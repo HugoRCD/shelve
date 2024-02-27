@@ -1,5 +1,5 @@
 {
-  "name": "nuxt-app",
+  "name": "shelves",
   "private": true,
   "type": "module",
   "version": "0.0.0",
@@ -11,14 +11,28 @@
     "postinstall": "nuxt prepare",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "prisma:generate": "prisma generate",
+    "prisma:pull": "prisma db pull",
+    "prisma:push": "prisma db push",
+    "prisma:migrate": "prisma migrate dev",
+    "vercel:env": "vercel env pull"
+  },
+  "prisma": {
+    "schema": "server/database/schema.prisma"
   },
   "devDependencies": {
+    "@linear/sdk": "^14.0.0",
     "@nuxt/eslint-config": "^0.2.0",
+    "@prisma/client": "^5.10.2",
     "blanked": "latest",
     "eslint": "^8.56.0",
     "eslint-plugin-tailwindcss": "^3.14.1",
     "nuxt": "^3.9.1",
+    "octokit": "^3.1.2",
+    "openai": "^4.28.0",
+    "prisma": "^5.10.2",
+    "resend": "^3.2.0",
     "vue": "^3.4.10",
     "vue-eslint-parser": "^9.4.2",
     "vue-router": "^4.2.5"

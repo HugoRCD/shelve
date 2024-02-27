@@ -2,7 +2,7 @@
 </script>
 
 <template>
-  <div class="flex h-screen flex-col items-center justify-center gap-3">
+  <div class="flex flex-col items-center justify-center gap-3">
     <div class="flex items-center gap-3">
       <div class="text-4xl font-bold">
         Hello World!
