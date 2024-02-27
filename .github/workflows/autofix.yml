@@ -25,6 +25,6 @@ jobs:
       - name: Fix lint issues
 
         run: bun run lint:fix
-      - uses: autofix-ci/action@ea32e3a12414e6d3183163c3424a7d7a8631ad84
+      - uses: autofix-ci/action@8bc06253bec489732e5f9c52884c7cace15c0160
         with:
           commit-message: "fix: lint issues"
