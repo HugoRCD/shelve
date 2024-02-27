@@ -25,6 +25,7 @@
     "@linear/sdk": "^14.0.0",
     "@nuxt/eslint-config": "^0.2.0",
     "@prisma/client": "^5.10.2",
+    "@vercel/analytics": "^1.2.2",
     "blanked": "latest",
     "eslint": "^8.56.0",
     "eslint-plugin-tailwindcss": "^3.14.1",

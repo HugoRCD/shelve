@@ -7,6 +7,7 @@
       <NuxtLayout>
         <NuxtPage />
       </NuxtLayout>
+      <Toasts close-button />
     </Body>
   </Html>
 </template>

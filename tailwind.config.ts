@@ -4,7 +4,7 @@ export default {
   darkMode: "class",
   content: [
     "./components/**/*.{js,vue,ts}",
-    "./layouts/**/*.vue",
+    "./layout/**/*.vue",
     "./pages/**/*.vue",
     "./nuxt.config.{js,ts}",
     "./app.vue",
