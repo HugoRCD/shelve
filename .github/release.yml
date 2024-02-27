@@ -1,0 +1,35 @@
+changelog:
+  exclude:
+    labels:
+      - ignore-for-release
+    authors:
+      - octocat
+  categories:
+    - title: Breaking Changes 🛠
+      labels:
+        - breaking
+    - title: Features 🚀
+      labels:
+        - feat
+    - title: Bug Fixes 🐞
+      labels:
+        - fix
+    - title: Documentation 📚
+      labels:
+        - docs
+    - title: Dependency Updates 📦
+      labels:
+        - dependencies
+    - title: Refactoring 🛠
+      labels:
+        - refactor
+    - title: Other 🤷‍
+      labels:
+        - other
+        - "*"
+    - title: Security Fixes 🔒
+      labels:
+        - security
+    - title: Bump Version 🏷
+      labels:
+        - version

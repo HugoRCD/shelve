@@ -1,0 +1,14 @@
+name: "💬 Question"
+description: Ask a question about the module.
+labels: ["question"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Before requesting a question, please make sure that you have read through our [documentation](https://blanked.hrcd.fr) and existing [issues](https://github.com/HugoRCD/blanked/issues) to see if the feature has already been requested or implemented. If it has, please add your reaction to the existing issue instead of creating a new one.
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+    validations:
+      required: true
