@@ -23,9 +23,9 @@ export default defineNuxtConfig({
     },
   },
 
-  modules: ['blanked'],
+  modules: ['blanked', "@nuxt/image"],
 
-  css: ['~/main.css'],
+  css: ['~/assets/style/main.css'],
 
   devtools: { enabled: true }
 })

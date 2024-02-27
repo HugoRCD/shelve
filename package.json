@@ -24,6 +24,7 @@
   "devDependencies": {
     "@linear/sdk": "^14.0.0",
     "@nuxt/eslint-config": "^0.2.0",
+    "@nuxt/image": "latest",
     "@prisma/client": "^5.10.2",
     "@vercel/analytics": "^1.2.2",
     "blanked": "latest",

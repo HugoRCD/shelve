@@ -1,9 +1,13 @@
 <script setup lang="ts">
-const { appName } = useAppConfig();
+const { title } = useAppConfig();
 defineProps({
   isText: {
     type: Boolean,
     default: false,
+  },
+  isLogo: {
+    type: Boolean,
+    default: true,
   },
   size: {
     type: Number,
@@ -20,13 +24,15 @@ defineProps({
       aria-label="Go back to home page"
     >
       <span
+        v-if="isLogo"
         class="text-2xl font-bold"
         :style="{ fontSize: `${size}rem` }"
       >🚀</span>
       <span
         v-if="isText"
-        class="ml-1 text-xs font-semibold"
-      >{{ appName }}</span>
+        class="ml-1 font-semibold"
+        :style="{ fontSize: `${size}rem` }"
+      >{{ title }}</span>
     </NuxtLink>
   </div>
 </template>
