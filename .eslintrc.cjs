@@ -13,6 +13,7 @@ module.exports = {
     }
   ],
   rules: {
-    "tailwindcss/no-custom-classname": "off"
+    "tailwindcss/no-custom-classname": "off",
+    "vue/multi-word-component-names": "off",
   }
 }

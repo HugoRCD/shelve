@@ -15,5 +15,11 @@
     >
       Render a toast
     </button>
+    <NuxtLink
+      to="/app/dashboard"
+      class="text-primary"
+    >
+      Go to dashboard
+    </NuxtLink>
   </div>
 </template>
