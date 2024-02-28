@@ -86,12 +86,12 @@ const login = async () => {
             </div>
 
             <div>
-              <Button
+              <Btn
                 type="submit"
                 :loading
               >
                 Sign in
-              </Button>
+              </Btn>
             </div>
           </form>
         </div>

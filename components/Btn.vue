@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { PropType } from "vue";
 
-const props = defineProps({
+defineProps({
   loading: {
     type: Boolean,
     default: false,
@@ -23,7 +23,7 @@ const props = defineProps({
 
 <template>
   <button
-    class="button"
+    class="flex items-center justify-center gap-2 rounded-md bg-accent px-4 py-2 text-inverted"
     :class="[
       full ? 'w-full' : '',
       loading ? 'opacity-50' : '',
