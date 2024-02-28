@@ -3,6 +3,9 @@ definePageMeta({
   layout: 'auth',
 });
 
+const email = ref('');
+const password = ref('');
+
 const loading = ref(false);
 
 const login = async () => {
@@ -42,40 +45,18 @@ const login = async () => {
             class="space-y-6"
             @submit.prevent="login"
           >
-            <div>
-              <label
-                for="email"
-                class="block text-sm font-medium leading-6 text-gray-900"
-              >Email address</label>
-              <div class="mt-2">
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  autocomplete="email"
-                  required
-                  class="input"
-                >
-              </div>
-            </div>
-
-            <div>
-              <label
-                for="password"
-                class="block text-sm font-medium leading-6 text-gray-900"
-              >Password</label>
-              <div class="mt-2">
-                <input
-                  id="password"
-                  name="password"
-                  type="password"
-                  autocomplete="current-password"
-                  required
-                  class="input"
-                >
-              </div>
-            </div>
-
+            <FormGroup
+              v-model="email"
+              label="Email address"
+              type="email"
+              required
+            />
+            <FormGroup
+              v-model="password"
+              label="Password"
+              type="password"
+              required
+            />
             <div class="flex items-center justify-end">
               <div class="text-sm leading-6">
                 <a
