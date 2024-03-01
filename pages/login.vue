@@ -1,64 +1,60 @@
 <script setup lang="ts">
-import Divider from "~/components/layout/Divider.vue";
-import CButton from "~/components/CButton.vue";
+import Loader from "~/components/Loader.vue";
+
+const { title } = useAppConfig();
 
 definePageMeta({
   layout: 'auth',
 });
 
-const loginDto = ref({
-  email: '',
-  password: '',
-});
+const email = ref('');
 
 const loading = ref(false);
 
+const { status, error, execute } = useFetch("/api/send-code", {
+  method: "POST",
+  body: { email },
+  watch: false,
+  immediate: false
+})
+
 const login = async () => {
-  loading.value = true;
-  await new Promise((resolve) => setTimeout(resolve, 1500));
-  console.log(loginDto.value);
-  toast.success(`Welcome back, ${loginDto.value.email} !`);
-  loading.value = false;
+  if (!email.value) {
+    toast.error("Please fill in all required fields.");
+    return;
+  }
+  await execute();
+  if (!error.value) {
+    email.value = "";
+    toast.success("Your code has been sent!");
+  } else {
+    toast.error("An error occurred while sending your code.");
+  }
 };
 </script>
 
 <template>
-  <div class="flex h-full flex-col items-center justify-center bg-secondary">
-    <div class="w-full max-w-xl rounded-md bg-primary p-8 shadow-md">
-      <div>
-        <Logo :size="2" :is-logo="false" is-text />
-        <h2 class="mt-8 text-2xl font-bold leading-9 tracking-tight text-primary">
-          Sign in to your account
-        </h2>
-        <p class="mt-2 text-sm leading-6 text-gray-500">
-          Not a member?
-          <NuxtLink to="/signup" class="font-semibold text-accent hover:text-accent-hover">
-            Sign up now
-          </NuxtLink>
+  <div class="flex h-full flex-col items-center justify-center">
+    <div class="flex flex-col justify-center gap-4">
+      <div class="flex flex-col items-center justify-center space-y-2 text-center">
+        <h1 class="text-center text-3xl font-semibold leading-9">
+          Login to <span class="font-newsreader font-light italic">{{ title }}</span>
+        </h1>
+        <p class="max-w-sm text-pretty text-sm leading-5 text-tertiary">
+          If you gained access to {{ title }}, you can enter your credentials here
         </p>
       </div>
-      <form method="POST" class="mt-10 space-y-6" @submit.prevent="login">
-        <FormGroup v-model="loginDto.email" label="Email address" type="email" required />
-        <FormGroup v-model="loginDto.password" label="Password" type="password" required />
-        <div class="flex items-center justify-end">
-          <NuxtLink to="#" class="text-sm font-semibold leading-6 text-accent hover:text-accent-hover">
-            Forgot password?
-          </NuxtLink>
-        </div>
-        <CButton type="submit" :loading>
-          Sign in
-        </CButton>
+      <form class="mt-8 flex flex-col gap-4" @submit.prevent="login" @keydown.enter.prevent="login">
+        <CInput v-model="email" label="Email address" type="email" required placeholder="email" />
+        <button type="submit" class="flex w-full items-center justify-center gap-2 rounded-md bg-black px-4 py-2 text-sm text-white transition-colors duration-300 hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-100">
+          Send me a magic link
+          <Loader v-if="status === 'pending'" />
+        </button>
       </form>
-
-      <div class="relative my-10">
-        <Divider text="Or continue with" />
-      </div>
-
-      <AuthGithub />
-
-      <div class="mt-4 flex items-center justify-center">
-        <SettingThemeToggle size="size-6" />
-      </div>
+      <button class="flex items-center justify-center gap-2 text-sm text-black transition-colors duration-300 dark:text-white">
+        <span class="i-lucide-github size-5 fill-inverted" />
+        <span class="text-sm font-semibold leading-6">GitHub</span>
+      </button>
     </div>
   </div>
 </template>

@@ -12,7 +12,7 @@ useHead({
       <NuxtLayout>
         <NuxtPage />
       </NuxtLayout>
-      <Toasts close-button />
+      <Toasts />
     </Body>
   </Html>
 </template>

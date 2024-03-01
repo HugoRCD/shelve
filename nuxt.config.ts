@@ -21,6 +21,9 @@ export default defineNuxtConfig({
     public: {
       siteUrl: process.env.NUXT_PUBLIC_SITE_URL,
     },
+    private: {
+      resendApiKey: process.env.NUXT_PRIVATE_RESEND_API_KEY,
+    },
   },
 
   modules: ['blanked', "@nuxt/image"],

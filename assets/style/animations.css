@@ -1,6 +1,6 @@
 /* Main Noise effect */
 .noise {
-    animation: noise 2s steps(10) infinite;
+    animation: noise 1s steps(10) infinite;
 }
 
 @keyframes noise {
