@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { PropType } from "vue";
+import CInput from "~/components/CInput.vue";
 
 defineProps({
   label: {
@@ -29,18 +30,12 @@ const model = defineModel({ type: String, required: true })
 
 <template>
   <div>
-    <label
-      :for="label"
-      class="block text-sm font-medium leading-6 text-primary"
-    >
+    <label :for="label" class="block text-sm font-medium leading-6 text-primary">
       {{ label }}
-      <span
-        v-if="required"
-        class="text-accent"
-      >*</span>
+      <span v-if="required" class="text-accent">*</span>
     </label>
     <div class="mt-2">
-      <SInput
+      <CInput
         v-model="model"
         :name="label"
         :type

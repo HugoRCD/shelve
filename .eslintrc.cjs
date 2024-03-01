@@ -16,5 +16,11 @@ module.exports = {
     "tailwindcss/no-custom-classname": "off",
     "vue/multi-word-component-names": "off",
     "vue/require-default-prop": "off",
+    "vue/max-attributes-per-line": [
+      'warn',
+      {
+        singleline: 5,
+      }
+    ],
   }
 }

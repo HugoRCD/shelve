@@ -1,93 +1,64 @@
 <script setup lang="ts">
+import Divider from "~/components/layout/Divider.vue";
+import CButton from "~/components/CButton.vue";
+
 definePageMeta({
   layout: 'auth',
 });
 
-const email = ref('');
-const password = ref('');
+const loginDto = ref({
+  email: '',
+  password: '',
+});
 
 const loading = ref(false);
 
 const login = async () => {
   loading.value = true;
-  await new Promise((resolve) => setTimeout(resolve, 2000));
+  await new Promise((resolve) => setTimeout(resolve, 1500));
+  console.log(loginDto.value);
+  toast.success(`Welcome back, ${loginDto.value.email} !`);
   loading.value = false;
 };
 </script>
 
 <template>
-  <div class="flex min-h-full flex-1">
-    <div class="flex flex-1 flex-col justify-center px-4 py-12 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
-      <div class="mx-auto w-full max-w-sm lg:w-96">
-        <div>
-          <Logo
-            :size="2"
-            :is-logo="false"
-            is-text
-          />
-          <h2 class="mt-8 text-2xl font-bold leading-9 tracking-tight text-gray-900">
-            Sign in to your account
-          </h2>
-          <p class="mt-2 text-sm leading-6 text-gray-500">
-            Not a member?
-            <NuxtLink
-              to="/signup"
-              class="font-semibold text-accent hover:text-accent"
-            >
-              Sign up now
-            </NuxtLink>
-          </p>
-        </div>
-
-        <div class="mt-10">
-          <form
-            method="POST"
-            class="space-y-6"
-            @submit.prevent="login"
-          >
-            <FormGroup
-              v-model="email"
-              label="Email address"
-              type="email"
-              required
-            />
-            <FormGroup
-              v-model="password"
-              label="Password"
-              type="password"
-              required
-            />
-            <div class="flex items-center justify-end">
-              <div class="text-sm leading-6">
-                <a
-                  href="#"
-                  class="font-semibold text-accent hover:text-accent"
-                >Forgot password?</a>
-              </div>
-            </div>
-
-            <div>
-              <Btn
-                type="submit"
-                :loading
-              >
-                Sign in
-              </Btn>
-            </div>
-          </form>
-        </div>
+  <div class="flex h-full flex-col items-center justify-center bg-secondary">
+    <div class="w-full max-w-xl rounded-md bg-primary p-8 shadow-md">
+      <div>
+        <Logo :size="2" :is-logo="false" is-text />
+        <h2 class="mt-8 text-2xl font-bold leading-9 tracking-tight text-primary">
+          Sign in to your account
+        </h2>
+        <p class="mt-2 text-sm leading-6 text-gray-500">
+          Not a member?
+          <NuxtLink to="/signup" class="font-semibold text-accent hover:text-accent-hover">
+            Sign up now
+          </NuxtLink>
+        </p>
       </div>
-    </div>
-    <div class="relative hidden w-0 flex-1 lg:block">
-      <NuxtImg
-        class="absolute inset-0 size-full object-cover"
-        src="https://images.unsplash.com/photo-1496917756835-20cb06e75b4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1908&q=80"
-        alt=""
-      />
+      <form method="POST" class="mt-10 space-y-6" @submit.prevent="login">
+        <FormGroup v-model="loginDto.email" label="Email address" type="email" required />
+        <FormGroup v-model="loginDto.password" label="Password" type="password" required />
+        <div class="flex items-center justify-end">
+          <NuxtLink to="#" class="text-sm font-semibold leading-6 text-accent hover:text-accent-hover">
+            Forgot password?
+          </NuxtLink>
+        </div>
+        <CButton type="submit" :loading>
+          Sign in
+        </CButton>
+      </form>
+
+      <div class="relative my-10">
+        <Divider text="Or continue with" />
+      </div>
+
+      <AuthGithub />
+
+      <div class="mt-4 flex items-center justify-center">
+        <SettingThemeToggle size="size-6" />
+      </div>
     </div>
   </div>
 </template>
-
-<style scoped>
-
-</style>

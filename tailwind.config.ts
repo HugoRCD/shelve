@@ -13,7 +13,14 @@ export default {
     extend: {
       colors: {
         primary: "var(--primary-color)",
+        "primary-hover": "var(--primary-hover-color)",
+        secondary: "var(--secondary-color)",
+        "secondary-hover": "var(--secondary-hover-color)",
         accent: "var(--accent-color)",
+        "accent-light": "var(--accent-light-color)",
+        "accent-hover": "var(--accent-hover-color)",
+        inverted: "var(--inverted-color)",
+        "inverted-hover": "var(--inverted-hover-color)",
       },
       textColor: {
         primary: "var(--text-primary)",
