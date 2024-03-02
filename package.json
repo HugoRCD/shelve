@@ -12,12 +12,20 @@
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "typecheck": "tsc --noEmit",
-    "vercel:env": "vercel env pull"
+    "vercel:env": "vercel env pull",
+    "prisma:generate": "prisma generate",
+    "prisma:pull": "prisma db pull",
+    "prisma:push": "prisma db push",
+    "prisma:migrate": "prisma migrate dev"
+  },
+  "prisma": {
+    "schema": "server/database/schema.prisma"
   },
   "devDependencies": {
     "@linear/sdk": "^14.0.0",
     "@nuxt/eslint-config": "^0.2.0",
     "@nuxt/image": "latest",
+    "@prisma/client": "^5.10.2",
     "@vercel/analytics": "^1.2.2",
     "@vue-email/nuxt": "^0.8.18",
     "blanked": "latest",
@@ -26,6 +34,7 @@
     "nuxt": "^3.9.1",
     "octokit": "^3.1.2",
     "openai": "^4.28.0",
+    "prisma": "^5.10.2",
     "resend": "^3.2.0",
     "vue": "^3.4.10",
     "vue-eslint-parser": "^9.4.2",
