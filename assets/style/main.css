@@ -7,21 +7,6 @@ html, body, #__nuxt, #__layout {
     @apply font-geist selection:bg-accent selection:text-inverted;
 }
 
-@font-face {
-    font-family: "Newsreader", serif;
-    src: url("../../public/fonts/Newsreader_60pt-MediumItalic.ttf");
-}
-
-@font-face {
-    font-family: "Geist", sans-serif;
-    src: url("../../public/fonts/GeistVariableVF.ttf");
-}
-
-@font-face {
-    font-family: "Cabinet Grotesk Variable", sans-serif;
-    src: url("../../public/fonts/CabinetGrotesk-Variable.ttf");
-}
-
 html.light {
     --primary-color: rgb(255, 255, 255);
     --primary-hover-color: rgb(255, 255, 255, 0.9);

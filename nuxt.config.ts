@@ -26,7 +26,7 @@ export default defineNuxtConfig({
     },
   },
 
-  modules: ['blanked', "@nuxt/image"],
+  modules: ['blanked', "@nuxt/image", "@vue-email/nuxt"],
 
   css: ['~/assets/style/main.css'],
 

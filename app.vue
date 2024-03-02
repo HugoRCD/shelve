@@ -4,6 +4,8 @@ useHead({
   title: title,
   link: link,
 });
+
+await useUser();
 </script>
 
 <template>
