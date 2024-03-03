@@ -1,12 +1,12 @@
 import { withAccelerate } from '@prisma/extension-accelerate'
-import { PrismaClient } from "@prisma/client";
-import { publicUser, Role, User } from "~/types/User";
+import { User as prismaUser, PrismaClient } from "@prisma/client";
+import { publicUser, Role } from "~/types/User";
 
 const prisma = new PrismaClient().$extends(withAccelerate())
 
 export default prisma;
 
-export function formatUser(user: User): publicUser {
+export function formatUser(user: prismaUser): publicUser {
   return {
     id: user.id,
     username: user.username,

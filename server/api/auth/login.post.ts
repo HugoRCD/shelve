@@ -1,4 +1,3 @@
-/*
 import { formatUser } from "~/server/database/client";
 import { login } from "~/server/app/authService";
 import { H3Event } from "h3";
@@ -13,4 +12,3 @@ export default eventHandler(async (event: H3Event) => {
   });
   return formatUser(user);
 });
-*/

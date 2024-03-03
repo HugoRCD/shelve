@@ -30,8 +30,6 @@ export type UserCreateInput = {
   username: string;
   email: string;
   password: string;
-  code: number;
-  role: Role;
 };
 
 export type UserUpdateInput = {
