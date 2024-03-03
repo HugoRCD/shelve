@@ -31,5 +31,9 @@ export default defineNuxtConfig({
 
   css: ['~/assets/style/main.css'],
 
+  vueEmail: {
+    autoImport: true,
+  },
+
   devtools: { enabled: true }
 })

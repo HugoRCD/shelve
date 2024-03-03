@@ -1,7 +1,5 @@
 name: autofix.ci
-on:
-  pull_request:
-  on: [ push, pull_request ]
+on: [ push, pull_request ]
 
 permissions:
   contents: read

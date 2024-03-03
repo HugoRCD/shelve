@@ -12,10 +12,13 @@ type sendMailDto = {
   name: string;
 }
 
-export async function sendLoginCode(email: string, code: number) {
-  const template = await useCompiler('LoginCode.vue', {
+export async function sendOtp(email: string, otp: string) {
+  const runtimeConfig = useRuntimeConfig();
+  const siteUrl = runtimeConfig.public.siteUrl;
+  const template = await useCompiler('otp.vue', {
     props: {
-      code,
+      otp,
+      redirectUrl: `${siteUrl}/login?email=${email}`,
     }
   });
 

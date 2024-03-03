@@ -1,19 +1,13 @@
 import prisma, { formatUser } from "~/server/database/client";
 import { Role, UserCreateInput, type UserUpdateInput } from "~/types/User";
+import { generateOtp } from "~/server/app/authService";
+import { sendOtp } from "~/server/app/resendService";
 import jwt from "jsonwebtoken";
-import bcrypt from "bcryptjs";
 
 export async function createUser(userData: UserCreateInput) {
   const foundUser = await prisma.user.findFirst({
     where: {
-      OR: [
-        {
-          username: userData.username,
-        },
-        {
-          email: userData.email,
-        },
-      ],
+      email: userData.email,
     },
   });
   if (foundUser) {
@@ -22,13 +16,14 @@ export async function createUser(userData: UserCreateInput) {
       statusMessage: "User already exists",
     });
   }
-  const password = await bcrypt.hash(userData.password, 10);
+  const { otp, encryptedOtp } = await generateOtp();
   const user = await prisma.user.create({
     data: {
       ...userData,
-      password,
+      otp: encryptedOtp,
     },
   });
+  await sendOtp(user.email, otp);
   return formatUser(user);
 }
 
