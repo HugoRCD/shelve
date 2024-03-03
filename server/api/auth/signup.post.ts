@@ -4,8 +4,5 @@ import { H3Event } from "h3";
 
 export default eventHandler(async (event: H3Event) => {
   const body = await readBody(event);
-  const createUserInput: UserCreateInput = {
-    email: body.email,
-  };
-  return await createUser(createUserInput);
+  return await createUser(body.email);
 });

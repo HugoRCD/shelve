@@ -15,6 +15,7 @@ export default defineNuxtConfig({
 
   routeRules: {
     "/": { isr: true, prerender: true },
+    "/app/**": { ssr: false },
   },
 
   runtimeConfig: {

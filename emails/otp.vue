@@ -36,7 +36,7 @@ defineProps({
           </ESection>
           <EText class="text-[14px] leading-[24px] text-black">
             or copy and paste this URL into your browser:
-            <ELink :href="redirectUrl" class="text-[#000000]">
+            <ELink :href="redirectUrl" class="text-[#2C3BF5]">
               {{ redirectUrl }}
             </ELink>
           </EText>

@@ -4,10 +4,10 @@ import { generateOtp } from "~/server/app/authService";
 import { sendOtp } from "~/server/app/resendService";
 import jwt from "jsonwebtoken";
 
-export async function createUser(userData: UserCreateInput) {
+export async function createUser(email: string) {
   const foundUser = await prisma.user.findFirst({
     where: {
-      email: userData.email,
+      email,
     },
   });
   if (foundUser) {
@@ -19,7 +19,7 @@ export async function createUser(userData: UserCreateInput) {
   const { otp, encryptedOtp } = await generateOtp();
   const user = await prisma.user.create({
     data: {
-      ...userData,
+      email,
       otp: encryptedOtp,
     },
   });
