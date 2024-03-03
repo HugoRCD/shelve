@@ -4,21 +4,16 @@ import { generateOtp } from "~/server/app/authService";
 import { sendOtp } from "~/server/app/resendService";
 import jwt from "jsonwebtoken";
 
-export async function createUser(email: string) {
-  const foundUser = await prisma.user.findFirst({
+export async function upsertUser(email: string) {
+  const { otp, encryptedOtp } = await generateOtp();
+  const user = await prisma.user.upsert({
     where: {
       email,
     },
-  });
-  if (foundUser) {
-    throw createError({
-      statusCode: 400,
-      statusMessage: "User already exists",
-    });
-  }
-  const { otp, encryptedOtp } = await generateOtp();
-  const user = await prisma.user.create({
-    data: {
+    update: {
+      otp: encryptedOtp,
+    },
+    create: {
       email,
       otp: encryptedOtp,
     },

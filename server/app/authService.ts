@@ -2,7 +2,7 @@ import { getUserByEmail, setAuthToken } from "~/server/app/userService";
 import prisma from "~/server/database/client";
 import bcrypt from "bcryptjs";
 
-export async function login(email: string, otp: string) {
+export async function verify(email: string, otp: string) {
   const user = await getUserByEmail(email);
   if (!user) throw createError({ statusCode: 404, statusMessage: "user_not_found" });
   if (!user.otp) throw createError({ statusCode: 400, statusMessage: "otp_not_set" });

@@ -21,11 +21,5 @@ const { title } = useAppConfig();
     >
       Go to login
     </NuxtLink>
-    <NuxtLink
-      to="/signup"
-      class="text-primary"
-    >
-      Go to signup
-    </NuxtLink>
   </div>
 </template>

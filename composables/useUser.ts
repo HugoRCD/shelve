@@ -1,8 +1,8 @@
-import type { User } from "~/types/User";
+import type { publicUser } from "~/types/User";
 import { Role } from "~/types/User";
 
 export const useCurrentUser = () => {
-  return useState<User | null>("user", () => null);
+  return useState<publicUser | null>("user", () => null);
 };
 
 export const isLoggedIn = computed(() => {
@@ -13,20 +13,24 @@ export const isAdmin = computed(() => {
   return useCurrentUser().value?.role === Role.Admin;
 });
 
-export async function useUser(): Promise<User | null> {
+export async function useUser(): Promise<publicUser | null> {
   const authCookie = useCookie("authToken");
   const user = useCurrentUser().value;
 
   if (authCookie && !user) {
     const cookieHeaders = useRequestHeaders(["cookie"]);
-    const response = await $fetch<User>("/api/auth/currentUser", {
+    const response = await $fetch<publicUser>("/api/auth/currentUser", {
       method: "GET",
       headers: cookieHeaders as HeadersInit,
     });
-    if (!response) {
-      return null;
-    }
+    if (!response) return null;
     useCurrentUser().value = response;
   }
   return user;
+}
+
+export async function logout() {
+  useCurrentUser().value = null;
+  await $fetch("/api/auth/logout", { method: "POST" });
+  await useRouter().push("/login");
 }
