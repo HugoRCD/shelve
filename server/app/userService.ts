@@ -1,5 +1,5 @@
 import prisma, { formatUser } from "~/server/database/client";
-import { Role, UserCreateInput, type UserUpdateInput } from "~/types/User";
+import { Role, type UserUpdateInput } from "~/types/User";
 import { generateOtp } from "~/server/app/authService";
 import { sendOtp } from "~/server/app/resendService";
 import jwt from "jsonwebtoken";

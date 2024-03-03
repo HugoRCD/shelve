@@ -30,6 +30,8 @@ export async function useUser(): Promise<publicUser | null> {
 }
 
 export async function logout() {
+  const user = useCurrentUser().value;
+  toast.message("See you soon, " + user!.username);
   useCurrentUser().value = null;
   await $fetch("/api/auth/logout", { method: "POST" });
   await useRouter().push("/login");
