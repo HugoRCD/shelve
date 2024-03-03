@@ -1,34 +1,24 @@
 import prisma, { formatUser } from "~/server/database/client";
 import { Role, UserCreateInput, type UserUpdateInput } from "~/types/User";
+import { generateOtp } from "~/server/app/authService";
+import { sendOtp } from "~/server/app/resendService";
 import jwt from "jsonwebtoken";
-import bcrypt from "bcryptjs";
 
-export async function createUser(userData: UserCreateInput) {
-  const foundUser = await prisma.user.findFirst({
+export async function upsertUser(email: string) {
+  const { otp, encryptedOtp } = await generateOtp();
+  const user = await prisma.user.upsert({
     where: {
-      OR: [
-        {
-          username: userData.username,
-        },
-        {
-          email: userData.email,
-        },
-      ],
+      email,
+    },
+    update: {
+      otp: encryptedOtp,
+    },
+    create: {
+      email,
+      otp: encryptedOtp,
     },
   });
-  if (foundUser) {
-    throw createError({
-      statusCode: 400,
-      statusMessage: "User already exists",
-    });
-  }
-  const password = await bcrypt.hash(userData.password, 10);
-  const user = await prisma.user.create({
-    data: {
-      ...userData,
-      password,
-    },
-  });
+  await sendOtp(user.email, otp);
   return formatUser(user);
 }
 

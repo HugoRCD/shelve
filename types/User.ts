@@ -5,7 +5,7 @@ export enum Role {
 
 export type User = {
   id: number;
-  username: string;
+  username: string | null;
   email: string;
   otp: string | null;
   avatar: string;
@@ -22,19 +22,16 @@ export type publicUser = {
   avatar: string;
   role: Role;
   authToken: string | null;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
 };
 
 export type UserCreateInput = {
-  username: string;
   email: string;
-  password: string;
 };
 
 export type UserUpdateInput = {
   username?: string;
   email?: string;
-  code?: number;
   role?: Role;
 };

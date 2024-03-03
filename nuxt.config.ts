@@ -15,6 +15,7 @@ export default defineNuxtConfig({
 
   routeRules: {
     "/": { isr: true, prerender: true },
+    "/app/**": { ssr: false },
   },
 
   runtimeConfig: {
@@ -30,6 +31,10 @@ export default defineNuxtConfig({
   modules: ['blanked', "@nuxt/image", "@vue-email/nuxt"],
 
   css: ['~/assets/style/main.css'],
+
+  vueEmail: {
+    autoImport: true,
+  },
 
   devtools: { enabled: true }
 })

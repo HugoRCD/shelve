@@ -1,10 +1,10 @@
 import { formatUser } from "~/server/database/client";
-import { login } from "~/server/app/authService";
+import { verify } from "~/server/app/authService";
 import { H3Event } from "h3";
 
 export default eventHandler(async (event: H3Event) => {
   const body = await readBody(event);
-  const user = await login(body.username, body.password);
+  const user = await verify(body.email, body.otp);
   setCookie(event, "authToken", user.authToken as string, {
     httpOnly: true,
     path: "/",

@@ -10,10 +10,9 @@ datasource db {
 
 model User {
   id        Int      @id @default(autoincrement())
-  username  String   @unique
+  username  String?  @unique
   email     String   @unique
-  password  String
-  otp       String?
+  otp       String?  @unique
   avatar    String   @default("https://i.imgur.com/6VBx3io.png") @db.VarChar(500)
   role      String   @default("user")
   authToken String?  @unique @db.VarChar(500)
