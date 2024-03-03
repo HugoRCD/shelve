@@ -12,10 +12,11 @@ model User {
   id        Int      @id @default(autoincrement())
   username  String   @unique
   email     String   @unique
+  password  String
   otp       String?
   avatar    String   @default("https://i.imgur.com/6VBx3io.png") @db.VarChar(500)
   role      String   @default("user")
+  authToken String?  @unique @db.VarChar(500)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  authToken String?  @unique @db.VarChar(500)
 }

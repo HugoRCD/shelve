@@ -7,10 +7,36 @@ export type User = {
   id: number;
   username: string;
   email: string;
-  password: string;
+  otp: string | null;
   avatar: string;
   role: Role;
   authToken: string | null;
   createdAt: Date;
   updatedAt: Date;
+};
+
+export type publicUser = {
+  id: number;
+  username: string;
+  email: string;
+  avatar: string;
+  role: Role;
+  authToken: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+export type UserCreateInput = {
+  username: string;
+  email: string;
+  password: string;
+  code: number;
+  role: Role;
+};
+
+export type UserUpdateInput = {
+  username?: string;
+  email?: string;
+  code?: number;
+  role?: Role;
 };
