@@ -1,28 +1,26 @@
 <script setup lang="ts">
 const props = defineProps({
-  default: String,
   digitCount: {
     type: Number,
-    required: true
+    default: 6
   },
   disabled: Boolean
 });
 
+const otpRef = ref<HTMLDivElement>()
+const otpInputs = ref<Array<HTMLInputElement | null>>([]);
+const showPasteButton = ref(false);
+
 const digits = reactive<[string | null]>([null]);
 
-if (props.default && props.default.length === props.digitCount) {
-  for (let i =0; i < props.digitCount; i++) {
-    digits[i] = props.default.charAt(i)
-  }
-} else {
-  for (let i =0; i < props.digitCount; i++) {
-    digits[i] = null;
-  }
+const otp = defineModel({ type: String });
+
+for (let i = 0; i < props.digitCount; i++) {
+  digits[i] = null;
 }
 
-const otpCont = ref<HTMLDivElement>()
 
-const emit = defineEmits(['update:otp']);
+const emit = defineEmits(['otp:full']);
 
 const isDigitsFull = function () {
   for (const elem of digits) {
@@ -30,12 +28,11 @@ const isDigitsFull = function () {
       return false;
     }
   }
-
   return true;
 }
 
 const handleKeyDown = function (event: KeyboardEvent, index: number) {
-  if (!otpCont.value) return;
+  if (!otpRef.value) return;
   if (event.key !== "Tab" &&
       event.key !== "ArrowRight" &&
       event.key !== "ArrowLeft"
@@ -45,42 +42,51 @@ const handleKeyDown = function (event: KeyboardEvent, index: number) {
 
   if (event.key === "Backspace") {
     digits[index] = null;
-
     if (index != 0) {
-      (otpCont.value.children)[index-1].focus();
+      (otpRef.value.children)[index - 1].focus();
     }
-
+    otp.value = digits.join('');
+    otp.value = otp.value.slice(0, -1);
     return;
   }
 
   if ((new RegExp('^([0-9])$')).test(event.key)) {
     digits[index] = event.key;
-
     if (index != props.digitCount - 1) {
-      (otpCont.value.children)[index+1].focus();
+      (otpRef.value.children)[index + 1].focus();
     }
+    otp.value = digits.join('');
   }
 
   if (isDigitsFull()) {
-    emit('update:otp', digits.join(''))
+    emit('otp:full', otp.value);
   }
 }
 </script>
 
 <template>
-  <div ref="otpCont" class="flex justify-center gap-4">
-    <input
-      v-for="(el, ind) in digits"
-      :key="el+ind"
-      v-model="digits[ind]"
-      type="text"
-      class="digit-box"
-      :autofocus="ind === 0"
-      :placeholder="ind+1"
-      :disabled
-      maxlength="1"
-      @keydown="handleKeyDown($event, ind)"
+  <div class="flex flex-col gap-4">
+    <button
+      v-if="showPasteButton"
+      class="text-primary underline dark:text-secondary"
     >
+      Paste
+    </button>
+    <div ref="otpRef" class="flex justify-center gap-4">
+      <input
+        v-for="(el, index) in digits"
+        ref="otpInputs"
+        :key="el+index"
+        v-model="digits[index]"
+        type="text"
+        class="digit-box"
+        :autofocus="index === 0"
+        :placeholder="index+1"
+        :disabled
+        maxlength="1"
+        @keydown="handleKeyDown($event, index)"
+      >
+    </div>
   </div>
 </template>
 
