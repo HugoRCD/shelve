@@ -9,14 +9,13 @@ const props = defineProps({
 
 const otpRef = ref<HTMLDivElement>()
 const otpInputs = ref<Array<HTMLInputElement | null>>([]);
-const showPasteButton = ref(false);
 
 const digits = reactive<[string | null]>([null]);
 
 const otp = defineModel({ type: String });
 
 for (let i = 0; i < props.digitCount; i++) {
-  digits[i] = null;
+  digits[i] = otp.value![i] || null;
 }
 
 
@@ -66,12 +65,6 @@ const handleKeyDown = function (event: KeyboardEvent, index: number) {
 
 <template>
   <div class="flex flex-col gap-4">
-    <button
-      v-if="showPasteButton"
-      class="text-primary underline dark:text-secondary"
-    >
-      Paste
-    </button>
     <div ref="otpRef" class="flex justify-center gap-4">
       <input
         v-for="(el, index) in digits"

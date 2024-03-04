@@ -18,7 +18,7 @@ export async function sendOtp(email: string, otp: string) {
   const template = await useCompiler('otp.vue', {
     props: {
       otp,
-      redirectUrl: `${siteUrl}/login?email=${email}`,
+      redirectUrl: `${siteUrl}/login?email=${email}&otp=${otp}`,
     }
   });
 

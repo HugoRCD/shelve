@@ -10,7 +10,7 @@ const route = useRoute();
 const otpMode = ref(route.query.email ? true : false);
 
 const email = ref(route.query.email || '');
-const otp = ref('');
+const otp = ref(route.query.otp || '');
 
 const { status, error, execute } = useFetch("/api/auth/send-code", {
   method: "POST",
