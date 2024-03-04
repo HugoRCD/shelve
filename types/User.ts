@@ -7,6 +7,7 @@ export type User = {
   id: number;
   username: string | null;
   email: string;
+  password: string | null;
   otp: string | null;
   avatar: string;
   role: Role;
@@ -32,6 +33,7 @@ export type UserCreateInput = {
 
 export type UserUpdateInput = {
   username?: string;
+  password?: string;
   email?: string;
   role?: Role;
 };

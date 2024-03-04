@@ -11,6 +11,7 @@ datasource db {
 model User {
   id        Int      @id @default(autoincrement())
   username  String?  @unique
+  password  String?
   email     String   @unique
   otp       String?  @unique
   avatar    String   @default("https://i.imgur.com/6VBx3io.png") @db.VarChar(500)

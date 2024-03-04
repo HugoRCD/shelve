@@ -2,11 +2,15 @@ import { getUserByEmail, setAuthToken } from "~/server/app/userService";
 import prisma from "~/server/database/client";
 import bcrypt from "bcryptjs";
 
-export async function verify(email: string, otp: string) {
-  const user = await getUserByEmail(email);
+export async function verify(verifyDto: { email: string; password?: string; otp: string }) {
+  const user = await getUserByEmail(verifyDto.email);
   if (!user) throw createError({ statusCode: 404, statusMessage: "user_not_found" });
+  if (verifyDto.password) {
+    const isPasswordCorrect = await bcrypt.compare(verifyDto.password, user.password);
+    if (!isPasswordCorrect) throw createError({ statusCode: 401, statusMessage: "invalid_password" });
+  }
   if (!user.otp) throw createError({ statusCode: 400, statusMessage: "otp_not_set" });
-  const isOtpCorrect = await bcrypt.compare(otp, user.otp);
+  const isOtpCorrect = await bcrypt.compare(verifyDto.otp, user.otp);
   if (!isOtpCorrect) throw createError({ statusCode: 401, statusMessage: "invalid_password" });
   await deleteOtp(user.id);
   return await setAuthToken(user.id);

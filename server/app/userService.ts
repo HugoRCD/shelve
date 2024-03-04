@@ -3,6 +3,7 @@ import { Role, type UserUpdateInput } from "~/types/User";
 import { generateOtp } from "~/server/app/authService";
 import { sendOtp } from "~/server/app/resendService";
 import jwt from "jsonwebtoken";
+import bcrypt from "bcryptjs";
 
 type jwtPayload = {
   id: number;
@@ -116,6 +117,9 @@ export async function updateUser(userId: number, updateUserInput: UserUpdateInpu
       },
     });
     if (usernameTaken) throw createError({ statusCode: 400, message: "Username already taken" });
+  }
+  if (updateUserInput.password) {
+    updateUserInput.password = await bcrypt.hash(updateUserInput.password, 10);
   }
   const user = await prisma.user.update({
     where: { id: userId },
