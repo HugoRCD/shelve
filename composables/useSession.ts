@@ -8,10 +8,6 @@ export const useSession = () => {
   const authCookie = useCookie('authToken');
   const user = useState<publicUser | null>("user");
 
-  async function login() {
-    // Login the user
-  }
-
   async function refresh() {
     if (authCookie && !user.value) {
       const cookieHeaders = useRequestHeaders(["cookie"]);
@@ -41,7 +37,6 @@ export const useSession = () => {
 
   return {
     user,
-    login,
     refresh,
     clear,
     isLoggedIn,

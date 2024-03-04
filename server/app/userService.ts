@@ -4,6 +4,15 @@ import { generateOtp } from "~/server/app/authService";
 import { sendOtp } from "~/server/app/resendService";
 import jwt from "jsonwebtoken";
 
+type jwtPayload = {
+  id: number;
+  role: Role;
+  username: string;
+  email: string;
+};
+
+const runtimeConfig = useRuntimeConfig().private;
+
 export async function upsertUser(email: string) {
   const { otp, encryptedOtp } = await generateOtp();
   const user = await prisma.user.upsert({
@@ -49,14 +58,6 @@ export async function getUserById(userId: number) {
   return formatUser(user);
 }
 
-export async function getUserByLogin(login: string) {
-  return prisma.user.findFirst({
-    where: {
-      OR: [{ email: login }, { username: login }],
-    },
-  });
-}
-
 export async function getAllUsers() {
   const users = await prisma.user.findMany({
     cacheStrategy: { ttl: 60 },
@@ -73,6 +74,8 @@ export async function getUserByAuthToken(authToken: string) {
     },
   });
   if (!user) return null;
+  const decoded = jwt.verify(authToken, runtimeConfig.authSecret) as jwtPayload;
+  if (decoded.id !== user.id) return null;
   return formatUser(user);
 }
 
@@ -85,7 +88,7 @@ export async function setAuthToken(userId: number) {
       username: user.username,
       email: user.email,
     },
-    useRuntimeConfig().private.authSecret,
+    runtimeConfig.authSecret,
     { expiresIn: "30d" },
   );
   return prisma.user.update({
