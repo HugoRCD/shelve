@@ -5,12 +5,13 @@ useHead({
   link: link,
 });
 
-await useUser();
+await useSession().refresh();
 </script>
 
 <template>
   <Html>
     <Body class="relative bg-primary text-primary">
+      {{ useSession().user }}
       <NuxtLayout>
         <NuxtPage />
       </NuxtLayout>

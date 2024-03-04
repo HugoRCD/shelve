@@ -1,5 +1,7 @@
 export default defineNuxtRouteMiddleware(async () => {
-  if (!isAdmin.value) {
+  const { refresh, isAdmin } = useSession();
+  await refresh();
+  if (!isAdmin) {
     toast.error("You need to be an admin to access this page.");
     return "/app/dashboard";
   }
