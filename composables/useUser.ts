@@ -19,12 +19,12 @@ export async function useUser(): Promise<publicUser | null> {
 
   if (authCookie && !user) {
     const cookieHeaders = useRequestHeaders(["cookie"]);
-    const response = await $fetch<publicUser>("/api/auth/currentUser", {
+    const { data } = await useFetch<publicUser>("/api/auth/currentUser", {
       method: "GET",
       headers: cookieHeaders as HeadersInit,
     });
-    if (!response) return null;
-    useCurrentUser().value = response;
+    if (!data.value) return null;
+    // useCurrentUser().value = data.value;
   }
   return user;
 }
