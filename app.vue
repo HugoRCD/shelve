@@ -11,7 +11,6 @@ await useSession().refresh();
 <template>
   <Html>
     <Body class="relative bg-primary text-primary">
-      {{ useSession().user }}
       <NuxtLayout>
         <NuxtPage />
       </NuxtLayout>
