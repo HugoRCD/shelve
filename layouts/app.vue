@@ -1,5 +1,5 @@
 <template>
-  <div class="max-layout-width relative flex h-screen pt-4">
+  <div class="relative flex h-screen">
     <slot />
   </div>
 </template>

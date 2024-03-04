@@ -34,7 +34,6 @@ export default {
       },
       fontFamily: {
         newsreader: ["Newsreader", "serif"],
-        cabinet: ["Cabinet Grotesk Variable", "sans-serif"],
         geist: ["Geist", "sans-serif"],
       }
     },

@@ -18,6 +18,10 @@ defineProps({
     type: Boolean,
     default: true,
   },
+  color: {
+    type: String as PropType<"primary" | "secondary" | "accent">,
+    default: "primary",
+  },
   variant: {
     type: String as PropType<"solid" | "outline" | "link" | "ghost" | "soft">,
     default: "primary",
@@ -27,11 +31,14 @@ defineProps({
 
 <template>
   <button
-    class="flex items-center justify-center gap-2 rounded-md bg-accent px-4 py-2 text-inverted transition-colors duration-300 hover:bg-accent-hover"
+    class="flex items-center justify-center gap-2 rounded-md px-4 py-2 transition-colors duration-300"
     :class="[
       full ? 'w-full' : '',
       loading ? 'opacity-50' : '',
       disabled ? 'cursor-not-allowed' : '',
+      color === 'primary' ? 'bg-black text-white hover:bg-inverted-hover dark:bg-white dark:text-black dark:hover:bg-inverted-hover' : '',
+      color === 'secondary' ? 'bg-secondary text-inverted' : '',
+      color === 'accent' ? 'bg-accent text-inverted hover:bg-accent-hover' : '',
     ]"
     :disabled
     :type="type"

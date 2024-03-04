@@ -6,7 +6,7 @@ export async function verify(verifyDto: { email: string; password?: string; otp:
   const user = await getUserByEmail(verifyDto.email);
   if (!user) throw createError({ statusCode: 404, statusMessage: "user_not_found" });
   if (verifyDto.password) {
-    const isPasswordCorrect = await bcrypt.compare(verifyDto.password, user.password);
+    const isPasswordCorrect = bcrypt.compare(verifyDto.password, user.password);
     if (!isPasswordCorrect) throw createError({ statusCode: 401, statusMessage: "invalid_password" });
   }
   if (!user.otp) throw createError({ statusCode: 400, statusMessage: "otp_not_set" });
