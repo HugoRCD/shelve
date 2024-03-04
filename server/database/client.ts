@@ -9,7 +9,7 @@ export default prisma;
 export function formatUser(user: prismaUser): publicUser {
   return {
     id: user.id,
-    username: user.username,
+    username: user.username || "",
     email: user.email,
     role: user.role as Role,
     avatar: user.avatar,

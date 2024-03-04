@@ -22,8 +22,8 @@ export type publicUser = {
   avatar: string;
   role: Role;
   authToken: string | null;
-  createdAt: string;
-  updatedAt: string;
+  createdAt: string | Date;
+  updatedAt: string | Date;
 };
 
 export type UserCreateInput = {

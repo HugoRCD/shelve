@@ -81,7 +81,7 @@ const login = async (otpValue: string) => {
           </button>
         </form>
         <form v-else class="mt-8 flex flex-col gap-4" @submit.prevent="login" @keydown.enter.prevent="login">
-          <OTP digit-count="6" :disabled="verifyStatus === 'pending'" @update:otp="login($event)" />
+          <OTP :digit-count="6" :disabled="verifyStatus === 'pending'" @update:otp="login($event)" />
           <button type="submit" class="flex w-full items-center justify-center gap-2 rounded-md bg-black px-4 py-2 text-sm text-white transition-colors duration-300 hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-100">
             Verify code
             <Loader v-if="verifyStatus === 'pending'" />

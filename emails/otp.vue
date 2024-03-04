@@ -16,7 +16,7 @@ defineProps({
     <EHtml>
       <EHead />
       <EPreview>
-        Welcome to the Shelves
+        Here is your code to access Shelves
       </EPreview>
       <EBody class="m-auto bg-white font-sans">
         <EContainer class="mx-auto my-[40px] max-w-[465px] rounded border border-solid border-[#eaeaea] p-[20px] md:p-7">
