@@ -22,6 +22,18 @@ export function getNavigation(where: Where): Navigation[] {
           icon: "i-heroicons-chart-bar-square",
           title: "Dashboard",
         },
+        {
+          name: "Profile",
+          to: "/app/profile",
+          icon: "i-heroicons-user-circle",
+          title: "Profile",
+        },
+        {
+          name: "Settings",
+          to: "/app/settings",
+          icon: "i-heroicons-cog",
+          title: "Settings",
+        },
       ];
     default:
       return [];
