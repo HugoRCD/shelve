@@ -9,14 +9,37 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  username  String?  @unique
+  id        Int       @id @default(autoincrement())
+  username  String?   @unique
   password  String?
-  email     String   @unique
-  otp       String?  @unique
-  avatar    String   @default("https://i.imgur.com/6VBx3io.png") @db.VarChar(500)
-  role      String   @default("user")
-  authToken String?  @unique @db.VarChar(500)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  email     String    @unique
+  otp       String?   @unique
+  avatar    String    @default("https://i.imgur.com/6VBx3io.png") @db.VarChar(500)
+  role      String    @default("user")
+  authToken String?   @unique @db.VarChar(500)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  projects  Project[]
+}
+
+model Project {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  owner       User     @relation(fields: [ownerId], references: [id])
+  ownerId     Int
+  envVars     EnvVar[]
+}
+
+model EnvVar {
+  id          Int      @id @default(autoincrement())
+  key         String
+  value       String
+  environment String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  project     Project  @relation(fields: [projectId], references: [id])
+  projectId   Int
 }
