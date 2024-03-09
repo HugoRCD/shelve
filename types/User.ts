@@ -29,6 +29,7 @@ export type publicUser = {
 
 export type UserCreateInput = {
   email: string;
+  password?: string;
 };
 
 export type UserUpdateInput = {

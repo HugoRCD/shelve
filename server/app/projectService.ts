@@ -1,5 +1,5 @@
-import prisma from "~/server/database/client";
 import type { ProjectCreateInput } from "~/types/Project";
+import prisma from "~/server/database/client";
 
 export async function upsertProject(project: ProjectCreateInput) {
   return prisma.project.upsert({
@@ -13,6 +13,16 @@ export async function upsertProject(project: ProjectCreateInput) {
 
 export async function getProjectById(id: number) {
   return prisma.project.findUnique({
+    include: {
+      variables: true,
+      owner: {
+        select: {
+          id: true,
+          email: true,
+          username: true,
+        },
+      }
+    },
     where: {
       id,
     },

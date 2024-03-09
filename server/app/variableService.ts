@@ -1,5 +1,5 @@
 import prisma from "~/server/database/client";
-import { VariableCreateInput } from "~/types/Variables";
+import { Environment, VariableCreateInput } from "~/types/Variables";
 
 export async function upsertVariable(project: VariableCreateInput) {
   return prisma.envVar.upsert({
@@ -19,18 +19,16 @@ export async function getVariableById(id: number) {
   });
 }
 
-export async function getVariablesByProjectId(projectId: number) {
-  return prisma.envVar.findMany({
-    where: {
-      projectId,
-    },
-  });
+export async function getVariablesByProjectId(projectId: number, environment?: Environment) {
+  const options = environment ? { projectId, environment } : { projectId };
+  return prisma.envVar.findMany({ where: options });
 }
 
-export async function deleteVariable(id: number) {
+export async function deleteVariable(id: number, environment: Environment) {
   return prisma.envVar.delete({
     where: {
       id,
+      environment,
     },
   });
 }

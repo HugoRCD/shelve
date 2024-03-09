@@ -1,5 +1,5 @@
 import prisma, { formatUser } from "~/server/database/client";
-import { Role, type UserUpdateInput } from "~/types/User";
+import { Role, type UserCreateInput, type UserUpdateInput } from "~/types/User";
 import { generateOtp } from "~/server/app/authService";
 import { sendOtp } from "~/server/app/resendService";
 import jwt from "jsonwebtoken";
@@ -14,21 +14,25 @@ type jwtPayload = {
 
 const runtimeConfig = useRuntimeConfig().private;
 
-export async function upsertUser(email: string) {
+export async function upsertUser(userCreateInput: UserCreateInput) {
   const { otp, encryptedOtp } = await generateOtp();
+  let password = userCreateInput.password;
+  if (password) password = await bcrypt.hash(password, 10);
   const user = await prisma.user.upsert({
     where: {
-      email,
+      email: userCreateInput.email,
     },
     update: {
       otp: encryptedOtp,
+      password,
     },
     create: {
-      email,
+      ...userCreateInput,
+      password,
       otp: encryptedOtp,
     },
   });
-  await sendOtp(user.email, otp);
+  if (!userCreateInput.password) await sendOtp(user.email, otp);
   return formatUser(user);
 }
 
