@@ -2,26 +2,44 @@ import { getUserByAuthToken } from "~/server/app/userService";
 import { Role } from "~/types/User";
 import { H3Event } from "h3";
 
-export async function protectRoute(event: H3Event, allowedRoutes: string[], requiredRole: Role | null): Promise<{
-  isAllowed: boolean;
-  user: null | { id: number; email: string; role: Role };
-}> {
-  const isAllowed = false;
-  const user = null;
+export async function protectRoute(event: H3Event, protectedRoutes: string[], requiredRole: Role | null = null) {
+  const askedRoute = event.path;
 
-  if (event.path === undefined || !allowedRoutes.some((route) => event.path?.startsWith(route))) {
-    return { isAllowed: true, user };
-  } else {
-    const authToken = getCookie(event, "authToken");
-    if (!authToken) return { isAllowed: false, user: null };
-
-    const user = await getUserByAuthToken(authToken);
-    if (!user) return { isAllowed: false, user: null };
-
-    if (user.role === Role.Admin) return { isAllowed: true, user };
-
-    if (requiredRole && user.role !== requiredRole) return { isAllowed: false, user: null };
+  if (!protectedRoutes.some((route) => askedRoute?.startsWith(route))) {
+    return;
   }
 
-  return { isAllowed: true, user };
+  const authToken = getCookie(event, "authToken");
+  if (!authToken) {
+    return sendError(
+      event,
+      createError({
+        statusCode: 401,
+        statusMessage: "unauthorized",
+      }),
+    );
+  }
+
+  const user = await getUserByAuthToken(authToken);
+  if (!user) {
+    return sendError(
+      event,
+      createError({
+        statusCode: 401,
+        statusMessage: "unauthorized",
+      }),
+    );
+  }
+
+  if (requiredRole && user.role !== requiredRole) {
+    return sendError(
+      event,
+      createError({
+        statusCode: 401,
+        statusMessage: "insufficient permissions",
+      }),
+    );
+  }
+
+  return user;
 }
