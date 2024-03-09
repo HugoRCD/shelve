@@ -1,5 +1,5 @@
 import prisma, { formatUser } from "~/server/database/client";
-import { Role, type UserCreateInput, type UserUpdateInput } from "~/types/User";
+import { Role, User, type UserCreateInput, type UserUpdateInput } from "~/types/User";
 import { generateOtp } from "~/server/app/authService";
 import { sendOtp } from "~/server/app/resendService";
 import jwt from "jsonwebtoken";
@@ -53,16 +53,6 @@ export async function deleteUser(userId: number) {
   });
 }
 
-export async function getUserById(userId: number) {
-  const user = await prisma.user.findUnique({
-    where: {
-      id: userId,
-    },
-  });
-  if (!user) throw createError({ statusCode: 404, message: "User not found" });
-  return formatUser(user);
-}
-
 export async function getAllUsers() {
   const users = await prisma.user.findMany({
     cacheStrategy: { ttl: 60 },
@@ -72,7 +62,7 @@ export async function getAllUsers() {
   });
 }
 
-export async function getUserByAuthToken(authToken: string) {
+export const getUserByAuthToken = cachedFunction(async (authToken: string)=> {
   const user = await prisma.user.findFirst({
     where: {
       authToken,
@@ -82,10 +72,11 @@ export async function getUserByAuthToken(authToken: string) {
   const decoded = jwt.verify(authToken, runtimeConfig.authSecret) as jwtPayload;
   if (decoded.id !== user.id) return null;
   return formatUser(user);
-}
+}, {
+  maxAge: 20,
+})
 
-export async function setAuthToken(userId: number) {
-  const user = await getUserById(userId);
+export async function setAuthToken(user: User) {
   const authToken = jwt.sign(
     {
       id: user.id,
@@ -98,7 +89,7 @@ export async function setAuthToken(userId: number) {
   );
   return prisma.user.update({
     where: {
-      id: userId,
+      id: user.id,
     },
     data: {
       authToken,
@@ -106,15 +97,9 @@ export async function setAuthToken(userId: number) {
   });
 }
 
-export async function updateUser(userId: number, updateUserInput: UserUpdateInput) {
-  const foundUser = await prisma.user.findFirst({
-    where: {
-      id: userId,
-    },
-  });
-  if (!foundUser) throw createError({ statusCode: 404, message: "User not found" });
+export async function updateUser(user: User, updateUserInput: UserUpdateInput) {
   const newUsername = updateUserInput.username;
-  if (newUsername && newUsername !== foundUser.username) {
+  if (newUsername && newUsername !== user.username) {
     const usernameTaken = await prisma.user.findFirst({
       where: {
         username: newUsername,
@@ -125,13 +110,13 @@ export async function updateUser(userId: number, updateUserInput: UserUpdateInpu
   if (updateUserInput.password) {
     updateUserInput.password = await bcrypt.hash(updateUserInput.password, 10);
   }
-  const user = await prisma.user.update({
-    where: { id: userId },
+  const updatedUser = await prisma.user.update({
+    where: { id: user.id },
     data: {
       ...updateUserInput,
     },
   });
-  return formatUser(user);
+  return formatUser(updatedUser);
 }
 
 export async function updateRoleUser(userId: number, role: Role) {

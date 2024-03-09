@@ -1,4 +1,3 @@
-import { protectRoute } from "~/server/utils/protectedRoutes";
 import { Role } from "~/types/User";
 import { H3Event } from "h3";
 
@@ -7,7 +6,15 @@ export default defineEventHandler(async (event: H3Event) => {
     "/api/admin"
   ];
 
-  const user = await protectRoute(event, protectedRoutes, Role.Admin);
+  const user = event.context.user;
 
-  event.context.user = user;
+  if (protectedRoutes.some((route) => event.path?.startsWith(route)) && (!user || user.role !== Role.Admin)) {
+    return sendError(
+      event,
+      createError({
+        statusCode: 401,
+        statusMessage: "insufficient permissions",
+      }),
+    );
+  }
 });

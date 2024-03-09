@@ -1,4 +1,3 @@
-import { getUserByAuthToken } from "~/server/app/userService";
 import { deleteProject } from "~/server/app/projectService";
 import { H3Event } from "h3";
 
