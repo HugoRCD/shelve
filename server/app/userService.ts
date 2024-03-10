@@ -74,6 +74,8 @@ export const getUserByAuthToken = cachedFunction(async (authToken: string)=> {
   return formatUser(user);
 }, {
   maxAge: 20,
+  name: "getUserByAuthToken",
+  getKey: (authToken: string) => `authToken:${authToken}`,
 })
 
 export async function setAuthToken(user: User) {
@@ -116,7 +118,12 @@ export async function updateUser(user: User, updateUserInput: UserUpdateInput) {
       ...updateUserInput,
     },
   });
+  await removeCachedUser(user.authToken as string);
   return formatUser(updatedUser);
+}
+
+async function removeCachedUser(authToken: string) {
+  return await useStorage('cache').removeItem(`nitro:functions:getUserByAuthToken:authToken:${authToken}.json`);
 }
 
 export async function updateRoleUser(userId: number, role: Role) {
