@@ -16,7 +16,7 @@ defineProps({
   },
   full: {
     type: Boolean,
-    default: true,
+    default: false,
   },
   color: {
     type: String as PropType<"primary" | "secondary" | "accent">,
@@ -31,7 +31,7 @@ defineProps({
 
 <template>
   <button
-    class="flex items-center justify-center gap-2 rounded-md px-4 py-2 transition-colors duration-300"
+    class="flex items-center justify-center gap-2 rounded-md px-4 py-1 transition-colors duration-300"
     :class="[
       full ? 'w-full' : '',
       loading ? 'opacity-50' : '',

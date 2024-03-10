@@ -6,7 +6,7 @@ export const useCurrentUser = () => {
 
 export const useSession = () => {
   const authCookie = useCookie('authToken');
-  const user = useState<publicUser | null>("user");
+  const user = useState<publicUser>("user");
 
   async function refresh() {
     if (authCookie && !user.value) {
