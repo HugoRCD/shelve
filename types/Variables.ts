@@ -15,15 +15,9 @@ export type Variable = {
 };
 
 export type VariableCreateInput = {
+  id?: number;
   key: string;
   value: string;
   projectId: number;
   environment: Environment;
-};
-
-export type VariableUpdateInput = {
-  id: number;
-  key?: string;
-  value?: string;
-  environment?: Environment;
 };

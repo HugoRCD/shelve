@@ -25,7 +25,8 @@ model User {
 model Project {
   id          Int      @id @default(autoincrement())
   name        String
-  description String
+  description String?
+  avatar      String?  @default("https://i.imgur.com/6VBx3io.png") @db.VarChar(500)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   owner       User     @relation(fields: [ownerId], references: [id])

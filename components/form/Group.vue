@@ -12,7 +12,7 @@ defineProps({
     default: false,
   },
   type: {
-    type: String as PropType<"text" | "email" | "password">,
+    type: String as PropType<"text" | "email" | "password" | "textarea">,
     default: "text",
   },
   placeholder: {
@@ -23,13 +23,17 @@ defineProps({
     type: Boolean,
     default: false
   },
+  rows: {
+    type: Number,
+    default: 6
+  },
 })
 
 const model = defineModel({ type: String, required: true })
 </script>
 
 <template>
-  <div>
+  <div class="w-full">
     <label :for="label" class="block text-sm font-medium leading-6 text-primary">
       {{ label }}
       <span v-if="required" class="text-accent">*</span>

@@ -18,32 +18,26 @@ async function updateCurrentUser() {
 <template>
   <div class="mx-auto max-w-2xl py-6 sm:px-6 lg:px-8">
     <form class="flex flex-col" @submit.prevent="updateCurrentUser">
-      <h2 class="text-base font-semibold leading-7">
-        Personal Information
-      </h2>
-      <p class="text-sm leading-6 text-gray-500">
-        Use a permanent address where you can receive mail.
-      </p>
-      <div class="mt-6 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-        <div class="sm:col-span-3">
-          <label for="first-name" class="block text-sm font-medium leading-6"> Username </label>
-          <div class="mt-2">
-            <CInput v-model="user.username" />
-          </div>
+      <div class="flex items-center gap-4">
+        <NuxtImg :src="user.avatar" class="size-10 rounded-full" />
+        <div>
+          <h2 class="text-base font-semibold leading-7">
+            Personal Information
+          </h2>
+          <p class="text-sm leading-6 text-gray-500">
+            Use a permanent address where you can receive mail.
+          </p>
         </div>
-
+      </div>
+      <div class="mt-6 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-6">
         <div class="sm:col-span-3">
-          <label for="email" class="block text-sm font-medium leading-6"> Email address </label>
-          <div class="mt-2">
-            <CInput v-model="user.email" disabled />
-          </div>
+          <FormGroup v-model="user.username" label="Username" />
         </div>
-
+        <div class="sm:col-span-3">
+          <FormGroup v-model="user.email" label="Email" disabled />
+        </div>
         <div class="sm:col-span-4">
-          <label for="last-name" class="block text-sm font-medium leading-6"> Avatar </label>
-          <div class="mt-2">
-            <CInput v-model="user.avatar" />
-          </div>
+          <FormGroup v-model="user.avatar" label="Avatar" />
         </div>
       </div>
       <div class="mt-6 flex gap-2">

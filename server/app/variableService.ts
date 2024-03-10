@@ -1,13 +1,13 @@
 import prisma from "~/server/database/client";
 import { Environment, VariableCreateInput } from "~/types/Variables";
 
-export async function upsertVariable(project: VariableCreateInput) {
+export async function upsertVariable(variableCreateInput: VariableCreateInput) {
   return prisma.envVar.upsert({
     where: {
-      id: project.projectId,
+      id: variableCreateInput.id,
     },
-    update: project,
-    create: project,
+    update: variableCreateInput,
+    create: variableCreateInput,
   });
 }
 
