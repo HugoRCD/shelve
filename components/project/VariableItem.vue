@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import { copyToClipboard } from "~/composables/useClipboard";
 import type { Variable } from "~/types/Variables";
 import type { PropType, Ref } from 'vue';
-import { copyToClipboard } from "~/composables/useClipboard";
 
 const props = defineProps({
   variable: {
@@ -39,12 +39,15 @@ async function updateCurrentVariable() {
   await execute();
   if (error.value) toast.error("An error occurred");
   else toast.success("Your variable has been updated");
+  emit("refresh");
 }
 
+const emit = defineEmits(["refresh"]);
 async function deleteCurrentVariable() {
   await deleteVar();
   if (deleteError.value) toast.error("An error occurred");
   else toast.success("Your variable has been deleted");
+  emit("refresh");
 }
 
 const showEdit = ref(false)
@@ -54,6 +57,11 @@ const items = [
       label: "Edit",
       icon: "i-lucide-pen-line",
       click: () => showEdit.value = !showEdit.value
+    },
+    {
+      label: "Copy full variable",
+      icon: "i-lucide-clipboard-plus",
+      click: () => copyToClipboard(`${localVariable.value.key}=${localVariable.value.value}`, "Variable copied to clipboard")
     },
     {
       label: "Delete",
@@ -69,16 +77,18 @@ const items = [
   <UCard>
     <div class="flex w-full items-center justify-between">
       <div class="flex flex-col gap-1">
-        <h3 class="flex items-center gap-1 font-semibold">
+        <h3 class="flex items-center gap-1 text-sm font-semibold sm:text-base">
           {{ variable.key }}
-          <UButton color="gray" variant="ghost" icon="i-lucide-clipboard-plus" @click="copyToClipboard(variable.value, 'Variable value copied')" />
+          <UTooltip text="Copy variable clipboard">
+            <UButton color="gray" variant="ghost" icon="i-lucide-clipboard-plus" @click="copyToClipboard(variable.value, 'Variable value copied')" />
+          </UTooltip>
         </h3>
         <span class="text-xs font-normal text-gray-500">
-          {{ variable.environment.split("|").join(", ") }}
+          {{ capitalize(variable.environment.split("|").join(", ")) }}
         </span>
       </div>
       <div class="flex items-center gap-2">
-        <p class="text-xs font-normal text-gray-500">
+        <p class="hidden text-xs font-normal text-gray-500 md:block">
           Last updated: {{ new Date(variable.updatedAt).toLocaleDateString() }}
         </p>
         <UDropdown :items="items">

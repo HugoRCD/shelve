@@ -15,6 +15,7 @@ export type Variable = {
 };
 
 export type VariableCreateInput = {
+  index?: number;
   id?: number;
   key: string;
   value: string;

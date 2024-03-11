@@ -2,17 +2,21 @@ import { Environment, VariablesCreateInput } from "~/types/Variables";
 import prisma from "~/server/database/client";
 
 export async function upsertVariable(variablesCreateInput: VariablesCreateInput) {
-  console.log(variablesCreateInput);
   if (variablesCreateInput.variables.length === 1) {
     const variableCreateInput = variablesCreateInput.variables[0];
     return prisma.envVar.upsert({
       where: {
-        id: variableCreateInput.id,
+        id: variableCreateInput.id || -1,
       },
       update: variableCreateInput,
       create: variableCreateInput,
     });
   } else {
+    // remove index keys from variablesCreateInput.variables
+    variablesCreateInput.variables = variablesCreateInput.variables.map((variable) => {
+      const { index, ...rest } = variable;
+      return rest;
+    });
     return prisma.envVar.createMany({
       data: variablesCreateInput.variables,
       skipDuplicates: true,
@@ -25,11 +29,15 @@ export async function getVariablesByProjectId(projectId: number, environment?: E
   return prisma.envVar.findMany({ where: options });
 }
 
-export async function deleteVariable(id: number, environment: Environment) {
+export async function deleteVariable(id: number, environment: string) {
+  // decode environment to utf-8
+  const envs = environment.split("|").map((env) => decodeURIComponent(env));
   return prisma.envVar.delete({
     where: {
       id,
-      environment,
+      environment: {
+        in: envs,
+      },
     },
   });
 }
