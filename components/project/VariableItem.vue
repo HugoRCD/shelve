@@ -57,7 +57,7 @@ const items = [
 <template>
   <UCard>
     <div class="flex w-full items-center justify-between">
-      <h3 class="flex flex-col text-lg font-semibold">
+      <h3 class="flex flex-col font-semibold">
         {{ variable.key }}
         <span class="text-xs font-normal text-gray-500">
           {{ variable.environment }}

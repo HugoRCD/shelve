@@ -1,8 +1,8 @@
 <script setup lang="ts">
 const route = useRoute()
-const projectId = route.params.id
+const projectId = route.params.projectId
 
-const {data: project, status} = useFetch(`/api/project/${ projectId }`, {
+const {data: project, status} = useFetch(`/api/project/${projectId}`, {
   method: "GET",
   watch: false,
 })
@@ -25,6 +25,16 @@ const links = [
     to: `/app/project/${projectId}/variables`
   },
   {
+    label: 'Assets',
+    icon: 'i-lucide-images',
+    to: `/app/project/${projectId}/assets`
+  },
+  {
+    label: 'Files',
+    icon: 'i-lucide-files',
+    to: `/app/project/${projectId}/files`
+  },
+  {
     label: 'Users',
     icon: 'i-heroicons-user-group',
     to: `/app/project/${projectId}/users`
@@ -37,11 +47,11 @@ const links = [
     <ProjectMainSection :project="project" :loading="status === 'pending'" />
     <UHorizontalNavigation :links="links" class="mt-8 border-b border-gray-200 dark:border-gray-800" />
     <NuxtPage />
-    <UTabs :items="tabs">
+    <!--    <UTabs :items="tabs">
       <template #variables>
         <ProjectVariables v-if="project" :project-id />
       </template>
-    </UTabs>
+    </UTabs>-->
   </div>
 </template>
 
