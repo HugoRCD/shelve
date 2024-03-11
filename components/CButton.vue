@@ -36,9 +36,9 @@ defineProps({
       full ? 'w-full' : '',
       loading ? 'opacity-50' : '',
       disabled ? 'cursor-not-allowed' : '',
-      color === 'primary' ? 'bg-black text-white hover:bg-inverted-hover dark:bg-white dark:text-black dark:hover:bg-inverted-hover' : '',
+      color === 'primary' ? 'hover:bg-inverted-hover dark:hover:bg-inverted-hover bg-black text-white dark:bg-white dark:text-black' : '',
       color === 'secondary' ? 'bg-secondary text-inverted' : '',
-      color === 'accent' ? 'bg-accent text-inverted hover:bg-accent-hover' : '',
+      color === 'accent' ? 'bg-accent hover:bg-accent-hover text-inverted' : '',
     ]"
     :disabled
     :type="type"

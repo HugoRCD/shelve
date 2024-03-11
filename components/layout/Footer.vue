@@ -8,7 +8,7 @@
             role="link"
             target="_blank"
             to="https://hrcd.me/"
-            class="transition-colors duration-300 ease-in-out hover:text-primary"
+            class="hover:text-primary transition-colors duration-300 ease-in-out"
             aria-label="Go to HRCD Hugo Richard portfolio website"
           >
             HugoRCD

@@ -88,7 +88,7 @@ const login = async () => {
         </form>
       </Transition>
       <button class="flex items-center justify-center gap-2 text-sm text-black transition-colors duration-300 dark:text-white">
-        <span class="i-lucide-github size-5 fill-inverted" />
+        <span class="i-lucide-github fill-inverted size-5" />
         <span class="text-sm font-semibold leading-6">GitHub</span>
       </button>
     </div>

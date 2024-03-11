@@ -5,7 +5,7 @@
       <div class="flex items-center gap-4">
         <span class="text-sm text-tertiary">
           Want to go back to homepage ?
-          <NuxtLink to="/" class="ml-1 text-primary transition duration-300 ease-in-out hover:text-accent">
+          <NuxtLink to="/" class="text-primary ml-1 transition duration-300 ease-in-out hover:text-accent">
             Go to homepage
           </NuxtLink>
         </span>
