@@ -21,12 +21,6 @@ const { data: projects, status, error, refresh } = useFetch("/api/project", {
           </p>
         </NuxtLink>
       </div>
-      <button class="text-primary underline" @click="useSession().clear()">
-        Logout
-      </button>
-      <button class="text-primary underline" @click="navigateTo('/')">
-        Go to home
-      </button>
     </div>
     <LayoutFooter />
   </div>

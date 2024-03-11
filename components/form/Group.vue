@@ -33,22 +33,18 @@ const model = defineModel({ type: String, required: true })
 </script>
 
 <template>
-  <div class="w-full">
-    <label :for="label" class="block text-sm font-medium leading-6 text-primary">
-      {{ label }}
-      <span v-if="required" class="text-accent">*</span>
-    </label>
-    <div class="mt-2">
-      <CInput
-        v-model="model"
-        :name="label"
-        :type
-        :placeholder
-        :disabled
-        required
-      />
-    </div>
-  </div>
+  <UFormGroup :label>
+    <UTextarea
+      v-if="type === 'textarea'"
+      v-model="model"
+      autoresize
+      :placeholder
+      :disabled
+      :type
+      :rows
+    />
+    <UInput v-else v-model="model" :placeholder :disabled :type />
+  </UFormGroup>
 </template>
 
 <style scoped>

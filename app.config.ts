@@ -1,4 +1,19 @@
 export default defineAppConfig({
+  ui: {
+    primary: 'accent',
+    gray: 'neutral',
+    button: {
+      default: {
+        size: 'xs',
+        loadingIcon: 'i-lucide-loader',
+      }
+    },
+    card: {
+      body: {
+        padding: 'p-3 sm:p-3',
+      }
+    }
+  },
   title: "Shelves",
   description: "Shelves, is a project management tool for developers, designers, etc... to make project creation and management easier.",
   email: "contact@hrcd.fr",

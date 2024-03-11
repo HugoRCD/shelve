@@ -27,7 +27,7 @@ export default defineNuxtConfig({
     },
   },
 
-  modules: ['blanked', "@nuxt/image", "@vue-email/nuxt"],
+  modules: ["@nuxt/image", "@vue-email/nuxt", "@nuxt/ui", "@nuxt/fonts", "@vueuse/nuxt"],
 
   css: ['~/assets/style/main.css'],
 
@@ -35,5 +35,18 @@ export default defineNuxtConfig({
     autoImport: true,
   },
 
-  devtools: { enabled: true }
+  ui: {
+    icons: ["lucide"]
+  },
+
+  devtools: { enabled: true },
+
+  imports: {
+    presets: [
+      {
+        from: 'vue-sonner',
+        imports: ['toast']
+      }
+    ]
+  }
 })

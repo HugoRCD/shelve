@@ -9,7 +9,7 @@ export type Variable = {
   key: string;
   value: string;
   projectId: number;
-  environment: Environment;
+  environment: string;
   createdAt: Date;
   updatedAt: Date;
 };
@@ -19,5 +19,10 @@ export type VariableCreateInput = {
   key: string;
   value: string;
   projectId: number;
-  environment: Environment;
+  environment: string;
+};
+
+export type VariablesCreateInput = {
+  projectId: number;
+  variables: VariableCreateInput[];
 };

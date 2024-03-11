@@ -1,22 +1,22 @@
+import { Environment, VariablesCreateInput } from "~/types/Variables";
 import prisma from "~/server/database/client";
-import { Environment, VariableCreateInput } from "~/types/Variables";
 
-export async function upsertVariable(variableCreateInput: VariableCreateInput) {
-  return prisma.envVar.upsert({
-    where: {
-      id: variableCreateInput.id,
-    },
-    update: variableCreateInput,
-    create: variableCreateInput,
-  });
-}
-
-export async function getVariableById(id: number) {
-  return prisma.envVar.findUnique({
-    where: {
-      id,
-    },
-  });
+export async function upsertVariable(variablesCreateInput: VariablesCreateInput) {
+  if (variablesCreateInput.variables.length === 1) {
+    const variableCreateInput = variablesCreateInput.variables[0];
+    return prisma.envVar.upsert({
+      where: {
+        id: variableCreateInput.id,
+      },
+      update: variableCreateInput,
+      create: variableCreateInput,
+    });
+  } else {
+    return prisma.envVar.createMany({
+      data: variablesCreateInput.variables,
+      skipDuplicates: true,
+    });
+  }
 }
 
 export async function getVariablesByProjectId(projectId: number, environment?: Environment) {

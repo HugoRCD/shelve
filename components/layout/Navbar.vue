@@ -13,11 +13,11 @@ const navigation = getNavigation("app");
           v-for="item in navigation"
           :key="item.name"
           :to="item.to"
-          class="text-primary"
         >
           {{ item.name }}
         </NuxtLink>
       </div>
+      <DropdownMenu />
     </nav>
     <slot />
   </div>

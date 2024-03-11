@@ -12,18 +12,21 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: "var(--primary-color)",
-        "primary-hover": "var(--primary-hover-color)",
-        secondary: "var(--secondary-color)",
-        "secondary-hover": "var(--secondary-hover-color)",
-        accent: "var(--accent-color)",
-        "accent-light": "var(--accent-light-color)",
-        "accent-hover": "var(--accent-hover-color)",
-        inverted: "var(--inverted-color)",
-        "inverted-hover": "var(--inverted-hover-color)",
+        accent: {
+          '50': '#ebf6ff',
+          '100': '#dbedff',
+          '200': '#bedeff',
+          '300': '#97c6ff',
+          '400': '#6ea1ff',
+          '500': '#4c7eff',
+          '600': '#2853ff',
+          '700': '#2043e2',
+          '800': '#1d3bb6',
+          '900': '#20388f',
+          '950': '#131f53',
+        }
       },
       textColor: {
-        primary: "var(--text-primary)",
         secondary: "var(--text-secondary)",
         tertiary: "var(--text-tertiary)",
         inverted: "var(--text-inverted)",

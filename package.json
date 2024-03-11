@@ -22,16 +22,20 @@
     "schema": "server/database/schema.prisma"
   },
   "devDependencies": {
+    "@iconify-json/lucide": "^1.1.173",
     "@linear/sdk": "^14.0.0",
     "@nuxt/eslint-config": "^0.2.0",
+    "@nuxt/fonts": "latest",
     "@nuxt/image": "latest",
+    "@nuxt/ui": "^2.14.2",
     "@prisma/client": "^5.10.2",
     "@prisma/extension-accelerate": "^1.0.0",
     "@types/bcryptjs": "^2.4.6",
     "@vercel/analytics": "^1.2.2",
     "@vue-email/nuxt": "^0.8.18",
+    "@vueuse/core": "^10.9.0",
+    "@vueuse/nuxt": "^10.9.0",
     "bcryptjs": "^2.4.3",
-    "blanked": "latest",
     "eslint": "^8.56.0",
     "eslint-plugin-tailwindcss": "^3.14.1",
     "jsonwebtoken": "^9.0.2",
@@ -42,6 +46,7 @@
     "resend": "^3.2.0",
     "vue": "^3.4.10",
     "vue-eslint-parser": "^9.4.2",
-    "vue-router": "^4.2.5"
+    "vue-router": "^4.2.5",
+    "vue-sonner": "^1.1.2"
   }
 }

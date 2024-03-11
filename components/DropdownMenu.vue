@@ -1,82 +1,75 @@
 <script setup lang="ts">
-/*const props = defineProps({
-  msg: {
-    type: String,
-    required: true
-  }
-});*/
+const user = useSession().user
 
-const user = useSession().user;
-const navigation = getNavigation("app");
+const items = [
+  [
+    {
+      label: user.value.email,
+      slot: 'account',
+      disabled: true
+    }
+  ],
+  [
+    {
+      label: 'Settings',
+      icon: 'i-heroicons-cog-8-tooth'
+    }
+  ],
+  [
+    {
+      label: 'Documentation',
+      icon: 'i-heroicons-book-open'
+    },
+    {
+      label: 'Changelog',
+      icon: 'i-heroicons-megaphone'
+    },
+    {
+      label: 'Status',
+      icon: 'i-heroicons-signal'
+    }
+  ],
+  [
+    {
+      label: 'Sign out',
+      icon: 'i-heroicons-arrow-left-on-rectangle'
+    }
+  ]
+]
 </script>
 
 <template>
-  <HeadlessMenu as="div" class="relative inline-block text-left lg:hidden">
-    <div>
-      <HeadlessMenuButton class="inline-flex w-full justify-center rounded-md font-medium text-primary focus:outline-none">
-        <span class="sr-only">Open menu</span>
-        <img
-          class="size-8 rounded-full"
-          :src="user.avatar"
-          alt="Profile picture"
-        >
-      </HeadlessMenuButton>
-    </div>
-    <transition
-      enter-active-class="transition ease-out duration-100"
-      enter-from-class="transform opacity-0 scale-95"
-      enter-to-class="transform opacity-100 scale-100"
-      leave-active-class="transition ease-in duration-75"
-      leave-from-class="transform opacity-100 scale-100"
-      leave-to-class="transform opacity-0 scale-95"
-    >
-      <HeadlessMenuItems
-        class="absolute right-0 w-56 origin-top-right divide-y divide-gray-600 rounded-md bg-secondary shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
-      >
-        <div v-if="user" class="px-4 py-3">
-          <p class="text-sm">
-            Signed in as
-          </p>
-          <p class="truncate text-sm font-medium text-accent">
-            {{ user.email }}
-          </p>
-        </div>
-        <div>
-          <HeadlessMenuItem v-for="item in navigation" v-slot="{ active }" :key="item.name">
-            <NuxtLink
-              :id="item.name.toLowerCase()"
-              :to="item.to"
-              :class="[active || item.name === $route.name ? 'bg-accent-faded text-accent' : 'text-primary', 'block w-full px-4 py-2 text-left text-sm']"
-            >
-              {{ item.name }}
-            </NuxtLink>
-          </HeadlessMenuItem>
-        </div>
-        <div>
-          <HeadlessMenuItem v-slot="{ active }">
-            <NuxtLink
-              to="/app/settings"
-              class="block w-full px-4 py-2 text-left text-sm text-primary"
-              :class="active ? 'bg-accent-faded text-accent' : 'text-primary'"
-            >
-              Settings
-            </NuxtLink>
-          </HeadlessMenuItem>
-          <HeadlessMenuItem v-slot="{ active }">
-            <button
-              class="block w-full px-4 py-2 text-left text-sm text-primary"
-              :class="active ? 'bg-accent-faded text-accent' : 'text-red-600'"
-              @click="useSession().clear()"
-            >
-              Logout
-            </button>
-          </HeadlessMenuItem>
-        </div>
-      </HeadlessMenuItems>
-    </transition>
-  </HeadlessMenu>
+  <UDropdown
+    :items="items"
+    :ui="{
+      background: 'bg-white dark:bg-neutral-900',
+      ring: 'ring-1 ring-neutral-100 dark:ring-neutral-800',
+      divide: 'divide-y divide-neutral-100 dark:divide-neutral-800',
+      item: {
+        active: 'bg-neutral-100 dark:bg-neutral-800',
+        disabled: 'cursor-text select-text'
+      }
+    }"
+    :popper="{ placement: 'bottom-start' }"
+  >
+    <UAvatar :src="user.avatar" :alt="user.username" />
+
+    <template #account="{ item }">
+      <div class="text-left">
+        <p>
+          Signed in as
+        </p>
+        <p class="truncate font-medium text-gray-900 dark:text-white">
+          {{ item.label }}
+        </p>
+      </div>
+    </template>
+
+    <template #item="{ item }">
+      <span class="truncate">{{ item.label }}</span>
+
+      <UIcon :name="item.icon" class="ms-auto size-4 shrink-0 text-gray-400 dark:text-gray-500" />
+    </template>
+  </UDropdown>
 </template>
 
-<style scoped>
-
-</style>
