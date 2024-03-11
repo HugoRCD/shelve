@@ -51,6 +51,15 @@ const items = [
 
 <template>
   <div class="mx-auto max-w-2xl py-6 sm:px-6 lg:px-8">
+    <div class="mb-8 flex cursor-pointer items-center text-sm text-gray-500 hover:text-gray-400">
+      <UIcon
+        name="i-heroicons-chevron-left-20-solid"
+        class="size-4"
+      />
+      <NuxtLink to="/app/dashboard">
+        Back to projects
+      </NuxtLink>
+    </div>
     <div v-if="status !== 'pending'" class="flex flex-col">
       <div class="flex items-start justify-between gap-4">
         <div class="flex items-start gap-4">

@@ -2,7 +2,7 @@
 </script>
 
 <template>
-  <button class="bg-secondary text-primary ring-secondary hover:bg-secondary-hover flex w-full items-center justify-center gap-2 rounded-md px-3 py-2 text-sm font-semibold shadow-sm ring-1 ring-inset transition-colors duration-300">
+  <button class="text-primary ring-secondary flex w-full items-center justify-center gap-2 rounded-md px-3 py-2 text-sm font-semibold shadow-sm ring-1 ring-inset transition-colors duration-300">
     <svg
       class="fill-inverted size-5"
       aria-hidden="true"

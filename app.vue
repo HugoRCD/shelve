@@ -10,11 +10,11 @@ await useSession().refresh();
 
 <template>
   <Html>
-    <Body class="bg-gray selection:bg-accent relative font-geist text-black selection:text-inverted dark:text-white">
+    <Body class="relative font-geist text-black selection:bg-accent-600 selection:text-inverted dark:bg-neutral-950 dark:text-white">
       <NuxtLayout>
         <NuxtPage />
       </NuxtLayout>
-      <Toaster />
+      <Toaster position="top-center" />
     </Body>
   </Html>
 </template>

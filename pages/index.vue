@@ -3,9 +3,9 @@ const { title } = useAppConfig();
 </script>
 
 <template>
-  <div class="flex flex-col justify-center gap-3 p-5">
-    <div class="flex max-w-lg items-center gap-3">
-      <div class="text-balance text-4xl font-extralight">
+  <div class="flex h-full flex-col items-center justify-center gap-3 p-5">
+    <div class="flex max-w-lg items-center justify-center gap-3">
+      <div class="text-balance text-center text-3xl font-extralight sm:text-4xl">
         Meet <span class="font-newsreader font-light italic">{{ title }}</span> a cosy home for all your <span class="font-newsreader font-light italic">projects</span>
       </div>
     </div>
@@ -14,18 +14,18 @@ const { title } = useAppConfig();
         to="/login"
         class="w-fit"
       >
-        <CButton color="accent">
+        <UButton size="lg" class="px-3 py-2">
           Start your journey
-        </CButton>
+        </UButton>
       </NuxtLink>
       <NuxtLink
         v-if="useCurrentUser().value"
         to="/app/dashboard"
         class="w-fit"
       >
-        <CButton color="primary">
+        <UButton size="lg" class="px-3 py-2">
           Go to dashboard
-        </CButton>
+        </UButton>
       </NuxtLink>
     </div>
   </div>

@@ -58,7 +58,7 @@ const login = async () => {
 </script>
 
 <template>
-  <div class="flex h-full flex-col items-center justify-center">
+  <div class="mx-auto flex h-full max-w-sm flex-col items-center justify-center p-5">
     <div class="flex flex-col justify-center gap-4">
       <div class="flex flex-col items-center justify-center space-y-2 text-center">
         <h1 class="text-center text-3xl leading-9">
@@ -73,24 +73,23 @@ const login = async () => {
       </div>
       <Transition name="fade" mode="out-in">
         <form v-if="!otpMode" class="mt-8 flex flex-col gap-4" @submit.prevent="sendOtp" @keydown.enter.prevent="sendOtp">
-          <CInput v-model="email" label="Email address" type="email" required placeholder="email" />
-          <button type="submit" class="flex w-full items-center justify-center gap-2 rounded-md bg-black px-4 py-2 text-sm text-white transition-colors duration-300 hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-100">
+          <UInput v-model="email" label="Email address" type="email" required placeholder="email" />
+          <UButton type="submit" class="flex w-full items-center justify-center gap-2 rounded-md bg-black px-4 py-2 text-sm text-white transition-colors duration-300 hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-100">
             Send me a magic link
             <Loader v-if="status === 'pending'" />
-          </button>
+          </UButton>
         </form>
         <form v-else class="mt-8 flex flex-col gap-4" @submit.prevent="login" @keydown.enter.prevent="login">
           <OTP v-model="otp" :disabled="verifyStatus === 'pending'" @otp:full="login" />
-          <button type="submit" class="flex w-full items-center justify-center gap-2 rounded-md bg-black px-4 py-2 text-sm text-white transition-colors duration-300 hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-100">
+          <UButton
+            type="submit"
+            :loading="verifyStatus === 'pending'"
+            class="flex w-full items-center justify-center gap-2 rounded-md bg-black px-4 py-2 text-sm text-white transition-colors duration-300 hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-100"
+          >
             Verify code
-            <Loader v-if="verifyStatus === 'pending'" />
-          </button>
+          </UButton>
         </form>
       </Transition>
-      <button class="flex items-center justify-center gap-2 text-sm text-black transition-colors duration-300 dark:text-white">
-        <span class="i-lucide-github fill-inverted size-5" />
-        <span class="text-sm font-semibold leading-6">GitHub</span>
-      </button>
     </div>
   </div>
 </template>

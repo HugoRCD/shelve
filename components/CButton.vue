@@ -37,7 +37,6 @@ defineProps({
       loading ? 'opacity-50' : '',
       disabled ? 'cursor-not-allowed' : '',
       color === 'primary' ? 'hover:bg-inverted-hover dark:hover:bg-inverted-hover bg-black text-white dark:bg-white dark:text-black' : '',
-      color === 'secondary' ? 'bg-secondary text-inverted' : '',
       color === 'accent' ? 'bg-accent hover:bg-accent-hover text-inverted' : '',
     ]"
     :disabled
