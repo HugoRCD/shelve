@@ -22,7 +22,6 @@ const { data: projects, status, error, refresh } = useFetch("/api/project", {
         </NuxtLink>
       </div>
     </div>
-    <LayoutFooter />
   </div>
 </template>
 

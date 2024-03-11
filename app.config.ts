@@ -1,5 +1,6 @@
 export default defineAppConfig({
   ui: {
+    safelistColors: ['accent'],
     primary: 'accent',
     gray: 'neutral',
     button: {

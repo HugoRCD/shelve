@@ -7,7 +7,7 @@
           <NuxtLink
             role="link"
             target="_blank"
-            to="https://hrcd.me/"
+            to="https://hrcd.fr/"
             class="hover:text-primary transition-colors duration-300 ease-in-out"
             aria-label="Go to HRCD Hugo Richard portfolio website"
           >

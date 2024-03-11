@@ -4,10 +4,10 @@ import prisma from "~/server/database/client";
 export async function upsertProject(project: ProjectCreateInput) {
   return prisma.project.upsert({
     where: {
-      id: project.ownerId,
+      id: project.id,
     },
-    update: project,
     create: project,
+    update: project,
   });
 }
 

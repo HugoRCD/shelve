@@ -12,15 +12,9 @@ export type Project = {
 };
 
 export type ProjectCreateInput = {
+  id?: number;
   name: string;
   description?: string;
   avatar?: string;
   ownerId: number;
-};
-
-export type ProjectUpdateInput = {
-  id: number;
-  name?: string;
-  description?: string;
-  avatar?: string;
 };

@@ -74,7 +74,7 @@ const items = [
         <FormGroup v-model="localVariable.value" label="Value" type="textarea" />
         <div class="mt-2 flex justify-between gap-4">
           <div>
-            <UButton color="primary" type="submit" :loading="status === 'pending'">
+            <UButton color="primary" type="submit" trailing :loading="status === 'pending'">
               Save
             </UButton>
             <UButton color="white" variant="soft" @click="showEdit = false">
