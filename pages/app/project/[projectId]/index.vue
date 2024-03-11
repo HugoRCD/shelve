@@ -1,22 +1,12 @@
 <script setup lang="ts">
 const route = useRoute()
 const projectId = route.params.projectId
+navigateTo(`/app/project/${projectId}/variables`)
 
 const {data: project, status} = useFetch(`/api/project/${projectId}`, {
   method: "GET",
   watch: false,
 })
-
-const tabs = [
-  {
-    slot: "variables",
-    label: "Environment Variables",
-  },
-  {
-    slot: "Users",
-    label: "Users",
-  },
-];
 
 const links = [
   {
@@ -45,13 +35,9 @@ const links = [
 <template>
   <div class="flex flex-col">
     <ProjectMainSection :project="project" :loading="status === 'pending'" />
-    <UHorizontalNavigation :links="links" class="mt-8 border-b border-gray-200 dark:border-gray-800" />
+    <UHorizontalNavigation :links="links" class="mt-8 hidden border-b border-gray-200 dark:border-gray-800 md:block" />
+    <UVerticalNavigation :links="links" class="mt-8 border-b border-gray-200 pb-2 dark:border-gray-800 md:hidden" />
     <NuxtPage />
-    <!--    <UTabs :items="tabs">
-      <template #variables>
-        <ProjectVariables v-if="project" :project-id />
-      </template>
-    </UTabs>-->
   </div>
 </template>
 

@@ -25,7 +25,7 @@ defineProps({
       </div>
       <DropdownMenu />
     </div>
-    <div class="mt-6 flex h-full flex-col gap-4 overflow-y-auto px-6">
+    <div class="mt-6 flex h-full flex-col gap-4 overflow-y-auto px-3 sm:px-6">
       <slot />
     </div>
   </div>
