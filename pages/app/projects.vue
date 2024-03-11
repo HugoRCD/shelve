@@ -45,7 +45,7 @@ async function createProject() {
       <UModal v-model="createModal" @close="createModal = false">
         <UCard class="p-2">
           <form class="flex flex-col gap-4" @submit.prevent="createProject">
-            <FormGroup v-model="projectCreateInput.name" label="Name" />
+            <FormGroup v-model="projectCreateInput.name" label="Project name" />
             <FormGroup v-model="projectCreateInput.description" label="Description" type="textarea" />
             <div class="flex items-center gap-4">
               <UAvatar :src="projectCreateInput.avatar" size="xl" :alt="projectCreateInput.name" />

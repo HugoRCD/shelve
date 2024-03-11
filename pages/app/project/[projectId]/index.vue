@@ -28,6 +28,11 @@ const links = [
     label: 'Users',
     icon: 'i-heroicons-user-group',
     to: `/app/project/${projectId}/users`
+  },
+  {
+    label: 'Keys',
+    icon: 'i-heroicons-key',
+    to: `/app/project/${projectId}/keys`
   }
 ]
 </script>

@@ -2,6 +2,7 @@ import { Environment, VariablesCreateInput } from "~/types/Variables";
 import prisma from "~/server/database/client";
 
 export async function upsertVariable(variablesCreateInput: VariablesCreateInput) {
+  console.log(variablesCreateInput);
   if (variablesCreateInput.variables.length === 1) {
     const variableCreateInput = variablesCreateInput.variables[0];
     return prisma.envVar.upsert({

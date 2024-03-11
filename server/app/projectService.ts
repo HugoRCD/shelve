@@ -2,6 +2,7 @@ import type { ProjectCreateInput } from "~/types/Project";
 import prisma from "~/server/database/client";
 
 export async function upsertProject(project: ProjectCreateInput) {
+  await removeCachedUserProjects(project.ownerId.toString());
   return prisma.project.upsert({
     where: {
       id: project.id || -1,
@@ -28,12 +29,20 @@ export async function getProjectById(id: number) {
   });
 }
 
-export async function getProjectsByUserId(userId: number) {
+export const getProjectsByUserId = cachedFunction(async (userId: number) => {
   return prisma.project.findMany({
     where: {
       ownerId: userId,
     },
   });
+}, {
+  maxAge: 20,
+    name: "getProjectsByUserId",
+    getKey: (userId: number) => `userId:${userId}`,
+})
+
+async function removeCachedUserProjects(userId: string) {
+  return await useStorage('cache').removeItem(`nitro:functions:getProjectsByUserId:userId:${userId}.json`);
 }
 
 export async function deleteProject(id: number) {

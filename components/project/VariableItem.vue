@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { Variable } from "~/types/Variables";
 import type { PropType, Ref } from 'vue';
+import { copyToClipboard } from "~/composables/useClipboard";
 
 const props = defineProps({
   variable: {
@@ -10,10 +11,20 @@ const props = defineProps({
 });
 
 const localVariable = ref(props.variable) as Ref<Variable>;
+const selectedEnvironment = ref(props.variable.environment.split("|"));
+const environment = computed(() => selectedEnvironment.value.join("|"));
 
 const { status, error, execute } = useFetch(`/api/variable`, {
   method: "POST",
-  body: localVariable,
+  body: {
+    projectId: props.variable.projectId,
+    variables: [
+      {
+        ...localVariable.value,
+        environment
+      }
+    ]
+  },
   watch: false,
   immediate: false,
 })
@@ -57,22 +68,45 @@ const items = [
 <template>
   <UCard>
     <div class="flex w-full items-center justify-between">
-      <h3 class="flex flex-col font-semibold">
-        {{ variable.key }}
+      <div class="flex flex-col gap-1">
+        <h3 class="flex items-center gap-1 font-semibold">
+          {{ variable.key }}
+          <UButton color="gray" variant="ghost" icon="i-lucide-clipboard-plus" @click="copyToClipboard(variable.value, 'Variable value copied')" />
+        </h3>
         <span class="text-xs font-normal text-gray-500">
-          {{ variable.environment }}
+          {{ variable.environment.split("|").join(", ") }}
         </span>
-      </h3>
-      <UDropdown :items="items">
-        <UButton color="gray" variant="ghost" icon="i-heroicons-ellipsis-horizontal-20-solid" />
-      </UDropdown>
+      </div>
+      <div class="flex items-center gap-2">
+        <p class="text-xs font-normal text-gray-500">
+          Last updated: {{ new Date(variable.updatedAt).toLocaleDateString() }}
+        </p>
+        <UDropdown :items="items">
+          <UButton color="gray" variant="ghost" icon="i-heroicons-ellipsis-horizontal-20-solid" />
+        </UDropdown>
+      </div>
     </div>
     <div v-if="showEdit" class="flex flex-col gap-2 py-2">
       <hr class="border-1 border-black/10">
-      <form class="flex flex-col gap-4" @submit.prevent="updateCurrentVariable">
-        <FormGroup v-model="localVariable.key" label="Key" />
-        <FormGroup v-model="localVariable.value" label="Value" type="textarea" />
-        <div class="mt-2 flex justify-between gap-4">
+      <form class="flex flex-col gap-6" @submit.prevent="updateCurrentVariable">
+        <div class="flex flex-col gap-8 sm:flex-row">
+          <div class="flex flex-col gap-4 md:w-2/3">
+            <FormGroup v-model="localVariable.key" label="Key" />
+            <FormGroup v-model="localVariable.value" label="Value" type="textarea" />
+          </div>
+          <div class="flex w-full flex-col gap-4 md:w-1/3">
+            <h4 class="text-sm font-semibold">
+              Environments
+            </h4>
+            <div class="flex flex-col gap-4">
+              <UCheckbox v-model="selectedEnvironment" value="production" label="Production" />
+              <UCheckbox v-model="selectedEnvironment" value="staging" label="Staging" />
+              <UCheckbox v-model="selectedEnvironment" value="development" label="Development" />
+            </div>
+          </div>
+        </div>
+        <hr class="border-1 border-black/10 dark:border-white/5">
+        <div class="flex justify-between gap-4">
           <div>
             <UButton color="primary" type="submit" trailing :loading="status === 'pending'">
               Save
