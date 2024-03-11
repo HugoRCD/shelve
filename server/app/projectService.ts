@@ -14,7 +14,6 @@ export async function upsertProject(project: ProjectCreateInput) {
 export async function getProjectById(id: number) {
   return prisma.project.findUnique({
     include: {
-      variables: true,
       owner: {
         select: {
           id: true,

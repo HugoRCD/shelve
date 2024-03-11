@@ -17,7 +17,7 @@ defineProps({
 <template>
   <div class="nav-item select-none" :class="{ active }" @click="$router.push(nav_item.to)">
     <UIcon :name="nav_item.icon" class="size-5" />
-    <span class="hidden text-sm font-medium text-gray-500 dark:text-gray-400 sm:block">
+    <span class="text-sm font-medium">
       {{ capitalize(nav_item.name) }}
     </span>
   </div>
