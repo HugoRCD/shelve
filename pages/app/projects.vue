@@ -30,11 +30,8 @@ async function createProject() {
 </script>
 
 <template>
-  <div class="mx-auto max-w-5xl py-6 sm:px-6 lg:px-8">
-    <div class="mb-8 flex items-center justify-between">
-      <h1 class="text-3xl font-semibold">
-        Projects
-      </h1>
+  <div>
+    <div class="mb-8 flex items-center justify-end">
       <div class="flex gap-4">
         <UButton :loading="createStatus === 'pending'" @click="createModal = true">
           <UIcon name="i-heroicons-plus-20-solid" class="size-4" />
@@ -51,7 +48,7 @@ async function createProject() {
             <FormGroup v-model="projectCreateInput.name" label="Name" />
             <FormGroup v-model="projectCreateInput.description" label="Description" type="textarea" />
             <div class="flex items-center gap-4">
-              <UAvatar :src="projectCreateInput.avatar" size="xl" />
+              <UAvatar :src="projectCreateInput.avatar" size="xl" :alt="projectCreateInput.name" />
               <FormGroup v-model="projectCreateInput.avatar" label="Avatar" class="w-full" />
             </div>
             <div class="flex justify-end gap-4">

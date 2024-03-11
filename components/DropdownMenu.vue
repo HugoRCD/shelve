@@ -1,4 +1,13 @@
 <script setup lang="ts">
+const navigations = getNavigation("app");
+const navItem = navigations.map((nav) => {
+  return {
+    label: nav.name,
+    icon: nav.icon,
+    to: nav.to,
+  }
+})
+
 const user = useSession().user
 
 const items = [
@@ -9,26 +18,7 @@ const items = [
       disabled: true
     }
   ],
-  [
-    {
-      label: 'Settings',
-      icon: 'i-heroicons-cog-8-tooth'
-    }
-  ],
-  [
-    {
-      label: 'Documentation',
-      icon: 'i-heroicons-book-open'
-    },
-    {
-      label: 'Changelog',
-      icon: 'i-heroicons-megaphone'
-    },
-    {
-      label: 'Status',
-      icon: 'i-heroicons-signal'
-    }
-  ],
+  navItem,
   [
     {
       label: 'Sign out',

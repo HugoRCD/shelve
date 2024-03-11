@@ -17,10 +17,10 @@ export function getNavigation(where: Where): Navigation[] {
     case "app":
       return [
         {
-          name: "Dashboard",
-          to: "/app/dashboard",
-          icon: "i-heroicons-chart-bar-square",
-          title: "Dashboard",
+          name: "Projects",
+          to: "/app/projects",
+          icon: "i-lucide-folder",
+          title: "Projects",
         },
         {
           name: "Profile",

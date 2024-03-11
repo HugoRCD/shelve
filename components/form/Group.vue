@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { PropType } from "vue";
-import CInput from "~/components/CInput.vue";
 
 defineProps({
   label: {

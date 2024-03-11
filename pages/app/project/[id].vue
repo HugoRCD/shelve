@@ -4,7 +4,7 @@ import Variable from "~/components/Variable.vue";
 const route = useRoute()
 const showEdit = ref(false)
 
-const { data: project, status, error, refresh } = useFetch(`/api/project/${route.params.id}`, {
+const { data: project, status } = useFetch(`/api/project/${route.params.id}`, {
   method: "GET",
   watch: false,
 })
@@ -18,7 +18,7 @@ const { status: updateStatus, error: updateError, execute } = useFetch("/api/pro
 
 async function updateCurrentProject() {
   await execute();
-  if (error.value) toast.error("An error occurred");
+  if (updateError.value) toast.error("An error occurred");
   else toast.success("Your project has been updated");
   showEdit.value = false
 }
@@ -36,12 +36,12 @@ const items = [
     ],
   [
     {
-      label: "Edit",
+      label: "Edit project",
       icon: "i-lucide-pen-line",
       click: () => showEdit.value = !showEdit.value
     },
     {
-      label: "Delete",
+      label: "Delete project",
       icon: "i-lucide-trash",
       iconClass: "text-red-500 dark:text-red-500",
     }
@@ -56,14 +56,14 @@ const items = [
         name="i-heroicons-chevron-left-20-solid"
         class="size-4"
       />
-      <NuxtLink to="/app/dashboard">
+      <NuxtLink to="/app/projects">
         Back to projects
       </NuxtLink>
     </div>
     <div v-if="status !== 'pending'" class="flex flex-col">
       <div class="flex items-start justify-between gap-4">
         <div class="flex items-start gap-4">
-          <UAvatar :src="project.avatar" size="xl" />
+          <UAvatar :src="project.avatar" size="xl" :alt="project.name" />
           <div>
             <h2 class="text-base font-semibold leading-7">
               {{ project.name }}
@@ -78,7 +78,7 @@ const items = [
                 <FormGroup v-model="project.name" label="Name" />
                 <FormGroup v-model="project.description" label="Description" type="textarea" />
                 <div class="flex items-center gap-4">
-                  <UAvatar :src="project.avatar" size="xl" />
+                  <UAvatar :src="project.avatar" size="xl" :alt="project.name" />
                   <FormGroup v-model="project.avatar" label="Avatar" class="w-full" />
                 </div>
                 <div class="flex justify-end gap-4">
@@ -108,11 +108,11 @@ const items = [
       <div class="flex items-start justify-between gap-4">
         <div class="flex w-full items-start gap-4">
           <div>
-            <USkeleton class="size-16 rounded-full" />
+            <USkeleton class="size-14 rounded-full" />
           </div>
           <div class="w-full space-y-2">
-            <USkeleton class="h-4 w-full" />
-            <USkeleton class="h-4 w-full" />
+            <USkeleton class="h-4 w-[55%]" />
+            <USkeleton class="h-4 w-[75%]" />
             <USkeleton class="h-4 w-[25%]" />
           </div>
         </div>

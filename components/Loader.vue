@@ -2,13 +2,13 @@
 const props = defineProps({
   size: {
     type: String,
-    default: "size-4",
+    default: "md",
   }
 });
 </script>
 
 <template>
-  <span class="i-lucide-loader animate-spin" :class="size" />
+  <UIcon name="i-lucide-loader" class="animate-spin" :size />
 </template>
 
 <style scoped>

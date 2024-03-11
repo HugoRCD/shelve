@@ -20,10 +20,10 @@ const { title } = useAppConfig();
       </NuxtLink>
       <NuxtLink
         v-if="useCurrentUser().value"
-        to="/app/dashboard"
+        to="/app/projects"
         class="w-fit"
       >
-        <UButton size="lg" class="px-3 py-2">
+        <UButton size="lg" class="px-3 py-2" color="gray">
           Go to dashboard
         </UButton>
       </NuxtLink>

@@ -5,6 +5,22 @@ useHead({
   link: link,
 });
 
+function setPrefersReducedMotion(reduceMotion: boolean) {
+  if (reduceMotion) {
+    document.documentElement.setAttribute("data-reduce-motion", "reduce");
+  } else {
+    document.documentElement.removeAttribute("data-reduce-motion");
+  }
+}
+
+if (process.client) {
+  const reduceMotion = useCookie<boolean>("reduceMotion", {
+    watch: true,
+  });
+
+  setPrefersReducedMotion(reduceMotion.value);
+}
+
 await useSession().refresh();
 </script>
 

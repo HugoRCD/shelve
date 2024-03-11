@@ -49,7 +49,7 @@ const login = async () => {
   if (!verifyError.value && data.value) {
     toast.success(`Welcome back, ${data.value.email}!`);
     useCurrentUser().value = data.value;
-    await useRouter().push("/app/dashboard")
+    await useRouter().push("/app/projects")
   } else {
     toast.error("An error occurred while verifying your code.");
   }

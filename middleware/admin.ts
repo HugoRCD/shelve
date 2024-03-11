@@ -3,6 +3,6 @@ export default defineNuxtRouteMiddleware(async () => {
   await refresh();
   if (!isAdmin) {
     toast.error("You need to be an admin to access this page.");
-    return "/app/dashboard";
+    return "/app/projects";
   }
 });

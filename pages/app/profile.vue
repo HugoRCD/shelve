@@ -41,9 +41,9 @@ async function updateCurrentUser() {
         </div>
       </div>
       <div class="mt-6 flex gap-2">
-        <CButton type="submit" :loading="status === 'pending'">
+        <UButton type="submit" :loading="status === 'pending'">
           Save
-        </CButton>
+        </UButton>
       </div>
     </form>
   </div>
