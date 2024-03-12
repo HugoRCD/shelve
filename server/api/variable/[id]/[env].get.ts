@@ -1,7 +1,6 @@
-import { H3Event } from "h3";
-import { deleteVariable, getVariablesByProjectId } from "~/server/app/variableService";
-import { getUserByAuthToken } from "~/server/app/userService";
+import { getVariablesByProjectId } from "~/server/app/variableService";
 import { Environment } from "~/types/Variables";
+import { H3Event } from "h3";
 
 export default eventHandler(async (event: H3Event) => {
   console.log("event", event.context.user);

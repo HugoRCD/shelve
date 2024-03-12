@@ -1,7 +1,7 @@
 import { upsertVariable } from "~/server/app/variableService";
 import { getProjectById } from "~/server/app/projectService";
 import { H3Event } from "h3";
-import { VariableCreateInput, VariablesCreateInput } from "~/types/Variables";
+import { type VariablesCreateInput } from "~/types/Variables";
 
 export default eventHandler(async (event: H3Event) => {
   const user = event.context.user;

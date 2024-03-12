@@ -14,6 +14,7 @@ module.exports = {
   ],
   rules: {
     "tailwindcss/no-custom-classname": "off",
+    "tailwindcss/no-unnecessary-arbitrary-value": "off",
     "vue/multi-word-component-names": "off",
     "vue/require-default-prop": "off",
     "vue/max-attributes-per-line": [

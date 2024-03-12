@@ -3,6 +3,3 @@
     <div class="noise pointer-events-none absolute inset-[-200%] z-50 size-[400%] bg-[url('/noise.png')] opacity-[6%]" />
   </div>
 </template>
-
-<style scoped>
-</style>
