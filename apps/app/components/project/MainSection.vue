@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Project } from "~/types/Project";
+import type { Project } from "shelves-types";
 import type { PropType, Ref } from "vue";
 
 const props = defineProps({

@@ -1,4 +1,4 @@
-import type { Variable } from "~/types/Variables";
+import type { Variable } from "./Variables";
 
 export type Project = {
   id: number;

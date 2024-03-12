@@ -1,4 +1,4 @@
-import type { ProjectCreateInput } from "~/types/Project";
+import type { ProjectCreateInput } from "shelves-types";
 import prisma from "~/server/database/client";
 
 export async function upsertProject(project: ProjectCreateInput) {

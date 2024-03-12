@@ -1,4 +1,4 @@
-import { Role } from "~/types/User";
+import { Role } from "shelves-types";
 import { H3Event } from "h3";
 
 export default defineEventHandler(async (event: H3Event) => {

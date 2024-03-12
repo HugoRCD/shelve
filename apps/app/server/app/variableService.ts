@@ -1,4 +1,4 @@
-import { Environment, type VariablesCreateInput } from "~/types/Variables";
+import { Environment, type VariablesCreateInput } from "shelves-types";
 import prisma from "~/server/database/client";
 
 export async function upsertVariable(variablesCreateInput: VariablesCreateInput) {

@@ -5,9 +5,6 @@
   "files": [
     "index.ts"
   ],
-  "scripts": {
-    "lint": "eslint ."
-  },
   "devDependencies": {
     "eslint-config-custom": "*"
   }

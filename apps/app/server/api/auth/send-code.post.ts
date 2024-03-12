@@ -1,5 +1,5 @@
 import { upsertUser } from "~/server/app/userService";
-import type { UserCreateInput } from "~/types/User";
+import type { UserCreateInput } from "shelves-types";
 import { H3Event } from "h3";
 
 export default eventHandler(async (event: H3Event) => {

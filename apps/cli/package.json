@@ -1,0 +1,52 @@
+{
+  "name": "@mockline/shelves-cli",
+  "version": "0.0.1",
+  "description": "A CLI tool for env variables",
+  "author": "HugoRCD",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HugoRCD/shelves.git"
+  },
+  "scripts": {
+    "build": "unbuild",
+    "start": "node ./dist/index.mjs",
+    "test:types": "tsc --noEmit",
+    "lint": "eslint . && prettier --check src",
+    "lint:fix": "eslint --fix . && prettier --write src",
+    "release": "bun run build && npm publish"
+  },
+  "devDependencies": {
+    "eslint-config-custom": "*",
+    "shelves-types": "*",
+    "@nuxt/eslint-config": "^0.2.0",
+    "@types/bun": "latest",
+    "@types/semver": "^7.5.8",
+    "eslint": "^8.57.0"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "bin": {
+    "shelves": "dist/index.mjs",
+    "shelves-cli": "dist/index.mjs"
+  },
+  "exports": {
+    ".": "./dist/index.mjs"
+  },
+  "files": [
+    "dist"
+  ],
+  "types": "dist/index.d.ts",
+  "dependencies": {
+    "citty": "^0.1.6",
+    "colorette": "^2.0.20",
+    "consola": "^3.2.3",
+    "ofetch": "^1.3.3",
+    "semver": "^7.6.0",
+    "unbuild": "^2.0.0"
+  },
+  "bugs": {
+    "url": "https://github.com/HugoRCD/shelves/issues"
+  },
+  "homepage": "https://github.com/HugoRCD/shelves#readme"
+}

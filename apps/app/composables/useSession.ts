@@ -1,4 +1,4 @@
-import { type publicUser, Role } from "~/types/User";
+import { type publicUser, Role } from "shelves-types";
 
 export const useCurrentUser = () => {
   return useState<publicUser | null>("user");

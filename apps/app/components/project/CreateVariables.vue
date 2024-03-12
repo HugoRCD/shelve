@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Variable, VariablesCreateInput } from "~/types/Variables";
+import type { Variable, VariablesCreateInput } from "shelves-types";
 import type { PropType, Ref } from "vue";
 
 const props = defineProps({
