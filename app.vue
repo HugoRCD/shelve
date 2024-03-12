@@ -32,7 +32,10 @@ await useSession().refresh();
       <NuxtLayout>
         <NuxtPage />
       </NuxtLayout>
-      <Toaster position="top-center" />
+      <Toaster
+        position="bottom-right"
+        :theme="$colorMode.preference === 'dark' ? 'dark' : 'light'"
+      />
     </Body>
   </Html>
 </template>
