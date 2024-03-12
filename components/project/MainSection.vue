@@ -50,16 +50,6 @@ async function deleteProject() {
 const items = [
   [
     {
-      label: "Copy .env",
-      icon: "i-lucide-clipboard",
-      click: () => {
-        navigator.clipboard.writeText(project.value!.variables!.map(v => `${v.key}=${v.value}`).join("\n"))
-        toast.success("Copied to clipboard")
-      }
-    }
-  ],
-  [
-    {
       label: "Edit project",
       icon: "i-lucide-pen-line",
       click: () => showEdit.value = !showEdit.value

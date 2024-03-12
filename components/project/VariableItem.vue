@@ -14,16 +14,18 @@ const localVariable = ref(props.variable) as Ref<Variable>;
 const selectedEnvironment = ref(props.variable.environment.split("|"));
 const environment = computed(() => selectedEnvironment.value.join("|"));
 
+const variableToUpdate = computed(() => {
+  return {
+    ...localVariable.value,
+    environment: environment.value
+  }
+})
+
 const { status, error, execute } = useFetch(`/api/variable`, {
   method: "POST",
   body: {
     projectId: props.variable.projectId,
-    variables: [
-      {
-        ...localVariable.value,
-        environment
-      }
-    ]
+    variables: [variableToUpdate.value]
   },
   watch: false,
   immediate: false,

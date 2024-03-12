@@ -3,6 +3,10 @@ import prisma from "~/server/database/client";
 
 export async function upsertVariable(variablesCreateInput: VariablesCreateInput) {
   if (variablesCreateInput.variables.length === 1) {
+    variablesCreateInput.variables = variablesCreateInput.variables.map((variable) => {
+      const { index, ...rest } = variable;
+      return rest;
+    });
     const variableCreateInput = variablesCreateInput.variables[0];
     return prisma.envVar.upsert({
       where: {
@@ -12,7 +16,6 @@ export async function upsertVariable(variablesCreateInput: VariablesCreateInput)
       create: variableCreateInput,
     });
   } else {
-    // remove index keys from variablesCreateInput.variables
     variablesCreateInput.variables = variablesCreateInput.variables.map((variable) => {
       const { index, ...rest } = variable;
       return rest;
