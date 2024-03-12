@@ -125,7 +125,7 @@ const items = [
               This action cannot be undone.
             </p>
           </div>
-          <FormGroup v-model="projectName" label="Type the project name to confirm" />
+          <FormGroup v-model="projectName" :label="`Type the project name '${project.name}' to confirm`" />
           <div class="flex justify-end gap-4">
             <UButton color="gray" variant="ghost" @click="showDelete = false">
               Cancel
