@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { isMounted } from "~/composables/useDOM";
+
 const { data: projects, status, error, refresh } = useFetch("/api/project", {
   method: "GET",
   watch: false,
@@ -32,7 +34,7 @@ async function createProject() {
 <template>
   <div>
     <div class="flex items-center justify-end">
-      <!--      <Teleport to="#action-items">
+      <Teleport v-if="isMounted('action-items')" to="#action-items">
         <div class="flex gap-4">
           <UButton
             size="xs"
@@ -42,7 +44,7 @@ async function createProject() {
             @click="createModal = true"
           />
         </div>
-      </Teleport>-->
+      </Teleport>
       <UModal v-model="createModal" @close="createModal = false">
         <UCard class="p-2">
           <form class="flex flex-col gap-4" @submit.prevent="createProject">
@@ -56,7 +58,7 @@ async function createProject() {
               <UButton color="gray" variant="ghost" @click="createModal = false">
                 Cancel
               </UButton>
-              <UButton color="primary" type="submit" trailing :loading="createStatus === 'pending'">
+              <UButton color="primary" form="envForm" type="submit" trailing :loading="createStatus === 'pending'">
                 Save
               </UButton>
             </div>
