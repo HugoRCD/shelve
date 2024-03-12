@@ -1,7 +1,10 @@
 <script setup lang="ts">
+definePageMeta({
+  middleware: "project"
+})
+
 const route = useRoute()
 const projectId = route.params.projectId
-navigateTo(`/app/project/${projectId}/variables`)
 
 const {data: project, status} = useFetch(`/api/project/${projectId}`, {
   method: "GET",
