@@ -5,7 +5,13 @@
   "files": [
     "index.ts"
   ],
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "main": "index.ts",
+  "types": "index.ts",
   "devDependencies": {
+    "typescript": "latest",
     "eslint-config-custom": "*"
   }
 }
