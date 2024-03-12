@@ -1,0 +1,14 @@
+{
+  "name": "shelves-types",
+  "version": "0.0.0",
+  "private": true,
+  "files": [
+    "index.ts"
+  ],
+  "scripts": {
+    "lint": "eslint ."
+  },
+  "devDependencies": {
+    "eslint-config-custom": "*"
+  }
+}
