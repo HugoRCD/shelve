@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { Toaster } from "vue-sonner";
+
 const { title, link } = useAppConfig();
 useHead({
   title: title,

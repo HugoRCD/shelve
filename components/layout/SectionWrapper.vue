@@ -23,9 +23,14 @@ defineProps({
           </h1>
         </Transition>
       </div>
-      <DropdownMenu />
+      <div class="flex items-center gap-2">
+        <div id="action-items">
+          <!-- action-items -->
+        </div>
+        <DropdownMenu />
+      </div>
     </div>
-    <div class="mt-6 flex h-full flex-col gap-4 overflow-y-auto px-3 sm:px-6">
+    <div class="flex h-full flex-col gap-4 overflow-y-auto px-3 py-6 sm:px-6">
       <slot />
     </div>
   </div>

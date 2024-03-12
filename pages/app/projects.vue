@@ -31,17 +31,18 @@ async function createProject() {
 
 <template>
   <div>
-    <div class="mb-8 flex items-center justify-end">
-      <div class="flex gap-4">
-        <UButton :loading="createStatus === 'pending'" @click="createModal = true">
-          <UIcon name="i-heroicons-plus-20-solid" class="size-4" />
-          Create
-        </UButton>
-        <UButton color="white" :loading="status === 'pending'" @click="refresh">
-          <UIcon name="i-lucide-refresh-ccw" class="size-4" />
-          Refresh
-        </UButton>
-      </div>
+    <div class="flex items-center justify-end">
+      <!--      <Teleport to="#action-items">
+        <div class="flex gap-4">
+          <UButton
+            size="xs"
+            icon="i-heroicons-plus-20-solid"
+            :loading="createStatus === 'pending'"
+            label="Add project"
+            @click="createModal = true"
+          />
+        </div>
+      </Teleport>-->
       <UModal v-model="createModal" @close="createModal = false">
         <UCard class="p-2">
           <form class="flex flex-col gap-4" @submit.prevent="createProject">
@@ -75,6 +76,7 @@ async function createProject() {
               :src="project.avatar"
               :alt="project.name"
               size="sm"
+              img-class="object-cover"
             />
             <div class="flex flex-col gap-1">
               <h3 class="flex flex-col text-lg font-semibold">
