@@ -27,7 +27,14 @@ export default defineNuxtConfig({
     },
   },
 
-  modules: ["@nuxt/image", "@vue-email/nuxt", "@nuxt/ui", "@nuxt/fonts", "@vueuse/nuxt"],
+  modules: [
+    "@nuxt/image",
+    "@vue-email/nuxt",
+    "@nuxt/ui",
+    "@nuxt/fonts",
+    "@vueuse/nuxt",
+    "nuxt-build-cache"
+  ],
 
   css: ['~/assets/style/main.css'],
 
