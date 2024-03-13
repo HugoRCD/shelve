@@ -1,5 +1,5 @@
 {
-  "name": "@mockline/shelve-cli",
+  "name": "@shelve/cli",
   "version": "0.0.1",
   "description": "A CLI tool for env variables",
   "author": "HugoRCD",
@@ -7,6 +7,10 @@
     "type": "git",
     "url": "git+https://github.com/HugoRCD/shelve.git"
   },
+  "bugs": {
+    "url": "https://github.com/HugoRCD/shelve/issues"
+  },
+  "homepage": "https://github.com/HugoRCD/shelve#readme",
   "scripts": {
     "build": "unbuild",
     "start": "node ./dist/index.mjs",
@@ -45,8 +49,5 @@
     "semver": "^7.6.0",
     "unbuild": "^2.0.0"
   },
-  "bugs": {
-    "url": "https://github.com/HugoRCD/shelve/issues"
-  },
-  "homepage": "https://github.com/HugoRCD/shelve#readme"
+  "license": "ISC"
 }
