@@ -1,6 +1,6 @@
 import { getUserByEmail, setAuthToken } from "~/server/app/userService";
 import prisma from "~/server/database/client";
-import { type User } from "shelves-types";
+import { type User } from "shelve-types";
 import bcrypt from "bcryptjs";
 
 export async function verify(verifyDto: { email: string; password?: string; otp: string }) {

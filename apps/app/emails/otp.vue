@@ -16,12 +16,12 @@ defineProps({
     <EHtml>
       <EHead />
       <EPreview>
-        Here is your code to access Shelves
+        Here is your code to access Shelve
       </EPreview>
       <EBody class="m-auto bg-white font-sans">
         <EContainer class="mx-auto my-[40px] max-w-[465px] rounded border border-solid border-[#eaeaea] p-[20px] md:p-7">
           <EHeading class="mb-4 text-center text-2xl font-bold text-[#000000] md:text-3xl">
-            Welcome to Shelves
+            Welcome to Shelve
           </EHeading>
           <EText class="mb-4 text-center text-[#000000]">
             Your OTP is:
@@ -34,7 +34,7 @@ defineProps({
           </EText>
           <ESection class="my-[32px] text-center">
             <EButton px="20" py="12" class="rounded bg-[#000000] text-center text-[12px] font-semibold text-white no-underline" :href="redirectUrl">
-              Go to Shelves
+              Go to Shelve
             </EButton>
           </ESection>
           <EText class="text-[14px] leading-[24px] text-black">

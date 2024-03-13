@@ -1,11 +1,11 @@
 {
-  "name": "@mockline/shelves-cli",
+  "name": "@mockline/shelve-cli",
   "version": "0.0.1",
   "description": "A CLI tool for env variables",
   "author": "HugoRCD",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/HugoRCD/shelves.git"
+    "url": "git+https://github.com/HugoRCD/shelve.git"
   },
   "scripts": {
     "build": "unbuild",
@@ -17,7 +17,7 @@
   },
   "devDependencies": {
     "eslint-config-custom": "*",
-    "shelves-types": "*",
+    "shelve-types": "*",
     "@nuxt/eslint-config": "^0.2.0",
     "@types/bun": "latest",
     "@types/semver": "^7.5.8",
@@ -27,8 +27,8 @@
     "typescript": "^5.0.0"
   },
   "bin": {
-    "shelves": "dist/index.mjs",
-    "shelves-cli": "dist/index.mjs"
+    "shelve": "dist/index.mjs",
+    "shelve-cli": "dist/index.mjs"
   },
   "exports": {
     ".": "./dist/index.mjs"
@@ -46,7 +46,7 @@
     "unbuild": "^2.0.0"
   },
   "bugs": {
-    "url": "https://github.com/HugoRCD/shelves/issues"
+    "url": "https://github.com/HugoRCD/shelve/issues"
   },
-  "homepage": "https://github.com/HugoRCD/shelves#readme"
+  "homepage": "https://github.com/HugoRCD/shelve#readme"
 }

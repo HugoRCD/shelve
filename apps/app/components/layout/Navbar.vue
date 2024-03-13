@@ -6,7 +6,7 @@ const navigation = getNavigation("app");
   <div>
     <nav class="flex items-center justify-between p-5">
       <NuxtLink to="/" class="font-newsreader text-2xl font-light italic">
-        Shelves
+        Shelve
       </NuxtLink>
       <div class="flex gap-3">
         <NuxtLink

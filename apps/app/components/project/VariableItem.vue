@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { copyToClipboard } from "~/composables/useClipboard";
-import type { Variable } from "shelves-types";
+import type { Variable } from "shelve-types";
 import type { PropType, Ref } from 'vue';
 
 const props = defineProps({

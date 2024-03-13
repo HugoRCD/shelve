@@ -1,6 +1,6 @@
 import { withAccelerate } from '@prisma/extension-accelerate'
 import { type User as prismaUser, PrismaClient } from "@prisma/client";
-import { Role, type publicUser } from "shelves-types"
+import { Role, type publicUser } from "shelve-types"
 
 const prisma = new PrismaClient().$extends(withAccelerate())
 

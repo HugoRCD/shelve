@@ -26,7 +26,7 @@ export async function sendOtp(email: string, otp: string) {
     await resend.emails.send({
       from: "HugoRCD <contact@hrcd.fr>",
       to: [email],
-      subject: "Welcome to Shelves!",
+      subject: "Welcome to Shelve!",
       html: template.html,
     });
   } catch (error) {

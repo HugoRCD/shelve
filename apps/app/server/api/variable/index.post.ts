@@ -1,6 +1,6 @@
 import { upsertVariable } from "~/server/app/variableService";
 import { getProjectById } from "~/server/app/projectService";
-import { type VariablesCreateInput } from "shelves-types";
+import { type VariablesCreateInput } from "shelve-types";
 import { H3Event } from "h3";
 
 export default eventHandler(async (event: H3Event) => {

@@ -1,5 +1,5 @@
 {
-  "name": "shelves-app",
+  "name": "shelve-app",
   "private": true,
   "version": "0.0.0",
   "scripts": {
@@ -37,7 +37,7 @@
     "bcryptjs": "^2.4.3",
     "eslint": "^8.56.0",
     "eslint-config-custom": "*",
-    "shelves-types": "*",
+    "shelve-types": "*",
     "eslint-plugin-tailwindcss": "^3.14.1",
     "jsonwebtoken": "^9.0.2",
     "nuxt": "^3.9.1",

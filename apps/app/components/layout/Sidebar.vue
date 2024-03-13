@@ -34,7 +34,7 @@ watch(() => route.path, handleProjectNavigation, { immediate: true });
   <div class="flex flex-col gap-4 p-4 sm:w-[250px]">
     <div class="mb-4">
       <NuxtLink to="/" class="font-newsreader text-2xl font-light italic">
-        Shelves
+        Shelve
       </NuxtLink>
     </div>
     <div class="flex flex-col gap-2">

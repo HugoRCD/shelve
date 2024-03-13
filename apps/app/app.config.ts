@@ -21,8 +21,8 @@ export default defineAppConfig({
       },
     }
   },
-  title: "Shelves",
-  description: "Shelves, is a project management tool for developers, designers, etc... to make project creation and management easier.",
+  title: "Shelve",
+  description: "Shelve, is a project management tool for developers, designers, etc... to make project creation and management easier.",
   email: "contact@hrcd.fr",
   phone: "(+33) 6 21 56 22 18",
   socials: [
