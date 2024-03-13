@@ -10,7 +10,8 @@
   },
   "devDependencies": {
     "turbo": "latest",
-    "typescript": "5.3.3"
+    "typescript": "5.3.3",
+    "eslint-config-custom": "*"
   },
   "engines": {
     "node": ">=18"

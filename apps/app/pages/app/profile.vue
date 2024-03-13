@@ -1,6 +1,10 @@
 <script setup lang="ts">
 const user = useSession().user;
 
+const password = ref("");
+const passwordConfirmation = ref("");
+const errorMessage = ref("");
+
 const { status, error, execute } = useFetch("/api/user", {
   method: "PUT",
   body: user,
@@ -9,10 +13,21 @@ const { status, error, execute } = useFetch("/api/user", {
 })
 
 async function updateCurrentUser() {
+  if (password.value !== passwordConfirmation.value) {
+    errorMessage.value = "Passwords do not match";
+    toast.error("Passwords do not match");
+    return;
+  }
   await execute();
   if (error.value) toast.error("An error occurred");
   else toast.success("Your data has been updated");
+  password.value = "";
+  passwordConfirmation.value = "";
 }
+
+watch([password, passwordConfirmation], () => {
+  errorMessage.value = "";
+});
 </script>
 
 <template>
@@ -24,7 +39,7 @@ async function updateCurrentUser() {
           Personal Information
         </h2>
         <p class="text-sm leading-6 text-gray-500">
-          Use a permanent address where you can receive mail.
+          Update your personal information
         </p>
       </div>
     </div>
@@ -38,6 +53,15 @@ async function updateCurrentUser() {
       <div class="sm:col-span-4">
         <FormGroup v-model="user.avatar" label="Avatar" />
       </div>
+      <div class="sm:col-span-3">
+        <FormGroup v-model="password" label="Password" type="password" />
+      </div>
+      <div class="sm:col-span-3">
+        <FormGroup v-model="passwordConfirmation" label="Confirm Password" type="password" />
+      </div>
+    </div>
+    <div v-if="errorMessage" class="mt-1">
+      <span class="text-sm text-red-500">{{ errorMessage }}</span>
     </div>
     <div style="--stagger: 3" data-animate class="mt-6 flex gap-2">
       <UButton type="submit" :loading="status === 'pending'">
