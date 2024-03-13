@@ -48,6 +48,7 @@
     "vue": "^3.4.10",
     "vue-eslint-parser": "^9.4.2",
     "vue-router": "^4.2.5",
-    "vue-sonner": "^1.1.2"
+    "vue-sonner": "^1.1.2",
+    "nuxt-build-cache": "^0.1.1"
   }
 }
