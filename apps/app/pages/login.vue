@@ -9,8 +9,20 @@ definePageMeta({
 const route = useRoute();
 const otpMode = ref(route.query.email ? true : false);
 
+const user = useCurrentUser();
 const email = ref(route.query.email || '');
+const password = ref('');
 const otp = ref(route.query.otp || '');
+
+const passwordMode = ref(false);
+defineShortcuts({
+  meta_k: {
+    usingInput: true,
+    handler: () => {
+      passwordMode.value = !passwordMode.value;
+    }
+  }
+})
 
 const { status, error, execute } = useFetch("/api/auth/send-code", {
   method: "POST",
@@ -21,7 +33,7 @@ const { status, error, execute } = useFetch("/api/auth/send-code", {
 
 const { data, status: verifyStatus, error: verifyError, execute: verify } = useFetch("/api/auth/verify", {
   method: "POST",
-  body: { email, otp },
+  body: { email, otp, password },
   watch: false,
   immediate: false
 })
@@ -48,13 +60,17 @@ const login = async () => {
   await verify();
   if (!verifyError.value && data.value) {
     toast.success(`Welcome back, ${data.value.email}!`);
-    useCurrentUser().value = data.value;
+    user.value = data.value;
     await useRouter().push("/app/projects")
   } else {
     toast.error("An error occurred while verifying your code.");
   }
   otp.value = '';
 };
+
+function useLoginOrSendOtp() {
+  return passwordMode.value ? login() : sendOtp();
+}
 </script>
 
 <template>
@@ -72,11 +88,12 @@ const login = async () => {
         </button>
       </div>
       <Transition name="fade" mode="out-in">
-        <form v-if="!otpMode" class="mt-8 flex flex-col gap-4" @submit.prevent="sendOtp" @keydown.enter.prevent="sendOtp">
+        <form v-if="!otpMode" class="mt-8 flex flex-col gap-4" @submit.prevent="useLoginOrSendOtp" @keydown.enter.prevent="useLoginOrSendOtp">
           <UInput v-model="email" label="Email address" type="email" required placeholder="email" />
+          <UInput v-if="passwordMode" v-model="password" label="Password" type="password" required placeholder="password" />
           <UButton type="submit" class="flex w-full items-center justify-center gap-2 rounded-md bg-black px-4 py-2 text-sm text-white transition-colors duration-300 hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-100">
-            Send me a magic link
-            <Loader v-if="status === 'pending'" />
+            {{ passwordMode ? "Login" : "Send me a magic link" }}
+            <Loader v-if="passwordMode ? verifyStatus === 'pending' : status === 'pending'" />
           </UButton>
         </form>
         <form v-else class="mt-8 flex flex-col gap-4" @submit.prevent="login" @keydown.enter.prevent="login">

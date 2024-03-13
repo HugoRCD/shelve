@@ -32,6 +32,7 @@ const items = [
 
 <template>
   <UDropdown
+    v-if="user"
     :items="items"
     :ui="{
       background: 'bg-white dark:bg-neutral-900',
