@@ -1,5 +1,6 @@
 <script setup lang="ts">
 const navigations = getNavigation("app");
+const admin_navigations = getNavigation("admin");
 const navItem = navigations.map((nav) => {
   return {
     label: nav.name,
@@ -7,6 +8,14 @@ const navItem = navigations.map((nav) => {
     to: nav.to,
   }
 })
+const adminNavItem = admin_navigations.map((nav) => {
+  return {
+    label: nav.name,
+    icon: nav.icon,
+    to: nav.to,
+  }
+})
+
 
 const user = useSession().user
 
@@ -19,6 +28,7 @@ const items = [
     }
   ],
   navItem,
+  adminNavItem,
   [
     {
       label: 'Sign out',
@@ -56,12 +66,6 @@ const items = [
           {{ item.label }}
         </p>
       </div>
-    </template>
-
-    <template #item="{ item }">
-      <span class="truncate">{{ item.label }}</span>
-
-      <UIcon :name="item.icon" class="ms-auto size-4 shrink-0 text-gray-400 dark:text-gray-500" />
     </template>
   </UDropdown>
 </template>
