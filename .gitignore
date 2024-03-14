@@ -132,3 +132,6 @@ dist
 
 # Turbo
 .turbo
+	
+# Intellij
+.idea
