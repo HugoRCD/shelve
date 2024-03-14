@@ -32,8 +32,7 @@ export default defineNuxtConfig({
     "@vue-email/nuxt",
     "@nuxt/ui",
     "@nuxt/fonts",
-    "@vueuse/nuxt",
-    "nuxt-build-cache"
+    "@vueuse/nuxt"
   ],
 
   css: ['~/assets/style/main.css'],
