@@ -1,4 +1,4 @@
-import { type publicUser, Role } from "shelve-types";
+import { type publicUser, Role } from "@shelve/types";
 
 export const useCurrentUser = () => {
   return useState<publicUser | null>("user");

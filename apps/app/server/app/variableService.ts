@@ -1,4 +1,4 @@
-import { Environment, type VariablesCreateInput } from "shelve-types";
+import { Environment, type VariablesCreateInput } from "@shelve/types";
 import prisma from "~/server/database/client";
 
 export async function upsertVariable(variablesCreateInput: VariablesCreateInput) {

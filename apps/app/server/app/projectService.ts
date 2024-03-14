@@ -1,4 +1,4 @@
-import type { ProjectCreateInput } from "shelve-types";
+import type { ProjectCreateInput } from "@shelve/types";
 import prisma from "~/server/database/client";
 
 export async function upsertProject(project: ProjectCreateInput) {

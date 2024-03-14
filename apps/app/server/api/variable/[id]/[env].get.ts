@@ -1,5 +1,5 @@
 import { getVariablesByProjectId } from "~/server/app/variableService";
-import { Environment } from "shelve-types";
+import { Environment } from "@shelve/types";
 import { H3Event } from "h3";
 
 export default eventHandler(async (event: H3Event) => {

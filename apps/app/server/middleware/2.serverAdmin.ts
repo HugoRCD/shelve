@@ -1,4 +1,4 @@
-import { Role } from "shelve-types";
+import { Role } from "@shelve/types";
 import { H3Event } from "h3";
 
 export default defineEventHandler(async (event: H3Event) => {
