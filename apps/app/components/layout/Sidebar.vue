@@ -53,8 +53,15 @@ watch(() => route.path, handleProjectNavigation, { immediate: true });
     </div>
 
     <div class="flex-1" />
-    <div>
-      <SettingThemeToggle />
+    <div class="flex flex-row justify-between">
+      <UTooltip text="Change theme" placement="top">
+        <SettingThemeToggle size="size-5" />
+      </UTooltip>
+      <UTooltip text="Need help?" placement="top">
+        <NuxtLink to="https://github.com/HugoRCD/shelve/issues">
+          <span class="i-lucide-life-buoy size-5" />
+        </NuxtLink>
+      </UTooltip>
     </div>
   </div>
 </template>
