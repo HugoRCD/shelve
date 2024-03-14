@@ -38,17 +38,20 @@ watch(() => route.path, handleProjectNavigation, { immediate: true });
       </NuxtLink>
     </div>
     <div class="flex flex-col gap-2">
-      <TransitionGroup name="fade" tag="ul" class="flex flex-col gap-3" mode="out-in">
+      <TransitionGroup name="fade" tag="ul" class="flex flex-col gap-2" mode="out-in">
         <LayoutNavItem v-for="nav in navigations" :key="nav.name" :active="nav.to === $route.path" :nav_item="nav" />
       </TransitionGroup>
     </div>
-    <!--    <Transition name="slide" mode="out-in">
-      &lt;!&ndash; Admin &ndash;&gt;
-      <div v-if="session.isAdmin" class="flex flex-col gap-2">
-        <UDivider class="my-3" />
-        <LayoutNavItem v-for="nav in admin_navigations" :key="nav.name" :active="nav.to === $route.path" :nav_item="nav" />
+
+    <!-- Admin -->
+    <div v-if="session.isAdmin" class="flex flex-col gap-2">
+      <UDivider class="my-3" />
+      <div class="text-xs font-medium text-neutral-500 dark:text-neutral-400">
+        Admin
       </div>
-    </Transition>-->
+      <LayoutNavItem v-for="nav in admin_navigations" :key="nav.name" :active="nav.to === $route.path" :nav_item="nav" />
+    </div>
+
     <div class="flex-1" />
     <div>
       <SettingThemeToggle />

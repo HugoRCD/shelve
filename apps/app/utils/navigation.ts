@@ -35,6 +35,15 @@ export function getNavigation(where: Where): Navigation[] {
           title: "Settings",
         },
       ];
+    case "admin":
+      return [
+        {
+          name: "Users",
+          to: "/admin/users",
+          icon: "i-heroicons-users",
+          title: "Users",
+        },
+      ];
     default:
       return [];
   }
