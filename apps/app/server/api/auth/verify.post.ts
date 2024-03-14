@@ -7,6 +7,7 @@ export default eventHandler(async (event: H3Event) => {
   const user = await verify(body);
   setCookie(event, "authToken", user.authToken as string, {
     httpOnly: true,
+    secure: true,
     path: "/",
     maxAge: 1000 * 60 * 60 * 24 * 7,
   });

@@ -21,10 +21,10 @@ export const useSession = () => {
   }
 
   async function clear() {
-    toast.message("See you soon, " + user.value?.username);
+    toast.message("See you soon, " + user.value.username || user.value.email);
     useCurrentUser().value = null;
-    await $fetch("/api/auth/logout", { method: "POST" });
     await useRouter().push("/login");
+    await $fetch("/api/auth/logout", { method: "POST" });
   }
 
   const isLoggedIn = computed(() => {

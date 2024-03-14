@@ -13,7 +13,6 @@ export function formatUser(user: prismaUser): publicUser {
     email: user.email,
     role: user.role as Role,
     avatar: user.avatar,
-    authToken: user.authToken || "",
     createdAt: user.createdAt,
     updatedAt: user.updatedAt,
   };
