@@ -11,7 +11,15 @@ export type User = {
   otp: string | null;
   avatar: string;
   role: Role;
-  authToken: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+export type Session = {
+  id: number;
+  userId: number;
+  authToken: string;
+  expiresAt: Date;
   createdAt: Date;
   updatedAt: Date;
 };

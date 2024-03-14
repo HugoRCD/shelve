@@ -1,6 +1,6 @@
 import { Role, type User, type UserCreateInput, type UserUpdateInput } from "@shelve/types";
 import prisma, { formatUser } from "~/server/database/client";
-import { generateOtp } from "~/server/app/authService";
+import { createSession, deleteSession, generateOtp } from "~/server/app/authService";
 import { sendOtp } from "~/server/app/resendService";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
@@ -53,25 +53,26 @@ export async function deleteUser(userId: number) {
   });
 }
 
-export const getUserByAuthToken = cachedFunction(async (authToken: string)=> {
-  const user = await prisma.user.findFirst({
+export async function getUserByAuthToken(authToken: string) {
+  const session = await prisma.session.findFirst({
     where: {
       authToken,
     },
+    include: {
+      user: true,
+    },
   });
+  const user = session?.user;
   if (!user) return null;
   try {
-    const decoded = jwt.verify(authToken, runtimeConfig.authSecret) as jwtPayload;
+    const decoded = jwt.verify(session.authToken, runtimeConfig.authSecret) as jwtPayload;
     if (decoded.id !== user.id) return null;
   } catch (error) {
+    await deleteSession(authToken);
     return null;
   }
   return formatUser(user);
-}, {
-  maxAge: 20,
-  name: "getUserByAuthToken",
-  getKey: (authToken: string) => `authToken:${authToken}`,
-})
+}
 
 export async function setAuthToken(user: User) {
   const authToken = jwt.sign(
@@ -84,14 +85,7 @@ export async function setAuthToken(user: User) {
     runtimeConfig.authSecret,
     { expiresIn: "30d" },
   );
-  return prisma.user.update({
-    where: {
-      id: user.id,
-    },
-    data: {
-      authToken,
-    },
-  });
+  return await createSession(user, authToken);
 }
 
 export async function updateUser(user: User, updateUserInput: UserUpdateInput) {
@@ -113,10 +107,10 @@ export async function updateUser(user: User, updateUserInput: UserUpdateInput) {
       ...updateUserInput,
     },
   });
-  await removeCachedUser(user.authToken as string);
+  // await removeCachedUser(user.authToken as string);
   return formatUser(updatedUser);
 }
 
-async function removeCachedUser(authToken: string) {
+/*async function removeCachedUser(authToken: string) {
   return await useStorage('cache').removeItem(`nitro:functions:getUserByAuthToken:authToken:${authToken}.json`);
-}
+}*/
