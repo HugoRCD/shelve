@@ -20,8 +20,8 @@
     "release": "bun run build && npm publish"
   },
   "devDependencies": {
-    "eslint-config-custom": "*",
-    "shelve-types": "*",
+    "@shelve/eslint-config": "*",
+    "@shelve/types": "*",
     "@nuxt/eslint-config": "^0.2.0",
     "@types/bun": "latest",
     "@types/semver": "^7.5.8",

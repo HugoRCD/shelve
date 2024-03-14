@@ -1,7 +1,6 @@
 module.exports = {
   root: true,
   extends: [
-    "eslint-config-custom",
     "@nuxt/eslint-config",
     "plugin:tailwindcss/recommended"
   ],

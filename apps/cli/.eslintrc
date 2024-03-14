@@ -1,6 +1,0 @@
-{
-  "extends": [
-    "eslint-config-custom",
-    "@nuxt/eslint-config"
-  ]
-}

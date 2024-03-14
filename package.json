@@ -9,9 +9,9 @@
     "test": "turbo test"
   },
   "devDependencies": {
+    "eslint": "^8.57.0",
     "turbo": "latest",
-    "typescript": "5.3.3",
-    "eslint-config-custom": "*"
+    "typescript": "5.3.3"
   },
   "engines": {
     "node": ">=18"

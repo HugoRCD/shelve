@@ -8,7 +8,7 @@ const src = computed(() => `https://volta.net/embed/${token}?theme=${colorMode.v
 </script>
 
 <template>
-  <div class="size-full flex justify-center items-center">
+  <div class="flex size-full items-center justify-center">
     <ClientOnly>
       <iframe :src="src" width="95%" height="95%" class="rounded-lg" />
     </ClientOnly>

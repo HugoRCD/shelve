@@ -1,5 +1,6 @@
 {
-  "name": "shelve-app",
+  "name": "@shelve/app",
+  "description": "Shelve is a project management tool for developers teams",
   "private": true,
   "version": "0.0.0",
   "scripts": {
@@ -21,6 +22,8 @@
     "schema": "server/database/schema.prisma"
   },
   "devDependencies": {
+    "@shelve/eslint-config": "*",
+    "@shelve/types": "*",
     "@iconify-json/lucide": "^1.1.173",
     "@linear/sdk": "^14.0.0",
     "@nuxt/eslint-config": "^0.2.0",
@@ -36,8 +39,6 @@
     "@vueuse/nuxt": "^10.9.0",
     "bcryptjs": "^2.4.3",
     "eslint": "^8.56.0",
-    "eslint-config-custom": "*",
-    "shelve-types": "*",
     "eslint-plugin-tailwindcss": "^3.14.1",
     "jsonwebtoken": "^9.0.2",
     "nuxt": "^3.9.1",

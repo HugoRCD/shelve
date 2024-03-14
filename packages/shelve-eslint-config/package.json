@@ -1,10 +1,10 @@
 {
-  "name": "eslint-config-custom",
+  "name": "@shelve/eslint-config",
   "version": "1.0.0",
   "license": "MIT",
   "private": true,
   "files": [
-    "index.ts"
+    "index.js"
   ],
   "devDependencies": {
     "eslint-config-turbo": "^1.11.3",
