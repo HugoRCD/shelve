@@ -1,6 +1,6 @@
 <script setup lang="ts">
 definePageMeta({
-  middleware: "project"
+  middleware: "project-redirect"
 })
 
 const route = useRoute()
@@ -43,8 +43,8 @@ const links = [
 <template>
   <div class="flex flex-col">
     <ProjectMainSection :project="project" :loading="status === 'pending'" />
-    <UHorizontalNavigation :links="links" class="mt-8 hidden border-b border-gray-200 dark:border-gray-800 md:block" />
-    <UVerticalNavigation :links="links" class="mt-8 border-b border-gray-200 pb-2 dark:border-gray-800 md:hidden" />
+    <UHorizontalNavigation :links="links" class="mt-8 hidden border-b border-gray-200 md:block dark:border-gray-800" />
+    <UVerticalNavigation :links="links" class="mt-8 border-b border-gray-200 pb-2 md:hidden dark:border-gray-800" />
     <NuxtPage />
   </div>
 </template>
