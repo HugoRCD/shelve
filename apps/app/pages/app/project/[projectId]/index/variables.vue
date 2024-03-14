@@ -17,7 +17,12 @@ const { data: variables, status, refresh } = useFetch(`/api/variable/project/${p
     </div>
     <div v-else class="flex flex-col gap-4">
       <div v-for="variable in 5" :key="variable">
-        <USkeleton class="h-16 w-full" />
+        <UCard class="h-16">
+          <div class="space-y-2">
+            <USkeleton class="h-4 w-2/4" />
+            <USkeleton class="h-4 w-1/4" />
+          </div>
+        </UCard>
       </div>
     </div>
   </div>
