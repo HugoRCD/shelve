@@ -39,7 +39,7 @@ export function getNavigation(where: Where): Navigation[] {
       return [
         {
           name: "Users",
-          to: "/admin/users",
+          to: "/app/admin/users",
           icon: "i-heroicons-users",
           title: "Users",
         },
