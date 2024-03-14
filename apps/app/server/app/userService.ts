@@ -1,6 +1,7 @@
 import { Role, type User, type UserCreateInput, type UserUpdateInput } from "@shelve/types";
+import { createSession, deleteSession } from "~/server/app/sessionService";
 import prisma, { formatUser } from "~/server/database/client";
-import { createSession, deleteSession, generateOtp } from "~/server/app/authService";
+import { generateOtp } from "~/server/app/authService";
 import { sendOtp } from "~/server/app/resendService";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";

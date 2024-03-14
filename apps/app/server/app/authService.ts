@@ -18,35 +18,6 @@ export async function verify(verifyDto: { email: string; password?: string; otp:
   return await setAuthToken(user as User);
 }
 
-export async function createSession(user: User, authToken: string) {
-  return await prisma.session.create({
-    data: {
-      user: {
-        connect: {
-          id: user.id,
-        },
-      },
-      authToken,
-    },
-  });
-}
-
-export async function deleteSession(authToken: string) {
-  return await prisma.session.delete({
-    where: {
-      authToken,
-    },
-  });
-}
-
-export async function deleteSessions(userId: number) {
-  return await prisma.session.deleteMany({
-    where: {
-      userId,
-    },
-  });
-}
-
 export async function generateOtp() {
   const otp = Math.floor(100000 + Math.random() * 900000).toString();
   const encryptedOtp = await bcrypt.hash(otp, 10);

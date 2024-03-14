@@ -1,4 +1,4 @@
-import { deleteSession } from "~/server/app/authService";
+import { deleteSession } from "~/server/app/sessionService";
 import { H3Event } from "h3";
 
 export default eventHandler(async (event: H3Event) => {
