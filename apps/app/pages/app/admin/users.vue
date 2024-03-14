@@ -6,7 +6,6 @@ const { data: users, status, refresh } = useFetch<publicUser[]>("/api/admin/user
   method: "GET",
   watch: false,
 })
-console.log(users)
 
 const search = ref("");
 const updateLoading = ref(false);

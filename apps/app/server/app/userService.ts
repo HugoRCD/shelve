@@ -1,5 +1,5 @@
-import prisma, { formatUser } from "~/server/database/client";
 import { Role, type User, type UserCreateInput, type UserUpdateInput } from "@shelve/types";
+import prisma, { formatUser } from "~/server/database/client";
 import { generateOtp } from "~/server/app/authService";
 import { sendOtp } from "~/server/app/resendService";
 import jwt from "jsonwebtoken";
@@ -53,15 +53,6 @@ export async function deleteUser(userId: number) {
   });
 }
 
-export async function getAllUsers() {
-  const users = await prisma.user.findMany({
-    cacheStrategy: { ttl: 60 },
-  });
-  return users.map((user) => {
-    return formatUser(user);
-  });
-}
-
 export const getUserByAuthToken = cachedFunction(async (authToken: string)=> {
   const user = await prisma.user.findFirst({
     where: {
@@ -69,8 +60,12 @@ export const getUserByAuthToken = cachedFunction(async (authToken: string)=> {
     },
   });
   if (!user) return null;
-  const decoded = jwt.verify(authToken, runtimeConfig.authSecret) as jwtPayload;
-  if (decoded.id !== user.id) return null;
+  try {
+    const decoded = jwt.verify(authToken, runtimeConfig.authSecret) as jwtPayload;
+    if (decoded.id !== user.id) return null;
+  } catch (error) {
+    return null;
+  }
   return formatUser(user);
 }, {
   maxAge: 20,
@@ -124,14 +119,4 @@ export async function updateUser(user: User, updateUserInput: UserUpdateInput) {
 
 async function removeCachedUser(authToken: string) {
   return await useStorage('cache').removeItem(`nitro:functions:getUserByAuthToken:authToken:${authToken}.json`);
-}
-
-export async function updateRoleUser(userId: number, role: Role) {
-  const user = await prisma.user.update({
-    where: { id: userId },
-    data: {
-      role,
-    },
-  });
-  return formatUser(user);
 }

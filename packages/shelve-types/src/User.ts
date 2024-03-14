@@ -22,7 +22,6 @@ export type publicUser = {
   email: string;
   avatar: string;
   role: Role;
-  authToken: string | null;
   createdAt: string | Date;
   updatedAt: string | Date;
 };
