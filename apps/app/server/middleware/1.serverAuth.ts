@@ -23,6 +23,7 @@ export default defineEventHandler(async (event: H3Event) => {
       }),
     );
   }
+  event.context.authToken = authToken;
 
   const user = event.context.user || (await getUserByAuthToken(authToken));
   if (!user) {

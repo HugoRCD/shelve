@@ -1,7 +1,7 @@
+import type { Session, User, DeviceInfo } from "@shelve/types";
 import prisma from "~/server/database/client";
-import type { User } from "@shelve/types";
 
-export async function createSession(user: User, authToken: string) {
+export async function createSession(user: User, authToken: string, deviceInfo: DeviceInfo) {
   return await prisma.session.create({
     data: {
       user: {
@@ -10,14 +10,30 @@ export async function createSession(user: User, authToken: string) {
         },
       },
       authToken,
+      device: deviceInfo.userAgent,
+      isCli: deviceInfo.isCli,
+      location: deviceInfo.location,
     },
   });
 }
 
-export async function deleteSession(authToken: string) {
+export async function getSessions(userId: number, authToken: string): Promise<Session[]> {
+  const sessions = await prisma.session.findMany({
+    where: {
+      userId,
+    },
+  });
+  return sessions.map((session) => ({
+    ...session,
+    current: session.authToken === authToken,
+  }));
+}
+
+export async function deleteSession(id: number, userId: number) {
   return await prisma.session.delete({
     where: {
-      authToken,
+      id,
+      userId,
     },
   });
 }

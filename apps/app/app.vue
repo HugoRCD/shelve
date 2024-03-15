@@ -28,7 +28,7 @@ await useSession().refresh();
 
 <template>
   <Html>
-    <Body class="font-geist selection:bg-primary selection:text-inverted relative text-black dark:bg-neutral-950 dark:text-white">
+    <Body class="selection:bg-primary relative font-geist text-black selection:text-inverted dark:bg-neutral-950 dark:text-white">
       <NuxtLayout>
         <NuxtPage />
       </NuxtLayout>
