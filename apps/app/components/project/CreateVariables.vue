@@ -52,7 +52,7 @@ function removeVariable(index: number) {
   variablesInput.value.variables.splice(index, 1)
 }
 
-const { data, status: createStatus, error, execute } = useFetch(`/api/variable/`, {
+const { status: createStatus, error, execute } = useFetch(`/api/variable/`, {
   method: "POST",
   body: variablesInput.value,
   watch: false,

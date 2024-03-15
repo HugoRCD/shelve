@@ -15,8 +15,8 @@
     "build": "unbuild",
     "start": "node ./dist/index.mjs",
     "test:types": "tsc --noEmit",
-    "lint": "eslint . && prettier --check src",
-    "lint:fix": "eslint --fix . && prettier --write src",
+    "lint": "eslint . --ext .ts",
+    "lint:fix": "eslint . --ext .ts --fix",
     "release": "bun run build && npm publish"
   },
   "devDependencies": {

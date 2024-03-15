@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { DeviceInfo } from "@shelve/types";
+
 const { title } = useAppConfig();
 
 definePageMeta({
@@ -13,6 +15,8 @@ const user = useCurrentUser();
 const email = ref(route.query.email || '');
 const password = ref('');
 const otp = ref(route.query.otp || '');
+
+const deviceInfo = ref<DeviceInfo>();
 
 const passwordMode = ref(false);
 defineShortcuts({
@@ -31,9 +35,9 @@ const { status, error, execute } = useFetch("/api/auth/send-code", {
   immediate: false
 })
 
-const { data, status: verifyStatus, error: verifyError, execute: verify } = useFetch("/api/auth/verify", {
+const { data, status: verifyStatus, error: verifyError, execute: verify } = useFetch("/api/auth/login", {
   method: "POST",
-  body: { email, otp, password },
+  body: { email, otp, password, deviceInfo },
   watch: false,
   immediate: false
 })
@@ -71,6 +75,19 @@ const login = async () => {
 function useLoginOrSendOtp() {
   return passwordMode.value ? login() : sendOtp();
 }
+
+function formatUserAgent(ua: string) {
+  const device = ua.match(/(Mac|Windows|Linux|Android|iOS)/)?.[0];
+  const osVersion = ua.match(/(Mac OS X|Windows NT|Linux|Android|iOS) ([^;)]+)/)?.[2];
+  const browser = ua.match(/(Chrome|Firefox|Safari|Edge)\/(\d+)/)?.[0];
+  return `${device} ${osVersion} - ${browser}`;
+}
+
+onMounted(() => {
+  deviceInfo.value = {
+    userAgent: formatUserAgent(navigator.userAgent),
+  }
+});
 </script>
 
 <template>
@@ -80,7 +97,7 @@ function useLoginOrSendOtp() {
         <h1 class="text-center text-3xl leading-9">
           Login to <span class="font-newsreader font-light italic">{{ title }}</span>
         </h1>
-        <p class="text-tertiary max-w-sm text-pretty text-sm leading-5">
+        <p class="max-w-sm text-pretty text-sm leading-5 text-tertiary">
           If you gained access to {{ title }}, you can enter your credentials here
         </p>
         <button class="text-sm text-black transition-colors duration-300 dark:text-white" @click="otpMode = !otpMode">

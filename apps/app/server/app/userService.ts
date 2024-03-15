@@ -1,4 +1,4 @@
-import { Role, type User, type UserCreateInput, type UserUpdateInput } from "@shelve/types";
+import { Role, type DeviceInfo, type User, type UserCreateInput, type UserUpdateInput } from "@shelve/types";
 import { createSession, deleteSession } from "~/server/app/sessionService";
 import prisma, { formatUser } from "~/server/database/client";
 import { generateOtp } from "~/server/app/authService";
@@ -69,13 +69,13 @@ export async function getUserByAuthToken(authToken: string) {
     const decoded = jwt.verify(session.authToken, runtimeConfig.authSecret) as jwtPayload;
     if (decoded.id !== user.id) return null;
   } catch (error) {
-    await deleteSession(authToken);
+    await deleteSession(session.id, user.id);
     return null;
   }
   return formatUser(user);
 }
 
-export async function setAuthToken(user: User) {
+export async function setAuthToken(user: User, deviceInfo: DeviceInfo) {
   const authToken = jwt.sign(
     {
       id: user.id,
@@ -86,7 +86,7 @@ export async function setAuthToken(user: User) {
     runtimeConfig.authSecret,
     { expiresIn: "30d" },
   );
-  await createSession(user, authToken);
+  await createSession(user, authToken, deviceInfo);
   return {
     user,
     authToken,

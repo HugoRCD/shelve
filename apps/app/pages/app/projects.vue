@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { isMounted } from "~/composables/useDOM";
 
-const { data: projects, status, error, refresh } = useFetch("/api/project", {
+const { data: projects, status, refresh } = useFetch("/api/project", {
   method: "GET",
   watch: false,
 });

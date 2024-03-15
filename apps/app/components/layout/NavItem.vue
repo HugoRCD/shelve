@@ -3,7 +3,7 @@ import type { Navigation } from "~/utils/navigation";
 import { capitalize, type PropType } from "vue";
 
 defineProps({
-  nav_item: {
+  navItem: {
     type: Object as PropType<Navigation>,
     required: true,
   },
@@ -15,10 +15,10 @@ defineProps({
 </script>
 
 <template>
-  <div class="nav-item select-none" :class="{ active }" @click="$router.push(nav_item.to)">
-    <span :class="`${nav_item.icon}`" class="font-medium" />
+  <div class="nav-item select-none" :class="{ active }" @click="$router.push(navItem.to)">
+    <span :class="`${navItem.icon}`" class="font-medium" />
     <span class="text-sm font-medium">
-      {{ capitalize(nav_item.name) }}
+      {{ capitalize(navItem.name) }}
     </span>
   </div>
 </template>
