@@ -1,4 +1,4 @@
-import type { Session, User, DeviceInfo } from "@shelve/types";
+import { User, DeviceInfo, SessionWithCurrent } from "@shelve/types";
 import prisma from "~/server/database/client";
 
 export async function createSession(user: User, authToken: string, deviceInfo: DeviceInfo) {
@@ -17,7 +17,7 @@ export async function createSession(user: User, authToken: string, deviceInfo: D
   });
 }
 
-export async function getSessions(userId: number, authToken: string): Promise<Session[]> {
+export async function getSessions(userId: number, authToken: string): Promise<SessionWithCurrent[]> {
   const sessions = await prisma.session.findMany({
     where: {
       userId,
@@ -26,7 +26,7 @@ export async function getSessions(userId: number, authToken: string): Promise<Se
   return sessions.map((session) => ({
     ...session,
     current: session.authToken === authToken,
-  }));
+  })) as SessionWithCurrent[];
 }
 
 export async function deleteSession(id: number, userId: number) {

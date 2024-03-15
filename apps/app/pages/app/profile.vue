@@ -106,7 +106,7 @@ async function logoutAll() {
       </div>
       <div class="mt-6">
         <div v-if="sessionsStatus !== 'pending'" class="grid grid-cols-1 gap-4 lg:grid-cols-2">
-          <AuthSession v-for="session in sessions.sort((device) => device.current ? -1 : 1)" :key="session.id" :session @refresh="refresh" />
+          <AuthSession v-for="session in sessions!.sort((device) => device.current ? -1 : 1)" :key="session.id" :session @refresh="refresh" />
         </div>
         <div v-else class="grid grid-cols-1 gap-4 lg:grid-cols-2">
           <USkeleton v-for="i in 4" :key="i" class="h-32" />
