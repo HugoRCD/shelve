@@ -86,7 +86,11 @@ export async function setAuthToken(user: User) {
     runtimeConfig.authSecret,
     { expiresIn: "30d" },
   );
-  return await createSession(user, authToken);
+  await createSession(user, authToken);
+  return {
+    user,
+    authToken,
+  };
 }
 
 export async function updateUser(user: User, updateUserInput: UserUpdateInput) {

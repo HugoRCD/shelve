@@ -54,5 +54,10 @@ export default defineNuxtConfig({
         imports: ['toast']
       }
     ]
-  }
+  },
+
+  colorMode: {
+    preference: 'dark',
+    fallback: 'dark'
+  },
 })

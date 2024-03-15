@@ -23,7 +23,7 @@ export const useSession = () => {
   async function clear() {
     toast.message("See you soon, " + user.value.username || user.value.email);
     useCurrentUser().value = null;
-    await useRouter().push("/login");
+    await useRouter().push("/");
     await $fetch("/api/auth/logout", { method: "POST" });
   }
 

@@ -4,8 +4,8 @@ import { H3Event } from "h3";
 
 export default eventHandler(async (event: H3Event) => {
   const body = await readBody(event);
-  const user = await verify(body);
-  setCookie(event, "authToken", user.authToken as string, {
+  const { user, authToken} = await verify(body);
+  setCookie(event, "authToken", authToken, {
     httpOnly: true,
     secure: true,
     path: "/",

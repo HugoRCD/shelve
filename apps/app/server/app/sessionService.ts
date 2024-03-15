@@ -22,10 +22,13 @@ export async function deleteSession(authToken: string) {
   });
 }
 
-export async function deleteSessions(userId: number) {
+export async function deleteSessions(userId: number, authToken: string) {
   return await prisma.session.deleteMany({
     where: {
       userId,
+      authToken: {
+        not: authToken,
+      },
     },
   });
 }
