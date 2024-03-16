@@ -45,7 +45,13 @@ export default defineNuxtConfig({
     icons: ["lucide"]
   },
 
-  devtools: { enabled: true },
+  devtools: {
+    enabled: true,
+
+    timeline: {
+      enabled: true,
+    },
+  },
 
   imports: {
     presets: [

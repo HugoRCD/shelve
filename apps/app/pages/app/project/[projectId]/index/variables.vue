@@ -9,10 +9,10 @@ const { data: variables, status, refresh } = useFetch(`/api/variable/project/${p
 
 <template>
   <div class="mt-6 flex flex-col gap-4">
-    <ProjectCreateVariables :variables :project-id="projectId" @refresh="refresh" />
+    <ProjectCreateVariables :variables :project-id="projectId" :refresh="refresh" />
     <div v-if="status !== 'pending'" class="flex flex-col gap-4">
       <div v-for="variable in variables" :key="variable.id">
-        <ProjectVariableItem :variable @refresh="refresh" />
+        <ProjectVariableItem :variables :project-id="projectId" :variable :refresh="refresh" />
       </div>
     </div>
     <div v-else class="flex flex-col gap-4">

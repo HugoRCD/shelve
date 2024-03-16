@@ -2,7 +2,11 @@
 import type { Variable, VariablesCreateInput } from "@shelve/types";
 import type { PropType, Ref } from "vue";
 
-const props = defineProps({
+const { refresh, variables, projectId } = defineProps({
+  refresh: {
+    type: Function,
+    required: true,
+  },
   variables: {
     type: Array as PropType<Variable[]>,
   },
@@ -12,127 +16,16 @@ const props = defineProps({
   },
 })
 
-const variables = toRef(props, "variables") as Ref<Variable[]>
-const projectId = toRef(props, "projectId") as Ref<string>
-const variablesToCreate = ref(1)
-const variablesInput = ref<VariablesCreateInput>({
-  projectId: parseInt(projectId.value),
-  variables: [
-    {
-      index: 1,
-      key: "",
-      value: "",
-      environment: "production",
-      projectId: parseInt(projectId.value),
-    },
-  ],
-})
-const selectedEnvironment = ref(["production"])
-const environment = computed(() => selectedEnvironment.value.join("|"));
-
-function addVariable() {
-  variablesToCreate.value++
-  variablesInput.value.variables.push({
-    index: variablesToCreate.value,
-    key: "",
-    value: "",
-    environment: environment.value,
-    projectId: parseInt(projectId.value as string),
-  })
-}
-
-watch(selectedEnvironment, () => {
-  variablesInput.value.variables.forEach((variable) => {
-    variable.environment = environment.value
-  })
-})
-
-function removeVariable(index: number) {
-  variablesToCreate.value--
-  variablesInput.value.variables.splice(index, 1)
-}
-
-const createLoading = ref(false)
-const emit = defineEmits(["refresh"])
-
-async function createVariables() {
-  createLoading.value = true;
-  if (environment.value.length === 0) {
-    toast.error("Please select at least one environment");
-    createLoading.value = false;
-    return;
-  }
-  const response = await $fetch(`/api/variable`, {
-    method: "POST",
-    body: variablesInput.value,
-  })
-  if (response.statusCode !== 200) toast.error("An error occurred");
-  else toast.success("Your variables have been created")
-  createLoading.value = false;
-  variablesToCreate.value = 1
-  variablesInput.value = {
-    projectId: parseInt(projectId.value),
-    variables: [
-      {
-        index: 1,
-        key: "",
-        value: "",
-        environment: "production",
-        projectId: parseInt(projectId.value),
-      },
-    ],
-  }
-  emit("refresh")
-}
-
-const items = [
-  [
-    {
-      label: "Copy .env",
-      disabled: true
-    }
-  ],
-  [
-    {
-      label: "For production",
-      icon: "i-lucide-clipboard",
-      click: () => copyEnv(variables.value, "production")
-    },
-    {
-      label: "For staging",
-      icon: "i-lucide-clipboard",
-      click: () => copyEnv(variables.value, "staging")
-    },
-    {
-      label: "For development",
-      icon: "i-lucide-clipboard",
-      click: () => copyEnv(variables.value, "development")
-    }
-  ],
-  [
-    {
-      label: "Download .env",
-      disabled: true
-    },
-  ],
-  [
-    {
-      label: "For production",
-      icon: "i-lucide-download",
-      click: () => downloadEnv(variables.value, "production")
-    },
-    {
-      label: "For staging",
-      icon: "i-lucide-download",
-      click: () => downloadEnv(variables.value, "staging")
-    },
-    {
-      label: "For development",
-      icon: "i-lucide-download",
-      click: () => downloadEnv(variables.value, "development")
-    }
-  ],
-]
+const {
+  items,
+  createLoading,
+  selectedEnvironment,
+  variablesInput,
+  variablesToCreate,
+  addVariable,
+  removeVariable,
+  createVariables,
+} = useVariables(refresh, projectId, variables!);
 </script>
 
 <template>

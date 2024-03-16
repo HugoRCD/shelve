@@ -9,7 +9,7 @@ export default defineCommand({
   },
   async setup() {
     const user = loadUserConfig()
-    if (!user) {
+    if (!user.authToken) {
       consola.info('Not currently logged in.')
       return
     }

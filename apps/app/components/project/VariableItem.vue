@@ -3,15 +3,33 @@ import { copyToClipboard } from "~/composables/useClipboard";
 import type { Variable } from "@shelve/types";
 import type { PropType, Ref } from 'vue';
 
-const props = defineProps({
+const { refresh, variable, variables, projectId } = defineProps({
+  refresh: {
+    type: Function,
+    required: true,
+  },
+  variables: {
+    type: Array as PropType<Variable[]>,
+  },
   variable: {
     type: Object as PropType<Variable>,
     required: true
   },
-});
+  projectId: {
+    type: String,
+    required: true,
+  },
+})
 
-const localVariable = toRef(props.variable) as Ref<Variable>;
-const selectedEnvironment = ref(props.variable.environment.split("|"));
+const {
+  updateLoading,
+  deleteLoading,
+  updateVariable,
+  deleteVariable,
+} = useVariables(refresh, projectId, variables!);
+
+const localVariable = toRef(variable) as Ref<Variable>;
+const selectedEnvironment = ref(variable.environment.split("|"));
 const environment = computed(() => selectedEnvironment.value.join("|"));
 
 const variableToUpdate = computed(() => {
@@ -20,42 +38,6 @@ const variableToUpdate = computed(() => {
     environment: environment.value
   }
 })
-
-const { status: deleteStatus, error: deleteError, execute: deleteVar } = useFetch(`/api/variable/${props.variable.id}/${props.variable.environment}`, {
-  method: "DELETE",
-  watch: false,
-  immediate: false,
-})
-
-const updateLoading = ref(false);
-
-async function updateCurrentVariable() {
-  updateLoading.value = true;
-  if (environment.value.length === 0) {
-    toast.error("Please select at least one environment");
-    updateLoading.value = false;
-    return;
-  }
-  const response = await $fetch(`/api/variable`, {
-    method: "POST",
-    body: {
-      projectId: props.variable.projectId,
-      variables: [variableToUpdate.value]
-    },
-  })
-  if (response.statusCode !== 200) toast.error("An error occurred");
-  else toast.success("Your variable has been updated");
-  updateLoading.value = false;
-  emit("refresh");
-}
-
-const emit = defineEmits(["refresh"]);
-async function deleteCurrentVariable() {
-  await deleteVar();
-  if (deleteError.value) toast.error("An error occurred");
-  else toast.success("Your variable has been deleted");
-  emit("refresh");
-}
 
 const showEdit = ref(false)
 const items = [
@@ -74,7 +56,7 @@ const items = [
       label: "Delete",
       icon: "i-lucide-trash",
       iconClass: "text-red-500 dark:text-red-500",
-      click: deleteCurrentVariable
+      click: () => deleteVariable(localVariable.value.id, environment.value)
     }
   ]
 ];
@@ -105,7 +87,7 @@ const items = [
     </div>
     <div v-if="showEdit" class="flex flex-col gap-2 py-2">
       <hr class="border-1 border-black/10">
-      <form class="flex flex-col gap-6" @submit.prevent="updateCurrentVariable">
+      <form class="flex flex-col gap-6" @submit.prevent="updateVariable(variableToUpdate)">
         <div class="flex flex-col gap-8 sm:flex-row">
           <div class="flex flex-col gap-4 md:w-2/3">
             <FormGroup v-model="localVariable.key" label="Key" />
@@ -132,7 +114,7 @@ const items = [
               Cancel
             </UButton>
           </div>
-          <UButton color="red" variant="soft" :loading="deleteStatus === 'pending'" @click="deleteCurrentVariable">
+          <UButton color="red" variant="soft" :loading="deleteLoading" @click="deleteVariable(variable.id, environment)">
             Delete
           </UButton>
         </div>
