@@ -18,8 +18,8 @@ export const main = defineCommand({
     logout: () => import("./commands/logout").then((r) => r.default),
   },
   async run() {
-    consola.info('Welcome to Shelve CLI');
-    consola.info(projectPath());
+    /*consola.info('Welcome to Shelve CLI');
+    consola.info(projectPath());*/
   },
   async setup(ctx) {
     await checkForUpdates();

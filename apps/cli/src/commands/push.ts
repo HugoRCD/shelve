@@ -1,5 +1,6 @@
 import { defineCommand } from "citty";
 import consola from "consola";
+import { pushProjectVariable } from "../utils/env.ts";
 
 export default defineCommand({
   meta: {
@@ -10,19 +11,12 @@ export default defineCommand({
     env: {
       type: "string",
       description: "Environment to push to",
-      valueHint: "production|preview|dev",
-      default: "dev",
+      valueHint: "production|preview|development",
+      default: "development",
     },
   },
   async run(ctx) {
-    console.log("Pushing env variables to", ctx.args);
-    await consola.prompt("Do you want to continue?", {
-      type: "confirm",
-    });
-    await new Promise((resolve) => {
-      setTimeout(resolve, 2000);
-      consola.start("Pushing...");
-    });
+    await pushProjectVariable(3, ctx.args.env)
     consola.success("Pushed successfully!");
   },
 });

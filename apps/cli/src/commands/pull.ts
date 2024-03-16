@@ -16,7 +16,6 @@ export default defineCommand({
     },
   },
   async run(ctx) {
-    console.log("Pulling env variables for", ctx.args.env);
     const variables = await getProjectVariable(1, ctx.args.env);
     await createEnvFile(variables);
     consola.success("Pulled successfully!");

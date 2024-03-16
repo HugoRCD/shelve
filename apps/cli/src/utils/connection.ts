@@ -15,6 +15,7 @@ export const $api = ofetch.create({
   onResponseError(ctx) {
     if (ctx.response.status === 401) {
       writeUserConfig({ ...loadUserConfig(), authToken: null })
+      consola.error('Authentication failed, please login again using `shelve login`')
     }
   }
 })
