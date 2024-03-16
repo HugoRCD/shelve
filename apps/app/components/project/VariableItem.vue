@@ -10,7 +10,7 @@ const props = defineProps({
   },
 });
 
-const localVariable = ref(props.variable) as Ref<Variable>;
+const localVariable = toRef(props.variable) as Ref<Variable>;
 const selectedEnvironment = ref(props.variable.environment.split("|"));
 const environment = computed(() => selectedEnvironment.value.join("|"));
 
@@ -21,26 +21,31 @@ const variableToUpdate = computed(() => {
   }
 })
 
-const { status, error, execute } = useFetch(`/api/variable`, {
-  method: "POST",
-  body: {
-    projectId: props.variable.projectId,
-    variables: [variableToUpdate.value]
-  },
-  watch: false,
-  immediate: false,
-})
-
 const { status: deleteStatus, error: deleteError, execute: deleteVar } = useFetch(`/api/variable/${props.variable.id}/${props.variable.environment}`, {
   method: "DELETE",
   watch: false,
   immediate: false,
 })
 
+const updateLoading = ref(false);
+
 async function updateCurrentVariable() {
-  await execute();
-  if (error.value) toast.error("An error occurred");
+  updateLoading.value = true;
+  if (environment.value.length === 0) {
+    toast.error("Please select at least one environment");
+    updateLoading.value = false;
+    return;
+  }
+  const response = await $fetch(`/api/variable`, {
+    method: "POST",
+    body: {
+      projectId: props.variable.projectId,
+      variables: [variableToUpdate.value]
+    },
+  })
+  if (response.statusCode !== 200) toast.error("An error occurred");
   else toast.success("Your variable has been updated");
+  updateLoading.value = false;
   emit("refresh");
 }
 
@@ -120,14 +125,14 @@ const items = [
         <hr class="border-1 border-black/10 dark:border-white/5">
         <div class="flex justify-between gap-4">
           <div>
-            <UButton color="primary" type="submit" trailing :loading="status === 'pending'">
+            <UButton color="primary" type="submit" trailing :loading="updateLoading">
               Save
             </UButton>
             <UButton color="white" variant="soft" @click="showEdit = false">
               Cancel
             </UButton>
           </div>
-          <UButton color="red" variant="soft" :loading="deleteStatus === 'pending'">
+          <UButton color="red" variant="soft" :loading="deleteStatus === 'pending'" @click="deleteCurrentVariable">
             Delete
           </UButton>
         </div>

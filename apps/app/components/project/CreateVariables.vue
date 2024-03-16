@@ -52,18 +52,23 @@ function removeVariable(index: number) {
   variablesInput.value.variables.splice(index, 1)
 }
 
-const { status: createStatus, error, execute } = useFetch(`/api/variable/`, {
-  method: "POST",
-  body: variablesInput.value,
-  watch: false,
-  immediate: false,
-})
-
+const createLoading = ref(false)
 const emit = defineEmits(["refresh"])
+
 async function createVariables() {
-  await execute()
-  if (error.value) toast.error("An error occurred")
+  createLoading.value = true;
+  if (environment.value.length === 0) {
+    toast.error("Please select at least one environment");
+    createLoading.value = false;
+    return;
+  }
+  const response = await $fetch(`/api/variable`, {
+    method: "POST",
+    body: variablesInput.value,
+  })
+  if (response.statusCode !== 200) toast.error("An error occurred");
   else toast.success("Your variables have been created")
+  createLoading.value = false;
   variablesToCreate.value = 1
   variablesInput.value = {
     projectId: parseInt(projectId.value),
@@ -80,24 +85,6 @@ async function createVariables() {
   emit("refresh")
 }
 
-function copyEnv(env: "production" | "staging" | "development") {
-  const envVariables = variables.value.filter((variable) => variable.environment.includes(env))
-  const envString = envVariables.map((variable) => `${variable.key}=${variable.value}`).join("\n")
-  copyToClipboard(envString, "Copied to clipboard")
-}
-
-function downloadEnv(env: "production" | "staging" | "development") {
-  const envVariables = variables.value.filter((variable) => variable.environment.includes(env))
-  const envString = envVariables.map((variable) => `${variable.key}=${variable.value}`).join("\n")
-  const blob = new Blob([envString], { type: "text/plain" })
-  const url = URL.createObjectURL(blob)
-  const a = document.createElement("a")
-  a.href = url
-  a.download = `.env.${env}`
-  a.click()
-  URL.revokeObjectURL(url)
-}
-
 const items = [
   [
     {
@@ -109,17 +96,17 @@ const items = [
     {
       label: "For production",
       icon: "i-lucide-clipboard",
-      click: () => copyEnv("production")
+      click: () => copyEnv(variables.value, "production")
     },
     {
       label: "For staging",
       icon: "i-lucide-clipboard",
-      click: () => copyEnv("staging")
+      click: () => copyEnv(variables.value, "staging")
     },
     {
       label: "For development",
       icon: "i-lucide-clipboard",
-      click: () => copyEnv("development")
+      click: () => copyEnv(variables.value, "development")
     }
   ],
   [
@@ -132,17 +119,17 @@ const items = [
     {
       label: "For production",
       icon: "i-lucide-download",
-      click: () => downloadEnv("production")
+      click: () => downloadEnv(variables.value, "production")
     },
     {
       label: "For staging",
       icon: "i-lucide-download",
-      click: () => downloadEnv("staging")
+      click: () => downloadEnv(variables.value, "staging")
     },
     {
       label: "For development",
       icon: "i-lucide-download",
-      click: () => downloadEnv("development")
+      click: () => downloadEnv(variables.value, "development")
     }
   ],
 ]
@@ -205,7 +192,7 @@ const items = [
       <template #footer>
         <div class="flex justify-between gap-4">
           <UButton label="Add variable" color="white" icon="i-heroicons-plus-circle-20-solid" @click="addVariable" />
-          <UButton label="Save" color="primary" :loading="createStatus === 'pending'" type="submit" />
+          <UButton label="Save" color="primary" :loading="createLoading" type="submit" />
         </div>
       </template>
     </UCard>

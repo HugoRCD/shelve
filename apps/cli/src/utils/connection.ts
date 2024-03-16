@@ -14,8 +14,7 @@ export const $api = ofetch.create({
   },
   onResponseError(ctx) {
     if (ctx.response.status === 401) {
-      consola.error('Unauthorized')
-      // writeUserConfig({ ...loadUserConfig(), authToken: null })
+      writeUserConfig({ ...loadUserConfig(), authToken: null })
     }
   }
 })
