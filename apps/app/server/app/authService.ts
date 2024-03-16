@@ -1,6 +1,6 @@
 import { getUserByEmail, setAuthToken } from "~/server/app/userService";
-import prisma from "~/server/database/client";
 import type { DeviceInfo, User } from "@shelve/types";
+import prisma from "~/server/database/client";
 import bcrypt from "bcryptjs";
 
 type VerifyDto = {

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import UAParser from "ua-parser-js";
 import type { DeviceInfo } from "@shelve/types";
 
 const { title } = useAppConfig();
@@ -76,16 +77,14 @@ function useLoginOrSendOtp() {
   return passwordMode.value ? login() : sendOtp();
 }
 
-function formatUserAgent(ua: string) {
-  const device = ua.match(/(Mac|Windows|Linux|Android|iOS)/)?.[0];
-  const osVersion = ua.match(/(Mac OS X|Windows NT|Linux|Android|iOS) ([^;)]+)/)?.[2];
-  const browser = ua.match(/(Chrome|Firefox|Safari|Edge)\/(\d+)/)?.[0];
-  return `${device} ${osVersion} - ${browser}`;
-}
-
 onMounted(() => {
+  const parser = new UAParser();
+  const parserResults = parser.getResult();
+  const device = `${parserResults.device.vendor} ${parserResults.device.model}`;
+  const os = `${parserResults.os.name} ${parserResults.os.version}`;
+  const browser = `${parserResults.browser.name} ${parserResults.browser.version}`;
   deviceInfo.value = {
-    userAgent: formatUserAgent(navigator.userAgent),
+    userAgent: `${device} - ${os} - ${browser}`,
   }
 });
 </script>
