@@ -2,7 +2,7 @@ import { deleteSession } from "~/server/app/sessionService";
 import { H3Event } from "h3";
 
 export default eventHandler(async (event: H3Event) => {
-  const authToken = getCookie(event, "authToken");
+  const authToken = event.context.authToken;
   deleteCookie(event, "authToken");
   if (!authToken) {
     return {
@@ -12,7 +12,7 @@ export default eventHandler(async (event: H3Event) => {
       },
     };
   }
-  await deleteSession(authToken);
+  await deleteSession(authToken, event.context.user.id);
   return {
     statusCode: 200,
     body: {

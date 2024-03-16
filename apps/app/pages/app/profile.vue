@@ -51,7 +51,7 @@ async function logoutAll() {
 
 <template>
   <div class="flex flex-col">
-    <form class="flex flex-col" @submit.prevent="updateCurrentUser">
+    <form v-if="user" class="flex flex-col" @submit.prevent="updateCurrentUser">
       <div style="--stagger: 1" data-animate class="flex items-center gap-4">
         <NuxtImg :src="user.avatar" class="size-10 rounded-full" />
         <div>

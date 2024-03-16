@@ -29,10 +29,10 @@ export async function getSessions(userId: number, authToken: string): Promise<Se
   })) as SessionWithCurrent[];
 }
 
-export async function deleteSession(id: number, userId: number) {
+export async function deleteSession(authToken: string, userId: number) {
   return await prisma.session.delete({
     where: {
-      id,
+      authToken,
       userId,
     },
   });

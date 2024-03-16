@@ -69,7 +69,7 @@ export async function getUserByAuthToken(authToken: string) {
     const decoded = jwt.verify(session.authToken, runtimeConfig.authSecret) as jwtPayload;
     if (decoded.id !== user.id) return null;
   } catch (error) {
-    await deleteSession(session.id, user.id);
+    await deleteSession(authToken, user.id);
     return null;
   }
   return formatUser(user);
