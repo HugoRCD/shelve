@@ -31,10 +31,11 @@ npx @shelve/cli
 ## Usage
 
 ```bash
-USAGE shelve login|logout|whoami|pull|push
+USAGE shelve upgrade|login|logout|whoami|pull|push
 
 COMMANDS
-    
+   
+  upgrade   Upgrade the Shelve CLI to the latest version 
   login     Authenticate with Shelve                           
   logout    Logout the current authenticated user                
   whoami    Shows the username of the currently logged in user
