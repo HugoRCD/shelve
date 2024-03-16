@@ -14,7 +14,7 @@
   "scripts": {
     "build": "unbuild",
     "start": "node ./dist/index.mjs",
-    "test:types": "tsc --noEmit",
+    "typecheck": "tsc --noEmit",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
     "release": "bun run build && npm publish"

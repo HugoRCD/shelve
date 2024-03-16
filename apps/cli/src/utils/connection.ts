@@ -1,18 +1,21 @@
-/*
+import { loadUserConfig, writeUserConfig } from "./config.ts";
 import { ofetch } from 'ofetch'
+import consola from "consola";
+
+const SHELVE_API_URL = process.env.NODE_ENV === 'development' ? 'http://localhost:3000/api' : 'https://shelve.hrcd.fr/api'
 
 export const $api = ofetch.create({
-  baseURL: joinURL(NUXT_HUB_URL, '/api'),
+  baseURL: SHELVE_API_URL,
   onRequest({ options }) {
-    options.headers = options.headers || {}
-    if (!options.headers.Authorization) {
-      options.headers.Authorization = `Bearer ${loadUserConfig().hub?.userToken || ''}`
+    options.headers = {
+      ...options.headers,
+      Cookie: `authToken=${loadUserConfig().authToken || ''}`
     }
   },
   onResponseError(ctx) {
-    if (ctx.response._data?.message) {
-      ctx.error = new Error(`- ${ctx.response._data.message}`)
+    if (ctx.response.status === 401) {
+      consola.error('Unauthorized')
+      // writeUserConfig({ ...loadUserConfig(), authToken: null })
     }
   }
 })
-*/
