@@ -10,7 +10,7 @@ export default defineCommand({
     env: {
       type: "string",
       description: "Environment to push to",
-      valueHint: "production|staging|dev",
+      valueHint: "production|preview|dev",
       default: "dev",
     },
   },

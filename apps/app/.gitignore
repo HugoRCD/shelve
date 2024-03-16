@@ -22,6 +22,6 @@ logs
 # Local env files
 .env
 .env.development
-.env.staging
+.env.preview
 .env.production
 .vercel

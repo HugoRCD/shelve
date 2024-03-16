@@ -1,10 +1,8 @@
-import { createEnvFile, getEnvFile } from "./utils/env.ts";
-import { defineCommand } from "citty";
 import { name, version, description } from "../package.json";
 import { checkForUpdates } from "./utils/update.ts";
-import { resolve } from 'pathe'
+import { projectPath } from "./utils/config.ts";
+import { defineCommand } from "citty";
 import consola from "consola";
-import { projectPath, writeUserConfig } from "./utils/config.ts";
 
 export const main = defineCommand({
   meta: {
@@ -24,9 +22,6 @@ export const main = defineCommand({
     consola.info(projectPath());
   },
   async setup(ctx) {
-    /*const cwd = resolve(<string>ctx.args.cwd || '.')
-    console.log('cwd', cwd)*/
-    /*await getEnvFile();*/
     await checkForUpdates();
   },
   cleanup() {

@@ -1,12 +1,12 @@
 import type { Variable } from "@shelve/types";
 
-export function copyEnv(variables: Variable[], env: "production" | "staging" | "development") {
+export function copyEnv(variables: Variable[], env: "production" | "preview" | "development") {
   const envVariables = variables.filter((variable) => variable.environment.includes(env))
   const envString = envVariables.map((variable) => `${variable.key}=${variable.value}`).join("\n")
   copyToClipboard(envString, "Copied to clipboard")
 }
 
-export function downloadEnv(variables: Variable[], env: "production" | "staging" | "development") {
+export function downloadEnv(variables: Variable[], env: "production" | "preview" | "development") {
   const envVariables = variables.filter((variable) => variable.environment.includes(env))
   const envString = envVariables.map((variable) => `${variable.key}=${variable.value}`).join("\n")
   const blob = new Blob([envString], { type: "text/plain" })

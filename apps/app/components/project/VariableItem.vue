@@ -99,7 +99,7 @@ const items = [
             </h4>
             <div class="flex flex-col gap-4">
               <UCheckbox v-model="selectedEnvironment" value="production" label="Production" />
-              <UCheckbox v-model="selectedEnvironment" value="staging" label="Staging" />
+              <UCheckbox v-model="selectedEnvironment" value="preview" label="Staging" />
               <UCheckbox v-model="selectedEnvironment" value="development" label="Development" />
             </div>
           </div>

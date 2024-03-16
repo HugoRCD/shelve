@@ -28,7 +28,12 @@ export async function upsertVariable(variablesCreateInput: VariablesCreateInput)
 }
 
 export async function getVariablesByProjectId(projectId: number, environment?: Environment) {
-  const options = environment ? { projectId, environment } : { projectId };
+  const options = environment ? {
+    projectId,
+    environment: {
+      contains: environment,
+    }
+  } : { projectId };
   return prisma.envVar.findMany({ where: options, orderBy: { updatedAt: "desc" } });
 }
 

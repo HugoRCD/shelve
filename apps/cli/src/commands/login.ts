@@ -1,7 +1,7 @@
 import { getComputerName, loadUserConfig, writeUserConfig } from '../utils/config'
+import { $api } from "../utils/connection.ts";
 import { defineCommand } from 'citty'
 import { consola } from 'consola'
-import { $api } from "../utils/connection.ts";
 
 export default defineCommand({
   meta: {
@@ -39,7 +39,6 @@ export default defineCommand({
       email: response.email,
       authToken: response.authToken
     })
-
     consola.info(`You are now logged in as \`${response.username}\``)
   },
 })

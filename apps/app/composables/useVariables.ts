@@ -61,9 +61,9 @@ export function useVariables(refresh: Function, projectId: string, projectVars: 
         click: () => copyEnv(projectVars, "production")
       },
       {
-        label: "For staging",
+        label: "For preview",
         icon: "i-lucide-clipboard",
-        click: () => copyEnv(projectVars, "staging")
+        click: () => copyEnv(projectVars, "preview")
       },
       {
         label: "For development",
@@ -84,9 +84,9 @@ export function useVariables(refresh: Function, projectId: string, projectVars: 
         click: () => downloadEnv(projectVars, "production")
       },
       {
-        label: "For staging",
+        label: "For preview",
         icon: "i-lucide-download",
-        click: () => downloadEnv(projectVars, "staging")
+        click: () => downloadEnv(projectVars, "preview")
       },
       {
         label: "For development",

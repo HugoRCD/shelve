@@ -1,15 +1,47 @@
-# mocka-cli
+# Shelve CLI
 
-To install dependencies:
+<p align="left">
+  <a aria-label="NPM version" href="https://www.npmjs.com/package/@shelve/cli">
+    <img alt="" src="https://img.shields.io/npm/v/shelve.svg?style=for-the-badge&labelColor=000000&color=E0E0E0">
+  </a>
+  <a aria-label="License" href="https://github.com/HugoRCD/shelve/blob/main/LICENSE">
+    <img alt="" src="https://img.shields.io/npm/l/shelve.svg?style=for-the-badge&labelColor=000000&color=212121">
+  </a>
+  <a aria-label="Follow Hugo on Twitter" href="https://twitter.com/HugoRCD__">
+    <img alt="" src="https://img.shields.io/twitter/follow/HugoRCD__.svg?style=for-the-badge&labelColor=000000&logo=twitter&label=Follow%20Hugo&logoWidth=20&logoColor=white">
+  </a>
+</p>
 
-```bash
-bun install
+The Shelve CLI is a command-line interface for the Shelve platform. It allows you to authenticate with Shelve, pull and push environment variables for your projects.
+
+## Installation
+
+Install the package globally:
+
+```sh
+npm install -g @shelve/cli
 ```
 
-To run:
+Or use `npx` to run the CLI without installing it:
 
-```bash
-bun run index.ts
+```sh
+npx @shelve/cli
 ```
 
-This project was created using `bun init` in bun v1.0.25. [Bun](https://bun.sh) is a fast all-in-one JavaScript runtime.
+## Usage
+
+```bash
+USAGE shelve login|logout|whoami|pull|push
+
+COMMANDS
+    
+  login     Authenticate with Shelve                           
+  logout    Logout the current authenticated user                
+  whoami    Shows the username of the currently logged in user
+  pull      Pull the environement variables for the current project
+  push      Push the environement variables for the current project
+
+Use shelve <command> --help for more information about a command.
+```
+
+

@@ -27,3 +27,10 @@ export type VariablesCreateInput = {
   projectId: number;
   variables: VariableCreateInput[];
 };
+
+export type Env = {
+  key: string;
+  value: string;
+}
+
+export type EnvFile = Env[];

@@ -11,14 +11,14 @@ export default defineCommand({
     env: {
       type: "string",
       description: "Environment to pull from",
-      valueHint: "production|staging|development",
+      valueHint: "production|preview|development",
       default: "development",
     },
   },
   async run(ctx) {
     console.log("Pulling env variables for", ctx.args.env);
     const variables = await getProjectVariable(1, ctx.args.env);
-    await createEnvFile(variables, false);
+    await createEnvFile(variables);
     consola.success("Pulled successfully!");
   },
 });

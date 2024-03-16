@@ -79,16 +79,16 @@ onMounted(() => {
           </h4>
           <div class="flex flex-col gap-4">
             <UCheckbox v-model="selectedEnvironment" value="production" label="Production" />
-            <UCheckbox v-model="selectedEnvironment" value="staging" label="Staging" />
+            <UCheckbox v-model="selectedEnvironment" value="preview" label="Staging" />
             <UCheckbox v-model="selectedEnvironment" value="development" label="Development" />
           </div>
         </div>
         <UDivider class="my-2" />
         <p class="text-xs font-normal text-gray-500">
-          🤫 You can also paste your environment variables as key value pairs to prefilled the form
+          🤫 You can also paste all your environment variables (.env) as key value pairs to prefilled the form
         </p>
         <div class="mb-4 flex flex-col gap-2">
-          <div class="flex items-center">
+          <div class="hidden items-center sm:flex">
             <span class="w-full text-sm font-normal text-gray-500">Key</span>
             <span class="w-full text-sm font-normal text-gray-500">Value</span>
             <div class="w-[100px]" />
