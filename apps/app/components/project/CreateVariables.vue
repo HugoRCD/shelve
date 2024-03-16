@@ -19,6 +19,7 @@ const { refresh, variables, projectId } = defineProps({
 const {
   items,
   createLoading,
+  environment,
   selectedEnvironment,
   variablesInput,
   variablesToCreate,
@@ -26,10 +27,35 @@ const {
   removeVariable,
   createVariables,
 } = useVariables(refresh, projectId, variables!);
+
+onMounted(() => {
+  document.addEventListener("paste", (e) => {
+    const clipboardData = e.clipboardData;
+    if (!clipboardData) return;
+    const pastedData = clipboardData.getData("text");
+    if (!e.target?.closest("#varCreation")) return;
+    if (!pastedData.includes("=")) return;
+    e.preventDefault();
+    const pastedDataArray = pastedData.split("\n");
+    const pastedDataArrayFiltered = pastedDataArray.filter((data) => data !== "");
+    const pastedDataArrayFilteredLength = pastedDataArrayFiltered.length;
+    variablesToCreate.value = pastedDataArrayFilteredLength;
+    variablesInput.value.variables = pastedDataArrayFiltered.map((data, index) => {
+      const [key, value] = data.split("=");
+      return {
+        index,
+        key: key.replace(/[\n\r'"]+/g, ""),
+        value: value.replace(/[\n\r'"]+/g, ""),
+        projectId: parseInt(projectId),
+        environment: environment.value
+      };
+    });
+  });
+});
 </script>
 
 <template>
-  <form @submit.prevent="createVariables">
+  <form id="varCreation" @submit.prevent="createVariables">
     <UCard :ui="{ background: 'bg-white dark:bg-neutral-950' }">
       <template #header>
         <div class="flex items-center justify-between">
@@ -58,6 +84,9 @@ const {
           </div>
         </div>
         <UDivider class="my-2" />
+        <p class="text-xs font-normal text-gray-500">
+          🤫 You can also paste your environment variables as key value pairs to prefilled the form
+        </p>
         <div class="mb-4 flex flex-col gap-2">
           <div class="flex items-center">
             <span class="w-full text-sm font-normal text-gray-500">Key</span>
