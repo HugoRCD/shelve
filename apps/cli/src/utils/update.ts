@@ -21,7 +21,7 @@ export async function checkForUpdates() {
         borderColor: "green",
       },
       message: [
-        `A new version of ${capitalize(name)} CLI is available: ${green(latestVersion)}`,
+        `A new version of ${capitalize(name)} is available: ${green(latestVersion)}`,
         `You are currently using ${yellow(version)}`,
         "",
         `Release notes: ${underline(cyan(changelogURL))}`,
