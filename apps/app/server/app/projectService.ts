@@ -34,6 +34,9 @@ export const getProjectsByUserId = cachedFunction(async (userId: number) => {
     where: {
       ownerId: userId,
     },
+    orderBy: {
+      updatedAt: "desc",
+    }
   });
 }, {
   maxAge: 20,

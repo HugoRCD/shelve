@@ -4,6 +4,9 @@ export type Project = {
   id: number;
   name: string;
   description?: string;
+  repository?: string;
+  projectManager?: string;
+  homepage?: string;
   avatar?: string;
   ownerId: number;
   createdAt: Date;

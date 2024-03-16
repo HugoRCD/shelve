@@ -10,12 +10,19 @@ const {data: project, status} = useFetch(`/api/project/${projectId}`, {
   method: "GET",
   watch: false,
 })
+provide("project", project)
+provide("status", status)
 
 const links = [
   {
     label: 'Environment Variables',
     icon: 'i-heroicons-variable',
     to: `/app/project/${projectId}/variables`
+  },
+  {
+    label: 'Info',
+    icon: 'i-heroicons-information-circle',
+    to: `/app/project/${projectId}/info`
   },
   {
     label: 'Assets',

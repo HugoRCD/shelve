@@ -62,45 +62,88 @@ const items = [
     }
   ]
 ];
+
+const projectManager = [
+  {
+    label: "Linear",
+    value: "linear",
+    icon: "i-custom-linear",
+  },
+  {
+    label: "Volta",
+    value: "volta",
+    icon: "i-custom-volta",
+  },
+]
+
+function getProjectManager(manager: string) {
+  if (!manager) return;
+  return projectManager.find((item) => manager.includes(item.value))
+}
 </script>
 
 <template>
   <div>
-    <div v-if="!loading" class="flex items-start justify-between gap-4">
-      <div class="flex items-start gap-4">
-        <UAvatar :src="project.avatar" size="xl" :alt="project.name" />
-        <div>
-          <h2 class="text-base font-semibold leading-7">
-            {{ project.name }}
-          </h2>
-          <p class="text-sm leading-6 text-gray-500">
-            {{ project.description }}
-          </p>
+    <div v-if="!loading">
+      <div class="flex items-start justify-between gap-4">
+        <div class="flex items-start gap-4">
+          <UAvatar :src="project.avatar" size="xl" :alt="project.name" />
+          <div>
+            <h2 class="text-base font-semibold leading-7">
+              {{ project.name }}
+            </h2>
+            <p class="text-sm leading-6 text-gray-500">
+              {{ project.description }}
+            </p>
+          </div>
+          <UModal v-model="showEdit">
+            <UCard class="p-2">
+              <form class="flex flex-col gap-4" @submit.prevent="updateCurrentProject">
+                <FormGroup v-model="project.name" label="Name" />
+                <FormGroup v-model="project.description" label="Description" type="textarea" />
+                <div class="flex items-center gap-4">
+                  <UAvatar :src="project.avatar" size="xl" :alt="project.name" />
+                  <FormGroup v-model="project.avatar" label="Avatar" class="w-full" />
+                </div>
+                <div class="flex justify-end gap-4">
+                  <UButton color="gray" variant="ghost" @click="showEdit = false">
+                    Cancel
+                  </UButton>
+                  <UButton color="primary" type="submit" trailing :loading="updateStatus === 'pending'">
+                    Save
+                  </UButton>
+                </div>
+              </form>
+            </UCard>
+          </UModal>
         </div>
-        <UModal v-model="showEdit">
-          <UCard class="p-2">
-            <form class="flex flex-col gap-4" @submit.prevent="updateCurrentProject">
-              <FormGroup v-model="project.name" label="Name" />
-              <FormGroup v-model="project.description" label="Description" type="textarea" />
-              <div class="flex items-center gap-4">
-                <UAvatar :src="project.avatar" size="xl" :alt="project.name" />
-                <FormGroup v-model="project.avatar" label="Avatar" class="w-full" />
-              </div>
-              <div class="flex justify-end gap-4">
-                <UButton color="gray" variant="ghost" @click="showEdit = false">
-                  Cancel
-                </UButton>
-                <UButton color="primary" type="submit" trailing :loading="updateStatus === 'pending'">
-                  Save
-                </UButton>
-              </div>
-            </form>
-          </UCard>
-        </UModal>
+        <UDropdown :items="items">
+          <UButton color="gray" variant="ghost" icon="i-heroicons-ellipsis-horizontal-20-solid" />
+        </UDropdown>
       </div>
-      <UDropdown :items="items">
-        <UButton color="gray" variant="ghost" icon="i-heroicons-ellipsis-horizontal-20-solid" />
-      </UDropdown>
+      <div v-if="project.projectManager || project.repository || project.homepage" class="mt-6 flex flex-wrap gap-4 sm:flex-row sm:items-center">
+        <NuxtLink v-if="project.projectManager" :to="project.projectManager">
+          <UButton
+            color="gray"
+            :icon="getProjectManager(project.projectManager)?.icon"
+            :label="`Open ${getProjectManager(project.projectManager)?.label}`"
+          />
+        </NuxtLink>
+        <NuxtLink v-if="project.repository" :to="project.repository">
+          <UButton
+            color="gray"
+            icon="i-custom-github"
+            label="Open repository"
+          />
+        </NuxtLink>
+        <NuxtLink v-if="project.homepage" :to="project.homepage">
+          <UButton
+            color="gray"
+            icon="i-heroicons-home"
+            label="Open homepage"
+          />
+        </NuxtLink>
+      </div>
     </div>
     <div v-else class="flex items-start justify-between gap-4">
       <div class="flex w-full items-start gap-4">
