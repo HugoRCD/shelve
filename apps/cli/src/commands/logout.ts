@@ -15,7 +15,7 @@ export default defineCommand({
     }
 
     const config = loadUserConfig()
-    delete config.token
+    config.authToken = null
     writeUserConfig(config)
 
     consola.info('You have been logged out.')

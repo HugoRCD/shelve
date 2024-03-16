@@ -1,7 +1,7 @@
+import type { EnvFile } from "../types/env.ts";
+import { $api } from "./connection.ts";
 import consola from "consola";
 import fs from 'fs';
-import { ofetch } from "ofetch";
-import type { EnvFile } from "../types/env.ts";
 
 export function isEnvFileExist() {
   return fs.existsSync('.env');
@@ -42,6 +42,5 @@ export async function getEnvFile(): Promise<EnvFile> {
 
 export async function getProjectVariable(projectId: number, environment: string): Promise<EnvFile> {
   consola.start("Pulling...");
-  const response = await ofetch<EnvFile>(`http://localhost:3000/api/variable/${projectId}/${environment}`);
-  return response;
+  return await $api<EnvFile>(`/variable/${ projectId }/${ environment }`);
 }

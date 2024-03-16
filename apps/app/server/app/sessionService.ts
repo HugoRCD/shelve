@@ -1,20 +1,33 @@
-import { User, DeviceInfo, SessionWithCurrent } from "@shelve/types";
+import type { User, SessionWithCurrent, CreateSessionInput } from "@shelve/types";
 import prisma from "~/server/database/client";
+import jwt from "jsonwebtoken";
 
-export async function createSession(user: User, authToken: string, deviceInfo: DeviceInfo) {
-  return await prisma.session.create({
+const runtimeConfig = useRuntimeConfig().private;
+
+export async function createSession(user: User, createSessionDto: CreateSessionInput) {
+  const authToken = jwt.sign(
+    {
+      id: user.id,
+      role: user.role,
+      username: user.username,
+      email: user.email,
+    },
+    runtimeConfig.authSecret,
+    { expiresIn: "30d" },
+  );
+  await prisma.session.create({
     data: {
-      user: {
-        connect: {
-          id: user.id,
-        },
-      },
       authToken,
-      device: deviceInfo.userAgent,
-      isCli: deviceInfo.isCli,
-      location: deviceInfo.location,
+      userId: user.id,
+      device: createSessionDto.deviceInfo.userAgent,
+      isCli: createSessionDto.deviceInfo.isCli,
+      location: createSessionDto.deviceInfo.location,
     },
   });
+  return {
+    user,
+    authToken,
+  };
 }
 
 export async function getSessions(userId: number, authToken: string): Promise<SessionWithCurrent[]> {

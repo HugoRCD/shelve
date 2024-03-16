@@ -1,7 +1,6 @@
-import { updateUser, readUser, writeUser } from 'rc9'
+import { loadUserConfig } from "../utils/config.ts";
 import { defineCommand } from "citty";
 import consola from "consola";
-import { loadUserConfig } from "../utils/config.ts";
 
 export default defineCommand({
   meta: {
@@ -10,7 +9,7 @@ export default defineCommand({
   },
   async setup() {
     const user = loadUserConfig();
-    if (!user) {
+    if (!user.authToken) {
       consola.info('Not currently logged in.')
       return
     }

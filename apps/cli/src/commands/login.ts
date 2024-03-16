@@ -1,6 +1,7 @@
-import { loadUserConfig, writeUserConfig } from '../utils/config'
+import { getComputerName, loadUserConfig, writeUserConfig } from '../utils/config'
 import { defineCommand } from 'citty'
 import { consola } from 'consola'
+import { $api } from "../utils/connection.ts";
 
 export default defineCommand({
   meta: {
@@ -9,11 +10,36 @@ export default defineCommand({
   },
   async setup() {
     const user = loadUserConfig()
-    if (user) return consola.info(`You are already logged as \`${user.username}\``)
+    if (user.authToken) return consola.info(`You are already logged as \`${user.username}\``)
 
-    const username = await consola.prompt('Enter your username') as string;
-    writeUserConfig({ username });
+    const email = await consola.prompt('Enter your email') as string;
+    consola.start('Sending code to your email...')
+    await $api("/auth/send-code", {
+      method: "POST",
+      body: {
+        email
+      }
+    })
+    consola.success('Code sent.')
+    const code = await consola.prompt('Enter the code') as string;
+    consola.start('Logging in...')
+    const response = await $api("/auth/login", {
+      method: "POST",
+      body: {
+        email,
+        otp: code,
+        deviceInfo: {
+          isCli: true,
+          userAgent: getComputerName()
+        }
+      }
+    })
+    writeUserConfig({
+      username: response.username,
+      email: response.email,
+      authToken: response.authToken
+    })
 
-    consola.info('You have been logged in.')
+    consola.info(`You are now logged in as \`${response.username}\``)
   },
 })

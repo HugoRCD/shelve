@@ -18,3 +18,10 @@ export type DeviceInfo = {
   location?: string;
   isCli?: boolean;
 };
+
+export type CreateSessionInput = {
+  email: string;
+  password?: string;
+  otp: string;
+  deviceInfo: DeviceInfo;
+};

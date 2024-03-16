@@ -1,9 +1,11 @@
 import { updateUser, readUser, writeUser } from 'rc9'
-import { homedir } from 'os'
+import { homedir, hostname } from 'os'
+import cp from "child_process";
 
 export type userConfig = {
   username: string
-  token?: string
+  email: string
+  authToken: string | null
 }
 
 export function loadUserConfig(): userConfig {
@@ -24,4 +26,18 @@ export function projectPath() {
 
 export function withTilde(path: string) {
   return path.replace(homedir(), '~')
+}
+
+export function getComputerName() {
+  switch (process.platform) {
+    case "win32":
+      return process.env.COMPUTERNAME;
+    case "darwin":
+      return cp.execSync("scutil --get ComputerName").toString().trim();
+    case "linux":
+      const prettyname = cp.execSync("hostnamectl --pretty").toString().trim();
+      return prettyname === "" ? hostname() : prettyname;
+    default:
+      return hostname();
+  }
 }

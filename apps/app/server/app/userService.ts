@@ -1,8 +1,9 @@
-import { Role, type DeviceInfo, type User, type UserCreateInput, type UserUpdateInput } from "@shelve/types";
-import { createSession, deleteSession } from "~/server/app/sessionService";
+import type { User, UserCreateInput, UserUpdateInput } from "@shelve/types";
+import { deleteSession } from "~/server/app/sessionService";
 import prisma, { formatUser } from "~/server/database/client";
 import { generateOtp } from "~/server/app/authService";
 import { sendOtp } from "~/server/app/resendService";
+import { Role } from "@shelve/types";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 
@@ -75,24 +76,6 @@ export async function getUserByAuthToken(authToken: string) {
   return formatUser(user);
 }
 
-export async function setAuthToken(user: User, deviceInfo: DeviceInfo) {
-  const authToken = jwt.sign(
-    {
-      id: user.id,
-      role: user.role,
-      username: user.username,
-      email: user.email,
-    },
-    runtimeConfig.authSecret,
-    { expiresIn: "30d" },
-  );
-  await createSession(user, authToken, deviceInfo);
-  return {
-    user,
-    authToken,
-  };
-}
-
 export async function updateUser(user: User, updateUserInput: UserUpdateInput) {
   const newUsername = updateUserInput.username;
   if (newUsername && newUsername !== user.username) {
@@ -112,10 +95,5 @@ export async function updateUser(user: User, updateUserInput: UserUpdateInput) {
       ...updateUserInput,
     },
   });
-  // await removeCachedUser(user.authToken as string);
   return formatUser(updatedUser);
 }
-
-/*async function removeCachedUser(authToken: string) {
-  return await useStorage('cache').removeItem(`nitro:functions:getUserByAuthToken:authToken:${authToken}.json`);
-}*/
