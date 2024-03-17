@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import UAParser from "ua-parser-js";
 import type { DeviceInfo } from "@shelve/types";
+import UAParser from "ua-parser-js";
 
 const { title } = useAppConfig();
 

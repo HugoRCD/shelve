@@ -15,7 +15,7 @@ type sendMailDto = {
 export async function sendOtp(email: string, otp: string) {
   const runtimeConfig = useRuntimeConfig();
   const siteUrl = runtimeConfig.public.siteUrl;
-  const template = await useCompiler('otp.vue', {
+  const template = await useCompiler('verify-otp.vue', {
     props: {
       otp,
       redirectUrl: `${siteUrl}/login?email=${email}&otp=${otp}`,

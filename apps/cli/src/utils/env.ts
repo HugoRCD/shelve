@@ -20,11 +20,10 @@ export function getEnvFile(): EnvFile {
   if (isExist) {
     const envFile = fs.readFileSync('.env', 'utf8');
     const envFileContent = envFile.split('\n').slice(1).join('\n');
-    const json = envFileContent.split('\n').map((item) => {
+    return envFileContent.split('\n').map((item) => {
       const [key, value] = item.split('=');
       return {key, value};
     });
-    return json;
   } else {
     return [];
   }
