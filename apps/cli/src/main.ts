@@ -6,12 +6,14 @@ import consola from "consola";
 
 export const main = defineCommand({
   meta: {
-    name,
+    name: "shelve",
     version,
     description,
   },
   subCommands: {
     upgrade: () => import("./commands/upgrade").then((r) => r.default),
+    link: () => import("./commands/link").then((r) => r.default),
+    unlink: () => import("./commands/unlink").then((r) => r.default),
     pull: () => import("./commands/pull").then((r) => r.default),
     push: () => import("./commands/push").then((r) => r.default),
     whoami: () => import("./commands/whoami").then((r) => r.default),

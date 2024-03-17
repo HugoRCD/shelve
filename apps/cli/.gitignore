@@ -132,3 +132,6 @@ dist
 
 # Build files
 dist
+
+# Shelve config
+.shelve

@@ -35,7 +35,9 @@ USAGE shelve upgrade|login|logout|whoami|pull|push
 
 COMMANDS
    
-  upgrade   Upgrade the Shelve CLI to the latest version 
+  upgrade   Upgrade the Shelve CLI to the latest version
+  link      Link the current directory to a Shelve project
+  unlink    Unlink the current directory from a Shelve project
   login     Authenticate with Shelve                           
   logout    Logout the current authenticated user                
   whoami    Shows the username of the currently logged in user
@@ -45,4 +47,34 @@ COMMANDS
 Use shelve <command> --help for more information about a command.
 ```
 
+## Contribution
 
+<details>
+  <summary>Local development</summary>
+
+- Clone this repository
+- Install the latest LTS version of [Node.js](https://nodejs.org/en/)
+- Enable [Corepack](https://github.com/nodejs/corepack) using `corepack enable`
+- Install dependencies using `bun install`
+- Run the CLI using `bun ./src/index.ts`
+
+</details>
+
+<!-- automd:contributors license=Apache author="HugoRCD" -->
+
+Published under the [APACHE](https://github.com/HugoRCD/shelve/blob/main/LICENSE) license.
+Made by [@HugoRCD](https://github.com/HugoRCD) and [community](https://github.com/HugoRCD/shelve/graphs/contributors) 💛
+<br><br>
+<a href="https://github.com/HugoRCD/shelve/graphs/contributors">
+<img src="https://contrib.rocks/image?repo=HugoRCD/shelve" />
+</a>
+
+<!-- /automd -->
+
+<!-- automd:with-automd -->
+
+---
+
+_🤖 auto updated with [automd](https://automd.unjs.io)_
+
+<!-- /automd -->

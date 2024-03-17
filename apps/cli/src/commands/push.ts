@@ -1,6 +1,7 @@
 import { defineCommand } from "citty";
 import consola from "consola";
 import { pushProjectVariable } from "../utils/env.ts";
+import { getProjectId } from "../utils/projects.ts";
 
 export default defineCommand({
   meta: {
@@ -16,7 +17,12 @@ export default defineCommand({
     },
   },
   async run(ctx) {
-    await pushProjectVariable(3, ctx.args.env)
+    const projectId = getProjectId();
+    if (!projectId) {
+      consola.error("Project is not linked run `shelve link` to link the project");
+      return;
+    }
+    await pushProjectVariable(projectId, ctx.args.env)
     consola.success("Pushed successfully!");
   },
 });
