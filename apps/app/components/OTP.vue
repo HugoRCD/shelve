@@ -18,7 +18,6 @@ for (let i = 0; i < props.digitCount; i++) {
   digits[i] = otp.value![i] || null;
 }
 
-
 const emit = defineEmits(['otp:full']);
 
 const isDigitsFull = function () {

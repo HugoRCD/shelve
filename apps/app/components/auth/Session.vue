@@ -34,7 +34,7 @@ async function logoutSession() {
         <div class="flex flex-col gap-1">
           <h3 class="flex items-center gap-2 text-lg font-semibold">
             {{ session.device }}
-            <UTooltip v-if="session.isCli" text="Connectd from CLI" :popper="{ placement: 'top' }">
+            <UTooltip v-if="session.isCli" text="Connected from CLI" :popper="{ placement: 'top' }">
               <div class="flex  items-center justify-center rounded-lg bg-gray-700 p-1 text-white">
                 <span class="i-lucide-terminal size-4" />
               </div>

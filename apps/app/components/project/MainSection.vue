@@ -122,21 +122,21 @@ function getProjectManager(manager: string) {
         </UDropdown>
       </div>
       <div v-if="project.projectManager || project.repository || project.homepage" class="mt-6 flex flex-wrap gap-4 sm:flex-row sm:items-center">
-        <NuxtLink v-if="project.projectManager" :to="project.projectManager">
+        <NuxtLink v-if="project.projectManager" target="_blank" :to="project.projectManager">
           <UButton
             color="gray"
             :icon="getProjectManager(project.projectManager)?.icon"
             :label="`Open ${getProjectManager(project.projectManager)?.label}`"
           />
         </NuxtLink>
-        <NuxtLink v-if="project.repository" :to="project.repository">
+        <NuxtLink v-if="project.repository" target="_blank" :to="project.repository">
           <UButton
             color="gray"
             icon="i-custom-github"
             label="Open repository"
           />
         </NuxtLink>
-        <NuxtLink v-if="project.homepage" :to="project.homepage">
+        <NuxtLink v-if="project.homepage" target="_blank" :to="project.homepage">
           <UButton
             color="gray"
             icon="i-heroicons-home"

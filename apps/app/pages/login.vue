@@ -120,7 +120,8 @@ onMounted(() => {
           </UButton>
         </form>
         <form v-else class="mt-8 flex flex-col gap-4" @submit.prevent="login" @keydown.enter.prevent="login">
-          <OTP v-model="otp" :disabled="verifyStatus === 'pending'" @otp:full="login" />
+          <!--          <OTP v-model="otp" :disabled="verifyStatus === 'pending'" @otp:full="login" />-->
+          <UInput v-model="otp" label="Magic code" type="text" required placeholder="code" />
           <UButton
             type="submit"
             :loading="verifyStatus === 'pending'"
