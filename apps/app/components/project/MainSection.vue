@@ -18,8 +18,8 @@ const projectName = ref("");
 const project = toRef(props, "project") as Ref<Project>;
 const { projectId } = useRoute().params;
 
-const { status: updateStatus, error: updateError, execute } = useFetch("/api/project", {
-  method: "POST",
+const { status: updateStatus, error: updateError, execute } = useFetch(`/api/project/${projectId}`, {
+  method: "PUT",
   body: project,
   watch: false,
   immediate: false,

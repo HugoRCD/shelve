@@ -1,14 +1,26 @@
-import type { ProjectCreateInput } from "@shelve/types";
+import type { ProjectCreateInput, ProjectUpdateInput } from "@shelve/types";
 import prisma from "~/server/database/client";
 
-export async function upsertProject(project: ProjectCreateInput) {
-  await removeCachedUserProjects(project.ownerId.toString());
-  return prisma.project.upsert({
+export async function createProject(project: ProjectCreateInput, userId: number) {
+  return prisma.project.create({
+    data: {
+      ...project,
+      ownerId: userId,
+      users: {
+        connect: {
+          id: userId,
+        }
+      }
+    }
+  });
+}
+
+export async function updateProject(project: ProjectUpdateInput, projectId: number) {
+  return prisma.project.update({
     where: {
-      id: project.id || -1,
+      id: projectId,
     },
-    create: project,
-    update: project,
+    data: project,
   });
 }
 
@@ -23,21 +35,14 @@ export async function getProjectById(id: number) {
 export async function getProjectsByUserId(userId: number) {
   return prisma.project.findMany({
     where: {
-      OR: [
-        {
-          ownerId: userId,
-        },
-        {
-          users: {
-            some: {
-              id: userId,
-            },
-          }
-        },
-      ],
+      users: {
+        some: {
+          id: userId,
+        }
+      }
     },
     orderBy: {
-      updatedAt: "asc",
+      updatedAt: "desc",
     }
   });
 }

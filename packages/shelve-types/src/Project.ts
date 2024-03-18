@@ -21,3 +21,11 @@ export type ProjectCreateInput = {
   avatar?: string;
   ownerId: number;
 };
+
+export type ProjectUpdateInput = {
+  name?: string;
+  description?: string;
+  avatar?: string;
+  ownerId?: number;
+};
+
