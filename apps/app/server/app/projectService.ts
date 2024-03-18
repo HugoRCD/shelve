@@ -23,7 +23,18 @@ export async function getProjectById(id: number) {
 export async function getProjectsByUserId(userId: number) {
   return prisma.project.findMany({
     where: {
-      ownerId: userId,
+      OR: [
+        {
+          ownerId: userId,
+        },
+        {
+          users: {
+            some: {
+              id: userId,
+            },
+          }
+        },
+      ],
     },
     orderBy: {
       updatedAt: "asc",
