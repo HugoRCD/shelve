@@ -26,6 +26,8 @@ export default defineNuxtConfig({
     private: {
       resendApiKey: process.env.NUXT_PRIVATE_RESEND_API_KEY,
       authSecret: process.env.NUXT_PRIVATE_AUTH_SECRET,
+      secret_encryption_key: process.env.NUXT_PRIVATE_SECRET_ENCRYPTION_KEY,
+      secret_encryption_iterations: process.env.NUXT_PRIVATE_SECRET_ENCRYPTION_ITERATIONS,
     },
   },
 
@@ -101,5 +103,9 @@ export default defineNuxtConfig({
         ...getIconCollections(['heroicons', 'lucide'])
       }
     }
-  }
+  },
+
+  features: {
+    devLogs: false
+  },
 })
