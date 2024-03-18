@@ -46,24 +46,36 @@ async function createProject() {
         </div>
       </Teleport>
       <UModal v-model="createModal" @close="createModal = false">
-        <UCard class="p-2">
-          <form class="flex flex-col gap-4" @submit.prevent="createProject">
-            <FormGroup v-model="projectCreateInput.name" label="Project name" />
-            <FormGroup v-model="projectCreateInput.description" label="Description" type="textarea" />
-            <div class="flex items-center gap-4">
-              <UAvatar :src="projectCreateInput.avatar" size="xl" :alt="projectCreateInput.name" />
-              <FormGroup v-model="projectCreateInput.avatar" label="Avatar" class="w-full" />
+        <form @submit.prevent="createProject">
+          <UCard>
+            <template #header>
+              <h3 class="text-lg font-semibold">
+                Create a new project
+              </h3>
+              <p class="text-sm font-normal text-gray-500">
+                Fill in the details of your new project
+              </p>
+            </template>
+            <div class="flex flex-col gap-4 p-2">
+              <FormGroup v-model="projectCreateInput.name" label="Project name" />
+              <FormGroup v-model="projectCreateInput.description" label="Description" type="textarea" />
+              <div class="flex items-center gap-4">
+                <UAvatar :src="projectCreateInput.avatar" size="xl" :alt="projectCreateInput.name" />
+                <FormGroup v-model="projectCreateInput.avatar" label="Avatar" class="w-full" />
+              </div>
             </div>
-            <div class="flex justify-end gap-4">
-              <UButton color="gray" variant="ghost" @click="createModal = false">
-                Cancel
-              </UButton>
-              <UButton color="primary" form="envForm" type="submit" trailing :loading="createStatus === 'pending'">
-                Save
-              </UButton>
-            </div>
-          </form>
-        </UCard>
+            <template #footer>
+              <div class="flex justify-end gap-4">
+                <UButton color="gray" variant="ghost" @click="createModal = false">
+                  Cancel
+                </UButton>
+                <UButton color="primary" type="submit" trailing :loading="createStatus === 'pending'">
+                  Save
+                </UButton>
+              </div>
+            </template>
+          </UCard>
+        </form>
       </UModal>
     </div>
     <div v-if="status !== 'pending'" class="grid grid-cols-1 gap-4 lg:grid-cols-2">

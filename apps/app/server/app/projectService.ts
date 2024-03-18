@@ -29,20 +29,16 @@ export async function getProjectById(id: number) {
   });
 }
 
-export const getProjectsByUserId = cachedFunction(async (userId: number) => {
+export async function getProjectsByUserId(userId: number) {
   return prisma.project.findMany({
     where: {
       ownerId: userId,
     },
     orderBy: {
-      updatedAt: "desc",
+      updatedAt: "asc",
     }
   });
-}, {
-  maxAge: 20,
-    name: "getProjectsByUserId",
-    getKey: (userId: number) => `userId:${userId}`,
-})
+}
 
 async function removeCachedUserProjects(userId: string) {
   return await useStorage('cache').removeItem(`nitro:functions:getProjectsByUserId:userId:${userId}.json`);

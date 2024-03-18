@@ -3,15 +3,6 @@ import { Resend } from "resend";
 
 const resend = new Resend(process.env.NUXT_PRIVATE_RESEND_API_KEY);
 
-// find your audience id here: https://resend.com/audiences
-const nuxtLogAudienceId = "555dc1c1-1008-4182-be98-605be9d1ebf6";
-
-type sendMailDto = {
-  email: string;
-  message: string;
-  name: string;
-}
-
 export async function sendOtp(email: string, otp: string) {
   const runtimeConfig = useRuntimeConfig();
   const siteUrl = runtimeConfig.public.siteUrl;

@@ -16,7 +16,7 @@ const showEdit = ref(false);
 const showDelete = ref(false);
 const projectName = ref("");
 const project = toRef(props, "project") as Ref<Project>;
-const projectId = () => props.project!.id;
+const { projectId } = useRoute().params;
 
 const { status: updateStatus, error: updateError, execute } = useFetch("/api/project", {
   method: "POST",
@@ -27,7 +27,6 @@ const { status: updateStatus, error: updateError, execute } = useFetch("/api/pro
 
 const { status: deleteStatus, error: deleteError, execute: deleteExecute } = useFetch(`/api/project/${projectId}`, {
   method: "DELETE",
-  body: project,
   watch: false,
   immediate: false,
 })
@@ -44,7 +43,7 @@ async function deleteProject() {
   if (deleteError.value) toast.error("An error occurred");
   else toast.success("Your project has been deleted");
   showDelete.value = false
-  navigateTo("/app/projects")
+  navigateTo("/app/projects");
 }
 
 const items = [
