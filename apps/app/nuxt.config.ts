@@ -103,5 +103,9 @@ export default defineNuxtConfig({
         ...getIconCollections(['heroicons', 'lucide'])
       }
     }
-  }
+  },
+
+  features: {
+    devLogs: false
+  },
 })

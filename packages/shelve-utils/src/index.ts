@@ -16,6 +16,7 @@ export function decrypt(toDecrypt: string, secretKey: string, iterations: number
   return result;
 }
 
+/*
 function testEncryptDecrypt() {
   const secretKey = "my-secret";
   const toEncrypt = "https://hrcd.fr/";
@@ -28,3 +29,4 @@ function testEncryptDecrypt() {
 }
 
 testEncryptDecrypt();
+*/
