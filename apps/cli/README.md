@@ -60,9 +60,9 @@ Use shelve <command> --help for more information about a command.
 
 </details>
 
-<!-- automd:contributors license=Apache author="HugoRCD" -->
+<!-- automd:contributors license=MIT author="HugoRCD" -->
 
-Published under the [APACHE](https://github.com/HugoRCD/shelve/blob/main/LICENSE) license.
+Published under the [MIT](https://github.com/HugoRCD/shelve/blob/main/LICENSE) license.
 Made by [@HugoRCD](https://github.com/HugoRCD) and [community](https://github.com/HugoRCD/shelve/graphs/contributors) 💛
 <br><br>
 <a href="https://github.com/HugoRCD/shelve/graphs/contributors">
