@@ -5,78 +5,14 @@ const { data: projects, status, refresh } = useFetch("/api/project", {
   method: "GET",
   watch: false,
 });
-
-const projectCreateInput = ref({
-  name: "",
-  description: "",
-  avatar: "",
-})
-const createModal = ref(false)
-
-const { status: createStatus, error: createError, execute } = useFetch("/api/project", {
-  method: "POST",
-  body: projectCreateInput,
-  watch: false,
-  immediate: false,
-})
-
-async function createProject() {
-  await execute()
-  if (createError.value) toast.error("An error occurred")
-  else {
-    toast.success("Your project has been created")
-    createModal.value = false
-    await refresh()
-  }
-}
 </script>
 
 <template>
   <div>
     <div class="flex items-center justify-end">
       <Teleport v-if="isMounted('action-items')" to="#action-items">
-        <div class="flex gap-4">
-          <UButton
-            size="xs"
-            icon="i-heroicons-plus-20-solid"
-            :loading="createStatus === 'pending'"
-            label="Add project"
-            @click="createModal = true"
-          />
-        </div>
+        <ProjectCreate :refresh="refresh" />
       </Teleport>
-      <UModal v-model="createModal" @close="createModal = false">
-        <form @submit.prevent="createProject">
-          <UCard>
-            <template #header>
-              <h3 class="text-lg font-semibold">
-                Create a new project
-              </h3>
-              <p class="text-sm font-normal text-gray-500">
-                Fill in the details of your new project
-              </p>
-            </template>
-            <div class="flex flex-col gap-4 p-2">
-              <FormGroup v-model="projectCreateInput.name" label="Project name" />
-              <FormGroup v-model="projectCreateInput.description" label="Description" type="textarea" />
-              <div class="flex items-center gap-4">
-                <UAvatar :src="projectCreateInput.avatar" size="xl" :alt="projectCreateInput.name" />
-                <FormGroup v-model="projectCreateInput.avatar" label="Avatar" class="w-full" />
-              </div>
-            </div>
-            <template #footer>
-              <div class="flex justify-end gap-4">
-                <UButton color="gray" variant="ghost" @click="createModal = false">
-                  Cancel
-                </UButton>
-                <UButton color="primary" type="submit" trailing :loading="createStatus === 'pending'">
-                  Save
-                </UButton>
-              </div>
-            </template>
-          </UCard>
-        </form>
-      </UModal>
     </div>
     <div v-if="status !== 'pending'" class="grid grid-cols-1 gap-4 lg:grid-cols-2">
       <NuxtLink
@@ -109,7 +45,3 @@ async function createProject() {
     </div>
   </div>
 </template>
-
-<style scoped>
-
-</style>

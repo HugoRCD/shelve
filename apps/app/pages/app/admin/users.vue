@@ -9,6 +9,7 @@ const { data: users, status, refresh } = useFetch<publicUser[]>("/api/admin/user
 
 const search = ref("");
 const updateLoading = ref(false);
+const deleteLoading = ref(false);
 
 const filteredUsers = computed(() => {
   if (!search.value) return users.value;
@@ -33,6 +34,7 @@ async function changeUserRole(id: number, role: string) {
 }
 
 async function deleteUser(id: number) {
+  deleteLoading.value = true;
   try {
     await $fetch(`/api/admin/users/${id}`, {
       method: "DELETE",
@@ -42,6 +44,7 @@ async function deleteUser(id: number) {
   } catch (error) {
     toast.error("Error deleting user");
   }
+  deleteLoading.value = false;
 }
 
 const columns = [
@@ -131,7 +134,7 @@ const columnsTable = computed(() => columns.filter((column) => selectedColumns.v
         </UButton>
       </USelectMenu>
     </div>
-    <UTable v-if="users" :rows="filteredUsers" :columns="columnsTable" :loading="status === 'pending'">
+    <UTable v-if="users" :rows="filteredUsers" :columns="columnsTable" :loading="status === 'pending' || updateLoading || deleteLoading">
       <template #avatar-data="{ row }">
         <UAvatar :src="row.avatar" :alt="row.name" size="sm" img-class="object-cover" />
       </template>
