@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { Variable, VariablesCreateInput } from "@shelve/types";
 import type { PropType, Ref } from "vue";
+import ContextMenu from "~/components/ContextMenu.vue";
 
 const { refresh, variables, projectId } = defineProps({
   refresh: {
@@ -96,7 +97,9 @@ onMounted(() => {
           <div v-for="variable in variablesToCreate" :key="variable" class="flex flex-col gap-4">
             <div class="flex flex-col gap-2">
               <div class="flex flex-col items-start gap-2 sm:flex-row">
-                <UInput v-model="variablesInput.variables[variable - 1].key" required class="w-full" placeholder="e.g. API_KEY" />
+                <ContextMenu v-model="variablesInput.variables[variable - 1].key" class="w-full">
+                  <UInput v-model="variablesInput.variables[variable - 1].key" required class="w-full" placeholder="e.g. API_KEY" />
+                </ContextMenu>
                 <UTextarea
                   v-model="variablesInput.variables[variable - 1].value"
                   required
