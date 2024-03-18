@@ -1,4 +1,13 @@
 <script setup lang="ts">
+import type { Project } from "@shelve/types";
+import type { Ref } from "vue";
+
+const project = inject("project") as Ref<Project>;
+
+const prefixList = computed(() => {
+  return project.value.variablePrefix?.replace(/\s/g, "").split(",");
+});
+
 const key = defineModel({ type: String })
 
 const { x, y } = useMouse()
@@ -23,7 +32,7 @@ function onContextMenu () {
 
 function addPrefixToInputId (prefix: string) {
   if (key.value?.startsWith(prefix)) return
-  key.value = `${prefix}_${key.value}`
+  key.value = `${prefix}${key.value}`
 }
 </script>
 
@@ -34,11 +43,23 @@ function addPrefixToInputId (prefix: string) {
     </div>
 
     <UContextMenu v-model="isOpen" :virtual-element="virtualElement">
-      <div class="p-4">
-        <UButton @click="addPrefixToInputId('NUXT_PRIVATE')">
-          Add NUXT_PRIVATE_
-        </UButton>
-      </div>
+      <UCard>
+        <template #header>
+          <h3 class="text-sm font-semibold">
+            Add Prefix to your variable
+          </h3>
+        </template>
+        <div class="flex flex-wrap gap-2">
+          <UButton
+            v-for="prefix in prefixList"
+            :key="prefix"
+            color="gray"
+            icon="i-heroicons-plus"
+            :label="prefix"
+            @click="addPrefixToInputId(prefix)"
+          />
+        </div>
+      </UCard>
     </UContextMenu>
   </div>
 </template>

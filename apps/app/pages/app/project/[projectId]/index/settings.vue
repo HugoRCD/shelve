@@ -30,7 +30,7 @@ async function updateCurrentProject() {
             <h2 class="text-lg font-semibold">
               Project Settings
             </h2>
-            <p class="text-sm text-neutral-500 dark:text-neutral-400 text-pretty">
+            <p class="text-pretty text-sm text-neutral-500 dark:text-neutral-400">
               Configure your project settings, quick links, environment variables prefix, etc...
             </p>
           </div>
@@ -42,11 +42,11 @@ async function updateCurrentProject() {
             <h3 class="font-semibold">
               Quick Links
             </h3>
-            <p class="text-xs text-neutral-500 dark:text-neutral-400 text-pretty">
+            <p class="text-pretty text-xs text-neutral-500 dark:text-neutral-400">
               Add quick links to your project repository, homepage, etc...
             </p>
           </div>
-          <div class="flex flex-col gap-4 my-2">
+          <div class="my-2 flex flex-col gap-4">
             <div>
               <USkeleton v-if="status === 'pending'" class="h-8" />
               <FormGroup v-else v-model="project.repository" label="Repository" class="w-2/3" />
@@ -67,17 +67,19 @@ async function updateCurrentProject() {
             <h3 class="font-semibold">
               Environment Variables Prefix
             </h3>
-            <p class="text-xs text-neutral-500 dark:text-neutral-400 text-pretty">
-              Add a prefix to your environment variables, for example: <code>NUXT_PUBLIC_</code> or <code>REACT_APP_</code>
+            <p class="text-pretty text-xs text-neutral-500 dark:text-neutral-400">
+              Add a prefix to your environment variables
             </p>
           </div>
-          <div class="flex flex-col gap-4 my-2">
+          <div class="my-2 flex flex-col gap-4">
             <div>
               <USkeleton v-if="status === 'pending'" class="h-8" />
               <FormGroup v-else v-model="project.variablePrefix" label="Prefix" class="w-2/3" />
-              <p class="text-xs text-neutral-500 dark:text-neutral-400 mt-1">
-                This prefix will be added to all environment variables in your project
-              </p>
+              <UTooltip text="Yes this will be improved in the future 😅">
+                <p class="mt-1 text-xs text-neutral-500 dark:text-neutral-400">
+                  Write your prefix separated by a comma, for example: <code>NUXT_PUBLIC_, REACT_APP_</code>
+                </p>
+              </UTooltip>
             </div>
           </div>
         </div>
