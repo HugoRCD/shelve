@@ -1,0 +1,21 @@
+{
+  "name": "@shelve/utils",
+  "version": "0.0.0",
+  "private": true,
+  "files": [
+    "index.ts"
+  ],
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "main": "index.ts",
+  "types": "index.ts",
+  "devDependencies": {
+    "@shelve/eslint-config": "*",
+    "@types/crypto-js": "^4.2.2",
+    "typescript": "latest"
+  },
+  "dependencies": {
+    "crypto-js": "^4.2.0"
+  }
+}
