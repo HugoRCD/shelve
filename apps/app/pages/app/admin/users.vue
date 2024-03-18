@@ -85,18 +85,18 @@ const items = (row: publicUser) => [
       label: "Set as Admin",
       icon: "i-heroicons-shield-check-20-solid",
       click: () => {
-        if (row.role === Role.Admin) {
+        if (row.role === Role.ADMIN) {
           toast.success("User is already an admin");
           return;
         }
-        changeUserRole(row.id, Role.Admin);
+        changeUserRole(row.id, Role.ADMIN);
       },
     },
     {
       label: "Set as User",
       icon: "i-heroicons-user-circle-20-solid",
       click: () => {
-        changeUserRole(row.id, Role.User);
+        changeUserRole(row.id, Role.USER);
       },
     },
   ],
@@ -106,7 +106,7 @@ const items = (row: publicUser) => [
       icon: "i-heroicons-trash-20-solid",
       iconClass: "text-red-500 dark:text-red-500",
       click: () => {
-        if (row.role === Role.Admin) {
+        if (row.role === Role.ADMIN) {
           toast.error("Cannot delete admin");
           return;
         }

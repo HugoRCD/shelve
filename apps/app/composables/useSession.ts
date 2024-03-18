@@ -32,7 +32,7 @@ export const useSession = () => {
   });
 
   const isAdmin = computed(() => {
-    return useCurrentUser().value?.role === Role.Admin;
+    return useCurrentUser().value?.role === Role.ADMIN;
   });
 
   return {
