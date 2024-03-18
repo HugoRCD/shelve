@@ -59,6 +59,19 @@ const items = [
       click: () => showEdit.value = !showEdit.value
     },
     {
+      label: "Export project data",
+      icon: "i-lucide-download",
+      click: () => {
+        const data = JSON.stringify(project.value, null, 2);
+        const blob = new Blob([data], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `${project.value.name}.json`;
+        a.click();
+      }
+    },
+    {
       label: "Delete project",
       icon: "i-lucide-trash",
       iconClass: "text-red-500 dark:text-red-500",
