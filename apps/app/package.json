@@ -31,10 +31,10 @@
     "@prisma/client": "^5.10.2",
     "@prisma/extension-accelerate": "^1.0.0",
     "@shelve/eslint-config": "*",
+    "@shelve/utils": "*",
     "@shelve/types": "*",
     "@types/bcryptjs": "^2.4.6",
     "@types/ua-parser-js": "^0.7.39",
-    "ua-parser-js": "^1.0.37",
     "@vercel/analytics": "^1.2.2",
     "@vue-email/nuxt": "^0.8.18",
     "@vueuse/core": "^10.9.0",
@@ -48,9 +48,13 @@
     "openai": "^4.28.0",
     "prisma": "^5.10.2",
     "resend": "^3.2.0",
+    "ua-parser-js": "^1.0.37",
     "vue": "latest",
     "vue-eslint-parser": "^9.4.2",
     "vue-router": "^4.2.5",
     "vue-sonner": "^1.1.2"
+  },
+  "dependencies": {
+    "vercel": "^33.6.1"
   }
 }
