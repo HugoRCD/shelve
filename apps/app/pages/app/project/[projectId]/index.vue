@@ -3,8 +3,7 @@ definePageMeta({
   middleware: "project-redirect"
 })
 
-const route = useRoute()
-const projectId = route.params.projectId
+const { projectId } = useRoute().params;
 
 const {data: project, status} = useFetch(`/api/project/${projectId}`, {
   method: "GET",
@@ -16,18 +15,8 @@ provide("status", status)
 const links = [
   {
     label: 'Environment Variables',
-    icon: 'i-heroicons-variable',
+    icon: 'i-lucide-container',
     to: `/app/project/${projectId}/variables`
-  },
-  {
-    label: 'Info',
-    icon: 'i-heroicons-information-circle',
-    to: `/app/project/${projectId}/info`
-  },
-  {
-    label: 'Assets',
-    icon: 'i-lucide-images',
-    to: `/app/project/${projectId}/assets`
   },
   {
     label: 'Files',
@@ -43,7 +32,12 @@ const links = [
     label: 'Keys',
     icon: 'i-heroicons-key',
     to: `/app/project/${projectId}/keys`
-  }
+  },
+  {
+    label: 'Settings',
+    icon: 'i-heroicons-cog',
+    to: `/app/project/${projectId}/settings`
+  },
 ]
 </script>
 
