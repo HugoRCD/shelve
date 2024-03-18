@@ -22,6 +22,7 @@ function onContextMenu () {
 }
 
 function addPrefixToInputId (prefix: string) {
+  if (key.value?.startsWith(prefix)) return
   key.value = `${prefix}_${key.value}`
 }
 </script>
