@@ -7,6 +7,7 @@ export type Project = {
   repository?: string;
   projectManager?: string;
   homepage?: string;
+  variablePrefix?: string;
   avatar?: string;
   ownerId: number;
   createdAt: Date;
