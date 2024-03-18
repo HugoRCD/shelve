@@ -17,6 +17,7 @@ const showDelete = ref(false);
 const projectName = ref("");
 const project = toRef(props, "project") as Ref<Project>;
 const { projectId } = useRoute().params;
+const user = useCurrentUser();
 
 const { status: updateStatus, error: updateError, execute } = useFetch(`/api/project/${projectId}`, {
   method: "PUT",
@@ -39,6 +40,10 @@ async function updateCurrentProject() {
 }
 
 async function deleteProject() {
+  if (project.value.ownerId !== user.value?.id) {
+    toast.error("You are not the owner of this project");
+    return;
+  }
   await deleteExecute();
   if (deleteError.value) toast.error("An error occurred");
   else toast.success("Your project has been deleted");

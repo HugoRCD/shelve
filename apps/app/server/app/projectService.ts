@@ -43,6 +43,9 @@ export async function getProjectsByUserId(userId: number) {
     },
     orderBy: {
       updatedAt: "desc",
+    },
+    cacheStrategy: {
+      ttl: 10,
     }
   });
 }
@@ -51,10 +54,11 @@ async function removeCachedUserProjects(userId: string) {
   return await useStorage('cache').removeItem(`nitro:functions:getProjectsByUserId:userId:${userId}.json`);
 }
 
-export async function deleteProject(id: number) {
+export async function deleteProject(id: number, userId: number) {
   return prisma.project.delete({
     where: {
       id,
-    },
+      ownerId: userId,
+    }
   });
 }
