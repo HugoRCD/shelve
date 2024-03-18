@@ -14,15 +14,6 @@ export async function upsertProject(project: ProjectCreateInput) {
 
 export async function getProjectById(id: number) {
   return prisma.project.findUnique({
-    include: {
-      owner: {
-        select: {
-          id: true,
-          email: true,
-          username: true,
-        },
-      }
-    },
     where: {
       id,
     },
