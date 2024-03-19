@@ -104,8 +104,4 @@ export default defineNuxtConfig({
       }
     }
   },
-
-  features: {
-    devLogs: false
-  },
 })
