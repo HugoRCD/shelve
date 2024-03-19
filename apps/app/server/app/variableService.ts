@@ -12,7 +12,7 @@ export async function upsertVariable(variablesCreateInput: VariablesCreateInput)
       return rest;
     });
     const variableCreateInput = variablesCreateInput.variables[0];
-    return prisma.envVar.upsert({
+    return prisma.variables.upsert({
       where: {
         id: variableCreateInput.id || -1,
       },
@@ -26,7 +26,7 @@ export async function upsertVariable(variablesCreateInput: VariablesCreateInput)
       rest.value = encryptedValue;
       return rest;
     });
-    return prisma.envVar.createMany({
+    return prisma.variables.createMany({
       data: variablesCreateInput.variables,
       skipDuplicates: true,
     });
@@ -41,7 +41,7 @@ export async function getVariablesByProjectId(projectId: number, environment?: E
       contains: environment,
     }
   } : { projectId };
-  const variables = await prisma.envVar.findMany({ where: options, orderBy: { updatedAt: "desc" } });
+  const variables = await prisma.variables.findMany({ where: options, orderBy: { updatedAt: "desc" } });
   return variables.map((variable) => {
     const decryptedValue = decrypt(variable.value, runtimeConfig.secret_encryption_key, parseInt(runtimeConfig.secret_encryption_iterations));
     return {
@@ -54,7 +54,7 @@ export async function getVariablesByProjectId(projectId: number, environment?: E
 export async function deleteVariable(id: number, environment: string) {
   // decode environment to utf-8
   const envs = environment.split("|").map((env) => decodeURIComponent(env));
-  return prisma.envVar.delete({
+  return prisma.variables.delete({
     where: {
       id,
       environment: {

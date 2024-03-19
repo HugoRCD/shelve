@@ -5,6 +5,7 @@ export default defineEventHandler(async (event: H3Event) => {
   const protectedRoutes = [
     "/api/auth/logout",
     "/api/user",
+    "/api/team",
     "/api/project",
     "/api/variable",
     "/api/admin"
