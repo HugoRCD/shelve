@@ -5,7 +5,7 @@ export async function createTeam(createTeamInput: CreateTeamInput, userId: numbe
   return await prisma.team.create({
     data: {
       name: createTeamInput.name,
-      roles: {
+      members: {
         create: {
           role: TeamRole.ADMIN,
           user: {
@@ -23,7 +23,7 @@ export async function updateTeam(updateTeamInput: UpdateTeamInput, userId: numbe
   const team = await prisma.team.findFirst({
     where: {
       id: updateTeamInput.id,
-      roles: {
+      members: {
         some: {
           userId,
           role: TeamRole.ADMIN,
@@ -38,8 +38,8 @@ export async function updateTeam(updateTeamInput: UpdateTeamInput, userId: numbe
     },
     data: {
       name: updateTeamInput.name,
-      roles: {
-        upsert: updateTeamInput.roles.map((role) => ({
+      members: {
+        upsert: updateTeamInput.members.map((role) => ({
           where: {
             userId: role.userId,
           },
@@ -56,6 +56,26 @@ export async function updateTeam(updateTeamInput: UpdateTeamInput, userId: numbe
           },
         })),
       }
+    },
+  });
+}
+
+export async function deleteTeam(teamId: number, userId: number) {
+  const team = await prisma.team.findFirst({
+    where: {
+      id: teamId,
+      members: {
+        some: {
+          userId,
+          role: TeamRole.ADMIN,
+        },
+      },
+    },
+  });
+  if (!team) throw new Error("unauthorized");
+  return await prisma.team.delete({
+    where: {
+      id: teamId,
     },
   });
 }

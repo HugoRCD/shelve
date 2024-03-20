@@ -11,11 +11,10 @@ export const useSession = () => {
   async function refresh() {
     if (authCookie && !user.value) {
       const cookieHeaders = useRequestHeaders(["cookie"]);
-      const response = await $fetch<publicUser>("/api/auth/currentUser", {
+      user.value = await $fetch<publicUser>("/api/auth/currentUser", {
         method: "GET",
         headers: cookieHeaders as HeadersInit,
       });
-      user.value = response;
     }
     return user.value;
   }

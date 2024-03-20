@@ -7,7 +7,7 @@ export enum TeamRole {
   DEVELOPER = "developer",
 }
 
-type Role = {
+type Member = {
   id: number;
   userId: number;
   teamId: number;
@@ -23,7 +23,7 @@ export type Team = {
   name: string;
   createdAt: Date;
   updatedAt: Date;
-  roles: Role[];
+  members: Member[];
   projects: Project[];
 };
 
@@ -34,6 +34,6 @@ export type CreateTeamInput = {
 export type UpdateTeamInput = {
   id: number;
   name: string;
-  roles: Role[];
+  members: Member[];
   projects: Project[];
 }

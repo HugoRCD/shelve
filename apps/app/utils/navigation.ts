@@ -23,10 +23,10 @@ export function getNavigation(where: Where): Navigation[] {
           title: "Projects",
         },
         {
-          name: "Team",
-          to: "/app/team",
+          name: "Teams",
+          to: "/app/teams",
           icon: "i-lucide-users",
-          title: "Team",
+          title: "Teams",
         },
         {
           name: "Profile",

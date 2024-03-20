@@ -20,18 +20,18 @@ model User {
   updatedAt DateTime  @updatedAt
   sessions  Session[]
   projects  Project[]
-  roles     Role[]
+  members   Member[]
 }
 
-model Role {
+model Member {
   id        Int      @id @default(autoincrement())
   userId    Int
   teamId    Int
-  role      String
+  role      String   @default("developer")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  team      Team     @relation(fields: [teamId], references: [id])
   user      User     @relation(fields: [userId], references: [id])
+  team      Team     @relation(fields: [teamId], references: [id])
 }
 
 model Team {
@@ -39,7 +39,7 @@ model Team {
   name      String
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
-  roles     Role[]
+  members   Member[]
   projects  Project[]
 }
 
