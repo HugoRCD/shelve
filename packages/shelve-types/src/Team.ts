@@ -1,5 +1,5 @@
-import { Project } from "./Project";
-import { User } from "./User";
+import type { Project } from "./Project";
+import type { User } from "./User";
 
 export enum TeamRole {
   OWNER = "owner",
@@ -7,7 +7,7 @@ export enum TeamRole {
   DEVELOPER = "developer",
 }
 
-export type Role = {
+type Role = {
   id: number;
   userId: number;
   teamId: number;

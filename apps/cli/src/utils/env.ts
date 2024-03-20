@@ -19,7 +19,7 @@ export function getEnvFile(): EnvFile {
   const isExist = fs.existsSync('.env');
   if (isExist) {
     const envFile = fs.readFileSync('.env', 'utf8');
-    const envFileContent = envFile.split('\n').slice(1).join('\n');
+    const envFileContent = envFile.split('\n').filter((item) => item && !item.startsWith('#')).join('\n');
     return envFileContent.split('\n').map((item) => {
       const [key, value] = item.split('=');
       return {key, value};

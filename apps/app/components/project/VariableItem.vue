@@ -26,7 +26,7 @@ const {
   deleteLoading,
   updateVariable,
   deleteVariable,
-} = useVariables(refresh, projectId, variables!);
+} = useVariables(refresh, projectId);
 
 const localVariable = toRef(variable) as Ref<Variable>;
 const selectedEnvironment = ref(variable.environment.split("|"));

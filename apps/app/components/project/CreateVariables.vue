@@ -17,7 +17,6 @@ const { refresh, variables, projectId } = defineProps({
 })
 
 const {
-  items,
   createLoading,
   environment,
   selectedEnvironment,
@@ -26,7 +25,56 @@ const {
   addVariable,
   removeVariable,
   createVariables,
-} = useVariables(refresh, projectId, variables!);
+} = useVariables(refresh, projectId);
+
+const items = [
+  [
+    {
+      label: "Copy .env",
+      disabled: true
+    }
+  ],
+  [
+    {
+      label: "For production",
+      icon: "i-lucide-clipboard",
+      click: () => copyEnv(variables!, "production")
+    },
+    {
+      label: "For preview",
+      icon: "i-lucide-clipboard",
+      click: () => copyEnv(variables!, "preview")
+    },
+    {
+      label: "For development",
+      icon: "i-lucide-clipboard",
+      click: () => copyEnv(variables!, "development")
+    }
+  ],
+  [
+    {
+      label: "Download .env",
+      disabled: true
+    },
+  ],
+  [
+    {
+      label: "For production",
+      icon: "i-lucide-download",
+      click: () => downloadEnv(variables!, "production")
+    },
+    {
+      label: "For preview",
+      icon: "i-lucide-download",
+      click: () => downloadEnv(variables!, "preview")
+    },
+    {
+      label: "For development",
+      icon: "i-lucide-download",
+      click: () => downloadEnv(variables!, "development")
+    }
+  ],
+]
 
 onMounted(() => {
   document.addEventListener("paste", (e) => {
