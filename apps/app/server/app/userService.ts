@@ -91,9 +91,7 @@ export async function updateUser(user: User, updateUserInput: UserUpdateInput) {
   }
   const updatedUser = await prisma.user.update({
     where: { id: user.id },
-    data: {
-      ...updateUserInput,
-    },
+    data: updateUserInput,
   });
   return formatUser(updatedUser);
 }

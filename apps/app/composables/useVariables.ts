@@ -1,8 +1,7 @@
 import type { Variable, VariablesCreateInput } from "@shelve/types";
 import type { Ref } from "vue";
 
-export function useVariables(refresh: Function, projectId: string, projectVars: Variable[]) {
-  const projectVariables = ref(projectVars);
+export function useVariables(refresh: Function, projectId: string) {
   const selectedEnvironment = ref(["production"]);
   const environment = computed(() => selectedEnvironment.value.join("|"));
 
@@ -46,55 +45,6 @@ export function useVariables(refresh: Function, projectId: string, projectVars: 
       variable.environment = environment.value
     })
   })
-
-  const items = [
-    [
-      {
-        label: "Copy .env",
-        disabled: true
-      }
-    ],
-    [
-      {
-        label: "For production",
-        icon: "i-lucide-clipboard",
-        click: () => copyEnv(projectVars, "production")
-      },
-      {
-        label: "For preview",
-        icon: "i-lucide-clipboard",
-        click: () => copyEnv(projectVars, "preview")
-      },
-      {
-        label: "For development",
-        icon: "i-lucide-clipboard",
-        click: () => copyEnv(projectVars, "development")
-      }
-    ],
-    [
-      {
-        label: "Download .env",
-        disabled: true
-      },
-    ],
-    [
-      {
-        label: "For production",
-        icon: "i-lucide-download",
-        click: () => downloadEnv(projectVars, "production")
-      },
-      {
-        label: "For preview",
-        icon: "i-lucide-download",
-        click: () => downloadEnv(projectVars, "preview")
-      },
-      {
-        label: "For development",
-        icon: "i-lucide-download",
-        click: () => downloadEnv(projectVars, "development")
-      }
-    ],
-  ]
 
   async function createVariables() {
     createLoading.value = true;
@@ -170,10 +120,8 @@ export function useVariables(refresh: Function, projectId: string, projectVars: 
     createLoading,
     updateLoading,
     deleteLoading,
-    projectVariables,
     selectedEnvironment,
     environment,
-    items,
     variablesInput,
     variablesToCreate,
     addVariable,

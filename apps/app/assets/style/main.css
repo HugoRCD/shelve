@@ -6,6 +6,16 @@ html, body, #__nuxt, #__layout {
     height: 100%;
 }
 
+::-webkit-scrollbar {
+    width: 5px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--inverted-color);
+    border-radius: 5px;
+}
+
 html.light {
     --primary-color: rgb(255, 255, 255);
     --primary-hover-color: rgb(255, 255, 255, 0.9);

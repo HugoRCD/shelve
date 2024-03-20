@@ -1,0 +1,39 @@
+import type { Project } from "./Project";
+import type { User } from "./User";
+
+export enum TeamRole {
+  OWNER = "owner",
+  ADMIN = "admin",
+  DEVELOPER = "developer",
+}
+
+type Role = {
+  id: number;
+  userId: number;
+  teamId: number;
+  role: TeamRole;
+  createdAt: Date;
+  updatedAt: Date;
+  team: Team;
+  user: User;
+};
+
+export type Team = {
+  id: number;
+  name: string;
+  createdAt: Date;
+  updatedAt: Date;
+  roles: Role[];
+  projects: Project[];
+};
+
+export type CreateTeamInput = {
+  name: string;
+};
+
+export type UpdateTeamInput = {
+  id: number;
+  name: string;
+  roles: Role[];
+  projects: Project[];
+}

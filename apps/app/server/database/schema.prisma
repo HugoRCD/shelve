@@ -20,6 +20,27 @@ model User {
   updatedAt DateTime  @updatedAt
   sessions  Session[]
   projects  Project[]
+  roles     Role[]
+}
+
+model Role {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  teamId    Int
+  role      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  team      Team     @relation(fields: [teamId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model Team {
+  id        Int       @id @default(autoincrement())
+  name      String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  roles     Role[]
+  projects  Project[]
 }
 
 model Session {
@@ -35,22 +56,23 @@ model Session {
 }
 
 model Project {
-  id             Int      @id @default(autoincrement())
+  id             Int         @id @default(autoincrement())
   name           String
   description    String?
   repository     String?
   projectManager String?
   homepage       String?
   variablePrefix String?
-  avatar         String?  @default("https://i.imgur.com/6VBx3io.png") @db.VarChar(500)
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  avatar         String?     @default("https://i.imgur.com/6VBx3io.png") @db.VarChar(500)
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
   ownerId        Int
-  variables      EnvVar[]
+  variables      Variables[]
   users          User[]
+  teams          Team[]
 }
 
-model EnvVar {
+model Variables {
   id          Int      @id @default(autoincrement())
   key         String
   value       String

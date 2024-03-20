@@ -3,12 +3,6 @@ export enum Role {
   USER = "user",
 }
 
-export enum ProjectRole {
-  OWNER = "owner",
-  ADMIN = "admin",
-  DEVELOPER = "developer",
-}
-
 export type User = {
   id: number;
   username: string | null;
