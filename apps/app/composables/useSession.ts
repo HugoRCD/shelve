@@ -6,7 +6,7 @@ export const useCurrentUser = () => {
 
 export const useSession = () => {
   const authCookie = useCookie('authToken');
-  const user = useState<publicUser>("user");
+  const user = useState<publicUser | null>("user");
 
   async function refresh() {
     if (authCookie && !user.value) {
@@ -20,18 +20,19 @@ export const useSession = () => {
   }
 
   async function clear() {
-    toast.message("See you soon, " + user.value.username || user.value.email);
-    useCurrentUser().value = null;
+    toast.message("See you soon, " + user.value!.username || user.value!.email);
+    user.value = null;
     await useRouter().push("/");
     await $fetch("/api/auth/logout", { method: "POST" });
   }
 
   const isLoggedIn = computed(() => {
-    return !!useCurrentUser().value;
+    return !!user.value;
   });
 
   const isAdmin = computed(() => {
-    return useCurrentUser().value?.role === Role.ADMIN;
+    if (!user.value) return false;
+    return user.value.role === Role.ADMIN;
   });
 
   return {

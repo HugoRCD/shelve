@@ -1,16 +1,11 @@
 <script setup lang="ts">
-const user = useSession().user;
+const user = useSession().user
 
 const password = ref("");
 const passwordConfirmation = ref("");
 const errorMessage = ref("");
 
-const { status, error, execute } = useFetch("/api/user", {
-  method: "PUT",
-  body: user,
-  watch: false,
-  immediate: false,
-})
+const updateLoading = ref(false);
 
 const { data: sessions, status: sessionsStatus, refresh } = useFetch("/api/user/session", {
   method: "GET",
@@ -23,14 +18,27 @@ const { status: logoutStatus, error: logoutError, execute: logout } = useFetch("
 })
 
 async function updateCurrentUser() {
+  updateLoading.value = true;
   if (password.value !== passwordConfirmation.value) {
     errorMessage.value = "Passwords do not match";
     toast.error("Passwords do not match");
     return;
   }
-  await execute();
-  if (error.value) toast.error("An error occurred");
-  else toast.success("Your data has been updated");
+  try {
+    await $fetch("/api/user", {
+      method: "PUT",
+      body: {
+        username: user.value!.username,
+        avatar: user.value!.avatar,
+        password: password.value,
+      },
+    });
+    toast.success("Profile updated successfully");
+  } catch (e) {
+    console.error(e);
+    toast.error("An error occurred");
+  }
+  updateLoading.value = false;
   password.value = "";
   passwordConfirmation.value = "";
 }
@@ -84,13 +92,13 @@ async function logoutAll() {
         <span class="text-sm text-red-500">{{ errorMessage }}</span>
       </div>
       <div style="--stagger: 3" data-animate class="mt-6 flex gap-2">
-        <UButton type="submit" :loading="status === 'pending'">
+        <UButton type="submit" :loading="updateLoading">
           Save
         </UButton>
       </div>
     </form>
-    <UDivider class="my-8" />
-    <form>
+    <UDivider style="--stagger: 4" data-animate class="my-8" />
+    <form style="--stagger: 5" data-animate>
       <div class="flex items-center justify-between">
         <div>
           <h2 class="text-base font-semibold leading-7">

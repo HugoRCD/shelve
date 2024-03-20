@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const session = useSession();
+const { isAdmin } = useSession();
 const navigations = getNavigation("app");
 const admin_navigations = getNavigation("admin");
 
@@ -44,7 +44,7 @@ watch(() => route.path, handleProjectNavigation, { immediate: true });
     </div>
 
     <!-- Admin -->
-    <div v-if="session.isAdmin" class="flex flex-col gap-2">
+    <div v-if="isAdmin" class="flex flex-col gap-2">
       <UDivider class="my-3" />
       <div class="text-xs font-medium text-neutral-500 dark:text-neutral-400">
         Admin

@@ -1,5 +1,4 @@
 import type { Team, UpdateTeamInput } from "@shelve/types";
-import { TeamRole } from "@shelve/types";
 
 export const useUserTeams = () => {
   return useState<Team[]>("teams");
@@ -12,10 +11,9 @@ export function useTeams() {
 
   async function fetchTeams () {
     loading.value = true;
-    const response = await $fetch<Team[]>("/api/teams", {
+    teams.value = await $fetch<Team[]>("/api/teams", {
       method: "GET",
     });
-    teams.value = response;
     loading.value = false;
   }
 
