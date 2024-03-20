@@ -7,7 +7,7 @@ export enum TeamRole {
   DEVELOPER = "developer",
 }
 
-type Member = {
+export type Member = {
   id: number;
   userId: number;
   teamId: number;

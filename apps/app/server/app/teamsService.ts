@@ -16,6 +16,20 @@ export async function createTeam(createTeamInput: CreateTeamInput, userId: numbe
         }
       },
     },
+    include: {
+      members: {
+        include: {
+          user: {
+            select: {
+              id: true,
+              username: true,
+              email: true,
+              avatar: true,
+            }
+          }
+        }
+      }
+    }
   });
 }
 
@@ -26,7 +40,7 @@ export async function updateTeam(updateTeamInput: UpdateTeamInput, userId: numbe
       members: {
         some: {
           userId,
-          role: TeamRole.ADMIN,
+          role: TeamRole.OWNER,
         },
       },
     },

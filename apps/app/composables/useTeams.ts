@@ -53,10 +53,10 @@ export function useTeams() {
 
   async function deleteTeam(teamId: number) {
     try {
+      teams.value = teams.value.filter((team) => team.id !== teamId);
       await $fetch(`/api/teams/${teamId}`, {
         method: "DELETE",
       });
-      teams.value = teams.value.filter((team) => team.id !== teamId);
       toast.success("Team deleted");
     } catch (error) {
       console.error(error);

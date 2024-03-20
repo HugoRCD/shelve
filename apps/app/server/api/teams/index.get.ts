@@ -5,14 +5,14 @@ export default eventHandler(async (event: H3Event) => {
   const user = event.context.user;
   return await prisma.team.findMany({
     where: {
-      roles: {
+      members: {
         some: {
           userId: user.id,
         },
       }
     },
     include: {
-      roles: {
+      members: {
         include: {
           user: {
             select: {
