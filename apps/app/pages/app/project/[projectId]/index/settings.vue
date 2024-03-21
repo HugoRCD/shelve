@@ -74,7 +74,7 @@ async function updateCurrentProject() {
           <div class="my-2 flex flex-col gap-4">
             <div>
               <USkeleton v-if="status === 'pending'" class="h-8" />
-              <FormGroup v-else v-model="project.variablePrefix" label="Prefix" class="w-2/3" />
+              <FormGroup v-else v-model="project.variablePrefix" type="textarea" label="Prefix" class="w-2/3" />
               <UTooltip text="Yes this will be improved in the future 😅">
                 <p class="mt-1 text-xs text-neutral-500 dark:text-neutral-400">
                   Write your prefix separated by a comma, for example: <code>NUXT_PUBLIC_, REACT_APP_</code>
