@@ -1,8 +1,8 @@
 import { isLatestVersion } from "../utils/update.ts";
 import { name, version } from "../../package.json";
 import { defineCommand } from "citty";
-import { exec } from "child_process";
 import consola from "consola";
+import { execa } from 'execa';
 
 export default defineCommand({
   meta: {
@@ -15,9 +15,14 @@ export default defineCommand({
       consola.success('You are using the latest version of Shelve CLI');
     } else {
       consola.start(`Upgrading from ${version} to the latest version...`);
-      exec(`npm install -g ${name}`, (err, stdout, stderr) => {
-        consola.success('Upgrade completed');
-      });
+      try {
+        await execa('npm', ['install', '-g', name], { stdio: 'inherit' });
+        consola.success(`Successfully upgraded to version ${latestVersion}`);
+      } catch (error) {
+        consola.error('Failed to upgrade the CLI');
+        consola.error(error);
+        return;
+      }
     }
   },
 })

@@ -19,6 +19,7 @@ export const main = defineCommand({
     whoami: () => import("./commands/whoami").then((r) => r.default),
     login: () => import("./commands/login").then((r) => r.default),
     logout: () => import("./commands/logout").then((r) => r.default),
+    open: () => import("./commands/open").then((r) => r.default),
   },
   async run() {
     /*consola.info('Welcome to Shelve CLI');

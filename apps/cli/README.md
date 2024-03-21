@@ -43,6 +43,7 @@ COMMANDS
   whoami    Shows the username of the currently logged in user
   pull      Pull the environement variables for the current project
   push      Push the environement variables for the current project
+  open      Open the current project in the browser
 
 Use shelve <command> --help for more information about a command.
 ```
