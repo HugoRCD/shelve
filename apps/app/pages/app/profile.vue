@@ -30,7 +30,7 @@ async function updateCurrentUser() {
       body: {
         username: user.value!.username,
         avatar: user.value!.avatar,
-        password: password.value,
+        password: password.value || undefined,
       },
     });
     toast.success("Profile updated successfully");

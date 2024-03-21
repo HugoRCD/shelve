@@ -8,7 +8,7 @@ html, body, #__nuxt, #__layout {
 
 ::-webkit-scrollbar {
     width: 5px;
-    height: 10px;
+    height: 2px;
 }
 
 ::-webkit-scrollbar-thumb {
