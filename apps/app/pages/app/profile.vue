@@ -2,7 +2,6 @@
 const user = useSession().user
 
 const usePassword = useCookie("usePassword")
-usePassword.value = usePassword.value ? "true" : "false";
 
 const password = ref("");
 const passwordConfirmation = ref("");
