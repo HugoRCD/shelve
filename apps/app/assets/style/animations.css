@@ -159,6 +159,28 @@
     }
 }
 
-[data-animation-controller="false"] [data-animate] {
-    animation: none;
+@media (prefers-reduced-motion: reduce) {
+    .slide-enter-active,
+    .slide-leave-active,
+    .slide-to-top-enter-active,
+    .slide-to-top-leave-active,
+    .slide-to-bottom-enter-active,
+    .slide-to-bottom-leave-active {
+        animation: none !important;
+    }
+}
+
+[data-reduce-motion="reduce"] {
+    .slide-enter-active,
+    .slide-leave-active,
+    .slide-to-top-enter-active,
+    .slide-to-top-leave-active,
+    .slide-to-bottom-enter-active,
+    .slide-to-bottom-leave-active {
+        animation: none !important;
+    }
+
+    [data-animate] {
+        animation: none;
+    }
 }

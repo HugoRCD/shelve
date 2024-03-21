@@ -5,6 +5,13 @@ const { title, link } = useAppConfig();
 useHead({
   title: title,
   link: link,
+  script: [
+    {
+      src: "https://eu.umami.is/script.js",
+      defer: true,
+      "data-website-id": "24a47d51-4629-4f67-af04-1e2242761c67",
+    },
+  ],
 });
 
 function setPrefersReducedMotion(reduceMotion: boolean) {
@@ -15,13 +22,12 @@ function setPrefersReducedMotion(reduceMotion: boolean) {
   }
 }
 
-if (process.client) {
-  const reduceMotion = useCookie<boolean>("reduceMotion", {
-    watch: true,
-  });
+const reduceMotion = useCookie<boolean>("reduceMotion", {
+  watch: true,
+});
 
-  setPrefersReducedMotion(reduceMotion.value);
-}
+if (process.client) setPrefersReducedMotion(reduceMotion.value);
+
 
 await useSession().refresh();
 </script>

@@ -24,7 +24,7 @@ watch(reduceMotion, () => {
           Reduce Motion
         </h2>
         <p class="text-sm text-gray-500">
-          Reduce motion is a setting that reduces the motion of animations played by apps.
+          Remove all transitions and animations from the site.
         </p>
       </div>
       <UToggle v-model="reduceMotion" />
