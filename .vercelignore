@@ -1,4 +1,4 @@
-apps/cli
-.github
+apps/cli/
+.github/
 LICENSE
 README.md

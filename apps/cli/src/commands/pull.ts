@@ -6,7 +6,7 @@ import { getProjectId } from "../utils/projects.ts";
 export default defineCommand({
   meta: {
     name: "pull",
-    description: "Pulls from the environment",
+    description: "Pull variables from the remote project for the specified environment",
   },
   args: {
     env: {
@@ -22,7 +22,7 @@ export default defineCommand({
       consola.error("Project is not linked run `shelve link` to link the project");
       return;
     }
-    const variables = await getProjectVariable(projectId, ctx.args.env);
+    const variables = await getProjectVariable(projectId, ctx.args._[0] || ctx.args.env);
     await createEnvFile(variables);
     consola.success("Pulled successfully!");
   },

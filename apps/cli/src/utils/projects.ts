@@ -9,14 +9,27 @@ export async function getProjects(): Promise<Project[]> {
   });
 }
 
-export function writeProjectConfig(projectId: any) {
+export async function getProjectByName(name: string): Promise<Project> {
+  return await $api(`/project/name/${name}`, {
+    method: 'GET',
+  });
+}
+
+export function writeProjectConfig(project: Project) {
+  const projectData = {
+    projectId: project.id,
+    name: project.name,
+    homepage: project.homepage,
+    repository: project.repository,
+    projectManager: project.projectManager,
+  }
   if (!fs.existsSync('.shelve'))
     fs.mkdirSync('.shelve');
-  fs.writeFileSync('.shelve/project.json', JSON.stringify({ projectId }));
+  fs.writeFileSync('.shelve/project.json', JSON.stringify(projectData));
   addDotShelveToGitignore();
 }
 
-export function loadProjectConfig(): { projectId?: string } {
+export function loadProjectConfig(): { projectId: string, name: string, homepage: string, repository: string, projectManager: string } | { projectId?: undefined } {
   try {
     return JSON.parse(fs.readFileSync('.shelve/project.json', 'utf-8'));
   } catch {
@@ -27,6 +40,19 @@ export function loadProjectConfig(): { projectId?: string } {
 export function getProjectId(): number | undefined {
   const projectId = loadProjectConfig().projectId;
   if (projectId) return parseInt(projectId);
+}
+
+export function getCurrentProject(): { id: number, name: string, homepage: string, repository: string, projectManager: string } | undefined {
+  const project = loadProjectConfig();
+  if (project.projectId) {
+    return {
+      id: parseInt(project.projectId),
+      name: project.name,
+      homepage: project.homepage,
+      repository: project.repository,
+      projectManager: project.projectManager,
+    }
+  }
 }
 
 export function hasProjectId(): boolean {

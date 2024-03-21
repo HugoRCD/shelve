@@ -6,7 +6,7 @@ import { getProjectId } from "../utils/projects.ts";
 export default defineCommand({
   meta: {
     name: "push",
-    description: "Pushes to the environment",
+    description: "Pushes the local environment variables to the remote project for the specified environment",
   },
   args: {
     env: {
@@ -22,7 +22,7 @@ export default defineCommand({
       consola.error("Project is not linked run `shelve link` to link the project");
       return;
     }
-    await pushProjectVariable(projectId, ctx.args.env)
+    await pushProjectVariable(projectId, ctx.args._[0] || ctx.args.env)
     consola.success("Pushed successfully!");
   },
 });
