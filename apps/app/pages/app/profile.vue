@@ -95,20 +95,20 @@ async function logoutAll() {
       <div v-if="errorMessage" class="mt-1">
         <span class="text-sm text-red-500">{{ errorMessage }}</span>
       </div>
-      <div class="mt-4 flex items-center gap-2">
+      <div style="--stagger: 3" data-animate class="mt-4 flex items-center gap-2">
         <UToggle v-model="usePassword" />
         <p class="text-sm">
           Use password instead of email for login
         </p>
       </div>
-      <div style="--stagger: 3" data-animate class="mt-6 flex items-center gap-2">
+      <div style="--stagger: 4" data-animate class="mt-6 flex items-center gap-2">
         <UButton type="submit" :loading="updateLoading">
           Save
         </UButton>
       </div>
     </form>
-    <UDivider style="--stagger: 4" data-animate class="my-8" />
-    <form style="--stagger: 5" data-animate>
+    <UDivider style="--stagger: 5" data-animate class="my-8" />
+    <form style="--stagger: 6" data-animate>
       <div class="flex items-center justify-between">
         <div>
           <h2 class="text-base font-semibold leading-7">
