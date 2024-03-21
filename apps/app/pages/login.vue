@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { DeviceInfo } from "@shelve/types";
 import UAParser from "ua-parser-js";
+import type { Ref } from "vue";
 
 const { title } = useAppConfig();
 
@@ -19,7 +20,8 @@ const otp = ref(route.query.otp || '');
 
 const deviceInfo = ref<DeviceInfo>();
 
-const passwordMode = ref(false);
+const usePassword = useCookie("usePassword") as Ref<boolean>;
+const passwordMode = ref(usePassword.value);
 defineShortcuts({
   meta_k: {
     usingInput: true,

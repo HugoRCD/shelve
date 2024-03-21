@@ -1,6 +1,9 @@
 <script setup lang="ts">
 const user = useSession().user
 
+const usePassword = useCookie("usePassword")
+usePassword.value = usePassword.value ? "true" : "false";
+
 const password = ref("");
 const passwordConfirmation = ref("");
 const errorMessage = ref("");
@@ -22,6 +25,7 @@ async function updateCurrentUser() {
   if (password.value !== passwordConfirmation.value) {
     errorMessage.value = "Passwords do not match";
     toast.error("Passwords do not match");
+    updateLoading.value = false;
     return;
   }
   try {
@@ -91,7 +95,13 @@ async function logoutAll() {
       <div v-if="errorMessage" class="mt-1">
         <span class="text-sm text-red-500">{{ errorMessage }}</span>
       </div>
-      <div style="--stagger: 3" data-animate class="mt-6 flex gap-2">
+      <div class="mt-4 flex items-center gap-2">
+        <UToggle v-model="usePassword" />
+        <p class="text-sm">
+          Use password instead of email for login
+        </p>
+      </div>
+      <div style="--stagger: 3" data-animate class="mt-6 flex items-center gap-2">
         <UButton type="submit" :loading="updateLoading">
           Save
         </UButton>
