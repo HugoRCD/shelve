@@ -1,16 +1,17 @@
 <script setup lang="ts">
-import type { Member, Team } from "@shelve/types";
-import { TeamRole } from "@shelve/types";
+import { type Member, Role, type Team, TeamRole } from "@shelve/types";
+
+const user = useCurrentUser();
 
 const search = ref("")
 const teamName = ref("")
-const createModal = ref(false)
-const members = ref<Member[]>()
+
+const editModal = ref(false)
+const addMemberModal = ref(false)
 
 const {
   teams,
   loading,
-  createLoading,
   fetchTeams,
   createTeam,
   updateTeam,
@@ -25,14 +26,6 @@ const filteredTeams = computed(() => {
 
 const updateLoading = ref(false)
 const deleteLoading = ref(false)
-
-async function create_team(teamName: string) {
-  createLoading.value = true;
-  await createTeam(teamName);
-  createLoading.value = false;
-  createModal.value = false;
-  await fetchTeams();
-}
 
 async function update_team(team: Team) {
   updateLoading.value = true;
@@ -58,16 +51,6 @@ const columns = [
     label: "Members",
   },
   {
-    key: "createdAt",
-    label: "Created At",
-    sortable: true,
-  },
-  {
-    key: "updatedAt",
-    label: "Updated At",
-    sortable: true,
-  },
-  {
     key: "actions",
     label: "Actions",
   },
@@ -91,6 +74,18 @@ const items = (row: Team) => [
     },
   ],
 ];
+
+const roles = [
+  {
+    label: "Developer",
+    value: TeamRole.DEVELOPER,
+  },
+  {
+    label: "Admin",
+    value: TeamRole.ADMIN,
+    disabled: user.value?.role !== Role.ADMIN,
+  },
+];
 </script>
 
 <template>
@@ -106,14 +101,10 @@ const items = (row: Team) => [
       </div>
     </div>
     <div style="--stagger: 2" data-animate class="flex flex-col justify-end gap-4 sm:flex-row sm:items-center">
-      <UButton
-        @click="() => createModal = true"
-      >
-        Create
-      </UButton>
+      <TeamCreate />
       <UInput v-model="search" label="Search" placeholder="Search a team" icon="i-heroicons-magnifying-glass-20-solid" />
     </div>
-    <div v-if="teams" style="--stagger: 3" data-animate class="mt-6">
+    <div style="--stagger: 3" data-animate class="mt-6">
       <UTable
         :columns="columns"
         :rows="filteredTeams"
@@ -129,25 +120,49 @@ const items = (row: Team) => [
           </div>
         </template>
         <template #members-data="{ row }">
-          <UAvatarGroup>
-            <UAvatar
-              v-for="role in row.members"
-              :key="role.id"
-              :src="role.user.avatar"
-              :alt="role.user.username"
-              size="sm"
-            />
+          <UAvatarGroup
+            :ui="{
+              ring: 'ring-0'
+            }"
+          >
+            <UPopover
+              v-for="member in row.members"
+              :key="member.id"
+            >
+              <UAvatar
+                :src="member.user.avatar"
+                :alt="member.user.username"
+                size="sm"
+              />
+              <template #panel>
+                <UCard>
+                  <div class="flex flex-col gap-2">
+                    <p class="flex gap-2 text-sm font-semibold leading-6">
+                      <span class="text-gray-200">{{ member.user.username }}</span>
+                      <span>({{ member.user.email }})</span>
+                    </p>
+                    <div class="flex gap-2">
+                      <USelect
+                        v-model="member.role"
+                        label="Role"
+                        :options="roles"
+                        value-attribute="value"
+                        option-attribute="label"
+                      />
+                      <UButton label="Update" />
+                      <UButton color="red" variant="soft" label="Remove" />
+                    </div>
+                  </div>
+                </UCard>
+              </template>
+            </UPopover>
+            <div
+              class="flex size-8 cursor-pointer items-center justify-center rounded-full border border-dashed border-gray-400"
+              @click="addMemberModal = true"
+            >
+              +
+            </div>
           </UAvatarGroup>
-        </template>
-        <template #createdAt-data="{ row }">
-          <span class="text-sm text-gray-500 dark:text-gray-400">
-            {{ new Date(row.createdAt).toLocaleString() }}
-          </span>
-        </template>
-        <template #updatedAt-data="{ row }">
-          <span class="text-sm text-gray-500 dark:text-gray-400">
-            {{ new Date(row.updatedAt).toLocaleString() }}
-          </span>
         </template>
         <template #actions-data="{ row }">
           <UDropdown :items="items(row)">
@@ -156,24 +171,7 @@ const items = (row: Team) => [
         </template>
       </UTable>
     </div>
-    <UModal v-model="createModal">
-      <form @submit.prevent="create_team(teamName)">
-        <UCard>
-          <template #header>
-            <h2 class="text-lg font-semibold leading-7">
-              Create a team
-            </h2>
-          </template>
-          <UInput v-model="teamName" label="Team name" placeholder="Team name" class="my-4" />
-          <template #footer>
-            <div class="flex justify-end gap-4">
-              <UButton color="gray" label="Cancel" @click="() => createModal = false" />
-              <UButton :loading="createLoading" label="Create" type="submit" @click="createTeam(teamName)" />
-            </div>
-          </template>
-        </UCard>
-      </form>
-    </UModal>
+    <TeamAddMember v-model="addMemberModal" />
   </div>
 </template>
 
