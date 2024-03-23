@@ -22,31 +22,14 @@ async function updateCurrentProject() {
 }
 
 const {
-  teams,
-  loading,
   fetchTeams,
-  createTeam,
-  deleteTeam,
 } = useTeams();
 fetchTeams()
 
 const userTeams = useUserTeams();
 
-const addLoading = ref(false);
 const removeLoading = ref(false);
-
-async function addTeamToProject(teamId: number) {
-  addLoading.value = true;
-  try {
-    await $fetch(`/api/project/${projectId}/team/${teamId}`, {
-      method: "POST",
-    });
-    toast.success("Team added to project");
-  } catch (error) {
-    toast.error("An error occurred");
-  }
-  addLoading.value = false;
-}
+const refresh = inject("refresh") as Function;
 
 async function removeTeamFromProject(teamId: number) {
   removeLoading.value = true;
@@ -55,6 +38,7 @@ async function removeTeamFromProject(teamId: number) {
       method: "DELETE",
     });
     toast.success("Team removed from project");
+    await refresh();
   } catch (error) {
     toast.error("An error occurred");
   }
@@ -81,7 +65,7 @@ async function removeTeamFromProject(teamId: number) {
         <div class="ga-4 flex flex-col">
           <div>
             <h3 class="font-semibold">
-              Project team
+              Project team <span v-if="project && project.team" class="text-sm text-neutral-500 dark:text-neutral-400">({{ project.team.name }})</span>
             </h3>
             <p class="text-pretty text-xs text-neutral-500 dark:text-neutral-400">
               Add your team members to this project
@@ -90,22 +74,21 @@ async function removeTeamFromProject(teamId: number) {
           <div class="mt-4 flex flex-col gap-4">
             <div>
               <USkeleton v-if="status === 'pending'" class="h-8" />
-              <TeamMembers v-if="project && project.team" :team-id="project.teamId" :members="project.team.members" />
-              <div v-else class="flex flex-col gap-4">
-                <div v-for="team in userTeams" :key="team.id" class="flex items-center justify-between rounded-lg bg-neutral-100 p-4 dark:bg-neutral-800">
-                  <h3 class="text-sm font-semibold">
-                    {{ team.name }}
-                  </h3>
-                  <div class="flex gap-4">
-                    <UButton
-                      color="primary"
-                      class="text-xs"
-                      :loading="addLoading"
-                      label="Assign"
-                      icon="i-lucide-plus"
-                      @click="addTeamToProject(team.id)"
-                    />
-                  </div>
+              <div v-else>
+                <div v-if="project && project.team" class="flex items-center justify-between">
+                  <TeamMembers :team-id="project.teamId" :members="project.team.members" />
+                  <UButton
+                    variant="soft"
+                    color="red"
+                    class="text-xs"
+                    :loading="removeLoading"
+                    label="Unlink"
+                    icon="i-lucide-unlink"
+                    @click="removeTeamFromProject(project.teamId)"
+                  />
+                </div>
+                <div v-else class="flex flex-col gap-4">
+                  <ProjectTeamAssign v-for="team in userTeams" :key="team.id" :team="team" :project-id="project.id" />
                 </div>
               </div>
             </div>

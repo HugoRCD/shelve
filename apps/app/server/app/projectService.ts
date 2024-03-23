@@ -81,29 +81,31 @@ export async function removeTeamFromProject(projectId: number, teamId: number) {
 }
 
 export async function getProjectsByUserId(userId: number) {
-  const projects = await prisma.project.findMany({
-    where: {
-      ownerId: userId,
-    },
-    cacheStrategy: {
-      ttl: 60,
-    }
-  });
-  const teams = await prisma.team.findMany({
-    where: {
-      members: {
-        some: {
-          userId,
-        }
+  const [projects, teams] = await Promise.all([
+    prisma.project.findMany({
+      where: {
+        ownerId: userId,
+      },
+      cacheStrategy: {
+        ttl: 60,
       }
-    },
-    include: {
-      projects: true,
-    },
-    cacheStrategy: {
-      ttl: 60,
-    }
-  });
+    }),
+    prisma.team.findMany({
+      where: {
+        members: {
+          some: {
+            userId,
+          }
+        }
+      },
+      include: {
+        projects: true,
+      },
+      cacheStrategy: {
+        ttl: 60,
+      }
+    })
+  ]);
   const teamProjects = teams.map(team => team.projects);
   return [...projects, ...teamProjects].flat().filter((project, index, self) => self.findIndex(p => p.id === project.id) === index);
 }
