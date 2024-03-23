@@ -1,4 +1,5 @@
-import type { Team, UpdateTeamInput } from "@shelve/types";
+import type { Member, Team, UpdateTeamInput } from "@shelve/types";
+import { TeamRole } from "@shelve/types";
 
 export const useUserTeams = () => {
   return useState<Team[]>("teams");
@@ -49,6 +50,47 @@ export function useTeams() {
     }
   }
 
+  async function upsertMember(teamId: number, email: string, role: TeamRole) {
+    try {
+      const response = await $fetch<Member>(`/api/teams/${teamId}/members`, {
+        method: "POST",
+        body: {
+          email,
+          role,
+        },
+      });
+      const index = teams.value.findIndex((team) => team.id === teamId);
+      const team = teams.value[index];
+      const memberIndex = team.members.findIndex((member) => member.id === response.id);
+      if (memberIndex !== -1) {
+        team.members[memberIndex] = response;
+      } else {
+        team.members.push(response);
+      }
+      console.log("team", team);
+      teams.value.splice(index, 1, team);
+      toast.success("Member added");
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to add member");
+    }
+  }
+
+  async function removeMember(teamId: number, memberId: number) {
+    try {
+      await $fetch<Member>(`/api/teams/${teamId}/members/${memberId}`, {
+        method: "DELETE",
+      });
+      const index = teams.value.findIndex((team) => team.id === teamId);
+      const team = teams.value[index];
+      team.members = team.members.filter((member) => member.id !== memberId);
+      toast.success("Member removed");
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to remove member");
+    }
+  }
+
   async function deleteTeam(teamId: number) {
     try {
       teams.value = teams.value.filter((team) => team.id !== teamId);
@@ -70,5 +112,7 @@ export function useTeams() {
     createTeam,
     updateTeam,
     deleteTeam,
+    upsertMember,
+    removeMember,
   };
 }

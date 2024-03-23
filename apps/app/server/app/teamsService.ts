@@ -33,43 +33,72 @@ export async function createTeam(createTeamInput: CreateTeamInput, userId: numbe
   });
 }
 
-export async function updateTeam(updateTeamInput: UpdateTeamInput, userId: number) {
+export async function upsertMember(teamId: number, addMemberInput: {
+  email: string;
+  role: TeamRole
+}, requesterId: number) {
   const team = await prisma.team.findFirst({
     where: {
-      id: updateTeamInput.id,
+      id: teamId,
       members: {
         some: {
-          userId,
-          role: TeamRole.OWNER,
+          userId: requesterId,
+          role: TeamRole.ADMIN,
+        },
+      },
+    },
+    include: {
+      members: true,
+    }
+  });
+  if (!team) throw new Error("unauthorized");
+  const user = await prisma.user.findFirst({
+    where: {
+      email: addMemberInput.email,
+    },
+  });
+  if (!user) throw new Error("user not found");
+  return await prisma.member.upsert({
+    where: {
+      id: team.members.find((member) => member.userId === user.id)?.id || -1,
+    },
+    update: {
+      role: addMemberInput.role,
+    },
+    create: {
+      role: addMemberInput.role,
+      teamId,
+      userId: user.id,
+    },
+    include: {
+      user: {
+        select: {
+          id: true,
+          username: true,
+          email: true,
+          avatar: true,
+        }
+      }
+    }
+  });
+}
+
+export async function removeMember(teamId: number, memberId: number, requesterId: number) {
+  const team = await prisma.team.findFirst({
+    where: {
+      id: teamId,
+      members: {
+        some: {
+          userId: requesterId,
+          role: TeamRole.ADMIN,
         },
       },
     },
   });
-  if (!team) throw new Error("Unauthorized");
-  return await prisma.team.update({
+  if (!team) throw new Error("unauthorized");
+  return await prisma.member.delete({
     where: {
-      id: updateTeamInput.id,
-    },
-    data: {
-      name: updateTeamInput.name,
-      members: {
-        upsert: updateTeamInput.members.map((role) => ({
-          where: {
-            userId: role.userId,
-          },
-          update: {
-            role: role.role,
-          },
-          create: {
-            role: role.role,
-            user: {
-              connect: {
-                id: role.userId,
-              },
-            },
-          },
-        })),
-      }
+      id: memberId,
     },
   });
 }

@@ -68,7 +68,7 @@ const items = [
       <div class="flex flex-col gap-1">
         <h3 class="flex items-center gap-1 text-sm font-semibold sm:text-base">
           {{ variable.key.length > 25 ? variable.key.slice(0, 25) + '...' : variable.key }}
-          <UTooltip text="Copy variable clipboard">
+          <UTooltip text="Copy variable to clipboard">
             <UButton color="gray" variant="ghost" icon="i-lucide-clipboard-plus" @click="copyToClipboard(variable.value, 'Variable value copied')" />
           </UTooltip>
         </h3>
