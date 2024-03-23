@@ -35,21 +35,6 @@ export function useTeams() {
     createLoading.value = false;
   }
 
-  async function updateTeam(updateTeamInput: UpdateTeamInput) {
-    try {
-      const response = await $fetch<Team>(`/api/teams/${updateTeamInput.id}`, {
-        method: "PUT",
-        body: updateTeamInput,
-      });
-      const index = teams.value.findIndex((team) => team.id === updateTeamInput.id);
-      teams.value[index] = response;
-      toast.success("Team updated");
-    } catch (error) {
-      console.error(error);
-      toast.error("Failed to update team");
-    }
-  }
-
   async function upsertMember(teamId: number, email: string, role: TeamRole) {
     try {
       const response = await $fetch<Member>(`/api/teams/${teamId}/members`, {
@@ -110,7 +95,6 @@ export function useTeams() {
     createLoading,
     fetchTeams,
     createTeam,
-    updateTeam,
     deleteTeam,
     upsertMember,
     removeMember,

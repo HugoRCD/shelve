@@ -1,5 +1,6 @@
 import type { Variable } from "./Variables";
 import type { User } from "./User";
+import { Team } from "./Team";
 
 export type Project = {
   id: number;
@@ -12,6 +13,8 @@ export type Project = {
   avatar?: string;
   ownerId: number;
   users: User[];
+  team: Team;
+  teamId: number;
   createdAt: Date;
   updatedAt: Date;
   variables?: Variable[];

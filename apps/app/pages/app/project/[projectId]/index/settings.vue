@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { Project } from "@shelve/types";
 import type { Ref } from "vue";
+import { useUserTeams } from "~/composables/useTeams";
 
 const { projectId } = useRoute().params;
 
@@ -18,6 +19,46 @@ async function updateCurrentProject() {
   await execute();
   if (updateError.value) toast.error("An error occurred");
   else toast.success("Your project has been updated");
+}
+
+const {
+  teams,
+  loading,
+  fetchTeams,
+  createTeam,
+  deleteTeam,
+} = useTeams();
+fetchTeams()
+
+const userTeams = useUserTeams();
+
+const addLoading = ref(false);
+const removeLoading = ref(false);
+
+async function addTeamToProject(teamId: number) {
+  addLoading.value = true;
+  try {
+    await $fetch(`/api/project/${projectId}/team/${teamId}`, {
+      method: "POST",
+    });
+    toast.success("Team added to project");
+  } catch (error) {
+    toast.error("An error occurred");
+  }
+  addLoading.value = false;
+}
+
+async function removeTeamFromProject(teamId: number) {
+  removeLoading.value = true;
+  try {
+    await $fetch(`/api/project/${projectId}/team/${teamId}`, {
+      method: "DELETE",
+    });
+    toast.success("Team removed from project");
+  } catch (error) {
+    toast.error("An error occurred");
+  }
+  removeLoading.value = false;
 }
 </script>
 
@@ -37,6 +78,40 @@ async function updateCurrentProject() {
         </div>
       </template>
       <div class="flex flex-col gap-4">
+        <div class="ga-4 flex flex-col">
+          <div>
+            <h3 class="font-semibold">
+              Project team
+            </h3>
+            <p class="text-pretty text-xs text-neutral-500 dark:text-neutral-400">
+              Add your team members to this project
+            </p>
+          </div>
+          <div class="mt-4 flex flex-col gap-4">
+            <div>
+              <USkeleton v-if="status === 'pending'" class="h-8" />
+              <TeamMembers v-if="project && project.team" :team-id="project.teamId" :members="project.team.members" />
+              <div v-else class="flex flex-col gap-4">
+                <div v-for="team in userTeams" :key="team.id" class="flex items-center justify-between rounded-lg bg-neutral-100 p-4 dark:bg-neutral-800">
+                  <h3 class="text-sm font-semibold">
+                    {{ team.name }}
+                  </h3>
+                  <div class="flex gap-4">
+                    <UButton
+                      color="primary"
+                      class="text-xs"
+                      :loading="addLoading"
+                      label="Assign"
+                      icon="i-lucide-plus"
+                      @click="addTeamToProject(team.id)"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <UDivider class="my-2" />
         <div class="flex flex-col gap-4">
           <div>
             <h3 class="font-semibold">

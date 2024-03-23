@@ -69,7 +69,8 @@ model Project {
   ownerId        Int
   variables      Variables[]
   users          User[]
-  teams          Team[]
+  teamId         Int?
+  team           Team?       @relation(fields: [teamId], references: [id])
 }
 
 model Variables {

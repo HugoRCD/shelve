@@ -134,7 +134,7 @@ function getProjectManager(manager: string) {
             </UCard>
           </UModal>
         </div>
-        <UDropdown :items="items">
+        <UDropdown v-if="project.ownerId === user?.id" :items="items">
           <UButton color="gray" variant="ghost" icon="i-heroicons-ellipsis-horizontal-20-solid" />
         </UDropdown>
       </div>

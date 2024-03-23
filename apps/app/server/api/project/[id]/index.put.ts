@@ -7,6 +7,7 @@ export default eventHandler(async (event: H3Event) => {
   if (!id) throw createError({ statusCode: 400, statusMessage: "Missing params" });
   const projectUpdateInput = await readBody(event);
   delete projectUpdateInput.variables;
+  delete projectUpdateInput.team;
   await updateProject(projectUpdateInput, parseInt(id));
   return {
     statusCode: 200,

@@ -29,25 +29,83 @@ export async function getProjectById(id: number) {
     where: {
       id,
     },
+    include: {
+      team: {
+        include: {
+          members: {
+            include: {
+              user: {
+                select: {
+                  id: true,
+                  username: true,
+                  email: true,
+                  avatar: true,
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  });
+}
+
+export async function addTeamToProject(projectId: number, teamId: number) {
+  return prisma.project.update({
+    where: {
+      id: projectId,
+    },
+    data: {
+      team: {
+        connect: {
+          id: teamId,
+        }
+      }
+    }
+  });
+}
+
+export async function removeTeamFromProject(projectId: number, teamId: number) {
+  return prisma.project.update({
+    where: {
+      id: projectId,
+    },
+    data: {
+      team: {
+        disconnect: {
+          id: teamId,
+        }
+      }
+    }
   });
 }
 
 export async function getProjectsByUserId(userId: number) {
-  return prisma.project.findMany({
+  const projects = await prisma.project.findMany({
     where: {
-      users: {
+      ownerId: userId,
+    },
+    cacheStrategy: {
+      ttl: 60,
+    }
+  });
+  const teams = await prisma.team.findMany({
+    where: {
+      members: {
         some: {
-          id: userId,
+          userId,
         }
       }
     },
-    orderBy: {
-      updatedAt: "desc",
+    include: {
+      projects: true,
     },
     cacheStrategy: {
-      ttl: 10,
+      ttl: 60,
     }
   });
+  const teamProjects = teams.map(team => team.projects);
+  return [...projects, ...teamProjects].flat().filter((project, index, self) => self.findIndex(p => p.id === project.id) === index);
 }
 
 async function removeCachedUserProjects(userId: string) {
