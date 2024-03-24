@@ -26,7 +26,6 @@ export type ProjectCreateInput = {
   description?: string;
   avatar?: string;
   ownerId: number;
-  usersId?: number[];
 };
 
 export type ProjectUpdateInput = {
@@ -34,6 +33,5 @@ export type ProjectUpdateInput = {
   description?: string;
   avatar?: string;
   ownerId?: number;
-  usersId?: number[];
 };
 

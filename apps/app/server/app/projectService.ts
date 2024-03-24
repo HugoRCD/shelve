@@ -2,6 +2,7 @@ import type { ProjectCreateInput, ProjectUpdateInput } from "@shelve/types";
 import prisma from "~/server/database/client";
 
 export async function createProject(project: ProjectCreateInput, userId: number) {
+  project.name = project.name.trim();
   return prisma.project.create({
     data: {
       ...project,
@@ -16,6 +17,7 @@ export async function createProject(project: ProjectCreateInput, userId: number)
 }
 
 export async function updateProject(project: ProjectUpdateInput, projectId: number) {
+  project.name = project.name?.trim();
   return prisma.project.update({
     where: {
       id: projectId,
