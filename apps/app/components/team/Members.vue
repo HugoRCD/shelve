@@ -2,13 +2,17 @@
 import { type Member, Role, TeamRole } from "@shelve/types";
 import type { PropType } from "vue";
 
-const { members, teamId } = defineProps({
+const { members, teamId, display } = defineProps({
   members: {
     type: Array as PropType<Member[]>,
   },
   teamId: {
     type: Number,
     required: true,
+  },
+  display: {
+    type: Boolean,
+    default: false,
   },
 });
 
@@ -30,6 +34,11 @@ const roles = [
     value: TeamRole.ADMIN,
     disabled: user.value?.role !== Role.ADMIN,
   },
+  {
+    label: "Owner",
+    value: TeamRole.OWNER,
+    disabled: user.value?.role !== Role.ADMIN
+  }
 ];
 
 const newMember = ref({
@@ -57,21 +66,9 @@ async function remove_member(teamId: number, memberId: number) {
 </script>
 
 <template>
-  <UAvatarGroup
-    :ui="{
-      ring: 'ring-0'
-    }"
-  >
-    <UPopover
-      v-for="member in members"
-      :key="member.id"
-      :popper="{ arrow: true }"
-    >
-      <UAvatar
-        :src="member.user.avatar"
-        :alt="member.user.username"
-        size="sm"
-      />
+  <UAvatarGroup v-if="!display" :ui="{ ring: 'ring-0' }">
+    <UPopover v-for="member in members" :key="member.id" :popper="{ arrow: true }">
+      <TeamMember :member="member" />
       <template #panel>
         <UCard>
           <form @submit.prevent="upsert_member(teamId, member.user.email, member.role)">
@@ -98,7 +95,9 @@ async function remove_member(teamId: number, memberId: number) {
     </UPopover>
     <div>
       <UPopover :popper="{ arrow: true }">
-        <span class="flex size-8 cursor-pointer items-center justify-center rounded-full border border-dashed border-gray-400">+</span>
+        <UTooltip text="Add member" :ui="{ popper: { placement: 'top' } }">
+          <span class="flex size-8 cursor-pointer items-center justify-center rounded-full border border-dashed border-gray-400">+</span>
+        </UTooltip>
         <template #panel>
           <UCard>
             <form @submit.prevent="upsert_member(teamId, newMember.email, newMember.role)">
@@ -121,8 +120,7 @@ async function remove_member(teamId: number, memberId: number) {
       </UPopover>
     </div>
   </UAvatarGroup>
+  <UAvatarGroup v-else :ui="{ ring: 'ring-0' }">
+    <TeamMember v-for="member in members" :key="member.id" :member="member" />
+  </UAvatarGroup>
 </template>
-
-<style scoped>
-
-</style>

@@ -7,7 +7,7 @@ export async function createTeam(createTeamInput: CreateTeamInput, userId: numbe
       name: createTeamInput.name,
       members: {
         create: {
-          role: TeamRole.ADMIN,
+          role: TeamRole.OWNER,
           user: {
             connect: {
               id: userId,
@@ -43,7 +43,9 @@ export async function upsertMember(teamId: number, addMemberInput: {
       members: {
         some: {
           userId: requesterId,
-          role: TeamRole.ADMIN,
+          role: {
+            in: [TeamRole.ADMIN, TeamRole.OWNER],
+          }
         },
       },
     },
@@ -90,7 +92,9 @@ export async function removeMember(teamId: number, memberId: number, requesterId
       members: {
         some: {
           userId: requesterId,
-          role: TeamRole.ADMIN,
+          role: {
+            in: [TeamRole.ADMIN, TeamRole.OWNER],
+          }
         },
       },
     },
@@ -110,7 +114,7 @@ export async function deleteTeam(teamId: number, userId: number) {
       members: {
         some: {
           userId,
-          role: TeamRole.ADMIN,
+          role: TeamRole.OWNER,
         },
       },
     },

@@ -152,7 +152,3 @@ async function removeTeamFromProject(teamId: number) {
     </UCard>
   </form>
 </template>
-
-<style scoped>
-
-</style>

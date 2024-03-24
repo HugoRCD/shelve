@@ -1,6 +1,5 @@
 <script setup lang="ts">
 const teamName = ref("")
-const show = ref(false)
 
 const {
   createLoading,
@@ -8,36 +7,35 @@ const {
   createTeam,
 } = useTeams();
 
-async function create_team(teamName: string) {
+async function create_team(name: string) {
   createLoading.value = true;
-  await createTeam(teamName);
+  await createTeam(name);
   createLoading.value = false;
-  show.value = false;
+  teamName.value = "";
   await fetchTeams();
 }
 </script>
 
 <template>
   <div>
-    <UButton label="Create" @click="() => show = true" />
-    <UModal v-model="show">
-      <form @submit.prevent="create_team(teamName)">
-        <UCard>
-          <template #header>
-            <h2 class="text-lg font-semibold leading-7">
-              Create a team
-            </h2>
-          </template>
-          <UInput v-model="teamName" label="Team name" placeholder="Team name" class="my-4" />
-          <template #footer>
-            <div class="flex justify-end gap-4">
-              <UButton color="gray" label="Cancel" @click="() => show = false" />
-              <UButton :loading="createLoading" label="Create" type="submit" @click="createTeam(teamName)" />
+    <UPopover :popper="{ arrow: true }">
+      <UButton label="Create" />
+      <template #panel>
+        <form @submit.prevent="create_team(teamName)">
+          <UCard>
+            <div class="flex flex-col gap-2">
+              <p class="flex gap-2 text-sm font-semibold leading-6">
+                Create a team
+              </p>
+              <div class="flex gap-2">
+                <UInput v-model="teamName" label="Team name" placeholder="Team name" />
+                <UButton :loading="createLoading" label="Create" type="submit" />
+              </div>
             </div>
-          </template>
-        </UCard>
-      </form>
-    </UModal>
+          </UCard>
+        </form>
+      </template>
+    </UPopover>
   </div>
 </template>
 

@@ -44,12 +44,14 @@ const columns = [
   },
 ];
 
+const isOwner = (team: Team) => team.members.find(member => member.userId === user.value?.id)?.role === TeamRole.OWNER
+
 const items = (row: Team) => [
   [
     {
       label: "Edit",
       icon: "i-lucide-pencil",
-      disabled: row.members.find(member => member.id === user.value?.id)?.role !== TeamRole.ADMIN,
+      disabled: !isOwner(row),
     },
   ],
   [
@@ -57,7 +59,7 @@ const items = (row: Team) => [
       label: "Delete",
       icon: "i-lucide-trash",
       iconClass: "text-red-500 dark:text-red-500",
-      disabled: row.members.find(member => member.id === user.value?.id)?.role !== TeamRole.ADMIN,
+      disabled: !isOwner(row),
       click: () => {
         delete_team(row.id)
       },
@@ -78,7 +80,7 @@ const items = (row: Team) => [
         </p>
       </div>
     </div>
-    <div style="--stagger: 2" data-animate class="flex flex-col justify-end gap-4 sm:flex-row sm:items-center">
+    <div style="--stagger: 2" data-animate class="mt-2 flex flex-col justify-end gap-2 sm:flex-row sm:items-center">
       <TeamCreate />
       <UInput v-model="search" label="Search" placeholder="Search a team" icon="i-heroicons-magnifying-glass-20-solid" />
     </div>
@@ -102,7 +104,7 @@ const items = (row: Team) => [
         </template>
         <template #actions-data="{ row }">
           <UDropdown :items="items(row)">
-            <UButton color="gray" variant="ghost" icon="i-heroicons-ellipsis-horizontal-20-solid" />
+            <UButton color="gray" variant="ghost" icon="i-heroicons-ellipsis-horizontal-20-solid" :disabled="!isOwner(row)" />
           </UDropdown>
         </template>
       </UTable>

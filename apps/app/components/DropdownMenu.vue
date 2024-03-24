@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import type { publicUser } from "@shelve/types";
+import type { Ref } from "vue";
+
 const navigations = getNavigation("app");
 const admin_navigations = getNavigation("admin");
 const navItem = navigations.map((nav) => {
@@ -17,7 +20,7 @@ const adminNavItem = admin_navigations.map((nav) => {
 })
 
 
-const user = useSession().user
+const user = useCurrentUser() as Ref<publicUser>;
 
 const items = [
   [

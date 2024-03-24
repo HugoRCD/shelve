@@ -52,7 +52,6 @@ export function useTeams() {
       } else {
         team.members.push(response);
       }
-      console.log("team", team);
       teams.value.splice(index, 1, team);
       toast.success("Member added");
     } catch (error) {
