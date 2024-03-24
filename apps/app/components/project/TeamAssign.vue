@@ -32,7 +32,7 @@ async function addTeamToProject(teamId: number) {
 </script>
 
 <template>
-  <div :key="team.id" class="flex items-center justify-between rounded-lg bg-neutral-100 p-4 dark:bg-neutral-800">
+  <div :key="team.id" class="flex items-center justify-between rounded-lg bg-neutral-100 px-4 py-2 dark:bg-neutral-900">
     <div class="flex items-center gap-4">
       <h3 class="text-sm font-semibold">
         {{ team.name }}

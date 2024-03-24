@@ -1,16 +1,14 @@
 <script setup lang="ts">
-import { Role, type Team, TeamRole } from "@shelve/types";
+import { type Team, TeamRole } from "@shelve/types";
 
 const user = useCurrentUser();
 
 const search = ref("")
-const teamName = ref("")
 
 const {
   teams,
   loading,
   fetchTeams,
-  createTeam,
   deleteTeam,
 } = useTeams();
 fetchTeams()
@@ -81,7 +79,7 @@ const items = (row: Team) => [
       </div>
     </div>
     <div style="--stagger: 2" data-animate class="mt-2 flex flex-col justify-end gap-2 sm:flex-row sm:items-center">
-      <TeamCreate />
+      <TeamCreate>Create</TeamCreate>
       <UInput v-model="search" label="Search" placeholder="Search a team" icon="i-heroicons-magnifying-glass-20-solid" />
     </div>
     <div style="--stagger: 3" data-animate class="mt-6">
@@ -94,9 +92,9 @@ const items = (row: Team) => [
         <template #empty-state>
           <div class="flex flex-col items-center justify-center gap-3 py-6">
             <span class="text-sm italic">No teams here</span>
-            <UButton @click="createTeam(teamName)">
+            <TeamCreate>
               Create a team
-            </UButton>
+            </TeamCreate>
           </div>
         </template>
         <template #members-data="{ row }">
@@ -112,6 +110,3 @@ const items = (row: Team) => [
   </div>
 </template>
 
-<style scoped>
-
-</style>

@@ -19,7 +19,9 @@ async function create_team(name: string) {
 <template>
   <div>
     <UPopover :popper="{ arrow: true }">
-      <UButton label="Create" />
+      <UButton>
+        <slot />
+      </UButton>
       <template #panel>
         <form @submit.prevent="create_team(teamName)">
           <UCard>

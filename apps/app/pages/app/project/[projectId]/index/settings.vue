@@ -68,7 +68,7 @@ async function removeTeamFromProject(teamId: number) {
               Project team <span v-if="project && project.team" class="text-sm text-neutral-500 dark:text-neutral-400">({{ project.team.name }})</span>
             </h3>
             <p class="text-pretty text-xs text-neutral-500 dark:text-neutral-400">
-              Add your team members to this project
+              Link a team to your project
             </p>
           </div>
           <div class="mt-4 flex flex-col gap-4">
@@ -76,7 +76,7 @@ async function removeTeamFromProject(teamId: number) {
               <USkeleton v-if="status === 'pending'" class="h-8" />
               <div v-else>
                 <div v-if="project && project.team" class="flex items-center justify-between">
-                  <TeamMembers :team-id="project.teamId" :members="project.team.members" />
+                  <TeamMembers :team-id="project.teamId" :members="project.team.members" display />
                   <UButton
                     variant="soft"
                     color="red"
@@ -88,7 +88,15 @@ async function removeTeamFromProject(teamId: number) {
                   />
                 </div>
                 <div v-else class="flex flex-col gap-4">
-                  <ProjectTeamAssign v-for="team in userTeams" :key="team.id" :team="team" :project-id="project.id" />
+                  <div v-if="userTeams.length !== 0">
+                    <ProjectTeamAssign v-for="team in userTeams" :key="team.id" :team="team" :project-id="project.id" />
+                  </div>
+                  <div v-else class="flex flex-col items-center justify-center gap-2">
+                    <p class="text-pretty text-xs text-neutral-500 dark:text-neutral-400">
+                      You don't have any teams yet
+                    </p>
+                    <TeamCreate>Create one</TeamCreate>
+                  </div>
                 </div>
               </div>
             </div>
