@@ -12,7 +12,8 @@
   </a>
 </p>
 
-The Shelve CLI is a command-line interface for the Shelve platform. It allows you to authenticate with Shelve, pull and push environment variables for your projects.
+The Shelve CLI is a command-line interface for the [Shelve](https://shelve.hrcd.fr/) platform. It allows you to authenticate with Shelve, pull and push environment variables for your projects
+with your team and without leaving your terminal.
 
 ## Installation
 
@@ -20,12 +21,6 @@ Install the package globally:
 
 ```sh
 npm install -g @shelve/cli
-```
-
-Or use `npx` to run the CLI without installing it:
-
-```sh
-npx @shelve/cli
 ```
 
 ## Usage

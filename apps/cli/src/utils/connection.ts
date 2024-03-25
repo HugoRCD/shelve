@@ -4,7 +4,7 @@ import consola from "consola";
 
 const SHELVE_API_URL = process.env.NODE_ENV === 'development' ? 'http://localhost:3000/api' : 'https://shelve.hrcd.fr/api'
 
-export const $api = ofetch.create({
+export const $api: any = ofetch.create({
   baseURL: SHELVE_API_URL,
   onRequest({ options }) {
     options.headers = {
@@ -18,4 +18,4 @@ export const $api = ofetch.create({
       consola.error('Authentication failed, please login again using `shelve login`')
     }
   }
-}) as typeof ofetch
+})
