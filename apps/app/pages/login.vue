@@ -72,7 +72,6 @@ const login = async () => {
   } else {
     toast.error("An error occurred while verifying your code.");
   }
-  otp.value = '';
 };
 
 function useLoginOrSendOtp() {
