@@ -30,6 +30,10 @@ export default defineCommand({
     }
     consola.start("Fetching projects...");
     const projects = await getProjects();
+    if (!projects.length) {
+      consola.error("No projects found");
+      return;
+    }
 
     try {
       const selectedProject = await consola.prompt("Select a project to link", {

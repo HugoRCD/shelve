@@ -2,32 +2,42 @@ import { Environment, type VariablesCreateInput } from "@shelve/types";
 import prisma from "~/server/database/client";
 import { decrypt, encrypt } from "@shelve/utils";
 
+const varAssociation = {
+  production: "production",
+  preview: "preview",
+  development: "development",
+  prod: "production",
+  dev: "development",
+}
+
+function getEnvString(env: string) {
+  return env.split("|").map((env) => varAssociation[env as Environment]).join("|");
+}
+
 export async function upsertVariable(variablesCreateInput: VariablesCreateInput) {
-  const runtimeConfig = useRuntimeConfig().private;
-  if (variablesCreateInput.variables.length === 1) {
-    variablesCreateInput.variables = variablesCreateInput.variables.map((variable) => {
-      const encryptedValue = encrypt(variable.value, runtimeConfig.secret_encryption_key, parseInt(runtimeConfig.secret_encryption_iterations));
-      const { index, ...rest} = variable;
-      rest.value = encryptedValue;
-      return rest;
+  const { secret_encryption_key, secret_encryption_iterations } = useRuntimeConfig().private;
+
+  const encryptVariables = (variables: VariablesCreateInput["variables"]) => {
+    return variables.map((variable) => {
+      const encryptedValue = encrypt(variable.value, secret_encryption_key, parseInt(secret_encryption_iterations));
+      variable.environment = getEnvString(variable.environment);
+      const { index, ...rest } = variable;
+      return { ...rest, value: encryptedValue };
     });
-    const variableCreateInput = variablesCreateInput.variables[0];
+  };
+
+  const encryptedVariables = encryptVariables(variablesCreateInput.variables);
+
+  if (variablesCreateInput.variables.length === 1) { // use on main form variable/update
+    const variableCreateInput = encryptedVariables[0];
     return prisma.variables.upsert({
-      where: {
-        id: variableCreateInput.id || -1,
-      },
+      where: { id: variableCreateInput.id || -1 },
       update: variableCreateInput,
       create: variableCreateInput,
     });
-  } else {
-    variablesCreateInput.variables = variablesCreateInput.variables.map((variable) => {
-      const encryptedValue = encrypt(variable.value, runtimeConfig.secret_encryption_key, parseInt(runtimeConfig.secret_encryption_iterations));
-      const { index, ...rest } = variable;
-      rest.value = encryptedValue;
-      return rest;
-    });
+  } else { // use on edit form variable/update or with CLI push command
     return prisma.variables.createMany({
-      data: variablesCreateInput.variables,
+      data: encryptedVariables,
       skipDuplicates: true,
     });
   }
@@ -38,7 +48,7 @@ export async function getVariablesByProjectId(projectId: number, environment?: E
   const options = environment ? {
     projectId,
     environment: {
-      contains: environment,
+      contains: varAssociation[environment],
     }
   } : { projectId };
   const variables = await prisma.variables.findMany({ where: options, orderBy: { updatedAt: "desc" } });

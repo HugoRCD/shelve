@@ -35,10 +35,10 @@ export default defineCommand({
       }
     })
     writeUserConfig({
-      username: response.username,
+      username: response.username || email,
       email: response.email,
       authToken: response.authToken
     })
-    consola.info(`You are now logged in as \`${response.username}\``)
+    consola.info(`You are now logged in as \`${response.username || email}\``)
   },
 })
