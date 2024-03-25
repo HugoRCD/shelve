@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { Project } from "@shelve/types";
 import type { Ref } from "vue";
-import { useUserTeams } from "~/composables/useTeams";
 
 const { projectId } = useRoute().params;
 
@@ -23,6 +22,7 @@ async function updateCurrentProject() {
 
 const {
   fetchTeams,
+  loading
 } = useTeams();
 fetchTeams()
 
@@ -73,7 +73,7 @@ async function removeTeamFromProject(teamId: number) {
           </div>
           <div class="mt-4 flex flex-col gap-4">
             <div>
-              <USkeleton v-if="status === 'pending'" class="h-8" />
+              <USkeleton v-if="status === 'pending' || loading" class="h-8" />
               <div v-else>
                 <div v-if="project && project.team" class="flex items-center justify-between">
                   <TeamMembers :team-id="project.teamId" :members="project.team.members" display />
