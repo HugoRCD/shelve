@@ -44,7 +44,13 @@ export default defineCommand({
         })),
       }) as unknown as number;
 
-      writeProjectConfig(projects[selectedProject]);
+      const project = projects.find((project: any) => project.id === selectedProject);
+      if (!project) {
+        consola.error("An error occurred while selecting the project");
+        return;
+      }
+
+      writeProjectConfig(project);
       consola.success("Project linked successfully");
     } catch (e) {
       consola.error("An error occurred while selecting the project");

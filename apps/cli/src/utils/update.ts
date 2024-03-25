@@ -26,7 +26,7 @@ export async function checkForUpdates() {
         "",
         `Release notes: ${underline(cyan(changelogURL))}`,
         "",
-        `To update: \`npm install -g ${name}\``,
+        `To update: \`npm install -g ${name}\` or \`${name} upgrade\``,
       ].join("\n"),
     });
   }

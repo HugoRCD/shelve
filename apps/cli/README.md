@@ -31,13 +31,13 @@ USAGE shelve upgrade|login|logout|whoami|pull|push
 COMMANDS
    
   upgrade   Upgrade the Shelve CLI to the latest version
-  link      Link the current directory to a Shelve project
+  link      Link the current directory with a Shelve project
   unlink    Unlink the current directory from a Shelve project
   login     Authenticate with Shelve                           
   logout    Logout the current authenticated user                
   whoami    Shows the username of the currently logged in user
-  pull      Pull the environement variables for the current project
-  push      Push the environement variables for the current project
+  pull      Retrieve the environement variables from Shelve
+  push      Send the environement variables to Shelve
   open      Open the current project in the browser
 
 Use shelve <command> --help for more information about a command.
