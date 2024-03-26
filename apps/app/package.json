@@ -23,7 +23,7 @@
   },
   "devDependencies": {
     "@iconify-json/lucide": "^1.1.173",
-    "@linear/sdk": "^14.0.0",
+    "@linear/sdk": "^19.0.0",
     "@nuxt/eslint-config": "^0.2.0",
     "@nuxt/fonts": "latest",
     "@nuxt/image": "latest",
