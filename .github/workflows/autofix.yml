@@ -1,0 +1,28 @@
+name: autofix.ci # needed to securely identify the workflow
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  autofix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v1
+
+      - name: 📦 Install dependencies
+        run: bun install
+
+      - name: 💅 Lint code
+        run: bun run lint:fix
+
+      - name: 📚 Build docs
+        run: bunx automd
+
+      - uses: autofix-ci/action@ea32e3a12414e6d3183163c3424a7d7a8631ad84
+        with:
+          commit-message: 'chore: apply automated lint fixes'

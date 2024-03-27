@@ -19,17 +19,17 @@ changelog:
         - docs
     - title: Dependency Updates 📦
       labels:
-        - dependencies
+        - chore
     - title: Refactoring 🛠
       labels:
         - refactor
+    - title: Revert 🔄
+      labels:
+        - revert
+    - title: Tests 🧪
+      labels:
+        - test
     - title: Other 🤷‍
       labels:
         - other
-        - "*"
-    - title: Security Fixes 🔒
-      labels:
-        - security
-    - title: Bump Version 🏷
-      labels:
-        - version
+        - '*'
