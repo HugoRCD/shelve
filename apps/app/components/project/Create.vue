@@ -1,11 +1,13 @@
 <script setup lang="ts">
+import type { CreateProjectInput, Team } from "@shelve/types";
+
 const { refresh } = defineProps({
   refresh: {
     type: Function,
     required: true,
   },
 })
-const projectCreateInput = ref({
+const projectCreateInput = ref<CreateProjectInput>({
   name: "",
   description: "",
   avatar: "",
@@ -14,7 +16,6 @@ const projectCreateInput = ref({
   homepage: "",
 })
 
-const createModal = ref(false)
 const isOpen = ref(false)
 
 const { status: createStatus, error: createError, execute } = useFetch("/api/project", {
@@ -29,40 +30,26 @@ async function createProject() {
   if (createError.value) toast.error("An error occurred")
   else {
     toast.success("Your project has been created")
-    createModal.value = false
+    isOpen.value = false
     await refresh()
   }
 }
 
-const teamMembers = ref([
-  {
-    id: 1,
-    name: "Benjamin Canac",
-    avatar: "https://avatars.githubusercontent.com/u/739984?v=4",
-  },
-  {
-    id: 2,
-    name: "Anthony Gore",
-    avatar: "https://avatars.githubusercontent.com/u/904724?v=4",
-  },
-  {
-    id: 3,
-    name: "Sébastien Marroufi",
-    avatar: "https://avatars.githubusercontent.com/u/7547335?v=4",
-  },
-])
-
-function addTeamMember() {
-  teamMembers.value.push({
-    id: teamMembers.value.length + 1,
-    name: "New member",
-    avatar: "",
-  })
+function addTeam(team: Team) {
+  projectCreateInput.value.team = team
 }
 
-function removeTeamMember(index: number) {
-  teamMembers.value.splice(index, 1)
+function removeTeam() {
+  delete projectCreateInput.value.team
 }
+
+const {
+  fetchTeams,
+  loading
+} = useTeams();
+fetchTeams()
+
+const teams = useUserTeams();
 
 function importProject() {
   const input = document.createElement("input")
@@ -124,19 +111,40 @@ function importProject() {
                   Add team members to your project
                 </p>
               </div>
-              <UAvatarGroup size="sm" :max="6">
-                <div class="flex size-8 cursor-pointer items-center justify-center rounded-full border border-dashed border-gray-400" @click="addTeamMember">
-                  +
+              <div>
+                <USkeleton v-if="loading" class="h-8" />
+                <div v-else>
+                  <div v-if="projectCreateInput.team" class="flex items-center justify-between">
+                    <div class="flex flex-col gap-2">
+                      <h3 class="text-xs font-semibold text-neutral-600 dark:text-neutral-400">
+                        {{ projectCreateInput.team.name }}
+                      </h3>
+                      <TeamMembers :team-id="projectCreateInput.team.id" :members="projectCreateInput.team.members" display />
+                    </div>
+                    <UButton
+                      variant="soft"
+                      color="red"
+                      class="text-xs"
+                      label="Unlink"
+                      icon="i-lucide-unlink"
+                      @click="removeTeam"
+                    />
+                  </div>
+                  <div v-else class="flex flex-col gap-4">
+                    <div v-if="teams.length !== 0" class="flex flex-col gap-4">
+                      <div v-for="team in teams" :key="team.id" class="divide-y divide-gray-100 dark:divide-gray-800">
+                        <ProjectTeamAssign :team="team" :project-id="0" is-emit @add-team="addTeam" />
+                      </div>
+                    </div>
+                    <div v-else class="flex flex-col items-center justify-center gap-2">
+                      <p class="text-pretty text-xs text-neutral-500 dark:text-neutral-400">
+                        You don't have any teams yet
+                      </p>
+                      <TeamCreate>Create one</TeamCreate>
+                    </div>
+                  </div>
                 </div>
-                <UAvatar
-                  v-for="(member, index) in teamMembers"
-                  :key="member.id"
-                  :src="member.avatar"
-                  :alt="member.name"
-                  size="sm"
-                  @click="removeTeamMember(index)"
-                />
-              </UAvatarGroup>
+              </div>
             </div>
             <UDivider class="my-4" />
             <div class="flex flex-col gap-4">

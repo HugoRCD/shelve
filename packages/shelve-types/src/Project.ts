@@ -20,12 +20,13 @@ export type Project = {
   variables?: Variable[];
 };
 
-export type ProjectCreateInput = {
+export type CreateProjectInput = {
   id?: number;
   name: string;
-  description?: string;
-  avatar?: string;
+  description: string;
+  avatar: string;
   ownerId: number;
+  team?: Team;
 };
 
 export type ProjectUpdateInput = {

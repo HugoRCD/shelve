@@ -71,6 +71,8 @@ model Project {
   users          User[]
   teamId         Int?
   team           Team?       @relation(fields: [teamId], references: [id])
+
+  @@index([name], name: "project_name_index")
 }
 
 model Variables {

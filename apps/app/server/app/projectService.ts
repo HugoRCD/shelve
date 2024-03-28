@@ -1,21 +1,44 @@
-import type { ProjectCreateInput, ProjectUpdateInput } from "@shelve/types";
+import type { CreateProjectInput, ProjectUpdateInput } from "@shelve/types";
 import prisma from "~/server/database/client";
 
-export async function createProject(project: ProjectCreateInput, userId: number) {
-  return prisma.project.create({
-    data: {
-      ...project,
-      ownerId: userId,
-      users: {
-        connect: {
-          id: userId,
+export async function createProject(project: CreateProjectInput, userId: number) {
+  const projectAlreadyExists = await isProjectAlreadyExists(project.name, userId);
+  if (projectAlreadyExists) throw new Error('Project already exists');
+  if (project.team) {
+    return prisma.project.create({
+      data: {
+        ...project,
+        ownerId: userId,
+        users: {
+          connect: {
+            id: userId,
+          }
+        },
+        team: {
+          connect: {
+            id: project.team.id,
+          }
         }
       }
-    }
-  });
+    });
+  } else {
+    return prisma.project.create({
+      data: {
+        ...project,
+        ownerId: userId,
+        users: {
+          connect: {
+            id: userId,
+          }
+        }
+      }
+    });
+  }
 }
 
-export async function updateProject(project: ProjectUpdateInput, projectId: number) {
+export async function updateProject(project: ProjectUpdateInput, projectId: number, userId: number) {
+  await removeCachedUserProjects(userId.toString());
+  await removeCachedProjectById(projectId.toString());
   return prisma.project.update({
     where: {
       id: projectId,
@@ -24,7 +47,7 @@ export async function updateProject(project: ProjectUpdateInput, projectId: numb
   });
 }
 
-export async function getProjectById(id: number) {
+export const getProjectById = cachedFunction(async (id: number) => {
   return prisma.project.findUnique({
     where: {
       id,
@@ -48,7 +71,11 @@ export async function getProjectById(id: number) {
       }
     }
   });
-}
+}, {
+  maxAge: 60 * 60,
+  name: 'getProjectById',
+  getKey: (id: number) => `projectId:${id}`,
+});
 
 export async function addTeamToProject(projectId: number, teamId: number) {
   return prisma.project.update({
@@ -79,16 +106,12 @@ export async function removeTeamFromProject(projectId: number, teamId: number) {
     }
   });
 }
-
-export async function getProjectsByUserId(userId: number) {
+export const getProjectsByUserId = cachedFunction(async (userId: number) => {
   const [projects, teams] = await Promise.all([
     prisma.project.findMany({
       where: {
         ownerId: userId,
       },
-      cacheStrategy: {
-        ttl: 60,
-      }
     }),
     prisma.team.findMany({
       where: {
@@ -100,21 +123,39 @@ export async function getProjectsByUserId(userId: number) {
       },
       include: {
         projects: true,
-      },
-      cacheStrategy: {
-        ttl: 60,
       }
     })
   ]);
   const teamProjects = teams.map(team => team.projects);
   return [...projects, ...teamProjects].flat().filter((project, index, self) => self.findIndex(p => p.id === project.id) === index);
+}, {
+  maxAge: 60 * 60,
+  name: 'getProjectsByUserId',
+  getKey: (userId: number) => `userId:${userId}`,
+});
+
+async function isProjectAlreadyExists(name: string, userId: number) {
+  const project = await prisma.project.findFirst({
+    where: {
+      name: {
+        equals: name,
+        mode: 'insensitive',
+      },
+      ownerId: userId,
+    }
+  });
+  return !!project;
 }
 
 async function removeCachedUserProjects(userId: string) {
   return await useStorage('cache').removeItem(`nitro:functions:getProjectsByUserId:userId:${userId}.json`);
 }
+async function removeCachedProjectById(id: string) {
+  return await useStorage('cache').removeItem(`nitro:functions:getProjectById:projectId:${id}.json`);
+}
 
 export async function deleteProject(id: number, userId: number) {
+  await removeCachedProjectById(id.toString);
   return prisma.project.delete({
     where: {
       id,
