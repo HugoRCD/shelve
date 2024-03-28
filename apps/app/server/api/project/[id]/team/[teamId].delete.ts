@@ -6,4 +6,8 @@ export default defineEventHandler(async (event: H3Event) => {
   const teamId = getRouterParam(event, "teamId") as string;
   if (!id || !teamId) throw createError({ statusCode: 400, statusMessage: "Missing params" });
   await removeTeamFromProject(+id, +teamId);
+  return {
+    statusCode: 200,
+    message: "Team removed from project",
+  };
 });

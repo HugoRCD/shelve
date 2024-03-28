@@ -26,11 +26,9 @@ jobs:
             feat
             fix
             docs
-            dependencies
+            chore
             refactor
             security
-            version
-            other
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

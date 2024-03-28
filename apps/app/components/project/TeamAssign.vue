@@ -19,6 +19,8 @@ const { team, projectId, isEmit } = defineProps({
 
 const loading = ref(false);
 
+const refresh = inject("refresh", () => {}) as Function;
+
 const emit = defineEmits(["addTeam"]);
 async function addTeamToProject(teamId: number) {
   if (isEmit) {
@@ -30,7 +32,6 @@ async function addTeamToProject(teamId: number) {
         method: "POST",
       });
       toast.success("Team added to project");
-      const refresh = inject("refresh") as Function;
       await refresh();
     } catch (error) {
       toast.error("An error occurred");
@@ -46,7 +47,7 @@ async function addTeamToProject(teamId: number) {
       <h3 class="text-xs font-semibold text-neutral-600 dark:text-neutral-400">
         {{ team.name }}
       </h3>
-      <TeamMembers :members="team.members" :team-id="team.id" display />
+      <TeamMembers :members="team.members" :team-id="team.id" />
     </div>
     <div class="flex gap-4">
       <UButton

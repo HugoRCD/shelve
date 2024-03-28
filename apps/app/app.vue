@@ -39,6 +39,7 @@ await useSession().refresh();
         <NuxtPage />
       </NuxtLayout>
       <Toaster
+        close-button
         position="top-center"
       />
     </Body>

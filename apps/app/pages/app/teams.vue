@@ -23,7 +23,6 @@ async function delete_team(teamId: number) {
   deleteLoading.value = true;
   await deleteTeam(teamId);
   deleteLoading.value = false;
-  await fetchTeams();
 }
 
 const columns = [

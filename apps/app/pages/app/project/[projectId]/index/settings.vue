@@ -4,6 +4,8 @@ import type { Ref } from "vue";
 
 const { projectId } = useRoute().params;
 
+const user = useCurrentUser();
+
 const project = inject("project") as Ref<Project>;
 const status = inject("status") as Ref<string>;
 
@@ -27,6 +29,7 @@ const {
 fetchTeams()
 
 const userTeams = useUserTeams();
+const projectTeam = computed(() => userTeams.value.find((team) => team.id === project.value?.teamId));
 
 const removeLoading = ref(false);
 const refresh = inject("refresh") as Function;
@@ -75,9 +78,10 @@ async function removeTeamFromProject(teamId: number) {
             <div>
               <USkeleton v-if="status === 'pending' || loading" class="h-8" />
               <div v-else>
-                <div v-if="project && project.team" class="flex items-center justify-between">
-                  <TeamMembers :team-id="project.teamId" :members="project.team.members" display />
+                <div v-if="project && projectTeam" class="flex items-center justify-between">
+                  <TeamMembers :team-id="project.teamId" :members="projectTeam.members" />
                   <UButton
+                    v-if="projectTeam.members.find(member => member.userId === user.value?.id)?.role === 'OWNER'"
                     variant="soft"
                     color="red"
                     class="text-xs"
@@ -88,7 +92,7 @@ async function removeTeamFromProject(teamId: number) {
                   />
                 </div>
                 <div v-else class="flex flex-col gap-4">
-                  <div v-if="userTeams.length !== 0">
+                  <div v-if="userTeams.length !== 0" class="flex flex-col gap-4">
                     <ProjectTeamAssign v-for="team in userTeams" :key="team.id" :team="team" :project-id="project.id" />
                   </div>
                   <div v-else class="flex flex-col items-center justify-center gap-2">

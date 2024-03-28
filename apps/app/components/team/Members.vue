@@ -5,6 +5,7 @@ import type { PropType } from "vue";
 const { members, teamId, display } = defineProps({
   members: {
     type: Array as PropType<Member[]>,
+    required: true,
   },
   teamId: {
     type: Number,
@@ -17,7 +18,6 @@ const { members, teamId, display } = defineProps({
 });
 
 const {
-  fetchTeams,
   upsertMember,
   removeMember,
 } = useTeams();
@@ -53,7 +53,6 @@ async function upsert_member(teamId: number, email: string, role: TeamRole) {
   newMember.value.email = "";
   newMember.value.role = TeamRole.DEVELOPER;
   loadingMembers.value = false;
-  await fetchTeams();
 }
 
 const loadingRemove = ref(false);
@@ -61,7 +60,6 @@ async function remove_member(teamId: number, memberId: number) {
   loadingRemove.value = true;
   await removeMember(teamId, memberId);
   loadingRemove.value = false;
-  await fetchTeams();
 }
 </script>
 
@@ -93,7 +91,7 @@ async function remove_member(teamId: number, memberId: number) {
         </UCard>
       </template>
     </UPopover>
-    <div>
+    <div v-if="user?.role === Role.ADMIN || user?.role === Role.OWNER" class="flex items-center justify-center">
       <UPopover :popper="{ arrow: true }">
         <UTooltip text="Add member" :ui="{ popper: { placement: 'top' } }">
           <span class="flex size-8 cursor-pointer items-center justify-center rounded-full border border-dashed border-gray-400">+</span>

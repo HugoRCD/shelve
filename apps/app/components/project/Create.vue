@@ -103,13 +103,18 @@ function importProject() {
             <FormGroup v-model="projectCreateInput.description" label="Description" type="textarea" />
             <UDivider class="my-4" />
             <div class="flex flex-col gap-4">
-              <div>
-                <h3 class="font-semibold">
-                  Team Members
-                </h3>
-                <p class="text-pretty text-xs text-neutral-500 dark:text-neutral-400">
-                  Add team members to your project
-                </p>
+              <div class="flex items-center justify-between">
+                <div>
+                  <h3 class="font-semibold">
+                    Team Members
+                  </h3>
+                  <p class="text-pretty text-xs text-neutral-500 dark:text-neutral-400">
+                    Add team members to your project
+                  </p>
+                </div>
+                <TeamCreate variant="soft">
+                  Create a team
+                </TeamCreate>
               </div>
               <div>
                 <USkeleton v-if="loading" class="h-8" />

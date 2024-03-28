@@ -1,6 +1,17 @@
 <script setup lang="ts">
 const teamName = ref("")
 
+defineProps({
+  variant: {
+    type: String,
+    default: "solid",
+  },
+  color: {
+    type: String,
+    default: "primary",
+  },
+})
+
 const {
   createLoading,
   fetchTeams,
@@ -19,7 +30,7 @@ async function create_team(name: string) {
 <template>
   <div>
     <UPopover :popper="{ arrow: true }">
-      <UButton>
+      <UButton :variant :color>
         <slot />
       </UButton>
       <template #panel>

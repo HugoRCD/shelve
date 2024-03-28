@@ -78,6 +78,7 @@ export const getProjectById = cachedFunction(async (id: number) => {
 });
 
 export async function addTeamToProject(projectId: number, teamId: number) {
+  await removeCachedProjectById(projectId.toString());
   return prisma.project.update({
     where: {
       id: projectId,
@@ -93,6 +94,7 @@ export async function addTeamToProject(projectId: number, teamId: number) {
 }
 
 export async function removeTeamFromProject(projectId: number, teamId: number) {
+  await removeCachedProjectById(projectId.toString());
   return prisma.project.update({
     where: {
       id: projectId,
