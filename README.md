@@ -2,19 +2,15 @@
 
 # Shelve CLI
 
-<p align="left">
-  <a aria-label="NPM version" href="https://www.npmjs.com/package/@shelve/cli">
-    <img alt="" src="https://img.shields.io/npm/v/shelve.svg?style=for-the-badge&labelColor=000000&color=E0E0E0">
-  </a>
-  <a aria-label="License" href="https://github.com/HugoRCD/shelve/blob/main/LICENSE">
-    <img alt="" src="https://img.shields.io/npm/l/shelve.svg?style=for-the-badge&labelColor=000000&color=212121">
-  </a>
-  <a aria-label="Follow Hugo on Twitter" href="https://twitter.com/HugoRCD__">
-    <img alt="" src="https://img.shields.io/twitter/follow/HugoRCD__.svg?style=for-the-badge&labelColor=000000&logo=twitter&label=Follow%20Hugo&logoWidth=20&logoColor=white">
-  </a>
-</p>
+<!-- automd:badges color=black license provider=shields -->
 
-The Shelve CLI is a command-line interface for the Shelve platform. It allows you to authenticate with Shelve, pull and push environment variables for your projects.
+[![npm version](https://img.shields.io/npm/v/@shelve/cli?color=black)](https://npmjs.com/package/@shelve/cli)
+[![npm downloads](https://img.shields.io/npm/dm/@shelve/cli?color=black)](https://npmjs.com/package/@shelve/cli)
+[![license](https://img.shields.io/github/license/HugoRCD/shelve?color=black)](https://github.com/HugoRCD/shelve/blob/main/LICENSE)
+
+<!-- /automd -->
+
+The Shelve CLI serves as a command-line interface designed for the [Shelve](https://shelve.hrcd.fr/) platform. This tool enables users to authenticate with Shelve, facilitating the seamless transfer of environment variables for project collaboration within a team directly through the terminal interface.
 
 ## Installation
 
@@ -24,47 +20,54 @@ Install the package globally:
 npm install -g @shelve/cli
 ```
 
-Or use `npx` to run the CLI without installing it:
-
-```sh
-npx @shelve/cli
-```
-
 ## Usage
 
 ```bash
 USAGE shelve upgrade|login|logout|whoami|pull|push
 
 COMMANDS
-   
+
   upgrade   Upgrade the Shelve CLI to the latest version
-  link      Link the current directory to a Shelve project
+  link      Link the current directory with a Shelve project
   unlink    Unlink the current directory from a Shelve project
-  login     Authenticate with Shelve                           
-  logout    Logout the current authenticated user                
+  login     Authenticate with Shelve
+  logout    Logout the current authenticated user
   whoami    Shows the username of the currently logged in user
-  pull      Pull the environement variables for the current project
-  push      Push the environement variables for the current project
+  pull      Retrieve the environement variables from Shelve
+  push      Send the environement variables to Shelve
+  open      Open the current project in the browser
 
 Use shelve <command> --help for more information about a command.
 ```
 
-## Contribution
-
-<details>
-  <summary>Local development</summary>
+### Local development
 
 - Clone this repository
-- Install the latest LTS version of [Node.js](https://nodejs.org/en/)
+- Install latest LTS version of [Node.js](https://nodejs.org/en/)
 - Enable [Corepack](https://github.com/nodejs/corepack) using `corepack enable`
 - Install dependencies using `bun install`
-- Run the CLI using `bun ./src/index.ts`
+- Start development server using `bun dev`
+- Open [http://localhost:3000](http://localhost:3000) in your browser
 
-</details>
+## Contributing
+To start contributing, you can follow these steps:
+
+1. First raise an issue to discuss the changes you would like to make.
+2. Fork the repository.
+3. Create a branch with a descriptive name `add-feature` or `fix-issue`.
+4. Make changes following the local development steps [above](#local-development).
+5. Commit your changes following the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) specification.
+6. Run tests using `bun run test`.
+7. Create a pull request following the [Pull Request Template](.github/PULL_REQUEST_TEMPLATE.md).
+  - To be merged, the pull request must pass the tests/workflow and have at least one approval.
+  - If your changes affect the documentation, make sure to update it.
+  - If your changes affect the code, make sure to update the tests.
+8. Wait for the maintainers to review your pull request.
+9. Once approved, the pull request will be merged in the next release !
 
 <!-- automd:contributors license=MIT author="HugoRCD" -->
 
-Published under the [MIT](https://github.com/HugoRCD/shelve/blob/main/LICENSE) license.
+Published under the [Apache](https://github.com/HugoRCD/shelve/blob/main/LICENSE) license.
 Made by [@HugoRCD](https://github.com/HugoRCD) and [community](https://github.com/HugoRCD/shelve/graphs/contributors) 💛
 <br><br>
 <a href="https://github.com/HugoRCD/shelve/graphs/contributors">
@@ -73,10 +76,13 @@ Made by [@HugoRCD](https://github.com/HugoRCD) and [community](https://github.co
 
 <!-- /automd -->
 
-<!-- automd:with-automd -->
+<!-- automd:with-automd lastUpdate -->
 
 ---
 
 _🤖 auto updated with [automd](https://automd.unjs.io)_
+
+<!-- /automd -->
+
 
 <!-- /automd -->
