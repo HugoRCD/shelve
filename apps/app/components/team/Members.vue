@@ -91,32 +91,30 @@ async function remove_member(teamId: number, memberId: number) {
         </UCard>
       </template>
     </UPopover>
-    <div v-if="user?.role === Role.ADMIN || user?.role === Role.OWNER" class="flex items-center justify-center">
-      <UPopover :popper="{ arrow: true }">
-        <UTooltip text="Add member" :ui="{ popper: { placement: 'top' } }">
-          <span class="flex size-8 cursor-pointer items-center justify-center rounded-full border border-dashed border-gray-400">+</span>
-        </UTooltip>
-        <template #panel>
-          <UCard>
-            <form @submit.prevent="upsert_member(teamId, newMember.email, newMember.role)">
-              <div class="flex flex-col gap-2">
-                <UInput v-model="newMember.email" label="Email" placeholder="Email" />
-                <div class="flex gap-2">
-                  <USelect
-                    v-model="newMember.role"
-                    label="Role"
-                    :options="roles"
-                    value-attribute="value"
-                    option-attribute="label"
-                  />
-                  <UButton label="Add member" :loading="loadingMembers" type="submit" />
-                </div>
+    <UPopover v-if="members.find(member => member.user.id === user?.id)?.role === TeamRole.OWNER" :popper="{ arrow: true }">
+      <UTooltip text="Add member" :ui="{ popper: { placement: 'top' } }">
+        <span class="flex size-8 cursor-pointer items-center justify-center rounded-full border border-dashed border-gray-400">+</span>
+      </UTooltip>
+      <template #panel>
+        <UCard>
+          <form @submit.prevent="upsert_member(teamId, newMember.email, newMember.role)">
+            <div class="flex flex-col gap-2">
+              <UInput v-model="newMember.email" label="Email" placeholder="Email" />
+              <div class="flex gap-2">
+                <USelect
+                  v-model="newMember.role"
+                  label="Role"
+                  :options="roles"
+                  value-attribute="value"
+                  option-attribute="label"
+                />
+                <UButton label="Add member" :loading="loadingMembers" type="submit" />
               </div>
-            </form>
-          </UCard>
-        </template>
-      </UPopover>
-    </div>
+            </div>
+          </form>
+        </UCard>
+      </template>
+    </UPopover>
   </UAvatarGroup>
   <UAvatarGroup v-else :ui="{ ring: 'ring-0' }">
     <TeamMember v-for="member in members" :key="member.id" :member="member" />
