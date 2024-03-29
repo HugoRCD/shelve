@@ -1,12 +1,6 @@
 <!-- automd:fetch url="gh:hugorcd/shelve/main/apps/cli/README.md" -->
 
-# Shelve CLI
-
-<!-- automd:badges color=black license provider=shields -->
-
-[![npm version](https://img.shields.io/npm/v/@shelve/cli?color=black)](https://npmjs.com/package/@shelve/cli)
-[![npm downloads](https://img.shields.io/npm/dm/@shelve/cli?color=black)](https://npmjs.com/package/@shelve/cli)
-[![license](https://img.shields.io/github/license/HugoRCD/shelve?color=black)](https://github.com/HugoRCD/shelve/blob/main/LICENSE)
+<!-- ⚠️  (fetch) [GET] "https://raw.githubusercontent.com/hugorcd/shelve/main/apps/cli/README.md": 404 Not Found -->
 
 <!-- /automd -->
 
@@ -67,12 +61,7 @@ To start contributing, you can follow these steps:
 
 <!-- automd:contributors license=MIT author="HugoRCD" -->
 
-Published under the [Apache](https://github.com/HugoRCD/shelve/blob/main/LICENSE) license.
-Made by [@HugoRCD](https://github.com/HugoRCD) and [community](https://github.com/HugoRCD/shelve/graphs/contributors) 💛
-<br><br>
-<a href="https://github.com/HugoRCD/shelve/graphs/contributors">
-<img src="https://contrib.rocks/image?repo=HugoRCD/shelve" />
-</a>
+<!-- ⚠️  (contributors) `github` is required! -->
 
 <!-- /automd -->
 
@@ -80,7 +69,7 @@ Made by [@HugoRCD](https://github.com/HugoRCD) and [community](https://github.co
 
 ---
 
-_🤖 auto updated with [automd](https://automd.unjs.io)_
+_🤖 auto updated with [automd](https://automd.unjs.io) (last updated: Fri Mar 29 2024)_
 
 <!-- /automd -->
 
