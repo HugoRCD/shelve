@@ -52,7 +52,7 @@ To start contributing, you can follow these steps:
 
 1. First raise an issue to discuss the changes you would like to make.
 2. Fork the repository.
-3. Create a branch with a descriptive name `add-feature` or `fix-issue`.
+3. Create a branch using the ticket number like `feature/123` or `fix/123`.
 4. Make changes following the local development steps [above](#local-development).
 5. Commit your changes following the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) specification.
 6. Run tests using `bun run test`.

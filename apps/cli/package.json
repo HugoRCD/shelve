@@ -3,7 +3,11 @@
   "version": "0.1.4",
   "description": "The command-line interface for Shelve",
   "author": "HugoRCD",
-  "repository": "https://github.com/HugoRCD/shelve",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HugoRCD/shelve.git",
+    "directory": "packages/cli"
+  },
   "bugs": {
     "url": "https://github.com/HugoRCD/shelve/issues"
   },
@@ -14,7 +18,9 @@
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
-    "release": "bun run build && npm publish"
+    "release": "bun run build && npm publish",
+    "test": "vitest",
+    "coverage": "vitest run --coverage"
   },
   "devDependencies": {
     "@nuxt/eslint-config": "^0.2.0",
@@ -23,7 +29,8 @@
     "@types/bun": "latest",
     "@types/semver": "^7.5.8",
     "automd": "^0.3.6",
-    "eslint": "^8.57.0"
+    "eslint": "^8.57.0",
+    "vitest": "^1.4.0"
   },
   "peerDependencies": {
     "typescript": "^5.4.3"
