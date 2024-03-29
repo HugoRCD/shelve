@@ -1,4 +1,4 @@
-name: "validate pr title"
+name: validate pr title
 
 on:
   pull_request_target:
@@ -28,7 +28,9 @@ jobs:
             docs
             chore
             refactor
-            security
+            revert
+            style
+            test
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
