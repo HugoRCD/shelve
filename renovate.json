@@ -1,5 +1,5 @@
 {
   "extends": [
-    "github>mockline/renovate-config"
+    "github>hugorcd/renovate-config"
   ]
 }
