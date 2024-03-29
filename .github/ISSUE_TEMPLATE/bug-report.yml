@@ -10,18 +10,12 @@ body:
     id: env
     attributes:
       label: Environment
-      description: You can use `npx nuxi info` to fill this section
-      placeholder: |
-        - Operating System: `Darwin`
-        - Node Version:     `v18.16.0`
-        - Nuxt Version:     `3.7.3`
-        - CLI Version:      `3.8.4`
-        - Nitro Version:    `2.6.3`
-        - Package Manager:  `pnpm@8.7.4`
-        - Builder:          `-`
-        - User Config:      `-`
-        - Runtime Modules:  `-`
-        - Build Modules:    `-`
+      description: |
+        Please complete the following information, for example:
+        - OS: Windows 10
+        - Browser: Chrome 88
+        - Node.js version: 14.15.4
+        - Package manager: npm 6.14.10
     validations:
       required: true
   - type: input

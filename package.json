@@ -10,7 +10,7 @@
     "test": "turbo test",
     "typecheck": "turbo typecheck",
     "prepare": "husky",
-    "release": "changelogen --release",
+    "release": "changelogen --release --push",
     "gh:release": "changelogen gh release"
   },
   "devDependencies": {

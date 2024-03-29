@@ -10,11 +10,11 @@ body:
     id: description
     attributes:
       label: Description
-      description: A clear and concise description of what you think would be an helpful addition to the module, including the possible use cases and alternatives you have considered. If you have a working prototype or module that implements it, please include a link.
+      description: A clear and concise description of what you think would be an helpful addition to the project, including the possible use cases and alternatives you have considered.
     validations:
       required: true
   - type: textarea
-    id: additonal
+    id: additional
     attributes:
       label: Additional context
       description: If applicable, add any other context or screenshots here.
