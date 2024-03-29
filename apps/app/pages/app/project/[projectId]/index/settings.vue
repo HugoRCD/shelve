@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Project } from "@shelve/types";
+import { type Project, TeamRole } from "@shelve/types";
 import type { Ref } from "vue";
 
 const { projectId } = useRoute().params;
@@ -81,7 +81,7 @@ async function removeTeamFromProject(teamId: number) {
                 <div v-if="project && projectTeam" class="flex items-center justify-between">
                   <TeamMembers :team-id="project.teamId" :members="projectTeam.members" />
                   <UButton
-                    v-if="projectTeam.members.find(member => member.userId === user.value?.id)?.role === 'OWNER'"
+                    v-if="projectTeam.members.find(member => member.userId === user?.id)?.role === TeamRole.OWNER"
                     variant="soft"
                     color="red"
                     class="text-xs"

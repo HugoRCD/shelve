@@ -25,7 +25,9 @@ export type CreateProjectInput = {
   name: string;
   description: string;
   avatar: string;
-  ownerId: number;
+  repository: string;
+  projectManager: string;
+  homepage: string;
   team?: Team;
 };
 
