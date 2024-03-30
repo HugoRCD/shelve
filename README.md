@@ -61,11 +61,11 @@ To start contributing, you can follow these steps:
 
 <!-- automd:contributors license=Apache author=HugoRCD github="hugorcd/shelve" -->
 
-Published under the [APACHE](https://github.com/HugoRCD/shelve/blob/main/LICENSE) license.
-Made by [@HugoRCD](https://github.com/HugoRCD) and [community](https://github.com/HugoRCD/shelve/graphs/contributors) 💛
+Published under the [APACHE](https://github.com/hugorcd/shelve/blob/main/LICENSE) license.
+Made by [@HugoRCD](https://github.com/HugoRCD) and [community](https://github.com/hugorcd/shelve/graphs/contributors) 💛
 <br><br>
-<a href="https://github.com/HugoRCD/shelve/graphs/contributors">
-<img src="https://contrib.rocks/image?repo=HugoRCD/shelve" />
+<a href="https://github.com/hugorcd/shelve/graphs/contributors">
+<img src="https://contrib.rocks/image?repo=hugorcd/shelve" />
 </a>
 
 <!-- /automd -->
