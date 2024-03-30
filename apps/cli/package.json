@@ -3,11 +3,16 @@
   "version": "0.1.4",
   "description": "The command-line interface for Shelve",
   "author": "HugoRCD",
-  "repository": "https://github.com/HugoRCD/shelve",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HugoRCD/shelve.git",
+    "directory": "apps/cli"
+  },
+  "funding": "https://github.com/sponsors/HugoRCD",
   "bugs": {
     "url": "https://github.com/HugoRCD/shelve/issues"
   },
-  "homepage": "https://github.com/HugoRCD/shelve#readme",
+  "homepage": "https://shelve.hrcd.fr",
   "scripts": {
     "build": "automd && unbuild",
     "start": "node ./dist/index.mjs",
