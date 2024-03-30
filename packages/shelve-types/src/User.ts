@@ -10,7 +10,7 @@ export type User = {
   password: string | null;
   otp: string | null;
   avatar: string;
-  role: Role;
+  role: Role | string;
   createdAt: Date;
   updatedAt: Date;
 };

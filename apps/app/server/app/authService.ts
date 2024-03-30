@@ -4,7 +4,7 @@ import { createSession } from '~/server/app/sessionService'
 import { getUserByEmail } from '~/server/app/userService'
 import prisma from '~/server/database/client'
 
-export async function login(createSessionDto: CreateSessionInput) {
+export async function login(createSessionDto: CreateSessionInput): Promise<{ user: User; authToken: string }> {
   const user = await getUserByEmail(createSessionDto.email.trim())
   if (!user) throw createError({ statusCode: 404, statusMessage: 'user_not_found' })
   if (createSessionDto.password && user.password) {

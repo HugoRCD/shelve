@@ -6,7 +6,7 @@ export async function createProject(project: CreateProjectInput, userId: number)
   const projectAlreadyExists = await isProjectAlreadyExists(project.name, userId)
   if (projectAlreadyExists) throw new Error('Project already exists')
   if (project.team) {
-    return prisma.project.create({
+    return await prisma.project.create({
       data: {
         ...project,
         ownerId: userId,
@@ -23,7 +23,7 @@ export async function createProject(project: CreateProjectInput, userId: number)
       }
     })
   }
-  return prisma.project.create({
+  return await prisma.project.create({
     data: {
       ...project,
       ownerId: userId,
@@ -34,7 +34,6 @@ export async function createProject(project: CreateProjectInput, userId: number)
       }
     }
   })
-
 }
 
 export async function updateProject(project: ProjectUpdateInput, projectId: number, userId: number) {
@@ -150,13 +149,6 @@ async function isProjectAlreadyExists(name: string, userId: number) {
   return !!project
 }
 
-async function removeCachedUserProjects(userId: string) {
-  return await useStorage('cache').removeItem(`nitro:functions:getProjectsByUserId:userId:${userId}.json`)
-}
-async function removeCachedProjectById(id: string) {
-  return await useStorage('cache').removeItem(`nitro:functions:getProjectById:projectId:${id}.json`)
-}
-
 export async function deleteProject(id: string, userId: number) {
   await removeCachedUserProjects(userId.toString())
   await removeCachedProjectById(id)
@@ -166,4 +158,11 @@ export async function deleteProject(id: string, userId: number) {
       ownerId: userId,
     }
   })
+}
+
+async function removeCachedUserProjects(userId: string) {
+  return await useStorage('cache').removeItem(`nitro:functions:getProjectsByUserId:userId:${userId}.json`)
+}
+async function removeCachedProjectById(id: string) {
+  return await useStorage('cache').removeItem(`nitro:functions:getProjectById:projectId:${id}.json`)
 }

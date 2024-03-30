@@ -3,6 +3,7 @@ import { updateUser } from '~/server/app/userService'
 
 export default eventHandler(async (event: H3Event) => {
   const user = event.context.user
+  const authToken = event.context.authToken
   const updateUserInput = await readBody(event)
-  return await updateUser(user, updateUserInput)
+  return await updateUser(user, updateUserInput, authToken)
 })

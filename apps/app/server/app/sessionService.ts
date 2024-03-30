@@ -1,10 +1,11 @@
 import type { User, SessionWithCurrent, CreateSessionInput } from '@shelve/types'
 import jwt from 'jsonwebtoken'
 import prisma from '~/server/database/client'
+import { removeCachedUserToken } from '~/server/app/userService'
 
 const runtimeConfig = useRuntimeConfig().private
 
-export async function createSession(user: User, createSessionDto: CreateSessionInput) {
+export async function createSession(user: User, createSessionDto: CreateSessionInput): Promise<{ user: User; authToken: string }> {
   const authToken = jwt.sign(
     {
       id: user.id,
@@ -42,8 +43,9 @@ export async function getSessions(userId: number, authToken: string): Promise<Se
   })) as SessionWithCurrent[]
 }
 
-export async function deleteSession(authToken: string, userId: number) {
-  return await prisma.session.delete({
+export async function deleteSession(authToken: string, userId: number): Promise<void> {
+  await removeCachedUserToken(authToken)
+  await prisma.session.delete({
     where: {
       authToken,
       userId,
@@ -51,8 +53,8 @@ export async function deleteSession(authToken: string, userId: number) {
   })
 }
 
-export async function deleteSessions(userId: number, authToken: string) {
-  return await prisma.session.deleteMany({
+export async function deleteSessions(userId: number, authToken: string): Promise<void> {
+  await prisma.session.deleteMany({
     where: {
       userId,
       authToken: {
