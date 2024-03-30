@@ -23,7 +23,7 @@
   },
   "devDependencies": {
     "@iconify-json/lucide": "^1.1.178",
-    "@linear/sdk": "^19.2.0",
+    "@linear/sdk": "^19.3.0",
     "@nuxt/eslint-config": "^0.2.0",
     "@nuxt/fonts": "latest",
     "@nuxt/image": "latest",
@@ -46,7 +46,7 @@
     "nuxt": "latest",
     "nuxt-build-cache": "latest",
     "octokit": "^3.1.2",
-    "openai": "^4.29.2",
+    "openai": "^4.30.0",
     "prisma": "^5.11.0",
     "resend": "^3.2.0",
     "ua-parser-js": "^1.0.37",
