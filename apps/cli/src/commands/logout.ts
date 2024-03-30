@@ -1,13 +1,13 @@
-import { loadUserConfig, writeUserConfig } from '../utils/config'
 import { defineCommand } from 'citty'
 import { consola } from 'consola'
+import { loadUserConfig, writeUserConfig } from '../utils/config'
 
 export default defineCommand({
   meta: {
     name: 'logout',
     description: 'Logout the current authenticated user',
   },
-  async setup() {
+  setup() {
     const user = loadUserConfig()
     if (!user.authToken) {
       consola.info('Not currently logged in.')

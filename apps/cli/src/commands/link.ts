@@ -1,6 +1,6 @@
-import { getProjectByName, getProjects, writeProjectConfig } from "../utils/projects.ts";
 import { defineCommand } from 'citty'
 import { consola } from 'consola'
+import { getProjectByName, getProjects, writeProjectConfig } from '../utils/projects.ts'
 
 export default defineCommand({
   meta: {
@@ -16,44 +16,44 @@ export default defineCommand({
     }
   },
   async run(ctx) {
-    const name = ctx.args._[0] || ctx.args.name;
+    const name = ctx.args._[0] || ctx.args.name
     if (name) {
-      consola.start(`Fetching project ${name}...`);
-      const project = await getProjectByName(name);
+      consola.start(`Fetching project ${name}...`)
+      const project = await getProjectByName(name)
       if (!project) {
-        consola.error(`Project with name ${name} not found`);
-        return;
+        consola.error(`Project with name ${name} not found`)
+        return
       }
-      writeProjectConfig(project);
-      consola.success(`Project ${name} linked successfully`);
-      process.exit(0);
+      writeProjectConfig(project)
+      consola.success(`Project ${name} linked successfully`)
+      process.exit(0)
     }
-    consola.start("Fetching projects...");
-    const projects = await getProjects();
+    consola.start('Fetching projects...')
+    const projects = await getProjects()
     if (!projects.length) {
-      consola.error("No projects found");
-      return;
+      consola.error('No projects found')
+      return
     }
 
     try {
-      const selectedProject = await consola.prompt("Select a project to link", {
-        type: "select",
+      const selectedProject = await consola.prompt('Select a project to link', {
+        type: 'select',
         options: projects.map((project: any) => ({
           label: project.name,
           value: project.id
         })),
-      }) as unknown as number;
+      }) as unknown as number
 
-      const project = projects.find((project: any) => project.id === selectedProject);
+      const project = projects.find((project: any) => project.id === selectedProject)
       if (!project) {
-        consola.error("An error occurred while selecting the project");
-        return;
+        consola.error('An error occurred while selecting the project')
+        return
       }
 
-      writeProjectConfig(project);
-      consola.success("Project linked successfully");
+      writeProjectConfig(project)
+      consola.success('Project linked successfully')
     } catch (e) {
-      consola.error("An error occurred while selecting the project");
+      consola.error('An error occurred while selecting the project')
     }
   },
 })

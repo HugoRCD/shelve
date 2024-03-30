@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { copyToClipboard } from "~/composables/useClipboard";
-import type { Variable } from "@shelve/types";
-import type { PropType, Ref } from 'vue';
+import type { Variable } from '@shelve/types'
+import type { PropType, Ref } from 'vue'
+import { copyToClipboard } from '~/composables/useClipboard'
 
-const { refresh, variable, variables, projectId } = defineProps({
+const { refresh, variable, projectId } = defineProps({
   refresh: {
     type: Function,
     required: true,
@@ -26,11 +26,11 @@ const {
   deleteLoading,
   updateVariable,
   deleteVariable,
-} = useVariables(refresh, projectId);
+} = useVariables(refresh, projectId)
 
-const localVariable = toRef(variable) as Ref<Variable>;
-const selectedEnvironment = ref(variable.environment.split("|"));
-const environment = computed(() => selectedEnvironment.value.join("|"));
+const localVariable = toRef(variable) as Ref<Variable>
+const selectedEnvironment = ref(variable.environment.split('|'))
+const environment = computed(() => selectedEnvironment.value.join('|'))
 
 const variableToUpdate = computed(() => {
   return {
@@ -43,23 +43,23 @@ const showEdit = ref(false)
 const items = [
   [
     {
-      label: "Edit",
-      icon: "i-lucide-pen-line",
+      label: 'Edit',
+      icon: 'i-lucide-pen-line',
       click: () => showEdit.value = !showEdit.value
     },
     {
-      label: "Copy full variable",
-      icon: "i-lucide-clipboard-plus",
-      click: () => copyToClipboard(`${localVariable.value.key}=${localVariable.value.value}`, "Variable copied to clipboard")
+      label: 'Copy full variable',
+      icon: 'i-lucide-clipboard-plus',
+      click: () => copyToClipboard(`${localVariable.value.key}=${localVariable.value.value}`, 'Variable copied to clipboard')
     },
     {
-      label: "Delete",
-      icon: "i-lucide-trash",
-      iconClass: "text-red-500 dark:text-red-500",
+      label: 'Delete',
+      icon: 'i-lucide-trash',
+      iconClass: 'text-red-500 dark:text-red-500',
       click: () => deleteVariable(localVariable.value.id, environment.value)
     }
   ]
-];
+]
 </script>
 
 <template>

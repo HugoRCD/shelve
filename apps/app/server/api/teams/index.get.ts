@@ -1,8 +1,8 @@
-import prisma from "~/server/database/client";
-import { H3Event } from "h3";
+import { H3Event } from 'h3'
+import prisma from '~/server/database/client'
 
 export default eventHandler(async (event: H3Event) => {
-  const user = event.context.user;
+  const user = event.context.user
   return await prisma.team.findMany({
     where: {
       members: {
@@ -25,5 +25,5 @@ export default eventHandler(async (event: H3Event) => {
         }
       }
     }
-  });
-});
+  })
+})

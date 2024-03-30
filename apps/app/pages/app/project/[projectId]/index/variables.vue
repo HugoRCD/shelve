@@ -2,7 +2,7 @@
 const { projectId } = useRoute().params
 
 const { data: variables, status, refresh } = useFetch(`/api/variable/project/${projectId}`, {
-  method: "GET",
+  method: 'GET',
   watch: false,
 })
 </script>

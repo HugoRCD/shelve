@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { PropType } from "vue";
+import type { PropType } from 'vue'
 
 defineProps({
   label: {
@@ -11,8 +11,8 @@ defineProps({
     default: false,
   },
   type: {
-    type: String as PropType<"text" | "email" | "password" | "textarea">,
-    default: "text",
+    type: String as PropType<'text' | 'email' | 'password' | 'textarea'>,
+    default: 'text',
   },
   placeholder: {
     type: String,

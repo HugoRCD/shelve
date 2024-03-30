@@ -1,45 +1,45 @@
 <script setup lang="ts">
-import type { DeviceInfo } from "@shelve/types";
-import UAParser from "ua-parser-js";
-import type { Ref } from "vue";
+import type { DeviceInfo } from '@shelve/types'
+import UAParser from 'ua-parser-js'
+import type { Ref } from 'vue'
 
-const { title } = useAppConfig();
+const { title } = useAppConfig()
 
 definePageMeta({
   layout: 'auth',
   middleware: 'guest-only'
-});
+})
 
-const route = useRoute();
-const otpMode = ref(route.query.email ? true : false);
+const route = useRoute()
+const otpMode = ref(!!route.query.email)
 
-const user = useCurrentUser();
-const email = ref(route.query.email || '');
-const password = ref('');
-const otp = ref(route.query.otp || '');
+const user = useCurrentUser()
+const email = ref(route.query.email || '')
+const password = ref('')
+const otp = ref(route.query.otp || '')
 
-const deviceInfo = ref<DeviceInfo>();
+const deviceInfo = ref<DeviceInfo>()
 
-const usePassword = useCookie("usePassword") as Ref<boolean>;
-const passwordMode = ref(usePassword.value);
+const usePassword = useCookie('usePassword') as Ref<boolean>
+const passwordMode = ref(usePassword.value)
 defineShortcuts({
   meta_k: {
     usingInput: true,
     handler: () => {
-      passwordMode.value = !passwordMode.value;
+      passwordMode.value = !passwordMode.value
     }
   }
 })
 
-const { status, error, execute } = useFetch("/api/auth/send-code", {
-  method: "POST",
+const { status, error, execute } = useFetch('/api/auth/send-code', {
+  method: 'POST',
   body: { email },
   watch: false,
   immediate: false
 })
 
-const { data, status: verifyStatus, error: verifyError, execute: verify } = useFetch("/api/auth/login", {
-  method: "POST",
+const { data, status: verifyStatus, error: verifyError, execute: verify } = useFetch('/api/auth/login', {
+  method: 'POST',
   body: { email, otp, password, deviceInfo },
   watch: false,
   immediate: false
@@ -47,47 +47,47 @@ const { data, status: verifyStatus, error: verifyError, execute: verify } = useF
 
 const sendOtp = async () => {
   if (!email.value) {
-    toast.error("Please fill in all required fields.");
-    return;
+    toast.error('Please fill in all required fields.')
+    return
   }
-  await execute();
+  await execute()
   if (!error.value) {
-    toast.success("Your code has been sent!");
-    otpMode.value = true;
+    toast.success('Your code has been sent!')
+    otpMode.value = true
   } else {
-    toast.error("An error occurred while sending your code.");
+    toast.error('An error occurred while sending your code.')
   }
-};
+}
 
 const login = async () => {
   if (!otp) {
-    toast.error("Please fill in all required fields.");
-    return;
+    toast.error('Please fill in all required fields.')
+    return
   }
-  await verify();
+  await verify()
   if (!verifyError.value && data.value) {
-    toast.success(`Welcome back, ${data.value.username || data.value.email}!`);
-    user.value = data.value;
-    await useRouter().push("/app/projects")
+    toast.success(`Welcome back, ${data.value.username || data.value.email}!`)
+    user.value = data.value
+    await useRouter().push('/app/projects')
   } else {
-    toast.error("An error occurred while verifying your code.");
+    toast.error('An error occurred while verifying your code.')
   }
-};
+}
 
 function useLoginOrSendOtp() {
-  return passwordMode.value ? login() : sendOtp();
+  return passwordMode.value ? login() : sendOtp()
 }
 
 onMounted(() => {
-  const parser = new UAParser();
-  const parserResults = parser.getResult();
-  const device = `${parserResults.device.vendor} ${parserResults.device.model}`;
-  const os = `${parserResults.os.name} ${parserResults.os.version}`;
-  const browser = `${parserResults.browser.name} ${parserResults.browser.version}`;
+  const parser = new UAParser()
+  const parserResults = parser.getResult()
+  const device = `${parserResults.device.vendor} ${parserResults.device.model}`
+  const os = `${parserResults.os.name} ${parserResults.os.version}`
+  const browser = `${parserResults.browser.name} ${parserResults.browser.version}`
   deviceInfo.value = {
     userAgent: `${device} - ${os} - ${browser}`,
   }
-});
+})
 </script>
 
 <template>

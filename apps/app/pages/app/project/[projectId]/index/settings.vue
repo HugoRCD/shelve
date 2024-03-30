@@ -1,51 +1,51 @@
 <script setup lang="ts">
-import { type Project, TeamRole } from "@shelve/types";
-import type { Ref } from "vue";
+import { type Project, TeamRole } from '@shelve/types'
+import type { Ref } from 'vue'
 
-const { projectId } = useRoute().params;
+const { projectId } = useRoute().params
 
-const user = useCurrentUser();
+const user = useCurrentUser()
 
-const project = inject("project") as Ref<Project>;
-const status = inject("status") as Ref<string>;
+const project = inject('project') as Ref<Project>
+const status = inject('status') as Ref<string>
 
 const { status: updateStatus, error: updateError, execute } = useFetch(`/api/project/${projectId}`, {
-  method: "PUT",
+  method: 'PUT',
   body: project,
   watch: false,
   immediate: false,
 })
 
 async function updateCurrentProject() {
-  await execute();
-  if (updateError.value) toast.error("An error occurred");
-  else toast.success("Your project has been updated");
+  await execute()
+  if (updateError.value) toast.error('An error occurred')
+  else toast.success('Your project has been updated')
 }
 
 const {
   fetchTeams,
   loading
-} = useTeams();
+} = useTeams()
 fetchTeams()
 
-const userTeams = useUserTeams();
-const projectTeam = computed(() => userTeams.value.find((team) => team.id === project.value?.teamId));
+const userTeams = useUserTeams()
+const projectTeam = computed(() => userTeams.value.find((team) => team.id === project.value?.teamId))
 
-const removeLoading = ref(false);
-const refresh = inject("refresh") as Function;
+const removeLoading = ref(false)
+const refresh = inject('refresh') as Function
 
 async function removeTeamFromProject(teamId: number) {
-  removeLoading.value = true;
+  removeLoading.value = true
   try {
     await $fetch(`/api/project/${projectId}/team/${teamId}`, {
-      method: "DELETE",
-    });
-    toast.success("Team removed from project");
-    await refresh();
+      method: 'DELETE',
+    })
+    toast.success('Team removed from project')
+    await refresh()
   } catch (error) {
-    toast.error("An error occurred");
+    toast.error('An error occurred')
   }
-  removeLoading.value = false;
+  removeLoading.value = false
 }
 </script>
 

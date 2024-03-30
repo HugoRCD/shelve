@@ -5,59 +5,59 @@ const props = defineProps({
     default: 6
   },
   disabled: Boolean
-});
+})
 
 const otpRef = ref<HTMLDivElement>()
-const otpInputs = ref<Array<HTMLInputElement | null>>([]);
+const otpInputs = ref<Array<HTMLInputElement | null>>([])
 
-const digits = reactive<[string | null]>([null]);
+const digits = reactive<[string | null]>([null])
 
-const otp = defineModel({ type: String });
+const otp = defineModel({ type: String })
 
 for (let i = 0; i < props.digitCount; i++) {
-  digits[i] = otp.value![i] || null;
+  digits[i] = otp.value![i] || null
 }
 
-const emit = defineEmits(['otp:full']);
+const emit = defineEmits(['otp:full'])
 
 const isDigitsFull = function () {
   for (const elem of digits) {
-    if (elem == null || elem == undefined) {
-      return false;
+    if (elem) {
+      return false
     }
   }
-  return true;
+  return true
 }
 
 const handleKeyDown = function (event: KeyboardEvent, index: number) {
-  if (!otpRef.value) return;
-  if (event.key !== "Tab" &&
-      event.key !== "ArrowRight" &&
-      event.key !== "ArrowLeft"
+  if (!otpRef.value) return
+  if (event.key !== 'Tab' &&
+      event.key !== 'ArrowRight' &&
+      event.key !== 'ArrowLeft'
   ) {
-    event.preventDefault();
+    event.preventDefault()
   }
 
-  if (event.key === "Backspace") {
-    digits[index] = null;
-    if (index != 0) {
-      (otpRef.value.children)[index - 1].focus();
+  if (event.key === 'Backspace') {
+    digits[index] = null
+    if (index !== 0) {
+      (otpRef.value.children)[index - 1].focus()
     }
-    otp.value = digits.join('');
-    otp.value = otp.value.slice(0, -1);
-    return;
+    otp.value = digits.join('')
+    otp.value = otp.value.slice(0, -1)
+    return
   }
 
   if ((new RegExp('^([0-9])$')).test(event.key)) {
-    digits[index] = event.key;
-    if (index != props.digitCount - 1) {
-      (otpRef.value.children)[index + 1].focus();
+    digits[index] = event.key
+    if (index !== props.digitCount - 1) {
+      (otpRef.value.children)[index + 1].focus()
     }
-    otp.value = digits.join('');
+    otp.value = digits.join('')
   }
 
   if (isDigitsFull()) {
-    emit('otp:full', otp.value);
+    emit('otp:full', otp.value)
   }
 }
 </script>
@@ -68,12 +68,12 @@ const handleKeyDown = function (event: KeyboardEvent, index: number) {
       <input
         v-for="(el, index) in digits"
         ref="otpInputs"
-        :key="el+index"
+        :key="`otp-${index}`"
         v-model="digits[index]"
         type="text"
         class="digit-box"
         :autofocus="index === 0"
-        :placeholder="index+1"
+        :placeholder="`${index + 1}`"
         :disabled
         maxlength="1"
         @keydown="handleKeyDown($event, index)"

@@ -1,8 +1,8 @@
-import type { User, SessionWithCurrent, CreateSessionInput } from "@shelve/types";
-import prisma from "~/server/database/client";
-import jwt from "jsonwebtoken";
+import type { User, SessionWithCurrent, CreateSessionInput } from '@shelve/types'
+import jwt from 'jsonwebtoken'
+import prisma from '~/server/database/client'
 
-const runtimeConfig = useRuntimeConfig().private;
+const runtimeConfig = useRuntimeConfig().private
 
 export async function createSession(user: User, createSessionDto: CreateSessionInput) {
   const authToken = jwt.sign(
@@ -13,8 +13,8 @@ export async function createSession(user: User, createSessionDto: CreateSessionI
       email: user.email,
     },
     runtimeConfig.authSecret,
-    { expiresIn: "30d" },
-  );
+    { expiresIn: '30d' },
+  )
   await prisma.session.create({
     data: {
       authToken,
@@ -23,11 +23,11 @@ export async function createSession(user: User, createSessionDto: CreateSessionI
       isCli: createSessionDto.deviceInfo.isCli,
       location: createSessionDto.deviceInfo.location,
     },
-  });
+  })
   return {
     user,
     authToken,
-  };
+  }
 }
 
 export async function getSessions(userId: number, authToken: string): Promise<SessionWithCurrent[]> {
@@ -35,11 +35,11 @@ export async function getSessions(userId: number, authToken: string): Promise<Se
     where: {
       userId,
     },
-  });
+  })
   return sessions.map((session) => ({
     ...session,
     current: session.authToken === authToken,
-  })) as SessionWithCurrent[];
+  })) as SessionWithCurrent[]
 }
 
 export async function deleteSession(authToken: string, userId: number) {
@@ -48,7 +48,7 @@ export async function deleteSession(authToken: string, userId: number) {
       authToken,
       userId,
     },
-  });
+  })
 }
 
 export async function deleteSessions(userId: number, authToken: string) {
@@ -59,5 +59,5 @@ export async function deleteSessions(userId: number, authToken: string) {
         not: authToken,
       },
     },
-  });
+  })
 }

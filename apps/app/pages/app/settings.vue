@@ -1,19 +1,19 @@
 <script setup lang="ts">
-const reduceMotion = useCookie<boolean>("reduceMotion", {
+const reduceMotion = useCookie<boolean>('reduceMotion', {
   watch: true,
-});
+})
 
 function setPrefersReducedMotion() {
   if (reduceMotion.value) {
-    document.documentElement.setAttribute("data-reduce-motion", "reduce");
+    document.documentElement.setAttribute('data-reduce-motion', 'reduce')
   } else {
-    document.documentElement.removeAttribute("data-reduce-motion");
+    document.documentElement.removeAttribute('data-reduce-motion')
   }
 }
 
 watch(reduceMotion, () => {
-  setPrefersReducedMotion();
-});
+  setPrefersReducedMotion()
+})
 </script>
 
 <template>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { Variable } from "@shelve/types";
-import type { PropType } from "vue";
+import type { Variable } from '@shelve/types'
+import type { PropType } from 'vue'
 
 const { refresh, variables, projectId } = defineProps({
   refresh: {
@@ -25,81 +25,81 @@ const {
   addVariable,
   removeVariable,
   createVariables,
-} = useVariables(refresh, projectId);
+} = useVariables(refresh, projectId)
 
 const items = [
   [
     {
-      label: "Copy .env",
+      label: 'Copy .env',
       disabled: true
     }
   ],
   [
     {
-      label: "For production",
-      icon: "i-lucide-clipboard",
-      click: () => copyEnv(variables!, "production")
+      label: 'For production',
+      icon: 'i-lucide-clipboard',
+      click: () => copyEnv(variables!, 'production')
     },
     {
-      label: "For preview",
-      icon: "i-lucide-clipboard",
-      click: () => copyEnv(variables!, "preview")
+      label: 'For preview',
+      icon: 'i-lucide-clipboard',
+      click: () => copyEnv(variables!, 'preview')
     },
     {
-      label: "For development",
-      icon: "i-lucide-clipboard",
-      click: () => copyEnv(variables!, "development")
+      label: 'For development',
+      icon: 'i-lucide-clipboard',
+      click: () => copyEnv(variables!, 'development')
     }
   ],
   [
     {
-      label: "Download .env",
+      label: 'Download .env',
       disabled: true
     },
   ],
   [
     {
-      label: "For production",
-      icon: "i-lucide-download",
-      click: () => downloadEnv(variables!, "production")
+      label: 'For production',
+      icon: 'i-lucide-download',
+      click: () => downloadEnv(variables!, 'production')
     },
     {
-      label: "For preview",
-      icon: "i-lucide-download",
-      click: () => downloadEnv(variables!, "preview")
+      label: 'For preview',
+      icon: 'i-lucide-download',
+      click: () => downloadEnv(variables!, 'preview')
     },
     {
-      label: "For development",
-      icon: "i-lucide-download",
-      click: () => downloadEnv(variables!, "development")
+      label: 'For development',
+      icon: 'i-lucide-download',
+      click: () => downloadEnv(variables!, 'development')
     }
   ],
 ]
 
 onMounted(() => {
-  document.addEventListener("paste", (e) => {
-    const clipboardData = e.clipboardData;
-    if (!clipboardData) return;
-    const pastedData = clipboardData.getData("text");
-    if (!e.target?.closest("#varCreation")) return;
-    if (!pastedData.includes("=")) return;
-    e.preventDefault();
-    const pastedDataArray = pastedData.split("\n");
-    const pastedDataArrayFiltered = pastedDataArray.filter((data) => data !== "");
-    const pastedDataArrayFilteredLength = pastedDataArrayFiltered.length;
-    variablesToCreate.value = pastedDataArrayFilteredLength;
+  document.addEventListener('paste', (e) => {
+    const clipboardData = e.clipboardData
+    if (!clipboardData) return
+    const pastedData = clipboardData.getData('text')
+    if (!e.target?.closest('#varCreation')) return
+    if (!pastedData.includes('=')) return
+    e.preventDefault()
+    const pastedDataArray = pastedData.split('\n')
+    const pastedDataArrayFiltered = pastedDataArray.filter((data) => data !== '')
+    const pastedDataArrayFilteredLength = pastedDataArrayFiltered.length
+    variablesToCreate.value = pastedDataArrayFilteredLength
     variablesInput.value.variables = pastedDataArrayFiltered.map((data, index) => {
-      const [key, value] = data.split("=");
+      const [key, value] = data.split('=')
       return {
         index,
-        key: key.replace(/[\n\r'"]+/g, ""),
-        value: value.replace(/[\n\r'"]+/g, ""),
+        key: key.replace(/[\n\r'"]+/g, ''),
+        value: value.replace(/[\n\r'"]+/g, ''),
         projectId: parseInt(projectId),
         environment: environment.value
-      };
-    });
-  });
-});
+      }
+    })
+  })
+})
 </script>
 
 <template>

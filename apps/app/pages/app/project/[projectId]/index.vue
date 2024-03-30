@@ -1,17 +1,17 @@
 <script setup lang="ts">
 definePageMeta({
-  middleware: "project-redirect"
+  middleware: 'project-redirect'
 })
 
-const { projectId } = useRoute().params;
+const { projectId } = useRoute().params
 
 const {data: project, status, refresh} = useFetch(`/api/project/${projectId}`, {
-  method: "GET",
+  method: 'GET',
   watch: false,
 })
-provide("project", project)
-provide("status", status)
-provide("refresh", refresh)
+provide('project', project)
+provide('status', status)
+provide('refresh', refresh)
 
 const links = [
   {

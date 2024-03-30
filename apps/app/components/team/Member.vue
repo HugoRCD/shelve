@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import type { Member } from "@shelve/types";
-import type { PropType } from "vue";
+import type { Member } from '@shelve/types'
+import type { PropType } from 'vue'
 
 defineProps({
   member: {
     type: Object as PropType<Member>,
     required: true
   }
-});
+})
 </script>
 
 <template>

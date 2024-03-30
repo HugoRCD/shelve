@@ -1,5 +1,5 @@
-import { CreateTeamInput, TeamRole, UpdateTeamInput } from "@shelve/types";
-import prisma from "~/server/database/client";
+import { CreateTeamInput, TeamRole } from '@shelve/types'
+import prisma from '~/server/database/client'
 
 export async function createTeam(createTeamInput: CreateTeamInput, userId: number) {
   return await prisma.team.create({
@@ -30,7 +30,7 @@ export async function createTeam(createTeamInput: CreateTeamInput, userId: numbe
         }
       }
     }
-  });
+  })
 }
 
 export async function upsertMember(teamId: number, addMemberInput: {
@@ -52,14 +52,14 @@ export async function upsertMember(teamId: number, addMemberInput: {
     include: {
       members: true,
     }
-  });
-  if (!team) throw new Error("unauthorized");
+  })
+  if (!team) throw new Error('unauthorized')
   const user = await prisma.user.findFirst({
     where: {
       email: addMemberInput.email,
     },
-  });
-  if (!user) throw new Error("user not found");
+  })
+  if (!user) throw new Error('user not found')
   return await prisma.member.upsert({
     where: {
       id: team.members.find((member) => member.userId === user.id)?.id || -1,
@@ -82,7 +82,7 @@ export async function upsertMember(teamId: number, addMemberInput: {
         }
       }
     }
-  });
+  })
 }
 
 export async function removeMember(teamId: number, memberId: number, requesterId: number) {
@@ -98,13 +98,13 @@ export async function removeMember(teamId: number, memberId: number, requesterId
         },
       },
     },
-  });
-  if (!team) throw new Error("unauthorized");
+  })
+  if (!team) throw new Error('unauthorized')
   return await prisma.member.delete({
     where: {
       id: memberId,
     },
-  });
+  })
 }
 
 export async function deleteTeam(teamId: number, userId: number) {
@@ -118,11 +118,11 @@ export async function deleteTeam(teamId: number, userId: number) {
         },
       },
     },
-  });
-  if (!team) throw new Error("unauthorized");
+  })
+  if (!team) throw new Error('unauthorized')
   return await prisma.team.delete({
     where: {
       id: teamId,
     },
-  });
+  })
 }

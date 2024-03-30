@@ -1,14 +1,14 @@
 <script setup lang="ts">
-const teamName = ref("")
+const teamName = ref('')
 
 defineProps({
   variant: {
     type: String,
-    default: "solid",
+    default: 'solid',
   },
   color: {
     type: String,
-    default: "primary",
+    default: 'primary',
   },
 })
 
@@ -16,14 +16,14 @@ const {
   createLoading,
   fetchTeams,
   createTeam,
-} = useTeams();
+} = useTeams()
 
 async function create_team(name: string) {
-  createLoading.value = true;
-  await createTeam(name);
-  createLoading.value = false;
-  teamName.value = "";
-  await fetchTeams();
+  createLoading.value = true
+  await createTeam(name)
+  createLoading.value = false
+  teamName.value = ''
+  await fetchTeams()
 }
 </script>
 

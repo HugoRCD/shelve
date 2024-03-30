@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { CreateProjectInput, Team } from "@shelve/types";
+import type { CreateProjectInput, Team } from '@shelve/types'
 
 const { refresh } = defineProps({
   refresh: {
@@ -8,18 +8,18 @@ const { refresh } = defineProps({
   },
 })
 const projectCreateInput = ref<CreateProjectInput>({
-  name: "",
-  description: "",
-  avatar: "",
-  repository: "",
-  projectManager: "",
-  homepage: "",
+  name: '',
+  description: '',
+  avatar: '',
+  repository: '',
+  projectManager: '',
+  homepage: '',
 })
 
 const isOpen = ref(false)
 
-const { status: createStatus, error: createError, execute } = useFetch("/api/project", {
-  method: "POST",
+const { status: createStatus, error: createError, execute } = useFetch('/api/project', {
+  method: 'POST',
   body: projectCreateInput,
   watch: false,
   immediate: false,
@@ -27,9 +27,9 @@ const { status: createStatus, error: createError, execute } = useFetch("/api/pro
 
 async function createProject() {
   await execute()
-  if (createError.value) toast.error("An error occurred")
+  if (createError.value) toast.error('An error occurred')
   else {
-    toast.success("Your project has been created")
+    toast.success('Your project has been created')
     isOpen.value = false
     await refresh()
   }
@@ -46,22 +46,22 @@ function removeTeam() {
 const {
   fetchTeams,
   loading
-} = useTeams();
+} = useTeams()
 fetchTeams()
 
-const teams = useUserTeams();
+const teams = useUserTeams()
 
 function importProject() {
-  const input = document.createElement("input")
-  input.type = "file"
-  input.accept = ".json"
+  const input = document.createElement('input')
+  input.type = 'file'
+  input.accept = '.json'
   input.onchange = (e) => {
     const file = (e.target as HTMLInputElement).files?.[0]
     if (file) {
       const reader = new FileReader()
       reader.onload = (e) => {
         const content = e.target?.result
-        if (typeof content === "string") {
+        if (typeof content === 'string') {
           const data = JSON.parse(content)
           projectCreateInput.value = {
             ...projectCreateInput.value,

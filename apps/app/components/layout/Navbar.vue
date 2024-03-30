@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-const navigation = getNavigation("app");
+const navigation = getNavigation('app')
 </script>
 
 <template>

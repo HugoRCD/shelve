@@ -1,42 +1,42 @@
-import { getUserByAuthToken } from "~/server/app/userService";
-import { H3Event } from "h3";
+import { H3Event } from 'h3'
+import { getUserByAuthToken } from '~/server/app/userService'
 
 export default defineEventHandler(async (event: H3Event) => {
   const protectedRoutes = [
-    "/api/auth/logout",
-    "/api/user",
-    "/api/team",
-    "/api/project",
-    "/api/variable",
-    "/api/admin"
-  ];
+    '/api/auth/logout',
+    '/api/user',
+    '/api/team',
+    '/api/project',
+    '/api/variable',
+    '/api/admin'
+  ]
 
   if (!protectedRoutes.some((route) => event.path?.startsWith(route))) {
-    return;
+    return
   }
 
-  const authToken = getCookie(event, "authToken");
+  const authToken = getCookie(event, 'authToken')
   if (!authToken) {
     return sendError(
       event,
       createError({
         statusCode: 401,
-        statusMessage: "unauthorized",
+        statusMessage: 'unauthorized',
       }),
-    );
+    )
   }
-  event.context.authToken = authToken;
+  event.context.authToken = authToken
 
-  const user = event.context.user || (await getUserByAuthToken(authToken));
+  const user = event.context.user || (await getUserByAuthToken(authToken))
   if (!user) {
     return sendError(
       event,
       createError({
         statusCode: 401,
-        statusMessage: "unauthorized",
+        statusMessage: 'unauthorized',
       }),
-    );
+    )
   }
 
-  event.context.user = user;
-});
+  event.context.user = user
+})

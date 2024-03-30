@@ -1,6 +1,6 @@
-import { loadUserConfig, writeUserConfig } from "./config.ts";
 import { ofetch } from 'ofetch'
-import consola from "consola";
+import consola from 'consola'
+import { loadUserConfig, writeUserConfig } from './config.ts'
 
 const SHELVE_API_URL = process.env.NODE_ENV === 'development' ? 'http://localhost:3000/api' : 'https://shelve.hrcd.fr/api'
 
