@@ -6,7 +6,7 @@ export async function createProject(project: CreateProjectInput, userId: number)
   const projectAlreadyExists = await isProjectAlreadyExists(project.name, userId)
   if (projectAlreadyExists) throw new Error('Project already exists')
   if (project.team) {
-    return prisma.project.create({
+    return await prisma.project.create({
       data: {
         ...project,
         ownerId: userId,
@@ -23,7 +23,7 @@ export async function createProject(project: CreateProjectInput, userId: number)
       }
     })
   }
-  return prisma.project.create({
+  return await prisma.project.create({
     data: {
       ...project,
       ownerId: userId,
@@ -34,7 +34,6 @@ export async function createProject(project: CreateProjectInput, userId: number)
       }
     }
   })
-
 }
 
 export async function updateProject(project: ProjectUpdateInput, projectId: number, userId: number) {

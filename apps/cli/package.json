@@ -14,6 +14,7 @@
   },
   "homepage": "https://shelve.hrcd.fr",
   "scripts": {
+    "automd": "automd",
     "build": "automd && unbuild",
     "start": "node ./dist/index.mjs",
     "typecheck": "tsc --noEmit",

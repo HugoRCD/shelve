@@ -21,13 +21,13 @@ export type Project = {
 };
 
 export type CreateProjectInput = {
-  id?: number;
   name: string;
   description: string;
   avatar: string;
   repository: string;
   projectManager: string;
   homepage: string;
+  users: User[];
   team?: Team;
 };
 

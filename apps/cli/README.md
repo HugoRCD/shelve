@@ -38,14 +38,18 @@ COMMANDS
 Use shelve <command> --help for more information about a command.
 ```
 
+<!-- automd:fetch url="gh:hugorcd/markdown/main/src/local_development.md" -->
+
 ### Local development
 
 - Clone this repository
 - Install latest LTS version of [Node.js](https://nodejs.org/en/)
 - Enable [Corepack](https://github.com/nodejs/corepack) using `corepack enable`
 - Install dependencies using `bun install`
-- Start development server using `bun dev`
-- Open [http://localhost:3000](http://localhost:3000) in your browser
+
+<!-- /automd -->
+
+<!-- automd:fetch url="gh:hugorcd/markdown/main/src/contributions.md" -->
 
 ## Contributing
 To start contributing, you can follow these steps:
@@ -53,15 +57,17 @@ To start contributing, you can follow these steps:
 1. First raise an issue to discuss the changes you would like to make.
 2. Fork the repository.
 3. Create a branch using conventional commits and the issue number as the branch name. For example, `feat/123` or `fix/456`.
-4. Make changes following the local development steps [above](#local-development).
+4. Make changes following the local development steps.
 5. Commit your changes following the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) specification.
-6. Run tests using `bun run test`.
-7. Create a pull request following the [Pull Request Template](.github/PULL_REQUEST_TEMPLATE.md).
+6. If your changes affect the code, run tests using `bun run test`.
+7. Create a pull request following the [Pull Request Template](https://github.com/HugoRCD/markdown/blob/main/src/pull_request_template.md).
    - To be merged, the pull request must pass the tests/workflow and have at least one approval.
    - If your changes affect the documentation, make sure to update it.
    - If your changes affect the code, make sure to update the tests.
 8. Wait for the maintainers to review your pull request.
 9. Once approved, the pull request will be merged in the next release !
+
+<!-- /automd -->
 
 <!-- automd:contributors license=Apache author="HugoRCD" -->
 
