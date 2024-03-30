@@ -1,9 +1,3 @@
-<!-- automd:fetch url="gh:hugorcd/shelve/main/apps/cli/README.md" -->
-
-<!-- ⚠️  (fetch) [GET] "https://raw.githubusercontent.com/hugorcd/shelve/main/apps/cli/README.md": 404 Not Found -->
-
-<!-- /automd -->
-
 The Shelve CLI serves as a command-line interface designed for the [Shelve](https://shelve.hrcd.fr/) platform. This tool enables users to authenticate with Shelve, facilitating the seamless transfer of environment variables for project collaboration within a team directly through the terminal interface.
 
 ## Installation
@@ -65,9 +59,14 @@ To start contributing, you can follow these steps:
 
 <!-- /automd -->
 
-<!-- automd:contributors license=MIT author="HugoRCD" -->
+<!-- automd:contributors license=Apache author=HugoRCD github="hugorcd/shelve" -->
 
-<!-- ⚠️  (contributors) `github` is required! -->
+Published under the [APACHE](https://github.com/HugoRCD/shelve/blob/main/LICENSE) license.
+Made by [@HugoRCD](https://github.com/HugoRCD) and [community](https://github.com/HugoRCD/shelve/graphs/contributors) 💛
+<br><br>
+<a href="https://github.com/HugoRCD/shelve/graphs/contributors">
+<img src="https://contrib.rocks/image?repo=HugoRCD/shelve" />
+</a>
 
 <!-- /automd -->
 
@@ -76,8 +75,5 @@ To start contributing, you can follow these steps:
 ---
 
 _🤖 auto updated with [automd](https://automd.unjs.io) (last updated: Sat Mar 30 2024)_
-
-<!-- /automd -->
-
 
 <!-- /automd -->

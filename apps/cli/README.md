@@ -69,7 +69,7 @@ To start contributing, you can follow these steps:
 
 <!-- /automd -->
 
-<!-- automd:contributors license=Apache author="HugoRCD" -->
+<!-- automd:contributors license=Apache author=HugoRCD -->
 
 Published under the [APACHE](https://github.com/HugoRCD/shelve/blob/main/LICENSE) license.
 Made by [@HugoRCD](https://github.com/HugoRCD) and [community](https://github.com/HugoRCD/shelve/graphs/contributors) 💛

@@ -149,13 +149,6 @@ async function isProjectAlreadyExists(name: string, userId: number) {
   return !!project
 }
 
-async function removeCachedUserProjects(userId: string) {
-  return await useStorage('cache').removeItem(`nitro:functions:getProjectsByUserId:userId:${userId}.json`)
-}
-async function removeCachedProjectById(id: string) {
-  return await useStorage('cache').removeItem(`nitro:functions:getProjectById:projectId:${id}.json`)
-}
-
 export async function deleteProject(id: string, userId: number) {
   await removeCachedUserProjects(userId.toString())
   await removeCachedProjectById(id)
@@ -165,4 +158,11 @@ export async function deleteProject(id: string, userId: number) {
       ownerId: userId,
     }
   })
+}
+
+async function removeCachedUserProjects(userId: string) {
+  return await useStorage('cache').removeItem(`nitro:functions:getProjectsByUserId:userId:${userId}.json`)
+}
+async function removeCachedProjectById(id: string) {
+  return await useStorage('cache').removeItem(`nitro:functions:getProjectById:projectId:${id}.json`)
 }

@@ -1,4 +1,4 @@
-import type { User, UserCreateInput, UserUpdateInput } from '@shelve/types'
+import type { publicUser, User, UserCreateInput, UserUpdateInput } from '@shelve/types'
 import { Role } from '@shelve/types'
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcryptjs'
@@ -38,7 +38,7 @@ export async function upsertUser(userCreateInput: UserCreateInput) {
   return formatUser(user)
 }
 
-export async function getUserByEmail(email: string) {
+export async function getUserByEmail(email: string): Promise<User | null> {
   return await prisma.user.findUnique({
     where: {
       email,
@@ -47,15 +47,15 @@ export async function getUserByEmail(email: string) {
   })
 }
 
-export async function deleteUser(userId: number) {
-  return await prisma.user.delete({
+export async function deleteUser(userId: number): Promise<void> {
+  await prisma.user.delete({
     where: {
       id: userId,
     },
   })
 }
 
-export async function getUserByAuthToken(authToken: string) {
+export const getUserByAuthToken = cachedFunction(async (authToken: string): Promise<User> => {
   const session = await prisma.session.findFirst({
     where: {
       authToken,
@@ -64,19 +64,27 @@ export async function getUserByAuthToken(authToken: string) {
       user: true,
     },
   })
-  const user = session?.user
-  if (!user) return null
+  if (!session)
+    throw createError({ statusCode: 400, message: 'Invalid token' })
+  return session.user
+}, {
+  maxAge: 60 * 60,
+  name: 'getUserByAuthToken',
+  getKey: (authToken: string) => `authToken:${authToken}`,
+})
+
+export async function verifyUserToken(token: string, user: User): Promise<boolean> {
   try {
-    const decoded = jwt.verify(session.authToken, runtimeConfig.authSecret) as jwtPayload
-    if (decoded.id !== user.id) return null
+    const decoded = jwt.verify(token, runtimeConfig.authSecret) as jwtPayload
+    if (decoded.id !== user.id) return false
+    return true
   } catch (error) {
-    await deleteSession(authToken, user.id)
-    return null
+    await deleteSession(token, user.id)
+    return false
   }
-  return formatUser(user)
 }
 
-export async function updateUser(user: User, updateUserInput: UserUpdateInput) {
+export async function updateUser(user: User, updateUserInput: UserUpdateInput, authToken: string): Promise<publicUser> {
   const newUsername = updateUserInput.username
   if (newUsername && newUsername !== user.username) {
     const usernameTaken = await prisma.user.findFirst({
@@ -93,5 +101,10 @@ export async function updateUser(user: User, updateUserInput: UserUpdateInput) {
     where: { id: user.id },
     data: updateUserInput,
   })
+  await removeCachedUserToken(authToken)
   return formatUser(updatedUser)
+}
+
+export async function removeCachedUserToken(authToken: string): Promise<void> {
+  await useStorage('cache').removeItem(`nitro:functions:getUserByAuthToken:authToken:${authToken}.json`)
 }
