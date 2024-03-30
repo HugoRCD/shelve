@@ -2,6 +2,7 @@ import type { CreateProjectInput, ProjectUpdateInput } from '@shelve/types'
 import prisma from '~/server/database/client'
 
 export async function createProject(project: CreateProjectInput, userId: number) {
+  await removeCachedUserProjects(userId.toString())
   const projectAlreadyExists = await isProjectAlreadyExists(project.name, userId)
   if (projectAlreadyExists) throw new Error('Project already exists')
   if (project.team) {
@@ -157,6 +158,7 @@ async function removeCachedProjectById(id: string) {
 }
 
 export async function deleteProject(id: string, userId: number) {
+  await removeCachedUserProjects(userId.toString())
   await removeCachedProjectById(id)
   return prisma.project.delete({
     where: {
