@@ -7,10 +7,7 @@
     "index.js"
   ],
   "devDependencies": {
-    "eslint-config-turbo": "^1.13.0",
-    "eslint-plugin-only-warn": "^1.1.0",
-    "@typescript-eslint/parser": "^7.4.0",
-    "@typescript-eslint/eslint-plugin": "^7.4.0",
+    "@hrcd/eslint-config": "^0.0.2",
     "typescript": "^5.4.3"
   }
 }

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { Navigation } from "~/utils/navigation";
-import { capitalize, type PropType } from "vue";
+import { capitalize, type PropType } from 'vue'
+import type { Navigation } from '~/utils/navigation'
 
 defineProps({
   navItem: {
@@ -11,7 +11,7 @@ defineProps({
     type: Boolean,
     default: false,
   },
-});
+})
 </script>
 
 <template>

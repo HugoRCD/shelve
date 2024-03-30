@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { type Member, Role, TeamRole } from "@shelve/types";
-import type { PropType } from "vue";
+import { type Member, Role, TeamRole } from '@shelve/types'
+import type { PropType } from 'vue'
 
 const { members, teamId, display } = defineProps({
   members: {
@@ -15,51 +15,51 @@ const { members, teamId, display } = defineProps({
     type: Boolean,
     default: false,
   },
-});
+})
 
 const {
   upsertMember,
   removeMember,
-} = useTeams();
+} = useTeams()
 
-const user = useCurrentUser();
+const user = useCurrentUser()
 
 const roles = [
   {
-    label: "Developer",
+    label: 'Developer',
     value: TeamRole.DEVELOPER,
   },
   {
-    label: "Admin",
+    label: 'Admin',
     value: TeamRole.ADMIN,
     disabled: user.value?.role !== Role.ADMIN,
   },
   {
-    label: "Owner",
+    label: 'Owner',
     value: TeamRole.OWNER,
     disabled: user.value?.role !== Role.ADMIN
   }
-];
+]
 
 const newMember = ref({
-  email: "",
+  email: '',
   role: TeamRole.DEVELOPER,
-});
+})
 
-const loadingMembers = ref(false);
+const loadingMembers = ref(false)
 async function upsert_member(teamId: number, email: string, role: TeamRole) {
-  loadingMembers.value = true;
-  await upsertMember(teamId, email, role);
-  newMember.value.email = "";
-  newMember.value.role = TeamRole.DEVELOPER;
-  loadingMembers.value = false;
+  loadingMembers.value = true
+  await upsertMember(teamId, email, role)
+  newMember.value.email = ''
+  newMember.value.role = TeamRole.DEVELOPER
+  loadingMembers.value = false
 }
 
-const loadingRemove = ref(false);
+const loadingRemove = ref(false)
 async function remove_member(teamId: number, memberId: number) {
-  loadingRemove.value = true;
-  await removeMember(teamId, memberId);
-  loadingRemove.value = false;
+  loadingRemove.value = true
+  await removeMember(teamId, memberId)
+  loadingRemove.value = false
 }
 </script>
 

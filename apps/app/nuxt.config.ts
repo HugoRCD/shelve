@@ -3,21 +3,21 @@ import { getIconCollections } from '@egoist/tailwindcss-icons'
 export default defineNuxtConfig({
   app: {
     head: {
-      viewport: "width=device-width, initial-scale=1",
-      charset: "utf-8",
+      viewport: 'width=device-width, initial-scale=1',
+      charset: 'utf-8',
       meta: [
         {
-          name: "author",
-          content: "Hugo Richard",
+          name: 'author',
+          content: 'Hugo Richard',
         },
       ],
     },
   },
 
   routeRules: {
-    "/": { isr: true, prerender: true },
-    "/login": { isr: true, prerender: true },
-    "/app/**": { ssr: false },
+    '/': { isr: true, prerender: true },
+    '/login': { isr: true, prerender: true },
+    '/app/**': { ssr: false },
   },
 
   runtimeConfig: {
@@ -33,12 +33,12 @@ export default defineNuxtConfig({
   },
 
   modules: [
-    "@nuxt/image",
-    "@vue-email/nuxt",
-    "@nuxt/ui",
-    "@nuxt/fonts",
-    "@vueuse/nuxt",
-    "nuxt-build-cache"
+    '@nuxt/image',
+    '@vue-email/nuxt',
+    '@nuxt/ui',
+    '@nuxt/fonts',
+    '@vueuse/nuxt',
+    'nuxt-build-cache'
   ],
 
   css: ['~/assets/style/main.css'],

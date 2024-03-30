@@ -1,27 +1,27 @@
 <script setup lang="ts">
-import type { Session } from "@shelve/types";
-import type { PropType } from "vue";
+import type { Session } from '@shelve/types'
+import type { PropType } from 'vue'
 
 const props = defineProps({
   session: {
     type: Object as PropType<Session>,
     required: true,
   },
-});
+})
 
 const { status, error, execute } = await useFetch(`/api/user/session/${props.session.id}`, {
-  method: "DELETE",
+  method: 'DELETE',
   watch: false,
   immediate: false,
 })
 
-const emit = defineEmits(["refresh"]);
+const emit = defineEmits(['refresh'])
 async function logoutSession() {
   await execute()
-  if (error.value) toast.error("An error occurred")
+  if (error.value) toast.error('An error occurred')
   else {
-    toast.success("You have been logged out from this device")
-    emit("refresh")
+    toast.success('You have been logged out from this device')
+    emit('refresh')
   }
 }
 </script>

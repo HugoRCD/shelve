@@ -1,60 +1,59 @@
 <script setup lang="ts">
 const user = useSession().user
 
-const usePassword = useCookie("usePassword")
+const usePassword = useCookie('usePassword')
 
-const password = ref("");
-const passwordConfirmation = ref("");
-const errorMessage = ref("");
+const password = ref('')
+const passwordConfirmation = ref('')
+const errorMessage = ref('')
 
-const updateLoading = ref(false);
+const updateLoading = ref(false)
 
-const { data: sessions, status: sessionsStatus, refresh } = useFetch("/api/user/session", {
-  method: "GET",
+const { data: sessions, status: sessionsStatus, refresh } = useFetch('/api/user/session', {
+  method: 'GET',
 })
 
-const { status: logoutStatus, error: logoutError, execute: logout } = useFetch("/api/user/session", {
-  method: "DELETE",
+const { status: logoutStatus, error: logoutError, execute: logout } = useFetch('/api/user/session', {
+  method: 'DELETE',
   watch: false,
   immediate: false,
 })
 
 async function updateCurrentUser() {
-  updateLoading.value = true;
+  updateLoading.value = true
   if (password.value !== passwordConfirmation.value) {
-    errorMessage.value = "Passwords do not match";
-    toast.error("Passwords do not match");
-    updateLoading.value = false;
-    return;
+    errorMessage.value = 'Passwords do not match'
+    toast.error('Passwords do not match')
+    updateLoading.value = false
+    return
   }
   try {
-    await $fetch("/api/user", {
-      method: "PUT",
+    await $fetch('/api/user', {
+      method: 'PUT',
       body: {
         username: user.value!.username,
         avatar: user.value!.avatar,
         password: password.value || undefined,
       },
-    });
-    toast.success("Profile updated successfully");
+    })
+    toast.success('Profile updated successfully')
   } catch (e) {
-    console.error(e);
-    toast.error("An error occurred");
+    toast.error('An error occurred')
   }
-  updateLoading.value = false;
-  password.value = "";
-  passwordConfirmation.value = "";
+  updateLoading.value = false
+  password.value = ''
+  passwordConfirmation.value = ''
 }
 
 watch([password, passwordConfirmation], () => {
-  errorMessage.value = "";
-});
+  errorMessage.value = ''
+})
 
 async function logoutAll() {
   await logout()
-  if (logoutError.value) toast.error("An error occurred")
+  if (logoutError.value) toast.error('An error occurred')
   else {
-    toast.success("You have been logged out from all devices")
+    toast.success('You have been logged out from all devices')
     await refresh()
   }
 }

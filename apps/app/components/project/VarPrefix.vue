@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import type { Project } from "@shelve/types";
-import type { Ref } from "vue";
+import type { Project } from '@shelve/types'
+import type { Ref } from 'vue'
 
-const project = inject("project") as Ref<Project>;
+const project = inject('project') as Ref<Project>
 
 const prefixList = computed(() => {
-  return project.value.variablePrefix?.replace(/\s/g, "").split(",");
-});
+  return project.value.variablePrefix?.replace(/\s/g, '').split(',')
+})
 
 const key = defineModel({ type: String })
 
@@ -16,7 +16,7 @@ const { y: windowY } = useWindowScroll()
 const isOpen = ref(false)
 const virtualElement = ref({ getBoundingClientRect: () => ({}) })
 
-function onContextMenu () {
+function onContextMenu() {
   const top = unref(y) - unref(windowY)
   const left = unref(x)
 
@@ -30,7 +30,7 @@ function onContextMenu () {
   isOpen.value = true
 }
 
-function addPrefixToInputId (prefix: string) {
+function addPrefixToInputId(prefix: string) {
   if (key.value?.startsWith(prefix)) return
   key.value = `${prefix}${key.value}`
 }

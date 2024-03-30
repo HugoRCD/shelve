@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import type { publicUser } from "@shelve/types";
-import type { Ref } from "vue";
+import type { publicUser } from '@shelve/types'
+import type { Ref } from 'vue'
 
-const navigations = getNavigation("app");
-const admin_navigations = getNavigation("admin");
+const navigations = getNavigation('app')
+const admin_navigations = getNavigation('admin')
 const navItem = navigations.map((nav) => {
   return {
     label: nav.name,
@@ -20,7 +20,7 @@ const adminNavItem = admin_navigations.map((nav) => {
 })
 
 
-const user = useCurrentUser() as Ref<publicUser>;
+const user = useCurrentUser() as Ref<publicUser>
 
 const items = [
   [
@@ -36,7 +36,7 @@ const items = [
     {
       label: 'Sign out',
       icon: 'i-heroicons-arrow-left-on-rectangle',
-      iconClass: "text-red-500 dark:text-red-500",
+      iconClass: 'text-red-500 dark:text-red-500',
       click: () => useSession().clear()
     }
   ]

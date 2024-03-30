@@ -1,16 +1,16 @@
 <script setup lang="ts">
-import { type Team, TeamRole } from "@shelve/types";
+import { type Team, TeamRole } from '@shelve/types'
 
-const user = useCurrentUser();
+const user = useCurrentUser()
 
-const search = ref("")
+const search = ref('')
 
 const {
   teams,
   loading,
   fetchTeams,
   deleteTeam,
-} = useTeams();
+} = useTeams()
 fetchTeams()
 
 const filteredTeams = computed(() => {
@@ -18,51 +18,51 @@ const filteredTeams = computed(() => {
   return teams.value!.filter((team: Team) => team.name.toLowerCase().includes(search.value.toLowerCase()))
 })
 
-const deleteLoading = ref(false);
+const deleteLoading = ref(false)
 async function delete_team(teamId: number) {
-  deleteLoading.value = true;
-  await deleteTeam(teamId);
-  deleteLoading.value = false;
+  deleteLoading.value = true
+  await deleteTeam(teamId)
+  deleteLoading.value = false
 }
 
 const columns = [
   {
-    key: "name",
-    label: "Name",
+    key: 'name',
+    label: 'Name',
     sortable: true,
   },
   {
-    key: "members",
-    label: "Members",
+    key: 'members',
+    label: 'Members',
   },
   {
-    key: "actions",
-    label: "Actions",
+    key: 'actions',
+    label: 'Actions',
   },
-];
+]
 
 const isOwner = (team: Team) => team.members.find(member => member.userId === user.value?.id)?.role === TeamRole.OWNER
 
 const items = (row: Team) => [
   [
     {
-      label: "Edit",
-      icon: "i-lucide-pencil",
+      label: 'Edit',
+      icon: 'i-lucide-pencil',
       disabled: !isOwner(row),
     },
   ],
   [
     {
-      label: "Delete",
-      icon: "i-lucide-trash",
-      iconClass: "text-red-500 dark:text-red-500",
+      label: 'Delete',
+      icon: 'i-lucide-trash',
+      iconClass: 'text-red-500 dark:text-red-500',
       disabled: !isOwner(row),
       click: () => {
         delete_team(row.id)
       },
     },
   ],
-];
+]
 </script>
 
 <template>

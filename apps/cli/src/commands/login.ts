@@ -1,7 +1,7 @@
-import { getComputerName, loadUserConfig, writeUserConfig } from '../utils/config'
-import { $api } from "../utils/connection.ts";
 import { defineCommand } from 'citty'
 import { consola } from 'consola'
+import { getComputerName, loadUserConfig, writeUserConfig } from '../utils/config'
+import { $api } from '../utils/connection.ts'
 
 export default defineCommand({
   meta: {
@@ -12,19 +12,19 @@ export default defineCommand({
     const user = loadUserConfig()
     if (user.authToken) return consola.info(`You are already logged as \`${user.username}\``)
 
-    const email = await consola.prompt('Enter your email') as string;
+    const email = await consola.prompt('Enter your email') as string
     consola.start('Sending code to your email...')
-    await $api("/auth/send-code", {
-      method: "POST",
+    await $api('/auth/send-code', {
+      method: 'POST',
       body: {
         email
       }
     })
     consola.success('Code sent.')
-    const code = await consola.prompt('Enter the code') as string;
+    const code = await consola.prompt('Enter the code') as string
     consola.start('Logging in...')
-    const response = await $api("/auth/login", {
-      method: "POST",
+    const response = await $api('/auth/login', {
+      method: 'POST',
       body: {
         email,
         otp: code,

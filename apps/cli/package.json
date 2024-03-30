@@ -22,7 +22,6 @@
     "release": "bun run build && npm publish"
   },
   "devDependencies": {
-    "@nuxt/eslint-config": "^0.2.0",
     "@shelve/eslint-config": "*",
     "@shelve/types": "*",
     "@types/bun": "latest",

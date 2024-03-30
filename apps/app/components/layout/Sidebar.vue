@@ -1,33 +1,33 @@
 <script setup lang="ts">
-const { isAdmin } = useSession();
-const navigations = getNavigation("app");
-const admin_navigations = getNavigation("admin");
+const { isAdmin } = useSession()
+const navigations = getNavigation('app')
+const admin_navigations = getNavigation('admin')
 
-const route = useRoute();
+const route = useRoute()
 const handleProjectNavigation = () => {
-  const isCryptoRoute = route.path.includes("/app/project/");
+  const isCryptoRoute = route.path.includes('/app/project/')
   const projectNavigation = {
-    title: "Project Details",
-    icon: "i-lucide-folder-open",
+    title: 'Project Details',
+    icon: 'i-lucide-folder-open',
     to: route.path,
-    name: "Project Details",
-  };
+    name: 'Project Details',
+  }
   if (isCryptoRoute) {
-    const indexToReplace = navigations.findIndex((item) => item.to.includes("/app/project/"));
+    const indexToReplace = navigations.findIndex((item) => item.to.includes('/app/project/'))
     if (indexToReplace !== -1) {
-      navigations.splice(indexToReplace, 1, projectNavigation);
+      navigations.splice(indexToReplace, 1, projectNavigation)
     } else {
-      navigations.unshift(projectNavigation);
+      navigations.unshift(projectNavigation)
     }
   } else {
-    const indexToRemove = navigations.findIndex((item) => item.to.includes("/app/project/"));
+    const indexToRemove = navigations.findIndex((item) => item.to.includes('/app/project/'))
     if (indexToRemove !== -1) {
-      navigations.splice(indexToRemove, 1);
+      navigations.splice(indexToRemove, 1)
     }
   }
-};
+}
 
-watch(() => route.path, handleProjectNavigation, { immediate: true });
+watch(() => route.path, handleProjectNavigation, { immediate: true })
 </script>
 
 <template>

@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import type { Navigation } from "~/utils/navigation";
-import type { PropType } from "vue";
+import type { PropType } from 'vue'
+import type { Navigation } from '~/utils/navigation'
 
 defineProps({
   navigation: {
     type: Object as PropType<Navigation>,
     required: true,
   },
-});
+})
 </script>
 
 <template>

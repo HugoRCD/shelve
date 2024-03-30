@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { Project } from "@shelve/types";
-import type { PropType, Ref } from "vue";
+import type { Project } from '@shelve/types'
+import type { PropType, Ref } from 'vue'
 
 const props = defineProps({
   project: {
@@ -10,91 +10,91 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
-});
+})
 
-const showEdit = ref(false);
-const showDelete = ref(false);
-const projectName = ref("");
-const project = toRef(props, "project") as Ref<Project>;
-const { projectId } = useRoute().params;
-const user = useCurrentUser();
+const showEdit = ref(false)
+const showDelete = ref(false)
+const projectName = ref('')
+const project = toRef(props, 'project') as Ref<Project>
+const { projectId } = useRoute().params
+const user = useCurrentUser()
 
 const { status: updateStatus, error: updateError, execute } = useFetch(`/api/project/${projectId}`, {
-  method: "PUT",
+  method: 'PUT',
   body: project,
   watch: false,
   immediate: false,
 })
 
 const { status: deleteStatus, error: deleteError, execute: deleteExecute } = useFetch(`/api/project/${projectId}`, {
-  method: "DELETE",
+  method: 'DELETE',
   watch: false,
   immediate: false,
 })
 
 async function updateCurrentProject() {
-  await execute();
-  if (updateError.value) toast.error("An error occurred");
-  else toast.success("Your project has been updated");
+  await execute()
+  if (updateError.value) toast.error('An error occurred')
+  else toast.success('Your project has been updated')
   showEdit.value = false
 }
 
 async function deleteProject() {
   if (project.value.ownerId !== user.value?.id) {
-    toast.error("You are not the owner of this project");
-    return;
+    toast.error('You are not the owner of this project')
+    return
   }
-  await deleteExecute();
-  if (deleteError.value) toast.error("An error occurred");
-  else toast.success("Your project has been deleted");
+  await deleteExecute()
+  if (deleteError.value) toast.error('An error occurred')
+  else toast.success('Your project has been deleted')
   showDelete.value = false
-  navigateTo("/app/projects");
+  navigateTo('/app/projects')
 }
 
 const items = [
   [
     {
-      label: "Edit project",
-      icon: "i-lucide-pen-line",
+      label: 'Edit project',
+      icon: 'i-lucide-pen-line',
       click: () => showEdit.value = !showEdit.value
     },
     {
-      label: "Export project data",
-      icon: "i-lucide-download",
+      label: 'Export project data',
+      icon: 'i-lucide-download',
       click: () => {
-        const data = JSON.stringify(project.value, null, 2);
-        const blob = new Blob([data], { type: "application/json" });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `${project.value.name}.json`;
-        a.click();
+        const data = JSON.stringify(project.value, null, 2)
+        const blob = new Blob([data], { type: 'application/json' })
+        const url = URL.createObjectURL(blob)
+        const a = document.createElement('a')
+        a.href = url
+        a.download = `${project.value.name}.json`
+        a.click()
       }
     },
     {
-      label: "Delete project",
-      icon: "i-lucide-trash",
-      iconClass: "text-red-500 dark:text-red-500",
+      label: 'Delete project',
+      icon: 'i-lucide-trash',
+      iconClass: 'text-red-500 dark:text-red-500',
       click: () => showDelete.value = !showDelete.value
     }
   ]
-];
+]
 
 const projectManager = [
   {
-    label: "Linear",
-    value: "linear",
-    icon: "i-custom-linear",
+    label: 'Linear',
+    value: 'linear',
+    icon: 'i-custom-linear',
   },
   {
-    label: "Volta",
-    value: "volta",
-    icon: "i-custom-volta",
+    label: 'Volta',
+    value: 'volta',
+    icon: 'i-custom-volta',
   },
 ]
 
 function getProjectManager(manager: string) {
-  if (!manager) return;
+  if (!manager) return
   return projectManager.find((item) => manager.includes(item.value))
 }
 </script>
@@ -169,8 +169,8 @@ function getProjectManager(manager: string) {
         </div>
         <div class="w-full space-y-2">
           <USkeleton class="h-4 w-[55%]" />
-          <USkeleton class="h-4 w-[75%]" />
-          <USkeleton class="h-4 w-[25%]" />
+          <USkeleton class="h-4 w-3/4" />
+          <USkeleton class="h-4 w-1/4" />
         </div>
       </div>
     </div>

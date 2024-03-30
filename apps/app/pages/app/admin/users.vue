@@ -1,127 +1,127 @@
 <script setup lang="ts">
-import type { publicUser } from "@shelve/types";
-import { Role } from "@shelve/types";
+import type { publicUser } from '@shelve/types'
+import { Role } from '@shelve/types'
 
-const { data: users, status, refresh } = useFetch<publicUser[]>("/api/admin/users", {
-  method: "GET",
+const { data: users, status, refresh } = useFetch<publicUser[]>('/api/admin/users', {
+  method: 'GET',
   watch: false,
 })
 
-const search = ref("");
-const updateLoading = ref(false);
-const deleteLoading = ref(false);
+const search = ref('')
+const updateLoading = ref(false)
+const deleteLoading = ref(false)
 
 const filteredUsers = computed(() => {
-  if (!search.value) return users.value;
-  return users.value!.filter((user: publicUser) => user.username.toLowerCase().includes(search.value.toLowerCase()));
-});
+  if (!search.value) return users.value
+  return users.value!.filter((user: publicUser) => user.username.toLowerCase().includes(search.value.toLowerCase()))
+})
 
 async function changeUserRole(id: number, role: string) {
   try {
-    updateLoading.value = true;
+    updateLoading.value = true
     await $fetch(`/api/admin/users/${id}`, {
-      method: "PUT",
+      method: 'PUT',
       body: {
         role,
       },
-    });
-    toast.success("User role updated");
-    await refresh();
+    })
+    toast.success('User role updated')
+    await refresh()
   } catch (error) {
-    toast.error("Error updating user role");
+    toast.error('Error updating user role')
   }
-  updateLoading.value = false;
+  updateLoading.value = false
 }
 
 async function deleteUser(id: number) {
-  deleteLoading.value = true;
+  deleteLoading.value = true
   try {
     await $fetch(`/api/admin/users/${id}`, {
-      method: "DELETE",
-    });
-    toast.success("User deleted");
-    await refresh();
+      method: 'DELETE',
+    })
+    toast.success('User deleted')
+    await refresh()
   } catch (error) {
-    toast.error("Error deleting user");
+    toast.error('Error deleting user')
   }
-  deleteLoading.value = false;
+  deleteLoading.value = false
 }
 
 const columns = [
   {
-    key: "avatar",
-    label: "Avatar",
+    key: 'avatar',
+    label: 'Avatar',
   },
   {
-    key: "username",
-    label: "Username",
+    key: 'username',
+    label: 'Username',
     sortable: true,
   },
   {
-    key: "email",
-    label: "Email",
+    key: 'email',
+    label: 'Email',
     sortable: true,
   },
   {
-    key: "role",
-    label: "Role",
+    key: 'role',
+    label: 'Role',
   },
   {
-    key: "createdAt",
-    label: "Created At",
+    key: 'createdAt',
+    label: 'Created At',
     sortable: true,
   },
   {
-    key: "updatedAt",
-    label: "Updated At",
+    key: 'updatedAt',
+    label: 'Updated At',
     sortable: true,
   },
   {
-    key: "actions",
-    label: "Actions",
+    key: 'actions',
+    label: 'Actions',
   },
-];
+]
 
 const items = (row: publicUser) => [
   [
     {
-      label: "Set as Admin",
-      icon: "i-heroicons-shield-check-20-solid",
+      label: 'Set as Admin',
+      icon: 'i-heroicons-shield-check-20-solid',
       click: () => {
         if (row.role === Role.ADMIN) {
-          toast.success("User is already an admin");
-          return;
+          toast.success('User is already an admin')
+          return
         }
-        changeUserRole(row.id, Role.ADMIN);
+        changeUserRole(row.id, Role.ADMIN)
       },
     },
     {
-      label: "Set as User",
-      icon: "i-heroicons-user-circle-20-solid",
+      label: 'Set as User',
+      icon: 'i-heroicons-user-circle-20-solid',
       click: () => {
-        changeUserRole(row.id, Role.USER);
+        changeUserRole(row.id, Role.USER)
       },
     },
   ],
   [
     {
-      label: "Delete",
-      icon: "i-heroicons-trash-20-solid",
-      iconClass: "text-red-500 dark:text-red-500",
+      label: 'Delete',
+      icon: 'i-heroicons-trash-20-solid',
+      iconClass: 'text-red-500 dark:text-red-500',
       click: () => {
         if (row.role === Role.ADMIN) {
-          toast.error("Cannot delete admin");
-          return;
+          toast.error('Cannot delete admin')
+          return
         }
-        deleteUser(row.id);
+        deleteUser(row.id)
       },
     },
   ],
-];
+]
 
 // Selected Columns
-const selectedColumns = ref(columns);
-const columnsTable = computed(() => columns.filter((column) => selectedColumns.value.includes(column)));
+const selectedColumns = ref(columns)
+const columnsTable = computed(() => columns.filter((column) => selectedColumns.value.includes(column)))
 </script>
 
 <template>

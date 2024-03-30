@@ -1,28 +1,28 @@
-import { defineCommand } from "citty";
-import consola from "consola";
-import { pushProjectVariable } from "../utils/env.ts";
-import { getProjectId } from "../utils/projects.ts";
+import { defineCommand } from 'citty'
+import consola from 'consola'
+import { pushProjectVariable } from '../utils/env.ts'
+import { getProjectId } from '../utils/projects.ts'
 
 export default defineCommand({
   meta: {
-    name: "push",
-    description: "Pushes the local environment variables to the remote project for the specified environment",
+    name: 'push',
+    description: 'Pushes the local environment variables to the remote project for the specified environment',
   },
   args: {
     env: {
-      type: "string",
-      description: "Environment to push to",
-      valueHint: "production|prod|preview|development|dev",
-      default: "development",
+      type: 'string',
+      description: 'Environment to push to',
+      valueHint: 'production|prod|preview|development|dev',
+      default: 'development',
     },
   },
   async run(ctx) {
-    const projectId = getProjectId();
+    const projectId = getProjectId()
     if (!projectId) {
-      consola.error("Project is not linked run `shelve link` to link the project");
-      return;
+      consola.error('Project is not linked run `shelve link` to link the project')
+      return
     }
     await pushProjectVariable(projectId, ctx.args._[0] || ctx.args.env)
-    consola.success("Pushed successfully!");
+    consola.success('Pushed successfully!')
   },
-});
+})

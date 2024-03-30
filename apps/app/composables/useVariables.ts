@@ -1,24 +1,23 @@
-import type { Variable, VariablesCreateInput } from "@shelve/types";
-import type { Ref } from "vue";
+import type { Variable, VariablesCreateInput } from '@shelve/types'
 
 export function useVariables(refresh: Function, projectId: string) {
-  const selectedEnvironment = ref(["production"]);
-  const environment = computed(() => selectedEnvironment.value.join("|"));
+  const selectedEnvironment = ref(['production'])
+  const environment = computed(() => selectedEnvironment.value.join('|'))
 
 
-  const createLoading = ref(false);
-  const updateLoading = ref(false);
-  const deleteLoading = ref(false);
+  const createLoading = ref(false)
+  const updateLoading = ref(false)
+  const deleteLoading = ref(false)
 
-  const variablesToCreate = ref(1);
+  const variablesToCreate = ref(1)
   const variablesInput = ref<VariablesCreateInput>({
     projectId: parseInt(projectId),
     variables: [
       {
         index: 1,
-        key: "",
-        value: "",
-        environment: "production",
+        key: '',
+        value: '',
+        environment: 'production',
         projectId: parseInt(projectId),
       },
     ],
@@ -28,8 +27,8 @@ export function useVariables(refresh: Function, projectId: string) {
     variablesToCreate.value++
     variablesInput.value.variables.push({
       index: variablesToCreate.value,
-      key: "",
-      value: "",
+      key: '',
+      value: '',
       environment: environment.value,
       projectId: parseInt(projectId),
     })
@@ -47,72 +46,72 @@ export function useVariables(refresh: Function, projectId: string) {
   })
 
   async function createVariables() {
-    createLoading.value = true;
+    createLoading.value = true
     if (environment.value.length === 0) {
-      toast.error("Please select at least one environment");
-      createLoading.value = false;
-      return;
+      toast.error('Please select at least one environment')
+      createLoading.value = false
+      return
     }
     try {
       await $fetch(`/api/variable`, {
-        method: "POST",
+        method: 'POST',
         body: variablesInput.value,
       })
-      toast.success("Your variables have been created")
+      toast.success('Your variables have been created')
       variablesToCreate.value = 1
       variablesInput.value = {
         projectId: parseInt(projectId),
         variables: [
           {
             index: 1,
-            key: "",
-            value: "",
-            environment: "production",
+            key: '',
+            value: '',
+            environment: 'production',
             projectId: parseInt(projectId),
           },
         ],
       }
     } catch (error) {
-      toast.error("An error occurred");
+      toast.error('An error occurred')
     }
-    createLoading.value = false;
+    createLoading.value = false
     refresh()
   }
 
   async function updateVariable(variable: Variable) {
-    updateLoading.value = true;
+    updateLoading.value = true
     if (variable.environment.length === 0) {
-      toast.error("Please select at least one environment");
-      updateLoading.value = false;
-      return;
+      toast.error('Please select at least one environment')
+      updateLoading.value = false
+      return
     }
     try {
       await $fetch(`/api/variable`, {
-        method: "POST",
+        method: 'POST',
         body: {
           projectId: parseInt(projectId),
           variables: [variable]
         },
       })
-      toast.success("Your variable has been updated")
+      toast.success('Your variable has been updated')
     } catch (error) {
-      toast.error("An error occurred");
+      toast.error('An error occurred')
     }
-    updateLoading.value = false;
+    updateLoading.value = false
     refresh()
   }
 
   async function deleteVariable(varId: number, varEnv: string) {
-    deleteLoading.value = true;
+    deleteLoading.value = true
     try {
       await $fetch(`/api/variable/${varId}/${varEnv}`, {
-        method: "DELETE",
+        method: 'DELETE',
       })
-      toast.success("Your variable has been deleted")
+      toast.success('Your variable has been deleted')
     } catch (error) {
-      toast.error("An error occurred");
+      toast.error('An error occurred')
     }
-    deleteLoading.value = false;
+    deleteLoading.value = false
     refresh()
   }
 
