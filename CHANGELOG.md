@@ -25,34 +25,27 @@
 
 - HugoRCD ([@HugoRCD](http://github.com/HugoRCD))
 
-## v0.0.1
-
-[compare changes](https://github.com/HugoRCD/shelves/compare/v0.0.4...v0.0.1)
+## v0.0.4
 
 ### 🚀 Enhancements
 
-- Improve global login and session speed ([6836938](https://github.com/HugoRCD/shelves/commit/6836938))
-- Add index on session authToken ([5436978](https://github.com/HugoRCD/shelves/commit/5436978))
-
-### 💅 Refactors
-
-- Remove changelogen generation on cli release ([7c2f09a](https://github.com/HugoRCD/shelves/commit/7c2f09a))
+- Use new eslint custom config ([ca137b7](https://github.com/HugoRCD/shelve/commit/ca137b7))
 
 ### 📖 Documentation
 
-- Use latest md template ([e958d88](https://github.com/HugoRCD/shelves/commit/e958d88))
+- Add changelog.md ([4f155eb](https://github.com/HugoRCD/shelve/commit/4f155eb))
+- Update community template ([086b21c](https://github.com/HugoRCD/shelve/commit/086b21c))
+- Improve CLI package.json ([3232928](https://github.com/HugoRCD/shelve/commit/3232928))
 
 ### 🏡 Chore
 
-- Apply automated lint fixes ([d567b91](https://github.com/HugoRCD/shelves/commit/d567b91))
+- Update renovate config ([7d790a9](https://github.com/HugoRCD/shelve/commit/7d790a9))
 
 ### ❤️ Contributors
 
 - HugoRCD ([@HugoRCD](http://github.com/HugoRCD))
 
-## v0.0.2...main
-
-[compare changes](https://github.com/HugoRCD/shelves/compare/v0.0.2...main)
+## v0.0.3
 
 ### 🩹 Fixes
 
@@ -70,4 +63,3 @@
 ### ❤️ Contributors
 
 - HugoRCD ([@HugoRCD](http://github.com/HugoRCD))
-
