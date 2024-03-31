@@ -19,34 +19,29 @@ const project = toRef(props, 'project') as Ref<Project>
 const { projectId } = useRoute().params
 const user = useCurrentUser()
 
-const { status: updateStatus, error: updateError, execute } = useFetch(`/api/project/${projectId}`, {
-  method: 'PUT',
-  body: project,
-  watch: false,
-  immediate: false,
-})
+const {
+  updateProject,
+  deleteProject,
+} = useProjects()
 
-const { status: deleteStatus, error: deleteError, execute: deleteExecute } = useFetch(`/api/project/${projectId}`, {
-  method: 'DELETE',
-  watch: false,
-  immediate: false,
-})
-
+const updateLoading = ref(false)
 async function updateCurrentProject() {
-  await execute()
-  if (updateError.value) toast.error('An error occurred')
-  else toast.success('Your project has been updated')
+  updateLoading.value = true
+  await updateProject(+projectId, project.value)
   showEdit.value = false
+  updateLoading.value = false
 }
 
-async function deleteProject() {
+const deleteLoading = ref(false)
+async function delete_project() {
+  deleteLoading.value = true
   if (project.value.ownerId !== user.value?.id) {
     toast.error('You are not the owner of this project')
+    deleteLoading.value = false
     return
   }
-  await deleteExecute()
-  if (deleteError.value) toast.error('An error occurred')
-  else toast.success('Your project has been deleted')
+  await deleteProject(+projectId)
+  deleteLoading.value = false
   showDelete.value = false
   navigateTo('/app/projects')
 }
@@ -126,7 +121,7 @@ function getProjectManager(manager: string) {
                   <UButton color="gray" variant="ghost" @click="showEdit = false">
                     Cancel
                   </UButton>
-                  <UButton color="primary" type="submit" trailing :loading="updateStatus === 'pending'">
+                  <UButton color="primary" type="submit" trailing :loading="updateLoading">
                     Save
                   </UButton>
                 </div>
@@ -176,7 +171,7 @@ function getProjectManager(manager: string) {
     </div>
     <UModal v-model="showDelete">
       <UCard class="p-2">
-        <form class="flex flex-col gap-6" @submit.prevent="deleteProject">
+        <form class="flex flex-col gap-6" @submit.prevent="delete_project">
           <div>
             <h2 class="text-lg font-semibold leading-7">
               Are you sure you want to delete this project?
@@ -190,7 +185,7 @@ function getProjectManager(manager: string) {
             <UButton color="gray" variant="ghost" @click="showDelete = false">
               Cancel
             </UButton>
-            <UButton color="red" type="submit" trailing :loading="deleteStatus === 'pending'" :disabled="projectName !== project.name">
+            <UButton color="red" type="submit" trailing :loading="deleteLoading" :disabled="projectName !== project.name">
               Delete
             </UButton>
           </div>
