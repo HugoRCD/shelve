@@ -6,7 +6,7 @@ import login from '../commands/login.ts'
 import { createProject } from './projects.ts'
 
 export async function suggestCreateProject(name?: string): Promise<Project | null> {
-  const accept = await consola.prompt('Do you want to create a project? (y/n)', {
+  const accept = await consola.prompt(`Do you want to create ${name ? 'the project' : 'a project'}? (y/n)`, {
     default: 'y',
     type: 'confirm',
   })

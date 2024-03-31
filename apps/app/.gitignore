@@ -25,3 +25,6 @@ logs
 .env.preview
 .env.production
 .vercel
+
+# Shelve config
+.shelve

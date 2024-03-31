@@ -1,11 +1,11 @@
 
-## v0.0.6
+## v0.2.0
 
 [compare changes](https://github.com/HugoRCD/shelves/compare/v0.0.5...v0.0.6)
 
 ### 🚀 Enhancements
 
-- Add create project CLI command, and lot of commands alias ([e9cccfd](https://github.com/HugoRCD/shelves/commit/e9cccfd))
+- Add create project CLI command, and a lot of commands alias ([e9cccfd](https://github.com/HugoRCD/shelves/commit/e9cccfd))
 - Add create command alias init ([60fda92](https://github.com/HugoRCD/shelves/commit/60fda92))
 - Auto-suggest and execute command on error ([cac833e](https://github.com/HugoRCD/shelves/commit/cac833e))
 
