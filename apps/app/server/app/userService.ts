@@ -1,4 +1,4 @@
-import type { publicUser, User, UserCreateInput, UserUpdateInput } from '@shelve/types'
+import type { publicUser, User, CreateUserInput, UpdateUserInput } from '@shelve/types'
 import { Role } from '@shelve/types'
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcryptjs'
@@ -16,25 +16,25 @@ type jwtPayload = {
 
 const runtimeConfig = useRuntimeConfig().private
 
-export async function upsertUser(userCreateInput: UserCreateInput) {
+export async function upsertUser(createUserInput: CreateUserInput) {
   const { otp, encryptedOtp } = await generateOtp()
-  let password = userCreateInput.password
+  let password = createUserInput.password
   if (password) password = await bcrypt.hash(password, 10)
   const user = await prisma.user.upsert({
     where: {
-      email: userCreateInput.email,
+      email: createUserInput.email,
     },
     update: {
       otp: encryptedOtp,
       password,
     },
     create: {
-      ...userCreateInput,
+      ...createUserInput,
       password,
       otp: encryptedOtp,
     },
   })
-  if (!userCreateInput.password) await sendOtp(user.email, otp)
+  if (!createUserInput.password) await sendOtp(user.email, otp)
   return formatUser(user)
 }
 
@@ -84,7 +84,7 @@ export async function verifyUserToken(token: string, user: User): Promise<boolea
   }
 }
 
-export async function updateUser(user: User, updateUserInput: UserUpdateInput, authToken: string): Promise<publicUser> {
+export async function updateUser(user: User, updateUserInput: UpdateUserInput, authToken: string): Promise<publicUser> {
   const newUsername = updateUserInput.username
   if (newUsername && newUsername !== user.username) {
     const usernameTaken = await prisma.user.findFirst({
