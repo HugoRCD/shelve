@@ -48,7 +48,7 @@ const items = [
     v-if="user"
     :items="items"
     :ui="{
-      background: 'bg-white dark:bg-neutral-900',
+      background: 'backdrop-blur-md border dark:bg-gray-950/50 dark:border-gray-400/10 bg-white',
       ring: 'ring-1 ring-neutral-100 dark:ring-neutral-800',
       divide: 'divide-y divide-neutral-100 dark:divide-neutral-800',
       item: {

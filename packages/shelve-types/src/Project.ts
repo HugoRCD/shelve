@@ -27,7 +27,6 @@ export type CreateProjectInput = {
   repository: string;
   projectManager: string;
   homepage: string;
-  users: User[];
   team?: Team;
 };
 

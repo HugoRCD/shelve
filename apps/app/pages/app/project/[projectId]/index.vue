@@ -9,6 +9,7 @@ const {data: project, status, refresh} = useFetch(`/api/project/${projectId}`, {
   method: 'GET',
   watch: false,
 })
+
 provide('project', project)
 provide('status', status)
 provide('refresh', refresh)
