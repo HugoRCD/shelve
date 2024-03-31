@@ -26,6 +26,7 @@ USAGE shelve <command|shortcut> [options]
 | Commands | Description                                          | Shortcut  |
 |----------|------------------------------------------------------|-----------|
 | create   | Create a new Shelve project                          | c         |
+| init     | alias for create                                     | i         |
 | upgrade  | Upgrade the Shelve CLI to the latest version         | u         |
 | link     | Link the current directory with a Shelve project     | l         |
 | unlink   | Unlink the current directory from a Shelve project   | ul        |

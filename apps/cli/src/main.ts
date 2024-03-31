@@ -12,6 +12,8 @@ export const main = defineCommand({
     upgrade: () => import('./commands/upgrade').then((r) => r.default),
     u: () => import('./commands/upgrade').then((r) => r.default),
     create: () => import('./commands/create').then((r) => r.default),
+    init: () => import('./commands/create').then((r) => r.default),
+    i: () => import('./commands/create').then((r) => r.default),
     c: () => import('./commands/create').then((r) => r.default),
     link: () => import('./commands/link').then((r) => r.default),
     l: () => import('./commands/link').then((r) => r.default),
