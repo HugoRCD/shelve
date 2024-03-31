@@ -21,21 +21,22 @@ npm install -g @shelve/cli
 ## Usage
 
 ```bash
-USAGE shelve upgrade|login|logout|whoami|pull|push
+USAGE shelve <command|shortcut> [options]
 
-COMMANDS
+| Commands | Description                                          | Shortcut  |
+|----------|------------------------------------------------------|-----------|
+| create   | Create a new Shelve project                          | c         |
+| upgrade  | Upgrade the Shelve CLI to the latest version         | u         |
+| link     | Link the current directory with a Shelve project     | l         |
+| unlink   | Unlink the current directory from a Shelve project   | ul        |
+| login    | Authenticate with Shelve                             | li        |
+| logout   | Logout the current authenticated user                | lo        |
+| whoami   | Shows the username of the currently logged-in user   | w         |
+| pull     | Retrieve the environment variables from Shelve       | pl        |
+| push     | Send the environment variables to Shelve             | ps        |
+| open     | Open the current project in the browser              | o         |
 
-  upgrade   Upgrade the Shelve CLI to the latest version
-  link      Link the current directory with a Shelve project
-  unlink    Unlink the current directory from a Shelve project
-  login     Authenticate with Shelve
-  logout    Logout the current authenticated user
-  whoami    Shows the username of the currently logged in user
-  pull      Retrieve the environement variables from Shelve
-  push      Send the environement variables to Shelve
-  open      Open the current project in the browser
-
-Use shelve <command> --help for more information about a command.
+Use shelve <command|shortcut> --help for more information about a command.
 ```
 
 <!-- automd:fetch url="gh:hugorcd/markdown/main/src/local_development.md" -->
