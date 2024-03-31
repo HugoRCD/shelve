@@ -25,12 +25,12 @@ export type publicUser = {
   updatedAt: string | Date;
 };
 
-export type UserCreateInput = {
+export type CreateUserInput = {
   email: string;
   password?: string;
 };
 
-export type UserUpdateInput = {
+export type UpdateUserInput = {
   username?: string;
   password?: string;
   email?: string;
