@@ -25,7 +25,7 @@ export async function checkForUpdates(): Promise<void> {
         '',
         `Release notes: ${underline(cyan(changelogURL))}`,
         '',
-        `To update: \`npm install -g ${name}\` or \`${name} upgrade\``,
+        `To update: \`npm install -g ${name}\` or \`shelve upgrade\``,
       ].join('\n'),
     })
   }
