@@ -1,12 +1,6 @@
 <script setup lang="ts">
 import type { CreateProjectInput, Team } from '@shelve/types'
 
-const { refresh } = defineProps({
-  refresh: {
-    type: Function,
-    required: true,
-  },
-})
 const projectCreateInput = ref<CreateProjectInput>({
   name: '',
   description: '',
@@ -18,21 +12,19 @@ const projectCreateInput = ref<CreateProjectInput>({
 
 const isOpen = ref(false)
 
-const { status: createStatus, error: createError, execute } = useFetch('/api/project', {
-  method: 'POST',
-  body: projectCreateInput,
-  watch: false,
-  immediate: false,
-})
+const {
+  loading: projectLoading,
+  fetchProjects,
+  createProject,
+} = useProjects()
 
-async function createProject() {
-  await execute()
-  if (createError.value) toast.error('An error occurred')
-  else {
-    toast.success('Your project has been created')
-    isOpen.value = false
-    await refresh()
-  }
+const createLoading = ref(false)
+async function create_project() {
+  createLoading.value = true
+  await createProject(projectCreateInput.value)
+  isOpen.value = false
+  createLoading.value = false
+  await fetchProjects()
 }
 
 function addTeam(team: Team) {
@@ -44,12 +36,13 @@ function removeTeam() {
 }
 
 const {
-  fetchTeams,
-  loading
+  teams,
+  loading,
+  fetchTeams
 } = useTeams()
-fetchTeams()
 
-const teams = useUserTeams()
+if (!teams.value)
+  fetchTeams()
 
 function importProject() {
   const input = document.createElement('input')
@@ -81,13 +74,13 @@ function importProject() {
     <UButton
       size="xs"
       icon="i-heroicons-plus-20-solid"
-      :loading="createStatus === 'pending'"
+      :loading="projectLoading"
       label="Add project"
       @click="isOpen = true"
     />
 
     <USlideover v-model="isOpen">
-      <form class="flex flex-1 overflow-y-auto" @submit.prevent="createProject">
+      <form class="flex flex-1 overflow-y-auto" @submit.prevent="create_project">
         <UCard class="flex flex-1 flex-col" :ui="{ body: { base: 'flex-1' }, ring: '', divide: 'divide-y divide-gray-100 dark:divide-gray-800' }">
           <template #header>
             <h3 class="text-lg font-semibold">
@@ -199,7 +192,7 @@ function importProject() {
                 <UButton color="gray" variant="ghost" @click="isOpen = false">
                   Cancel
                 </UButton>
-                <UButton color="primary" type="submit" trailing :loading="createStatus === 'pending'">
+                <UButton color="primary" type="submit" trailing :loading="createLoading">
                   Save
                 </UButton>
               </div>

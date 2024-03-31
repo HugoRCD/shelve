@@ -1,20 +1,24 @@
 <script setup lang="ts">
 import { isMounted } from '~/composables/useDOM'
 
-const { data: projects, status, refresh } = useFetch('/api/project', {
-  method: 'GET',
-  watch: false,
-})
+const {
+  projects,
+  loading,
+  fetchProjects,
+} = useProjects()
+
+if (!projects.value)
+  fetchProjects()
 </script>
 
 <template>
   <div>
     <div class="flex items-center justify-end">
       <Teleport v-if="isMounted('action-items')" to="#action-items">
-        <ProjectCreate :refresh="refresh" />
+        <ProjectCreate />
       </Teleport>
     </div>
-    <div v-if="status !== 'pending'" class="grid grid-cols-1 gap-4 lg:grid-cols-2">
+    <div v-if="!loading" class="grid grid-cols-1 gap-4 lg:grid-cols-2">
       <NuxtLink
         v-for="project in projects"
         :key="project.id"

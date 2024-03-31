@@ -7,7 +7,7 @@ const { projectId } = useRoute().params
 const user = useCurrentUser()
 
 const project = inject('project') as Ref<Project>
-const status = inject('status') as Ref<string>
+const loading = inject('loading') as Ref<boolean>
 
 const { status: updateStatus, error: updateError, execute } = useFetch(`/api/project/${projectId}`, {
   method: 'PUT',
@@ -24,7 +24,7 @@ async function updateCurrentProject() {
 
 const {
   fetchTeams,
-  loading
+  loading: teamsLoading
 } = useTeams()
 fetchTeams()
 
@@ -76,7 +76,7 @@ async function removeTeamFromProject(teamId: number) {
           </div>
           <div class="mt-4 flex flex-col gap-4">
             <div>
-              <USkeleton v-if="status === 'pending' || loading" class="h-8" />
+              <USkeleton v-if="teamsLoading && !userTeams" class="h-8" />
               <div v-else>
                 <div v-if="project && projectTeam" class="flex items-center justify-between">
                   <TeamMembers :team-id="project.teamId" :members="projectTeam.members" />
@@ -118,15 +118,15 @@ async function removeTeamFromProject(teamId: number) {
           </div>
           <div class="my-2 flex flex-col gap-4">
             <div>
-              <USkeleton v-if="status === 'pending'" class="h-8" />
+              <USkeleton v-if="loading" class="h-8" />
               <FormGroup v-else v-model="project.repository" label="Repository" class="w-2/3" />
             </div>
             <div>
-              <USkeleton v-if="status === 'pending'" class="h-8" />
+              <USkeleton v-if="loading" class="h-8" />
               <FormGroup v-else v-model="project.projectManager" label="Project Manager" class="w-2/3" />
             </div>
             <div>
-              <USkeleton v-if="status === 'pending'" class="h-8" />
+              <USkeleton v-if="loading" class="h-8" />
               <FormGroup v-else v-model="project.homepage" label="Homepage" class="w-2/3" />
             </div>
           </div>
@@ -143,7 +143,7 @@ async function removeTeamFromProject(teamId: number) {
           </div>
           <div class="my-2 flex flex-col gap-4">
             <div>
-              <USkeleton v-if="status === 'pending'" class="h-8" />
+              <USkeleton v-if="loading" class="h-8" />
               <FormGroup v-else v-model="project.variablePrefix" type="textarea" label="Prefix" class="w-2/3" />
               <UTooltip text="Yes this will be improved in the future 😅">
                 <p class="mt-1 text-xs text-neutral-500 dark:text-neutral-400">
