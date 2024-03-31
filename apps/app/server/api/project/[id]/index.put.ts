@@ -8,9 +8,5 @@ export default eventHandler(async (event: H3Event) => {
   const projectUpdateInput = await readBody(event)
   delete projectUpdateInput.variables
   delete projectUpdateInput.team
-  await updateProject(projectUpdateInput, parseInt(id), user.id)
-  return {
-    statusCode: 200,
-    message: 'Project updated',
-  }
+  return await updateProject(projectUpdateInput, parseInt(id), user.id)
 })

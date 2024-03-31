@@ -4,9 +4,16 @@ export const useUserProjects = () => {
   return useState<Project[]>('projects')
 }
 
+export const useCurrentProject = () => {
+  return useState<Project>('currentProject')
+}
+
 export function useProjects() {
   const projects = useUserProjects()
+  const currentProject = useCurrentProject()
+
   const loading = ref(false)
+  const currentLoading = ref(false)
 
   async function fetchProjects() {
     loading.value = true
@@ -14,6 +21,14 @@ export function useProjects() {
       method: 'GET',
     })
     loading.value = false
+  }
+
+  async function fetchCurrentProject(projectId: number) {
+    currentLoading.value = true
+    currentProject.value = await $fetch<Project>(`/api/project/${projectId}`, {
+      method: 'GET',
+    })
+    currentLoading.value = false
   }
 
   async function createProject(createProjectInput: CreateProjectInput) {
@@ -57,8 +72,11 @@ export function useProjects() {
 
   return {
     projects,
+    currentProject,
     loading,
+    currentLoading,
     fetchProjects,
+    fetchCurrentProject,
     createProject,
     updateProject,
     deleteProject,

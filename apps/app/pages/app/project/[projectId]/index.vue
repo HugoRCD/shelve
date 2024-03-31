@@ -5,14 +5,18 @@ definePageMeta({
 
 const { projectId } = useRoute().params
 
-const {data: project, status, refresh} = useFetch(`/api/project/${projectId}`, {
-  method: 'GET',
-  watch: false,
-})
+const {
+  currentProject,
+  currentLoading,
+  fetchCurrentProject
+} = useProjects()
 
-provide('project', project)
-provide('status', status)
-provide('refresh', refresh)
+if (!currentProject.value)
+  fetchCurrentProject(+projectId)
+
+provide('project', currentProject)
+provide('loading', currentLoading)
+provide('refresh', fetchCurrentProject)
 
 const links = [
   {
@@ -40,7 +44,7 @@ const links = [
 
 <template>
   <div class="flex flex-col">
-    <ProjectMainSection :project="project" :loading="status === 'pending'" />
+    <ProjectMainSection :project="currentProject" :loading="currentLoading" />
     <UHorizontalNavigation :links="links" class="mt-8 hidden border-b border-gray-200 dark:border-gray-800 md:block" />
     <UVerticalNavigation :links="links" class="mt-8 border-b border-gray-200 pb-2 dark:border-gray-800 md:hidden" />
     <NuxtPage />

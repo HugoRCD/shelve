@@ -36,12 +36,13 @@ function removeTeam() {
 }
 
 const {
-  fetchTeams,
-  loading
+  teams,
+  loading,
+  fetchTeams
 } = useTeams()
-fetchTeams()
 
-const teams = useUserTeams()
+if (!teams.value)
+  fetchTeams()
 
 function importProject() {
   const input = document.createElement('input')

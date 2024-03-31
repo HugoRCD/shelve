@@ -7,7 +7,8 @@ const {
   fetchProjects,
 } = useProjects()
 
-fetchProjects()
+if (!projects.value)
+  fetchProjects()
 </script>
 
 <template>
