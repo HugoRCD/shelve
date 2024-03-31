@@ -25,12 +25,16 @@ jobs:
             breaking
             feat
             fix
+            build
+            ci
             docs
+            enhancement
             chore
+            performance
+            style
+            tests
             refactor
             revert
-            style
-            test
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

@@ -1,0 +1,46 @@
+changelog:
+  exclude:
+    labels:
+      - ignore-for-release
+    authors:
+      - octocat
+  categories:
+    - title: Breaking Changes 💥
+      labels:
+        - breaking
+    - title: Features 🚀
+      labels:
+        - feat
+    - title: Bug Fixes 🐞
+      labels:
+        - fix
+    - title: Build System 🛠
+      labels:
+        - build
+    - title: Continuous Integration 🔄
+      labels:
+        - ci
+    - title: Documentation 📚
+      labels:
+        - docs
+    - title: Enhancements 🌈
+      labels:
+        - enhancement
+    - title: Dependency Updates 📦
+      labels:
+        - chore
+    - title: Performance Improvements ⚡️
+      labels:
+        - performance
+    - title: Style 💅
+      labels:
+        - style
+    - title: Tests 🧪
+      labels:
+        - tests
+    - title: Refactoring 🛠
+      labels:
+        - refactor
+    - title: Revert 🔄
+      labels:
+        - revert

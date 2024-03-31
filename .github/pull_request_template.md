@@ -1,21 +1,31 @@
 <!---
 ☝️ PR title should follow conventional commits (https://conventionalcommits.org)
+Here are the available types:
+
+- breaking (fix or feature that would cause existing functionality to change) 💥
+- feat (a non-breaking change that adds functionality) ✨
+- fix (a non-breaking change that fixes an issue) 🐞
+- build (changes that affect the build system or external dependencies) 🏗
+- ci (changes to our CI configuration files and scripts) 🚀
+- docs (updates to the documentation or readme) 📖
+- enhancement (improving an existing functionality) 🌈
+- chore (updates to the build process or auxiliary tools and libraries) 📦
+- perf (a code change that improves performance) ⚡️
+- style (changes that do not affect the meaning of the code) 💅
+- tests (adding or updating tests) 🧪
+- refactor (a code change that neither fixes a bug nor adds a feature) 🛠
+- revert (reverts a previous commit) 🔄
+
+we can also use the following scopes:
+- app
+- cli
+- docs
+
 -->
 
 ### 🔗 Linked issue
 
 <!-- If it resolves an open issue, please link the issue here. For example "Resolves #123" -->
-
-### ❓ Type of change
-
-<!-- What types of changes does your code introduce? Put an `x` in all the boxes that apply. -->
-
-- [ ] 📖 Documentation (updates to the documentation or readme)
-- [ ] 🐞 Bug fix (a non-breaking change that fixes an issue)
-- [ ] 👌 Enhancement (improving an existing functionality)
-- [ ] ✨ New feature (a non-breaking change that adds functionality)
-- [ ] 🧹 Chore (updates to the build process or auxiliary tools and libraries)
-- [ ] ⚠️ Breaking change (fix or feature that would cause existing functionality to change)
 
 ### 📚 Description
 
