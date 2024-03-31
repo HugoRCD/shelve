@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { type Team, TeamRole } from '@shelve/types'
+import { isMounted } from '~/composables/useDOM'
 
 const user = useCurrentUser()
 
@@ -77,7 +78,13 @@ const items = (row: Team) => [
         </p>
       </div>
     </div>
-    <div style="--stagger: 2" data-animate class="mt-2 flex flex-col justify-end gap-2 sm:flex-row sm:items-center">
+    <Teleport v-if="isMounted('action-items')" to="#action-items">
+      <div class="hidden items-center justify-end gap-2 sm:flex">
+        <TeamCreate>Create</TeamCreate>
+        <UInput v-model="search" label="Search" placeholder="Search a team" icon="i-heroicons-magnifying-glass-20-solid" />
+      </div>
+    </Teleport>
+    <div style="--stagger: 2" data-animate class="mt-2 flex flex-col justify-end gap-2 sm:hidden sm:flex-row sm:items-center">
       <TeamCreate>Create</TeamCreate>
       <UInput v-model="search" label="Search" placeholder="Search a team" icon="i-heroicons-magnifying-glass-20-solid" />
     </div>
