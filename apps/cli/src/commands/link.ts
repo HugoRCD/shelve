@@ -1,8 +1,7 @@
-import { defineCommand, runCommand } from 'citty'
+import { defineCommand } from 'citty'
 import { consola } from 'consola'
 import { getProjectByName, getProjects, writeProjectConfig } from '../utils/projects.ts'
 import { suggestCreateProject } from '../utils/suggest.ts'
-import create from './create.ts'
 
 export default defineCommand({
   meta: {
