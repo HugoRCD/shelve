@@ -1,4 +1,43 @@
 
+## v0.2.2
+
+[compare changes](https://github.com/HugoRCD/shelves/compare/v0.2.1...v0.2.2)
+
+### 🚀 Enhancements
+
+- Add new dropdown ui ([ee0f459](https://github.com/HugoRCD/shelves/commit/ee0f459))
+- Init new useProjects composable for performances improve ([68b5ef2](https://github.com/HugoRCD/shelves/commit/68b5ef2))
+- Major performance upgrade ([dc362a5](https://github.com/HugoRCD/shelves/commit/dc362a5))
+- Trim all name use for entity creation ([5aad82a](https://github.com/HugoRCD/shelves/commit/5aad82a))
+- Send action item to teleport in team view ([b3c4971](https://github.com/HugoRCD/shelves/commit/b3c4971))
+
+### 🩹 Fixes
+
+- Workflow ([5017326](https://github.com/HugoRCD/shelves/commit/5017326))
+- Multiple prompt ([62c0718](https://github.com/HugoRCD/shelves/commit/62c0718))
+
+### 💅 Refactors
+
+- Trim name when creating project ([da574a8](https://github.com/HugoRCD/shelves/commit/da574a8))
+
+### 📖 Documentation
+
+- Add auto-commit on cli release ([56de875](https://github.com/HugoRCD/shelves/commit/56de875))
+- Update github files ([9af5353](https://github.com/HugoRCD/shelves/commit/9af5353))
+
+### 📦 Build
+
+- Try new workflow ([a6a87b8](https://github.com/HugoRCD/shelves/commit/a6a87b8))
+
+### 🏡 Chore
+
+- Bump cli version ([6eb2af9](https://github.com/HugoRCD/shelves/commit/6eb2af9))
+- Apply automated lint fixes ([ac39b11](https://github.com/HugoRCD/shelves/commit/ac39b11))
+
+### ❤️ Contributors
+
+- HugoRCD ([@HugoRCD](http://github.com/HugoRCD))
+
 ## v0.2.1
 
 [compare changes](https://github.com/HugoRCD/shelves/compare/v0.0.6...v0.2.1)
