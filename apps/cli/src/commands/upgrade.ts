@@ -17,11 +17,11 @@ export default defineCommand({
       consola.start(`Upgrading from ${version} to the latest version...`)
       try {
         await execa('npm', ['install', '-g', name], { stdio: 'inherit' })
-        consola.success(`Successfully upgraded to version ${latestVersion}`)
+        consola.success(`Successfully upgraded to the latest version`)
       } catch (error) {
         consola.error('Failed to upgrade the CLI')
         consola.error(error)
-        
+
       }
     }
   },

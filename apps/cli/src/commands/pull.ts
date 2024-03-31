@@ -14,6 +14,7 @@ export default defineCommand({
       description: 'Environment to pull from',
       valueHint: 'production|prod|preview|development|dev',
       default: 'development',
+      alias: 'e',
     },
   },
   async run(ctx) {
@@ -22,8 +23,8 @@ export default defineCommand({
       consola.error('Project is not linked run `shelve link` to link the project')
       return
     }
-    const variables = await getProjectVariable(projectId, ctx.args._[0] || ctx.args.env)
-    await createEnvFile(variables)
+    const variables = await getProjectVariable(projectId, ctx.args.env)
+    createEnvFile(variables)
     consola.success('Pulled successfully!')
   },
 })

@@ -13,10 +13,11 @@ export default defineCommand({
       description: 'Name of the project to link',
       valueHint: 'project-name (case-insensitive)',
       default: '',
+      alias: 'n',
     }
   },
   async run(ctx) {
-    const name = ctx.args._[0] || ctx.args.name
+    const name = ctx.args.name
     if (name) {
       consola.start(`Fetching project ${name}...`)
       const project = await getProjectByName(name)

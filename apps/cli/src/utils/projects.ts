@@ -78,3 +78,12 @@ export function addDotShelveToGitignore(): void {
       fs.writeFileSync('.gitignore', `${gitignore}\n# Shelve config\n.shelve`)
   }
 }
+
+export async function createProject(name: string): Promise<Project> {
+  return await $api('/project', {
+    method: 'POST',
+    body: {
+      name,
+    }
+  })
+}
