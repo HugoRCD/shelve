@@ -1,6 +1,8 @@
-import { defineCommand } from 'citty'
+import { defineCommand, runCommand } from 'citty'
 import { consola } from 'consola'
 import { getProjectByName, getProjects, writeProjectConfig } from '../utils/projects.ts'
+import { suggestCreateProject } from '../utils/suggest.ts'
+import create from './create.ts'
 
 export default defineCommand({
   meta: {
@@ -23,6 +25,7 @@ export default defineCommand({
       const project = await getProjectByName(name)
       if (!project) {
         consola.error(`Project with name ${name} not found`)
+        await suggestCreateProject(name)
         return
       }
       writeProjectConfig(project)
@@ -33,6 +36,7 @@ export default defineCommand({
     const projects = await getProjects()
     if (!projects.length) {
       consola.error('No projects found')
+      await suggestCreateProject(name)
       return
     }
 
@@ -53,6 +57,7 @@ export default defineCommand({
 
       writeProjectConfig(project)
       consola.success('Project linked successfully')
+      return project
     } catch (e) {
       consola.error('An error occurred while selecting the project')
     }

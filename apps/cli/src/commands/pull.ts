@@ -2,6 +2,7 @@ import { defineCommand } from 'citty'
 import consola from 'consola'
 import { createEnvFile, getProjectVariable } from '../utils/env.ts'
 import { getProjectId } from '../utils/projects.ts'
+import { suggestLinkProjects } from '../utils/suggest.ts'
 
 export default defineCommand({
   meta: {
@@ -18,10 +19,15 @@ export default defineCommand({
     },
   },
   async run(ctx) {
-    const projectId = getProjectId()
+    let projectId = getProjectId()
     if (!projectId) {
-      consola.error('Project is not linked run `shelve link` to link the project')
-      return
+      consola.error('The current project is not linked to a remote project')
+      const linkedProject = await suggestLinkProjects()
+      if (linkedProject) {
+        projectId = linkedProject.id
+      } else {
+        return
+      }
     }
     const variables = await getProjectVariable(projectId, ctx.args.env)
     createEnvFile(variables)

@@ -2,6 +2,7 @@ import fs from 'fs'
 import type { Project } from '@shelve/types'
 import consola from 'consola'
 import { $api } from './connection.ts'
+import { suggestLinkProject } from './suggest.ts'
 
 export async function getProjects(): Promise<Project[]> {
   return await $api('/project', {
@@ -79,11 +80,22 @@ export function addDotShelveToGitignore(): void {
   }
 }
 
-export async function createProject(name: string): Promise<Project> {
-  return await $api('/project', {
-    method: 'POST',
-    body: {
-      name,
+export async function createProject(name: string): Promise<Project | null> {
+  try {
+    let project = await $api('/project', {
+      method: 'POST',
+      body: {
+        name,
+      }
+    })
+    consola.success(`Project ${ name } created successfully!`)
+    const linkedProject = await suggestLinkProject(name)
+    if (linkedProject) {
+      project = linkedProject
     }
-  })
+    return project
+  } catch (e) {
+    consola.error('Failed to create project')
+    return null
+  }
 }

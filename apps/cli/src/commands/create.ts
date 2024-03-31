@@ -1,7 +1,7 @@
-import { defineCommand, runCommand } from 'citty'
+import { defineCommand } from 'citty'
 import consola from 'consola'
 import { createProject } from '../utils/projects.ts'
-import link from './link.ts'
+import { suggestLinkProject } from '../utils/suggest.ts'
 
 export default defineCommand({
   meta: {
@@ -21,19 +21,13 @@ export default defineCommand({
     const name = ctx.args.name
     consola.start(`Creating project ${ name }...`)
     try {
-      await createProject(name)
+      let project = await createProject(name)
       consola.success(`Project ${ name } created successfully!`)
-      const linkProject = await consola.prompt('Do you want to link the project? (y/n)', {
-        default: 'y',
-        type: 'confirm',
-      })
-      if (linkProject) {
-        await runCommand(link, { rawArgs: [name] }).then(() => {
-          consola.success('Project linked successfully!')
-        }).catch(() => {
-          consola.error('Failed to link the project')
-        })
+      const linkedProject = await suggestLinkProject(name)
+      if (linkedProject) {
+        project = linkedProject
       }
+      return project
     } catch (e) {
       consola.error('Failed to create project')
     }
