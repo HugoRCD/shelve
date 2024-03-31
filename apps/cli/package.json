@@ -28,6 +28,7 @@
     "@types/bun": "latest",
     "@types/semver": "^7.5.8",
     "automd": "^0.3.7",
+    "changelogen": "^0.5.5",
     "eslint": "^8.57.0"
   },
   "peerDependencies": {
