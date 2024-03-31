@@ -13,7 +13,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
-    if: github.repository == 'nuxt/nuxt'
     steps:
       - uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
         env:
@@ -26,13 +25,6 @@ jobs:
               number: ${{ github.event.pull_request.number }},
               title: process.env.PULL_REQUEST_TITLE,
               labelsNames: ${{ toJson(github.event.pull_request.labels.*.name) }}
-            }
-
-            // Select label based on the name of the base branch
-            const baseBranchLabelName = '3.x'
-
-            if (!pullRequest.labelsNames.includes(baseBranchLabelName)) {
-              labelsToAdd.push(baseBranchLabelName)
             }
 
             // Select label based on the type in PR title
