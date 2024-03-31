@@ -1,4 +1,21 @@
 
+## v0.2.1
+
+[compare changes](https://github.com/HugoRCD/shelves/compare/v0.0.6...v0.2.1)
+
+### 📖 Documentation
+
+- Use only one changelog.md ([2dd5139](https://github.com/HugoRCD/shelves/commit/2dd5139))
+
+### 🏡 Chore
+
+- Add changelogen to cli ([7244cdd](https://github.com/HugoRCD/shelves/commit/7244cdd))
+- Sync cli and app version ([f1cfd98](https://github.com/HugoRCD/shelves/commit/f1cfd98))
+
+### ❤️ Contributors
+
+- HugoRCD ([@HugoRCD](http://github.com/HugoRCD))
+
 ## v0.2.0
 
 [compare changes](https://github.com/HugoRCD/shelves/compare/v0.0.5...v0.0.6)
