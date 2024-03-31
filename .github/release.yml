@@ -10,10 +10,12 @@ changelog:
         - breaking
     - title: Features 🚀
       labels:
+        - feature
         - feat
     - title: Bug Fixes 🐞
       labels:
         - fix
+        - bug
     - title: Build System 🛠
       labels:
         - build
@@ -23,18 +25,22 @@ changelog:
     - title: Documentation 📚
       labels:
         - docs
+        - documentation
     - title: Enhancements 🌈
       labels:
         - enhancement
     - title: Dependency Updates 📦
       labels:
         - chore
+        - dependencies
     - title: Performance Improvements ⚡️
       labels:
+        - perf
         - performance
     - title: Style 💅
       labels:
         - style
+        - lint
     - title: Tests 🧪
       labels:
         - tests
