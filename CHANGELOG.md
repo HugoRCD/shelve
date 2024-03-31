@@ -1,4 +1,37 @@
 
+## v0.0.6
+
+[compare changes](https://github.com/HugoRCD/shelves/compare/v0.0.5...v0.0.6)
+
+### 🚀 Enhancements
+
+- Add create project CLI command, and lot of commands alias ([e9cccfd](https://github.com/HugoRCD/shelves/commit/e9cccfd))
+- Add create command alias init ([60fda92](https://github.com/HugoRCD/shelves/commit/60fda92))
+- Auto-suggest and execute command on error ([cac833e](https://github.com/HugoRCD/shelves/commit/cac833e))
+
+### 🩹 Fixes
+
+- Changelog ([e3beb29](https://github.com/HugoRCD/shelves/commit/e3beb29))
+- Link command on composed project name #58 ([#58](https://github.com/HugoRCD/shelves/issues/58))
+
+### 📖 Documentation
+
+- Update readme ([7f3b8fe](https://github.com/HugoRCD/shelves/commit/7f3b8fe))
+- Update main readme ([fca5c09](https://github.com/HugoRCD/shelves/commit/fca5c09))
+
+### 🏡 Chore
+
+- Bump cli version ([6d9bbba](https://github.com/HugoRCD/shelves/commit/6d9bbba))
+- Bump CLI version to 0.2.0 ([05b5f39](https://github.com/HugoRCD/shelves/commit/05b5f39))
+
+### 🎨 Styles
+
+- Lint fix ([0390136](https://github.com/HugoRCD/shelves/commit/0390136))
+
+### ❤️ Contributors
+
+- HugoRCD ([@HugoRCD](http://github.com/HugoRCD))
+
 ## v0.0.5
 
 [compare changes](https://github.com/HugoRCD/shelves/compare/v0.0.4...v0.0.5)

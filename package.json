@@ -1,7 +1,7 @@
 {
   "name": "shelve",
   "private": true,
-  "version": "0.0.5",
+  "version": "0.0.6",
   "scripts": {
     "build": "automd && turbo build",
     "dev": "turbo dev",
