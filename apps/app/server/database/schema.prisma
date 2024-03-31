@@ -65,7 +65,7 @@ model Project {
   projectManager String?
   homepage       String?
   variablePrefix String?
-  avatar         String?     @default("https://i.imgur.com/6VBx3io.png") @db.VarChar(500)
+  avatar         String?     @db.VarChar(500)
   createdAt      DateTime    @default(now())
   updatedAt      DateTime    @updatedAt
   ownerId        Int
