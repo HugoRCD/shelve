@@ -2,7 +2,7 @@
   "name": "@shelve/app",
   "description": "Shelve is a project management tool for developers teams",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.2.0",
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",

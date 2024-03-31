@@ -20,7 +20,7 @@
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
-    "release": "bun run lint && bun run build && npm publish"
+    "release": "bun run build && changelogen --bump --no-output && npm publish"
   },
   "devDependencies": {
     "@shelve/eslint-config": "*",
