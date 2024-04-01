@@ -1,0 +1,77 @@
+<script setup lang="ts">
+const features = [
+  {
+    title: 'Manage your projects secrets',
+    description: 'End Slack messages like "Can you send me .env file?", keep your secrets in one place and share them with your team.',
+    icon: 'i-lucide-lock',
+  },
+  {
+    title: 'Collaborate with your team',
+    description: 'Create, invite and manage your team members to work together on your projects in seconds.',
+    icon: 'i-lucide-users',
+  },
+  {
+    title: 'Powerful CLI',
+    description: 'Manage your projects secrets, files and more withour leaving your terminal.',
+    icon: 'i-lucide-terminal',
+  },
+  {
+    title: 'Shared env variables',
+    description: 'Create shared env variables that can be used across all your projects.',
+    icon: 'i-lucide-share',
+    soon: true,
+  },
+  {
+    title: 'Sync with your favorite tools',
+    description: 'Integrate with your favorite tools like GitHub, Vercel, etc...',
+    icon: 'i-custom-github',
+    soon: true,
+  },
+  {
+    title: 'Talk to project',
+    description: 'Talk to your project with built in trained AI on your project data.',
+    icon: 'i-lucide-message-square',
+    soon: true,
+  }
+]
+</script>
+
+<template>
+  <div class="mx-auto mt-8 max-w-5xl lg:mt-16">
+    <div class="mb-10 flex flex-col items-center justify-center gap-2">
+      <h3 class="from-primary-300 to-primary-400 bg-gradient-to-tr bg-clip-text text-3xl font-bold text-transparent sm:text-4xl">
+        <LandingScrambleText label="Features" />
+      </h3>
+      <p class="max-w-lg text-pretty text-center text-gray-500">
+        No more tedious tasks, Shelve has everything you need to manage your projects.
+      </p>
+    </div>
+    <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3 lg:gap-y-16">
+      <div
+        v-for="(feature, index) in features"
+        :key="index"
+        class="flex flex-col gap-1"
+        :style="{ '--stagger': index + 1 }"
+        data-animate
+      >
+        <div class="flex items-center">
+          <div class="flex items-center justify-center rounded border border-white/5 bg-white/5 p-1">
+            <span :class="feature.icon" class="size-5 text-gray-300" />
+          </div>
+
+          <div class="ml-4 font-semibold text-gray-300">
+            {{ feature.title }} <span v-if="feature.soon" class="ml-1 text-xs text-gray-400">(soon)</span>
+          </div>
+        </div>
+
+        <div class="ml-11 pl-0.5 text-sm text-gray-500">
+          {{ feature.description }}
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<style scoped>
+
+</style>

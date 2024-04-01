@@ -5,7 +5,7 @@ const user = useCurrentUser()
 
 <template>
   <div>
-    <nav class="flex items-center justify-between p-4 sm:p-5">
+    <nav class="fixed inset-x-0 top-0 z-50 flex items-center justify-between bg-neutral-900/50 p-4 backdrop-blur-lg sm:px-5 sm:py-2">
       <NuxtLink to="/" class="font-newsreader text-2xl font-light italic">
         Shelve
       </NuxtLink>
