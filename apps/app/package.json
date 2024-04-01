@@ -24,6 +24,7 @@
   "devDependencies": {
     "@iconify-json/lucide": "^1.1.178",
     "@linear/sdk": "^19.3.0",
+    "@nuxt/content": "^2.12.1",
     "@nuxt/fonts": "latest",
     "@nuxt/image": "latest",
     "@nuxt/ui": "^2.15.0",
@@ -32,6 +33,8 @@
     "@shelve/eslint-config": "*",
     "@shelve/types": "*",
     "@shelve/utils": "*",
+    "@tsparticles/engine": "^3.3.0",
+    "@tsparticles/slim": "^3.3.0",
     "@types/bcryptjs": "^2.4.6",
     "@types/ua-parser-js": "^0.7.39",
     "@vercel/analytics": "^1.2.2",
