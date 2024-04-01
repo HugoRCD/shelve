@@ -1,4 +1,18 @@
 
+## v0.2.4
+
+[compare changes](https://github.com/HugoRCD/shelves/compare/v0.2.3...v0.2.4)
+
+### 🏡 Chore
+
+- **release:** V0.2.3 ([75fe852](https://github.com/HugoRCD/shelves/commit/75fe852))
+- Apply automated lint fixes ([523b54d](https://github.com/HugoRCD/shelves/commit/523b54d))
+- **release:** V0.2.4 ([7712872](https://github.com/HugoRCD/shelves/commit/7712872))
+
+### ❤️ Contributors
+
+- HugoRCD ([@HugoRCD](http://github.com/HugoRCD))
+
 ## v0.2.3
 
 [compare changes](https://github.com/HugoRCD/shelves/compare/v0.2.2...v0.2.3)
