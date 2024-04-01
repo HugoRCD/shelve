@@ -34,7 +34,7 @@ useSession().refresh()
 
 <template>
   <Html>
-    <Body class="selection:bg-primary relative font-geist text-black selection:text-inverted dark:bg-neutral-950 dark:text-white">
+    <Body class="selection:bg-primary relative font-geist text-black selection:text-inverted dark:text-white">
       <NuxtLayout>
         <NuxtPage />
       </NuxtLayout>
