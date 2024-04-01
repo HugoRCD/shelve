@@ -1,4 +1,21 @@
 
+## v0.2.3
+
+[compare changes](https://github.com/HugoRCD/shelves/compare/v0.2.2...v0.2.3)
+
+### 💅 Refactors
+
+- Better tsconfig and ts support ([8ebcbd9](https://github.com/HugoRCD/shelves/commit/8ebcbd9))
+
+### 🏡 Chore
+
+- **release:** V0.2.2 ([0ead183](https://github.com/HugoRCD/shelves/commit/0ead183))
+- Update github files ([9519fd3](https://github.com/HugoRCD/shelves/commit/9519fd3))
+
+### ❤️ Contributors
+
+- HugoRCD ([@HugoRCD](http://github.com/HugoRCD))
+
 ## v0.2.2
 
 [compare changes](https://github.com/HugoRCD/shelves/compare/v0.2.1...v0.2.2)
