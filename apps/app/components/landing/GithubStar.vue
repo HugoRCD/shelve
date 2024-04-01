@@ -8,6 +8,9 @@ type repoType = {
 }
 
 const githubStars = useCookie('githubStars')
+if (!githubStars.value) {
+  githubStars.value = '0'
+}
 
 async function fetchRepo() {
   try {
@@ -24,9 +27,7 @@ fetchRepo()
     to="https://github.com/HugoRCD/shelve"
   >
     <span class="i-custom-github text-xl" />
-    <span class="text-sm">
-      {{ githubStars }}
-    </span>
+    <LandingScrambleText :label="githubStars" class="text-sm" />
   </NuxtLink>
 </template>
 

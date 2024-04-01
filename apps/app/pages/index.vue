@@ -72,7 +72,7 @@ function copy_to_clipboard(text: string) {
       </div>
 
       <div>
-        <LandingFAQ />
+        <LandingFaq />
       </div>
     </div>
   </div>

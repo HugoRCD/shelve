@@ -37,6 +37,7 @@ export default defineNuxtConfig({
   },
 
   modules: [
+    '@nuxt/content',
     '@nuxt/image',
     '@vue-email/nuxt',
     '@nuxt/ui',

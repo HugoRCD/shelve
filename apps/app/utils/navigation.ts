@@ -12,7 +12,7 @@ export function getNavigation(where: Where): Navigation[] {
     case 'home':
       return [
         { name: 'Home', to: '/', icon: 'i-heroicons-home', title: 'Home' },
-        { name: 'Changelog', to: '/changelog', icon: 'i-heroicons-document-text', title: 'Changelog' },
+        /*{ name: 'Changelog', to: '/changelog', icon: 'i-heroicons-document-text', title: 'Changelog' },*/
         { name: 'Docs', to: '/docs', icon: 'i-heroicons-book-open', title: 'Docs' },
         { name: 'Roadmap', to: '/roadmap', icon: 'i-heroicons-clipboard-list', title: 'Roadmap' },
       ]
