@@ -2,7 +2,7 @@ import { cyan, green, yellow, underline } from 'colorette'
 import * as semver from 'semver'
 import { $fetch } from 'ofetch'
 import consola from 'consola'
-import { name, version, repository } from '../../package.json'
+import { name, version } from '../../package.json'
 import { capitalize } from './string'
 
 export async function checkForUpdates(): Promise<void> {
@@ -13,7 +13,7 @@ export async function checkForUpdates(): Promise<void> {
     return
   }
   if (semver.gt(latestVersion, version, { loose: true })) {
-    const changelogURL = `${repository}/releases/tag/v${latestVersion}`
+    const changelogURL = `https://github.com/HugoRCD/shelve/releases/tag/v${latestVersion}`
     consola.box({
       title: `Shelve CLI Update Available 🚀`,
       style: {
