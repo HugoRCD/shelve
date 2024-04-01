@@ -5,7 +5,7 @@ const user = useCurrentUser()
 
 <template>
   <div>
-    <nav class="flex items-center justify-between p-5">
+    <nav class="flex items-center justify-between p-4 sm:p-5">
       <NuxtLink to="/" class="font-newsreader text-2xl font-light italic">
         Shelve
       </NuxtLink>
@@ -19,19 +19,28 @@ const user = useCurrentUser()
           {{ item.name }}
         </NuxtLink>
       </div>
-      <div>
+      <div class="hidden items-center gap-5 sm:flex">
+        <LandingGithubStar />
         <DropdownMenu v-if="user" />
+        <NuxtLink v-else to="/login" class="btn-primary">
+          Login
+        </NuxtLink>
       </div>
     </nav>
-    <slot />
   </div>
 </template>
 
 <style scoped>
 .nav-pill {
-  @apply flex gap-5 rounded-full px-6 py-2;
-  @apply hover:bg-gray-800;
-  @apply border border-transparent hover:border-gray-600;
-  @apply transition-colors duration-200;
+  @apply flex gap-3 sm:gap-5 rounded-full sm:px-6 sm:py-2;
+  @apply sm:hover:bg-gray-800/50;
+  @apply border border-transparent sm:hover:border-gray-600/50 hover:shadow-lg;
+  @apply transition-colors duration-300;
+}
+
+.btn-primary {
+  @apply px-4 py-2 text-sm font-semibold text-white;
+  @apply bg-neutral-800 hover:bg-neutral-700;
+  @apply rounded-full shadow-md;
 }
 </style>

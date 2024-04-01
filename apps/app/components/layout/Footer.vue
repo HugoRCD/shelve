@@ -6,19 +6,19 @@ const nav = [
     sub: [
       {
         name: 'Documentation',
-        to: '/docs',
+        to: '/',
       },
       {
         name: 'FAQ',
-        to: '/faq',
+        to: '/',
       },
       {
         name: 'Roadmap',
-        to: '/roadmap',
+        to: 'https://volta.net/HugoRCD/shelve',
       },
       {
         name: 'Status',
-        to: '/status',
+        to: 'https://shelve.betteruptime.com/',
       }
     ],
   },
@@ -28,7 +28,7 @@ const nav = [
     sub: [
       {
         name: 'GitHub',
-        to: '/github',
+        to: 'https://github.com/HugoRCD/shelve/issues',
       },
     ],
   },
@@ -38,11 +38,11 @@ const nav = [
     sub: [
       {
         name: 'Privacy',
-        to: '/privacy',
+        to: '/',
       },
       {
         name: 'Terms',
-        to: '/terms',
+        to: '/',
       },
     ],
   },
@@ -63,7 +63,7 @@ const nav = [
       </div>
       <div class="flex gap-10">
         <div v-for="item in nav" :key="item.name" class="flex flex-col gap-3">
-          <div class="flex items-center gap-1">
+          <div class="flex items-center gap-1.5">
             <span :class="item.icon" class="text-gray-300" />
             <div class="text-sm font-semibold text-gray-200 sm:text-lg">
               {{ item.name }}
