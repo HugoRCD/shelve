@@ -37,12 +37,12 @@ const features = [
 </script>
 
 <template>
-  <div class="mx-auto mt-8 max-w-5xl lg:mt-16">
+  <div class="mx-auto max-w-5xl">
     <div class="mb-10 flex flex-col items-center justify-center gap-2">
       <h3 class="from-primary-300 to-primary-400 bg-gradient-to-tr bg-clip-text text-3xl font-bold text-transparent sm:text-4xl">
         <LandingScrambleText label="Features" />
       </h3>
-      <p class="max-w-lg text-pretty text-center text-gray-500">
+      <p class="max-w-lg text-pretty text-center text-sm text-gray-500 sm:text-base">
         No more tedious tasks, Shelve has everything you need to manage your projects.
       </p>
     </div>
