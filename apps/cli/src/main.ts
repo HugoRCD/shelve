@@ -9,8 +9,6 @@ export const main = defineCommand({
     description,
   },
   subCommands: {
-    upgrade: () => import('./commands/upgrade').then((r) => r.default),
-    u: () => import('./commands/upgrade').then((r) => r.default),
     create: () => import('./commands/create').then((r) => r.default),
     init: () => import('./commands/create').then((r) => r.default),
     i: () => import('./commands/create').then((r) => r.default),
@@ -29,8 +27,6 @@ export const main = defineCommand({
     li: () => import('./commands/login').then((r) => r.default),
     logout: () => import('./commands/logout').then((r) => r.default),
     lo: () => import('./commands/logout').then((r) => r.default),
-    open: () => import('./commands/open').then((r) => r.default),
-    o: () => import('./commands/open').then((r) => r.default),
   },
   async setup() {
     await checkForUpdates()

@@ -17,7 +17,6 @@ USAGE shelve <command|shortcut> [options]
 |----------|------------------------------------------------------|-----------|
 | create   | Create a new Shelve project                          | c         |
 | init     | alias for create                                     | i         |
-| upgrade  | Upgrade the Shelve CLI to the latest version         | u         |
 | link     | Link the current directory with a Shelve project     | l         |
 | unlink   | Unlink the current directory from a Shelve project   | ul        |
 | login    | Authenticate with Shelve                             | li        |
@@ -25,7 +24,6 @@ USAGE shelve <command|shortcut> [options]
 | whoami   | Shows the username of the currently logged-in user   | w         |
 | pull     | Retrieve the environment variables from Shelve       | pl        |
 | push     | Send the environment variables to Shelve             | ps        |
-| open     | Open the current project in the browser              | o         |
 
 Use shelve <command|shortcut> --help for more information about a command.
 ```
