@@ -58,7 +58,9 @@ const nav = [
           Shelve
         </NuxtLink>
         <div class="text-xs text-gray-500">
-          © {{ new Date().getFullYear() }} Shelve
+          © {{ new Date().getFullYear() }} - Made with 💚 by <NuxtLink to="https://hrcd.fr/" class="text-gray-400 hover:text-gray-200">
+            HugoRCD
+          </NuxtLink>
         </div>
       </div>
       <div class="flex gap-10">
