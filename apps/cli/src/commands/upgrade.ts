@@ -2,7 +2,7 @@ import { defineCommand } from 'citty'
 import consola from 'consola'
 import { execa } from 'execa'
 import { name, version } from '../../package.json'
-import { isLatestVersion } from '../utils/update.ts'
+import { isLatestVersion } from '../utils/update'
 
 export default defineCommand({
   meta: {

@@ -1,18 +1,22 @@
 {
   "compilerOptions": {
-    "esModuleInterop": false,
+    "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "skipLibCheck": true,
     "target": "ESNext",
     "module": "ESNext",
-    "moduleResolution": "Node",
+    "noUncheckedIndexedAccess": true,
+    "moduleResolution": "Bundler",
     "strict": true,
+    "moduleDetection": "force",
+    "isolatedModules": true,
     "noImplicitAny": true,
     "allowJs": true,
     "noEmit": true,
     "noUnusedLocals": true,
     "resolveJsonModule": true,
-    "types": ["node", "./types"],
+    "declaration": true,
+    "types": ["node"],
   },
   "include": ["src"]
 }

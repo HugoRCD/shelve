@@ -1,9 +1,9 @@
 import consola from 'consola'
 import { runCommand } from 'citty'
 import type { Project } from '@shelve/types'
-import link from '../commands/link.ts'
-import login from '../commands/login.ts'
-import { createProject } from './projects.ts'
+import link from '../commands/link'
+import login from '../commands/login'
+import { createProject } from './projects'
 
 export async function suggestCreateProject(name?: string): Promise<Project | null> {
   const accept = await consola.prompt(`Do you want to create ${name ? 'the project' : 'a project'}? (y/n)`, {

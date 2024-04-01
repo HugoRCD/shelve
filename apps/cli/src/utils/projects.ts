@@ -1,8 +1,8 @@
 import fs from 'fs'
 import type { Project } from '@shelve/types'
 import consola from 'consola'
-import { $api } from './connection.ts'
-import { suggestLinkProject } from './suggest.ts'
+import { $api } from './connection'
+import { suggestLinkProject } from './suggest'
 
 export async function getProjects(): Promise<Project[]> {
   return await $api('/project', {

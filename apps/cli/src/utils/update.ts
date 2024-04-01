@@ -3,7 +3,7 @@ import * as semver from 'semver'
 import { $fetch } from 'ofetch'
 import consola from 'consola'
 import { name, version, repository } from '../../package.json'
-import { capitalize } from './string.ts'
+import { capitalize } from './string'
 
 export async function checkForUpdates(): Promise<void> {
   const { version: latestVersion = '' } = await $fetch(

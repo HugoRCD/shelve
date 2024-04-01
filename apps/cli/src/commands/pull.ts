@@ -1,8 +1,8 @@
 import { defineCommand } from 'citty'
 import consola from 'consola'
-import { createEnvFile, getProjectVariable } from '../utils/env.ts'
-import { getProjectId } from '../utils/projects.ts'
-import { suggestLinkProjects } from '../utils/suggest.ts'
+import { createEnvFile, getProjectVariable } from '../utils/env'
+import { getProjectId } from '../utils/projects'
+import { suggestLinkProjects } from '../utils/suggest'
 
 export default defineCommand({
   meta: {

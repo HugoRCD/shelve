@@ -1,7 +1,7 @@
 import { defineCommand } from 'citty'
 import { consola } from 'consola'
 import { getComputerName, loadUserConfig, writeUserConfig } from '../utils/config'
-import { $api } from '../utils/connection.ts'
+import { $api } from '../utils/connection'
 
 export default defineCommand({
   meta: {

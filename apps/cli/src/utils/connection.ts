@@ -1,7 +1,7 @@
 import { ofetch } from 'ofetch'
 import consola from 'consola'
-import { loadUserConfig, writeUserConfig } from './config.ts'
-import { suggestLogin } from './suggest.ts'
+import { loadUserConfig, writeUserConfig } from './config'
+import { suggestLogin } from './suggest'
 
 const SHELVE_API_URL = process.env.NODE_ENV === 'development' ? 'http://localhost:3000/api' : 'https://shelve.hrcd.fr/api'
 

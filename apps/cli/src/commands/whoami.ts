@@ -1,6 +1,6 @@
 import { defineCommand } from 'citty'
 import consola from 'consola'
-import { loadUserConfig } from '../utils/config.ts'
+import { loadUserConfig } from '../utils/config'
 
 export default defineCommand({
   meta: {

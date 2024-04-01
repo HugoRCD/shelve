@@ -1,6 +1,6 @@
 import { defineCommand } from 'citty'
 import { version, description } from '../package.json'
-import { checkForUpdates } from './utils/update.ts'
+import { checkForUpdates } from './utils/update'
 
 export const main = defineCommand({
   meta: {

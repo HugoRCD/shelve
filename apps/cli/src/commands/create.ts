@@ -1,6 +1,6 @@
 import { defineCommand } from 'citty'
 import consola from 'consola'
-import { createProject } from '../utils/projects.ts'
+import { createProject } from '../utils/projects'
 
 export default defineCommand({
   meta: {

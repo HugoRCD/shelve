@@ -1,6 +1,6 @@
 import { defineCommand } from 'citty'
 import { consola } from 'consola'
-import { deleteProjectConfig } from '../utils/projects.ts'
+import { deleteProjectConfig } from '../utils/projects'
 
 export default defineCommand({
   meta: {

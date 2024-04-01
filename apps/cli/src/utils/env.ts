@@ -1,7 +1,7 @@
 import fs from 'fs'
 import type { EnvFile, VariablesCreateInput } from '@shelve/types'
 import consola from 'consola'
-import { $api } from './connection.ts'
+import { $api } from './connection'
 
 export function isEnvFileExist(): boolean {
   return fs.existsSync('.env')
@@ -22,6 +22,7 @@ export function getEnvFile(): EnvFile {
     const envFileContent = envFile.split('\n').filter((item) => item && !item.startsWith('#')).join('\n')
     return envFileContent.split('\n').map((item) => {
       const [key, value] = item.split('=')
+      if (!key || !value) throw new Error('Invalid .env file')
       return {key, value}
     })
   }

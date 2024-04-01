@@ -1,8 +1,8 @@
 import { defineCommand } from 'citty'
 import { consola } from 'consola'
 import open from 'open'
-import { getProjectId } from '../utils/projects.ts'
-import { suggestLinkProjects } from '../utils/suggest.ts'
+import { getProjectId } from '../utils/projects'
+import { suggestLinkProjects } from '../utils/suggest'
 
 export default defineCommand({
   meta: {
