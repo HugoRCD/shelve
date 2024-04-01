@@ -12,14 +12,9 @@ Here are the available types:
 - chore (updates to the build process or auxiliary tools and libraries) 📦
 - perf (a code change that improves performance) ⚡️
 - style (changes that do not affect the meaning of the code) 💅
-- tests (adding or updating tests) 🧪
+- test (adding or updating tests) 🧪
 - refactor (a code change that neither fixes a bug nor adds a feature) 🛠
 - revert (reverts a previous commit) 🔄
-
-we can also use the following scopes:
-- app
-- cli
-- docs
 
 -->
 

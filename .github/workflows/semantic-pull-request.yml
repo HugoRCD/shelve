@@ -32,7 +32,7 @@ jobs:
             chore
             performance
             style
-            tests
+            test
             refactor
             revert
         env:

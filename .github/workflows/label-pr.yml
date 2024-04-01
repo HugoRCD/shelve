@@ -39,7 +39,7 @@ jobs:
               chore: 'chore',
               perf: 'performance',
               style: 'style',
-              tests: 'tests',
+              test: 'test',
               refactor: 'refactor',
               revert: 'revert'
             }
