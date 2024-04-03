@@ -9,7 +9,6 @@
     "lint:fix": "turbo lint -- --fix",
     "test": "turbo test",
     "typecheck": "turbo typecheck",
-    "prepare": "husky",
     "release": "changelogen --release --push",
     "gh:release": "changelogen gh release"
   },
@@ -18,7 +17,6 @@
     "@commitlint/config-conventional": "^19.1.0",
     "changelogen": "^0.5.5",
     "eslint": "^8.57.0",
-    "husky": "^9.0.11",
     "turbo": "latest",
     "typescript": "5.4.3"
   },
