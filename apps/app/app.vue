@@ -7,9 +7,11 @@ useHead({
   link: link,
   script: [
     {
-      src: 'https://eu.umami.is/script.js',
+      src: "https://static.cloudflareinsights.com/beacon.min.js",
       defer: true,
-      'data-website-id': '24a47d51-4629-4f67-af04-1e2242761c67',
+      "data-cf-beacon": { 
+        "token": "7aaae044b38b43a194ccaf490ef32563"
+      }
     },
   ],
 })
