@@ -5,10 +5,18 @@ const { data } = await useAsyncData('release', () =>
 </script>
 
 <template>
-  <div>
-    <section
-      class="markdown relative mx-auto max-w-5xl px-4 sm:px-6 lg:px-8"
-    >
+  <div class="flex flex-col gap-4">
+    <div class="mt-10 flex h-full flex-col items-center justify-center gap-3 p-5">
+      <div class="mb-10 flex flex-col gap-2 text-center">
+        <h3 class="from-primary-300 to-primary-400 bg-gradient-to-tr bg-clip-text text-3xl font-bold text-transparent sm:text-4xl">
+          <LandingScrambleText label="Changelog" />
+        </h3>
+        <p class="text-sm text-gray-500 sm:text-base">
+          Stay up to date with the latest changes to Shelve.
+        </p>
+      </div>
+    </div>
+    <section class="mx-auto flex max-w-5xl flex-col gap-8 border-t border-gray-700 pt-20">
       <Release
         v-for="(post, index) in data"
         :key="post.slug"
@@ -21,15 +29,3 @@ const { data } = await useAsyncData('release', () =>
     </section>
   </div>
 </template>
-
-<style scoped>
-.markdown {
-  @apply prose max-w-none;
-  @apply prose-h1:text-2xl prose-h1:font-bold prose-h1:text-primary;
-  @apply prose-h2:text-xl prose-h2:font-medium prose-h2:text-primary prose-h2:mt-8 prose-h2:mb-4;
-  @apply prose-h3:text-lg prose-h3:font-medium prose-h3:text-primary prose-h3:mt-8 prose-h3:mb-4;
-  @apply prose-p:font-light;
-  @apply prose-a:font-semibold prose-a:text-accent prose-a:no-underline hover:prose-a:underline;
-  @apply prose-ul:font-light prose-ul:leading-5;
-}
-</style>

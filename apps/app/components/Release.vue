@@ -11,36 +11,29 @@ defineProps({
 </script>
 
 <template>
-  <article
-    :id="content.title"
-    class="border-gray mx-auto flex max-w-3xl flex-col border-t-DEFAULT px-4 py-20 sm:px-6 lg:px-8"
-  >
-    <img
-      :src="content.image"
-      :alt="content.title"
-      class="w-full"
-    >
-    <div class="flex items-center gap-3">
-      <h1 class="font-main text-primary text-xl font-bold sm:text-3xl">
-        {{ content.title }}
-      </h1>
+  <article :id="content.title" class="flex flex-col justify-between gap-4 sm:flex-row sm:gap-8">
+    <div class="flex flex-col gap-2">
+      <span class="text-nowrap text-gray-300">
+        {{ new Date(content.date).toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+        }) }}
+      </span>
+      <UBadge v-if="content.tag" color="blue" variant="subtle">
+        {{ content.tag }}
+      </UBadge>
     </div>
-    <span class="text-muted block text-sm">
-      {{ new Date(content.date).toLocaleDateString("en-US", {
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-      }) }}
-    </span>
-    <ContentRenderer
-      :value="content"
-      class="post"
-    />
+    <div class="flex flex-col gap-2">
+      <img
+        :src="content.image"
+        :alt="content.title"
+        class="h-64 w-full rounded-xl object-cover"
+      >
+      <ContentRenderer
+        :value="content"
+        class="prose prose-h2:text-gray-200"
+      />
+    </div>
   </article>
 </template>
-
-<style scoped>
-img {
-  @apply mx-auto rounded-xl;
-}
-</style>
