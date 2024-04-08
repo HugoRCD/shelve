@@ -32,7 +32,7 @@
     "eslint": "^8.57.0"
   },
   "peerDependencies": {
-    "typescript": "^5.4.3"
+    "typescript": "^5.4.4"
   },
   "bin": {
     "shelve": "dist/index.mjs",
