@@ -27,7 +27,9 @@ fetchRepo()
     to="https://github.com/HugoRCD/shelve"
   >
     <span class="i-custom-github text-xl" />
-    <LandingScrambleText :label="githubStars" class="text-sm" />
+    <span class="text-sm font-bold">
+      {{ githubStars }}
+    </span>
   </NuxtLink>
 </template>
 
