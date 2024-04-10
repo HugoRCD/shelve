@@ -36,7 +36,7 @@ jobs:
               ci: 'ci',
               docs: 'documentation',
               enhancement: 'enhancement',
-              chore: 'chore',
+              chore: 'dependencies',
               perf: 'performance',
               style: 'style',
               test: 'test',

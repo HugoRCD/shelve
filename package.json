@@ -1,7 +1,7 @@
 {
   "name": "shelve",
   "private": true,
-  "version": "0.2.4",
+  "version": "1.0.0",
   "scripts": {
     "build": "automd && turbo build",
     "dev": "turbo dev",
@@ -27,10 +27,5 @@
   "workspaces": [
     "apps/*",
     "packages/*"
-  ],
-  "commitlint": {
-    "extends": [
-      "@commitlint/config-conventional"
-    ]
-  }
+  ]
 }
