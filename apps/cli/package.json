@@ -3,6 +3,7 @@
   "version": "1.0.1",
   "description": "The command-line interface for Shelve",
   "author": "HugoRCD",
+  "type": "module",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/HugoRCD/shelve.git",
