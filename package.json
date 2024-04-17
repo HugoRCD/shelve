@@ -13,8 +13,6 @@
     "gh:release": "changelogen gh release"
   },
   "devDependencies": {
-    "@commitlint/cli": "^19.2.2",
-    "@commitlint/config-conventional": "^19.2.2",
     "changelogen": "^0.5.5",
     "eslint": "^8.57.0",
     "turbo": "latest",

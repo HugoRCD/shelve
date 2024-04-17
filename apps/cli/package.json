@@ -21,7 +21,8 @@
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
-    "release": "bun run build && changelogen --release --no-tag --no-output --push && npm publish"
+    "release": "bun run test && changelogen --release && npm publish && git push --follow-tags",
+    "test": "bun run build && bun run typecheck && bun run lint"
   },
   "devDependencies": {
     "@shelve/eslint-config": "*",
