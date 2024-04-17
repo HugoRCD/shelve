@@ -7,11 +7,9 @@ useHead({
   link: link,
   script: [
     {
-      src: "https://static.cloudflareinsights.com/beacon.min.js",
+      src: 'https://plausible.hrcd.fr/js/script.js',
       defer: true,
-      "data-cf-beacon": { 
-        "token": "7aaae044b38b43a194ccaf490ef32563"
-      }
+      'data-domain': 'shelve.hrcd.fr'
     },
   ],
 })
