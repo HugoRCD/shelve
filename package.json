@@ -13,15 +13,13 @@
     "gh:release": "changelogen gh release"
   },
   "devDependencies": {
-    "@commitlint/cli": "^19.2.1",
-    "@commitlint/config-conventional": "^19.1.0",
     "changelogen": "^0.5.5",
     "eslint": "^8.57.0",
     "turbo": "latest",
-    "typescript": "5.4.4"
+    "typescript": "5.4.5"
   },
   "engines": {
-    "node": ">=18.20.1"
+    "node": ">=18.20.2"
   },
   "packageManager": "bun@1.0.30",
   "workspaces": [
