@@ -42,7 +42,7 @@ function addPrefixToInputId(prefix: string) {
       <slot />
     </div>
 
-    <UContextMenu v-model="isOpen" :virtual-element="virtualElement">
+    <UContextMenu v-model="isOpen" :virtual-element>
       <UCard>
         <template #header>
           <h3 class="text-sm font-semibold">

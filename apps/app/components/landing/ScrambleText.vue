@@ -1,19 +1,22 @@
-<script setup>
+<script setup lang="ts">
 const props = defineProps({
-  label: String,
+  label: {
+    type: String,
+    required: true,
+  },
 })
 
 const displayText = ref(props.label)
 const charset = 'abcdefghijklmnopqrstuvwxyz'
 
-function randomChars(length) {
+function randomChars(length: number) {
   return Array.from(
     { length },
     () => charset[Math.floor(Math.random() * charset.length)]
   ).join('')
 }
 
-async function scramble(input) {
+async function scramble(input: string) {
   let prefix = ''
   for (let index = 0; index < input.length; index++) {
     await new Promise((resolve) => setTimeout(resolve, 50))

@@ -90,9 +90,9 @@ const items = (row: Team) => [
     </div>
     <div style="--stagger: 3" data-animate class="mt-6">
       <UTable
-        :columns="columns"
+        :columns
         :rows="filteredTeams"
-        :loading="loading"
+        :loading
         :items-per-page="10"
       >
         <template #empty-state>

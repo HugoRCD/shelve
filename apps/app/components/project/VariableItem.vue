@@ -80,7 +80,7 @@ const items = [
         <p class="hidden text-xs font-normal text-gray-500 md:block">
           Last updated: {{ new Date(variable.updatedAt).toLocaleDateString() }}
         </p>
-        <UDropdown :items="items">
+        <UDropdown :items>
           <UButton color="gray" variant="ghost" icon="i-heroicons-ellipsis-horizontal-20-solid" />
         </UDropdown>
       </div>

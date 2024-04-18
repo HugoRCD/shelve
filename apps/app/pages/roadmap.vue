@@ -9,7 +9,7 @@ const src = computed(() => `https://volta.net/embed/${token}?gray=${appConfig.ui
 <template>
   <div class="flex size-full items-center justify-center">
     <ClientOnly>
-      <iframe :src="src" width="100%" height="100%" />
+      <iframe :src width="100%" height="100%" />
     </ClientOnly>
   </div>
 </template>

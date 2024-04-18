@@ -2,9 +2,7 @@ import { Role } from '@shelve/types'
 import { H3Event } from 'h3'
 
 export default defineEventHandler((event: H3Event) => {
-  const protectedRoutes = [
-    '/api/admin'
-  ]
+  const protectedRoutes = ['/api/admin']
 
   const user = event.context.user
 
