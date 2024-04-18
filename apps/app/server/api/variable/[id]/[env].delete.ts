@@ -8,6 +8,6 @@ export default eventHandler(async (event: H3Event) => {
   await deleteVariable(parseInt(id), env)
   return {
     statusCode: 200,
-    message: 'User deleted',
+    message: 'Variable deleted',
   }
 })

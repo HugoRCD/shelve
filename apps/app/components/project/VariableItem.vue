@@ -19,6 +19,10 @@ const { refresh, variable, projectId } = defineProps({
     type: String,
     required: true,
   },
+  isSelected: {
+    type: Boolean,
+    required: true
+  }
 })
 
 const {
@@ -28,6 +32,7 @@ const {
   deleteVariable,
 } = useVariables(refresh, projectId)
 
+const emit = defineEmits(['toggleSelected'])
 const localVariable = toRef(variable) as Ref<Variable>
 const selectedEnvironment = ref(variable.environment.split('|'))
 const environment = computed(() => selectedEnvironment.value.join('|'))
@@ -63,13 +68,16 @@ const items = [
 </script>
 
 <template>
-  <UCard>
+  <UCard :ui="{ background: isSelected && showEdit ? 'ring ring-primary' : isSelected && !showEdit ? 'bg-gray-100 dark:bg-gray-800' : '' }">
     <div class="flex w-full items-center justify-between">
-      <div class="flex flex-col gap-1">
+      <div class="flex w-full cursor-pointer flex-col gap-1" @click="emit('toggleSelected')">
         <h3 class="flex items-center gap-1 text-sm font-semibold sm:text-base">
-          {{ variable.key.length > 25 ? variable.key.slice(0, 25) + '...' : variable.key }}
+          <span class="lg:hidden">
+            {{ variable.key.length > 25 ? variable.key.slice(0, 25) + '...' : variable.key }}
+          </span>
+          <span class="hidden lg:block">{{ variable.key }}</span>
           <UTooltip text="Copy variable to clipboard">
-            <UButton color="gray" variant="ghost" icon="i-lucide-clipboard-plus" @click="copyToClipboard(variable.value, 'Variable value copied')" />
+            <UButton color="gray" variant="ghost" icon="i-lucide-clipboard-plus" @click.stop="copyToClipboard(variable.value, 'Variable value copied')" />
           </UTooltip>
         </h3>
         <span class="text-xs font-normal text-gray-500">

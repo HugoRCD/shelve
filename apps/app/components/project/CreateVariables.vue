@@ -9,6 +9,7 @@ const { refresh, variables, projectId } = defineProps({
   },
   variables: {
     type: Array as PropType<Variable[]>,
+    required: true,
   },
   projectId: {
     type: String,
