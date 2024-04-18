@@ -44,7 +44,7 @@ const items = [
         color="primary"
         variant="ghost"
         size="sm"
-        :items="items"
+        :items
       />
     </div>
   </div>

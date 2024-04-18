@@ -20,7 +20,7 @@ for (let i = 0; i < props.digitCount; i++) {
 
 const emit = defineEmits(['otp:full'])
 
-const isDigitsFull = function () {
+const isDigitsFull = function() {
   for (const elem of digits) {
     if (elem) {
       return false
@@ -29,7 +29,7 @@ const isDigitsFull = function () {
   return true
 }
 
-const handleKeyDown = function (event: KeyboardEvent, index: number) {
+const handleKeyDown = function(event: KeyboardEvent, index: number) {
   if (!otpRef.value) return
   if (event.key !== 'Tab' &&
       event.key !== 'ArrowRight' &&

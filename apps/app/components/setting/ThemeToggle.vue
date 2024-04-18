@@ -1,17 +1,4 @@
-<template>
-  <ClientOnly>
-    <button
-      :class="[$colorMode.value === 'light' ? 'i-heroicons-moon-20-solid' : 'i-heroicons-sun-20-solid', size]"
-      aria-label="Theme"
-      @click="startViewTransition($colorMode.value === 'light' ? 'dark' : 'light')"
-    />
-    <template #fallback>
-      <div :class="size" />
-    </template>
-  </ClientOnly>
-</template>
-
-<script setup>
+<script setup lang="ts">
 defineProps({
   size: {
     type: String,
@@ -39,6 +26,19 @@ function startViewTransition(theme) {
   document.startViewTransition(switchTheme)
 }
 </script>
+
+<template>
+  <ClientOnly>
+    <button
+      :class="[$colorMode.value === 'light' ? 'i-heroicons-moon-20-solid' : 'i-heroicons-sun-20-solid', size]"
+      aria-label="Theme"
+      @click="startViewTransition($colorMode.value === 'light' ? 'dark' : 'light')"
+    />
+    <template #fallback>
+      <div :class="size" />
+    </template>
+  </ClientOnly>
+</template>
 
 <style>
 /* Dark/Light reveal effect */

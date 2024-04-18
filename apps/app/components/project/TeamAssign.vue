@@ -53,7 +53,7 @@ async function addTeamToProject(teamId: number) {
       <UButton
         color="primary"
         class="text-xs"
-        :loading="loading"
+        :loading
         label="Link"
         icon="i-lucide-link"
         @click="addTeamToProject(team.id)"

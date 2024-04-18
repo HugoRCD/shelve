@@ -66,7 +66,7 @@ async function remove_member(teamId: number, memberId: number) {
 <template>
   <UAvatarGroup v-if="!display" :ui="{ ring: 'ring-0' }">
     <UPopover v-for="member in members" :key="member.id" :popper="{ arrow: true }">
-      <TeamMember :member="member" />
+      <TeamMember :member />
       <template #panel>
         <UCard>
           <form @submit.prevent="upsert_member(teamId, member.user.email, member.role)">
@@ -117,6 +117,6 @@ async function remove_member(teamId: number, memberId: number) {
     </UPopover>
   </UAvatarGroup>
   <UAvatarGroup v-else :ui="{ ring: 'ring-0' }">
-    <TeamMember v-for="member in members" :key="member.id" :member="member" />
+    <TeamMember v-for="member in members" :key="member.id" :member />
   </UAvatarGroup>
 </template>

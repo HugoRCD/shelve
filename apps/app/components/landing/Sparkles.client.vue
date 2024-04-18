@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { tsParticles } from '@tsparticles/engine'
 import { loadSlim } from '@tsparticles/slim'
 import { onMounted, onUnmounted } from 'vue'
@@ -119,5 +119,5 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div :id="id" />
+  <div :id />
 </template>

@@ -86,8 +86,7 @@ onMounted(() => {
     e.preventDefault()
     const pastedDataArray = pastedData.split('\n')
     const pastedDataArrayFiltered = pastedDataArray.filter((data) => data !== '')
-    const pastedDataArrayFilteredLength = pastedDataArrayFiltered.length
-    variablesToCreate.value = pastedDataArrayFilteredLength
+    variablesToCreate.value = pastedDataArrayFiltered.length
     variablesInput.value.variables = pastedDataArrayFiltered.map((data, index) => {
       const [key, value] = data.split('=')
       return {
@@ -115,7 +114,7 @@ onMounted(() => {
               Manage your environment variables
             </p>
           </div>
-          <UDropdown :items="items">
+          <UDropdown :items>
             <UButton color="gray" variant="ghost" icon="i-heroicons-ellipsis-horizontal-20-solid" />
           </UDropdown>
         </div>

@@ -131,7 +131,7 @@ function importProject() {
                   <div v-else class="flex flex-col gap-4">
                     <div v-if="teams.length !== 0" class="flex flex-col gap-4">
                       <div v-for="team in teams" :key="team.id" class="divide-y divide-gray-100 dark:divide-gray-800">
-                        <ProjectTeamAssign :team="team" :project-id="0" is-emit @add-team="addTeam" />
+                        <ProjectTeamAssign :team :project-id="0" is-emit @add-team="addTeam" />
                       </div>
                     </div>
                     <div v-else class="flex flex-col items-center justify-center gap-2">
