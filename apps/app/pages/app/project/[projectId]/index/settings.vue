@@ -93,7 +93,7 @@ async function removeTeamFromProject(teamId: number) {
                 </div>
                 <div v-else class="flex flex-col gap-4">
                   <div v-if="userTeams.length !== 0" class="flex flex-col gap-4">
-                    <ProjectTeamAssign v-for="team in userTeams" :key="team.id" :team="team" :project-id="project.id" />
+                    <ProjectTeamAssign v-for="team in userTeams" :key="team.id" :team :project-id="project.id" />
                   </div>
                   <div v-else class="flex flex-col items-center justify-center gap-2">
                     <p class="text-pretty text-xs text-neutral-500 dark:text-neutral-400">

@@ -1,44 +1,46 @@
-import type { CreateProjectInput, ProjectUpdateInput } from '@shelve/types'
+import type { CreateProjectInput, ProjectUpdateInput, Team } from '@shelve/types'
 import prisma from '~/server/database/client'
+
+type CreateProjectInputWithAll = CreateProjectInput & { ownerId: number, team?: { connect: { id: number } } }
 
 export async function createProject(project: CreateProjectInput, userId: number) {
   await removeCachedUserProjects(userId.toString())
   const projectAlreadyExists = await isProjectAlreadyExists(project.name, userId)
   if (projectAlreadyExists) throw new Error('Project already exists')
+
+  const projectData = {
+    ...project,
+    ownerId: userId,
+    users: { connect: { id: userId } }
+  } as CreateProjectInputWithAll
+
   if (project.team) {
-    return await prisma.project.create({
-      data: {
-        ...project,
-        ownerId: userId,
-        users: {
-          connect: {
-            id: userId,
-          }
-        },
-        team: {
-          connect: {
-            id: project.team.id,
-          }
-        }
-      }
-    })
+    projectData.team = { connect: { id: project.team.id } } as Team & { connect: { id: number } }
   }
-  return await prisma.project.create({
-    data: {
-      ...project,
+
+  return prisma.project.create({ data: projectData })
+}
+
+async function isProjectAlreadyExists(name: string, userId: number) {
+  const project = await prisma.project.findFirst({
+    where: {
+      name: {
+        equals: name,
+        mode: 'insensitive',
+      },
       ownerId: userId,
-      users: {
-        connect: {
-          id: userId,
-        }
-      }
-    }
+    },
   })
+  return !!project
 }
 
 export async function updateProject(project: ProjectUpdateInput, projectId: number, userId: number) {
   await removeCachedUserProjects(userId.toString())
   await removeCachedProjectById(projectId.toString())
+  if (project.name) {
+    const projectAlreadyExists = await isProjectAlreadyExists(project.name, userId)
+    if (projectAlreadyExists) throw new Error('Project already exists')
+  }
   return prisma.project.update({
     where: {
       id: projectId,
@@ -135,19 +137,6 @@ export const getProjectsByUserId = cachedFunction(async (userId: number) => {
   name: 'getProjectsByUserId',
   getKey: (userId: number) => `userId:${userId}`,
 })
-
-async function isProjectAlreadyExists(name: string, userId: number) {
-  const project = await prisma.project.findFirst({
-    where: {
-      name: {
-        equals: name,
-        mode: 'insensitive',
-      },
-      ownerId: userId,
-    }
-  })
-  return !!project
-}
 
 export async function deleteProject(id: string, userId: number) {
   await removeCachedUserProjects(userId.toString())
