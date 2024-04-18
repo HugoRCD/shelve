@@ -24,6 +24,7 @@ const isVariableSelected = (variable: Variable) => {
 }
 
 async function deleteVariables() {
+  if (!confirm('Are you sure you want to delete these variables?')) return
   loading.value = true
   const ids = selectedVariables.value.map((v) => v.id)
   try {
@@ -53,7 +54,10 @@ async function deleteVariables() {
             {{ selectedVariables.length }} variables selected
           </span>
           <div>
-            <UTooltip text="Copy selected variables to clipboard">
+            <UTooltip
+              text="Copy selected variables (dev) to clipboard"
+              @click="copyEnv(selectedVariables, 'development')"
+            >
               <UButton color="gray" variant="ghost" icon="i-lucide-clipboard-plus" />
             </UTooltip>
             <UTooltip text="Delete selected variables">
@@ -71,7 +75,7 @@ async function deleteVariables() {
           :variable
           :refresh
           :is-selected="isVariableSelected(variable)"
-          @click="toggleVariable(variable)"
+          @toggle-selected="toggleVariable(variable)"
         />
       </div>
     </div>
@@ -87,6 +91,3 @@ async function deleteVariables() {
     </div>
   </div>
 </template>
-
-<style scoped>
-</style>
