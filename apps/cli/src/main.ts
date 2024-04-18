@@ -29,7 +29,7 @@ export const main = defineCommand({
     lo: () => import('./commands/logout').then((r) => r.default),
   },
   async setup() {
-    await checkForUpdates()
+    // await checkForUpdates()
   },
   cleanup() {}
 }) as any
