@@ -4,9 +4,10 @@
   "version": "1.0.0",
   "scripts": {
     "build": "automd && turbo build",
+    "generate": "turbo run generate",
     "dev": "turbo dev",
     "lint": "turbo lint",
-    "lint:fix": "turbo lint -- --fix",
+    "lint:fix": "turbo lint:fix",
     "test": "turbo test",
     "typecheck": "turbo typecheck",
     "release": "changelogen --release --push",
