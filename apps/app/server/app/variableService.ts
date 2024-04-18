@@ -1,4 +1,4 @@
-import { Environment, type VariablesCreateInput } from '@shelve/types'
+import { Environment, User, Variable, type VariablesCreateInput } from '@shelve/types'
 import { decrypt, encrypt } from '@shelve/utils'
 import prisma from '~/server/database/client'
 
@@ -44,7 +44,7 @@ export async function upsertVariable(variablesCreateInput: VariablesCreateInput)
 
 }
 
-export async function getVariablesByProjectId(projectId: number, environment?: Environment) {
+export async function getVariablesByProjectId(projectId: number, environment?: Environment): Promise<Variable[]> {
   const runtimeConfig = useRuntimeConfig().private
   const options = environment ? {
     projectId,
@@ -62,10 +62,9 @@ export async function getVariablesByProjectId(projectId: number, environment?: E
   })
 }
 
-export async function deleteVariable(id: number, environment: string) {
-  // decode environment to utf-8
+export async function deleteVariable(id: number, environment: string): Promise<void> {
   const envs = environment.split('|').map((env) => decodeURIComponent(env))
-  return await prisma.variables.delete({
+  await prisma.variables.delete({
     where: {
       id,
       environment: {
@@ -73,4 +72,26 @@ export async function deleteVariable(id: number, environment: string) {
       },
     },
   })
+}
+
+export async function deleteVariables(variablesId: number[], user: User): Promise<void> {
+  const variables = await prisma.variables.findMany({
+    where: {
+      id: {
+        in: variablesId
+      }
+    },
+    select: {
+      id: true,
+      project: {
+        select: {
+          ownerId: true
+        }
+      }
+    }
+  })
+  if (!variables.every(variable => variable.project.ownerId === user.id)) {
+    throw new Error('You do not have permission to delete these variables')
+  }
+  await prisma.variables.deleteMany({ where: { id: { in: variables.map(variable => variable.id) } } })
 }
