@@ -1,3 +1,12 @@
+# Shelve CLI
+
+<!-- automd:badges color=black license provider=shields name=@shelve/cli -->
+
+[![npm version](https://img.shields.io/npm/v/@shelve/cli?color=black)](https://npmjs.com/package/@shelve/cli)
+[![npm downloads](https://img.shields.io/npm/dm/@shelve/cli?color=black)](https://npmjs.com/package/@shelve/cli)
+
+<!-- /automd -->
+
 The Shelve CLI serves as a command-line interface designed for the [Shelve](https://shelve.hrcd.fr/) platform. This tool enables users to authenticate with Shelve, facilitating the seamless transfer of environment variables for project collaboration within a team directly through the terminal interface.
 
 ## Installation

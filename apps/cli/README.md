@@ -1,10 +1,9 @@
 # Shelve CLI
 
-<!-- automd:badges color=black license provider=shields -->
+<!-- automd:badges color=black license provider=shields name=@shelve/cli -->
 
 [![npm version](https://img.shields.io/npm/v/@shelve/cli?color=black)](https://npmjs.com/package/@shelve/cli)
 [![npm downloads](https://img.shields.io/npm/dm/@shelve/cli?color=black)](https://npmjs.com/package/@shelve/cli)
-[![license](https://img.shields.io/github/license/HugoRCD/shelve?color=black)](https://github.com/HugoRCD/shelve/blob/main/LICENSE)
 
 <!-- /automd -->
 
@@ -69,7 +68,7 @@ To start contributing, you can follow these steps:
 
 <!-- /automd -->
 
-<!-- automd:contributors license=Apache author=HugoRCD -->
+<!-- automd:contributors license=Apache author=HugoRCD github=HugoRCD/shelve -->
 
 Published under the [APACHE](https://github.com/HugoRCD/shelve/blob/main/LICENSE) license.
 Made by [@HugoRCD](https://github.com/HugoRCD) and [community](https://github.com/HugoRCD/shelve/graphs/contributors) 💛
