@@ -51,7 +51,7 @@ async function deleteVariables() {
       <div v-if="selectedVariables.length > 0" class="absolute bottom-4 left-1/2 z-20 -translate-x-1/2">
         <div class="flex items-center gap-4 rounded-full bg-white px-5 py-1.5 shadow-md dark:bg-neutral-950">
           <span class="text-sm font-semibold text-gray-300">
-            {{ selectedVariables.length }} variables selected
+            {{ selectedVariables.length }} variable{{ selectedVariables.length > 1 ? 's' : '' }} selected
           </span>
           <div>
             <UTooltip
@@ -62,6 +62,9 @@ async function deleteVariables() {
             </UTooltip>
             <UTooltip text="Delete selected variables">
               <UButton color="red" variant="ghost" icon="i-heroicons-trash" :loading @click="deleteVariables" />
+            </UTooltip>
+            <UTooltip text="Clear selection">
+              <UButton color="gray" variant="ghost" icon="i-lucide-x" @click="selectedVariables = []" />
             </UTooltip>
           </div>
         </div>
