@@ -32,7 +32,7 @@ const userTeams = useUserTeams()
 const projectTeam = computed(() => userTeams.value.find((team) => team.id === project.value?.teamId))
 
 const removeLoading = ref(false)
-const refresh = inject('refresh') as Function
+const refresh = inject('refresh') as () => Promise<void>
 
 async function removeTeamFromProject(teamId: number) {
   removeLoading.value = true

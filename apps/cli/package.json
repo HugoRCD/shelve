@@ -19,13 +19,12 @@
     "build": "automd && unbuild",
     "start": "node ./dist/index.mjs",
     "typecheck": "tsc --noEmit",
-    "lint": "eslint . --ext .ts",
-    "lint:fix": "eslint . --ext .ts --fix",
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix .",
     "release": "bun run test && changelogen --release && npm publish && git push --follow-tags",
     "test": "bun run build && bun run typecheck && bun run lint"
   },
   "devDependencies": {
-    "@shelve/eslint-config": "*",
     "@shelve/types": "*",
     "@types/bun": "latest",
     "@types/semver": "^7.5.8",
@@ -48,6 +47,7 @@
   ],
   "types": "dist/index.d.ts",
   "dependencies": {
+    "@hrcd/eslint-config": "^1.1.3",
     "citty": "^0.1.6",
     "colorette": "^2.0.20",
     "consola": "^3.2.3",

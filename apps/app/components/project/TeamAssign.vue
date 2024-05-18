@@ -19,7 +19,7 @@ const { team, projectId, isEmit } = defineProps({
 
 const loading = ref(false)
 
-const refresh = inject('refresh', () => {}) as Function
+const refresh = inject('refresh', () => {}) as () => Promise<void>
 
 const emit = defineEmits(['addTeam'])
 async function addTeamToProject(teamId: number) {

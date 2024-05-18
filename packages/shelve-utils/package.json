@@ -11,7 +11,6 @@
   "main": "index.ts",
   "types": "index.ts",
   "devDependencies": {
-    "@shelve/eslint-config": "*",
     "@types/crypto-js": "^4.2.2",
     "typescript": "latest"
   },

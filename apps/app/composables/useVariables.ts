@@ -1,9 +1,8 @@
 import type { Variable, VariablesCreateInput } from '@shelve/types'
 
-export function useVariables(refresh: Function, projectId: string) {
+export function useVariables(refresh: () => Promise<void>, projectId: string) {
   const selectedEnvironment = ref(['production'])
   const environment = computed(() => selectedEnvironment.value.join('|'))
-
 
   const createLoading = ref(false)
   const updateLoading = ref(false)

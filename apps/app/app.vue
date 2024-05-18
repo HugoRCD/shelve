@@ -26,7 +26,7 @@ const reduceMotion = useCookie<boolean>('reduceMotion', {
   watch: true,
 })
 
-if (process.client) setPrefersReducedMotion(reduceMotion.value)
+if (import.meta.client) setPrefersReducedMotion(reduceMotion.value)
 
 
 await useSession().refresh()
