@@ -20,7 +20,7 @@
     "typescript": "5.4.5"
   },
   "engines": {
-    "node": ">=20.12.2"
+    "node": ">=20.13.1"
   },
   "packageManager": "bun@1.0.30",
   "workspaces": [
