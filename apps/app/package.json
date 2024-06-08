@@ -47,7 +47,7 @@
     "jsonwebtoken": "^9.0.2",
     "nuxt": "latest",
     "nuxt-build-cache": "latest",
-    "octokit": "^3.2.1",
+    "octokit": "^4.0.2",
     "openai": "^4.49.1",
     "prisma": "^5.15.0",
     "resend": "^3.2.0",
