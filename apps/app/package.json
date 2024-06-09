@@ -43,7 +43,7 @@
     "@vueuse/core": "^10.10.0",
     "@vueuse/nuxt": "^10.10.0",
     "bcryptjs": "^2.4.3",
-    "eslint": "^8.57.0",
+    "eslint": "^9.4.0",
     "jsonwebtoken": "^9.0.2",
     "nuxt": "latest",
     "nuxt-build-cache": "latest",
