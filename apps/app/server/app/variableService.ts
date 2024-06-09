@@ -21,7 +21,7 @@ export async function upsertVariable(variablesCreateInput: VariablesCreateInput)
     return variables.map((variable) => {
       const encryptedValue = encrypt(variable.value, secret_encryption_key, parseInt(secret_encryption_iterations))
       variable.environment = getEnvString(variable.environment)
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+       
       const { index, ...rest } = variable
       return { ...rest, value: encryptedValue }
     })
