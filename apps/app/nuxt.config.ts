@@ -24,6 +24,13 @@ export default defineNuxtConfig({
     '/app/**': { ssr: false },
   },
 
+  nitro: {
+    prerender: {
+      crawlLinks: true,
+      routes: ['/'],
+    },
+  },
+
   runtimeConfig: {
     public: {
       siteUrl: process.env.NUXT_PUBLIC_SITE_URL,
