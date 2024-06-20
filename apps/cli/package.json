@@ -30,7 +30,7 @@
     "@types/semver": "^7.5.8",
     "automd": "^0.3.7",
     "changelogen": "^0.5.5",
-    "eslint": "^9.4.0"
+    "eslint": "^9.5.0"
   },
   "peerDependencies": {
     "typescript": "^5.4.5"
@@ -47,7 +47,7 @@
   ],
   "types": "dist/index.d.ts",
   "dependencies": {
-    "@hrcd/eslint-config": "^1.1.4",
+    "@hrcd/eslint-config": "^1.1.5",
     "citty": "^0.1.6",
     "colorette": "^2.0.20",
     "consola": "^3.2.3",
