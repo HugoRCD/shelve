@@ -24,9 +24,9 @@
   },
   "devDependencies": {
     "@hrcd/eslint-config": "^1.1.5",
-    "@iconify-json/lucide": "^1.1.193",
+    "@iconify-json/lucide": "^1.1.194",
     "@linear/sdk": "^22.0.0",
-    "@nuxt/content": "^2.12.1",
+    "@nuxt/content": "^2.13.0",
     "@nuxt/fonts": "latest",
     "@nuxt/image": "latest",
     "@nuxt/ui": "^2.17.0",

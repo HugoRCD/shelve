@@ -17,10 +17,10 @@
     "changelogen": "^0.5.5",
     "eslint": "^9.5.0",
     "turbo": "latest",
-    "typescript": "5.4.5"
+    "typescript": "5.5.2"
   },
   "engines": {
-    "node": ">=20.14.0"
+    "node": ">=20.15.0"
   },
   "packageManager": "bun@1.0.30",
   "workspaces": [
