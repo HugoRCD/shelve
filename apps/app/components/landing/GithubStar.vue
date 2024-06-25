@@ -1,5 +1,5 @@
 <script setup lang="ts">
-type repoType = {
+type RepoType = {
   name: string
   stars: number
   watchers: number
@@ -14,7 +14,7 @@ if (!githubStars.value) {
 
 async function fetchRepo() {
   try {
-    const res = await $fetch('https://ungh.cc/repos/hugorcd/shelve') as { repo: repoType }
+    const res = await $fetch('https://ungh.cc/repos/hugorcd/shelve') as { repo: RepoType }
     githubStars.value = res.repo.stars.toString()
   } catch (e) { /* empty */ }
 }

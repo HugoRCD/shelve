@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const copy = ref(false)
-function copy_to_clipboard(text: string) {
+function copyToClipboard(text: string) {
   copyToClipboard(text, 'Copied to clipboard')
   copy.value = true
   setTimeout(() => {
@@ -29,7 +29,7 @@ function copy_to_clipboard(text: string) {
           <div class="absolute bottom-16 z-20 flex w-full items-center justify-center [mask-image:linear-gradient(to_bottom,white,transparent)]">
             <div
               class="flex items-center justify-center gap-4 rounded-md bg-white/5 px-4 py-2 backdrop-blur-lg"
-              @click="copy_to_clipboard('npm install -g @shelve/cli')"
+              @click="copyToClipboard('npm install -g @shelve/cli')"
             >
               <div class="flex cursor-pointer items-center justify-center gap-2 text-sm text-gray-300">
                 <span>

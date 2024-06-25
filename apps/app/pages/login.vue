@@ -60,7 +60,7 @@ const sendOtp = async () => {
 }
 
 const login = async () => {
-  if (!otp.value) {
+  if (!otp.value && !password.value) {
     toast.error('Please fill in all required fields.')
     return
   }

@@ -15,13 +15,13 @@ function getEnvString(env: string) {
 }
 
 export async function upsertVariable(variablesCreateInput: VariablesCreateInput) {
-  const { secret_encryption_key, secret_encryption_iterations } = useRuntimeConfig().private
+  const { secretEncryptionKey, secretEncryptionIterations } = useRuntimeConfig().private
 
   const encryptVariables = (variables: VariablesCreateInput['variables']) => {
     return variables.map((variable) => {
-      const encryptedValue = encrypt(variable.value, secret_encryption_key, parseInt(secret_encryption_iterations))
+      const encryptedValue = encrypt(variable.value, secretEncryptionKey, parseInt(secretEncryptionIterations))
       variable.environment = getEnvString(variable.environment)
-       
+
       const { index, ...rest } = variable
       return { ...rest, value: encryptedValue }
     })
@@ -41,7 +41,6 @@ export async function upsertVariable(variablesCreateInput: VariablesCreateInput)
     data: encryptedVariables,
     skipDuplicates: true,
   })
-
 }
 
 export async function getVariablesByProjectId(projectId: number, environment?: Environment): Promise<Variable[]> {

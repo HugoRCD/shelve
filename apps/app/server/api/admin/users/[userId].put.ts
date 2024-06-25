@@ -2,7 +2,7 @@ import { H3Event } from 'h3'
 import prisma from '~/server/database/client'
 
 export default eventHandler(async (event: H3Event) => {
-  const user = event.context.user
+  const { user } = event.context
   const body = await readBody(event)
   const id = getRouterParam(event, 'userId') as string
 
