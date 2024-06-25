@@ -1,5 +1,5 @@
 import { H3Event } from 'h3'
-import { upsertMember } from '~/server/app/teamsService'
+import { upsertMember } from '~~/server/app/teamsService'
 
 export default eventHandler(async (event: H3Event) => {
   const { user } = event.context

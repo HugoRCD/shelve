@@ -44,7 +44,7 @@
     "bcryptjs": "^2.4.3",
     "eslint": "^9.5.0",
     "jsonwebtoken": "^9.0.2",
-    "nuxt": "latest",
+    "nuxt": "^3.12.2",
     "nuxt-build-cache": "latest",
     "prisma": "^5.15.1",
     "resend": "^3.3.0",

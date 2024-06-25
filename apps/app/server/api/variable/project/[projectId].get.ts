@@ -1,5 +1,5 @@
 import { H3Event } from 'h3'
-import { getVariablesByProjectId } from '~/server/app/variableService'
+import { getVariablesByProjectId } from '~~/server/app/variableService'
 
 export default eventHandler(async (event: H3Event) => {
   const id = getRouterParam(event, 'projectId') as string

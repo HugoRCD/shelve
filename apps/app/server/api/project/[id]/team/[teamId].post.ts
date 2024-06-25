@@ -1,5 +1,5 @@
 import { H3Event } from 'h3'
-import { addTeamToProject } from '~/server/app/projectService'
+import { addTeamToProject } from '~~/server/app/projectService'
 
 export default defineEventHandler(async (event: H3Event) => {
   const id = getRouterParam(event, 'id') as string

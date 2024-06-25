@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { isMounted } from '~/composables/useDOM'
-
 const {
   projects,
   loading,

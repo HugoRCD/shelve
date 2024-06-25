@@ -1,5 +1,5 @@
 import { H3Event } from 'h3'
-import prisma from '~/server/database/client'
+import prisma from '~~/server/database/client'
 
 export default eventHandler(async (event: H3Event) => {
   const paramName = getRouterParam(event, 'name')

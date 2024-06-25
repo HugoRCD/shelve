@@ -1,5 +1,5 @@
 import { H3Event } from 'h3'
-import { deleteSessions } from '~/server/app/sessionService'
+import { deleteSessions } from '~~/server/app/sessionService'
 
 export default eventHandler(async (event: H3Event) => {
   const { authToken } = event.context

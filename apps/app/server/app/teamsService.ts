@@ -1,5 +1,5 @@
 import { CreateTeamInput, TeamRole } from '@shelve/types'
-import prisma from '~/server/database/client'
+import prisma from '~~/server/database/client'
 
 export async function createTeam(createTeamInput: CreateTeamInput, userId: number) {
   return await prisma.team.create({

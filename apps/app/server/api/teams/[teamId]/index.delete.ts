@@ -1,5 +1,5 @@
 import { H3Event } from 'h3'
-import { deleteTeam } from '~/server/app/teamsService'
+import { deleteTeam } from '~~/server/app/teamsService'
 
 export default eventHandler(async (event: H3Event) => {
   const { user } = event.context

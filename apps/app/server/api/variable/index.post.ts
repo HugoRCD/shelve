@@ -1,7 +1,7 @@
 import { type VariablesCreateInput } from '@shelve/types'
 import { H3Event } from 'h3'
-import { upsertVariable } from '~/server/app/variableService'
-import { getProjectById } from '~/server/app/projectService'
+import { upsertVariable } from '~~/server/app/variableService'
+import { getProjectById } from '~~/server/app/projectService'
 
 export default eventHandler(async (event: H3Event) => {
   const variablesCreateInput = await readBody(event) as VariablesCreateInput

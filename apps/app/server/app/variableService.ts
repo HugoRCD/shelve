@@ -1,6 +1,6 @@
 import { Environment, User, Variable, type VariablesCreateInput } from '@shelve/types'
 import { decrypt, encrypt } from '@shelve/utils'
-import prisma from '~/server/database/client'
+import prisma from '~~/server/database/client'
 
 const varAssociation = {
   production: 'production',
@@ -53,7 +53,7 @@ export async function getVariablesByProjectId(projectId: number, environment?: E
   } : { projectId }
   const variables = await prisma.variables.findMany({ where: options, orderBy: { updatedAt: 'desc' } })
   return variables.map((variable) => {
-    const decryptedValue = decrypt(variable.value, runtimeConfig.secret_encryption_key, parseInt(runtimeConfig.secret_encryption_iterations))
+    const decryptedValue = decrypt(variable.value, runtimeConfig.secretEncryptionKey, parseInt(runtimeConfig.secretEncryptionIterations))
     return {
       ...variable,
       value: decryptedValue,
