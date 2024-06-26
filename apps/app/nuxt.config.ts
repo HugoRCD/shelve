@@ -30,10 +30,6 @@ export default defineNuxtConfig({
   },
 
   nitro: {
-    prerender: {
-      crawlLinks: true,
-      routes: ['/'],
-    },
     rollupConfig: {
       plugins: [vue()]
     },

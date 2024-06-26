@@ -29,7 +29,7 @@ const reduceMotion = useCookie<boolean>('reduceMotion', {
 if (import.meta.client) setPrefersReducedMotion(reduceMotion.value)
 
 
-await useSession().refresh()
+useSession().refresh()
 </script>
 
 <template>

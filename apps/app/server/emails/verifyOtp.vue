@@ -39,16 +39,16 @@ defineProps({
             Welcome to Shelve
           </Heading>
           <Text class="mb-4 text-center text-[#000000]">
-            Your OTP is:
+            Your code is:
           </Text>
           <Text class="mb-4 text-center text-[36px] font-bold text-[#000000]">
             <span class="text-[#2C3BF5]">{{ otp }}</span>
           </Text>
           <Text class="mb-4 text-center text-[#000000]">
-            Use this OTP to verify your account
+            Use this code to login to Shelve
           </Text>
           <Section class="my-[32px] text-center">
-            <Button px="20" py="12" class="rounded bg-[#000000] text-center text-[12px] font-semibold text-white no-underline" :href="redirectUrl">
+            <Button class="rounded bg-[#000000] px-8 py-3 text-center text-[12px] font-semibold text-white no-underline" :href="redirectUrl">
               Go to Shelve
             </Button>
           </Section>
@@ -60,8 +60,8 @@ defineProps({
           </Text>
           <Hr class="mx-0 my-[26px] w-full border border-solid border-[#eaeaea]" />
           <Text class="text-[12px] leading-[24px] text-[#666666]">
-            If you were not expecting this invitation, you can ignore this email. If you are concerned about your account's safety, please reply to this email to get in touch
-            with us.
+            If you were not expecting this invitation, you can safely ignore this email. If you are concerned about your account's safety,
+            please send an email to contact@hrcd.fr
           </Text>
         </Container>
       </Body>
