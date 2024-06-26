@@ -1,4 +1,5 @@
 import { getIconCollections } from '@egoist/tailwindcss-icons'
+import vue from '@vitejs/plugin-vue'
 
 export default defineNuxtConfig({
   app: {
@@ -33,6 +34,9 @@ export default defineNuxtConfig({
       crawlLinks: true,
       routes: ['/'],
     },
+    rollupConfig: {
+      plugins: [vue()]
+    },
   },
 
   runtimeConfig: {
@@ -50,7 +54,6 @@ export default defineNuxtConfig({
   modules: [
     '@nuxt/content',
     '@nuxt/image',
-    '@vue-email/nuxt',
     '@nuxt/ui',
     '@nuxt/fonts',
     '@vueuse/nuxt',
@@ -58,10 +61,6 @@ export default defineNuxtConfig({
   ],
 
   css: ['~/assets/style/main.css'],
-
-  vueEmail: {
-    autoImport: true,
-  },
 
   devtools: {
     enabled: true,
