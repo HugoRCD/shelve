@@ -28,7 +28,7 @@ export async function suggestLinkProject(name: string): Promise<Project | null> 
     type: 'confirm',
   })
   if (linkProject) {
-    const res = await runCommand(link, {rawArgs: ['--name', name]}) as { result: Project }
+    const res = await runCommand(link, { rawArgs: ['--name', name] }) as { result: Project }
     return res.result
   }
   return null
@@ -40,7 +40,7 @@ export async function suggestLinkProjects(): Promise<Project | null> {
     type: 'confirm',
   })
   if (linkProject) {
-    const res = await runCommand(link, {rawArgs: []}) as { result: Project }
+    const res = await runCommand(link, { rawArgs: [] }) as { result: Project }
     return res.result
   }
   return null
@@ -52,6 +52,6 @@ export async function suggestLogin(): Promise<void> {
     type: 'confirm',
   })
   if (accept) {
-    await runCommand(login, {rawArgs: []})
+    await runCommand(login, { rawArgs: [] })
   }
 }

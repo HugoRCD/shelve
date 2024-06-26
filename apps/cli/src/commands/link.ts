@@ -18,7 +18,7 @@ export default defineCommand({
     }
   },
   async run(ctx) {
-    const name = ctx.args.name
+    const { name } = ctx.args
     if (name) {
       consola.start(`Fetching project ${name}...`)
       const project = await getProjectByName(name)

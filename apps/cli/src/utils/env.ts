@@ -23,7 +23,7 @@ export function getEnvFile(): EnvFile {
     return envFileContent.split('\n').map((item) => {
       const [key, value] = item.split('=')
       if (!key || !value) throw new Error('Invalid .env file')
-      return {key, value}
+      return { key, value }
     })
   }
   return []

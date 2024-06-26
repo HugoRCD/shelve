@@ -2,21 +2,21 @@ import { homedir, hostname } from 'os'
 import cp from 'child_process'
 import { updateUser, readUser, writeUser } from 'rc9'
 
-export type userConfig = {
+export type UserConfig = {
   username: string
   email: string
   authToken: string | null
 }
 
-export function loadUserConfig(): userConfig {
+export function loadUserConfig(): UserConfig {
   return readUser('.shelve_config')
 }
 
-export function updateUserConfig(config: userConfig): userConfig {
+export function updateUserConfig(config: UserConfig): UserConfig {
   return updateUser(config, '.shelve_config')
 }
 
-export function writeUserConfig(config: userConfig): void {
+export function writeUserConfig(config: UserConfig): void {
   return writeUser(config, '.shelve_config')
 }
 

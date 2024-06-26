@@ -39,7 +39,7 @@ export function loadProjectConfig(): { projectId: string, name: string, homepage
 }
 
 export function getProjectId(): number | undefined {
-  const projectId = loadProjectConfig().projectId
+  const { projectId } = loadProjectConfig()
   if (projectId) return parseInt(projectId)
 }
 

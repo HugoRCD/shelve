@@ -15,7 +15,7 @@ export const $api: any = ofetch.create({
   },
   async onResponseError(ctx) {
     if (ctx.response.status === 401) {
-      writeUserConfig({...loadUserConfig(), authToken: null})
+      writeUserConfig({ ...loadUserConfig(), authToken: null })
       consola.error('Authentication failed')
       await suggestLogin().then(r => r)
     }

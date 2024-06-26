@@ -17,7 +17,7 @@ export default defineCommand({
     },
   },
   async setup(ctx) {
-    const name = ctx.args.name
+    const { name } = ctx.args
     consola.start(`Creating project ${ name }...`)
     try {
       return await createProject(name)

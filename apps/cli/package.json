@@ -4,6 +4,7 @@
   "description": "The command-line interface for Shelve",
   "author": "HugoRCD",
   "type": "module",
+  "license": "Apache-2.0",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/HugoRCD/shelve.git",
@@ -24,14 +25,6 @@
     "release": "bun run test && changelogen --release && npm publish && git push --follow-tags",
     "test": "bun run build && bun run typecheck && bun run lint"
   },
-  "devDependencies": {
-    "@shelve/types": "*",
-    "@types/bun": "latest",
-    "@types/semver": "^7.5.8",
-    "automd": "^0.3.7",
-    "changelogen": "^0.5.5",
-    "eslint": "^9.5.0"
-  },
   "peerDependencies": {
     "typescript": "^5.5.2"
   },
@@ -47,7 +40,6 @@
   ],
   "types": "dist/index.d.ts",
   "dependencies": {
-    "@hrcd/eslint-config": "^2.0.0",
     "citty": "^0.1.6",
     "colorette": "^2.0.20",
     "consola": "^3.2.3",
@@ -56,5 +48,12 @@
     "semver": "^7.6.2",
     "unbuild": "^2.0.0"
   },
-  "license": "Apache-2.0"
+  "devDependencies": {
+    "@shelve/types": "*",
+    "@types/bun": "^1.1.5",
+    "@types/semver": "^7.5.8",
+    "automd": "^0.3.7",
+    "changelogen": "^0.5.5",
+    "eslint": "^9.5.0"
+  }
 }
