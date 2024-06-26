@@ -60,7 +60,7 @@ const sendOtp = async () => {
 }
 
 const login = async () => {
-  if (!otp.value) {
+  if (!otp.value && !password.value) {
     toast.error('Please fill in all required fields.')
     return
   }
@@ -115,7 +115,10 @@ onMounted(() => {
             required
             placeholder="password"
           />
-          <UButton type="submit" class="flex w-full items-center justify-center gap-2 rounded-md bg-black px-4 py-2 text-sm text-white transition-colors duration-300 hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-100">
+          <UButton
+            :disabled="passwordMode ? verifyStatus === 'pending' : status === 'pending'"
+            type="submit"
+            class="flex w-full items-center justify-center gap-2 rounded-md bg-black px-4 py-2 text-sm text-white transition-colors duration-300 hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-100">
             {{ passwordMode ? "Login" : "Send me a magic link" }}
             <Loader v-if="passwordMode ? verifyStatus === 'pending' : status === 'pending'" />
           </UButton>

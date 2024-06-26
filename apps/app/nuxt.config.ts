@@ -1,4 +1,5 @@
 import { getIconCollections } from '@egoist/tailwindcss-icons'
+import vue from '@vitejs/plugin-vue'
 
 export default defineNuxtConfig({
   app: {
@@ -14,6 +15,10 @@ export default defineNuxtConfig({
     },
   },
 
+  future: {
+    compatibilityVersion: 4,
+  },
+
   experimental: {
     componentIslands: true,
   },
@@ -25,9 +30,8 @@ export default defineNuxtConfig({
   },
 
   nitro: {
-    prerender: {
-      crawlLinks: true,
-      routes: ['/'],
+    rollupConfig: {
+      plugins: [vue()]
     },
   },
 
@@ -38,15 +42,14 @@ export default defineNuxtConfig({
     private: {
       resendApiKey: process.env.NUXT_PRIVATE_RESEND_API_KEY,
       authSecret: process.env.NUXT_PRIVATE_AUTH_SECRET,
-      secret_encryption_key: process.env.NUXT_PRIVATE_SECRET_ENCRYPTION_KEY,
-      secret_encryption_iterations: process.env.NUXT_PRIVATE_SECRET_ENCRYPTION_ITERATIONS,
+      secretEncryptionKey: process.env.NUXT_PRIVATE_SECRET_ENCRYPTION_KEY,
+      secretEncryptionIterations: process.env.NUXT_PRIVATE_SECRET_ENCRYPTION_ITERATIONS,
     },
   },
 
   modules: [
     '@nuxt/content',
     '@nuxt/image',
-    '@vue-email/nuxt',
     '@nuxt/ui',
     '@nuxt/fonts',
     '@vueuse/nuxt',
@@ -54,10 +57,6 @@ export default defineNuxtConfig({
   ],
 
   css: ['~/assets/style/main.css'],
-
-  vueEmail: {
-    autoImport: true,
-  },
 
   devtools: {
     enabled: true,

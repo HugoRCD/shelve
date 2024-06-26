@@ -79,7 +79,7 @@ const items = [
 
 onMounted(() => {
   document.addEventListener('paste', (e) => {
-    const clipboardData = e.clipboardData
+    const { clipboardData } = e
     if (!clipboardData) return
     const pastedData = clipboardData.getData('text')
     if (!e.target?.closest('#varCreation')) return

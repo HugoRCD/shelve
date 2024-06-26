@@ -2,12 +2,12 @@ import type { publicUser, User, CreateUserInput, UpdateUserInput } from '@shelve
 import { Role } from '@shelve/types'
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcryptjs'
-import { deleteSession } from '~/server/app/sessionService'
-import prisma, { formatUser } from '~/server/database/client'
-import { generateOtp } from '~/server/app/authService'
-import { sendOtp } from '~/server/app/resendService'
+import { deleteSession } from '~~/server/app/sessionService'
+import prisma, { formatUser } from '~~/server/database/client'
+import { generateOtp } from '~~/server/app/authService'
+import { sendOtp } from '~~/server/app/resendService'
 
-type jwtPayload = {
+type JwtPayload = {
   id: number;
   role: Role;
   username: string;
@@ -18,7 +18,7 @@ const runtimeConfig = useRuntimeConfig().private
 
 export async function upsertUser(createUserInput: CreateUserInput) {
   const { otp, encryptedOtp } = await generateOtp()
-  let password = createUserInput.password
+  let { password } = createUserInput
   if (password) password = await bcrypt.hash(password, 10)
   const user = await prisma.user.upsert({
     where: {
@@ -75,7 +75,7 @@ export const getUserByAuthToken = cachedFunction(async (authToken: string): Prom
 
 export async function verifyUserToken(token: string, user: User): Promise<boolean> {
   try {
-    const decoded = jwt.verify(token, runtimeConfig.authSecret) as jwtPayload
+    const decoded = jwt.verify(token, runtimeConfig.authSecret) as JwtPayload
     if (decoded.id !== user.id) return false
     return true
   } catch (error) {

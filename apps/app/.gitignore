@@ -28,3 +28,6 @@ logs
 
 # Shelve config
 .shelve
+
+# Nitro
+.nitro/

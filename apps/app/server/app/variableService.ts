@@ -1,6 +1,6 @@
 import { Environment, User, Variable, type VariablesCreateInput } from '@shelve/types'
 import { decrypt, encrypt } from '@shelve/utils'
-import prisma from '~/server/database/client'
+import prisma from '~~/server/database/client'
 
 const varAssociation = {
   production: 'production',
@@ -15,13 +15,13 @@ function getEnvString(env: string) {
 }
 
 export async function upsertVariable(variablesCreateInput: VariablesCreateInput) {
-  const { secret_encryption_key, secret_encryption_iterations } = useRuntimeConfig().private
+  const { secretEncryptionKey, secretEncryptionIterations } = useRuntimeConfig().private
 
   const encryptVariables = (variables: VariablesCreateInput['variables']) => {
     return variables.map((variable) => {
-      const encryptedValue = encrypt(variable.value, secret_encryption_key, parseInt(secret_encryption_iterations))
+      const encryptedValue = encrypt(variable.value, secretEncryptionKey, parseInt(secretEncryptionIterations))
       variable.environment = getEnvString(variable.environment)
-       
+
       const { index, ...rest } = variable
       return { ...rest, value: encryptedValue }
     })
@@ -41,7 +41,6 @@ export async function upsertVariable(variablesCreateInput: VariablesCreateInput)
     data: encryptedVariables,
     skipDuplicates: true,
   })
-
 }
 
 export async function getVariablesByProjectId(projectId: number, environment?: Environment): Promise<Variable[]> {
@@ -54,7 +53,7 @@ export async function getVariablesByProjectId(projectId: number, environment?: E
   } : { projectId }
   const variables = await prisma.variables.findMany({ where: options, orderBy: { updatedAt: 'desc' } })
   return variables.map((variable) => {
-    const decryptedValue = decrypt(variable.value, runtimeConfig.secret_encryption_key, parseInt(runtimeConfig.secret_encryption_iterations))
+    const decryptedValue = decrypt(variable.value, runtimeConfig.secretEncryptionKey, parseInt(runtimeConfig.secretEncryptionIterations))
     return {
       ...variable,
       value: decryptedValue,

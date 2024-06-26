@@ -1,5 +1,5 @@
 import type { CreateProjectInput, ProjectUpdateInput, Team } from '@shelve/types'
-import prisma from '~/server/database/client'
+import prisma from '~~/server/database/client'
 
 type CreateProjectInputWithAll = CreateProjectInput & { ownerId: number, team?: { connect: { id: number } } }
 

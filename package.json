@@ -16,7 +16,7 @@
   "devDependencies": {
     "changelogen": "^0.5.5",
     "eslint": "^9.5.0",
-    "turbo": "latest",
+    "turbo": "^2.0.5",
     "typescript": "5.5.2"
   },
   "engines": {

@@ -1,21 +1,21 @@
 import { Resend } from 'resend'
-import { useCompiler } from '#vue-email'
+import { render } from '@vue-email/render'
+import verifyOtp from '../emails/verifyOtp.vue'
 
-const resend = new Resend(process.env.NUXT_PRIVATE_RESEND_API_KEY)
+const runtimeConfig = useRuntimeConfig()
+
+const resend = new Resend(runtimeConfig.private.resendApiKey)
 
 export async function sendOtp(email: string, otp: string) {
-  const runtimeConfig = useRuntimeConfig()
-  const siteUrl = runtimeConfig.public.siteUrl
-  let template = { html: '' }
+  const { siteUrl } = runtimeConfig.public
+  let template
   try {
-    template = await useCompiler('verify-otp.vue', {
-      props: {
-        otp,
-        redirectUrl: `${siteUrl}/login?email=${email}&otp=${otp}`,
-      }
+    template = await render(verifyOtp, {
+      otp,
+      redirectUrl: `${siteUrl}/login?email=${email}&otp=${otp}`,
     })
   } catch (error) {
-    template.html = `<h1>OTP: ${otp}</h1>`
+    template = `<h1>OTP: ${otp}</h1>`
   }
 
   try {
@@ -23,7 +23,11 @@ export async function sendOtp(email: string, otp: string) {
       from: 'HugoRCD <contact@hrcd.fr>',
       to: [email],
       subject: 'Welcome to Shelve!',
-      html: template.html,
+      html: template,
+    }).then((response) => {
+      console.log('Email sent: ', response)
     })
-  } catch (error) { /* empty */ }
+  } catch (error) {
+    console.log('Error sending email: ', error)
+  }
 }

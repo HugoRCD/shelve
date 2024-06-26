@@ -1,5 +1,5 @@
 import { H3Event } from 'h3'
-import { getUserByAuthToken, verifyUserToken } from '~/server/app/userService'
+import { getUserByAuthToken, verifyUserToken } from '~~/server/app/userService'
 
 export default defineEventHandler(async (event: H3Event) => {
   const protectedRoutes = [
