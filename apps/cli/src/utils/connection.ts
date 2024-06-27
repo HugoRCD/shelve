@@ -5,7 +5,7 @@ import { suggestLogin } from './suggest'
 
 const SHELVE_API_URL = process.env.NODE_ENV === 'development' ? 'http://localhost:3000/api' : 'https://shelve.hrcd.fr/api'
 
-export const $api: any = ofetch.create({
+export const $api = ofetch.create({
   baseURL: SHELVE_API_URL,
   onRequest({ options }) {
     options.headers = {

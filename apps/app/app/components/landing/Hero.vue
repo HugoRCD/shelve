@@ -13,8 +13,8 @@ defineShortcuts({
 
 <template>
   <div class="h-96 w-full overflow-hidden">
-    <div class="mx-auto mt-32 w-full max-w-2xl">
-      <div class="text-balance text-center text-3xl font-extralight sm:text-4xl">
+    <div class="mx-auto mt-32 w-full max-w-2xl font-inter font-light">
+      <div class="text-balance text-center text-3xl sm:text-4xl">
         Meet <span class="font-newsreader font-light italic">{{ title }}</span> a cosy home for all your <span class="font-newsreader font-light italic">projects</span>
       </div>
       <p class="mt-4 text-center text-gray-400">

@@ -21,7 +21,7 @@ const user = useCurrentUser()
       </div>
       <div class="hidden items-center gap-5 sm:flex">
         <LandingGithubStar />
-        <DropdownMenu v-if="user" />
+        <DropdownMenu v-if="user" nuxt-client />
         <NuxtLink v-else to="/login" class="btn-primary">
           Login
         </NuxtLink>

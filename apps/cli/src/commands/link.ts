@@ -1,5 +1,6 @@
 import { defineCommand } from 'citty'
 import { consola } from 'consola'
+import type { Project } from '@shelve/types'
 import { getProjectByName, getProjects, writeProjectConfig } from '../utils/projects'
 import { suggestCreateProject } from '../utils/suggest'
 
@@ -42,13 +43,13 @@ export default defineCommand({
     try {
       const selectedProject = await consola.prompt('Select a project to link', {
         type: 'select',
-        options: projects.map((project: any) => ({
+        options: projects.map((project: any) => ({ // eslint-disable-line @typescript-eslint/no-explicit-any
           label: project.name,
           value: project.id
         })),
       }) as unknown as number
 
-      const project = projects.find((project: any) => project.id === selectedProject)
+      const project = projects.find((project: Project) => project.id === selectedProject)
       if (!project) {
         consola.error('An error occurred while selecting the project')
         return

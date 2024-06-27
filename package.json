@@ -3,6 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "scripts": {
+    "automd": "automd",
     "build": "automd && turbo build",
     "generate": "turbo run generate",
     "dev": "turbo dev",

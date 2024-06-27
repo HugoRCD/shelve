@@ -3,7 +3,7 @@ import type { publicUser } from '@shelve/types'
 import type { Ref } from 'vue'
 
 const navigations = getNavigation('app')
-const admin_navigations = getNavigation('admin')
+const adminNavigations = getNavigation('admin')
 const navItem = navigations.map((nav) => {
   return {
     label: nav.name,
@@ -11,14 +11,13 @@ const navItem = navigations.map((nav) => {
     to: nav.to,
   }
 })
-const adminNavItem = admin_navigations.map((nav) => {
+const adminNavItem = adminNavigations.map((nav) => {
   return {
     label: nav.name,
     icon: nav.icon,
     to: nav.to,
   }
 })
-
 
 const user = useCurrentUser() as Ref<publicUser>
 
@@ -44,32 +43,47 @@ const items = [
 </script>
 
 <template>
-  <UDropdown
-    v-if="user"
-    :items
-    :ui="{
-      background: 'backdrop-blur-md border dark:bg-gray-950/50 dark:border-gray-400/10 bg-white',
-      ring: 'ring-1 ring-neutral-100 dark:ring-neutral-800',
-      divide: 'divide-y divide-neutral-100 dark:divide-neutral-800',
-      item: {
-        active: 'bg-neutral-100 dark:bg-neutral-800',
-        disabled: 'cursor-text select-text'
-      }
-    }"
-    :popper="{ placement: 'bottom-start' }"
-  >
-    <UAvatar :src="user.avatar" :alt="user.username" />
+  <ClientOnly>
+    <UDropdown
+      v-if="user"
+      :items
+      :ui="{
+        background: 'backdrop-blur-md border dark:bg-gray-950/50 dark:border-gray-400/10 bg-white',
+        ring: 'ring-1 ring-neutral-100 dark:ring-neutral-800',
+        divide: 'divide-y divide-neutral-100 dark:divide-neutral-800',
+        item: {
+          active: 'bg-neutral-100 dark:bg-neutral-800',
+          disabled: 'cursor-text select-text'
+        }
+      }"
+      :popper="{ placement: 'bottom-start' }"
+    >
+      <UAvatar :src="user.avatar" :alt="user.username" />
 
-    <template #account="{ item }">
-      <div class="text-left">
-        <p>
-          Signed in as
-        </p>
-        <p class="truncate font-medium text-gray-900 dark:text-white">
-          {{ item.label }}
-        </p>
-      </div>
+      <template #account="{ item }">
+        <div class="text-left">
+          <p>
+            Signed in as
+          </p>
+          <p class="truncate font-medium text-gray-900 dark:text-white">
+            {{ item.label }}
+          </p>
+        </div>
+      </template>
+    </UDropdown>
+    <template #fallback>
+      <NuxtLink to="/login" class="btn-primary">
+        Login
+      </NuxtLink>
     </template>
-  </UDropdown>
+  </ClientOnly>
 </template>
+
+<style scoped>
+.btn-primary {
+  @apply px-4 py-2 text-sm font-semibold text-white;
+  @apply bg-neutral-800 hover:bg-neutral-700;
+  @apply rounded-full shadow-md;
+}
+</style>
 

@@ -37,8 +37,9 @@ export default {
         main: 'var(--border-color)',
       },
       fontFamily: {
-        newsreader: ['Newsreader', 'serif'],
-        geist: ['Geist', 'sans-serif'],
+        newsreader: ['Newsreader'],
+        inter: ['Inter'],
+        geist: ['Geist'],
       }
     },
   },

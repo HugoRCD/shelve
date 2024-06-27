@@ -18,7 +18,10 @@ async function fetchRepo() {
     githubStars.value = res.repo.stars.toString()
   } catch (e) { /* empty */ }
 }
-fetchRepo()
+
+if (import.meta.server) {
+  await fetchRepo()
+}
 </script>
 
 <template>

@@ -31,4 +31,4 @@ export const main = defineCommand({
     // await checkForUpdates()
   },
   cleanup() {}
-}) as any
+})
