@@ -18,7 +18,7 @@ const {
   createTeam,
 } = useTeams()
 
-async function create_team(name: string) {
+async function createTeamFunction(name: string) {
   createLoading.value = true
   await createTeam(name)
   createLoading.value = false
@@ -34,7 +34,7 @@ async function create_team(name: string) {
         <slot />
       </UButton>
       <template #panel>
-        <form @submit.prevent="create_team(teamName)">
+        <form @submit.prevent="createTeamFunction(teamName)">
           <UCard>
             <div class="flex flex-col gap-2">
               <p class="flex gap-2 text-sm font-semibold leading-6">

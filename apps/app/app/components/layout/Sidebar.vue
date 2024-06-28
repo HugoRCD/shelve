@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const { isAdmin } = useSession()
 const navigations = getNavigation('app')
-const admin_navigations = getNavigation('admin')
+const adminNavigations = getNavigation('admin')
 
 const route = useRoute()
 const handleProjectNavigation = () => {
@@ -49,7 +49,7 @@ watch(() => route.path, handleProjectNavigation, { immediate: true })
       <div class="text-xs font-medium text-neutral-500 dark:text-neutral-400">
         Admin
       </div>
-      <LayoutNavItem v-for="nav in admin_navigations" :key="nav.name" :active="nav.to === $route.path" :nav-item="nav" />
+      <LayoutNavItem v-for="nav in adminNavigations" :key="nav.name" :active="nav.to === $route.path" :nav-item="nav" />
     </div>
 
     <div class="flex-1" />

@@ -19,7 +19,7 @@ const {
 } = useProjects()
 
 const createLoading = ref(false)
-async function create_project() {
+async function createProjectFunction() {
   createLoading.value = true
   await createProject(projectCreateInput.value)
   isOpen.value = false
@@ -80,7 +80,7 @@ function importProject() {
     />
 
     <USlideover v-model="isOpen">
-      <form class="flex flex-1 overflow-y-auto" @submit.prevent="create_project">
+      <form class="flex flex-1 overflow-y-auto" @submit.prevent="createProjectFunction">
         <UCard class="flex flex-1 flex-col" :ui="{ body: { base: 'flex-1' }, ring: '', divide: 'divide-y divide-gray-100 dark:divide-gray-800' }">
           <template #header>
             <h3 class="text-lg font-semibold">

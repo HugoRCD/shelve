@@ -30,7 +30,7 @@ export async function upsertVariable(variablesCreateInput: VariablesCreateInput)
   const encryptedVariables = encryptVariables(variablesCreateInput.variables)
 
   if (variablesCreateInput.variables.length === 1) { // use on main form variable/update
-    const variableCreateInput = encryptedVariables[0]
+    const [variableCreateInput] = encryptedVariables
     return await prisma.variables.upsert({
       where: { id: variableCreateInput.id || -1 },
       update: variableCreateInput,

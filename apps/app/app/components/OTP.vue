@@ -15,6 +15,7 @@ const digits = reactive<[string | null]>([null])
 const otp = defineModel({ type: String })
 
 for (let i = 0; i < props.digitCount; i++) {
+  // eslint-disable-next-line vue/no-ref-object-reactivity-loss
   digits[i] = otp.value![i] || null
 }
 
