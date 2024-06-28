@@ -105,5 +105,5 @@ export async function updateUser(user: User, updateUserInput: UpdateUserInput, a
 }
 
 export async function removeCachedUserToken(authToken: string): Promise<void> {
-  await useStorage('cache').removeItem(`nitro:functions:getUserByAuthToken:authToken:${authToken}.json`)
+  await useStorage('redis').removeItem(`nitro:functions:getUserByAuthToken:authToken:${authToken}.json`)
 }
