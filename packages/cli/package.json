@@ -8,7 +8,7 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/HugoRCD/shelve.git",
-    "directory": "apps/cli"
+    "directory": "packages/cli"
   },
   "funding": "https://github.com/sponsors/HugoRCD",
   "bugs": {

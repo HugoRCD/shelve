@@ -2,7 +2,6 @@ import { Resend } from 'resend'
 import { render } from '@vue-email/render'
 import verifyOtp from '../emails/verifyOtp.vue'
 
-
 export async function sendOtp(email: string, otp: string) {
   const runtimeConfig = useRuntimeConfig()
   const resend = new Resend(runtimeConfig.private.resendApiKey)
