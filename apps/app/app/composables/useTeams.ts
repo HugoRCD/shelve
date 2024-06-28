@@ -45,6 +45,8 @@ export function useTeams() {
       })
       const index = teams.value.findIndex((team) => team.id === teamId)
       const team = teams.value[index]
+      if (!team)
+        return toast.error('Failed to update member')
       const memberIndex = team.members.findIndex((member) => member.id === response.id)
       if (memberIndex !== -1) {
         team.members[memberIndex] = response
@@ -65,6 +67,8 @@ export function useTeams() {
       })
       const index = teams.value.findIndex((team) => team.id === teamId)
       const team = teams.value[index]
+      if (!team)
+        return toast.error('Failed to remove member')
       team.members = team.members.filter((member) => member.id !== memberId)
       toast.success('Member removed')
     } catch (error) {

@@ -1,5 +1,5 @@
 import { H3Event } from 'h3'
-import { UpdateUserInput } from '@shelve/types'
+import type { UpdateUserInput } from '@shelve/types'
 import { updateUser } from '~~/server/app/userService'
 
 export default eventHandler(async (event: H3Event) => {

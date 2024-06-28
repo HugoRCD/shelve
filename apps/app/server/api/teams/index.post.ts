@@ -1,5 +1,5 @@
 import { H3Event } from 'h3'
-import { CreateTeamInput } from '@shelve/types'
+import type { CreateTeamInput } from '@shelve/types'
 import { createTeam } from '~~/server/app/teamsService'
 
 export default eventHandler(async (event: H3Event) => {

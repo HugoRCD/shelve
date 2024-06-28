@@ -1,4 +1,4 @@
-import { Environment, User, Variable, type VariablesCreateInput } from '@shelve/types'
+import type { Environment, User, Variable, VariablesCreateInput } from '@shelve/types'
 import { decrypt, encrypt } from '@shelve/utils'
 import prisma from '~~/server/database/client'
 
@@ -14,7 +14,7 @@ function getEnvString(env: string) {
   return env.split('|').map((env) => varAssociation[env as Environment]).join('|')
 }
 
-export async function upsertVariable(variablesCreateInput: VariablesCreateInput) {
+export function upsertVariable(variablesCreateInput: VariablesCreateInput) {
   const { secretEncryptionKey, secretEncryptionIterations } = useRuntimeConfig().private
 
   const encryptVariables = (variables: VariablesCreateInput['variables']) => {
@@ -31,13 +31,14 @@ export async function upsertVariable(variablesCreateInput: VariablesCreateInput)
 
   if (variablesCreateInput.variables.length === 1) { // use on main form variable/update
     const [variableCreateInput] = encryptedVariables
-    return await prisma.variables.upsert({
+    if (!variableCreateInput) throw new Error('Invalid variable')
+    return prisma.variables.upsert({
       where: { id: variableCreateInput.id || -1 },
       update: variableCreateInput,
       create: variableCreateInput,
     })
   } // use on edit form variable/update or with CLI push command
-  return await prisma.variables.createMany({
+  return prisma.variables.createMany({
     data: encryptedVariables,
     skipDuplicates: true,
   })

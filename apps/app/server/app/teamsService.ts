@@ -1,8 +1,8 @@
-import { CreateTeamInput, TeamRole } from '@shelve/types'
+import { type CreateTeamInput, TeamRole } from '@shelve/types'
 import prisma from '~~/server/database/client'
 
-export async function createTeam(createTeamInput: CreateTeamInput, userId: number) {
-  return await prisma.team.create({
+export function createTeam(createTeamInput: CreateTeamInput, userId: number) {
+  return prisma.team.create({
     data: {
       name: createTeamInput.name,
       members: {
@@ -60,7 +60,7 @@ export async function upsertMember(teamId: number, addMemberInput: {
     },
   })
   if (!user) throw new Error('user not found')
-  return await prisma.member.upsert({
+  return prisma.member.upsert({
     where: {
       id: team.members.find((member) => member.userId === user.id)?.id || -1,
     },
@@ -100,7 +100,7 @@ export async function removeMember(teamId: number, memberId: number, requesterId
     },
   })
   if (!team) throw new Error('unauthorized')
-  return await prisma.member.delete({
+  return prisma.member.delete({
     where: {
       id: memberId,
     },
@@ -120,7 +120,7 @@ export async function deleteTeam(teamId: number, userId: number) {
     },
   })
   if (!team) throw new Error('unauthorized')
-  return await prisma.team.delete({
+  return prisma.team.delete({
     where: {
       id: teamId,
     },

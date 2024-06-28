@@ -1,6 +1,6 @@
 import type { Variable } from "./Variables";
 import type { User } from "./User";
-import { Team } from "./Team";
+import type { Team } from "./Team";
 
 export type Project = {
   id: number;
