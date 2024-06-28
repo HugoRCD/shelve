@@ -20,7 +20,7 @@ const filteredTeams = computed(() => {
 })
 
 const deleteLoading = ref(false)
-async function delete_team(teamId: number) {
+async function deleteTeamFunction(teamId: number) {
   deleteLoading.value = true
   await deleteTeam(teamId)
   deleteLoading.value = false
@@ -59,7 +59,7 @@ const items = (row: Team) => [
       iconClass: 'text-red-500 dark:text-red-500',
       disabled: !isOwner(row),
       click: () => {
-        delete_team(row.id)
+        deleteTeamFunction(row.id)
       },
     },
   ],

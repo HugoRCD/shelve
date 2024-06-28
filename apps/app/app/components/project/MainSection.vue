@@ -16,7 +16,7 @@ const showEdit = ref(false)
 const showDelete = ref(false)
 const projectName = ref('')
 const project = toRef(props, 'project') as Ref<Project>
-const { projectId } = useRoute().params
+const { projectId } = useRoute().params as { projectId: string }
 const user = useCurrentUser()
 
 const {
@@ -33,7 +33,7 @@ async function updateCurrentProject() {
 }
 
 const deleteLoading = ref(false)
-async function delete_project() {
+async function deleteProjectFunction() {
   deleteLoading.value = true
   if (project.value.ownerId !== user.value?.id) {
     toast.error('You are not the owner of this project')
@@ -171,7 +171,7 @@ function getProjectManager(manager: string) {
     </div>
     <UModal v-model="showDelete">
       <UCard class="p-2">
-        <form class="flex flex-col gap-6" @submit.prevent="delete_project">
+        <form class="flex flex-col gap-6" @submit.prevent="deleteProjectFunction">
           <div>
             <h2 class="text-lg font-semibold leading-7">
               Are you sure you want to delete this project?

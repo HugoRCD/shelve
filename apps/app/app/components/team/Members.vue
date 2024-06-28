@@ -47,7 +47,7 @@ const newMember = ref({
 })
 
 const loadingMembers = ref(false)
-async function upsert_member(teamId: number, email: string, role: TeamRole) {
+async function upsertMemberFunction(teamId: number, email: string, role: TeamRole) {
   loadingMembers.value = true
   await upsertMember(teamId, email, role)
   newMember.value.email = ''
@@ -56,7 +56,7 @@ async function upsert_member(teamId: number, email: string, role: TeamRole) {
 }
 
 const loadingRemove = ref(false)
-async function remove_member(teamId: number, memberId: number) {
+async function removeMemberFunction(teamId: number, memberId: number) {
   loadingRemove.value = true
   await removeMember(teamId, memberId)
   loadingRemove.value = false
@@ -69,7 +69,7 @@ async function remove_member(teamId: number, memberId: number) {
       <TeamMember :member />
       <template #panel>
         <UCard>
-          <form @submit.prevent="upsert_member(teamId, member.user.email, member.role)">
+          <form @submit.prevent="upsertMemberFunction(teamId, member.user.email, member.role)">
             <div class="flex flex-col gap-2">
               <p class="flex gap-2 text-sm font-semibold leading-6">
                 <span class="text-gray-200">{{ member.user.username }}</span>
@@ -84,7 +84,7 @@ async function remove_member(teamId: number, memberId: number) {
                   option-attribute="label"
                 />
                 <UButton label="Update" :loading="loadingMembers" type="submit" />
-                <UButton color="red" variant="soft" label="Remove" :loading="loadingRemove" @click="remove_member(teamId, member.id)" />
+                <UButton color="red" variant="soft" label="Remove" :loading="loadingRemove" @click="removeMemberFunction(teamId, member.id)" />
               </div>
             </div>
           </form>
@@ -97,7 +97,7 @@ async function remove_member(teamId: number, memberId: number) {
       </UTooltip>
       <template #panel>
         <UCard>
-          <form @submit.prevent="upsert_member(teamId, newMember.email, newMember.role)">
+          <form @submit.prevent="upsertMemberFunction(teamId, newMember.email, newMember.role)">
             <div class="flex flex-col gap-2">
               <UInput v-model="newMember.email" label="Email" placeholder="Email" />
               <div class="flex gap-2">
