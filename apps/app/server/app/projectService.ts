@@ -49,8 +49,8 @@ export async function updateProject(project: ProjectUpdateInput, projectId: numb
   })
 }
 
-export const getProjectById = cachedFunction(async (id: number) => {
-  return await prisma.project.findUnique({
+export const getProjectById = cachedFunction((id: number) => {
+  return prisma.project.findUnique({
     where: {
       id,
     },

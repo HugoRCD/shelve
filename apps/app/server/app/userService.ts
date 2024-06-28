@@ -38,12 +38,11 @@ export async function upsertUser(createUserInput: CreateUserInput) {
   return formatUser(user)
 }
 
-export async function getUserByEmail(email: string): Promise<User | null> {
-  return await prisma.user.findUnique({
+export function getUserByEmail(email: string): Promise<User | null> {
+  return prisma.user.findUnique({
     where: {
       email,
-    },
-    cacheStrategy: { ttl: 60 },
+    }
   })
 }
 

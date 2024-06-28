@@ -25,8 +25,8 @@ export async function generateOtp() {
   return { otp, encryptedOtp }
 }
 
-export async function deleteOtp(userId: number) {
-  return await prisma.user.update({
+export function deleteOtp(userId: number) {
+  return prisma.user.update({
     where: {
       id: userId
     },
