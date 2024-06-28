@@ -25,9 +25,6 @@
     "release": "bun run test && changelogen --release && npm publish && git push --follow-tags",
     "test": "bun run build && bun run typecheck && bun run lint"
   },
-  "peerDependencies": {
-    "typescript": "^5.5.2"
-  },
   "bin": {
     "shelve": "dist/index.mjs",
     "shelve-cli": "dist/index.mjs"
@@ -38,7 +35,7 @@
   "files": [
     "dist"
   ],
-  "types": "dist/index.d.ts",
+  "types": "./dist/index.d.ts",
   "dependencies": {
     "citty": "^0.1.6",
     "colorette": "^2.0.20",
@@ -52,8 +49,6 @@
     "@shelve/types": "*",
     "@types/bun": "^1.1.5",
     "@types/semver": "^7.5.8",
-    "automd": "^0.3.7",
-    "changelogen": "^0.5.5",
-    "eslint": "^9.5.0"
+    "changelogen": "^0.5.5"
   }
 }
