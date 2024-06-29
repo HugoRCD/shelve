@@ -1,5 +1,3 @@
-import { useCurrentProject } from '~/composables/useProjects'
-
 export default defineNuxtRouteMiddleware(((to) => {
   const userProjects = useUserProjects()
   const currentProject = useCurrentProject()

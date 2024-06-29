@@ -75,8 +75,7 @@ export const getUserByAuthToken = cachedFunction(async (authToken: string): Prom
 export async function verifyUserToken(token: string, user: User): Promise<boolean> {
   try {
     const decoded = jwt.verify(token, runtimeConfig.authSecret) as JwtPayload
-    if (decoded.id !== user.id) return false
-    return true
+    return decoded.id === user.id
   } catch (error) {
     await deleteSession(token, user.id)
     return false
@@ -105,5 +104,5 @@ export async function updateUser(user: User, updateUserInput: UpdateUserInput, a
 }
 
 export async function removeCachedUserToken(authToken: string): Promise<void> {
-  await useStorage('cache').removeItem(`nitro:functions:getUserByAuthToken:authToken:${authToken}.json`)
+  await useStorage('redis').removeItem(`nitro:functions:getUserByAuthToken:authToken:${authToken}.json`)
 }

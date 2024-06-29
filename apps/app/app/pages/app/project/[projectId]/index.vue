@@ -3,7 +3,7 @@ definePageMeta({
   middleware: 'project-redirect'
 })
 
-const { projectId } = useRoute().params
+const { projectId } = useRoute().params as { projectId: string }
 
 const {
   currentProject,

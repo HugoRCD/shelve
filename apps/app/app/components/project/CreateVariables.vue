@@ -4,12 +4,11 @@ import type { PropType } from 'vue'
 
 const { refresh, variables, projectId } = defineProps({
   refresh: {
-    type: Function,
+    type: Function as PropType<() => Promise<void>>,
     required: true,
   },
   variables: {
     type: Array as PropType<Variable[]>,
-    required: true,
   },
   projectId: {
     type: String,
@@ -90,6 +89,7 @@ onMounted(() => {
     variablesToCreate.value = pastedDataArrayFiltered.length
     variablesInput.value.variables = pastedDataArrayFiltered.map((data, index) => {
       const [key, value] = data.split('=')
+      if (!key || !value) throw new Error('Invalid .env')
       return {
         index,
         key: key.replace(/[\n\r'"]+/g, ''),
@@ -144,11 +144,11 @@ onMounted(() => {
           <div v-for="variable in variablesToCreate" :key="variable" class="flex flex-col gap-4">
             <div class="flex flex-col gap-2">
               <div class="flex flex-col items-start gap-2 sm:flex-row">
-                <ProjectVarPrefix v-model="variablesInput.variables[variable - 1].key" class="w-full">
-                  <UInput v-model="variablesInput.variables[variable - 1].key" required class="w-full" placeholder="e.g. API_KEY" />
+                <ProjectVarPrefix v-model="variablesInput.variables[variable - 1]!.key" class="w-full">
+                  <UInput v-model="variablesInput.variables[variable - 1]!.key" required class="w-full" placeholder="e.g. API_KEY" />
                 </ProjectVarPrefix>
                 <UTextarea
-                  v-model="variablesInput.variables[variable - 1].value"
+                  v-model="variablesInput.variables[variable - 1]!.value"
                   required
                   :rows="1"
                   class="w-full"

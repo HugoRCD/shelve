@@ -31,9 +31,9 @@ export type CreateProjectInput = {
 };
 
 export type ProjectUpdateInput = {
-  name?: string;
-  description?: string;
-  avatar?: string;
-  ownerId?: number;
+  name: string;
+  description: string;
+  avatar: string;
+  ownerId: number;
 };
 
