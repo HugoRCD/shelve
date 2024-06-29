@@ -21,7 +21,7 @@ export async function createProject(project: CreateProjectInput, userId: number)
   return prisma.project.create({ data: projectData })
 }
 
-async function isProjectAlreadyExists(name: string, userId: number) {
+async function isProjectAlreadyExists(name: string, userId: number): Promise<boolean> {
   const project = await prisma.project.findFirst({
     where: {
       name: {
@@ -37,7 +37,13 @@ async function isProjectAlreadyExists(name: string, userId: number) {
 export async function updateProject(project: ProjectUpdateInput, projectId: number, userId: number) {
   await removeCachedUserProjects(userId.toString())
   await removeCachedProjectById(projectId.toString())
-  if (project.name) {
+  const findProject = await prisma.project.findFirst({
+    where: {
+      id: projectId,
+    },
+  })
+  if (!findProject) throw new Error('Project not found')
+  if (findProject.name !== project.name) {
     const projectAlreadyExists = await isProjectAlreadyExists(project.name, userId)
     if (projectAlreadyExists) throw new Error('Project already exists')
   }
