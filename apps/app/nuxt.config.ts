@@ -40,14 +40,14 @@ export default defineNuxtConfig({
     rollupConfig: {
       plugins: [vue()]
     },
-    storage: {
+    /*storage: {
       cache: {
         driver: 'redis',
         url: process.env.NUXT_PRIVATE_REDIS_URL,
         password: process.env.NUXT_PRIVATE_REDIS_PASSWORD,
         database: process.env.NUXT_PRIVATE_REDIS_DATABASE,
       },
-    },
+    },*/
   },
 
   runtimeConfig: {
