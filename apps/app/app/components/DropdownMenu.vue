@@ -43,7 +43,7 @@ const items = [
 </script>
 
 <template>
-  <ClientOnly>
+  <div>
     <UDropdown
       v-if="user"
       :items
@@ -74,12 +74,7 @@ const items = [
     <NuxtLink v-else to="/login" class="btn-primary">
       Login
     </NuxtLink>
-    <template #fallback>
-      <NuxtLink to="/login" class="btn-primary">
-        Login
-      </NuxtLink>
-    </template>
-  </ClientOnly>
+  </div>
 </template>
 
 <style scoped>

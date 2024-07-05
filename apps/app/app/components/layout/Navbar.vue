@@ -21,7 +21,14 @@ const user = useCurrentUser()
       </div>
       <div class="hidden items-center gap-5 sm:flex">
         <LandingGithubStar />
-        <DropdownMenu />
+        <ClientOnly>
+          <DropdownMenu />
+          <template #fallback>
+            <NuxtLink to="/login" class="btn-primary">
+              Login
+            </NuxtLink>
+          </template>
+        </ClientOnly>
       </div>
     </nav>
   </div>
