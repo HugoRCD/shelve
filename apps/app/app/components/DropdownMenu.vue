@@ -71,6 +71,9 @@ const items = [
         </div>
       </template>
     </UDropdown>
+    <NuxtLink v-else to="/login" class="btn-primary">
+      Login
+    </NuxtLink>
     <template #fallback>
       <NuxtLink to="/login" class="btn-primary">
         Login

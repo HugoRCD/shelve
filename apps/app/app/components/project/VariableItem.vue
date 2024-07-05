@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { Variable } from '@shelve/types'
 import type { PropType, Ref } from 'vue'
-import { copyToClipboard } from '~/composables/useClipboard'
 
 const { refresh, variable, projectId } = defineProps({
   refresh: {
