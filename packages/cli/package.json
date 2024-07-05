@@ -47,7 +47,7 @@
   },
   "devDependencies": {
     "@shelve/types": "*",
-    "@types/bun": "^1.1.5",
+    "@types/bun": "^1.1.6",
     "@types/semver": "^7.5.8",
     "changelogen": "^0.5.5"
   }
