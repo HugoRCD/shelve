@@ -7,10 +7,7 @@ type RepoType = {
   repo: string
 }
 
-const githubStars = useCookie('githubStars')
-if (!githubStars.value) {
-  githubStars.value = '0'
-}
+const githubStars = ref('0')
 
 async function fetchRepo() {
   try {
@@ -19,9 +16,7 @@ async function fetchRepo() {
   } catch (e) { /* empty */ }
 }
 
-if (import.meta.server) {
-  await fetchRepo()
-}
+await fetchRepo()
 </script>
 
 <template>

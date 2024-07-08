@@ -43,7 +43,7 @@ const items = [
 </script>
 
 <template>
-  <div>
+  <div class="flex items-center justify-center">
     <UDropdown
       v-if="user"
       :items

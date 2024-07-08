@@ -14,6 +14,9 @@ changelog:
     - title: Bug Fixes 🐞
       labels:
         - bug
+    - title: Enhancements 🌈
+      labels:
+        - enhancement
     - title: Build System 🛠
       labels:
         - build
@@ -23,9 +26,12 @@ changelog:
     - title: Documentation 📚
       labels:
         - documentation
-    - title: Enhancements 🌈
+    - title: Tests 🧪
       labels:
-        - enhancement
+        - test
+    - title: Refactoring 🛠
+      labels:
+        - refactor
     - title: Dependency Updates 📦
       labels:
         - dependencies
@@ -35,12 +41,6 @@ changelog:
     - title: Style 💅
       labels:
         - style
-    - title: Tests 🧪
-      labels:
-        - test
-    - title: Refactoring 🛠
-      labels:
-        - refactor
     - title: Revert 🔄
       labels:
         - revert
