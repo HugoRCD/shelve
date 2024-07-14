@@ -80,15 +80,26 @@ const items = (row: Team) => [
     <Teleport v-if="isMounted('action-items')" to="#action-items">
       <div class="hidden items-center justify-end gap-2 sm:flex">
         <TeamCreate>Create</TeamCreate>
-        <UInput v-model="search" label="Search" placeholder="Search a team"
-          icon="i-heroicons-magnifying-glass-20-solid" />
+        <UInput
+          v-model="search"
+          label="Search"
+          placeholder="Search a team"
+          icon="i-heroicons-magnifying-glass-20-solid"
+        />
       </div>
     </Teleport>
-    <div style="--stagger: 2" data-animate
-      class="mt-2 flex flex-col justify-end gap-2 sm:hidden sm:flex-row sm:items-center">
+    <div
+      style="--stagger: 2"
+      data-animate
+      class="mt-2 flex flex-col justify-end gap-2 sm:hidden sm:flex-row sm:items-center"
+    >
       <TeamCreate>Create</TeamCreate>
-      <UInput v-model="search" label="Search" placeholder="Search a team"
-        icon="i-heroicons-magnifying-glass-20-solid" />
+      <UInput
+        v-model="search"
+        label="Search"
+        placeholder="Search a team"
+        icon="i-heroicons-magnifying-glass-20-solid"
+      />
     </div>
     <div style="--stagger: 3" data-animate class="mt-6">
       <UTable :columns :rows="filteredTeams" :loading :items-per-page="10">
@@ -105,8 +116,12 @@ const items = (row: Team) => [
         </template>
         <template #actions-data="{ row }">
           <UDropdown :items="items(row)">
-            <UButton color="gray" variant="ghost" icon="i-heroicons-ellipsis-horizontal-20-solid"
-              :disabled="!isOwner(row)" />
+            <UButton
+              color="gray"
+              variant="ghost"
+              icon="i-heroicons-ellipsis-horizontal-20-solid"
+              :disabled="!isOwner(row)"
+            />
           </UDropdown>
         </template>
       </UTable>
