@@ -18,12 +18,12 @@
     "@hrcd/eslint-config": "^2.0.1",
     "automd": "^0.3.8",
     "changelogen": "^0.5.5",
-    "eslint": "^9.6.0",
+    "eslint": "^9.7.0",
     "turbo": "^2.0.6",
     "typescript": "5.5.3"
   },
   "engines": {
-    "node": ">=20.15.0"
+    "node": ">=20.15.1"
   },
   "packageManager": "bun@1.0.30",
   "workspaces": [
