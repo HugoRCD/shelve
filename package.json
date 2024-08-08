@@ -9,6 +9,7 @@
     "dev": "turbo dev",
     "lint": "turbo lint",
     "lint:fix": "turbo lint:fix",
+    "start": "turbo start --filter=@shelve/app",
     "test": "turbo test",
     "typecheck": "turbo typecheck",
     "release": "changelogen --release --push",
