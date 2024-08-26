@@ -11,35 +11,35 @@ export function getNavigation(where: Where): Navigation[] {
   switch (where) {
     case 'home':
       return [
-        { name: 'Home', to: '/', icon: 'i-heroicons-home', title: 'Home' },
+        { name: 'Home', to: '/', icon: 'heroicons:home', title: 'Home' },
         /*{ name: 'Changelog', to: '/changelog', icon: 'i-heroicons-document-text', title: 'Changelog' },*/
-        { name: 'Docs', to: '/docs', icon: 'i-heroicons-book-open', title: 'Docs' },
-        { name: 'Roadmap', to: '/roadmap', icon: 'i-heroicons-clipboard-list', title: 'Roadmap' },
+        { name: 'Docs', to: '/docs', icon: 'heroicons:book-open', title: 'Docs' },
+        { name: 'Roadmap', to: '/roadmap', icon: 'heroicons:clipboard-list', title: 'Roadmap' },
       ]
     case 'app':
       return [
         {
           name: 'Projects',
           to: '/app/projects',
-          icon: 'i-lucide-folder',
+          icon: 'lucide:folder',
           title: 'Projects',
         },
         {
           name: 'Teams',
           to: '/app/teams',
-          icon: 'i-lucide-users',
+          icon: 'lucide:users',
           title: 'Teams',
         },
         {
           name: 'Profile',
           to: '/app/profile',
-          icon: 'i-heroicons-user-circle',
+          icon: 'heroicons:user-circle',
           title: 'Profile',
         },
         {
           name: 'Settings',
           to: '/app/settings',
-          icon: 'i-heroicons-cog',
+          icon: 'heroicons:cog',
           title: 'Settings',
         },
       ]
@@ -48,7 +48,7 @@ export function getNavigation(where: Where): Navigation[] {
         {
           name: 'Users',
           to: '/app/admin/users',
-          icon: 'i-heroicons-users',
+          icon: 'heroicons:users',
           title: 'Users',
         },
       ]

@@ -24,13 +24,9 @@ await fetchRepo()
     class="flex items-center gap-2 text-gray-200"
     to="https://github.com/HugoRCD/shelve"
   >
-    <span class="i-custom-github text-xl" />
+    <UIcon name="custom:github" class="fill-white text-xl" />
     <span class="text-sm font-bold">
       {{ githubStars }}
     </span>
   </NuxtLink>
 </template>
-
-<style scoped>
-
-</style>

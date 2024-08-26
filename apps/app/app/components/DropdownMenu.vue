@@ -34,7 +34,7 @@ const items = [
   [
     {
       label: 'Sign out',
-      icon: 'i-heroicons-arrow-left-on-rectangle',
+      icon: 'heroicons:arrow-left-on-rectangle',
       iconClass: 'text-red-500 dark:text-red-500',
       click: () => useSession().clear()
     }

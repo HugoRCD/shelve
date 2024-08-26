@@ -86,7 +86,7 @@ const items = (row: publicUser) => [
   [
     {
       label: 'Set as Admin',
-      icon: 'i-heroicons-shield-check-20-solid',
+      icon: 'heroicons:shield-check-20-solid',
       click: () => {
         if (row.role === Role.ADMIN) {
           toast.success('User is already an admin')
@@ -97,7 +97,7 @@ const items = (row: publicUser) => [
     },
     {
       label: 'Set as User',
-      icon: 'i-heroicons-user-circle-20-solid',
+      icon: 'heroicons:user-circle-20-solid',
       click: () => {
         changeUserRole(row.id, Role.USER)
       },
@@ -106,7 +106,7 @@ const items = (row: publicUser) => [
   [
     {
       label: 'Delete',
-      icon: 'i-heroicons-trash-20-solid',
+      icon: 'heroicons:trash-20-solid',
       iconClass: 'text-red-500 dark:text-red-500',
       click: () => {
         if (row.role === Role.ADMIN) {
@@ -127,9 +127,9 @@ const columnsTable = computed(() => columns.filter((column) => selectedColumns.v
 <template>
   <div class="mt-1 flex flex-col gap-4">
     <div class="flex flex-col justify-end gap-4 sm:flex-row sm:items-center">
-      <UInput v-model="search" label="Search" placeholder="Search a user" icon="i-heroicons-magnifying-glass-20-solid" />
+      <UInput v-model="search" label="Search" placeholder="Search a user" icon="heroicons:magnifying-glass-20-solid" />
       <USelectMenu v-model="selectedColumns" :options="columns" multiple>
-        <UButton icon="i-heroicons-view-columns" color="gray" class="w-full sm:w-40">
+        <UButton icon="heroicons:view-columns" color="gray" class="w-full sm:w-40">
           Columns
         </UButton>
       </USelectMenu>
@@ -153,7 +153,7 @@ const columnsTable = computed(() => columns.filter((column) => selectedColumns.v
       </template>
       <template #actions-data="{ row }">
         <UDropdown :items="items(row)">
-          <UButton color="gray" variant="ghost" icon="i-heroicons-ellipsis-horizontal-20-solid" />
+          <UButton color="gray" variant="ghost" icon="heroicons:ellipsis-horizontal-20-solid" />
         </UDropdown>
       </template>
     </UTable>

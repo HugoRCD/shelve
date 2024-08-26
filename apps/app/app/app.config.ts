@@ -5,7 +5,7 @@ export default defineAppConfig({
     button: {
       default: {
         size: 'xs',
-        loadingIcon: 'i-lucide-loader',
+        loadingIcon: 'lucide:loader',
       }
     },
     card: {

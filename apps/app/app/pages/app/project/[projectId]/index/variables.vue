@@ -58,13 +58,13 @@ async function deleteVariables() {
               text="Copy selected variables (dev) to clipboard"
               @click="copyEnv(selectedVariables, 'development')"
             >
-              <UButton color="gray" variant="ghost" icon="i-lucide-clipboard-plus" />
+              <UButton color="gray" variant="ghost" icon="lucide:clipboard-plus" />
             </UTooltip>
             <UTooltip text="Delete selected variables">
-              <UButton color="red" variant="ghost" icon="i-heroicons-trash" :loading @click="deleteVariables" />
+              <UButton color="red" variant="ghost" icon="heroicons:trash" :loading @click="deleteVariables" />
             </UTooltip>
             <UTooltip text="Clear selection">
-              <UButton color="gray" variant="ghost" icon="i-lucide-x" @click="selectedVariables = []" />
+              <UButton color="gray" variant="ghost" icon="lucide:x" @click="selectedVariables = []" />
             </UTooltip>
           </div>
         </div>

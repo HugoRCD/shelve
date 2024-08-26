@@ -54,7 +54,7 @@ function addPrefixToInputId(prefix: string) {
             v-for="prefix in prefixList"
             :key="prefix"
             color="gray"
-            icon="i-heroicons-plus"
+            icon="heroicons:plus"
             :label="prefix"
             @click="addPrefixToInputId(prefix)"
           />

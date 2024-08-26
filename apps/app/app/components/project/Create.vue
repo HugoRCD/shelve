@@ -73,7 +73,7 @@ function importProject() {
   <div>
     <UButton
       size="xs"
-      icon="i-heroicons-plus-20-solid"
+      icon="heroicons:plus-20-solid"
       :loading="projectLoading"
       label="Add project"
       @click="isOpen = true"
@@ -124,7 +124,7 @@ function importProject() {
                       color="red"
                       class="text-xs"
                       label="Unlink"
-                      icon="i-lucide-unlink"
+                      icon=":lucide-unlink"
                       @click="removeTeam"
                     />
                   </div>

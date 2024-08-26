@@ -2,7 +2,7 @@
 const nav = [
   {
     name: 'Support',
-    icon: 'i-lucide-life-buoy',
+    icon: 'lucide:life-buoy',
     sub: [
       {
         name: 'Documentation',
@@ -24,7 +24,7 @@ const nav = [
   },
   {
     name: 'Community',
-    icon: 'i-lucide-users',
+    icon: 'lucide:users',
     sub: [
       {
         name: 'GitHub',
@@ -34,7 +34,7 @@ const nav = [
   },
   {
     name: 'Legal',
-    icon: 'i-lucide-shield',
+    icon: 'lucide:shield',
     sub: [
       {
         name: 'Privacy',
@@ -66,7 +66,7 @@ const nav = [
       <div class="flex gap-10">
         <div v-for="item in nav" :key="item.name" class="flex flex-col gap-3">
           <div class="flex items-center gap-1.5">
-            <span :class="item.icon" class="text-gray-300" />
+            <UIcon :name="item.icon" class="text-gray-300" />
             <div class="text-sm font-semibold text-gray-200 sm:text-lg">
               {{ item.name }}
             </div>
