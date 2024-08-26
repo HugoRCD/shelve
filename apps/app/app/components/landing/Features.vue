@@ -56,7 +56,7 @@ const features = [
       >
         <div class="flex items-center">
           <div class="flex items-center justify-center rounded border border-white/5 bg-white/5 p-1">
-            <span :class="feature.icon" class="size-5 text-gray-300" />
+            <UIcon :name="feature.icon" class="size-5 fill-white text-gray-300" />
           </div>
 
           <div class="ml-4 font-semibold text-gray-300">

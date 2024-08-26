@@ -139,6 +139,7 @@ function getProjectManager(manager: string) {
             color="gray"
             :icon="getProjectManager(project.projectManager)?.icon"
             :label="`Open ${getProjectManager(project.projectManager)?.label}`"
+            :ui="{ icon: { base: 'dark:fill-white fill-black' } }"
           />
         </NuxtLink>
         <NuxtLink v-if="project.repository" target="_blank" :to="project.repository">
@@ -146,9 +147,8 @@ function getProjectManager(manager: string) {
             color="gray"
             icon="custom:github"
             label="Open repository"
-          >
-            <UIcon name="custom:linear" class="size-5 fill-white" />
-          </UButton>
+            :ui="{ icon: { base: 'dark:fill-white fill-black' } }"
+          />
         </NuxtLink>
         <NuxtLink v-if="project.homepage" target="_blank" :to="project.homepage">
           <UButton
