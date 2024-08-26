@@ -3,34 +3,34 @@ const features = [
   {
     title: 'Manage your projects secrets',
     description: 'End Slack messages like "Can you send me .env file?", keep your secrets in one place and share them with your team.',
-    icon: 'i-lucide-lock',
+    icon: 'lucide:lock',
   },
   {
     title: 'Collaborate with your team',
     description: 'Create, invite and manage your team members to work together on your projects in seconds.',
-    icon: 'i-lucide-users',
+    icon: 'lucide:users',
   },
   {
     title: 'Powerful CLI',
     description: 'Manage your projects secrets, files and more withour leaving your terminal.',
-    icon: 'i-lucide-terminal',
+    icon: 'lucide:terminal',
   },
   {
     title: 'Shared env variables',
     description: 'Create shared env variables that can be used across all your projects.',
-    icon: 'i-lucide-share',
+    icon: 'lucide:share',
     soon: true,
   },
   {
     title: 'Sync with your favorite tools',
     description: 'Integrate with your favorite tools like GitHub, Vercel, etc...',
-    icon: 'i-custom-github',
+    icon: 'custom:github',
     soon: true,
   },
   {
     title: 'Talk to project',
     description: 'Talk to your project with built in trained AI on your project data.',
-    icon: 'i-lucide-message-square',
+    icon: 'lucide:message-square',
     soon: true,
   }
 ]
@@ -71,7 +71,3 @@ const features = [
     </div>
   </div>
 </template>
-
-<style scoped>
-
-</style>

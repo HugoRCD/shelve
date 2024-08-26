@@ -8,9 +8,5 @@ defineProps({
 </script>
 
 <template>
-  <UIcon name="i-lucide-loader" class="animate-spin" :size />
+  <UIcon name="lucide:loader" class="animate-spin" :size />
 </template>
-
-<style scoped>
-
-</style>

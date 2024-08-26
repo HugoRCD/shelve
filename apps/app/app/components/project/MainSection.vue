@@ -50,12 +50,12 @@ const items = [
   [
     {
       label: 'Edit project',
-      icon: 'i-lucide-pen-line',
+      icon: 'lucide:pen-line',
       click: () => showEdit.value = !showEdit.value
     },
     {
       label: 'Export project data',
-      icon: 'i-lucide-download',
+      icon: 'lucide:download',
       click: () => {
         const data = JSON.stringify(project.value, null, 2)
         const blob = new Blob([data], { type: 'application/json' })
@@ -68,7 +68,7 @@ const items = [
     },
     {
       label: 'Delete project',
-      icon: 'i-lucide-trash',
+      icon: 'lucide:trash',
       iconClass: 'text-red-500 dark:text-red-500',
       click: () => showDelete.value = !showDelete.value
     }
@@ -79,12 +79,12 @@ const projectManager = [
   {
     label: 'Linear',
     value: 'linear',
-    icon: 'i-custom-linear',
+    icon: 'custom:linear',
   },
   {
     label: 'Volta',
     value: 'volta',
-    icon: 'i-custom-volta',
+    icon: 'custom:volta',
   },
 ]
 
@@ -130,7 +130,7 @@ function getProjectManager(manager: string) {
           </UModal>
         </div>
         <UDropdown v-if="project.ownerId === user?.id" :items>
-          <UButton color="gray" variant="ghost" icon="i-heroicons-ellipsis-horizontal-20-solid" />
+          <UButton color="gray" variant="ghost" icon="heroicons:ellipsis-horizontal-20-solid" />
         </UDropdown>
       </div>
       <div v-if="project.projectManager || project.repository || project.homepage" class="mt-6 flex flex-wrap gap-4 sm:flex-row sm:items-center">
@@ -144,14 +144,16 @@ function getProjectManager(manager: string) {
         <NuxtLink v-if="project.repository" target="_blank" :to="project.repository">
           <UButton
             color="gray"
-            icon="i-custom-github"
+            icon="custom:github"
             label="Open repository"
-          />
+          >
+            <UIcon name="custom:linear" class="size-5 fill-white" />
+          </UButton>
         </NuxtLink>
         <NuxtLink v-if="project.homepage" target="_blank" :to="project.homepage">
           <UButton
             color="gray"
-            icon="i-heroicons-home"
+            icon="heroicons:home"
             label="Open homepage"
           />
         </NuxtLink>
@@ -194,7 +196,3 @@ function getProjectManager(manager: string) {
     </UModal>
   </div>
 </template>
-
-<style scoped>
-
-</style>

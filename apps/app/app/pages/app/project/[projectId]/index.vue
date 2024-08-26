@@ -25,22 +25,22 @@ provide('refresh', refresh)
 const links = [
   {
     label: 'Environment Variables',
-    icon: 'i-lucide-container',
+    icon: 'lucide:container',
     to: `/app/project/${projectId}/variables`
   },
   {
     label: 'Files',
-    icon: 'i-lucide-files',
+    icon: 'lucide:files',
     to: `/app/project/${projectId}/files`
   },
   {
     label: 'Keys',
-    icon: 'i-heroicons-key',
+    icon: 'heroicons:key',
     to: `/app/project/${projectId}/keys`
   },
   {
     label: 'Settings',
-    icon: 'i-heroicons-cog',
+    icon: 'heroicons:cog',
     to: `/app/project/${projectId}/settings`
   },
 ]
@@ -54,7 +54,3 @@ const links = [
     <NuxtPage />
   </div>
 </template>
-
-<style scoped>
-
-</style>

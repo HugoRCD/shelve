@@ -5,8 +5,8 @@ const route = useRoute()
 const currentPage = computed(() => {
   const page = pages.find((page) => page.to === route.path)
   const fallback = route.path.includes('/app/project')
-    ? { title: 'Project Details', to: '/app/project', name: 'project', icon: 'i-lucide-folder-open' }
-    : { title: '404', to: '/404', name: '404', icon: 'i-heroicons-exclamation-triangle' }
+    ? { title: 'Project Details', to: '/app/project', name: 'project', icon: 'lucide:folder-open' }
+    : { title: '404', to: '/404', name: '404', icon: 'heroicons:exclamation-triangle' }
   return page ?? fallback
 })
 </script>

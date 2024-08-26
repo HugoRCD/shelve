@@ -37,17 +37,17 @@ const items = [
   [
     {
       label: 'For production',
-      icon: 'i-lucide-clipboard',
+      icon: 'lucide:clipboard',
       click: () => copyEnv(variables!, 'production')
     },
     {
       label: 'For preview',
-      icon: 'i-lucide-clipboard',
+      icon: 'lucide:clipboard',
       click: () => copyEnv(variables!, 'preview')
     },
     {
       label: 'For development',
-      icon: 'i-lucide-clipboard',
+      icon: 'lucide:clipboard',
       click: () => copyEnv(variables!, 'development')
     }
   ],
@@ -60,17 +60,17 @@ const items = [
   [
     {
       label: 'For production',
-      icon: 'i-lucide-download',
+      icon: 'lucide:download',
       click: () => downloadEnv(variables!, 'production')
     },
     {
       label: 'For preview',
-      icon: 'i-lucide-download',
+      icon: 'lucide:download',
       click: () => downloadEnv(variables!, 'preview')
     },
     {
       label: 'For development',
-      icon: 'i-lucide-download',
+      icon: 'lucide:download',
       click: () => downloadEnv(variables!, 'development')
     }
   ],
@@ -116,7 +116,7 @@ onMounted(() => {
             </p>
           </div>
           <UDropdown :items>
-            <UButton color="gray" variant="ghost" icon="i-heroicons-ellipsis-horizontal-20-solid" />
+            <UButton color="gray" variant="ghost" icon="heroicons:ellipsis-horizontal-20-solid" />
           </UDropdown>
         </div>
       </template>
@@ -163,7 +163,7 @@ onMounted(() => {
       </div>
       <template #footer>
         <div class="flex justify-between gap-4">
-          <UButton label="Add variable" color="white" icon="i-heroicons-plus-circle-20-solid" @click="addVariable" />
+          <UButton label="Add variable" color="white" icon="heroicons:plus-circle-20-solid" @click="addVariable" />
           <UButton label="Save" color="primary" :loading="createLoading" type="submit" />
         </div>
       </template>

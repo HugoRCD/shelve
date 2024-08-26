@@ -30,10 +30,12 @@ function startViewTransition(theme) {
 <template>
   <ClientOnly>
     <button
-      :class="[$colorMode.value === 'light' ? 'i-heroicons-moon-20-solid' : 'i-heroicons-sun-20-solid', size]"
       aria-label="Theme"
       @click="startViewTransition($colorMode.value === 'light' ? 'dark' : 'light')"
-    />
+    >
+      <UIcon v-if="$colorMode.value === 'light'" name="heroicons:moon-20-solid" :class="size" />
+      <UIcon v-else name="heroicons:sun-20-solid" :class="size" />
+    </button>
     <template #fallback>
       <div :class="size" />
     </template>

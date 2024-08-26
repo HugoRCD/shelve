@@ -48,17 +48,17 @@ const items = [
   [
     {
       label: 'Edit',
-      icon: 'i-lucide-pen-line',
+      icon: 'lucide:pen-line',
       click: () => showEdit.value = !showEdit.value
     },
     {
       label: 'Copy full variable',
-      icon: 'i-lucide-clipboard-plus',
+      icon: 'lucide:clipboard-plus',
       click: () => copyToClipboard(`${localVariable.value.key}=${localVariable.value.value}`, 'Variable copied to clipboard')
     },
     {
       label: 'Delete',
-      icon: 'i-lucide-trash',
+      icon: 'lucide:trash',
       iconClass: 'text-red-500 dark:text-red-500',
       click: () => deleteVariable(localVariable.value.id, environment.value)
     }
@@ -76,7 +76,7 @@ const items = [
           </span>
           <span class="hidden lg:block">{{ variable.key }}</span>
           <UTooltip text="Copy variable to clipboard">
-            <UButton color="gray" variant="ghost" icon="i-lucide-clipboard-plus" @click.stop="copyToClipboard(variable.value, 'Variable value copied')" />
+            <UButton color="gray" variant="ghost" icon="lucide:clipboard-plus" @click.stop="copyToClipboard(variable.value, 'Variable value copied')" />
           </UTooltip>
         </h3>
         <span class="text-xs font-normal text-gray-500">
@@ -88,7 +88,7 @@ const items = [
           Last updated: {{ new Date(variable.updatedAt).toLocaleDateString() }}
         </p>
         <UDropdown :items>
-          <UButton color="gray" variant="ghost" icon="i-heroicons-ellipsis-horizontal-20-solid" />
+          <UButton color="gray" variant="ghost" icon="heroicons:ellipsis-horizontal-20-solid" />
         </UDropdown>
       </div>
     </div>

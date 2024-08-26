@@ -55,7 +55,7 @@ async function addTeamToProject(teamId: number) {
         class="text-xs"
         :loading
         label="Link"
-        icon="i-lucide-link"
+        icon="lucide:link"
         @click="addTeamToProject(team.id)"
       />
     </div>

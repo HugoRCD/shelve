@@ -36,14 +36,8 @@ function useClipboard(text: string) {
                 <span>
                   npm install -g @shelve/cli
                 </span>
-                <span
-                  v-if="!copy"
-                  class="i-lucide-copy"
-                />
-                <span
-                  v-else
-                  class="i-lucide-check text-primary-400 text-lg"
-                />
+                <UIcon v-if="!copy" name="lucide:copy" />
+                <UIcon v-else name="lucide:check" class="text-primary-400 text-lg" />
               </div>
             </div>
           </div>
@@ -61,7 +55,7 @@ function useClipboard(text: string) {
 
             <div class="relative flex items-center justify-center">
               <div class="flex size-16 items-center justify-center rounded-full border border-white/25 bg-white/5 p-3 shadow-xl">
-                <span class="i-lucide-lock size-8 text-gray-300" />
+                <UIcon name="lucide:lock" class="size-8 text-gray-300" />
               </div>
             </div>
           </div>

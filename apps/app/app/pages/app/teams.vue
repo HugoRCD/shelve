@@ -47,14 +47,14 @@ const items = (row: Team) => [
   [
     {
       label: 'Edit',
-      icon: 'i-lucide-pencil',
+      icon: 'lucide:pencil',
       disabled: !isOwner(row),
     },
   ],
   [
     {
       label: 'Delete',
-      icon: 'i-lucide-trash',
+      icon: 'lucide:trash',
       iconClass: 'text-red-500 dark:text-red-500',
       disabled: !isOwner(row),
       click: () => {
@@ -84,7 +84,7 @@ const items = (row: Team) => [
           v-model="search"
           label="Search"
           placeholder="Search a team"
-          icon="i-heroicons-magnifying-glass-20-solid"
+          icon="heroicons:magnifying-glass-20-solid"
         />
       </div>
     </Teleport>
@@ -98,7 +98,7 @@ const items = (row: Team) => [
         v-model="search"
         label="Search"
         placeholder="Search a team"
-        icon="i-heroicons-magnifying-glass-20-solid"
+        icon="heroicons:magnifying-glass-20-solid"
       />
     </div>
     <div style="--stagger: 3" data-animate class="mt-6">
@@ -119,7 +119,7 @@ const items = (row: Team) => [
             <UButton
               color="gray"
               variant="ghost"
-              icon="i-heroicons-ellipsis-horizontal-20-solid"
+              icon="heroicons:ellipsis-horizontal-20-solid"
               :disabled="!isOwner(row)"
             />
           </UDropdown>

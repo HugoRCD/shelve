@@ -87,7 +87,7 @@ async function removeTeamFromProject(teamId: number) {
                     class="text-xs"
                     :loading="removeLoading"
                     label="Unlink"
-                    icon="i-lucide-unlink"
+                    icon="lucide:unlink"
                     @click="removeTeamFromProject(project.teamId)"
                   />
                 </div>

@@ -36,7 +36,7 @@ async function logoutSession() {
             {{ session.device }}
             <UTooltip v-if="session.isCli" text="Connected from CLI" :popper="{ placement: 'top' }">
               <div class="flex  items-center justify-center rounded-lg bg-gray-700 p-1 text-white">
-                <span class="i-lucide-terminal size-4" />
+                <UIcon name="lucide:terminal" class="size-4" />
               </div>
             </UTooltip>
           </h3>

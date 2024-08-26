@@ -8,7 +8,7 @@ const handleProjectNavigation = () => {
   const isCryptoRoute = route.path.includes('/app/project/')
   const projectNavigation = {
     title: 'Project Details',
-    icon: 'i-lucide-folder-open',
+    icon: 'lucide:folder-open',
     to: route.path,
     name: 'Project Details',
   }
@@ -59,7 +59,7 @@ watch(() => route.path, handleProjectNavigation, { immediate: true })
       </UTooltip>
       <UTooltip text="Need help?" placement="top">
         <NuxtLink to="https://github.com/HugoRCD/shelve/issues">
-          <span class="i-lucide-life-buoy size-5" />
+          <UIcon name="lucide:life-buoy" size="size-5" />
         </NuxtLink>
       </UTooltip>
     </div>
