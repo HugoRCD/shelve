@@ -3,10 +3,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "automd": "automd",
-    "build": "automd && turbo build",
-    "build:app": "automd && turbo run build --filter=@shelve/app",
-    "build:cli": "automd && turbo run build --filter=@shelve/cli",
+    "build": "turbo build",
+    "build:app": "turbo run build --filter=@shelve/app",
+    "build:cli": "turbo run build --filter=@shelve/cli",
     "dev": "turbo dev",
     "dev:app": "turbo dev --filter=@shelve/app",
     "dev:cli": "turbo dev --filter=@shelve/cli",
