@@ -18,8 +18,5 @@ jobs:
       - name: 📦 Install dependencies
         run: bun install
 
-      - name: 🚀 Prepare
-        run: bun run dev:prepare
-
       - name: 🛠️ Build
         run: bun run build
