@@ -21,7 +21,7 @@
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
-    "release": "bun run test && changelogen --release && npm publish && git push --follow-tags",
+    "release": "bun run test && changelogen --release && npm publish",
     "test": "bun run build && bun run typecheck && bun run lint"
   },
   "bin": {
