@@ -20,6 +20,7 @@
       "persistent": true
     },
     "lint": {},
+    "lint:fix": {},
     "test": {},
     "typecheck": {}
   }
