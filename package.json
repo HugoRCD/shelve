@@ -3,17 +3,17 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "automd": "automd",
-    "build": "automd && turbo build",
-    "generate": "turbo run generate",
+    "build": "turbo build",
+    "build:app": "turbo run build --filter=@shelve/app",
+    "build:cli": "turbo run build --filter=@shelve/cli",
     "dev": "turbo dev",
+    "dev:app": "turbo dev --filter=@shelve/app",
+    "dev:cli": "turbo dev --filter=@shelve/cli",
+    "generate": "turbo run generate",
     "lint": "turbo lint",
     "lint:fix": "turbo lint:fix",
-    "start": "turbo start --filter=@shelve/app",
     "test": "turbo test",
-    "typecheck": "turbo typecheck",
-    "release": "changelogen --release --push",
-    "gh:release": "changelogen gh release"
+    "typecheck": "turbo typecheck"
   },
   "devDependencies": {
     "@hrcd/eslint-config": "^2.0.2",
@@ -26,7 +26,7 @@
   "engines": {
     "node": ">=20.17.0"
   },
-  "packageManager": "bun@1.0.30",
+  "packageManager": "bun@1.1.26",
   "workspaces": [
     "apps/*",
     "packages/*"
