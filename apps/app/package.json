@@ -46,6 +46,7 @@
     "eslint": "^9.9.1",
     "jsonwebtoken": "^9.0.2",
     "nuxt": "^3.13.0",
+    "nuxt-auth-utils": "^0.3.6",
     "nuxt-build-cache": "^0.1.1",
     "prisma": "^5.19.0",
     "resend": "^3.5.0",
