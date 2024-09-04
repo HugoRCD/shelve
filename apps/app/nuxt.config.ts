@@ -56,6 +56,8 @@ export default defineNuxtConfig({
       siteUrl: process.env.NUXT_PUBLIC_SITE_URL,
     },
     private: {
+      githubClientId: process.env.GITHUB_CLIENT_ID,
+      githubClientSecret: process.env.GITHUB_CLIENT_SECRET,
       resendApiKey: process.env.NUXT_PRIVATE_RESEND_API_KEY,
       authSecret: process.env.NUXT_PRIVATE_AUTH_SECRET,
       secretEncryptionKey: process.env.NUXT_PRIVATE_SECRET_ENCRYPTION_KEY,

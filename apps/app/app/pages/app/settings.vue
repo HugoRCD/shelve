@@ -14,6 +14,10 @@ function setPrefersReducedMotion() {
 watch(reduceMotion, () => {
   setPrefersReducedMotion()
 })
+
+const loginWithGithub = () => {
+  window.location.href = '/api/auth/github/login'
+}
 </script>
 
 <template>
@@ -29,6 +33,9 @@ watch(reduceMotion, () => {
       </div>
       <UToggle v-model="reduceMotion" />
     </div>
+    <button @click="loginWithGithub">
+      Se connecter avec GitHub
+    </button>
     <UDivider class="my-4" />
     <div style="--stagger: 2" data-animate class="flex flex-col gap-3">
       <h2 class="text-lg font-bold">
