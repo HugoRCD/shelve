@@ -11,7 +11,9 @@ export default oauthGitHubEventHandler({
       avatar: user.avatar_url,
     }, 'github')
     await setUserSession(event, {
-      accessToken: tokens.access_token,
+      tokens: {
+        github: tokens.access_token,
+      },
       user: {
         id: _user.id,
         username: user.login,
