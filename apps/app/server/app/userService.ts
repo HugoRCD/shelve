@@ -17,6 +17,12 @@ type JwtPayload = {
 const runtimeConfig = useRuntimeConfig().private
 
 export async function upsertUser(createUserInput: CreateUserInput, provider: 'local' | 'github' = 'local'): Promise<publicUser> {
+  const foundUser = await prisma.user.findUnique({
+    where: {
+      username: createUserInput.username,
+    },
+  })
+  if (foundUser) throw createError({ statusCode: 400, message: 'Username already taken' })
   if (provider === 'local') {
     const { otp, encryptedOtp } = await generateOtp()
     let { password } = createUserInput
@@ -26,6 +32,7 @@ export async function upsertUser(createUserInput: CreateUserInput, provider: 'lo
         email: createUserInput.email,
       },
       update: {
+        updatedAt: new Date(),
         otp: encryptedOtp,
         password,
       },
@@ -45,6 +52,7 @@ export async function upsertUser(createUserInput: CreateUserInput, provider: 'lo
     update: {
       username: createUserInput.username,
       avatar: createUserInput.avatar,
+      updatedAt: new Date(),
     },
     create: {
       ...createUserInput,

@@ -13,6 +13,17 @@ definePageMeta({
 const route = useRoute()
 const otpMode = ref(!!route.query.email)
 
+if (route.query.error === 'github') {
+  toast.error('An error occurred while logging in with GitHub.', {
+    duration: Infinity,
+    closeButton: false,
+    action: {
+      label: 'Dismiss',
+      onClick: () => useRouter().push('/login')
+    }
+  })
+}
+
 const { user, fetch } = useUserSession()
 const email = ref(route.query.email || '')
 const password = ref('')
@@ -107,14 +118,11 @@ onMounted(() => {
               Sign in with GitHub
             </span>
           </a>
-          <UDivider label="or" />
         </div>
-        <button class="text-sm text-black transition-colors duration-300 dark:text-white" @click="otpMode = !otpMode">
-          {{ otpMode ? "Send me a magic link" : "I have a magic code" }}
-        </button>
       </div>
+      <UDivider label="or" />
       <Transition name="fade" mode="out-in">
-        <form v-if="!otpMode" class="mt-2 flex flex-col gap-4" @submit.prevent="useLoginOrSendOtp" @keydown.enter.prevent="useLoginOrSendOtp">
+        <form v-if="!otpMode" class="flex flex-col gap-4" @submit.prevent="useLoginOrSendOtp" @keydown.enter.prevent="useLoginOrSendOtp">
           <UInput
             v-model="email"
             label="Email address"
@@ -150,6 +158,9 @@ onMounted(() => {
           </UButton>
         </form>
       </Transition>
+      <button class="text-xs text-black transition-colors duration-300 dark:text-gray-300" @click="otpMode = !otpMode">
+        {{ otpMode ? "Send me a magic link" : "I have a magic code" }}
+      </button>
     </div>
   </div>
 </template>

@@ -11,6 +11,9 @@
         </span>
         <SettingThemeToggle />
       </div>
+      <span class="text-sm text-tertiary">
+        Try ⌘ + K to use password
+      </span>
     </footer>
   </div>
 </template>
