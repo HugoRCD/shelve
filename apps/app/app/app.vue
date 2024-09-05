@@ -1,17 +1,33 @@
 <script setup lang="ts">
 import { Toaster } from 'vue-sonner'
 
-const { title, link } = useAppConfig()
+useScriptPlausibleAnalytics({
+  domain: 'shelve.hrcd.fr',
+  scriptInput: {
+    src: 'https://analytics.hrcd.fr/js/script.js',
+  }
+})
+
+const { title, link, description, ogImage } = useAppConfig()
 useHead({
   title: title,
   link: link,
-  script: [
-    {
-      src: 'https://plausible.hrcd.fr/js/script.js',
-      defer: true,
-      'data-domain': 'shelve.hrcd.fr'
-    },
-  ],
+})
+
+useSeoMeta({
+  title,
+  description,
+  author: 'Hugo Richard',
+  twitter: '@HugoRCD__',
+  twitterTitle: title,
+  twitterDescription: description,
+  twitterCard: 'summary_large_image',
+  twitterImage: ogImage,
+  ogUrl: 'https://shelve.hrcd.fr',
+  ogImage: ogImage,
+  ogSiteName: title,
+  ogTitle: title,
+  ogDescription: description
 })
 
 function setPrefersReducedMotion(reduceMotion: boolean) {
@@ -33,7 +49,7 @@ useSession().refresh()
 </script>
 
 <template>
-  <Html>
+  <Html lang="en">
     <Body class="selection:bg-primary relative overflow-x-hidden font-geist text-black selection:text-inverted dark:text-white">
       <NuxtLayout>
         <NuxtPage />

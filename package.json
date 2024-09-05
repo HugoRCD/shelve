@@ -6,7 +6,7 @@
     "build": "turbo build",
     "build:app": "turbo run build --filter=@shelve/app",
     "build:cli": "turbo run build --filter=@shelve/cli",
-    "dev": "turbo dev",
+    "dev": "turbo dev --filter=@shelve/app",
     "dev:app": "turbo dev --filter=@shelve/app",
     "dev:cli": "turbo dev --filter=@shelve/cli",
     "generate": "turbo run generate",
