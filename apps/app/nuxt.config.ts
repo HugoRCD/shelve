@@ -12,13 +12,6 @@ export default defineNuxtConfig({
           content: 'Hugo Richard',
         },
       ],
-      script: [
-        {
-          'src': 'https://analytics.hrcd.fr/js/script.js',
-          'defer': true,
-          'data-domain': 'shelve.hrcd.fr',
-        },
-      ]
     },
   },
 
@@ -71,6 +64,7 @@ export default defineNuxtConfig({
     '@vueuse/nuxt',
     'nuxt-build-cache',
     'nuxt-auth-utils',
+    '@nuxt/scripts'
   ],
 
   css: ['~/assets/style/main.css'],
