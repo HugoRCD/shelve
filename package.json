@@ -6,7 +6,7 @@
     "build": "turbo build",
     "build:app": "turbo run build --filter=@shelve/app",
     "build:cli": "turbo run build --filter=@shelve/cli",
-    "dev": "turbo dev",
+    "dev": "turbo dev --filter=@shelve/app",
     "dev:app": "turbo dev --filter=@shelve/app",
     "dev:cli": "turbo dev --filter=@shelve/cli",
     "generate": "turbo run generate",
@@ -20,7 +20,7 @@
     "automd": "^0.3.8",
     "changelogen": "^0.5.5",
     "eslint": "^9.9.1",
-    "turbo": "^2.0.14",
+    "turbo": "^2.1.0",
     "typescript": "5.5.4"
   },
   "engines": {
