@@ -18,7 +18,7 @@ export default oauthGitHubEventHandler({
         },
         user: {
           id: _user.id,
-          username: user.login,
+          username: _user.username,
           email: user.email,
           avatar: user.avatar_url,
           role: _user.role,

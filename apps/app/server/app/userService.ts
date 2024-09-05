@@ -22,7 +22,7 @@ export async function upsertUser(createUserInput: CreateUserInput, provider: 'lo
       username: createUserInput.username,
     },
   })
-  if (foundUser) throw createError({ statusCode: 400, message: 'Username already taken' })
+  const newUsername = foundUser ? `${createUserInput.username}_#${Math.floor(Math.random() * 1000)}` : createUserInput.username
   if (provider === 'local') {
     const { otp, encryptedOtp } = await generateOtp()
     let { password } = createUserInput
@@ -38,6 +38,7 @@ export async function upsertUser(createUserInput: CreateUserInput, provider: 'lo
       },
       create: {
         ...createUserInput,
+        username: newUsername,
         password,
         otp: encryptedOtp,
       },
@@ -50,12 +51,11 @@ export async function upsertUser(createUserInput: CreateUserInput, provider: 'lo
       email: createUserInput.email,
     },
     update: {
-      username: createUserInput.username,
-      avatar: createUserInput.avatar,
       updatedAt: new Date(),
     },
     create: {
       ...createUserInput,
+      username: newUsername,
     },
   })
   return formatUser(user)

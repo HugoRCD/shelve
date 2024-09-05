@@ -103,6 +103,13 @@ onMounted(() => {
 
 <template>
   <div class="mx-auto flex h-full max-w-sm flex-col items-center justify-center p-5">
+    <ClientOnly>
+      <Teleport defer to="#password-mode-toggle">
+        <span class="cursor-pointer select-none text-sm text-tertiary" @click="passwordMode = !passwordMode">
+          Try ⌘ + K to use your password
+        </span>
+      </Teleport>
+    </ClientOnly>
     <div class="flex flex-col justify-center gap-4">
       <div class="flex flex-col items-center justify-center gap-2 text-center">
         <h1 class="text-center text-3xl leading-9">
