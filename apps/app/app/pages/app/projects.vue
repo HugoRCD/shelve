@@ -12,7 +12,7 @@ if (!projects.value)
 <template>
   <div>
     <div class="flex items-center justify-end">
-      <Teleport v-if="isMounted('action-items')" to="#action-items">
+      <Teleport defer to="#action-items">
         <ProjectCreate />
       </Teleport>
     </div>
