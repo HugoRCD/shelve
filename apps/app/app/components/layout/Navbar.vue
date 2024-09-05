@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 const navigation = getNavigation('home')
-const { user, loggedIn } = useUserSession()
 </script>
 
 <template>
@@ -22,9 +21,7 @@ const { user, loggedIn } = useUserSession()
       <div class="hidden items-center gap-5 sm:flex">
         <LandingGithubStar />
         <AuthState>
-          <template #default>
-            <DropdownMenu />
-          </template>
+          <DropdownMenu />
           <template #placeholder>
             <NuxtLink to="/login" class="btn-primary">
               Login

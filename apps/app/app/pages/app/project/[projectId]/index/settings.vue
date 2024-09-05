@@ -4,7 +4,7 @@ import type { Ref } from 'vue'
 
 const { projectId } = useRoute().params
 
-const { use } = useUserSession()
+const { user } = useUserSession()
 
 const project = inject('project') as Ref<Project>
 const loading = inject('loading') as Ref<boolean>

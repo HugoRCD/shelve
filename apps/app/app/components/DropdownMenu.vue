@@ -36,8 +36,8 @@ const items = [
       icon: 'heroicons:arrow-left-on-rectangle',
       iconClass: 'text-red-500 dark:text-red-500',
       click: () => {
+        navigateTo('/')
         clear()
-        navigateTo('/login')
       }
     }
   ]

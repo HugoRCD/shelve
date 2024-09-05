@@ -16,31 +16,7 @@ if (!projects.value)
         <ProjectCreate />
       </Teleport>
     </div>
-    <div v-if="!loading" class="grid grid-cols-1 gap-4 lg:grid-cols-2">
-      <NuxtLink
-        v-for="project in projects"
-        :key="project.id"
-        :to="`/app/project/${project.id}`"
-      >
-        <UCard class="h-full">
-          <div class="flex w-full items-start gap-4">
-            <UAvatar
-              :src="project.avatar"
-              :alt="project.name"
-              size="sm"
-              img-class="object-cover"
-            />
-            <div class="flex flex-col gap-1">
-              <h3 class="flex flex-col text-lg font-semibold">
-                {{ project.name }}
-              </h3>
-              <div class="text-xs font-normal text-gray-500">
-                {{ project.description }}
-              </div>
-            </div>
-          </div>
-        </UCard>
-      </NuxtLink>
+    <div v-if="!loading">
       <div v-if="projects.length === 0" class="flex h-64 flex-col items-center justify-center gap-4">
         <UIcon name="heroicons:folder-open" class="size-10 text-gray-400" />
         <h2 class="text-lg font-semibold">
@@ -50,6 +26,32 @@ if (!projects.value)
           You don't have any projects yet. Create one now!
         </p>
         <ProjectCreate />
+      </div>
+      <div v-else class="grid grid-cols-1 gap-4 lg:grid-cols-2">
+        <NuxtLink
+          v-for="project in projects"
+          :key="project.id"
+          :to="`/app/project/${project.id}`"
+        >
+          <UCard class="h-full">
+            <div class="flex w-full items-start gap-4">
+              <UAvatar
+                :src="project.avatar"
+                :alt="project.name"
+                size="sm"
+                img-class="object-cover"
+              />
+              <div class="flex flex-col gap-1">
+                <h3 class="flex flex-col text-lg font-semibold">
+                  {{ project.name }}
+                </h3>
+                <div class="text-xs font-normal text-gray-500">
+                  {{ project.description }}
+                </div>
+              </div>
+            </div>
+          </UCard>
+        </NuxtLink>
       </div>
     </div>
     <div v-else class="grid grid-cols-1 gap-4 lg:grid-cols-2">

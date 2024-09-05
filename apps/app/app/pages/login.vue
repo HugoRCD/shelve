@@ -13,7 +13,7 @@ definePageMeta({
 const route = useRoute()
 const otpMode = ref(!!route.query.email)
 
-const { use } = useUserSession()
+const { user, fetch } = useUserSession()
 const email = ref(route.query.email || '')
 const password = ref('')
 const otp = ref(route.query.otp || '')
@@ -38,7 +38,7 @@ const { status, error, execute } = useFetch('/api/auth/send-code', {
   immediate: false
 })
 
-const { data, status: verifyStatus, error: verifyError, execute: verify } = useFetch('/api/auth/login', {
+const { status: verifyStatus, error: verifyError, execute: verify } = useFetch('/api/auth/login', {
   method: 'POST',
   body: { email, otp, password, deviceInfo },
   watch: false,
@@ -65,10 +65,10 @@ const login = async () => {
     return
   }
   await verify()
-  if (!verifyError.value && data.value) {
-    toast.success(`Welcome back, ${data.value.username || data.value.email}!`)
-    user.value = data.value
+  if (!verifyError.value) {
+    await fetch()
     await useRouter().push('/app/projects')
+    toast.success(`Welcome back, ${user.value.username || user.value.email}!`)
   } else {
     toast.error('An error occurred while verifying your code.')
   }
@@ -107,15 +107,21 @@ onMounted(() => {
               Sign in with GitHub
             </span>
           </a>
-          <!--          <UDivider label="or" />-->
+          <UDivider label="or" />
         </div>
-        <!--        <button class="text-sm text-black transition-colors duration-300 dark:text-white" @click="otpMode = !otpMode">
+        <button class="text-sm text-black transition-colors duration-300 dark:text-white" @click="otpMode = !otpMode">
           {{ otpMode ? "Send me a magic link" : "I have a magic code" }}
-        </button>-->
+        </button>
       </div>
-      <!--      <Transition name="fade" mode="out-in">
-        <form v-if="!otpMode" class="mt-8 flex flex-col gap-4" @submit.prevent="useLoginOrSendOtp" @keydown.enter.prevent="useLoginOrSendOtp">
-          <UInput v-model="email" label="Email address" type="email" required placeholder="email" />
+      <Transition name="fade" mode="out-in">
+        <form v-if="!otpMode" class="mt-2 flex flex-col gap-4" @submit.prevent="useLoginOrSendOtp" @keydown.enter.prevent="useLoginOrSendOtp">
+          <UInput
+            v-model="email"
+            label="Email address"
+            type="email"
+            required
+            placeholder="email"
+          />
           <UInput
             v-if="passwordMode"
             v-model="password"
@@ -133,7 +139,7 @@ onMounted(() => {
             <Loader v-if="passwordMode ? verifyStatus === 'pending' : status === 'pending'" />
           </UButton>
         </form>
-        <form v-else class="mt-8 flex flex-col gap-4" @submit.prevent="login" @keydown.enter.prevent="login">
+        <form v-else class="mt-2 flex flex-col gap-4" @submit.prevent="login" @keydown.enter.prevent="login">
           <OTP v-model="otp" :disabled="verifyStatus === 'pending'" @otp:full="login" />
           <UButton
             type="submit"
@@ -143,7 +149,7 @@ onMounted(() => {
             Verify code
           </UButton>
         </form>
-      </Transition>-->
+      </Transition>
     </div>
   </div>
 </template>

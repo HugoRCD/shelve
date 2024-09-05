@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { type Team, TeamRole } from '@shelve/types'
 
-const { use } = useUserSession()
+const { user } = useUserSession()
 
 const search = ref('')
 
