@@ -17,7 +17,7 @@ const showDelete = ref(false)
 const projectName = ref('')
 const project = toRef(props, 'project') as Ref<Project>
 const { projectId } = useRoute().params as { projectId: string }
-const user = useCurrentUser()
+const { use } = useUserSession()
 
 const {
   updateProject,

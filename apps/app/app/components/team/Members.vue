@@ -22,7 +22,7 @@ const {
   removeMember,
 } = useTeams()
 
-const user = useCurrentUser()
+const { use } = useUserSession()
 
 const roles = [
   {

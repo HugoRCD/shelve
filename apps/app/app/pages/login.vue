@@ -13,7 +13,7 @@ definePageMeta({
 const route = useRoute()
 const otpMode = ref(!!route.query.email)
 
-const user = useCurrentUser()
+const { use } = useUserSession()
 const email = ref(route.query.email || '')
 const password = ref('')
 const otp = ref(route.query.otp || '')
