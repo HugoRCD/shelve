@@ -1,5 +1,7 @@
 <script setup lang="ts">
-const { isAdmin } = useSession()
+import { Role } from '@shelve/types'
+
+const { user } = useUserSession()
 const navigations = getNavigation('app')
 const adminNavigations = getNavigation('admin')
 
@@ -44,7 +46,7 @@ watch(() => route.path, handleProjectNavigation, { immediate: true })
     </div>
 
     <!-- Admin -->
-    <div v-if="isAdmin" class="flex flex-col gap-2">
+    <div v-if="user && user.role === Role.ADMIN" class="flex flex-col gap-2">
       <UDivider class="my-3" />
       <div class="text-xs font-medium text-neutral-500 dark:text-neutral-400">
         Admin

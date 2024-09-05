@@ -1,22 +1,38 @@
+import { upsertUser } from '~~/server/app/userService'
+
 export default oauthGitHubEventHandler({
   config: {
     emailRequired: true,
     scope: ['repo', 'user:email'],
   },
   async onSuccess(event, { user, tokens }) {
-    await setUserSession(event, {
-      accessToken: tokens.access_token,
-      user: {
-        username: user.login,
+    try {
+      const _user = await upsertUser({
         email: user.email,
         avatar: user.avatar_url,
-      },
-      loggedInAt: new Date().toISOString(),
-    })
-    return sendRedirect(event, '/app/settings')
+        username: user.login,
+      }, 'github')
+      await setUserSession(event, {
+        tokens: {
+          github: tokens.access_token,
+        },
+        user: {
+          id: _user.id,
+          username: _user.username,
+          email: user.email,
+          avatar: user.avatar_url,
+          role: _user.role,
+        },
+        loggedInAt: new Date().toISOString(),
+      })
+      return sendRedirect(event, '/app/projects')
+    } catch (error) {
+      console.error('GitHub OAuth error:', error)
+      return sendRedirect(event, '/login?error=github')
+    }
   },
   onError(event, error) {
     console.error('GitHub OAuth error:', error)
-    return sendRedirect(event, '/app/settings')
+    return sendRedirect(event, '/login?error=github')
   },
 })

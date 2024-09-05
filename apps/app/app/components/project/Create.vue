@@ -75,7 +75,7 @@ function importProject() {
       size="xs"
       icon="heroicons:plus-20-solid"
       :loading="projectLoading"
-      label="Add project"
+      label="Create project"
       @click="isOpen = true"
     />
 

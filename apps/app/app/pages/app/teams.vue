@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { type Team, TeamRole } from '@shelve/types'
 
-const user = useCurrentUser()
+const { user } = useUserSession()
 
 const search = ref('')
 
@@ -77,7 +77,7 @@ const items = (row: Team) => [
         </p>
       </div>
     </div>
-    <Teleport v-if="isMounted('action-items')" to="#action-items">
+    <Teleport defer to="#action-items">
       <div class="hidden items-center justify-end gap-2 sm:flex">
         <TeamCreate>Create</TeamCreate>
         <UInput

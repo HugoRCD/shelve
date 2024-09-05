@@ -13,7 +13,18 @@ definePageMeta({
 const route = useRoute()
 const otpMode = ref(!!route.query.email)
 
-const user = useCurrentUser()
+if (route.query.error === 'github') {
+  toast.error('An error occurred while logging in with GitHub.', {
+    duration: Infinity,
+    closeButton: false,
+    action: {
+      label: 'Dismiss',
+      onClick: () => useRouter().push('/login')
+    }
+  })
+}
+
+const { user, fetch } = useUserSession()
 const email = ref(route.query.email || '')
 const password = ref('')
 const otp = ref(route.query.otp || '')
@@ -38,7 +49,7 @@ const { status, error, execute } = useFetch('/api/auth/send-code', {
   immediate: false
 })
 
-const { data, status: verifyStatus, error: verifyError, execute: verify } = useFetch('/api/auth/login', {
+const { status: verifyStatus, error: verifyError, execute: verify } = useFetch('/api/auth/login', {
   method: 'POST',
   body: { email, otp, password, deviceInfo },
   watch: false,
@@ -65,10 +76,10 @@ const login = async () => {
     return
   }
   await verify()
-  if (!verifyError.value && data.value) {
-    toast.success(`Welcome back, ${data.value.username || data.value.email}!`)
-    user.value = data.value
+  if (!verifyError.value) {
+    await fetch()
     await useRouter().push('/app/projects')
+    toast.success(`Welcome back, ${user.value.username || user.value.email}!`)
   } else {
     toast.error('An error occurred while verifying your code.')
   }
@@ -92,21 +103,40 @@ onMounted(() => {
 
 <template>
   <div class="mx-auto flex h-full max-w-sm flex-col items-center justify-center p-5">
+    <ClientOnly>
+      <Teleport defer to="#password-mode-toggle">
+        <span class="cursor-pointer select-none text-sm text-tertiary" @click="passwordMode = !passwordMode">
+          Try ⌘ + K to use your password
+        </span>
+      </Teleport>
+    </ClientOnly>
     <div class="flex flex-col justify-center gap-4">
-      <div class="flex flex-col items-center justify-center space-y-2 text-center">
+      <div class="flex flex-col items-center justify-center gap-2 text-center">
         <h1 class="text-center text-3xl leading-9">
           Login to <span class="font-newsreader font-light italic">{{ title }}</span>
         </h1>
         <p class="max-w-sm text-pretty text-sm leading-5 text-tertiary">
           If you gained access to {{ title }}, you can enter your credentials here
         </p>
-        <button class="text-sm text-black transition-colors duration-300 dark:text-white" @click="otpMode = !otpMode">
-          {{ otpMode ? "Send me a magic link" : "I have a magic code" }}
-        </button>
+        <div class="mt-4 flex flex-col items-center justify-center gap-8">
+          <a href="/auth/github" class="flex items-center gap-2 rounded-md bg-gray-200 px-5 py-1.5 text-sm text-black transition-colors duration-300 hover:bg-gray-300 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700">
+            <UIcon name="custom:github" class="size-5 fill-current" />
+            <span>
+              Sign in with GitHub
+            </span>
+          </a>
+        </div>
       </div>
+      <UDivider label="or" />
       <Transition name="fade" mode="out-in">
-        <form v-if="!otpMode" class="mt-8 flex flex-col gap-4" @submit.prevent="useLoginOrSendOtp" @keydown.enter.prevent="useLoginOrSendOtp">
-          <UInput v-model="email" label="Email address" type="email" required placeholder="email" />
+        <form v-if="!otpMode" class="flex flex-col gap-4" @submit.prevent="useLoginOrSendOtp" @keydown.enter.prevent="useLoginOrSendOtp">
+          <UInput
+            v-model="email"
+            label="Email address"
+            type="email"
+            required
+            placeholder="email"
+          />
           <UInput
             v-if="passwordMode"
             v-model="password"
@@ -124,7 +154,7 @@ onMounted(() => {
             <Loader v-if="passwordMode ? verifyStatus === 'pending' : status === 'pending'" />
           </UButton>
         </form>
-        <form v-else class="mt-8 flex flex-col gap-4" @submit.prevent="login" @keydown.enter.prevent="login">
+        <form v-else class="mt-2 flex flex-col gap-4" @submit.prevent="login" @keydown.enter.prevent="login">
           <OTP v-model="otp" :disabled="verifyStatus === 'pending'" @otp:full="login" />
           <UButton
             type="submit"
@@ -135,6 +165,9 @@ onMounted(() => {
           </UButton>
         </form>
       </Transition>
+      <button class="text-xs text-black transition-colors duration-300 dark:text-gray-300" @click="otpMode = !otpMode">
+        {{ otpMode ? "Send me a magic link" : "I have a magic code" }}
+      </button>
     </div>
   </div>
 </template>

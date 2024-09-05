@@ -16,25 +16,48 @@ type JwtPayload = {
 
 const runtimeConfig = useRuntimeConfig().private
 
-export async function upsertUser(createUserInput: CreateUserInput) {
-  const { otp, encryptedOtp } = await generateOtp()
-  let { password } = createUserInput
-  if (password) password = await bcrypt.hash(password, 10)
+export async function upsertUser(createUserInput: CreateUserInput, provider: 'local' | 'github' = 'local'): Promise<publicUser> {
+  const foundUser = await prisma.user.findUnique({
+    where: {
+      username: createUserInput.username,
+    },
+  })
+  const newUsername = foundUser ? `${createUserInput.username}_#${Math.floor(Math.random() * 1000)}` : createUserInput.username
+  if (provider === 'local') {
+    const { otp, encryptedOtp } = await generateOtp()
+    let { password } = createUserInput
+    if (password) password = await bcrypt.hash(password, 10)
+    const user = await prisma.user.upsert({
+      where: {
+        email: createUserInput.email,
+      },
+      update: {
+        updatedAt: new Date(),
+        otp: encryptedOtp,
+        password,
+      },
+      create: {
+        ...createUserInput,
+        username: newUsername,
+        password,
+        otp: encryptedOtp,
+      },
+    })
+    if (!createUserInput.password) await sendOtp(user.email, otp)
+    return formatUser(user)
+  }
   const user = await prisma.user.upsert({
     where: {
       email: createUserInput.email,
     },
     update: {
-      otp: encryptedOtp,
-      password,
+      updatedAt: new Date(),
     },
     create: {
       ...createUserInput,
-      password,
-      otp: encryptedOtp,
+      username: newUsername,
     },
   })
-  if (!createUserInput.password) await sendOtp(user.email, otp)
   return formatUser(user)
 }
 

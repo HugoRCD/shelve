@@ -1,5 +1,4 @@
 import { H3Event } from 'h3'
-import { getUserByAuthToken, verifyUserToken } from '~~/server/app/userService'
 
 export default defineEventHandler(async (event: H3Event) => {
   const protectedRoutes = [
@@ -15,41 +14,7 @@ export default defineEventHandler(async (event: H3Event) => {
     return
   }
 
-  const authToken = getCookie(event, 'authToken')
-  if (!authToken) {
-    return sendError(
-      event,
-      createError({
-        statusCode: 401,
-        statusMessage: 'unauthorized',
-      }),
-    )
-  }
-  event.context.authToken = authToken
+  const session = await requireUserSession(event)
 
-  const user = await getUserByAuthToken(authToken)
-  if (!user) {
-    deleteCookie(event, 'authToken')
-    return sendError(
-      event,
-      createError({
-        statusCode: 401,
-        statusMessage: 'unauthorized',
-      }),
-    )
-  }
-
-  const isTokenValid = await verifyUserToken(authToken, user)
-  if (!isTokenValid) {
-    deleteCookie(event, 'authToken')
-    return sendError(
-      event,
-      createError({
-        statusCode: 401,
-        statusMessage: 'unauthorized',
-      }),
-    )
-  }
-
-  event.context.user = user
+  event.context.user = session.user
 })

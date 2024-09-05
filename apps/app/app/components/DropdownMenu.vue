@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { publicUser } from '@shelve/types'
+import { type publicUser, Role } from '@shelve/types'
 import type { Ref } from 'vue'
 
 const navigations = getNavigation('app')
@@ -19,7 +19,7 @@ const adminNavItem = adminNavigations.map((nav) => {
   }
 })
 
-const user = useCurrentUser() as Ref<publicUser>
+const { loggedIn, user, clear } = useUserSession()
 
 const items = [
   [
@@ -30,13 +30,15 @@ const items = [
     }
   ],
   navItem,
-  adminNavItem,
   [
     {
       label: 'Sign out',
       icon: 'heroicons:arrow-left-on-rectangle',
       iconClass: 'text-red-500 dark:text-red-500',
-      click: () => useSession().clear()
+      click: () => {
+        navigateTo('/')
+        clear()
+      }
     }
   ]
 ]
@@ -45,7 +47,7 @@ const items = [
 <template>
   <div class="flex items-center justify-center">
     <UDropdown
-      v-if="user"
+      v-if="loggedIn"
       :items
       :ui="{
         background: 'backdrop-blur-md border dark:bg-gray-950/50 dark:border-gray-400/10 bg-white',
