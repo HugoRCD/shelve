@@ -93,18 +93,27 @@ onMounted(() => {
 <template>
   <div class="mx-auto flex h-full max-w-sm flex-col items-center justify-center p-5">
     <div class="flex flex-col justify-center gap-4">
-      <div class="flex flex-col items-center justify-center space-y-2 text-center">
+      <div class="flex flex-col items-center justify-center gap-2 text-center">
         <h1 class="text-center text-3xl leading-9">
           Login to <span class="font-newsreader font-light italic">{{ title }}</span>
         </h1>
         <p class="max-w-sm text-pretty text-sm leading-5 text-tertiary">
           If you gained access to {{ title }}, you can enter your credentials here
         </p>
-        <button class="text-sm text-black transition-colors duration-300 dark:text-white" @click="otpMode = !otpMode">
+        <div class="mt-4 flex flex-col items-center justify-center gap-8">
+          <a href="/auth/github" class="flex items-center gap-2 rounded-md bg-gray-200 px-5 py-1.5 text-sm text-black transition-colors duration-300 hover:bg-gray-300 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700">
+            <UIcon name="custom:github" class="size-5 fill-current" />
+            <span>
+              Sign in with GitHub
+            </span>
+          </a>
+          <!--          <UDivider label="or" />-->
+        </div>
+        <!--        <button class="text-sm text-black transition-colors duration-300 dark:text-white" @click="otpMode = !otpMode">
           {{ otpMode ? "Send me a magic link" : "I have a magic code" }}
-        </button>
+        </button>-->
       </div>
-      <Transition name="fade" mode="out-in">
+      <!--      <Transition name="fade" mode="out-in">
         <form v-if="!otpMode" class="mt-8 flex flex-col gap-4" @submit.prevent="useLoginOrSendOtp" @keydown.enter.prevent="useLoginOrSendOtp">
           <UInput v-model="email" label="Email address" type="email" required placeholder="email" />
           <UInput
@@ -134,7 +143,7 @@ onMounted(() => {
             Verify code
           </UButton>
         </form>
-      </Transition>
+      </Transition>-->
     </div>
   </div>
 </template>

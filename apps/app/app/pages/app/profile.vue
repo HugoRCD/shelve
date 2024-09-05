@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { user } = useSession()
+const { user } = useUserSession()
 
 const usePassword = useCookie('usePassword')
 
