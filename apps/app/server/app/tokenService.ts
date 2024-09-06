@@ -1,7 +1,18 @@
 import prisma from '~~/server/database/client'
 
-export function getUserByAuthToken(token: string) {
-  return prisma.cliToken.findUnique({
+function updateUsedAt(token: string) {
+  return prisma.cliToken.update({
+    where: {
+      token,
+    },
+    data: {
+      updatedAt: new Date(),
+    },
+  })
+}
+
+export async function getUserByAuthToken(token: string) {
+  const user = await prisma.cliToken.findUnique({
     where: {
       token,
     },
@@ -16,6 +27,8 @@ export function getUserByAuthToken(token: string) {
       },
     },
   })
+  await updateUsedAt(token)
+  return user
 }
 
 export function getTokensByUserId(userId: number) {
