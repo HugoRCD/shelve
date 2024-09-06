@@ -7,15 +7,6 @@ import prisma, { formatUser } from '~~/server/database/client'
 import { generateOtp } from '~~/server/app/authService'
 import { sendOtp } from '~~/server/app/resendService'
 
-type JwtPayload = {
-  id: number;
-  role: Role;
-  username: string;
-  email: string;
-};
-
-const runtimeConfig = useRuntimeConfig().private
-
 export async function upsertUser(createUserInput: CreateUserInput, provider: 'local' | 'github' = 'local'): Promise<publicUser> {
   const foundUser = await prisma.user.findUnique({
     where: {
@@ -75,34 +66,6 @@ export async function deleteUser(userId: number): Promise<void> {
       id: userId,
     },
   })
-}
-
-export const getUserByAuthToken = cachedFunction(async (authToken: string): Promise<User> => {
-  const session = await prisma.session.findFirst({
-    where: {
-      authToken,
-    },
-    include: {
-      user: true,
-    },
-  })
-  if (!session)
-    throw createError({ statusCode: 400, message: 'Invalid token' })
-  return session.user
-}, {
-  maxAge: 60 * 60,
-  name: 'getUserByAuthToken',
-  getKey: (authToken: string) => `authToken:${authToken}`,
-})
-
-export async function verifyUserToken(token: string, user: User): Promise<boolean> {
-  try {
-    const decoded = jwt.verify(token, runtimeConfig.authSecret) as JwtPayload
-    return decoded.id === user.id
-  } catch (error) {
-    await deleteSession(token, user.id)
-    return false
-  }
 }
 
 export async function updateUser(user: User, updateUserInput: UpdateUserInput, authToken: string): Promise<publicUser> {

@@ -8,18 +8,19 @@ datasource db {
 }
 
 model User {
-  id        Int       @id @default(autoincrement())
-  username  String?   @unique
+  id        Int        @id @default(autoincrement())
+  username  String?    @unique
   password  String?
-  email     String    @unique
-  otp       String?   @unique
-  avatar    String    @default("https://i.imgur.com/6VBx3io.png") @db.VarChar(500)
-  role      String    @default("user")
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  email     String     @unique
+  otp       String?    @unique
+  avatar    String     @default("https://i.imgur.com/6VBx3io.png") @db.VarChar(500)
+  role      String     @default("user")
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
   sessions  Session[]
   projects  Project[]
   members   Member[]
+  CliToken  CliToken[]
 }
 
 model Member {
@@ -85,4 +86,14 @@ model Variables {
   updatedAt   DateTime @updatedAt
   project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
   projectId   Int
+}
+
+model CliToken {
+  id        Int      @id @default(autoincrement())
+  name      String   @db.VarChar(500)
+  token     String   @unique @db.VarChar(500)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

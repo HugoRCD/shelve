@@ -37,6 +37,12 @@ export function getNavigation(where: Where): Navigation[] {
           title: 'Profile',
         },
         {
+          name: 'Tokens',
+          to: '/app/tokens',
+          icon: 'heroicons:key',
+          title: 'Tokens',
+        },
+        {
           name: 'Settings',
           to: '/app/settings',
           icon: 'heroicons:cog',

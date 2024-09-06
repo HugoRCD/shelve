@@ -3,3 +3,4 @@ export * from "./User";
 export * from "./Project";
 export * from "./Session";
 export * from "./Team";
+export * from "./CliToken";
