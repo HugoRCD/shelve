@@ -66,6 +66,12 @@ async function deleteToken(token: CliToken) {
   await fetchTokens()
 }
 
+function isTokenActive(token: CliToken) {
+  const updatedAt = new Date(token.updatedAt)
+  const oneWeekAgo = new Date(Date.now() - 1000 * 60 * 60 * 24 * 7)
+  return updatedAt > oneWeekAgo
+}
+
 fetchTokens()
 </script>
 
@@ -102,7 +108,15 @@ fetchTokens()
           {{ new Date(row.createdAt).toLocaleString() }}
         </template>
         <template #updatedAt-data="{ row }">
-          {{ new Date(row.updatedAt).toLocaleString() }}
+          <span class="flex items-center gap-1">
+            {{ new Date(row.updatedAt).toLocaleString() }}
+            <UTooltip v-if="!isTokenActive(row)" text="Token seems to be inactive">
+              <UIcon name="heroicons-outline:clock" class="size-4 text-red-600" />
+            </UTooltip>
+            <UTooltip v-else text="Token is active">
+              <UIcon name="heroicons-outline:clock" class="size-4 text-gray-500" />
+            </UTooltip>
+          </span>
         </template>
         <template #actions-data="{ row }">
           <UDropdown :items="items(row)">
