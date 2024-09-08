@@ -1,7 +1,7 @@
 import prisma from '~~/server/database/client'
 
 function updateUsedAt(token: string) {
-  return prisma.cliToken.update({
+  return prisma.token.update({
     where: {
       token,
     },
@@ -12,7 +12,7 @@ function updateUsedAt(token: string) {
 }
 
 export async function getUserByAuthToken(token: string) {
-  const user = await prisma.cliToken.findUnique({
+  const user = await prisma.token.findUnique({
     where: {
       token,
     },
@@ -32,7 +32,7 @@ export async function getUserByAuthToken(token: string) {
 }
 
 export function getTokensByUserId(userId: number) {
-  return prisma.cliToken.findMany({
+  return prisma.token.findMany({
     where: {
       userId,
     },
@@ -69,7 +69,7 @@ function generateUserToken(userId) {
 export async function createToken({ name, userId }: { name: string, userId: number }) {
   const token = generateUserToken(userId)
 
-  await prisma.cliToken.create({
+  await prisma.token.create({
     data: {
       token,
       name,

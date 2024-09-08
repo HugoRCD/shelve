@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { CliToken } from '@shelve/types'
+import type { Token } from '@shelve/types'
 
 const tokenName = ref('')
 const loading = ref(false)
@@ -8,7 +8,7 @@ const emits = defineEmits(['create'])
 async function createToken() {
   loading.value = true
   try {
-    await $fetch<CliToken>('/api/tokens', {
+    await $fetch<Token>('/api/tokens', {
       method: 'POST',
       body: {
         name: tokenName.value,

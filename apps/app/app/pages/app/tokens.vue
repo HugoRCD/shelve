@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { CliToken } from '@shelve/types'
+import type { Token } from '@shelve/types'
 
 const columns = [
   {
@@ -28,7 +28,7 @@ const columns = [
   },
 ]
 
-const items = (row: CliToken) => [
+const items = (row: Token) => [
   [
     {
       label: 'Delete',
@@ -41,24 +41,24 @@ const items = (row: CliToken) => [
   ],
 ]
 
-const tokens = ref<CliToken[]>([])
+const tokens = ref<Token[]>([])
 const search = ref('')
 const loading = ref(false)
 
 const filteredTokens = computed(() => {
   if (!search.value) return tokens.value
-  return tokens.value!.filter((token: CliToken) => token.name.toLowerCase().includes(search.value.toLowerCase()))
+  return tokens.value!.filter((token: Token) => token.name.toLowerCase().includes(search.value.toLowerCase()))
 })
 
 async function fetchTokens() {
   loading.value = true
-  tokens.value = await $fetch<CliToken[]>('/api/tokens', {
+  tokens.value = await $fetch<Token[]>('/api/tokens', {
     method: 'GET',
   })
   loading.value = false
 }
 
-async function deleteToken(token: CliToken) {
+async function deleteToken(token: Token) {
   await $fetch(`/api/tokens/${token.id}`, {
     method: 'DELETE',
   })
@@ -66,7 +66,7 @@ async function deleteToken(token: CliToken) {
   await fetchTokens()
 }
 
-function isTokenActive(token: CliToken) {
+function isTokenActive(token: Token) {
   const updatedAt = new Date(token.updatedAt)
   const oneWeekAgo = new Date(Date.now() - 1000 * 60 * 60 * 24 * 7)
   return updatedAt > oneWeekAgo
