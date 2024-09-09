@@ -10,7 +10,7 @@ export default defineCommand({
   },
   async setup() {
     const user = loadUserConfig()
-    console.log(user)
+
     if (user.authToken) {
       const exit = await consola.prompt(`You are already logged as \`${user.username}\`, do you want to login again? (y/n)`, { type: 'confirm' })
       if (!exit) return
@@ -18,7 +18,7 @@ export default defineCommand({
 
     let selfInstanceUrl = ''
     const isSelfHosted = await consola.prompt('Is this a self-hosted instance? (y/n)', {
-      default: 'n',
+      initial: 'n',
       type: 'confirm',
     })
 
@@ -27,11 +27,11 @@ export default defineCommand({
       if (!selfInstanceUrl.endsWith('/')) selfInstanceUrl += '/'
     }
 
-    const token = await consola.prompt(`Enter a valid token created at ${selfInstanceUrl ? selfInstanceUrl : 'https://shelve.hrcd.fr'}app/tokens`) as string
+    const token = await consola.prompt(`Enter a valid token created at ${selfInstanceUrl ? selfInstanceUrl : 'https://shelve.hrcd.fr/'}app/tokens`) as string
 
     writeUserConfig({
       ...user,
-      url: selfInstanceUrl || 'https://shelve.hrcd.fr',
+      url: selfInstanceUrl || 'https://shelve.hrcd.fr/',
       authToken: token,
     })
 
@@ -43,7 +43,7 @@ export default defineCommand({
     consola.info(`Authentication successful, you are now logged in as \`${loggedUser.username}\``)
 
     writeUserConfig({
-      url: selfInstanceUrl || 'https://shelve.hrcd.fr',
+      url: selfInstanceUrl || 'https://shelve.hrcd.fr/',
       username: loggedUser.username || loggedUser.email,
       email: loggedUser.email,
       authToken: token,
