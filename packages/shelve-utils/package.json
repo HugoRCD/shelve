@@ -3,6 +3,9 @@
   "version": "0.0.0",
   "type": "module",
   "private": true,
+  "scripts": {
+    "dev": "bun run src/index.ts"
+  },
   "files": [
     "index.ts"
   ],
@@ -16,6 +19,7 @@
     "typescript": "latest"
   },
   "dependencies": {
-    "crypto-js": "^4.2.0"
+    "crypto-js": "^4.2.0",
+    "uncrypto": "^0.1.3"
   }
 }
