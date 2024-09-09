@@ -1,5 +1,5 @@
 import type { Environment, User, Variable, VariablesCreateInput } from '@shelve/types'
-import { decrypt, encrypt } from '@shelve/utils'
+import { unseal, seal } from '@shelve/utils'
 import prisma from '~~/server/database/client'
 
 const varAssociation = {
@@ -10,24 +10,33 @@ const varAssociation = {
   dev: 'development',
 }
 
+const { encryptionKey } = useRuntimeConfig().private
+
 function getEnvString(env: string) {
   return env.split('|').map((env) => varAssociation[env as Environment]).join('|')
 }
 
-export function upsertVariable(variablesCreateInput: VariablesCreateInput) {
-  const { secretEncryptionKey, secretEncryptionIterations } = useRuntimeConfig().private
-
-  const encryptVariables = (variables: VariablesCreateInput['variables']) => {
-    return variables.map((variable) => {
-      const encryptedValue = encrypt(variable.value, secretEncryptionKey, parseInt(secretEncryptionIterations))
-      variable.environment = getEnvString(variable.environment)
-
-      const { index, ...rest } = variable
-      return { ...rest, value: encryptedValue }
-    })
+async function encryptVariable(variables: VariablesCreateInput['variables']): Promise<VariablesCreateInput['variables']> {
+  for (const variable of variables) {
+    const encryptedValue = await seal(variable.value, encryptionKey)
+    delete variable.index
+    variable.environment = getEnvString(variable.environment)
+    variable.value = encryptedValue
   }
+  return variables
+}
 
-  const encryptedVariables = encryptVariables(variablesCreateInput.variables)
+async function decryptVariable(variables: VariablesCreateInput['variables']): Promise<VariablesCreateInput['variables']> {
+  for (const variable of variables) {
+    const decryptedValue = await unseal(variable.value, encryptionKey)
+    variable.environment = getEnvString(variable.environment)
+    variable.value = decryptedValue
+  }
+  return variables
+}
+
+export async function upsertVariable(variablesCreateInput: VariablesCreateInput) {
+  const encryptedVariables = await encryptVariable(variablesCreateInput.variables)
 
   if (variablesCreateInput.variables.length === 1) { // use on main form variable/update
     const [variableCreateInput] = encryptedVariables
@@ -45,7 +54,6 @@ export function upsertVariable(variablesCreateInput: VariablesCreateInput) {
 }
 
 export async function getVariablesByProjectId(projectId: number, environment?: Environment): Promise<Variable[]> {
-  const runtimeConfig = useRuntimeConfig().private
   const options = environment ? {
     projectId,
     environment: {
@@ -53,13 +61,7 @@ export async function getVariablesByProjectId(projectId: number, environment?: E
     }
   } : { projectId }
   const variables = await prisma.variables.findMany({ where: options, orderBy: { updatedAt: 'desc' } })
-  return variables.map((variable) => {
-    const decryptedValue = decrypt(variable.value, runtimeConfig.secretEncryptionKey, parseInt(runtimeConfig.secretEncryptionIterations))
-    return {
-      ...variable,
-      value: decryptedValue,
-    }
-  })
+  return await decryptVariable(variables)
 }
 
 export async function deleteVariable(id: number, environment: string): Promise<void> {

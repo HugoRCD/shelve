@@ -59,7 +59,7 @@ export const macPrefix = 'Fe26.2' // `Fe26.${macFormatVersion}`
 export async function seal(
   object: Readonly<unknown>,
   password: Readonly<RawPassword>,
-  opts: Readonly<SealOptions>,
+  opts: Readonly<SealOptions> = defaults,
 ): Promise<string> {
   const now = Date.now() + (opts.localtimeOffsetMsec || 0)
 
@@ -86,7 +86,7 @@ export async function seal(
 export async function unseal(
   sealed: string,
   password: Password | PasswordHash,
-  opts: Readonly<SealOptions>,
+  opts: Readonly<SealOptions> = defaults,
 ): Promise<unknown> {
   const now = Date.now() + (opts.localtimeOffsetMsec || 0)
 
@@ -241,13 +241,10 @@ async function pbkdf2(
   hash: HashAlgorithmIdentifier,
 ): Promise<ArrayBuffer> {
   const passwordBuffer = textEncoder.encode(password)
-  // prettier-ignore
   const importedKey = await crypto.subtle.importKey('raw', passwordBuffer, { name: 'PBKDF2' }, false, ['deriveBits'])
   const saltBuffer = textEncoder.encode(salt)
   const params = { name: 'PBKDF2', hash, salt: saltBuffer, iterations }
-  // prettier-ignore
-  const derivation = await crypto.subtle.deriveBits(params, importedKey, keyLength * 8)
-  return derivation
+  return await crypto.subtle.deriveBits(params, importedKey, keyLength * 8)
 }
 
 // --- encrypt/decrypt ---
