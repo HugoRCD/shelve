@@ -7,7 +7,7 @@ export default defineEventHandler(async (event: H3Event) => {
 
   if (!id) throw createError({ statusCode: 400, statusMessage: 'Missing params' })
 
-  await prisma.cliToken.delete({
+  await prisma.token.delete({
     where: {
       id: +id,
       userId: user.id,

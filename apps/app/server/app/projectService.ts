@@ -116,6 +116,7 @@ export async function removeTeamFromProject(projectId: number, teamId: number) {
     }
   })
 }
+
 export const getProjectsByUserId = cachedFunction(async (userId: number) => {
   const [projects, teams] = await Promise.all([
     prisma.project.findMany({

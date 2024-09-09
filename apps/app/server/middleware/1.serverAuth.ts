@@ -17,8 +17,8 @@ export default defineEventHandler(async (event: H3Event) => {
     return
   }
 
-  const authToken = getHeader(event, 'Authorization')?.split(' ')[1]
-  console.log(authToken)
+  const authToken = getCookie(event, 'authToken')
+
   if (authToken) {
     const user = await getUserByAuthToken(authToken)
     if (!user) throw createError({ statusCode: 401, statusMessage: 'Invalid token' })

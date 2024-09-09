@@ -1,6 +1,6 @@
 import { User } from './User'
 
-export type CliToken = {
+export type Token = {
   id: number;
   name: string;
   token: string;

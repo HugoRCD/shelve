@@ -26,6 +26,8 @@ export const main = defineCommand({
     li: () => import('./commands/login').then((r) => r.default),
     logout: () => import('./commands/logout').then((r) => r.default),
     lo: () => import('./commands/logout').then((r) => r.default),
+    token: () => import('./commands/token').then((r) => r.default),
+    t: () => import('./commands/token').then((r) => r.default),
   },
   async setup() {
     // await checkForUpdates()
