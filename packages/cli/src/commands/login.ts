@@ -1,44 +1,52 @@
 import { defineCommand } from 'citty'
 import { consola } from 'consola'
-import { getComputerName, loadUserConfig, writeUserConfig } from '../utils/config'
+import { loadUserConfig, writeUserConfig } from '../utils/config'
 import { $api } from '../utils/connection'
 
 export default defineCommand({
   meta: {
     name: 'login',
-    description: 'Authenticate with Shelve'
+    description: 'Authenticate with Shelve App'
   },
   async setup() {
     const user = loadUserConfig()
-    if (user.authToken) return consola.info(`You are already logged as \`${user.username}\``)
+    console.log(user)
+    if (user.authToken) {
+      const exit = await consola.prompt(`You are already logged as \`${user.username}\`, do you want to login again? (y/n)`, { type: 'confirm' })
+      if (!exit) return
+    }
 
-    const email = await consola.prompt('Enter your email') as string
-    consola.start('Sending code to your email...')
-    await $api('/auth/send-code', {
-      method: 'POST',
-      body: {
-        email
-      }
+    let selfInstanceUrl = ''
+    const isSelfHosted = await consola.prompt('Is this a self-hosted instance? (y/n)', {
+      default: 'n',
+      type: 'confirm',
     })
-    consola.success('Code sent.')
-    const code = await consola.prompt('Enter the code') as string
-    consola.start('Logging in...')
-    const response = await $api('/auth/login', {
-      method: 'POST',
-      body: {
-        email,
-        otp: code,
-        deviceInfo: {
-          isCli: true,
-          userAgent: getComputerName()
-        }
-      }
-    })
+
+    if (isSelfHosted) {
+      selfInstanceUrl = await consola.prompt('Enter the URL of your instance') as string
+      if (!selfInstanceUrl.endsWith('/')) selfInstanceUrl += '/'
+    }
+
+    const token = await consola.prompt(`Enter a valid token created at ${selfInstanceUrl ? selfInstanceUrl : 'https://shelve.hrcd.fr'}app/tokens`) as string
+
     writeUserConfig({
-      username: response.username || email,
-      email: response.email,
-      authToken: response.authToken
+      ...user,
+      url: selfInstanceUrl || 'https://shelve.hrcd.fr',
+      authToken: token,
     })
-    consola.info(`You are now logged in as \`${response.username || email}\``)
+
+    const response = await $api('/auth/currentUser', {
+      method: 'GET',
+    })
+    const loggedUser = response.user
+
+    consola.info(`Authentication successful, you are now logged in as \`${loggedUser.username}\``)
+
+    writeUserConfig({
+      url: selfInstanceUrl || 'https://shelve.hrcd.fr',
+      username: loggedUser.username || loggedUser.email,
+      email: loggedUser.email,
+      authToken: token,
+    })
   },
 })

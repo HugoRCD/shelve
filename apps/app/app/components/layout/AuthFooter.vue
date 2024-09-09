@@ -6,10 +6,13 @@
         <span class="text-sm text-tertiary">
           Want to go back to homepage ?
           <NuxtLink to="/" class="text-primary ml-1 transition duration-300 ease-in-out hover:text-accent">
-            Go to homepage
+            Click here
           </NuxtLink>
         </span>
         <SettingThemeToggle />
+      </div>
+      <div id="password-mode-toggle">
+        <!-- password-mode-toggle -->
       </div>
     </footer>
   </div>

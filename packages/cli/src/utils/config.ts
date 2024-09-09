@@ -5,6 +5,7 @@ import { updateUser, readUser, writeUser } from 'rc9'
 export type UserConfig = {
   username: string
   email: string
+  url: string
   authToken: string | null
 }
 

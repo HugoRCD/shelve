@@ -43,9 +43,6 @@ const reduceMotion = useCookie<boolean>('reduceMotion', {
 })
 
 if (import.meta.client) setPrefersReducedMotion(reduceMotion.value)
-
-
-useSession().refresh()
 </script>
 
 <template>
@@ -61,4 +58,3 @@ useSession().refresh()
     </Body>
   </Html>
 </template>
-

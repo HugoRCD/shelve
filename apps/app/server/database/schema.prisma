@@ -20,6 +20,7 @@ model User {
   sessions  Session[]
   projects  Project[]
   members   Member[]
+  token     Token[]
 }
 
 model Member {
@@ -85,4 +86,14 @@ model Variables {
   updatedAt   DateTime @updatedAt
   project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
   projectId   Int
+}
+
+model Token {
+  id        Int      @id @default(autoincrement())
+  name      String   @db.VarChar(500)
+  token     String   @unique @db.VarChar(500)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
