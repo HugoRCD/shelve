@@ -2,20 +2,13 @@
 import { type Member, Role, TeamRole } from '@shelve/types'
 import type { PropType } from 'vue'
 
-const { members, teamId, display } = defineProps({
-  members: {
-    type: Array as PropType<Member[]>,
-    required: true,
-  },
-  teamId: {
-    type: Number,
-    required: true,
-  },
-  display: {
-    type: Boolean,
-    default: false,
-  },
-})
+type TeamMemberProps = {
+  members: Member[]
+  teamId: number
+  display?: boolean
+}
+
+const { members, teamId, display = false } = defineProps<TeamMemberProps>()
 
 const {
   upsertMember,

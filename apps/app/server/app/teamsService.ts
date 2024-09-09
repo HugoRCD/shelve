@@ -61,7 +61,7 @@ export async function upsertMember(teamId: number, addMemberInput: {
     },
   })
   if (!user) throw new Error('user not found')
-  await deleteCachedTeamByUserId(user.id)
+  await deleteCachedTeamByUserId(requesterId)
   return prisma.member.upsert({
     where: {
       id: team.members.find((member) => member.userId === user.id)?.id || -1,
@@ -102,6 +102,7 @@ export async function removeMember(teamId: number, memberId: number, requesterId
     },
   })
   if (!team) throw new Error('unauthorized')
+
   await deleteCachedTeamByUserId(requesterId)
   return prisma.member.delete({
     where: {
