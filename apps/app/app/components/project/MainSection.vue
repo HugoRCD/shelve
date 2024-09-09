@@ -57,7 +57,11 @@ const items = [
       label: 'Export project data',
       icon: 'lucide:download',
       click: () => {
-        const data = JSON.stringify(project.value, null, 2)
+        const sanitizedProject = JSON.parse(JSON.stringify(project.value))
+        delete sanitizedProject.id
+        delete sanitizedProject.ownerId
+        delete sanitizedProject.teamId
+        const data = JSON.stringify(sanitizedProject, null, 2)
         const blob = new Blob([data], { type: 'application/json' })
         const url = URL.createObjectURL(blob)
         const a = document.createElement('a')
