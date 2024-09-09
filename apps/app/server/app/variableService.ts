@@ -1,5 +1,5 @@
 import type { Environment, User, Variable, VariablesCreateInput } from '@shelve/types'
-import { unseal, seal } from '@shelve/utils'
+import { unseal, seal } from '@shelve/crypto'
 import prisma from '~~/server/database/client'
 
 const varAssociation = {

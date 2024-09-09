@@ -32,7 +32,7 @@
     "@nuxt/ui": "^2.18.4",
     "@prisma/client": "^5.19.1",
     "@shelve/types": "workspace:*",
-    "@shelve/utils": "workspace:*",
+    "@shelve/crypto": "workspace:*",
     "@tsparticles/engine": "^3.5.0",
     "@tsparticles/slim": "^3.5.0",
     "@types/bcryptjs": "^2.4.6",
