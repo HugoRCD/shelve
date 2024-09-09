@@ -69,7 +69,11 @@ export function useTeams() {
       const team = teams.value[index]
       if (!team)
         return toast.error('Failed to remove member')
-      team.members = team.members.filter((member) => member.id !== memberId)
+      const memberIndex = team.members.findIndex((member) => member.id === memberId)
+      if (memberIndex !== -1) {
+        team.members.splice(memberIndex, 1)
+      }
+      teams.value.splice(index, 1, team)
       toast.success('Member removed')
     } catch (error) {
       toast.error('Failed to remove member')
