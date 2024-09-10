@@ -3,10 +3,10 @@ import prisma from '~~/server/database/client'
 
 const { encryptionKey } = useRuntimeConfig().private
 
-function updateUsedAt(token: string) {
+function updateUsedAt(tokenId: string) {
   return prisma.token.update({
     where: {
-      token,
+      id: tokenId,
     },
     data: {
       updatedAt: new Date(),
@@ -14,24 +14,40 @@ function updateUsedAt(token: string) {
   })
 }
 
-export async function getUserByAuthToken(token: string) {
-  const sealedToken = await seal(token, encryptionKey)
-  const user = await prisma.token.findUnique({
+export async function getUserByAuthToken(authToken: string) {
+  const userId = +authToken.split('_')[1]
+
+  const userTokens = await prisma.token.findMany({
     where: {
-      token: sealedToken,
-    },
-    select: {
-      user: {
-        select: {
-          id: true,
-          email: true,
-          role: true,
-          username: true,
-        },
-      },
+      userId
     },
   })
-  await updateUsedAt(sealedToken)
+
+  let foundToken
+
+  for (const token of userTokens) {
+    token.token = await unseal(token.token, encryptionKey)
+    if (token.token === authToken) {
+      foundToken = token
+      break
+    }
+  }
+
+  if (!foundToken) throw new Error('Invalid token')
+
+  const user = await prisma.user.findUnique({
+    where: {
+      id: userId,
+    },
+    select: {
+      id: true,
+      username: true,
+      email: true,
+      role: true,
+    },
+  })
+
+  await updateUsedAt(foundToken.id)
   return user
 }
 
