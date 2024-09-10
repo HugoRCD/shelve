@@ -50,7 +50,7 @@ const items = [
       v-if="loggedIn"
       :items
       :ui="{
-        background: 'backdrop-blur-md border dark:bg-gray-950/50 dark:border-gray-400/10 bg-white',
+        background: 'backdrop-blur-3xl border dark:bg-gray-950/95 dark:border-gray-400/10 bg-white',
         ring: 'ring-1 ring-neutral-100 dark:ring-neutral-800',
         divide: 'divide-y divide-neutral-100 dark:divide-neutral-800',
         item: {
