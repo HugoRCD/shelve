@@ -2,7 +2,7 @@ import { ofetch } from 'ofetch'
 import consola from 'consola'
 import { loadShelveConfig } from './config'
 
-export async function useApi() {
+export async function useApi(): Promise<typeof ofetch> {
   const { url, token } = await loadShelveConfig()
 
   const sanitizedUrl = url.replace(/\/+$/, '') // remove trailing slash
@@ -16,7 +16,7 @@ export async function useApi() {
         Cookie: `authToken=${token}`
       }
     },
-    async onResponseError(ctx) {
+    onResponseError(ctx) {
       console.log(ctx.response)
       if (ctx.response.status === 401) {
         consola.error('Authentication failed, please verify your token')

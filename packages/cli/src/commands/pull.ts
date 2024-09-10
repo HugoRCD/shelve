@@ -5,7 +5,7 @@ import { useApi } from '../utils/api'
 import { getProjectByName } from '../utils/project'
 import { createEnvFile } from '../utils/env'
 
-export function pullCommand(program: Command) {
+export function pullCommand(program: Command): void {
   program
     .command('pull')
     .description('Pull variables from Shelve')
