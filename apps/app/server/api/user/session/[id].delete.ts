@@ -1,6 +1,6 @@
 import { H3Event } from 'h3'
-import prisma from '~~/server/database/client'
 import { removeCachedUserToken } from '~~/server/app/userService'
+
 
 export default eventHandler(async (event: H3Event) => {
   const { user } = event.context

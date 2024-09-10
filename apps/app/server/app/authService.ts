@@ -2,7 +2,6 @@ import type { CreateSessionInput, User } from '@shelve/types'
 import bcrypt from 'bcryptjs'
 import { createSession } from '~~/server/app/sessionService'
 import { getUserByEmail } from '~~/server/app/userService'
-import prisma from '~~/server/database/client'
 
 export async function login(createSessionDto: CreateSessionInput): Promise<{ user: User; authToken: string }> {
   const user = await getUserByEmail(createSessionDto.email.trim())

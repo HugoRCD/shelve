@@ -1,9 +1,7 @@
 import { type User as prismaUser, PrismaClient } from '@prisma/client'
 import { Role, type publicUser } from '@shelve/types'
 
-const prisma = new PrismaClient()
-
-export default prisma
+export const prisma = new PrismaClient()
 
 export function formatUser(user: prismaUser): publicUser {
   return {

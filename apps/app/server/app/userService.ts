@@ -1,9 +1,5 @@
 import type { publicUser, User, CreateUserInput, UpdateUserInput } from '@shelve/types'
-import { Role } from '@shelve/types'
-import jwt from 'jsonwebtoken'
 import bcrypt from 'bcryptjs'
-import { deleteSession } from '~~/server/app/sessionService'
-import prisma, { formatUser } from '~~/server/database/client'
 import { generateOtp } from '~~/server/app/authService'
 import { sendOtp } from '~~/server/app/resendService'
 
