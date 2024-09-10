@@ -5,8 +5,6 @@ import { cancel } from '@clack/prompts'
 import consola from 'consola'
 import { useApi } from './api'
 
-const api = await useApi()
-
 export function isEnvFileExist(): boolean {
   return fs.existsSync('.env')
 }
@@ -50,6 +48,7 @@ export function getEnvFile(): Env[] {
 }
 
 export async function pushProjectVariable(projectId: number, environment: string): Promise<void> {
+  const api = await useApi()
   consola.start(`Pushing variables for ${environment} environment`)
   try {
     const variables = getEnvFile()

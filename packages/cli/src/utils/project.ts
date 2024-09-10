@@ -1,13 +1,9 @@
-import fs from 'fs'
 import type { Project } from '@shelve/types'
 import consola from 'consola'
-import { $api } from './connection'
-import { suggestLinkProject } from './suggest'
 import { useApi } from './api'
 
-const api = await useApi()
-
 export async function getProjects(): Promise<Project[]> {
+  const api = await useApi()
   try {
     return await api('/project', {
       method: 'GET',
@@ -18,12 +14,14 @@ export async function getProjects(): Promise<Project[]> {
 }
 
 export async function getProjectByName(name: string): Promise<Project> {
+  const api = await useApi()
   return await api(`/project/name/${name}`, {
     method: 'GET',
   })
 }
 
 export async function createProject(name: string): Promise<Project | null> {
+  const api = await useApi()
   try {
     await api('/project', {
       method: 'POST',
