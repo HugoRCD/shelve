@@ -1,4 +1,7 @@
+import { seal, unseal } from '@shelve/crypto'
 import prisma from '~~/server/database/client'
+
+const { encryptionKey } = useRuntimeConfig().private
 
 function updateUsedAt(token: string) {
   return prisma.token.update({
@@ -31,25 +34,19 @@ export async function getUserByAuthToken(token: string) {
   return user
 }
 
-export function getTokensByUserId(userId: number) {
-  return prisma.token.findMany({
+export async function getTokensByUserId(userId: number) {
+  const tokens = await prisma.token.findMany({
     where: {
       userId,
-    },
-    include: {
-      user: {
-        select: {
-          id: true,
-          username: true,
-          email: true,
-          avatar: true,
-        }
-      }
     },
     orderBy: {
       createdAt: 'desc',
     },
   })
+  for (const token of tokens) {
+    token.token = await unseal(token.token, encryptionKey)
+  }
+  return tokens
 }
 
 function generateUserToken(userId) {
@@ -63,15 +60,13 @@ function generateUserToken(userId) {
     token += characters.charAt(randomIndex)
   }
 
-  return token
+  return `she_${userId}_${token}`
 }
 
 export async function createToken({ name, userId }: { name: string, userId: number }) {
-  const token = generateUserToken(userId)
-
   await prisma.token.create({
     data: {
-      token,
+      token: await seal(generateUserToken(userId), encryptionKey),
       name,
       userId
     },
