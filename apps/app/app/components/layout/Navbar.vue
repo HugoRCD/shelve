@@ -18,8 +18,8 @@ const navigation = getNavigation('home')
           {{ item.name }}
         </NuxtLink>
       </div>
-      <div class="hidden items-center gap-5 sm:flex">
-        <LandingGithubStar />
+      <div class="flex items-center gap-5">
+        <LandingGithubStar class="hidden sm:flex" />
         <AuthState>
           <DropdownMenu />
           <template #placeholder>
