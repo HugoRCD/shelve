@@ -1,5 +1,4 @@
 import { type CreateTeamInput, TeamRole } from '@shelve/types'
-import prisma from '~~/server/database/client'
 
 export async function createTeam(createTeamInput: CreateTeamInput, userId: number) {
   await deleteCachedTeamByUserId(userId)

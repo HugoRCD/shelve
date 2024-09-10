@@ -1,6 +1,5 @@
 import type { User, SessionWithCurrent, CreateSessionInput } from '@shelve/types'
 import jwt from 'jsonwebtoken'
-import prisma from '~~/server/database/client'
 import { removeCachedUserToken } from '~~/server/app/userService'
 
 const runtimeConfig = useRuntimeConfig().private

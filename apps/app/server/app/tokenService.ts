@@ -1,5 +1,4 @@
 import { seal, unseal } from '@shelve/crypto'
-import prisma from '~~/server/database/client'
 
 const { encryptionKey } = useRuntimeConfig().private
 

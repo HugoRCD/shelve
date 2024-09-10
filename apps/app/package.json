@@ -19,9 +19,6 @@
     "prisma:push": "prisma db push",
     "prisma:migrate": "prisma migrate dev"
   },
-  "prisma": {
-    "schema": "server/database/schema.prisma"
-  },
   "devDependencies": {
     "@iconify-json/lucide": "^1.2.3",
     "@nuxt/content": "^2.13.2",
