@@ -1,36 +1,13 @@
-import { defineCommand } from 'citty'
+import { Command } from 'commander'
 import { version, description } from '../package.json'
+import { registerCommands } from './commands'
 
-export const main = defineCommand({
-  meta: {
-    name: 'shelve',
-    version,
-    description,
-  },
-  subCommands: {
-    create: () => import('./commands/create').then((r) => r.default),
-    init: () => import('./commands/create').then((r) => r.default),
-    i: () => import('./commands/create').then((r) => r.default),
-    c: () => import('./commands/create').then((r) => r.default),
-    link: () => import('./commands/link').then((r) => r.default),
-    l: () => import('./commands/link').then((r) => r.default),
-    unlink: () => import('./commands/unlink').then((r) => r.default),
-    ul: () => import('./commands/unlink').then((r) => r.default),
-    pull: () => import('./commands/pull').then((r) => r.default),
-    pl: () => import('./commands/pull').then((r) => r.default),
-    push: () => import('./commands/push').then((r) => r.default),
-    ps: () => import('./commands/push').then((r) => r.default),
-    whoami: () => import('./commands/whoami').then((r) => r.default),
-    w: () => import('./commands/whoami').then((r) => r.default),
-    login: () => import('./commands/login').then((r) => r.default),
-    li: () => import('./commands/login').then((r) => r.default),
-    logout: () => import('./commands/logout').then((r) => r.default),
-    lo: () => import('./commands/logout').then((r) => r.default),
-    token: () => import('./commands/token').then((r) => r.default),
-    t: () => import('./commands/token').then((r) => r.default),
-  },
-  async setup() {
-    // await checkForUpdates()
-  },
-  cleanup() {}
-})
+const program = new Command()
+
+program
+  .version(version)
+  .description(description)
+
+registerCommands(program)
+
+program.parse(process.argv)

@@ -1,51 +1,24 @@
-import { defineCommand } from 'citty'
-import { consola } from 'consola'
-import { loadUserConfig, writeUserConfig } from '../utils/config'
-import { $api } from '../utils/connection'
+import { Command } from 'commander'
+import inquirer from 'inquirer'
 
-export default defineCommand({
-  meta: {
-    name: 'login',
-    description: 'Authenticate with Shelve App'
-  },
-  async setup() {
-    const user = loadUserConfig()
+export function loginCommand(program: Command) {
+  program
+    .command('login')
+    .description('Login to Shelve')
+    .action(async () => {
+      const answers = await inquirer.prompt([
+        {
+          type: 'input',
+          name: 'username',
+          message: 'Enter your username:'
+        },
+        {
+          type: 'password',
+          name: 'password',
+          message: 'Enter your password:'
+        }
+      ])
 
-    if (user.authToken) {
-      const exit = await consola.prompt(`You are already logged as \`${user.username}\`, do you want to login again? (y/n)`, { type: 'confirm' })
-      if (!exit) return
-    }
-
-    let selfInstanceUrl = ''
-    const isSelfHosted = await consola.prompt('Is this a self-hosted instance? (y/n)', {
-      initial: 'n',
-      type: 'confirm',
+      console.log('Successfully logged in as', answers.username)
     })
-
-    if (isSelfHosted) {
-      selfInstanceUrl = await consola.prompt('Enter the URL of your instance') as string
-      if (!selfInstanceUrl.endsWith('/')) selfInstanceUrl += '/'
-    }
-
-    const token = await consola.prompt(`Enter a valid token created at ${selfInstanceUrl ? selfInstanceUrl : 'https://shelve.hrcd.fr/'}app/tokens`) as string
-
-    writeUserConfig({
-      ...user,
-      url: selfInstanceUrl || 'https://shelve.hrcd.fr/',
-      authToken: token,
-    })
-
-    const loggedUser = await $api('/auth/currentUser', {
-      method: 'GET',
-    })
-
-    consola.info(`Authentication successful, you are now logged in as \`${loggedUser.username}\``)
-
-    writeUserConfig({
-      url: selfInstanceUrl || 'https://shelve.hrcd.fr/',
-      username: loggedUser.username || loggedUser.email,
-      email: loggedUser.email,
-      authToken: token,
-    })
-  },
-})
+}
