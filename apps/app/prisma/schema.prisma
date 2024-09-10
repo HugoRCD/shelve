@@ -10,14 +10,11 @@ datasource db {
 model User {
   id        Int       @id @default(autoincrement())
   username  String?   @unique
-  password  String?
   email     String    @unique
-  otp       String?   @unique
   avatar    String    @default("https://i.imgur.com/6VBx3io.png") @db.VarChar(500)
   role      String    @default("user")
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
-  sessions  Session[]
   projects  Project[]
   members   Member[]
   token     Token[]
@@ -41,20 +38,6 @@ model Team {
   updatedAt DateTime  @updatedAt
   members   Member[]
   projects  Project[]
-}
-
-model Session {
-  id        Int      @id @default(autoincrement())
-  userId    Int
-  authToken String   @unique @db.VarChar(500)
-  device    String   @default("web") @db.VarChar(500)
-  location  String?  @db.VarChar(500)
-  isCli     Boolean  @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([authToken], name: "auth_token_index")
 }
 
 model Project {

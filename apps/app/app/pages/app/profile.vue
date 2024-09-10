@@ -1,39 +1,16 @@
 <script setup lang="ts">
 const { user } = useUserSession()
 
-const usePassword = useCookie('usePassword')
-
-const password = ref('')
-const passwordConfirmation = ref('')
-const errorMessage = ref('')
-
 const updateLoading = ref(false)
-
-const { data: sessions, status: sessionsStatus, refresh } = useFetch('/api/user/session', {
-  method: 'GET',
-})
-
-const { status: logoutStatus, error: logoutError, execute: logout } = useFetch('/api/user/session', {
-  method: 'DELETE',
-  watch: false,
-  immediate: false,
-})
 
 async function updateCurrentUser() {
   updateLoading.value = true
-  if (password.value !== passwordConfirmation.value) {
-    errorMessage.value = 'Passwords do not match'
-    toast.error('Passwords do not match')
-    updateLoading.value = false
-    return
-  }
   try {
     await $fetch('/api/user', {
       method: 'PUT',
       body: {
         username: user.value!.username,
         avatar: user.value!.avatar,
-        password: password.value || undefined,
       },
     })
     toast.success('Profile updated successfully')
@@ -41,21 +18,6 @@ async function updateCurrentUser() {
     toast.error('An error occurred')
   }
   updateLoading.value = false
-  password.value = ''
-  passwordConfirmation.value = ''
-}
-
-watch([password, passwordConfirmation], () => {
-  errorMessage.value = ''
-})
-
-async function logoutAll() {
-  await logout()
-  if (logoutError.value) toast.error('An error occurred')
-  else {
-    toast.success('You have been logged out from all devices')
-    await refresh()
-  }
 }
 </script>
 
@@ -83,50 +45,11 @@ async function logoutAll() {
         <div class="sm:col-span-4">
           <FormGroup v-model="user.avatar" label="Avatar" />
         </div>
-        <div class="sm:col-span-3">
-          <FormGroup v-model="password" label="Password" type="password" />
-        </div>
-        <div class="sm:col-span-3">
-          <FormGroup v-model="passwordConfirmation" label="Confirm Password" type="password" />
-        </div>
-      </div>
-      <div v-if="errorMessage" class="mt-1">
-        <span class="text-sm text-red-500">{{ errorMessage }}</span>
-      </div>
-      <div style="--stagger: 3" data-animate class="mt-4 flex items-center gap-2">
-        <UToggle v-model="usePassword" />
-        <p class="text-sm">
-          Use password instead of email for login
-        </p>
       </div>
       <div style="--stagger: 4" data-animate class="mt-6 flex items-center gap-2">
         <UButton type="submit" :loading="updateLoading">
           Save
         </UButton>
-      </div>
-    </form>
-    <UDivider style="--stagger: 5" data-animate class="my-8" />
-    <form style="--stagger: 6" data-animate>
-      <div class="flex items-center justify-between">
-        <div>
-          <h2 class="text-base font-semibold leading-7">
-            Your Sessions
-          </h2>
-          <p class="text-sm leading-6 text-gray-500">
-            Manage your active sessions
-          </p>
-        </div>
-        <UButton color="gray" variant="ghost" :loading="logoutStatus === 'pending'" @click="logoutAll">
-          Logout all
-        </UButton>
-      </div>
-      <div class="mt-6">
-        <div v-if="sessionsStatus !== 'pending'" class="grid grid-cols-1 gap-4 lg:grid-cols-2">
-          <AuthSession v-for="session in sessions!.sort((device) => device.current ? -1 : 1)" :key="session.id" :session @refresh="refresh" />
-        </div>
-        <div v-else class="grid grid-cols-1 gap-4 lg:grid-cols-2">
-          <USkeleton v-for="i in 4" :key="i" class="h-32" />
-        </div>
       </div>
     </form>
   </div>
