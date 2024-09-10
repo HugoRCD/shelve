@@ -1,19 +1,27 @@
 import { ofetch } from 'ofetch'
+import consola from 'consola'
+import { loadShelveConfig } from './config'
 
-/*export const $api = ofetch.create({
-  baseURL: `${loadUserConfig().url + 'api' || SHELVE_API_URL}`,
-  onRequest({ options }) {
-    options.headers = {
-      ...options.headers,
-      Cookie: `authToken=${loadUserConfig().authToken || ''}`
+export async function useApi() {
+  const { url, token } = await loadShelveConfig()
+
+  const sanitizedUrl = url.replace(/\/+$/, '') // remove trailing slash
+  const baseURL = `${sanitizedUrl}/api`
+
+  return ofetch.create({
+    baseURL,
+    onRequest({ options }) {
+      options.headers = {
+        ...options.headers,
+        Cookie: `authToken=${token}`
+      }
+    },
+    async onResponseError(ctx) {
+      console.log(ctx.response)
+      if (ctx.response.status === 401) {
+        consola.error('Authentication failed, please verify your token')
+        process.exit(1)
+      }
     }
-  },
-  async onResponseError(ctx) {
-    if (ctx.response.status === 401) {
-      writeUserConfig({ ...loadUserConfig(), authToken: null })
-      consola.error('Authentication failed, please login again with `shelve login`')
-      await suggestLogin()
-      process.exit(1)
-    }
-  }
-})*/
+  })
+}

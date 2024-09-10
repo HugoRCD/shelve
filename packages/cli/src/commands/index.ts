@@ -1,8 +1,8 @@
 import { Command } from 'commander'
-import { loginCommand } from './login'
 import { configCommand } from './config'
+import { pullCommand } from './pull'
 
 export function registerCommands(program: Command) {
-  loginCommand(program)
   configCommand(program)
+  pullCommand(program)
 }

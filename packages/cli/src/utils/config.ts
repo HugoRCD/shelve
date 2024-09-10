@@ -1,4 +1,5 @@
-import { loadConfig } from 'c12'
+import { loadConfig, setupDotenv } from 'c12'
+import consola from 'consola'
 
 export type ShelveConfig = {
   /**
@@ -26,35 +27,45 @@ export type ShelveConfig = {
   confirmChanges: boolean
 }
 
-const getDefaultConfig = () => <ShelveConfig>({
-  project: process.env.SHELVE_PROJECT,
-  token: process.env.SHELVE_TOKEN,
-  url: process.env.SHELVE_URL || 'https://shelve.hrcd.fr',
-  confirmChanges: false
-})
-
 export async function loadShelveConfig(): Promise<ShelveConfig> {
-  const defaults = getDefaultConfig()
+  await setupDotenv({})
 
   const { config } = await loadConfig<ShelveConfig>({
     name: 'shelve',
     packageJson: true,
     rcFile: false,
     globalRc: false,
-    defaults,
-    dotenv: true
+    dotenv: true,
+    defaults: {
+      project: process.env.SHELVE_PROJECT,
+      token: process.env.SHELVE_TOKEN,
+      url: process.env.SHELVE_URL || 'https://shelve.hrcd.fr',
+      confirmChanges: false
+    }
   })
+
+  if (!config.project) {
+    consola.error('Please provide a project name')
+    process.exit(0)
+  }
+
+  // TODO: check provide URL
+
+  if (!config.token) {
+    consola.error('You need to provide a token')
+    process.exit(0)
+  }
 
   return config
 }
 
 export function createShelveConfig(config: ShelveConfig): ShelveConfig {
   if (!config.project) {
-    console.error('Please provide a project name')
+    consola.error('Please provide a project name')
     process.exit(1)
   }
   if (config.token) {
-    console.warn('Avoid using the token option, use the SHELVE_TOKEN environment variable instead')
+    consola.warn('Avoid using the token option, use the SHELVE_TOKEN environment variable instead for security reasons')
   }
   return config
 }
