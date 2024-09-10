@@ -51,8 +51,7 @@ export default defineNuxtConfig({
     private: {
       resendApiKey: process.env.NUXT_PRIVATE_RESEND_API_KEY,
       authSecret: process.env.NUXT_PRIVATE_AUTH_SECRET,
-      secretEncryptionKey: process.env.NUXT_PRIVATE_SECRET_ENCRYPTION_KEY,
-      secretEncryptionIterations: process.env.NUXT_PRIVATE_SECRET_ENCRYPTION_ITERATIONS,
+      encryptionKey: process.env.NUXT_PRIVATE_ENCRYPTION_KEY,
     },
   },
 

@@ -2,7 +2,6 @@
   "name": "@shelve/app",
   "description": "Shelve is a project management tool for developers teams",
   "private": true,
-  "version": "0.2.0",
   "type": "module",
   "scripts": {
     "build": "nuxt build",
@@ -32,7 +31,7 @@
     "@nuxt/ui": "^2.18.4",
     "@prisma/client": "^5.19.1",
     "@shelve/types": "workspace:*",
-    "@shelve/utils": "workspace:*",
+    "@shelve/crypto": "workspace:*",
     "@tsparticles/engine": "^3.5.0",
     "@tsparticles/slim": "^3.5.0",
     "@types/bcryptjs": "^2.4.6",
