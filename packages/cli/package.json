@@ -47,7 +47,7 @@
   },
   "devDependencies": {
     "@shelve/types": "workspace:*",
-    "@types/bun": "^1.1.8",
+    "@types/bun": "^1.1.9",
     "@types/semver": "^7.5.8",
     "changelogen": "^0.5.5"
   }
