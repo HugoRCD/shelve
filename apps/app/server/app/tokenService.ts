@@ -46,7 +46,6 @@ export async function getUserByAuthToken(authToken: string) {
       role: true,
     },
   })
-  console.log(user)
 
   await updateUsedAt(foundToken.id)
   return user
