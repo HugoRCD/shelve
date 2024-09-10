@@ -136,5 +136,5 @@ dist
 # Shelve config
 .shelve
 
-.config/shelve.ts
-shelve.config.ts
+.config/*
+shelve.config*
