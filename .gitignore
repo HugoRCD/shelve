@@ -132,6 +132,9 @@ dist
 
 # Turbo
 .turbo
-	
+
 # Intellij
 .idea
+
+.config/shelve*
+shelve*

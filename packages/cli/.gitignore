@@ -137,4 +137,4 @@ dist
 .shelve
 
 .config/*
-shelve.config*
+*shelve.config*

@@ -14,13 +14,6 @@
     "release": "bun run test && changelogen --release && npm publish",
     "test": "bun run build && bun run typecheck && bun run lint"
   },
-  "shelve": {
-    "name": "shelve",
-    "repository": "https://github.com/HugoRCD/shelve",
-    "homepage": "https://shelve.hrcd.fr",
-    "bugs": "https://github.com/HugoRCD/shelve/issues",
-    "version": "2.0.0"
-  },
   "bin": {
     "shelve": "dist/index.mjs",
     "shelve-cli": "dist/index.mjs"

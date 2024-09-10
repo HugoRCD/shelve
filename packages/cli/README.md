@@ -18,6 +18,22 @@ Install the package globally:
 npm install -g @shelve/cli
 ```
 
+## Configuration
+
+Configuration is loaded by [unjs/c12](https://github.com/unjs/c12) from cwd. You can use either `shelve.config.json`, `shelve.config.{ts,js,mjs,cjs}` or use the `shelve` field in `package.json`.
+You have the option to generate a `shelve.config.ts` file to enable type checking and autocompletion. The file should contain the following content:
+
+```ts title="shelve.config.ts"
+import { createShelveConfig } from "@shelve/cli"
+
+export default createShelveConfig({
+  project: "my-project",
+  token: "my-token",
+  url: "https://shelve.hrcd.fr",
+  confirmChanges: false,
+})
+```
+
 ## Usage
 
 ```bash

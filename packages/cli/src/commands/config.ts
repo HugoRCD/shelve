@@ -1,10 +1,12 @@
-
 import { Command } from 'commander'
-import { showConfig } from '../utils/config'
+import { loadShelveConfig } from '../utils/config'
 
 export function configCommand(program: Command) {
   program
     .command('config')
     .description('Manage Shelve config')
-    .action(showConfig)
+    .action(async () => {
+      const config = await loadShelveConfig()
+      console.log(config)
+    })
 }
