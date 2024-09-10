@@ -11,9 +11,6 @@
         </span>
         <SettingThemeToggle />
       </div>
-      <div id="password-mode-toggle">
-        <!-- password-mode-toggle -->
-      </div>
     </footer>
   </div>
 </template>
