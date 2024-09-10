@@ -1,38 +1,12 @@
 import type { publicUser, User, CreateUserInput, UpdateUserInput } from '@shelve/types'
-import bcrypt from 'bcryptjs'
-import { generateOtp } from '~~/server/app/authService'
-import { sendOtp } from '~~/server/app/resendService'
 
-export async function upsertUser(createUserInput: CreateUserInput, provider: 'local' | 'github' = 'local'): Promise<publicUser> {
+export async function upsertUser(createUserInput: CreateUserInput): Promise<publicUser> {
   const foundUser = await prisma.user.findUnique({
     where: {
       username: createUserInput.username,
     },
   })
   const newUsername = foundUser ? `${createUserInput.username}_#${Math.floor(Math.random() * 1000)}` : createUserInput.username
-  if (provider === 'local') {
-    const { otp, encryptedOtp } = await generateOtp()
-    let { password } = createUserInput
-    if (password) password = await bcrypt.hash(password, 10)
-    const user = await prisma.user.upsert({
-      where: {
-        email: createUserInput.email,
-      },
-      update: {
-        updatedAt: new Date(),
-        otp: encryptedOtp,
-        password,
-      },
-      create: {
-        ...createUserInput,
-        username: newUsername,
-        password,
-        otp: encryptedOtp,
-      },
-    })
-    if (!createUserInput.password) await sendOtp(user.email, otp)
-    return formatUser(user)
-  }
   const user = await prisma.user.upsert({
     where: {
       email: createUserInput.email,
@@ -73,9 +47,6 @@ export async function updateUser(user: User, updateUserInput: UpdateUserInput, a
       },
     })
     if (usernameTaken) throw createError({ statusCode: 400, message: 'Username already taken' })
-  }
-  if (updateUserInput.password) {
-    updateUserInput.password = await bcrypt.hash(updateUserInput.password, 10)
   }
   const updatedUser = await prisma.user.update({
     where: { id: user.id },
