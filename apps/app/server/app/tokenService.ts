@@ -15,9 +15,10 @@ function updateUsedAt(token: string) {
 }
 
 export async function getUserByAuthToken(token: string) {
+  const sealedToken = await seal(token, encryptionKey)
   const user = await prisma.token.findUnique({
     where: {
-      token,
+      token: sealedToken,
     },
     select: {
       user: {
@@ -30,7 +31,7 @@ export async function getUserByAuthToken(token: string) {
       },
     },
   })
-  await updateUsedAt(token)
+  await updateUsedAt(sealedToken)
   return user
 }
 
