@@ -21,8 +21,6 @@ export default defineCommand({
     const response = await $api('/auth/currentUser', {
       method: 'GET',
     })
-    const loggedUser = response.user
-
-    consola.info(`Authentication successful, you are now logged in as \`${loggedUser.username}\``)
+    consola.info(`Authentication successful, you are now logged in as \`${response.username}\``)
   }
 })
