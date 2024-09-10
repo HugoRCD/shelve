@@ -11,12 +11,12 @@ changelog:
     - title: Features 🚀
       labels:
         - feature
-    - title: Bug Fixes 🐞
-      labels:
-        - bug
     - title: Enhancements 🌈
       labels:
         - enhancement
+    - title: Bug Fixes 🐞
+      labels:
+        - bug
     - title: Build System 🛠
       labels:
         - build
