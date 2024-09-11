@@ -17,7 +17,6 @@ export async function useApi(): Promise<typeof ofetch> {
       }
     },
     onResponseError(ctx) {
-      console.log(ctx.response)
       if (ctx.response.status === 401) {
         consola.error('Authentication failed, please verify your token')
         process.exit(1)

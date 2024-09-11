@@ -25,6 +25,28 @@ export type ShelveConfig = {
    * @default false
    * */
   confirmChanges: boolean
+  /**
+   * Push method to use for .env file (overwrite or append)
+   * Overwrite will replace all existing variables in Shelve app with the ones in the .env file
+   * Append will append the .env file to the existing variables in Shelve app
+   *
+   * @default 'overwrite'
+   * */
+  pushMethod: 'overwrite' | 'append'
+  /**
+   * Pull method to use for .env file (overwrite or append)
+   * Overwrite will replace the .env file with the variables in Shelve app
+   * Append will append the variables in Shelve app to the .env file
+   *
+   * @default 'overwrite'
+   * */
+  pullMethod: 'overwrite' | 'append'
+  /**
+   * Name of your env file
+   *
+   * @default '.env'
+   * */
+  envFileName: string
 }
 
 export async function loadShelveConfig(): Promise<ShelveConfig> {
@@ -40,7 +62,10 @@ export async function loadShelveConfig(): Promise<ShelveConfig> {
       project: process.env.SHELVE_PROJECT,
       token: process.env.SHELVE_TOKEN,
       url: process.env.SHELVE_URL || 'https://shelve.hrcd.fr',
-      confirmChanges: false
+      confirmChanges: false,
+      pullMethod: 'overwrite',
+      pushMethod: 'overwrite',
+      envFileName: '.env',
     }
   })
 

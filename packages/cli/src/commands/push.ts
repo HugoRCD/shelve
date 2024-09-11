@@ -5,16 +5,16 @@ import { useApi } from '../utils/api'
 import { getProjectByName } from '../utils/project'
 import { createEnvFile } from '../utils/env'
 
-export function pullCommand(program: Command): void {
+export function pushCommand(program: Command): void {
   program
-    .command('pull')
-    .description('Pull variables for specified environment to .env file')
+    .command('push')
+    .description('Push variables for specified environment to Shelve')
     .action(async () => {
-      const { project, pullMethod } = await loadShelveConfig()
+      const { project } = await loadShelveConfig()
       const api = await useApi()
       const s = spinner()
 
-      intro(`Pulling variable from ${ project } project in ${ pullMethod } mode`)
+      intro('Pushing variable to Shelve')
 
       const environment = await select({
         message: 'Select the environment:',
@@ -31,14 +31,8 @@ export function pullCommand(program: Command): void {
       }
 
       try {
-        s.start('Fetching project')
-        const projectData = await getProjectByName(project)
-        const variables = await api(`/variable/${projectData.id}/${environment}`)
-        s.stop('Fetching project')
-        await createEnvFile(variables)
-        outro(`Successfully pulled variable from ${environment} environment`)
+        // TODO: validate env file
       } catch (e) {
-        cancel('Failed to fetch project')
         process.exit(0)
       }
     })

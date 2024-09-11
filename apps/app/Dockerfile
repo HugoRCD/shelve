@@ -1,7 +1,7 @@
-FROM oven/bun:latest as builder
+FROM oven/bun:latest AS builder
 
 # Définir le répertoire de travail à la racine du monorepo
-WORKDIR /monorepo
+WORKDIR /shelve
 
 # Copier les fichiers nécessaires du monorepo
 COPY package.json .
@@ -13,15 +13,18 @@ COPY packages ./packages
 RUN bun install
 
 # Construire l'application
-WORKDIR /monorepo/apps/app
+WORKDIR /shelve/apps/app
 RUN bun run build
 
-FROM oven/bun:latest as production
+FROM oven/bun:latest AS production
 WORKDIR /app
 
 # Copier les fichiers nécessaires depuis le builder
-COPY --from=builder /monorepo/apps/app /app
-COPY --from=builder /monorepo/node_modules /app/node_modules
+COPY --from=builder /shelve/apps/app/.output ./.output
+COPY --from=builder /shelve/apps/app/package.json .
+COPY --from=builder /shelve/apps/app/node_modules ./node_modules
+
+RUN bun install
 
 EXPOSE 3000
 

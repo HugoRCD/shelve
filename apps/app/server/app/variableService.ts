@@ -4,6 +4,7 @@ import { unseal, seal } from '@shelve/crypto'
 const varAssociation = {
   production: 'production',
   preview: 'preview',
+  staging: 'preview',
   development: 'development',
   prod: 'production',
   dev: 'development',
