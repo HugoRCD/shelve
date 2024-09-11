@@ -1,7 +1,7 @@
 export enum Environment {
-  PRODUCTION = "production",
-  PREVIEW = "preview",
-  DEVELOPMENT = "development",
+  PRODUCTION = 'production',
+  PREVIEW = 'preview',
+  DEVELOPMENT = 'development',
 }
 
 export type Variable = {
@@ -24,6 +24,7 @@ export type VariableCreateInput = {
 };
 
 export type VariablesCreateInput = {
+  mode?: 'overwrite' | 'merge';
   projectId: number;
   variables: VariableCreateInput[];
 };

@@ -28,19 +28,19 @@ export type ShelveConfig = {
   /**
    * Push method to use for .env file (overwrite or append)
    * Overwrite will replace all existing variables in Shelve app with the ones in the .env file
-   * Append will append the .env file to the existing variables in Shelve app
+   * Merge will append the .env file to the existing variables in Shelve app
    *
    * @default 'overwrite'
    * */
-  pushMethod: 'overwrite' | 'append'
+  pushMethod: 'overwrite' | 'merge'
   /**
    * Pull method to use for .env file (overwrite or append)
    * Overwrite will replace the .env file with the variables in Shelve app
-   * Append will append the variables in Shelve app to the .env file
+   * Merge will append the variables in Shelve app to the .env file
    *
    * @default 'overwrite'
    * */
-  pullMethod: 'overwrite' | 'append'
+  pullMethod: 'overwrite' | 'merge'
   /**
    * Name of your env file
    *

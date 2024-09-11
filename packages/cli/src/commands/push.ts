@@ -1,16 +1,17 @@
 import { cancel, intro, isCancel, spinner, outro, select } from '@clack/prompts'
 import { Command } from 'commander'
+import type { VariablesCreateInput } from '@shelve/types'
 import { loadShelveConfig } from '../utils/config'
 import { useApi } from '../utils/api'
 import { getProjectByName } from '../utils/project'
-import { createEnvFile } from '../utils/env'
+import { getEnvFile } from '../utils/env'
 
 export function pushCommand(program: Command): void {
   program
     .command('push')
     .description('Push variables for specified environment to Shelve')
     .action(async () => {
-      const { project } = await loadShelveConfig()
+      const { project, pushMethod } = await loadShelveConfig()
       const api = await useApi()
       const s = spinner()
 
@@ -31,7 +32,22 @@ export function pushCommand(program: Command): void {
       }
 
       try {
-        // TODO: validate env file
+        s.start('Pushing variable')
+        const projectData = await getProjectByName(project)
+        const variables = await getEnvFile()
+        const body: VariablesCreateInput = {
+          method: pushMethod,
+          projectId: projectData.id,
+          variables: variables.map((variable) => ({
+            key: variable.key,
+            value: variable.value,
+            projectId: projectData.id,
+            environment
+          }))
+        }
+        await api(`/variable`, { method: 'POST', body })
+        s.stop('Pushing variable')
+        outro(`Successfully pushed variable to ${environment} environment`)
       } catch (e) {
         process.exit(0)
       }

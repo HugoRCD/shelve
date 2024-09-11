@@ -47,9 +47,23 @@ export async function upsertVariable(variablesCreateInput: VariablesCreateInput)
       create: variableCreateInput,
     })
   } // use on edit form variable/update or with CLI push command
-  return prisma.variables.createMany({
-    data: encryptedVariables,
-    skipDuplicates: true,
+  const mode = variablesCreateInput.mode || 'merge'
+  if (mode === 'overwrite') {
+    await prisma.variables.deleteMany({ where: { projectId: variablesCreateInput.projectId } })
+    return prisma.variables.createMany({
+      data: encryptedVariables,
+      skipDuplicates: true,
+    })
+  }
+  return prisma.variables.upsert({
+    where: {
+      projectId: variablesCreateInput.projectId,
+      key: {
+        in: encryptedVariables.map(variable => variable.key)
+      }
+    },
+    update: encryptedVariables,
+    create: encryptedVariables,
   })
 }
 

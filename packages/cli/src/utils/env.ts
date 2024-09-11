@@ -1,8 +1,7 @@
 import fs from 'fs'
-import type { Env, VariablesCreateInput } from '@shelve/types'
+import type { Env } from '@shelve/types'
 import { cancel } from '@clack/prompts'
 import consola from 'consola'
-import { useApi } from './api'
 import { loadShelveConfig } from './config'
 
 export async function isEnvFileExist(): boolean {
@@ -10,7 +9,7 @@ export async function isEnvFileExist(): boolean {
   return fs.existsSync(`${ envFileName }`)
 }
 
-export async function appendEnvFile(variables: Env = []): void {
+export async function mergeEnvFile(variables: Env = []): void {
   const { envFileName } = await loadShelveConfig()
   const envFile = await getEnvFile()
   envFile.push(...variables)
@@ -22,8 +21,8 @@ export async function appendEnvFile(variables: Env = []): void {
 
 export async function createEnvFile(variables: Env = []): void {
   const { pullMethod, envFileName } = await loadShelveConfig()
-  if (isEnvFileExist() && pullMethod === 'append') {
-    await appendEnvFile(variables)
+  if (isEnvFileExist() && pullMethod === 'merge') {
+    await mergeEnvFile(variables)
     return
   }
   const content = variables.map((item) => `${ item.key }=${ item.value }`).join('\n')
@@ -49,28 +48,4 @@ export async function getEnvFile(): Promise<Env[]> {
     })
   }
   return []
-}
-
-export async function pushProjectVariable(projectId: number, environment: string): Promise<void> {
-  const { pushMethod } = await loadShelveConfig()
-  const api = await useApi()
-  try {
-    const variables = getEnvFile()
-    const body: VariablesCreateInput = {
-      method: pushMethod,
-      projectId,
-      variables: variables.map((variable) => ({
-        key: variable.key,
-        value: variable.value,
-        projectId,
-        environment
-      }))
-    }
-    await api(`/variable`, {
-      method: 'POST',
-      body
-    })
-  } catch (error) {
-    process.exit(1)
-  }
 }
