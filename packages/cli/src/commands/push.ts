@@ -15,7 +15,7 @@ export function pushCommand(program: Command): void {
       const api = await useApi()
       const s = spinner()
 
-      intro('Pushing variable to Shelve')
+      intro(`Pushing variable to ${project} project in ${pushMethod} method`)
 
       const environment = await select({
         message: 'Select the environment:',
@@ -38,6 +38,7 @@ export function pushCommand(program: Command): void {
         const body: VariablesCreateInput = {
           method: pushMethod,
           projectId: projectData.id,
+          environment,
           variables: variables.map((variable) => ({
             key: variable.key,
             value: variable.value,
@@ -49,6 +50,7 @@ export function pushCommand(program: Command): void {
         s.stop('Pushing variable')
         outro(`Successfully pushed variable to ${environment} environment`)
       } catch (e) {
+        cancel('Failed to fetch project')
         process.exit(0)
       }
     })

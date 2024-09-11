@@ -24,7 +24,8 @@ export type VariableCreateInput = {
 };
 
 export type VariablesCreateInput = {
-  mode?: 'overwrite' | 'merge';
+  method?: 'overwrite' | 'merge';
+  environment?: Environment;
   projectId: number;
   variables: VariableCreateInput[];
 };

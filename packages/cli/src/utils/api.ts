@@ -21,6 +21,10 @@ export async function useApi(): Promise<typeof ofetch> {
         consola.error('Authentication failed, please verify your token')
         process.exit(1)
       }
+      if (ctx.response.status === 500) {
+        consola.error('Internal server error, please try again later')
+        process.exit(1)
+      }
     }
   })
 }
