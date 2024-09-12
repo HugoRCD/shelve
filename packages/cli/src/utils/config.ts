@@ -84,7 +84,7 @@ export async function loadShelveConfig(): Promise<ShelveConfig> {
   return config
 }
 
-export function createShelveConfig(config: ShelveConfig): ShelveConfig {
+export function defineShelveConfig(config: ShelveConfig): ShelveConfig {
   if (!config.project) {
     consola.error('Please provide a project name')
     process.exit(1)

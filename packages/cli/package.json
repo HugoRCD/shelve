@@ -12,7 +12,8 @@
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
-    "release": "bun run test && changelogen --release && npm publish",
+    "release": "bun run test && release-it",
+    "release:edge": "release-it --preRelease=edge --npm.tag=edge",
     "test": "bun run build && bun run typecheck && bun run lint"
   },
   "bin": {
@@ -37,7 +38,8 @@
   "devDependencies": {
     "@shelve/types": "workspace:*",
     "@types/bun": "^1.1.9",
-    "@types/semver": "^7.5.8"
+    "@types/semver": "^7.5.8",
+    "release-it": "^17.6.0"
   },
   "license": "Apache-2.0",
   "repository": {
