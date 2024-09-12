@@ -1,4 +1,4 @@
-export const JSON_SCHEMA = 'https://raw.githubusercontent.com/HugoRCD/shelve/main/packages/types/shelveConfigSchema.json'
+export const SHELVE_JSON_SCHEMA = 'https://raw.githubusercontent.com/HugoRCD/shelve/main/packages/types/shelveConfigSchema.json'
 
 export type ShelveConfig = {
   /**

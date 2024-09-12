@@ -1,7 +1,8 @@
+import fs from 'fs'
 import { cancel, intro, isCancel, outro, select, confirm } from '@clack/prompts'
 import { loadConfig, setupDotenv } from 'c12'
 import consola from 'consola'
-import { ShelveConfig } from '../types'
+import { SHELVE_JSON_SCHEMA, ShelveConfig } from '../types'
 import { getProjects } from './project'
 
 async function createShelveConfig(): Promise<ShelveConfig> {
@@ -15,7 +16,17 @@ async function createShelveConfig(): Promise<ShelveConfig> {
       value: project.name,
       label: project.name
     })),
-  })
+  }) as string
+
+  const configFile = JSON.stringify({
+    $schema: SHELVE_JSON_SCHEMA,
+    project: project.toLowerCase(),
+  }
+  , null,
+  2)
+
+  fs.writeFileSync('./shelve.config.json', configFile)
+
   if (isCancel(project)) {
     cancel('Operation cancelled.')
     process.exit(0)
