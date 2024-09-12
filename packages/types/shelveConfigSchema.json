@@ -41,5 +41,5 @@
       "default": ".env"
     }
   },
-  "required": ["project", "token", "url", "confirmChanges", "pushMethod", "pullMethod", "envFileName"]
+  "required": ["project"]
 }
