@@ -1,60 +1,33 @@
+import { cancel, intro, isCancel, outro, select, confirm } from '@clack/prompts'
 import { loadConfig, setupDotenv } from 'c12'
 import consola from 'consola'
+import { ShelveConfig } from '../types'
+import { getProjects } from './project'
 
-export type ShelveConfig = {
-  /**
-   * The project name
-   * */
-  project: string
-  /**
-   * The token to authenticate with Shelve created using the app (https://shelve.hrcd.fr/app/tokens) or your own Shelve instance
-   *
-   * @default process.env.SHELVE_TOKEN
-   * */
-  token: string
-  /**
-   * The URL of the Shelve instance can be overridden with the `SHELVE_URL` environment variable
-   *
-   * @default https://shelve.hrcd.fr
-   * @fallback process.env.SHELVE_URL
-   * */
-  url: string
-  /**
-   * Whether to confirm changes before pushing them to Shelve
-   *
-   * @default false
-   * */
-  confirmChanges: boolean
-  /**
-   * Push method to use for .env file (overwrite or append)
-   * Overwrite will replace all existing variables in Shelve app with the ones in the .env file
-   * Merge will append the .env file to the existing variables in Shelve app
-   *
-   * @default 'overwrite'
-   * */
-  pushMethod: 'overwrite' | 'merge'
-  /**
-   * Pull method to use for .env file (overwrite or append)
-   * Overwrite will replace the .env file with the variables in Shelve app
-   * Merge will append the variables in Shelve app to the .env file
-   *
-   * @default 'overwrite'
-   * */
-  pullMethod: 'overwrite' | 'merge'
-  /**
-   * Name of your env file
-   *
-   * @default '.env'
-   * */
-  envFileName: string
+async function createShelveConfig(): Promise<ShelveConfig> {
+  intro('No configuration file found, creating one')
+
+  const projects = await getProjects()
+
+  const project = await select({
+    message: 'Select the project:',
+    options: projects.map(project => ({
+      value: project.name,
+      label: project.name
+    })),
+  })
+  if (isCancel(project)) {
+    cancel('Operation cancelled.')
+    process.exit(0)
+  }
+
+  outro('Configuration file created successfully')
 }
 
-export async function loadShelveConfig(): Promise<ShelveConfig> {
-  await setupDotenv({})
-
-  const { config } = await loadConfig<ShelveConfig>({
+export async function getConfig(): Promise<ShelveConfig> {
+  const { config, configFile } = await loadConfig<ShelveConfig>({
     name: 'shelve',
-    packageJson: true,
+    packageJson: false,
     rcFile: false,
     globalRc: false,
     dotenv: true,
@@ -68,13 +41,31 @@ export async function loadShelveConfig(): Promise<ShelveConfig> {
       envFileName: '.env',
     }
   })
+  return {
+    config,
+    configFile,
+  }
+}
+
+export async function loadShelveConfig(): Promise<ShelveConfig> {
+  await setupDotenv({})
+
+  const { config, configFile } = await getConfig()
+
+  if (configFile === 'shelve.config') {
+    await createShelveConfig()
+  }
 
   if (!config.project) {
     consola.error('Please provide a project name')
     process.exit(0)
   }
 
-  // TODO: check provide URL
+  const urlRegex = /^(http|https):\/\/[^ "]+$/
+  if (!urlRegex.test(config.url)) {
+    consola.error('Please provide a valid url')
+    process.exit(0)
+  }
 
   if (!config.token) {
     consola.error('You need to provide a token')

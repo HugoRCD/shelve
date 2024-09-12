@@ -1,9 +1,10 @@
 import { ofetch } from 'ofetch'
 import consola from 'consola'
-import { loadShelveConfig } from './config'
+import { getConfig } from './config'
 
 export async function useApi(): Promise<typeof ofetch> {
-  const { url, token } = await loadShelveConfig()
+  const { config } = await getConfig()
+  const { token, url } = config
 
   const sanitizedUrl = url.replace(/\/+$/, '') // remove trailing slash
   const baseURL = `${sanitizedUrl}/api`

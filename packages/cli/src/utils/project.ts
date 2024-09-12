@@ -1,27 +1,46 @@
 import type { Project } from '@shelve/types'
 import consola from 'consola'
+import { cancel, spinner } from '@clack/prompts'
 import { useApi } from './api'
+
+const s = spinner()
 
 export async function getProjects(): Promise<Project[]> {
   const api = await useApi()
+
+  s.start('Loading projects')
   try {
-    return await api('/project', {
+    const projects = await api('/project', {
       method: 'GET',
     })
+    s.stop('Loading projects')
+    return projects
   } catch (e) {
-    return []
+    cancel('Failed to load projects')
+    process.exit(0)
   }
 }
 
 export async function getProjectByName(name: string): Promise<Project> {
   const api = await useApi()
-  return await api(`/project/name/${name}`, {
-    method: 'GET',
-  })
+
+  s.start('Fetching project')
+  try {
+    const project = await api(`/project/${ name }`, {
+      method: 'GET',
+    })
+    s.stop('Fetching project')
+    return project
+  } catch (e) {
+    cancel('Failed to fetch project')
+    process.exit(0)
+  }
 }
 
 export async function createProject(name: string): Promise<Project | null> {
   const api = await useApi()
+
+  s.start('Creating project')
   try {
     await api('/project', {
       method: 'POST',
@@ -29,9 +48,9 @@ export async function createProject(name: string): Promise<Project | null> {
         name,
       }
     })
-    consola.success(`Project ${ name } created successfully!`)
+    s.stop('Creating project')
   } catch (e) {
-    consola.error('Failed to create project')
-    return null
+    cancel('Failed to create project')
+    process.exit(0)
   }
 }

@@ -1,8 +1,11 @@
 import fs from 'fs'
 import type { Env } from '@shelve/types'
-import { cancel } from '@clack/prompts'
+import { cancel, spinner } from '@clack/prompts'
 import consola from 'consola'
 import { loadShelveConfig } from './config'
+import { useApi } from './api'
+
+const s = spinner()
 
 export async function isEnvFileExist(): boolean {
   const { envFileName } = await loadShelveConfig()
@@ -48,4 +51,18 @@ export async function getEnvFile(): Promise<Env[]> {
     })
   }
   return []
+}
+
+export async function getEnvVariables(projectId: string, environment: string): Promise<Env[]> {
+  const api = await useApi()
+
+  s.start('Fetching variables')
+  try {
+    const variables = await api(`/variable/${projectId}/${environment}`)
+    s.stop('Fetching variables')
+    return variables
+  } catch (e) {
+    cancel('Failed to fetch variables')
+    process.exit(0)
+  }
 }

@@ -3,7 +3,7 @@ import { Command } from 'commander'
 import { loadShelveConfig } from '../utils/config'
 import { useApi } from '../utils/api'
 import { getProjectByName } from '../utils/project'
-import { createEnvFile } from '../utils/env'
+import { createEnvFile, getEnvVariables } from '../utils/env'
 
 export function pullCommand(program: Command): void {
   program
@@ -31,10 +31,8 @@ export function pullCommand(program: Command): void {
       }
 
       try {
-        s.start('Fetching project')
         const projectData = await getProjectByName(project)
-        const variables = await api(`/variable/${projectData.id}/${environment}`)
-        s.stop('Fetching project')
+        const variables = await getEnvVariables(projectData.id, environment)
         await createEnvFile(variables)
         outro(`Successfully pulled variable from ${environment} environment`)
       } catch (e) {
