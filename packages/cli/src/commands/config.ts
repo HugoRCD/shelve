@@ -6,7 +6,6 @@ export function configCommand(program: Command): void {
     .command('config')
     .description('Manage Shelve config')
     .action(async () => {
-      const config = await loadShelveConfig()
-      console.log(config)
+      console.log(await loadShelveConfig())
     })
 }

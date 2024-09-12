@@ -1,5 +1,4 @@
 import type { Project } from '@shelve/types'
-import consola from 'consola'
 import { cancel, spinner } from '@clack/prompts'
 import { useApi } from './api'
 
@@ -26,7 +25,7 @@ export async function getProjectByName(name: string): Promise<Project> {
 
   s.start('Fetching project')
   try {
-    const project = await api(`/project/${ name }`, {
+    const project = await api(`/project/name/${ name }`, {
       method: 'GET',
     })
     s.stop('Fetching project')

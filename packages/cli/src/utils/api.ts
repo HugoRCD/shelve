@@ -1,5 +1,5 @@
 import { ofetch } from 'ofetch'
-import consola from 'consola'
+import { cancel } from '@clack/prompts'
 import { getConfig } from './config'
 
 export async function useApi(): Promise<typeof ofetch> {
@@ -19,12 +19,12 @@ export async function useApi(): Promise<typeof ofetch> {
     },
     onResponseError(ctx) {
       if (ctx.response.status === 401) {
-        consola.error('Authentication failed, please verify your token')
-        process.exit(1)
+        cancel('Authentication failed, please verify your token')
+        process.exit(0)
       }
       if (ctx.response.status === 500) {
-        consola.error('Internal server error, please try again later')
-        process.exit(1)
+        cancel('Internal server error, please try again later')
+        process.exit(0)
       }
     }
   })
