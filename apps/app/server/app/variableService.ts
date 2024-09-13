@@ -4,6 +4,7 @@ import { unseal, seal } from '@shelve/crypto'
 const varAssociation = {
   production: 'production',
   preview: 'preview',
+  staging: 'preview',
   development: 'development',
   prod: 'production',
   dev: 'development',
@@ -46,10 +47,40 @@ export async function upsertVariable(variablesCreateInput: VariablesCreateInput)
       create: variableCreateInput,
     })
   } // use on edit form variable/update or with CLI push command
-  return prisma.variables.createMany({
-    data: encryptedVariables,
-    skipDuplicates: true,
+  const method = variablesCreateInput.method || 'merge'
+  if (method === 'overwrite') {
+    await prisma.variables.deleteMany({ where: {
+      projectId: variablesCreateInput.projectId,
+      environment: varAssociation[variablesCreateInput.environment]
+    } })
+    return prisma.variables.createMany({
+      data: encryptedVariables,
+      skipDuplicates: true,
+    })
+  }
+  const existingVariables = await prisma.variables.findMany({
+    where: {
+      projectId: variablesCreateInput.projectId,
+      key: {
+        in: encryptedVariables.map(variable => variable.key)
+      }
+    },
+    select: {
+      id: true,
+    }
   })
+  for (const variable of encryptedVariables) {
+    if (existingVariables.some(existingVariable => existingVariable.id === variable.id)) {
+      await prisma.variables.update({
+        where: { id: variable.id },
+        data: variable,
+      })
+    }
+    await prisma.variables.create({
+      data: variable,
+    })
+  }
+  return encryptedVariables
 }
 
 export async function getVariablesByProjectId(projectId: number, environment?: Environment): Promise<Variable[]> {

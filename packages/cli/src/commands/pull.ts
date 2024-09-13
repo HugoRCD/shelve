@@ -1,36 +1,33 @@
-import { defineCommand } from 'citty'
-import consola from 'consola'
-import { createEnvFile, getProjectVariable } from '../utils/env'
-import { getProjectId } from '../utils/projects'
-import { suggestLinkProjects } from '../utils/suggest'
+import { intro, isCancel, outro, select } from '@clack/prompts'
+import { Command } from 'commander'
+import { loadShelveConfig } from '../utils/config'
+import { getProjectByName } from '../utils/project'
+import { createEnvFile, getEnvVariables } from '../utils/env'
+import { onCancel } from '../utils'
 
-export default defineCommand({
-  meta: {
-    name: 'pull',
-    description: 'Pull variables from the remote project for the specified environment',
-  },
-  args: {
-    env: {
-      type: 'string',
-      description: 'Environment to pull from',
-      valueHint: 'production|prod|preview|development|dev',
-      default: 'development',
-      alias: 'e',
-    },
-  },
-  async run(ctx) {
-    let projectId = getProjectId()
-    if (!projectId) {
-      consola.error('The current project is not linked to a remote project')
-      const linkedProject = await suggestLinkProjects()
-      if (linkedProject) {
-        projectId = linkedProject.id
-      } else {
-        return
-      }
-    }
-    const variables = await getProjectVariable(projectId, ctx.args.env)
-    createEnvFile(variables)
-    consola.success('Pulled successfully!')
-  },
-})
+export function pullCommand(program: Command): void {
+  program
+    .command('pull')
+    .description('Pull variables for specified environment to .env file')
+    .action(async () => {
+      const { project, pullMethod, envFileName } = await loadShelveConfig()
+
+      intro(`Pulling variable from ${ project } project in ${ pullMethod } mode`)
+
+      const environment = await select({
+        message: 'Select the environment:',
+        options: [
+          { value: 'dev', label: 'Development' },
+          { value: 'staging', label: 'Staging' },
+          { value: 'prod', label: 'Production' },
+        ],
+      }) as string
+
+      if (isCancel(environment)) onCancel('Operation cancelled.')
+
+      const projectData = await getProjectByName(project)
+      const variables = await getEnvVariables(projectData.id, environment)
+      await createEnvFile(pullMethod, envFileName, variables)
+      outro(`Successfully pulled variable from ${environment} environment`)
+    })
+}

@@ -1,35 +1,34 @@
-import { defineCommand } from 'citty'
-import consola from 'consola'
-import { pushProjectVariable } from '../utils/env'
-import { getProjectId } from '../utils/projects'
-import { suggestLinkProjects } from '../utils/suggest'
+import { intro, isCancel, outro, select } from '@clack/prompts'
+import { Command } from 'commander'
+import type { Environment } from '@shelve/types'
+import { loadShelveConfig } from '../utils/config'
+import { getProjectByName } from '../utils/project'
+import { getEnvFile, pushEnvFile } from '../utils/env'
+import { onCancel } from '../utils'
 
-export default defineCommand({
-  meta: {
-    name: 'push',
-    description: 'Pushes the local environment variables to the remote project for the specified environment',
-  },
-  args: {
-    env: {
-      type: 'string',
-      description: 'Environment to push to',
-      valueHint: 'production|prod|preview|development|dev',
-      default: 'development',
-      alias: 'e',
-    },
-  },
-  async run(ctx) {
-    let projectId = getProjectId()
-    if (!projectId) {
-      consola.error('The current project is not linked to a remote project')
-      const linkedProject = await suggestLinkProjects()
-      if (linkedProject) {
-        projectId = linkedProject.id
-      } else {
-        return
-      }
-    }
-    await pushProjectVariable(projectId, ctx.args.env)
-    consola.success('Pushed successfully!')
-  },
-})
+export function pushCommand(program: Command): void {
+  program
+    .command('push')
+    .description('Push variables for specified environment to Shelve')
+    .action(async () => {
+      const { project, pushMethod } = await loadShelveConfig()
+
+      intro(`Pushing variable to ${project} project in ${pushMethod} method`)
+
+      const environment = await select({
+        message: 'Select the environment:',
+        options: [
+          { value: 'dev', label: 'Development' },
+          { value: 'staging', label: 'Staging' },
+          { value: 'prod', label: 'Production' },
+        ],
+      }) as Environment
+
+      if (isCancel(environment)) onCancel('Operation cancelled.')
+
+      const projectData = await getProjectByName(project)
+      const variables = await getEnvFile()
+      await pushEnvFile(variables, projectData.id, environment)
+      outro(`Successfully pushed variable to ${environment} environment`)
+    })
+}

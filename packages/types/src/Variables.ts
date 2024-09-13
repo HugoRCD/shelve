@@ -1,8 +1,4 @@
-export enum Environment {
-  PRODUCTION = "production",
-  PREVIEW = "preview",
-  DEVELOPMENT = "development",
-}
+export type Environment = 'production' | 'preview' | 'development' | 'staging' | 'dev' | 'prod';
 
 export type Variable = {
   id: number;
@@ -24,6 +20,8 @@ export type VariableCreateInput = {
 };
 
 export type VariablesCreateInput = {
+  method?: 'overwrite' | 'merge';
+  environment?: Environment;
   projectId: number;
   variables: VariableCreateInput[];
 };

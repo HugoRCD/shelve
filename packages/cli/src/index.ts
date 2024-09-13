@@ -1,6 +1,12 @@
-#!/usr/bin/env node
+import { program } from 'commander'
+import { version, description } from '../package.json'
+import { registerCommands } from './commands'
 
-import { runMain } from 'citty'
-import { main } from './main'
+program
+  .name('shelve')
+  .version(version)
+  .description(description)
 
-runMain(main).then(() => process.exit(0)).catch(() => process.exit(1))
+registerCommands(program)
+
+program.parse(process.argv)

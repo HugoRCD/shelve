@@ -18,6 +18,27 @@ Install the package globally:
 npm install -g @shelve/cli
 ```
 
+## Configuration
+
+Configuration is loaded by [unjs/c12](https://github.com/unjs/c12) from cwd. You can use either `shelve.config.json`, `shelve.config.{ts,js,mjs,cjs}` or use the `shelve` field in `package.json`.
+You have the option to create a `shelve.config.ts` file to enable type checking and autocompletion. The file should contain the following content:
+
+```ts title="shelve.config.ts"
+import { createShelveConfig } from "@shelve/cli"
+
+export default createShelveConfig({
+  project: "my-project", // only required field
+  token: "my-token",
+  url: "https://shelve.hrcd.fr",
+  confirmChanges: false,
+  pushMethod: 'overwrite',
+  pullMethod: 'overwrite',
+  envFileName: '.env',
+})
+```
+
+The CLI also has a json schema for the configuration file. that can be used to validate the configuration file. (see it [here](https://raw.githubusercontent.com/HugoRCD/shelve/main/packages/types/shelveConfigSchema.json))
+
 ## Usage
 
 ```bash
@@ -26,14 +47,10 @@ USAGE shelve <command|shortcut> [options]
 | Commands | Description                                          | Shortcut  |
 |----------|------------------------------------------------------|-----------|
 | create   | Create a new Shelve project                          | c         |
-| init     | alias for create                                     | i         |
-| link     | Link the current directory with a Shelve project     | l         |
-| unlink   | Unlink the current directory from a Shelve project   | ul        |
-| login    | Authenticate with Shelve                             | li        |
-| logout   | Logout the current authenticated user                | lo        |
-| whoami   | Shows the username of the currently logged-in user   | w         |
+| init     | Create a new Shelve project                          | i         |
 | pull     | Retrieve the environment variables from Shelve       | pl        |
 | push     | Send the environment variables to Shelve             | ps        |
+| generate | Generate a .env.example file, and more               | g         |
 
 Use shelve <command|shortcut> --help for more information about a command.
 ```

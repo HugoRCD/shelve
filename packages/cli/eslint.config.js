@@ -8,9 +8,15 @@ export default createConfig({
     enable: false,
   },
   tailwind: {
-    enable: true,
+    enable: false,
   },
   typescript: {
     strict: true,
+  },
+  features: {
+    jsdoc: {
+      enable: true,
+      strict: true,
+    }
   }
 })
