@@ -23,6 +23,8 @@ export async function createShelveConfig(projectName?: string): Promise<string> 
     }) as string
   }
 
+  if (!project) onCancel('Error: no project selected')
+
   const configFile = JSON.stringify({
     $schema: SHELVE_JSON_SCHEMA,
     project: project.toLowerCase(),
