@@ -93,7 +93,7 @@ export async function pushEnvFile(variables: Env[], projectId: number, environme
   }
 }
 
-export async function generateEnvExampleFile(): void {
+export async function generateEnvExampleFile(): Promise<void> {
   const { envFileName } = await loadShelveConfig()
   const envExampleFile = `${envFileName}.example`
 

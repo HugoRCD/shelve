@@ -50,6 +50,7 @@ USAGE shelve <command|shortcut> [options]
 | init     | Create a new Shelve project                          | i         |
 | pull     | Retrieve the environment variables from Shelve       | pl        |
 | push     | Send the environment variables to Shelve             | ps        |
+| generate | Generate a .env.example file, and more               | g         |
 
 Use shelve <command|shortcut> --help for more information about a command.
 ```
