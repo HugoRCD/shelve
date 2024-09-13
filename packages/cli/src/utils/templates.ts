@@ -9,7 +9,7 @@ const templates = {
   eslint: 'https://raw.githubusercontent.com/HugoRCD/templates/main/eslint.config.js'
 }
 
-export async function getEslintConfig(): Promise<string> {
+export async function getEslintConfig(): Promise<void> {
   intro('Generate ESLint config')
 
   s.start('Fetching ESLint config')
