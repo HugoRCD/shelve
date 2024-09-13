@@ -12,7 +12,10 @@ export function generateCommand(program: Command): void {
 
       const toGenerate = await select({
         message: 'Select the resources to generate:',
-        options: [{ value: 'example', label: '.env.example' },],
+        options: [
+          { value: 'example', label: '.env.example' },
+          { value: 'eslint', label: 'ESLint config', hint: 'work in progress' },
+        ]
       })
 
       if (isCancel(toGenerate)) onCancel('Operation cancelled.')
