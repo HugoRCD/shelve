@@ -56,7 +56,7 @@ export async function createProject(name: string): Promise<Project> {
     const project = await api('/project', {
       method: 'POST',
       body: {
-        name,
+        name: name.charAt(0).toUpperCase() + name.slice(1),
       }
     })
     s.stop('Creating project')
