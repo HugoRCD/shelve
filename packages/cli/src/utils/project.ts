@@ -31,14 +31,11 @@ export async function getProjectByName(name: string): Promise<Project> {
     s.stop('Fetching project')
     return project
   } catch (e) {
+    // @ts-expect-error unknown error
     if (e.response?.status === 400) {
       s.stop('Fetching project')
       const shouldCreate = await confirm({
         message: 'Project not found, do you want to create it?',
-        options: [
-          { value: true, label: 'Yes' },
-          { value: false, label: 'No' },
-        ],
       })
 
       if (isCancel(shouldCreate) || !shouldCreate) {
@@ -55,7 +52,7 @@ export async function getProjectByName(name: string): Promise<Project> {
   }
 }
 
-export async function createProject(name: string): Promise<Project | null> {
+export async function createProject(name: string): Promise<Project> {
   const api = await useApi()
 
   s.start('Creating project')

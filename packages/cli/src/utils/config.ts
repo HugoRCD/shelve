@@ -1,11 +1,11 @@
 import fs from 'fs'
 import { cancel, intro, isCancel, outro, select } from '@clack/prompts'
-import { loadConfig, setupDotenv } from 'c12'
+import { loadConfig, setupDotenv, ConfigLayer } from 'c12'
 import consola from 'consola'
 import { SHELVE_JSON_SCHEMA, ShelveConfig } from '@shelve/types'
 import { getProjects } from './project'
 
-async function createShelveConfig(): Promise<ShelveConfig> {
+async function createShelveConfig(): Promise<void> {
   intro('No configuration file found, creating one')
 
   const projects = await getProjects()
@@ -35,7 +35,11 @@ async function createShelveConfig(): Promise<ShelveConfig> {
   outro('Configuration file created successfully')
 }
 
-export async function getConfig(): Promise<ShelveConfig> {
+type FullShelveConfig = {
+  config: ShelveConfig
+} & ConfigLayer
+
+export async function getConfig(): Promise<FullShelveConfig> {
   const { config, configFile } = await loadConfig<ShelveConfig>({
     name: 'shelve',
     packageJson: false,
@@ -43,7 +47,9 @@ export async function getConfig(): Promise<ShelveConfig> {
     globalRc: false,
     dotenv: true,
     defaults: {
+      // @ts-expect-error to provide error message we let project be undefined
       project: process.env.SHELVE_PROJECT,
+      // @ts-expect-error to provide error message we let token be undefined
       token: process.env.SHELVE_TOKEN,
       url: process.env.SHELVE_URL || 'https://shelve.hrcd.fr',
       confirmChanges: false,
@@ -59,6 +65,7 @@ export async function getConfig(): Promise<ShelveConfig> {
 }
 
 export async function loadShelveConfig(): Promise<ShelveConfig> {
+  // @ts-expect-error we don't want to specify 'cwd' option
   await setupDotenv({})
 
   const { config, configFile } = await getConfig()

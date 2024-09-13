@@ -1,5 +1,5 @@
 import fs from 'fs'
-import type { Env, VariablesCreateInput } from '@shelve/types'
+import type { Env, Environment, VariablesCreateInput } from '@shelve/types'
 import { cancel, spinner } from '@clack/prompts'
 import { loadShelveConfig } from './config'
 import { useApi } from './api'
@@ -10,7 +10,7 @@ export function isEnvFileExist(envFileName: string): boolean {
   return fs.existsSync(envFileName)
 }
 
-export async function mergeEnvFile(variables: Env = []): void {
+export async function mergeEnvFile(variables: Env[] = []): Promise<void> {
   const { envFileName } = await loadShelveConfig()
   s.start(`Merging ${envFileName} file`)
   const envFile = await getEnvFile()
@@ -21,8 +21,8 @@ export async function mergeEnvFile(variables: Env = []): void {
   s.stop(`Merging ${envFileName} file`)
 }
 
-export async function createEnvFile(pullMethod: string, envFileName: string, variables: Env = []): Promise<void> {
-  const envFileExist = isEnvFileExist()
+export async function createEnvFile(pullMethod: string, envFileName: string, variables: Env[] = []): Promise<void> {
+  const envFileExist = isEnvFileExist(envFileName)
   try {
     if (envFileExist && pullMethod === 'merge') {
       await mergeEnvFile(variables)
@@ -58,7 +58,7 @@ export async function getEnvFile(): Promise<Env[]> {
   return []
 }
 
-export async function getEnvVariables(projectId: string, environment: string): Promise<Env[]> {
+export async function getEnvVariables(projectId: number, environment: string): Promise<Env[]> {
   const api = await useApi()
 
   s.start('Fetching variables')
@@ -72,7 +72,7 @@ export async function getEnvVariables(projectId: string, environment: string): P
   }
 }
 
-export async function pushEnvFile(variables: Env[], projectId: string, environment: string): Promise<void> {
+export async function pushEnvFile(variables: Env[], projectId: number, environment: Environment): Promise<void> {
   const api = await useApi()
 
   s.start('Pushing variables')

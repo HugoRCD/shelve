@@ -1,5 +1,6 @@
 import { cancel, intro, isCancel, outro, select } from '@clack/prompts'
 import { Command } from 'commander'
+import type { Environment } from '@shelve/types'
 import { loadShelveConfig } from '../utils/config'
 import { getProjectByName } from '../utils/project'
 import { getEnvFile, pushEnvFile } from '../utils/env'
@@ -20,7 +21,7 @@ export function pushCommand(program: Command): void {
           { value: 'staging', label: 'Staging' },
           { value: 'prod', label: 'Production' },
         ],
-      }) as string
+      }) as Environment
 
       if (isCancel(environment)) {
         cancel('Operation cancelled.')
