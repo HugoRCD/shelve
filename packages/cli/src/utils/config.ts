@@ -1,6 +1,6 @@
 import fs from 'fs'
 import { cancel, intro, isCancel, outro, select } from '@clack/prompts'
-import { loadConfig, setupDotenv, ConfigLayer } from 'c12'
+import { loadConfig, setupDotenv, type ConfigLayer } from 'c12'
 import consola from 'consola'
 import { SHELVE_JSON_SCHEMA, ShelveConfig } from '@shelve/types'
 import { getProjects } from './project'
