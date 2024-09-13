@@ -11,21 +11,32 @@ export function pushCommand(program: Command): void {
     .command('push')
     .alias('ps')
     .description('Push variables for specified environment to Shelve')
-    .action(async () => {
+    .option('-e, --environment <env>', 'Specify the environment (dev, staging, prod)')
+    .action(async (options) => {
       const { project, pushMethod } = await loadShelveConfig()
 
       intro(`Pushing variable to ${project} project in ${pushMethod} method`)
 
-      const environment = await select({
-        message: 'Select the environment:',
-        options: [
-          { value: 'dev', label: 'Development' },
-          { value: 'staging', label: 'Staging' },
-          { value: 'prod', label: 'Production' },
-        ],
-      }) as Environment
+      let environment = options.environment as Environment | undefined
 
-      if (isCancel(environment)) onCancel('Operation cancelled.')
+      if (!environment) {
+        environment = await select({
+          message: 'Select the environment:',
+          options: [
+            { value: 'dev', label: 'Development' },
+            { value: 'staging', label: 'Staging' },
+            { value: 'prod', label: 'Production' },
+          ],
+        }) as Environment
+
+        if (isCancel(environment)) onCancel('Operation cancelled.')
+      } else {
+        // Validate the provided environment
+        const validEnvironments: Environment[] = ['dev', 'staging', 'prod']
+        if (!validEnvironments.includes(environment)) {
+          onCancel(`Invalid environment: ${environment}. Valid options are: dev, staging, prod`)
+        }
+      }
 
       const projectData = await getProjectByName(project)
       const variables = await getEnvFile()

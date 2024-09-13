@@ -10,21 +10,32 @@ export function pullCommand(program: Command): void {
     .command('pull')
     .alias('pl')
     .description('Pull variables for specified environment to .env file')
-    .action(async () => {
+    .option('-e, --environment <env>', 'Specify the environment (dev, staging, prod)')
+    .action(async (options) => {
       const { project, pullMethod, envFileName } = await loadShelveConfig()
 
-      intro(`Pulling variable from ${ project } project in ${ pullMethod } mode`)
+      intro(`Pulling variable from ${project} project in ${pullMethod} mode`)
 
-      const environment = await select({
-        message: 'Select the environment:',
-        options: [
-          { value: 'dev', label: 'Development' },
-          { value: 'staging', label: 'Staging' },
-          { value: 'prod', label: 'Production' },
-        ],
-      }) as string
+      let { environment } = options
 
-      if (isCancel(environment)) onCancel('Operation cancelled.')
+      if (!environment) {
+        environment = await select({
+          message: 'Select the environment:',
+          options: [
+            { value: 'dev', label: 'Development' },
+            { value: 'staging', label: 'Staging' },
+            { value: 'prod', label: 'Production' },
+          ],
+        }) as string
+
+        if (isCancel(environment)) onCancel('Operation cancelled.')
+      } else {
+        // Validate the provided environment
+        const validEnvironments = ['dev', 'staging', 'prod']
+        if (!validEnvironments.includes(environment)) {
+          onCancel(`Invalid environment: ${environment}. Valid options are: dev, staging, prod`)
+        }
+      }
 
       const projectData = await getProjectByName(project)
       const variables = await getEnvVariables(projectData.id, environment)
