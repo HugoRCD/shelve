@@ -6,6 +6,7 @@ import { onCancel } from '../utils'
 export function generateCommand(program: Command): void {
   program
     .command('generate')
+    .alias('g')
     .description('Generate resources for a project')
     .action(async () => {
       intro('Generate resources for a project')

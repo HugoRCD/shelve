@@ -4,7 +4,8 @@ import { loadShelveConfig } from '../utils/config'
 export function configCommand(program: Command): void {
   program
     .command('config')
-    .description('Manage Shelve config')
+    .alias('cf')
+    .description('Show the current configuration')
     .action(async () => {
       console.log(await loadShelveConfig())
     })

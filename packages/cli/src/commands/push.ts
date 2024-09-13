@@ -9,6 +9,7 @@ import { onCancel } from '../utils'
 export function pushCommand(program: Command): void {
   program
     .command('push')
+    .alias('ps')
     .description('Push variables for specified environment to Shelve')
     .action(async () => {
       const { project, pushMethod } = await loadShelveConfig()

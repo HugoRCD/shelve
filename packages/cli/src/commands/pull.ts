@@ -8,6 +8,7 @@ import { onCancel } from '../utils'
 export function pullCommand(program: Command): void {
   program
     .command('pull')
+    .alias('pl')
     .description('Pull variables for specified environment to .env file')
     .action(async () => {
       const { project, pullMethod, envFileName } = await loadShelveConfig()

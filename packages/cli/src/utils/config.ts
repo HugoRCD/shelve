@@ -6,18 +6,22 @@ import { SHELVE_JSON_SCHEMA, ShelveConfig } from '@shelve/types'
 import { getProjects } from './project'
 import { onCancel } from './index'
 
-async function createShelveConfig(): Promise<void> {
-  intro('No configuration file found, creating one')
+export async function createShelveConfig(projectName?: string): Promise<string> {
+  intro(projectName ? `Create configuration for ${projectName}` : 'No configuration file found, create a new one')
 
-  const projects = await getProjects()
+  let project = projectName
 
-  const project = await select({
-    message: 'Select the project:',
-    options: projects.map(project => ({
-      value: project.name,
-      label: project.name
-    })),
-  }) as string
+  if (!projectName) {
+    const projects = await getProjects()
+
+    project = await select({
+      message: 'Select the project:',
+      options: projects.map(project => ({
+        value: project.name,
+        label: project.name
+      })),
+    }) as string
+  }
 
   const configFile = JSON.stringify({
     $schema: SHELVE_JSON_SCHEMA,
@@ -31,6 +35,8 @@ async function createShelveConfig(): Promise<void> {
   if (isCancel(project)) onCancel('Operation cancelled.')
 
   outro('Configuration file created successfully')
+
+  return project
 }
 
 export async function getConfig(): Promise<{
@@ -67,7 +73,7 @@ export async function loadShelveConfig(): Promise<ShelveConfig> {
   const { config, configFile } = await getConfig()
 
   if (configFile === 'shelve.config') {
-    await createShelveConfig()
+    config.project = await createShelveConfig()
   }
 
   if (!config.project) {

@@ -37,7 +37,7 @@ export default createShelveConfig({
 })
 ```
 
-The CLI also has a json schema for the configuration file. that can be used to validate the configuration file. (see it [here](https://raw.githubusercontent.com/HugoRCD/shelve/main/packages/types/shelveConfigSchema.json))
+The CLI also has a json schema for the configuration file. that can be used to validate the configuration file. (see it [here](https://raw.githubusercontent.com/HugoRCD/shelve/main/packages/types/shelve-config-schema.json))
 
 ## Usage
 
@@ -46,11 +46,11 @@ USAGE shelve <command|shortcut> [options]
 
 | Commands | Description                                          | Shortcut  |
 |----------|------------------------------------------------------|-----------|
-| create   | Create a new Shelve project                          | c         |
-| init     | Create a new Shelve project                          | i         |
+| create   | Create a new Shelve project                          | c, init   |
 | pull     | Retrieve the environment variables from Shelve       | pl        |
 | push     | Send the environment variables to Shelve             | ps        |
 | generate | Generate a .env.example file, and more               | g         |
+| config   | Show the current configuration                       | cf        |
 
 Use shelve <command|shortcut> --help for more information about a command.
 ```
