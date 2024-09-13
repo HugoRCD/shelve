@@ -17,24 +17,45 @@ Install the package globally:
 npm install -g @shelve/cli
 ```
 
+## Configuration
+
+Configuration is loaded by [unjs/c12](https://github.com/unjs/c12) from cwd. You can use either `shelve.config.json`, `shelve.config.{ts,js,mjs,cjs}` or use the `shelve` field in `package.json`.
+You have the option to create a `shelve.config.ts` file to enable type checking and autocompletion. The file should contain the following content:
+
+```ts title="shelve.config.ts"
+import { createShelveConfig } from "@shelve/cli"
+
+export default createShelveConfig({
+  project: "my-project", // only required field
+  token: "my-token",
+  url: "https://shelve.hrcd.fr",
+  confirmChanges: false,
+  pushMethod: 'overwrite',
+  pullMethod: 'overwrite',
+  envFileName: '.env',
+})
+```
+
+The CLI also has a json schema for the configuration file. that can be used to validate the configuration file. (see it [here](https://raw.githubusercontent.com/HugoRCD/shelve/main/packages/types/shelve-config-schema.json))
+
 ## Usage
 
 ```bash
-USAGE shelve <command|shortcut> [options]
+Usage: shelve [options] [command]
 
-| Commands | Description                                          | Shortcut  |
-|----------|------------------------------------------------------|-----------|
-| create   | Create a new Shelve project                          | c         |
-| init     | alias for create                                     | i         |
-| link     | Link the current directory with a Shelve project     | l         |
-| unlink   | Unlink the current directory from a Shelve project   | ul        |
-| login    | Authenticate with Shelve                             | li        |
-| logout   | Logout the current authenticated user                | lo        |
-| whoami   | Shows the username of the currently logged-in user   | w         |
-| pull     | Retrieve the environment variables from Shelve       | pl        |
-| push     | Send the environment variables to Shelve             | ps        |
+The command-line interface for Shelve
 
-Use shelve <command|shortcut> --help for more information about a command.
+Options:
+  -V, --version       output the version number
+  -h, --help          display help for command
+
+Commands:
+  create|c [options]  Create a new project
+  pull|pl [options]   Pull variables for specified environment to .env file
+  push|ps [options]   Push variables for specified environment to Shelve
+  generate|g          Generate resources for a project
+  config|cf           Show the current configuration
+  help [command]      display help for command
 ```
 
 <!-- automd:fetch url="gh:hugorcd/markdown/main/src/local_development.md" -->
@@ -71,13 +92,13 @@ To start contributing, you can follow these steps:
 
 <!-- /automd -->
 
-<!-- automd:contributors license=Apache author=HugoRCD github="hugorcd/shelve" -->
+<!-- automd:contributors license=Apache author=HugoRCD github=HugoRCD/shelve -->
 
-Published under the [APACHE](https://github.com/hugorcd/shelve/blob/main/LICENSE) license.
-Made by [@HugoRCD](https://github.com/HugoRCD) and [community](https://github.com/hugorcd/shelve/graphs/contributors) 💛
+Published under the [APACHE](https://github.com/HugoRCD/shelve/blob/main/LICENSE) license.
+Made by [@HugoRCD](https://github.com/HugoRCD) and [community](https://github.com/HugoRCD/shelve/graphs/contributors) 💛
 <br><br>
-<a href="https://github.com/hugorcd/shelve/graphs/contributors">
-<img src="https://contrib.rocks/image?repo=hugorcd/shelve" />
+<a href="https://github.com/HugoRCD/shelve/graphs/contributors">
+<img src="https://contrib.rocks/image?repo=HugoRCD/shelve" />
 </a>
 
 <!-- /automd -->
@@ -86,6 +107,6 @@ Made by [@HugoRCD](https://github.com/HugoRCD) and [community](https://github.co
 
 ---
 
-_🤖 auto updated with [automd](https://automd.unjs.io) (last updated: Tue Aug 27 2024)_
+_🤖 auto updated with [automd](https://automd.unjs.io) (last updated: Fri Sep 13 2024)_
 
 <!-- /automd -->
