@@ -42,17 +42,21 @@ The CLI also has a json schema for the configuration file. that can be used to v
 ## Usage
 
 ```bash
-USAGE shelve <command|shortcut> [options]
+Usage: shelve [options] [command]
 
-| Commands | Description                                          | Shortcut  |
-|----------|------------------------------------------------------|-----------|
-| create   | Create a new Shelve project                          | c, init   |
-| pull     | Retrieve the environment variables from Shelve       | pl        |
-| push     | Send the environment variables to Shelve             | ps        |
-| generate | Generate a .env.example file, and more               | g         |
-| config   | Show the current configuration                       | cf        |
+The command-line interface for Shelve
 
-Use shelve <command|shortcut> --help for more information about a command.
+Options:
+  -V, --version       output the version number
+  -h, --help          display help for command
+
+Commands:
+  create|c [options]  Create a new project
+  pull|pl [options]   Pull variables for specified environment to .env file
+  push|ps [options]   Push variables for specified environment to Shelve
+  generate|g          Generate resources for a project
+  config|cf           Show the current configuration
+  help [command]      display help for command
 ```
 
 <!-- automd:fetch url="gh:hugorcd/markdown/main/src/local_development.md" -->
