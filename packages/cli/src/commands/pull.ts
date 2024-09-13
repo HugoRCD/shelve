@@ -1,7 +1,6 @@
-import { cancel, intro, isCancel, spinner, outro, select } from '@clack/prompts'
+import { cancel, intro, isCancel, outro, select } from '@clack/prompts'
 import { Command } from 'commander'
 import { loadShelveConfig } from '../utils/config'
-import { useApi } from '../utils/api'
 import { getProjectByName } from '../utils/project'
 import { createEnvFile, getEnvVariables } from '../utils/env'
 
@@ -10,9 +9,7 @@ export function pullCommand(program: Command): void {
     .command('pull')
     .description('Pull variables for specified environment to .env file')
     .action(async () => {
-      const { project, pullMethod } = await loadShelveConfig()
-      const api = await useApi()
-      const s = spinner()
+      const { project, pullMethod, envFileName } = await loadShelveConfig()
 
       intro(`Pulling variable from ${ project } project in ${ pullMethod } mode`)
 
@@ -30,14 +27,9 @@ export function pullCommand(program: Command): void {
         process.exit(0)
       }
 
-      try {
-        const projectData = await getProjectByName(project)
-        const variables = await getEnvVariables(projectData.id, environment)
-        await createEnvFile(variables)
-        outro(`Successfully pulled variable from ${environment} environment`)
-      } catch (e) {
-        cancel('Failed to fetch project')
-        process.exit(0)
-      }
+      const projectData = await getProjectByName(project)
+      const variables = await getEnvVariables(projectData.id, environment)
+      await createEnvFile(pullMethod, envFileName, variables)
+      outro(`Successfully pulled variable from ${environment} environment`)
     })
 }
