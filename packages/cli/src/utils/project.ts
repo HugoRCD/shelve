@@ -1,5 +1,5 @@
 import type { Project } from '@shelve/types'
-import { cancel, spinner } from '@clack/prompts'
+import { cancel, confirm, isCancel, spinner } from '@clack/prompts'
 import { useApi } from './api'
 
 const s = spinner()
@@ -31,6 +31,25 @@ export async function getProjectByName(name: string): Promise<Project> {
     s.stop('Fetching project')
     return project
   } catch (e) {
+    if (e.response?.status === 400) {
+      s.stop('Fetching project')
+      const shouldCreate = await confirm({
+        message: 'Project not found, do you want to create it?',
+        options: [
+          { value: true, label: 'Yes' },
+          { value: false, label: 'No' },
+        ],
+      })
+
+      if (isCancel(shouldCreate) || !shouldCreate) {
+        cancel('Operation cancelled.')
+        process.exit(0)
+      }
+
+      if (shouldCreate) {
+        return await createProject(name)
+      }
+    }
     cancel('Failed to fetch project')
     process.exit(0)
   }
@@ -41,13 +60,14 @@ export async function createProject(name: string): Promise<Project | null> {
 
   s.start('Creating project')
   try {
-    await api('/project', {
+    const project = await api('/project', {
       method: 'POST',
       body: {
         name,
       }
     })
     s.stop('Creating project')
+    return project
   } catch (e) {
     cancel('Failed to create project')
     process.exit(0)

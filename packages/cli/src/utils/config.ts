@@ -1,8 +1,8 @@
 import fs from 'fs'
-import { cancel, intro, isCancel, outro, select, confirm } from '@clack/prompts'
+import { cancel, intro, isCancel, outro, select } from '@clack/prompts'
 import { loadConfig, setupDotenv } from 'c12'
 import consola from 'consola'
-import { SHELVE_JSON_SCHEMA, ShelveConfig } from '../types'
+import { SHELVE_JSON_SCHEMA, ShelveConfig } from '@shelve/types'
 import { getProjects } from './project'
 
 async function createShelveConfig(): Promise<ShelveConfig> {
