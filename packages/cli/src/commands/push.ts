@@ -1,9 +1,10 @@
-import { cancel, intro, isCancel, outro, select } from '@clack/prompts'
+import { intro, isCancel, outro, select } from '@clack/prompts'
 import { Command } from 'commander'
 import type { Environment } from '@shelve/types'
 import { loadShelveConfig } from '../utils/config'
 import { getProjectByName } from '../utils/project'
 import { getEnvFile, pushEnvFile } from '../utils/env'
+import { onCancel } from '../utils'
 
 export function pushCommand(program: Command): void {
   program
@@ -23,10 +24,7 @@ export function pushCommand(program: Command): void {
         ],
       }) as Environment
 
-      if (isCancel(environment)) {
-        cancel('Operation cancelled.')
-        process.exit(0)
-      }
+      if (isCancel(environment)) onCancel('Operation cancelled.')
 
       const projectData = await getProjectByName(project)
       const variables = await getEnvFile()

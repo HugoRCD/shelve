@@ -1,9 +1,10 @@
 import fs from 'fs'
-import { cancel, intro, isCancel, outro, select } from '@clack/prompts'
+import { intro, isCancel, outro, select } from '@clack/prompts'
 import { loadConfig, setupDotenv, type ConfigLayer } from 'c12'
 import consola from 'consola'
 import { SHELVE_JSON_SCHEMA, ShelveConfig } from '@shelve/types'
 import { getProjects } from './project'
+import { onCancel } from './index'
 
 async function createShelveConfig(): Promise<void> {
   intro('No configuration file found, creating one')
@@ -27,10 +28,7 @@ async function createShelveConfig(): Promise<void> {
 
   fs.writeFileSync('./shelve.config.json', configFile)
 
-  if (isCancel(project)) {
-    cancel('Operation cancelled.')
-    process.exit(0)
-  }
+  if (isCancel(project)) onCancel('Operation cancelled.')
 
   outro('Configuration file created successfully')
 }
@@ -96,7 +94,7 @@ export async function loadShelveConfig(): Promise<ShelveConfig> {
 export function defineShelveConfig(config: ShelveConfig): ShelveConfig {
   if (!config.project) {
     consola.error('Please provide a project name')
-    process.exit(1)
+    process.exit(0)
   }
   if (config.token) {
     consola.warn('Avoid using the token option, use the SHELVE_TOKEN environment variable instead for security reasons')
