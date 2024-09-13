@@ -138,4 +138,3 @@ dist
 
 .config/shelve*
 shelve*
-packages/.cli

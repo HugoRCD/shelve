@@ -14,7 +14,7 @@
     "lint:fix": "eslint --fix .",
     "release": "bun run test && release-it",
     "release:edge": "release-it --preRelease=edge --npm.tag=edge",
-    "test": "bun run build && bun run typecheck && bun run lint"
+    "test": "bun run build && bun run typecheck && bun run lint && vitest run"
   },
   "bin": {
     "shelve": "dist/index.mjs",
@@ -40,7 +40,8 @@
     "@shelve/types": "workspace:*",
     "@types/bun": "^1.1.9",
     "@types/semver": "^7.5.8",
-    "release-it": "^17.6.0"
+    "release-it": "^17.6.0",
+    "vitest": "^2.1.0"
   },
   "license": "Apache-2.0",
   "repository": {

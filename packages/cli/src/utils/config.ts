@@ -33,11 +33,9 @@ async function createShelveConfig(): Promise<void> {
   outro('Configuration file created successfully')
 }
 
-type FullShelveConfig = {
+export async function getConfig(): Promise<{
   config: ShelveConfig
-} & ConfigLayer
-
-export async function getConfig(): Promise<FullShelveConfig> {
+} & ConfigLayer> {
   const { config, configFile } = await loadConfig<ShelveConfig>({
     name: 'shelve',
     packageJson: false,
