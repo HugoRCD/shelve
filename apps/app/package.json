@@ -22,7 +22,7 @@
   "devDependencies": {
     "@iconify-json/lucide": "^1.2.3",
     "@nuxt/content": "^2.13.2",
-    "@nuxt/fonts": "^0.7.2",
+    "@nuxt/fonts": "^0.8.0",
     "@nuxt/image": "^1.8.0",
     "@nuxt/scripts": "^0.8.5",
     "@nuxt/ui": "^2.18.4",
@@ -43,13 +43,13 @@
     "eslint": "^9.10.0",
     "jsonwebtoken": "^9.0.2",
     "nuxt": "^3.13.1",
-    "nuxt-auth-utils": "^0.3.7",
+    "nuxt-auth-utils": "^0.3.8",
     "nuxt-build-cache": "^0.1.1",
     "prisma": "^5.19.1",
     "resend": "^4.0.0",
     "ua-parser-js": "^1.0.38",
     "vue": "^3.5.4",
-    "vue-router": "^4.4.3",
+    "vue-router": "^4.4.4",
     "vue-sonner": "^1.1.5"
   }
 }
