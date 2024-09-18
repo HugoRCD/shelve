@@ -43,7 +43,7 @@
     "@types/semver": "^7.5.8",
     "eslint": "^9.10.0",
     "release-it": "^17.6.0",
-    "vitest": "^2.1.0"
+    "vitest": "^2.1.1"
   },
   "license": "Apache-2.0",
   "repository": {
