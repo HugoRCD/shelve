@@ -20,7 +20,7 @@
     "automd": "^0.3.8",
     "changelogen": "^0.5.5",
     "eslint": "^9.10.0",
-    "turbo": "^2.1.1",
+    "turbo": "^2.1.2",
     "typescript": "5.6.2"
   },
   "engines": {
