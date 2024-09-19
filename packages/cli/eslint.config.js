@@ -13,4 +13,10 @@ export default createConfig({
   typescript: {
     strict: true,
   },
+  features: {
+    packageJson: {
+      enabled: true,
+      strict: true,
+    },
+  }
 })
