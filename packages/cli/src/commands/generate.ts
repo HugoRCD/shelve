@@ -16,7 +16,7 @@ export function generateCommand(program: Command): void {
         message: 'Select the resources to generate:',
         options: [
           { value: 'example', label: '.env.example' },
-          { value: 'eslint', label: 'ESLint config', hint: 'work in progress' },
+          { value: 'eslint', label: 'ESLint config' },
         ]
       })
 

@@ -2,21 +2,15 @@ import { createConfig } from "@hrcd/eslint-config"
 
 export default createConfig({
   vue: {
-    enable: false,
+    enabled: false,
   },
   nuxt: {
-    enable: false,
+    enabled: false,
   },
   tailwind: {
-    enable: false,
+    enabled: false,
   },
   typescript: {
     strict: true,
   },
-  features: {
-    jsdoc: {
-      enable: true,
-      strict: true,
-    }
-  }
 })

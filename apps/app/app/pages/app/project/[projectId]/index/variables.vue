@@ -50,10 +50,10 @@ async function deleteVariables() {
     <Transition name="fade" mode="out-in">
       <div v-if="selectedVariables.length > 0" class="absolute bottom-4 left-1/2 z-20 -translate-x-1/2">
         <div class="flex items-center gap-4 rounded-full bg-white px-5 py-1.5 shadow-md dark:bg-neutral-950">
-          <span class="text-sm font-semibold text-gray-300">
+          <span class="text-nowrap text-sm font-semibold text-gray-300">
             {{ selectedVariables.length }} variable{{ selectedVariables.length > 1 ? 's' : '' }} selected
           </span>
-          <div>
+          <div class="flex gap-2">
             <UTooltip
               text="Copy selected variables (dev) to clipboard"
               @click="copyEnv(selectedVariables, 'development')"

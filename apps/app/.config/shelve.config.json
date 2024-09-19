@@ -1,0 +1,4 @@
+{
+  "$schema": "https://raw.githubusercontent.com/HugoRCD/shelve/main/packages/types/shelveConfigSchema.json",
+  "project": "shelve"
+}

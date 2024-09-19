@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { Variable } from '@shelve/types'
-import type { PropType, Ref } from 'vue'
+import type { PropType } from 'vue'
 
 const { refresh, variable, projectId } = defineProps({
   refresh: {
@@ -32,13 +32,13 @@ const {
 } = useVariables(refresh, projectId)
 
 const emit = defineEmits(['toggleSelected'])
-const localVariable = toRef(variable) as Ref<Variable>
+const localVariable = variable
 const selectedEnvironment = ref(variable.environment.split('|'))
 const environment = computed(() => selectedEnvironment.value.join('|'))
 
 const variableToUpdate = computed(() => {
   return {
-    ...localVariable.value,
+    ...localVariable,
     environment: environment.value
   }
 })

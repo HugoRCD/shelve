@@ -125,7 +125,7 @@ onMounted(() => {
           <h4 class="text-sm font-semibold">
             Environments
           </h4>
-          <div class="flex flex-col gap-4">
+          <div class="flex select-none gap-4">
             <UCheckbox v-model="selectedEnvironment" value="production" label="Production" />
             <UCheckbox v-model="selectedEnvironment" value="preview" label="Staging" />
             <UCheckbox v-model="selectedEnvironment" value="development" label="Development" />
