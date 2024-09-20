@@ -40,7 +40,8 @@ export function pushCommand(program: Command): void {
 
       const projectData = await getProjectByName(project)
       const variables = await getEnvFile()
-      await pushEnvFile(variables, projectData.id, environment)
+      await pushEnvFile({ variables, projectId: projectData.id, environment })
       outro(`Successfully pushed variable to ${environment} environment`)
+      process.exit(0)
     })
 }

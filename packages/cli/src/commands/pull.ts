@@ -39,7 +39,8 @@ export function pullCommand(program: Command): void {
 
       const projectData = await getProjectByName(project)
       const variables = await getEnvVariables(projectData.id, environment)
-      await createEnvFile(pullMethod, envFileName, variables)
+      await createEnvFile({ method: pullMethod, envFileName, variables })
       outro(`Successfully pulled variable from ${environment} environment`)
+      process.exit(0)
     })
 }
