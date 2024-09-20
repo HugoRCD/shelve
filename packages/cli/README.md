@@ -55,6 +55,7 @@ Commands:
   pull|pl [options]   Pull variables for specified environment to .env file
   push|ps [options]   Push variables for specified environment to Shelve
   generate|g          Generate resources for a project
+  upgrade|u           Upgrade the Shelve CLI to the latest version
   config|cf           Show the current configuration
   help [command]      display help for command
 ```
