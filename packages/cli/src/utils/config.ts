@@ -4,6 +4,7 @@ import { loadConfig, setupDotenv, type ConfigLayer } from 'c12'
 import consola from 'consola'
 import { SHELVE_JSON_SCHEMA, ShelveConfig } from '@shelve/types'
 import { getProjects } from './project'
+import { getKeyValue } from './env'
 import { onCancel } from './index'
 
 export async function createShelveConfig(projectName?: string): Promise<string> {
@@ -88,6 +89,9 @@ export async function loadShelveConfig(): Promise<ShelveConfig> {
     consola.error('Please provide a valid url')
     process.exit(0)
   }
+
+  const envToken = await getKeyValue('SHELVE_TOKEN')
+  if (envToken) config.token = envToken
 
   if (!config.token) {
     consola.error('You need to provide a token')

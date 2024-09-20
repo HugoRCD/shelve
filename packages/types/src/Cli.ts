@@ -1,3 +1,5 @@
+import { Env, Environment } from './Variables'
+
 export const SHELVE_JSON_SCHEMA = 'https://raw.githubusercontent.com/HugoRCD/shelve/main/packages/types/shelveConfigSchema.json'
 
 export type ShelveConfig = {
@@ -46,4 +48,40 @@ export type ShelveConfig = {
    * @default '.env'
    * */
   envFileName: string
+}
+
+export type CreateEnvFileInput = {
+  /**
+   * The method to use for .env file (overwrite or append)
+   * Overwrite will replace all existing variables in Shelve app with the ones in the .env file
+   * Merge will append the .env file to the existing variables in Shelve app
+   *
+   * @default 'overwrite'
+   * */
+  method: 'overwrite' | 'merge'
+  /**
+   * Name of your env file
+   *
+   * @default '.env'
+   * */
+  envFileName: string
+  /**
+   * The variables to create in the .env file
+   * */
+  variables: Env[]
+}
+
+export type PushEnvFileInput = {
+  /**
+   * The variables to push to Shelve
+   * */
+  variables: Env[]
+  /**
+   * The project ID
+   * */
+  projectId: number
+  /**
+   * The environment to push the variables to
+   * */
+  environment: Environment
 }

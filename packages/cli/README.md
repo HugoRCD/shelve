@@ -19,7 +19,7 @@ npm install -g @shelve/cli
 
 ## Configuration
 
-Configuration is loaded by [unjs/c12](https://github.com/unjs/c12) from cwd. You can use either `shelve.config.json`, `shelve.config.{ts,js,mjs,cjs}` or use the `shelve` field in `package.json`.
+Configuration is loaded by [unjs/c12](https://github.com/unjs/c12) from cwd. You can use either `shelve.config.json`, `shelve.config.{ts,js,mjs,cjs}`, but running the CLI without any configuration will create a `shelve.config.json` file.
 You have the option to create a `shelve.config.ts` file to enable type checking and autocompletion. The file should contain the following content:
 
 ```ts title="shelve.config.ts"

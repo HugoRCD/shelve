@@ -1,7 +1,7 @@
 import fs from 'fs'
-import type { Env, Environment, VariablesCreateInput } from '@shelve/types'
+import type { CreateEnvFileInput, Env, PushEnvFileInput, VariablesCreateInput } from '@shelve/types'
 import { spinner } from '@clack/prompts'
-import { loadShelveConfig } from './config'
+import { getConfig, loadShelveConfig } from './config'
 import { useApi } from './api'
 import { onCancel } from './index'
 
@@ -11,8 +11,20 @@ export function isEnvFileExist(envFileName: string): boolean {
   return fs.existsSync(envFileName)
 }
 
+export async function getKeyValue(key: string): Promise<string> {
+  const { config } = await getConfig()
+  const { envFileName } = config
+  const envFile = await getEnvFile()
+  const value = envFile.find((item) => item.key === key)?.value
+  if (!value) {
+    onCancel(`Key ${key} not found in ${envFileName}`)
+  }
+  return value
+}
+
 export async function mergeEnvFile(variables: Env[] = []): Promise<void> {
-  const { envFileName } = await loadShelveConfig()
+  const { config } = await getConfig()
+  const { envFileName } = config
   s.start(`Merging ${envFileName} file`)
   const envFile = await getEnvFile()
   envFile.push(...variables)
@@ -22,10 +34,11 @@ export async function mergeEnvFile(variables: Env[] = []): Promise<void> {
   s.stop(`Merging ${envFileName} file`)
 }
 
-export async function createEnvFile(pullMethod: string, envFileName: string, variables: Env[] = []): Promise<void> {
+export async function createEnvFile(input: CreateEnvFileInput): Promise<void> {
+  const { method, envFileName, variables } = input
   const envFileExist = isEnvFileExist(envFileName)
   try {
-    if (envFileExist && pullMethod === 'merge') {
+    if (envFileExist && method === 'merge') {
       await mergeEnvFile(variables)
       return
     }
@@ -41,11 +54,13 @@ export async function createEnvFile(pullMethod: string, envFileName: string, var
 }
 
 export async function getEnvFile(): Promise<Env[]> {
-  const { envFileName } = await loadShelveConfig()
+  const { config } = await getConfig()
+  const { envFileName } = config
   const isExist = fs.existsSync(envFileName)
   if (isExist) {
     const envFile = fs.readFileSync(envFileName, 'utf8')
     const envFileContent = envFile.split('\n').filter((item) => item && !item.startsWith('#')).join('\n')
+    if (!envFileContent) return []
     return envFileContent.split('\n').map((item) => {
       const [key, value] = item.split('=')
       if (!key || !value) {
@@ -70,7 +85,8 @@ export async function getEnvVariables(projectId: number, environment: string): P
   }
 }
 
-export async function pushEnvFile(variables: Env[], projectId: number, environment: Environment): Promise<void> {
+export async function pushEnvFile(input: PushEnvFileInput): Promise<void> {
+  const { variables, projectId, environment } = input
   const api = await useApi()
 
   s.start('Pushing variables')
