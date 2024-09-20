@@ -4,6 +4,7 @@
 
 [![npm version](https://img.shields.io/npm/v/@shelve/cli?color=black)](https://npmjs.com/package/@shelve/cli)
 [![npm downloads](https://img.shields.io/npm/dm/@shelve/cli?color=black)](https://npmjs.com/package/@shelve/cli)
+[![license](https://img.shields.io/github/license/HugoRCD/shelve?color=black)](https://github.com/HugoRCD/shelve/blob/main/LICENSE)
 
 <!-- /automd -->
 
@@ -107,6 +108,6 @@ Made by [@HugoRCD](https://github.com/HugoRCD) and [community](https://github.co
 
 ---
 
-_🤖 auto updated with [automd](https://automd.unjs.io) (last updated: Fri Sep 13 2024)_
+_🤖 auto updated with [automd](https://automd.unjs.io) (last updated: Fri Sep 20 2024)_
 
 <!-- /automd -->
