@@ -35,13 +35,13 @@
     "@vue-email/render": "^0.0.9",
     "@vueuse/core": "^11.1.0",
     "@vueuse/nuxt": "^11.1.0",
-    "eslint": "^9.10.0",
+    "eslint": "^9.11.0",
     "nuxt": "^3.13.2",
-    "nuxt-auth-utils": "^0.3.8",
+    "nuxt-auth-utils": "^0.3.9",
     "nuxt-build-cache": "^0.1.1",
     "prisma": "^5.19.1",
     "resend": "^4.0.0",
-    "vue": "^3.5.6",
+    "vue": "^3.5.8",
     "vue-router": "^4.4.5",
     "vue-sonner": "^1.1.5"
   }
