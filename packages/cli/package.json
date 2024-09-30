@@ -43,7 +43,7 @@
     "c12": "^1.11.2",
     "commander": "^12.1.0",
     "consola": "^3.2.3",
-    "npm-registry-fetch": "^17.1.0",
+    "npm-registry-fetch": "^18.0.0",
     "nypm": "^0.3.11",
     "ofetch": "^1.4.0",
     "semver": "^7.6.3",
