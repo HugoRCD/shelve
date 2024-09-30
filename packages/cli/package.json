@@ -40,7 +40,7 @@
   },
   "dependencies": {
     "@clack/prompts": "^0.7.0",
-    "c12": "^1.11.2",
+    "c12": "^2.0.0",
     "commander": "^12.1.0",
     "consola": "^3.2.3",
     "npm-registry-fetch": "^18.0.0",
