@@ -1,6 +1,6 @@
 import { upsertUser } from '~~/server/app/userService'
 
-export default oauthGitHubEventHandler({
+export default defineOAuthGitHubEventHandler({
   config: {
     emailRequired: true,
     scope: ['repo', 'user:email'],

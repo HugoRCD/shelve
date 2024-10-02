@@ -37,7 +37,7 @@
     "@vueuse/nuxt": "^11.1.0",
     "eslint": "^9.11.1",
     "nuxt": "^3.13.2",
-    "nuxt-auth-utils": "^0.4.1",
+    "nuxt-auth-utils": "^0.4.2",
     "nuxt-build-cache": "^0.1.1",
     "prisma": "^5.20.0",
     "resend": "^4.0.0",
