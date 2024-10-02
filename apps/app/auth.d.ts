@@ -10,8 +10,8 @@ declare module '#auth-utils' {
 
   type UserSession = {
     user: User
-    tokens: {
-      github?: string
+    secure: {
+      githubToken?: string
     }
     loggedInAt: string
   }

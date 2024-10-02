@@ -13,8 +13,8 @@ export default defineOAuthGitHubEventHandler({
         username: user.login,
       })
       await setUserSession(event, {
-        tokens: {
-          github: tokens.access_token,
+        secure: {
+          githubToken: tokens.access_token,
         },
         user: {
           id: _user.id,
