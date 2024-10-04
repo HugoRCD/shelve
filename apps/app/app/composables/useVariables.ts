@@ -8,6 +8,22 @@ export function useVariables(refresh: () => Promise<void>, projectId: string) {
   const updateLoading = ref(false)
   const deleteLoading = ref(false)
 
+  const dragOver = ref(false)
+
+  const border = computed(() => {
+    if (dragOver.value) {
+      return 'border-[0.5px] border-primary border-dashed'
+    }
+    return 'border-[0.5px] border-gray-200 dark:border-gray-800'
+  })
+  const background = computed(() => {
+    if (dragOver.value) {
+      return 'rgba(255, 255, 255, 0.2)' // Utilisation de rgba pour la transparence
+    }
+    return 'rgba(255, 255, 255, 1)' // Fond opaque
+  })
+
+
   const variablesToCreate = ref(1)
   const variablesInput = ref<VariablesCreateInput>({
     projectId: parseInt(projectId),
@@ -106,34 +122,66 @@ export function useVariables(refresh: () => Promise<void>, projectId: string) {
     fileInputRef.value?.click()
   }
 
+  function parseEnvFile(file: File) {
+    const reader = new FileReader()
+
+    reader.onload = (e) => {
+      const content = e.target?.result as string
+      const lines = content.split('\n')
+      const filteredLines = lines.filter((line) => !line.startsWith('#'))
+      const variables = filteredLines.map((line, index) => {
+        const [key, value] = line.split('=')
+        if (!key || !value) throw new Error('Invalid .env')
+        return {
+          index,
+          key: key.replace(/[\n\r'"]+/g, ''),
+          value: value.replace(/[\n\r'"]+/g, ''),
+          projectId: parseInt(projectId),
+          environment: environment.value,
+        }
+      })
+      variablesToCreate.value = variables.length
+      variablesInput.value.variables = variables
+    }
+
+    reader.onerror = (e) => {
+      console.error('Erreur de lecture du fichier:', e)
+    }
+
+    reader.readAsText(file)
+  }
+
   const handleFileUpload = (event: Event) => {
     const target = event.target as HTMLInputElement
-    console.log('Fichier sélectionné:', target.files)
     const file = target.files ? target.files[0] : null
     if (file) {
-      const reader = new FileReader()
-      reader.onload = (e) => {
-        const content = e.target?.result as string
-        const lines = content.split('\n')
-        const filteredLines = lines.filter((line) => !line.startsWith('#'))
-        const variables = filteredLines.map((line, index) => {
-          const [key, value] = line.split('=')
-          if (!key || !value) throw new Error('Invalid .env')
-          return {
-            index,
-            key: key.replace(/[\n\r'"]+/g, ''),
-            value: value.replace(/[\n\r'"]+/g, ''),
-            projectId: parseInt(projectId),
-            environment: environment.value
-          }
-        })
-        variablesToCreate.value = variables.length
-        variablesInput.value.variables = variables
-      }
-      reader.readAsText(file)
+      parseEnvFile(file)
     }
   }
 
+  function handleDragEnter(event: DragEvent) {
+    event.preventDefault()
+    dragOver.value = true
+  }
+
+  function handleDragOver(event: DragEvent) {
+    event.preventDefault()
+  }
+
+  function handleDragLeave(event: DragEvent) {
+    if (!event.currentTarget.contains(event.relatedTarget as Node)) {
+      dragOver.value = false
+    }
+  }
+
+  function handleDrop(event: DragEvent) {
+    event.preventDefault()
+    dragOver.value = false
+    const files = event.dataTransfer?.files
+    if (files && files.length > 0) {
+      parseEnvFile(files[0])
+    }
+  }
 
   async function deleteVariable(varId: number, varEnv: string) {
     deleteLoading.value = true
@@ -158,6 +206,13 @@ export function useVariables(refresh: () => Promise<void>, projectId: string) {
     variablesInput,
     variablesToCreate,
     fileInputRef,
+    dragOver,
+    border,
+    background,
+    handleDragOver,
+    handleDragEnter,
+    handleDragLeave,
+    handleDrop,
     triggerFileInput,
     handleFileUpload,
     addVariable,
