@@ -76,6 +76,40 @@ const items = [
   ],
 ]
 
+const fileInputRef = ref<HTMLInputElement | null>(null)
+
+const triggerFileInput = () => {
+  fileInputRef.value?.click()
+}
+
+const handleFileUpload = (event: Event) => {
+  const target = event.target as HTMLInputElement
+  console.log('Fichier sélectionné:', target.files)
+  const file = target.files ? target.files[0] : null
+  if (file) {
+    const reader = new FileReader()
+    reader.onload = (e) => {
+      const content = e.target?.result as string
+      const lines = content.split('\n')
+      const filteredLines = lines.filter((line) => !line.startsWith('#'))
+      const variables = filteredLines.map((line, index) => {
+        const [key, value] = line.split('=')
+        if (!key || !value) throw new Error('Invalid .env')
+        return {
+          index,
+          key: key.replace(/[\n\r'"]+/g, ''),
+          value: value.replace(/[\n\r'"]+/g, ''),
+          projectId: parseInt(projectId),
+          environment: environment.value
+        }
+      })
+      variablesToCreate.value = variables.length
+      variablesInput.value.variables = variables
+    }
+    reader.readAsText(file)
+  }
+}
+
 onMounted(() => {
   document.addEventListener('paste', (e) => {
     const { clipboardData } = e
@@ -163,7 +197,11 @@ onMounted(() => {
       </div>
       <template #footer>
         <div class="flex justify-between gap-4">
-          <UButton label="Add variable" color="white" icon="heroicons:plus-circle-20-solid" @click="addVariable" />
+          <div class="flex gap-2">
+            <UButton label="Add variable" color="white" icon="heroicons:plus-circle-20-solid" @click="addVariable" />
+            <input ref="fileInputRef" type="file" accept="text" style="display: none;" @change="handleFileUpload">
+            <UButton label="Import .env" color="white" icon="lucide:download" @click="triggerFileInput" />
+          </div>
           <UButton label="Save" color="primary" :loading="createLoading" type="submit" />
         </div>
       </template>
