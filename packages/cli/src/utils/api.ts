@@ -26,6 +26,9 @@ export async function useApi(): Promise<typeof ofetch> {
 
   if (!token) token = await getToken()
 
+  console.log(`token: ${token}`)
+  console.log(`url: ${url}`)
+
   const sanitizedUrl = url.replace(/\/+$/, '') // remove trailing slash
   const baseURL = `${sanitizedUrl}/api`
 
