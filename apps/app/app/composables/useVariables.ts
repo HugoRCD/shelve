@@ -100,6 +100,41 @@ export function useVariables(refresh: () => Promise<void>, projectId: string) {
     refresh()
   }
 
+  const fileInputRef = ref<HTMLInputElement | null>(null)
+
+  const triggerFileInput = () => {
+    fileInputRef.value?.click()
+  }
+
+  const handleFileUpload = (event: Event) => {
+    const target = event.target as HTMLInputElement
+    console.log('Fichier sélectionné:', target.files)
+    const file = target.files ? target.files[0] : null
+    if (file) {
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        const content = e.target?.result as string
+        const lines = content.split('\n')
+        const filteredLines = lines.filter((line) => !line.startsWith('#'))
+        const variables = filteredLines.map((line, index) => {
+          const [key, value] = line.split('=')
+          if (!key || !value) throw new Error('Invalid .env')
+          return {
+            index,
+            key: key.replace(/[\n\r'"]+/g, ''),
+            value: value.replace(/[\n\r'"]+/g, ''),
+            projectId: parseInt(projectId),
+            environment: environment.value
+          }
+        })
+        variablesToCreate.value = variables.length
+        variablesInput.value.variables = variables
+      }
+      reader.readAsText(file)
+    }
+  }
+
+
   async function deleteVariable(varId: number, varEnv: string) {
     deleteLoading.value = true
     try {
@@ -122,6 +157,9 @@ export function useVariables(refresh: () => Promise<void>, projectId: string) {
     environment,
     variablesInput,
     variablesToCreate,
+    fileInputRef,
+    triggerFileInput,
+    handleFileUpload,
     addVariable,
     removeVariable,
     createVariables,
