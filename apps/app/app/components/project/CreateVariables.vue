@@ -22,6 +22,16 @@ const {
   selectedEnvironment,
   variablesInput,
   variablesToCreate,
+  fileInputRef,
+  dragOver,
+  border,
+  background,
+  handleDragOver,
+  handleDragEnter,
+  handleDragLeave,
+  handleDrop,
+  triggerFileInput,
+  handleFileUpload,
   addVariable,
   removeVariable,
   createVariables,
@@ -100,13 +110,40 @@ onMounted(() => {
     })
   })
 })
+
 </script>
 
 <template>
-  <form id="varCreation" @submit.prevent="createVariables">
-    <UCard :ui="{ background: 'bg-white dark:bg-neutral-950' }">
+  <form id="varCreation" class="relative duration-500" @submit.prevent="createVariables">
+    <UCard
+      :ui="{ base: border }"
+      class="duration-500"
+      @dragenter.prevent="handleDragEnter"
+      @dragover.prevent="handleDragOver"
+      @dragleave.prevent="handleDragLeave"
+      @drop.prevent="handleDrop"
+    >
+      <div
+        :class="{ 'absolute': dragOver, 'hidden': !dragOver }"
+        class="
+        overlay
+        left-0
+        top-0
+        z-40
+        size-full
+        content-center
+        items-center
+        justify-center"
+      >
+        <div class="icon-container flex flex-col items-center gap-2">
+          <UIcon name="lucide:file-up" class="text-primary size-10" />
+          <p class="text-lg font-semibold">
+            Drop your file here
+          </p>
+        </div>
+      </div>
       <template #header>
-        <div class="flex items-center justify-between">
+        <div :class="{ 'opacity-30': dragOver }" class="flex items-center justify-between">
           <div class="flex flex-col">
             <h2 class="text-lg font-semibold">
               Environment Variables
@@ -120,7 +157,7 @@ onMounted(() => {
           </UDropdown>
         </div>
       </template>
-      <div class="flex flex-col gap-4">
+      <div :class="{ 'opacity-30': dragOver }" class="flex flex-col gap-4">
         <div class="flex w-full flex-col gap-4 md:w-1/3">
           <h4 class="text-sm font-semibold">
             Environments
@@ -162,8 +199,12 @@ onMounted(() => {
         </div>
       </div>
       <template #footer>
-        <div class="flex justify-between gap-4">
-          <UButton label="Add variable" color="white" icon="heroicons:plus-circle-20-solid" @click="addVariable" />
+        <div :class="{ 'opacity-30': dragOver }" class="flex justify-between gap-4">
+          <div class="flex gap-2">
+            <UButton label="Add variable" color="white" icon="heroicons:plus-circle-20-solid" @click="addVariable" />
+            <input ref="fileInputRef" type="file" accept="text" style="display: none;" @change="handleFileUpload">
+            <UButton label="Import .env" color="white" icon="lucide:download" @click="triggerFileInput" />
+          </div>
           <UButton label="Save" color="primary" :loading="createLoading" type="submit" />
         </div>
       </template>

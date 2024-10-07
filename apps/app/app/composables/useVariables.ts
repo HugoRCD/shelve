@@ -8,7 +8,25 @@ export function useVariables(refresh: () => Promise<void>, projectId: string) {
   const updateLoading = ref(false)
   const deleteLoading = ref(false)
 
+  const dragOver = ref(false)
+
+  const border = computed(() => {
+    if (dragOver.value) {
+      return 'border-[0.5px] border-primary border-dashed'
+    }
+    return 'border-[0.5px] border-gray-200 dark:border-gray-800'
+  })
+
+  const background = computed(() => {
+    if (dragOver.value) {
+      return 'rgba(255, 255, 255, 0.2)' // Utilisation de rgba pour la transparence
+    }
+    return 'rgba(255, 255, 255, 1)' // Fond opaque
+  })
+
+
   const variablesToCreate = ref(1)
+
   const variablesInput = ref<VariablesCreateInput>({
     projectId: parseInt(projectId),
     variables: [
@@ -74,7 +92,7 @@ export function useVariables(refresh: () => Promise<void>, projectId: string) {
       toast.error('An error occurred')
     }
     createLoading.value = false
-    refresh()
+    await refresh()
   }
 
   async function updateVariable(variable: Variable) {
@@ -97,7 +115,77 @@ export function useVariables(refresh: () => Promise<void>, projectId: string) {
       toast.error('An error occurred')
     }
     updateLoading.value = false
-    refresh()
+    await refresh()
+  }
+
+  const fileInputRef = ref<HTMLInputElement | null>(null)
+
+  const triggerFileInput = () => {
+    fileInputRef.value?.click()
+  }
+
+  function parseEnvFile(file: File) {
+    const reader = new FileReader()
+
+    reader.onload = (e) => {
+      const content = e.target?.result as string
+      const lines = content.split('\n')
+      const filteredLines = lines.filter((line) => !line.startsWith('#'))
+      const variables = filteredLines.map((line, index) => {
+        const [key, value] = line.split('=')
+        if (!key || !value) {
+          toast.error('Invalid .env file')
+          throw new Error('Invalid .env')
+        }
+        return {
+          index,
+          key: key.replace(/[\n\r'"]+/g, ''),
+          value: value.replace(/[\n\r'"]+/g, ''),
+          projectId: parseInt(projectId),
+          environment: environment.value,
+        }
+      })
+      variablesToCreate.value = variables.length
+      variablesInput.value.variables = variables
+    }
+
+    reader.onerror = (e) => {
+      console.error('Erreur de lecture du fichier:', e)
+    }
+
+    reader.readAsText(file)
+  }
+
+  const handleFileUpload = (event: Event) => {
+    const target = event.target as HTMLInputElement
+    const file = target.files ? target.files[0] : null
+    if (file) {
+      parseEnvFile(file)
+    }
+  }
+
+  function handleDragEnter(event: DragEvent) {
+    event.preventDefault()
+    dragOver.value = true
+  }
+
+  function handleDragOver(event: DragEvent) {
+    event.preventDefault()
+  }
+
+  function handleDragLeave(event: DragEvent) {
+    if (!event.currentTarget.contains(event.relatedTarget as Node)) {
+      dragOver.value = false
+    }
+  }
+
+  function handleDrop(event: DragEvent) {
+    event.preventDefault()
+    dragOver.value = false
+    const files = event.dataTransfer?.files
+    if (files && files.length > 0) {
+      parseEnvFile(files[0])
+    }
   }
 
   async function deleteVariable(varId: number, varEnv: string) {
@@ -111,7 +199,7 @@ export function useVariables(refresh: () => Promise<void>, projectId: string) {
       toast.error('An error occurred')
     }
     deleteLoading.value = false
-    refresh()
+    await refresh()
   }
 
   return {
@@ -122,6 +210,16 @@ export function useVariables(refresh: () => Promise<void>, projectId: string) {
     environment,
     variablesInput,
     variablesToCreate,
+    fileInputRef,
+    dragOver,
+    border,
+    background,
+    handleDragOver,
+    handleDragEnter,
+    handleDragLeave,
+    handleDrop,
+    triggerFileInput,
+    handleFileUpload,
     addVariable,
     removeVariable,
     createVariables,
