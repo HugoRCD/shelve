@@ -109,6 +109,6 @@ Made by [@HugoRCD](https://github.com/HugoRCD) and [community](https://github.co
 
 ---
 
-_🤖 auto updated with [automd](https://automd.unjs.io) (last updated: Fri Sep 20 2024)_
+_🤖 auto updated with [automd](https://automd.unjs.io) (last updated: Mon Oct 07 2024)_
 
 <!-- /automd -->

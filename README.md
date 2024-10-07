@@ -4,6 +4,7 @@
 
 [![npm version](https://img.shields.io/npm/v/@shelve/cli?color=black)](https://npmjs.com/package/@shelve/cli)
 [![npm downloads](https://img.shields.io/npm/dm/@shelve/cli?color=black)](https://npmjs.com/package/@shelve/cli)
+[![license](https://img.shields.io/github/license/HugoRCD/shelve?color=black)](https://github.com/HugoRCD/shelve/blob/main/LICENSE)
 
 <!-- /automd -->
 
@@ -92,10 +93,10 @@ To start contributing, you can follow these steps:
 
 <!-- /automd -->
 
-<!-- automd:contributors license=Apache author=HugoRCD github=HugoRCD/shelve -->
+<!-- automd:contributors license=Apache author=HugoRCD,CavallucciJohann -->
 
 Published under the [APACHE](https://github.com/HugoRCD/shelve/blob/main/LICENSE) license.
-Made by [@HugoRCD](https://github.com/HugoRCD) and [community](https://github.com/HugoRCD/shelve/graphs/contributors) 💛
+Made by [@HugoRCD](https://github.com/HugoRCD), [@CavallucciJohann](https://github.com/CavallucciJohann) and [community](https://github.com/HugoRCD/shelve/graphs/contributors) 💛
 <br><br>
 <a href="https://github.com/HugoRCD/shelve/graphs/contributors">
 <img src="https://contrib.rocks/image?repo=HugoRCD/shelve" />
@@ -107,6 +108,6 @@ Made by [@HugoRCD](https://github.com/HugoRCD) and [community](https://github.co
 
 ---
 
-_🤖 auto updated with [automd](https://automd.unjs.io) (last updated: Fri Sep 13 2024)_
+_🤖 auto updated with [automd](https://automd.unjs.io) (last updated: Mon Oct 07 2024)_
 
 <!-- /automd -->

@@ -2,6 +2,7 @@
   "name": "shelve",
   "private": true,
   "type": "module",
+  "repository": "https://github.com/HugoRCD/shelve",
   "scripts": {
     "build": "turbo build",
     "build:app": "turbo run build --filter=@shelve/app",
