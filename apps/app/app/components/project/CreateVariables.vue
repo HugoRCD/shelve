@@ -117,7 +117,6 @@ onMounted(() => {
   <form id="varCreation" class="relative duration-500" @submit.prevent="createVariables">
     <UCard
       :ui="{ base: border }"
-
       class="duration-500"
       @dragenter.prevent="handleDragEnter"
       @dragover.prevent="handleDragOver"
@@ -212,5 +211,3 @@ onMounted(() => {
     </UCard>
   </form>
 </template>
-
-h
