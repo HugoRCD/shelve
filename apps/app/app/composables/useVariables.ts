@@ -16,6 +16,7 @@ export function useVariables(refresh: () => Promise<void>, projectId: string) {
     }
     return 'border-[0.5px] border-gray-200 dark:border-gray-800'
   })
+
   const background = computed(() => {
     if (dragOver.value) {
       return 'rgba(255, 255, 255, 0.2)' // Utilisation de rgba pour la transparence
@@ -25,6 +26,7 @@ export function useVariables(refresh: () => Promise<void>, projectId: string) {
 
 
   const variablesToCreate = ref(1)
+
   const variablesInput = ref<VariablesCreateInput>({
     projectId: parseInt(projectId),
     variables: [
@@ -90,7 +92,7 @@ export function useVariables(refresh: () => Promise<void>, projectId: string) {
       toast.error('An error occurred')
     }
     createLoading.value = false
-    refresh()
+    await refresh()
   }
 
   async function updateVariable(variable: Variable) {
@@ -113,7 +115,7 @@ export function useVariables(refresh: () => Promise<void>, projectId: string) {
       toast.error('An error occurred')
     }
     updateLoading.value = false
-    refresh()
+    await refresh()
   }
 
   const fileInputRef = ref<HTMLInputElement | null>(null)
@@ -131,7 +133,10 @@ export function useVariables(refresh: () => Promise<void>, projectId: string) {
       const filteredLines = lines.filter((line) => !line.startsWith('#'))
       const variables = filteredLines.map((line, index) => {
         const [key, value] = line.split('=')
-        if (!key || !value) throw new Error('Invalid .env')
+        if (!key || !value) {
+          toast.error('Invalid .env file')
+          throw new Error('Invalid .env')
+        }
         return {
           index,
           key: key.replace(/[\n\r'"]+/g, ''),
@@ -194,7 +199,7 @@ export function useVariables(refresh: () => Promise<void>, projectId: string) {
       toast.error('An error occurred')
     }
     deleteLoading.value = false
-    refresh()
+    await refresh()
   }
 
   return {
