@@ -2,7 +2,7 @@ import fs from 'fs'
 import type { CreateEnvFileInput, Env, PushEnvFileInput, VariablesCreateInput } from '@shelve/types'
 import { spinner } from '@clack/prompts'
 import { getConfig, loadShelveConfig } from './config'
-import { useApi } from './api'
+import { getToken, useApi } from './api'
 import { onCancel } from './index'
 
 const s = spinner()
@@ -17,6 +17,7 @@ export async function getKeyValue(key: string): Promise<string> {
   const envFile = await getEnvFile()
   const value = envFile.find((item) => item.key === key)?.value
   if (!value) {
+    if (key === 'SHELVE_TOKEN') return await getToken()
     onCancel(`Key ${key} not found in ${envFileName}`)
   }
   return value

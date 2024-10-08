@@ -4,7 +4,7 @@ import { getConfig } from './config'
 import { mergeEnvFile } from './env'
 import { onCancel } from './index'
 
-async function getToken(): Promise<string> {
+export async function getToken(): Promise<string> {
   const token = await password({
     message: 'Please provide a valid token (you can generate one on https://shelve.hrcd.fr/app/tokens)',
     validate(value) {
@@ -38,6 +38,7 @@ export async function useApi(): Promise<typeof ofetch> {
       }
     },
     onResponseError(ctx) {
+      console.log(ctx)
       if (ctx.response.status === 401) onCancel('Authentication failed, please verify your token')
       if (ctx.response.status === 500) onCancel('Internal server error, please try again later')
     }

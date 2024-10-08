@@ -16,6 +16,7 @@ export async function getProjects(): Promise<Project[]> {
     s.stop('Loading projects')
     return projects
   } catch (e) {
+    console.error(e)
     onCancel('Failed to load projects')
   }
 }

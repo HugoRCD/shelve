@@ -45,6 +45,7 @@ export async function createShelveConfig(projectName?: string): Promise<string> 
 export async function getConfig(): Promise<{
   config: ShelveConfig
 } & ConfigLayer> {
+  await setupDotenv({})
   const { config, configFile } = await loadConfig<ShelveConfig>({
     name: 'shelve',
     packageJson: false,
@@ -79,6 +80,14 @@ export async function loadShelveConfig(): Promise<ShelveConfig> {
     config.project = await createShelveConfig()
   }
 
+  const envToken = await getKeyValue('SHELVE_TOKEN')
+  if (envToken) config.token = envToken
+
+  if (!config.token) {
+    consola.error('You need to provide a token')
+    process.exit(0)
+  }
+
   if (!config.project) {
     consola.error('Please provide a project name')
     process.exit(0)
@@ -87,14 +96,6 @@ export async function loadShelveConfig(): Promise<ShelveConfig> {
   const urlRegex = /^(http|https):\/\/[^ "]+$/
   if (!urlRegex.test(config.url)) {
     consola.error('Please provide a valid url')
-    process.exit(0)
-  }
-
-  const envToken = await getKeyValue('SHELVE_TOKEN')
-  if (envToken) config.token = envToken
-
-  if (!config.token) {
-    consola.error('You need to provide a token')
     process.exit(0)
   }
 
