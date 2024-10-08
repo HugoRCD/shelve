@@ -31,11 +31,8 @@ export async function useApi(): Promise<typeof ofetch> {
 
   return ofetch.create({
     baseURL,
-    onRequest({ options }) {
-      options.headers = {
-        ...options.headers,
-        Cookie: `authToken=${token}`
-      }
+    headers: {
+      Cookie: `authToken=${token}`
     },
     onResponseError(ctx) {
       console.log(ctx)

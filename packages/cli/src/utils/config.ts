@@ -45,6 +45,7 @@ export async function createShelveConfig(projectName?: string): Promise<string> 
 export async function getConfig(): Promise<{
   config: ShelveConfig
 } & ConfigLayer> {
+  // @ts-expect-error we don't want to specify 'cwd' option
   await setupDotenv({})
   const { config, configFile } = await loadConfig<ShelveConfig>({
     name: 'shelve',
