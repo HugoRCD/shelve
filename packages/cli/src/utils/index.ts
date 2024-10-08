@@ -33,7 +33,7 @@ export async function isLatestVersion(): Promise<boolean> {
 
 export async function installLatest(): Promise<void> {
   s.start('Updating Shelve CLI')
-  await addDependency('@shelve/cli', {
+  await addDependency('@shelve/cli@latest', {
     silent: true,
     global: true
   })

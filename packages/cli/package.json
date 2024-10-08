@@ -1,6 +1,6 @@
 {
   "name": "@shelve/cli",
-  "version": "2.3.3",
+  "version": "2.3.4",
   "description": "The command-line interface for Shelve",
   "homepage": "https://shelve.hrcd.fr",
   "bugs": {
