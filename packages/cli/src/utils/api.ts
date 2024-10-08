@@ -4,7 +4,7 @@ import { getConfig } from './config'
 import { mergeEnvFile } from './env'
 import { onCancel } from './index'
 
-async function getToken(): Promise<string> {
+export async function getToken(): Promise<string> {
   const token = await password({
     message: 'Please provide a valid token (you can generate one on https://shelve.hrcd.fr/app/tokens)',
     validate(value) {
@@ -25,9 +25,6 @@ export async function useApi(): Promise<typeof ofetch> {
   let { token } = config
 
   if (!token) token = await getToken()
-
-  console.log(`token: ${token}`)
-  console.log(`url: ${url}`)
 
   const sanitizedUrl = url.replace(/\/+$/, '') // remove trailing slash
   const baseURL = `${sanitizedUrl}/api`
