@@ -49,7 +49,7 @@ async function upsertMemberFunction(teamId: number, email: string, role: TeamRol
   await upsertMember(teamId, email, role)
   newMember.value.email = ''
   newMember.value.role = TeamRole.DEVELOPER
-  loadingMembers.value = false
+  loadingMates.value = false
 }
 
 const loadingRemove = ref(false)
@@ -63,9 +63,8 @@ async function loadTeammates() {
   const allTeammates = await $fetch<{ data: Member[] }>('/api/user/teammate', {
     method: 'GET',
   })
-  console.log(allTeammates)
   mainsTeammates.value = allTeammates
-  console.log(mainsTeammates.value)
+  teammateLoading.value = true
 }
 
 watch(open, (newValue) => {
@@ -73,6 +72,7 @@ watch(open, (newValue) => {
     loadTeammates()
   } else {
     newMember.value.email = ''
+    teammateLoading.value = false
   }
 })
 </script>
@@ -128,22 +128,27 @@ watch(open, (newValue) => {
                 <p class=" content-center items-center text-center">
                   Your teammates :
                 </p>
-                <div v-if="mainsTeammates" class="flex">
-                  <UAvatarGroup :ui="{ ring: 'ring-0'}">
-                    <UTooltip
-                      v-for="teammate in mainsTeammates"
-                      :text="teammate.teammate.username || teammate.teammate.email"
-                      :ui="{ popper: { placement: 'top' } }"
-                    >
-                      <UAvatar
-                        :src="teammate.teammate.avatar"
-                        :alt="teammate.teammate.username"
-                        size="sm"
-                        class="ring-primary transform cursor-pointer transition duration-300 hover:z-40 hover:scale-105 hover:ring-2"
-                        @click="newMember.email = teammate.teammate.email"
-                      />
-                    </UTooltip>
-                  </UAvatarGroup>
+                <div v-if="!teammateLoading" class="flex">
+                  <USkeleton v-for="n in 4" :key="n" class="size-8" :ui="{ rounded: 'rounded-full' }" />
+                </div>
+                <div v-else>
+                  <div v-if="mainsTeammates" class="flex">
+                    <UAvatarGroup :ui="{ ring: 'ring-0'}">
+                      <UTooltip
+                        v-for="teammate in mainsTeammates"
+                        :text="teammate.teammate.username || teammate.teammate.email"
+                        :ui="{ popper: { placement: 'top' } }"
+                      >
+                        <UAvatar
+                          :src="teammate.teammate.avatar"
+                          :alt="teammate.teammate.username"
+                          size="sm"
+                          class="ring-primary transform cursor-pointer transition duration-300 hover:z-40 hover:scale-105 hover:ring-2"
+                          @click="newMember.email = teammate.teammate.email"
+                        />
+                      </UTooltip>
+                    </UAvatarGroup>
+                  </div>
                 </div>
               </div>
             </div>
