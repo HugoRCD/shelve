@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { type Member, Role, TeamRole } from '@shelve/types'
+import { type Member, Role, type Team, TeamRole } from '@shelve/types'
 import type { PropType } from 'vue'
 
 type TeamMemberProps = {
@@ -7,6 +7,10 @@ type TeamMemberProps = {
   teamId: number
   display?: boolean
 }
+
+const open = ref(false)
+const mainsTeammates = ref([])
+const teammateLoading = ref(false)
 
 const { members, teamId, display = false } = defineProps<TeamMemberProps>()
 
@@ -54,6 +58,23 @@ async function removeMemberFunction(teamId: number, memberId: number) {
   await removeMember(teamId, memberId)
   loadingRemove.value = false
 }
+
+async function loadTeammates() {
+  const allTeammates = await $fetch<{ data: Member[] }>('/api/user/teammate', {
+    method: 'GET',
+  })
+  console.log(allTeammates)
+  mainsTeammates.value = allTeammates
+  console.log(mainsTeammates.value)
+}
+
+watch(open, (newValue) => {
+  if (newValue) {
+    loadTeammates()
+  } else {
+    newMember.value.email = ''
+  }
+})
 </script>
 
 <template>
@@ -84,7 +105,7 @@ async function removeMemberFunction(teamId: number, memberId: number) {
         </UCard>
       </template>
     </UPopover>
-    <UPopover v-if="members.find(member => member.user.id === user?.id)?.role === TeamRole.OWNER" :popper="{ arrow: true }">
+    <UPopover v-if="members.find(member => member.user.id === user?.id)?.role === TeamRole.OWNER" v-model:open="open" :popper="{ arrow: true }">
       <UTooltip text="Add member" :ui="{ popper: { placement: 'top' } }">
         <span class="flex size-8 cursor-pointer items-center justify-center rounded-full border border-dashed border-gray-400">+</span>
       </UTooltip>
@@ -101,7 +122,29 @@ async function removeMemberFunction(teamId: number, memberId: number) {
                   value-attribute="value"
                   option-attribute="label"
                 />
-                <UButton label="Add member" :loading="loadingMembers" type="submit" />
+                <UButton class="flex-1 justify-center" label="Add member" :loading="loadingMembers" type="submit" />
+              </div>
+              <div class="flex w-full content-between gap-2">
+                <p class=" content-center items-center text-center">
+                  Your teammates :
+                </p>
+                <div v-if="mainsTeammates" class="flex">
+                  <UAvatarGroup :ui="{ ring: 'ring-0'}">
+                    <UTooltip
+                      v-for="teammate in mainsTeammates"
+                      :text="teammate.teammate.username || teammate.teammate.email"
+                      :ui="{ popper: { placement: 'top' } }"
+                    >
+                      <UAvatar
+                        :src="teammate.teammate.avatar"
+                        :alt="teammate.teammate.username"
+                        size="sm"
+                        class="ring-primary transform cursor-pointer transition duration-300 hover:z-40 hover:scale-105 hover:ring-2"
+                        @click="newMember.email = teammate.teammate.email"
+                      />
+                    </UTooltip>
+                  </UAvatarGroup>
+                </div>
               </div>
             </div>
           </form>
