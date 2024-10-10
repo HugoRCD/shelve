@@ -8,5 +8,15 @@ export default eventHandler(async (event: H3Event) => {
   const updateUserInput = await readBody(event) as UpdateUserInput
   updateUserInput.username = updateUserInput.username?.trim()
   updateUserInput.email = updateUserInput.email?.trim()
-  return await updateUser(user, updateUserInput, authToken)
+  const updatedUser = await updateUser(user, updateUserInput, authToken)
+  await setUserSession(event, {
+    user: {
+      username: updatedUser.username,
+      email: updatedUser.email,
+      avatar: updatedUser.avatar,
+      role: updatedUser.role,
+    },
+    loggedInAt: new Date().toISOString(),
+  })
+  return updatedUser
 })
