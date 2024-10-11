@@ -3,7 +3,7 @@ import type { CreateProjectInput, ProjectUpdateInput, Team } from '@shelve/types
 type CreateProjectInputWithAll = CreateProjectInput & { ownerId: number, team?: { connect: { id: number } } }
 
 export async function createProject(project: CreateProjectInput, userId: number) {
-  await removeCachedUserProjects(userId.toString())
+  await deleteCachedUserProjects(userId)
   const projectAlreadyExists = await isProjectAlreadyExists(project.name, userId)
   if (projectAlreadyExists) throw new Error('Project already exists')
 
@@ -34,8 +34,8 @@ async function isProjectAlreadyExists(name: string, userId: number): Promise<boo
 }
 
 export async function updateProject(project: ProjectUpdateInput, projectId: number, userId: number) {
-  await removeCachedUserProjects(userId.toString())
-  await removeCachedProjectById(projectId.toString())
+  await deleteCachedUserProjects(userId)
+  await deleteCachedProjectById(projectId)
   const findProject = await prisma.project.findFirst({
     where: {
       id: projectId,
@@ -85,7 +85,7 @@ export const getProjectById = cachedFunction((id: number) => {
 })
 
 export async function addTeamToProject(projectId: number, teamId: number) {
-  await removeCachedProjectById(projectId.toString())
+  await deleteCachedProjectById(projectId)
   return prisma.project.update({
     where: {
       id: projectId,
@@ -101,7 +101,7 @@ export async function addTeamToProject(projectId: number, teamId: number) {
 }
 
 export async function removeTeamFromProject(projectId: number, teamId: number) {
-  await removeCachedProjectById(projectId.toString())
+  await deleteCachedProjectById(projectId)
   return prisma.project.update({
     where: {
       id: projectId,
@@ -145,8 +145,8 @@ export const getProjectsByUserId = cachedFunction(async (userId: number) => {
 })
 
 export async function deleteProject(id: string, userId: number) {
-  await removeCachedUserProjects(userId.toString())
-  await removeCachedProjectById(id)
+  await deleteCachedUserProjects(userId)
+  await deleteCachedProjectById(id)
   return prisma.project.delete({
     where: {
       id: parseInt(id),
@@ -155,9 +155,9 @@ export async function deleteProject(id: string, userId: number) {
   })
 }
 
-async function removeCachedUserProjects(userId: string) {
+export async function deleteCachedUserProjects(userId: number) {
   return await useStorage('cache').removeItem(`nitro:functions:getProjectsByUserId:userId:${userId}.json`)
 }
-async function removeCachedProjectById(id: string) {
+export async function deleteCachedProjectById(id: number) {
   return await useStorage('cache').removeItem(`nitro:functions:getProjectById:projectId:${id}.json`)
 }
