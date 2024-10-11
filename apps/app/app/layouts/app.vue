@@ -2,7 +2,7 @@
 const pages = [...getNavigation('app'), ...getNavigation('admin')]
 const route = useRoute()
 
-const currentPage = computed(() => {
+const navigation = computed(() => {
   if (route.path.includes('/app/project'))
     return { title: 'Project Details', to: '/app/project', name: 'project', icon: 'lucide:folder-open' }
   return pages.find((page) => page.to === route.path)
@@ -12,7 +12,7 @@ const currentPage = computed(() => {
 <template>
   <div class="max-layout-width relative flex h-screen">
     <LayoutSidebar class="hidden sm:flex" />
-    <LayoutSectionWrapper :navigation="currentPage">
+    <LayoutSectionWrapper :navigation>
       <slot />
     </LayoutSectionWrapper>
   </div>

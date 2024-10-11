@@ -1,13 +1,9 @@
 <script setup lang="ts">
-import type { PropType } from 'vue'
-import type { Navigation } from '~/utils/navigation'
+type SectionWrapperProps = {
+  navigation: Navigation
+}
 
-defineProps({
-  navigation: {
-    type: Object as PropType<Navigation>,
-    required: true,
-  },
-})
+defineProps<SectionWrapperProps>()
 </script>
 
 <template>

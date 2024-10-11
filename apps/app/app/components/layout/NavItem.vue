@@ -1,17 +1,13 @@
 <script setup lang="ts">
-import { capitalize, type PropType } from 'vue'
+import { capitalize } from 'vue'
 import type { Navigation } from '~/utils/navigation'
 
-defineProps({
-  navItem: {
-    type: Object as PropType<Navigation>,
-    required: true,
-  },
-  active: {
-    type: Boolean,
-    default: false,
-  },
-})
+type NavItemProps = {
+  navItem: Navigation
+  active: boolean
+}
+
+const { navItem, active = false } = defineProps<NavItemProps>()
 </script>
 
 <template>
