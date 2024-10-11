@@ -1,5 +1,4 @@
 import { type CreateTeamInput, TeamRole } from '@shelve/types'
-import idDelete from '~~/server/api/tokens/[id].delete'
 
 export async function createTeam(createTeamInput: CreateTeamInput, userId: number) {
   await deleteCachedTeamByUserId(userId)
@@ -56,12 +55,10 @@ export async function upsertTeammate(userId: number, teammateId: number, isUpdat
     })
   }
 
-  const [teammate, teammate2] = await Promise.all([
+  await Promise.all([
     updateOrCreateTeammate(userId, teammateId),
     updateOrCreateTeammate(teammateId, userId),
   ])
-
-  return [teammate, teammate2]
 }
 
 export async function upsertMember(teamId: number, addMemberInput: {
@@ -120,7 +117,7 @@ export async function upsertMember(teamId: number, addMemberInput: {
   return member
 }
 
-export async function deleteOneTeammate(userId: number, requesterId: number) {
+export async function deleteTeammate(userId: number, requesterId: number) {
   const updatedUser = await prisma.teammate.update({
     where: {
       userId_teammateId: {
@@ -175,8 +172,8 @@ export async function removeMember(teamId: number, memberId: number, requesterId
       userId: true,
     },
   })
-  await deleteOneTeammate(member.userId, requesterId)
-  await deleteOneTeammate(requesterId, member.userId)
+  await deleteTeammate(member.userId, requesterId)
+  await deleteTeammate(requesterId, member.userId)
   return prisma.member.delete({
     where: {
       id: memberId,
@@ -205,8 +202,8 @@ export async function deleteTeam(teamId: number, userId: number) {
   })
   for (const member of allMembers) {
     if (member.userId === userId) continue
-    await deleteOneTeammate(member.userId, userId)
-    await deleteOneTeammate(userId, member.userId)
+    await deleteTeammate(member.userId, userId)
+    await deleteTeammate(userId, member.userId)
   }
   return prisma.team.delete({
     where: {

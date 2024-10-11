@@ -59,9 +59,10 @@ async function removeMemberFunction(teamId: number, memberId: number) {
 }
 
 async function loadTeammates() {
-  mainsTeammates.value = await $fetch<{ data: Member[] }>('/api/user/teammate', {
+  mainsTeammates.value = await $fetch<Member[]>('/api/user/teammate', {
     method: 'GET',
   })
+  console.log(mainsTeammates.value)
   teammateLoading.value = true
 }
 
