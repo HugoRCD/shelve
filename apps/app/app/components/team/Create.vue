@@ -41,7 +41,7 @@ async function createTeamFunction(name: string) {
                 Create a team
               </p>
               <div class="flex gap-2">
-                <UInput v-model="teamName" label="Team name" placeholder="Team name" />
+                <UInput v-model="teamName" autofocus label="Team name" placeholder="Team name" />
                 <UButton :loading="createLoading" label="Create" type="submit" />
               </div>
             </div>
