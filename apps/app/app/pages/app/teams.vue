@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { type Role, type Team, TeamRole } from '@shelve/types'
+import { Role, type Team, TeamRole } from '@shelve/types'
 
 const { user } = useUserSession()
 
