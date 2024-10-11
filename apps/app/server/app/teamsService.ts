@@ -35,8 +35,6 @@ export async function createTeam(createTeamInput: CreateTeamInput, userId: numbe
 }
 
 export async function upsertTeammate(userId: number, teammateId: number, isUpdated: boolean) {
-  const incrementValue = isUpdated ? 0 : 1
-  console.log('Increment Value:', incrementValue)
   const teammate = await prisma.teammate.upsert({
     where: {
       userId_teammateId: {
@@ -130,15 +128,11 @@ export async function upsertMember(teamId: number, addMemberInput: {
     }
   })
   const isUpdated: boolean = new Date(member.createdAt).getTime() !== new Date(member.updatedAt).getTime()
-  console.log('isUpdated', isUpdated)
-  console.log('Member', member)
   await upsertTeammate(requesterId, user.id, isUpdated)
   return member
 }
 
 export async function deleteOneTeammate(userId: number, requesterId: number) {
-  console.log('Requester ID:', requesterId)
-  console.log('User ID:', userId)
   const updatedUser = await prisma.teammate.update({
     where: {
       userId_teammateId: {
@@ -155,10 +149,6 @@ export async function deleteOneTeammate(userId: number, requesterId: number) {
       count: true,
     },
   })
-
-  console.log('Updated Count:', updatedUser.count)
-  console.log('user', updatedUser)
-  console.log('user.count', updatedUser.count)
   if (updatedUser.count === 0) {
     await prisma.teammate.delete({
       where: {
@@ -240,7 +230,17 @@ export async function removeMember(teamId: number, memberId: number, requesterId
   if (!team) throw new Error('unauthorized')
 
   await deleteCachedTeamByUserId(requesterId)
-  await deleteTeammate(requesterId, memberId)
+
+  const member = await prisma.member.findFirst({
+    where: {
+      id: memberId,
+    },
+    select: {
+      userId: true,
+    },
+  })
+  await deleteOneTeammate(member.userId, requesterId)
+  await deleteOneTeammate(requesterId, member.userId)
   return prisma.member.delete({
     where: {
       id: memberId,
@@ -262,13 +262,11 @@ export async function deleteTeam(teamId: number, userId: number) {
   })
   if (!team) throw new Error('unauthorized')
   await deleteCachedTeamByUserId(userId)
-  // call deleteteammate for all members
   const allMembers = await prisma.member.findMany({
     where: {
       teamId,
     },
   })
-  console.log('allMembers', allMembers)
   for (const member of allMembers) {
     if (member.userId === userId) continue
     await deleteOneTeammate(member.userId, userId)
