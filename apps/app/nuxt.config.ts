@@ -6,12 +6,6 @@ export default defineNuxtConfig({
     head: {
       viewport: 'width=device-width, initial-scale=1',
       charset: 'utf-8',
-      meta: [
-        {
-          name: 'author',
-          content: 'Hugo Richard',
-        },
-      ],
     },
   },
 
@@ -50,7 +44,6 @@ export default defineNuxtConfig({
     },
     private: {
       resendApiKey: process.env.NUXT_PRIVATE_RESEND_API_KEY,
-      authSecret: process.env.NUXT_PRIVATE_AUTH_SECRET,
       encryptionKey: process.env.NUXT_PRIVATE_ENCRYPTION_KEY,
     },
   },
