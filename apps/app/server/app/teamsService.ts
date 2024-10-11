@@ -33,6 +33,34 @@ export async function createTeam(createTeamInput: CreateTeamInput, userId: numbe
   })
 }
 
+export async function upsertTeammate(userId: number, teammateId: number, isUpdated: boolean) {
+  const updateOrCreateTeammate = (userId: number, teammateId: number) => {
+    return prisma.teammate.upsert({
+      where: {
+        userId_teammateId: {
+          userId,
+          teammateId,
+        },
+      },
+      update: {
+        updatedAt: new Date(),
+        count: {
+          increment: isUpdated ? 0 : 1,
+        },
+      },
+      create: {
+        userId,
+        teammateId,
+      },
+    })
+  }
+
+  await Promise.all([
+    updateOrCreateTeammate(userId, teammateId),
+    updateOrCreateTeammate(teammateId, userId),
+  ])
+}
+
 export async function upsertMember(teamId: number, addMemberInput: {
   email: string;
   role: TeamRole
@@ -61,7 +89,7 @@ export async function upsertMember(teamId: number, addMemberInput: {
   })
   if (!user) throw new Error('user not found')
   await deleteCachedTeamByUserId(requesterId)
-  return prisma.member.upsert({
+  const member = await prisma.member.upsert({
     where: {
       id: team.members.find((member) => member.userId === user.id)?.id || -1,
     },
@@ -84,6 +112,38 @@ export async function upsertMember(teamId: number, addMemberInput: {
       }
     }
   })
+  const isUpdated: boolean = new Date(member.createdAt).getTime() !== new Date(member.updatedAt).getTime()
+  await upsertTeammate(requesterId, user.id, isUpdated)
+  return member
+}
+
+export async function deleteTeammate(userId: number, requesterId: number) {
+  const updatedUser = await prisma.teammate.update({
+    where: {
+      userId_teammateId: {
+        userId: requesterId,
+        teammateId: userId,
+      },
+    },
+    data: {
+      count: {
+        decrement: 1,
+      },
+    },
+    select: {
+      count: true,
+    },
+  })
+  if (updatedUser.count === 0) {
+    await prisma.teammate.delete({
+      where: {
+        userId_teammateId: {
+          userId: requesterId,
+          teammateId: userId,
+        },
+      },
+    })
+  }
 }
 
 export async function removeMember(teamId: number, memberId: number, requesterId: number) {
@@ -103,6 +163,17 @@ export async function removeMember(teamId: number, memberId: number, requesterId
   if (!team) throw new Error('unauthorized')
 
   await deleteCachedTeamByUserId(requesterId)
+
+  const member = await prisma.member.findFirst({
+    where: {
+      id: memberId,
+    },
+    select: {
+      userId: true,
+    },
+  })
+  await deleteTeammate(member.userId, requesterId)
+  await deleteTeammate(requesterId, member.userId)
   return prisma.member.delete({
     where: {
       id: memberId,
@@ -124,6 +195,16 @@ export async function deleteTeam(teamId: number, userId: number) {
   })
   if (!team) throw new Error('unauthorized')
   await deleteCachedTeamByUserId(userId)
+  const allMembers = await prisma.member.findMany({
+    where: {
+      teamId,
+    },
+  })
+  for (const member of allMembers) {
+    if (member.userId === userId) continue
+    await deleteTeammate(member.userId, userId)
+    await deleteTeammate(userId, member.userId)
+  }
   return prisma.team.delete({
     where: {
       id: teamId,

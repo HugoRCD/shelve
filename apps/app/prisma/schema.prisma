@@ -8,16 +8,18 @@ datasource db {
 }
 
 model User {
-  id        Int       @id @default(autoincrement())
-  username  String?   @unique
-  email     String    @unique
-  avatar    String    @default("https://i.imgur.com/6VBx3io.png") @db.VarChar(500)
-  role      String    @default("user")
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  projects  Project[]
-  members   Member[]
-  token     Token[]
+  id         Int        @id @default(autoincrement())
+  username   String?    @unique
+  email      String     @unique
+  avatar     String     @default("https://i.imgur.com/6VBx3io.png") @db.VarChar(500)
+  role       String     @default("user")
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  projects   Project[]
+  members    Member[]
+  token      Token[]
+  teammates  Teammate[] @relation("UserTeammates")
+  teammateOf Teammate[] @relation("UserTeammateOf")
 }
 
 model Member {
@@ -79,4 +81,16 @@ model Token {
   updatedAt DateTime @updatedAt
   userId    Int
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Teammate {
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  teammateId Int
+  count      Int      @default(1)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  user       User     @relation("UserTeammates", fields: [userId], references: [id], onDelete: Cascade)
+  teammate   User     @relation("UserTeammateOf", fields: [teammateId], references: [id], onDelete: Cascade)
+  @@unique([userId, teammateId])
 }
