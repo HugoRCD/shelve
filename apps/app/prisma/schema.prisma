@@ -91,4 +91,5 @@ model Teammate {
   updatedAt  DateTime @updatedAt
   user       User     @relation("UserTeammates", fields: [userId], references: [id], onDelete: Cascade)
   teammate   User     @relation("UserTeammateOf", fields: [teammateId], references: [id], onDelete: Cascade)
+  @@unique([userId, teammateId])
 }

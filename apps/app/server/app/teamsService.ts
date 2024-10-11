@@ -33,6 +33,42 @@ export async function createTeam(createTeamInput: CreateTeamInput, userId: numbe
   })
 }
 
+export async function upsertTeammate(userId: number, teammateId: number) {
+  const teammate = await prisma.teammate.upsert({
+    where: {
+      userId_teammateId: {
+        userId,
+        teammateId,
+      },
+    },
+    update: {
+      updatedAt: new Date(),
+    },
+    create: {
+      userId,
+      teammateId,
+    },
+  })
+
+  const teammate2 = await prisma.teammate.upsert({
+    where: {
+      userId_teammateId: {
+        userId: teammateId,
+        teammateId: userId,
+      },
+    },
+    update: {
+      updatedAt: new Date(),
+    },
+    create: {
+      userId: teammateId,
+      teammateId: userId,
+    },
+  })
+
+  return [teammate, teammate2]
+}
+
 export async function upsertMember(teamId: number, addMemberInput: {
   email: string;
   role: TeamRole
@@ -61,7 +97,7 @@ export async function upsertMember(teamId: number, addMemberInput: {
   })
   if (!user) throw new Error('user not found')
   await deleteCachedTeamByUserId(requesterId)
-  return prisma.member.upsert({
+  const teams = await prisma.member.upsert({
     where: {
       id: team.members.find((member) => member.userId === user.id)?.id || -1,
     },
@@ -84,6 +120,10 @@ export async function upsertMember(teamId: number, addMemberInput: {
       }
     }
   })
+
+  upsertTeammate(requesterId, user.id)
+
+  return teams
 }
 
 export async function removeMember(teamId: number, memberId: number, requesterId: number) {

@@ -49,7 +49,7 @@ async function upsertMemberFunction(teamId: number, email: string, role: TeamRol
   await upsertMember(teamId, email, role)
   newMember.value.email = ''
   newMember.value.role = TeamRole.DEVELOPER
-  loadingMates.value = false
+  loadingMembers.value = false
 }
 
 const loadingRemove = ref(false)
