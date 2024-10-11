@@ -35,43 +35,31 @@ export async function createTeam(createTeamInput: CreateTeamInput, userId: numbe
 }
 
 export async function upsertTeammate(userId: number, teammateId: number, isUpdated: boolean) {
-  const teammate = await prisma.teammate.upsert({
-    where: {
-      userId_teammateId: {
+  const updateOrCreateTeammate = async (userId: number, teammateId: number) => {
+    return prisma.teammate.upsert({
+      where: {
+        userId_teammateId: {
+          userId,
+          teammateId,
+        },
+      },
+      update: {
+        updatedAt: new Date(),
+        count: {
+          increment: isUpdated ? 0 : 1,
+        },
+      },
+      create: {
         userId,
         teammateId,
       },
-    },
-    update: {
-      updatedAt: new Date(),
-      count: {
-        increment: isUpdated ? 0 : 1,
-      }
-    },
-    create: {
-      userId,
-      teammateId,
-    },
-  })
+    })
+  }
 
-  const teammate2 = await prisma.teammate.upsert({
-    where: {
-      userId_teammateId: {
-        userId: teammateId,
-        teammateId: userId,
-      },
-    },
-    update: {
-      updatedAt: new Date(),
-      count: {
-        increment: isUpdated ? 0 : 1,
-      }
-    },
-    create: {
-      userId: teammateId,
-      teammateId: userId,
-    },
-  })
+  const [teammate, teammate2] = await Promise.all([
+    updateOrCreateTeammate(userId, teammateId),
+    updateOrCreateTeammate(teammateId, userId),
+  ])
 
   return [teammate, teammate2]
 }
@@ -154,58 +142,6 @@ export async function deleteOneTeammate(userId: number, requesterId: number) {
       where: {
         userId_teammateId: {
           userId: requesterId,
-          teammateId: userId,
-        },
-      },
-    })
-  }
-}
-
-export async function deleteTeammate(userId: number, teammateId: number) {
-  const teammate = await prisma.teammate.update({
-    where: {
-      userId_teammateId: {
-        userId: userId,
-        teammateId: teammateId,
-      },
-    },
-    data: {
-      count: {
-        decrement: 1,
-      }
-    },
-  })
-
-  const teammate2 = await prisma.teammate.update({
-    where: {
-      userId_teammateId: {
-        userId: teammateId,
-        teammateId: userId,
-      },
-    },
-    data: {
-      count: {
-        decrement: 1,
-      }
-    },
-  })
-
-  if (teammate.count === 0) {
-    await prisma.teammate.delete({
-      where: {
-        userId_teammateId: {
-          userId,
-          teammateId,
-        },
-      },
-    })
-  }
-
-  if (teammate2.count === 0) {
-    await prisma.teammate.delete({
-      where: {
-        userId_teammateId: {
-          userId: teammateId,
           teammateId: userId,
         },
       },
