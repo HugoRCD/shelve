@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { type Member, Role, type Team, TeamRole } from '@shelve/types'
-import type { PropType } from 'vue'
+import { type Member, Role, TeamRole } from '@shelve/types'
 
 type TeamMemberProps = {
   members: Member[]
@@ -60,10 +59,9 @@ async function removeMemberFunction(teamId: number, memberId: number) {
 }
 
 async function loadTeammates() {
-  const allTeammates = await $fetch<{ data: Member[] }>('/api/user/teammate', {
+  mainsTeammates.value = await $fetch<{ data: Member[] }>('/api/user/teammate', {
     method: 'GET',
   })
-  mainsTeammates.value = allTeammates
   teammateLoading.value = true
 }
 
