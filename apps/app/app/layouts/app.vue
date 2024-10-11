@@ -3,11 +3,9 @@ const pages = [...getNavigation('app'), ...getNavigation('admin')]
 const route = useRoute()
 
 const currentPage = computed(() => {
-  const page = pages.find((page) => page.to === route.path)
-  const fallback = route.path.includes('/app/project')
-    ? { title: 'Project Details', to: '/app/project', name: 'project', icon: 'lucide:folder-open' }
-    : { title: '404', to: '/404', name: '404', icon: 'heroicons:exclamation-triangle' }
-  return page ?? fallback
+  if (route.path.includes('/app/project'))
+    return { title: 'Project Details', to: '/app/project', name: 'project', icon: 'lucide:folder-open' }
+  return pages.find((page) => page.to === route.path)
 })
 </script>
 
