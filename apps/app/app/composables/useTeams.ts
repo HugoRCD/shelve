@@ -56,6 +56,7 @@ export function useTeams() {
       teams.value.splice(index, 1, team)
       toast.success('Member added')
     } catch (error) {
+      if (error.statusCode === 401) return toast.error('You need to be an admin to add a member')
       toast.error('Failed to add member')
     }
   }
@@ -76,6 +77,7 @@ export function useTeams() {
       teams.value.splice(index, 1, team)
       toast.success('Member removed')
     } catch (error) {
+      if (error.statusCode === 401) return toast.error('You need to be an admin to remove a member')
       toast.error('Failed to remove member')
     }
   }
@@ -88,6 +90,7 @@ export function useTeams() {
       })
       toast.success('Team deleted')
     } catch (error) {
+      if (error.statusCode === 401) return toast.error('You need to be an admin to delete a team')
       toast.error('Failed to delete team')
     }
   }

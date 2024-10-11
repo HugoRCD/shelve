@@ -62,7 +62,6 @@ async function loadTeammates() {
   mainsTeammates.value = await $fetch<Member[]>('/api/user/teammate', {
     method: 'GET',
   })
-  console.log(mainsTeammates.value)
   teammateLoading.value = true
 }
 

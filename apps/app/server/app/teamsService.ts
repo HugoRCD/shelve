@@ -81,13 +81,13 @@ export async function upsertMember(teamId: number, addMemberInput: {
       members: true,
     }
   })
-  if (!team) throw new Error('unauthorized')
+  if (!team) throw createError({ statusCode: 401, statusMessage: 'unauthorized' })
   const user = await prisma.user.findFirst({
     where: {
-      email: addMemberInput.email,
+      email: addMemberInput.email.trim(),
     },
   })
-  if (!user) throw new Error('user not found')
+  if (!user) throw createError({ statusCode: 400, statusMessage: 'user not found' })
   await deleteCachedTeamByUserId(requesterId)
   const member = await prisma.member.upsert({
     where: {
@@ -117,7 +117,23 @@ export async function upsertMember(teamId: number, addMemberInput: {
   return member
 }
 
+async function isTeamMate(userId: number, requesterId: number): Promise<boolean> {
+  const foundedTeamMate = await prisma.teammate.findFirst({
+    where: {
+      userId: {
+        equals: userId,
+      },
+      teammateId: {
+        equals: requesterId,
+      },
+    },
+  })
+  return !!foundedTeamMate
+}
+
 export async function deleteTeammate(userId: number, requesterId: number) {
+  const isTeammate = await isTeamMate(userId, requesterId)
+  if (!isTeammate) return
   const updatedUser = await prisma.teammate.update({
     where: {
       userId_teammateId: {
@@ -160,7 +176,7 @@ export async function removeMember(teamId: number, memberId: number, requesterId
       },
     },
   })
-  if (!team) throw new Error('unauthorized')
+  if (!team) throw createError({ statusCode: 401, statusMessage: 'unauthorized' })
 
   await deleteCachedTeamByUserId(requesterId)
 
@@ -193,7 +209,7 @@ export async function deleteTeam(teamId: number, userId: number) {
       },
     },
   })
-  if (!team) throw new Error('unauthorized')
+  if (!team) throw createError({ statusCode: 401, statusMessage: 'unauthorized' })
   await deleteCachedTeamByUserId(userId)
   const allMembers = await prisma.member.findMany({
     where: {

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { type Team, TeamRole } from '@shelve/types'
+import { type Role, type Team, TeamRole } from '@shelve/types'
 
 const { user } = useUserSession()
 
@@ -41,7 +41,7 @@ const columns = [
   },
 ]
 
-const isOwner = (team: Team) => team.members.find(member => member.userId === user.value?.id)?.role === TeamRole.OWNER
+const isOwner = (team: Team) => team.members.find(member => member.userId === user.value?.id)?.role === TeamRole.OWNER || user.value?.role === Role.ADMIN
 
 const items = (row: Team) => [
   [
