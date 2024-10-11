@@ -35,7 +35,7 @@ export async function createTeam(createTeamInput: CreateTeamInput, userId: numbe
 }
 
 export async function upsertTeammate(userId: number, teammateId: number, isUpdated: boolean) {
-  const updateOrCreateTeammate = async (userId: number, teammateId: number) => {
+  const updateOrCreateTeammate = (userId: number, teammateId: number) => {
     return prisma.teammate.upsert({
       where: {
         userId_teammateId: {
