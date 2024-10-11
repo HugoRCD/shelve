@@ -124,7 +124,7 @@ watch(open, (newValue) => {
                 />
                 <UButton class="flex-1 justify-center" label="Add member" :loading="loadingMembers" type="submit" />
               </div>
-              <div v-if="mainsTeammates > 0" class="flex w-full content-between gap-2">
+              <div v-if="mainsTeammates.length > 0" class="flex w-full content-between gap-2">
                 <p class=" content-center items-center text-center">
                   Your teammates :
                 </p>
@@ -136,6 +136,7 @@ watch(open, (newValue) => {
                     <UAvatarGroup :ui="{ ring: 'ring-0'}">
                       <UTooltip
                         v-for="teammate in mainsTeammates"
+                        :key="teammate.teammate.id"
                         :text="teammate.teammate.username || teammate.teammate.email"
                         :ui="{ popper: { placement: 'top' } }"
                       >

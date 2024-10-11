@@ -1,4 +1,5 @@
 import { type CreateTeamInput, TeamRole } from '@shelve/types'
+import idDelete from '~~/server/api/tokens/[id].delete'
 
 export async function createTeam(createTeamInput: CreateTeamInput, userId: number) {
   await deleteCachedTeamByUserId(userId)
@@ -33,7 +34,9 @@ export async function createTeam(createTeamInput: CreateTeamInput, userId: numbe
   })
 }
 
-export async function upsertTeammate(userId: number, teammateId: number) {
+export async function upsertTeammate(userId: number, teammateId: number, isUpdated: boolean) {
+  const incrementValue = isUpdated ? 0 : 1
+  console.log('Increment Value:', incrementValue)
   const teammate = await prisma.teammate.upsert({
     where: {
       userId_teammateId: {
@@ -44,7 +47,7 @@ export async function upsertTeammate(userId: number, teammateId: number) {
     update: {
       updatedAt: new Date(),
       count: {
-        increment: 1,
+        increment: isUpdated ? 0 : 1,
       }
     },
     create: {
@@ -63,7 +66,7 @@ export async function upsertTeammate(userId: number, teammateId: number) {
     update: {
       updatedAt: new Date(),
       count: {
-        increment: 1,
+        increment: isUpdated ? 0 : 1,
       }
     },
     create: {
@@ -103,7 +106,7 @@ export async function upsertMember(teamId: number, addMemberInput: {
   })
   if (!user) throw new Error('user not found')
   await deleteCachedTeamByUserId(requesterId)
-  const teams = await prisma.member.upsert({
+  const member = await prisma.member.upsert({
     where: {
       id: team.members.find((member) => member.userId === user.id)?.id || -1,
     },
@@ -126,16 +129,49 @@ export async function upsertMember(teamId: number, addMemberInput: {
       }
     }
   })
+  const isUpdated: boolean = new Date(member.createdAt).getTime() !== new Date(member.updatedAt).getTime()
+  console.log('isUpdated', isUpdated)
+  console.log('Member', member)
+  await upsertTeammate(requesterId, user.id, isUpdated)
+  return member
+}
 
-  upsertTeammate(requesterId, user.id)
+export async function deleteOneTeammate(userId: number, requesterId: number) {
+  console.log('Requester ID:', requesterId)
+  console.log('User ID:', userId)
+  const updatedUser = await prisma.teammate.update({
+    where: {
+      userId_teammateId: {
+        userId: requesterId,
+        teammateId: userId,
+      },
+    },
+    data: {
+      count: {
+        decrement: 1,
+      },
+    },
+    select: {
+      count: true,
+    },
+  })
 
-  return teams
+  console.log('Updated Count:', updatedUser.count)
+  console.log('user', updatedUser)
+  console.log('user.count', updatedUser.count)
+  if (updatedUser.count === 0) {
+    await prisma.teammate.delete({
+      where: {
+        userId_teammateId: {
+          userId: requesterId,
+          teammateId: userId,
+        },
+      },
+    })
+  }
 }
 
 export async function deleteTeammate(userId: number, teammateId: number) {
-  if (userId === teammateId) {
-    return
-  }
   const teammate = await prisma.teammate.update({
     where: {
       userId_teammateId: {
@@ -234,7 +270,9 @@ export async function deleteTeam(teamId: number, userId: number) {
   })
   console.log('allMembers', allMembers)
   for (const member of allMembers) {
-    await deleteTeammate(userId, member.userId)
+    if (member.userId === userId) continue
+    await deleteOneTeammate(member.userId, userId)
+    await deleteOneTeammate(userId, member.userId)
   }
   return prisma.team.delete({
     where: {
