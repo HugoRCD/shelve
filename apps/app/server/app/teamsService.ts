@@ -1,4 +1,5 @@
 import { type CreateTeamInput, TeamRole } from '@shelve/types'
+import { deleteCachedUserProjects } from '~~/server/app/projectService'
 
 export async function createTeam(createTeamInput: CreateTeamInput, userId: number) {
   await deleteCachedTeamByUserId(userId)
@@ -89,6 +90,7 @@ export async function upsertMember(teamId: number, addMemberInput: {
   })
   if (!user) throw createError({ statusCode: 400, statusMessage: 'user not found' })
   await deleteCachedTeamByUserId(requesterId)
+  await deleteCachedUserProjects(requesterId)
   const member = await prisma.member.upsert({
     where: {
       id: team.members.find((member) => member.userId === user.id)?.id || -1,
@@ -179,6 +181,7 @@ export async function removeMember(teamId: number, memberId: number, requesterId
   if (!team) throw createError({ statusCode: 401, statusMessage: 'unauthorized' })
 
   await deleteCachedTeamByUserId(requesterId)
+  await deleteCachedUserProjects(requesterId)
 
   const member = await prisma.member.findFirst({
     where: {
