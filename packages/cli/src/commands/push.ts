@@ -13,7 +13,7 @@ export function pushCommand(program: Command): void {
     .description('Push variables for specified environment to Shelve')
     .option('-e, --environment <env>', 'Specify the environment (dev, staging, prod)')
     .action(async (options) => {
-      const { project, pushMethod } = await loadShelveConfig()
+      const { project, pushMethod, confirmChanges } = await loadShelveConfig()
 
       intro(`Pushing variable to ${project} project in ${pushMethod} method`)
 
@@ -31,7 +31,6 @@ export function pushCommand(program: Command): void {
 
         if (isCancel(environment)) onCancel('Operation cancelled.')
       } else {
-        // Validate the provided environment
         const validEnvironments: Environment[] = ['dev', 'staging', 'prod']
         if (!validEnvironments.includes(environment)) {
           onCancel(`Invalid environment: ${environment}. Valid options are: dev, staging, prod`)
@@ -40,7 +39,7 @@ export function pushCommand(program: Command): void {
 
       const projectData = await getProjectByName(project)
       const variables = await getEnvFile()
-      await pushEnvFile({ variables, projectId: projectData.id, environment })
+      await pushEnvFile({ variables, projectId: projectData.id, environment, confirmChanges })
       outro(`Successfully pushed variable to ${environment} environment`)
       process.exit(0)
     })

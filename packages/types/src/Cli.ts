@@ -69,6 +69,12 @@ export type CreateEnvFileInput = {
    * The variables to create in the .env file
    * */
   variables: Env[]
+  /**
+   * Whether to confirm changes before updating the .env file
+   *
+   * @default false
+   */
+  confirmChanges: boolean
 }
 
 export type PushEnvFileInput = {
@@ -84,4 +90,10 @@ export type PushEnvFileInput = {
    * The environment to push the variables to
    * */
   environment: Environment
+  /**
+   * Whether to confirm changes before pushing the variables to Shelve
+   *
+   * @default false
+   */
+  confirmChanges: boolean
 }

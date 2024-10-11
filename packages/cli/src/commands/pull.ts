@@ -12,7 +12,7 @@ export function pullCommand(program: Command): void {
     .description('Pull variables for specified environment to .env file')
     .option('-e, --environment <env>', 'Specify the environment (dev, staging, prod)')
     .action(async (options) => {
-      const { project, pullMethod, envFileName } = await loadShelveConfig()
+      const { project, pullMethod, envFileName, confirmChanges } = await loadShelveConfig()
 
       intro(`Pulling variable from ${project} project in ${pullMethod} mode`)
 
@@ -30,7 +30,6 @@ export function pullCommand(program: Command): void {
 
         if (isCancel(environment)) onCancel('Operation cancelled.')
       } else {
-        // Validate the provided environment
         const validEnvironments = ['dev', 'staging', 'prod']
         if (!validEnvironments.includes(environment)) {
           onCancel(`Invalid environment: ${environment}. Valid options are: dev, staging, prod`)
@@ -39,7 +38,7 @@ export function pullCommand(program: Command): void {
 
       const projectData = await getProjectByName(project)
       const variables = await getEnvVariables(projectData.id, environment)
-      await createEnvFile({ method: pullMethod, envFileName, variables })
+      await createEnvFile({ method: pullMethod, envFileName, variables, confirmChanges })
       outro(`Successfully pulled variable from ${environment} environment`)
       process.exit(0)
     })

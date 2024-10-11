@@ -1,6 +1,6 @@
 import fs from 'fs'
 import type { CreateEnvFileInput, Env, PushEnvFileInput, VariablesCreateInput } from '@shelve/types'
-import { spinner } from '@clack/prompts'
+import { confirm, spinner } from '@clack/prompts'
 import { getConfig, loadShelveConfig } from './config'
 import { getToken, useApi } from './api'
 import { onCancel } from './index'
@@ -36,7 +36,13 @@ export async function mergeEnvFile(variables: Env[] = []): Promise<void> {
 }
 
 export async function createEnvFile(input: CreateEnvFileInput): Promise<void> {
-  const { method, envFileName, variables } = input
+  const { method, envFileName, variables, confirmChanges } = input
+  if (confirmChanges) {
+    const update = await confirm({
+      message: `Are you sure you want to update ${envFileName} file?`,
+    })
+    if (!update) return onCancel('Operation cancelled.')
+  }
   const envFileExist = isEnvFileExist(envFileName)
   try {
     if (envFileExist && method === 'merge') {
@@ -87,7 +93,13 @@ export async function getEnvVariables(projectId: number, environment: string): P
 }
 
 export async function pushEnvFile(input: PushEnvFileInput): Promise<void> {
-  const { variables, projectId, environment } = input
+  const { variables, projectId, environment, confirmChanges } = input
+  if (confirmChanges) {
+    const update = await confirm({
+      message: `Are you sure you want to push ${variables.length} variables to ${environment} environment?`,
+    })
+    if (!update) return onCancel('Operation cancelled.')
+  }
   const api = await useApi()
 
   s.start('Pushing variables')
