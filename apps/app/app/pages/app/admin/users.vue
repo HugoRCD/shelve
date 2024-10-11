@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { publicUser } from '@shelve/types'
 import { Role } from '@shelve/types'
+import { ConfirmModal } from '#components'
 
 const { data: users, status, refresh } = useFetch<publicUser[]>('/api/admin/users', {
   method: 'GET',
@@ -39,11 +40,8 @@ async function deleteUser(id: number) {
     await $fetch(`/api/admin/users/${id}`, {
       method: 'DELETE',
     })
-    toast.success('User deleted')
     await refresh()
-  } catch (error) {
-    toast.error('Error deleting user')
-  }
+  } catch (error) { /* empty */ }
   deleteLoading.value = false
 }
 
@@ -82,6 +80,7 @@ const columns = [
   },
 ]
 
+const modal = useModal()
 const items = (row: publicUser) => [
   [
     {
@@ -113,7 +112,18 @@ const items = (row: publicUser) => [
           toast.error('Cannot delete admin')
           return
         }
-        deleteUser(row.id)
+        modal.open(ConfirmModal, {
+          title: 'Are you sure?',
+          description: `You are about to delete ${row.username ? row.username : row.email}, this action cannot be undone.`,
+          danger: true,
+          onSuccess() {
+            toast.promise(deleteUser(row.id), {
+              loading: 'Deleting user...',
+              success: 'User has been deleted',
+              error: 'Failed to delete user',
+            })
+          },
+        })
       },
     },
   ],
