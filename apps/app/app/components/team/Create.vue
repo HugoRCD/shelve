@@ -37,13 +37,12 @@ async function createTeamFunction(name: string) {
         <form @submit.prevent="createTeamFunction(teamName)">
           <UCard>
             <div class="flex flex-col gap-2">
-              <p class="flex gap-2 text-sm font-semibold leading-6">
-                Create a team
-              </p>
-              <div class="flex gap-2">
-                <UInput v-model="teamName" autofocus label="Team name" placeholder="Team name" />
-                <UButton :loading="createLoading" label="Create" type="submit" />
-              </div>
+              <UFormGroup label="Create a team">
+                <div class="flex gap-2">
+                  <UInput v-model="teamName" required autofocus label="Team name" placeholder="Team name" />
+                  <UButton :loading="createLoading" label="Create" type="submit" />
+                </div>
+              </UFormGroup>
             </div>
           </UCard>
         </form>
