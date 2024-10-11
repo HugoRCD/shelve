@@ -51,6 +51,7 @@ if (import.meta.client) setPrefersReducedMotion(reduceMotion.value)
       <NuxtLayout>
         <NuxtPage />
       </NuxtLayout>
+      <UModals />
       <Toaster
         close-button
         position="top-center"
