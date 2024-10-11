@@ -43,6 +43,9 @@ export async function upsertTeammate(userId: number, teammateId: number) {
     },
     update: {
       updatedAt: new Date(),
+      count: {
+        increment: 1,
+      }
     },
     create: {
       userId,
@@ -59,6 +62,9 @@ export async function upsertTeammate(userId: number, teammateId: number) {
     },
     update: {
       updatedAt: new Date(),
+      count: {
+        increment: 1,
+      }
     },
     create: {
       userId: teammateId,
@@ -126,6 +132,61 @@ export async function upsertMember(teamId: number, addMemberInput: {
   return teams
 }
 
+export async function deleteTeammate(userId: number, teammateId: number) {
+  if (userId === teammateId) {
+    return
+  }
+  const teammate = await prisma.teammate.update({
+    where: {
+      userId_teammateId: {
+        userId: userId,
+        teammateId: teammateId,
+      },
+    },
+    data: {
+      count: {
+        decrement: 1,
+      }
+    },
+  })
+
+  const teammate2 = await prisma.teammate.update({
+    where: {
+      userId_teammateId: {
+        userId: teammateId,
+        teammateId: userId,
+      },
+    },
+    data: {
+      count: {
+        decrement: 1,
+      }
+    },
+  })
+
+  if (teammate.count === 0) {
+    await prisma.teammate.delete({
+      where: {
+        userId_teammateId: {
+          userId,
+          teammateId,
+        },
+      },
+    })
+  }
+
+  if (teammate2.count === 0) {
+    await prisma.teammate.delete({
+      where: {
+        userId_teammateId: {
+          userId: teammateId,
+          teammateId: userId,
+        },
+      },
+    })
+  }
+}
+
 export async function removeMember(teamId: number, memberId: number, requesterId: number) {
   const team = await prisma.team.findFirst({
     where: {
@@ -143,6 +204,7 @@ export async function removeMember(teamId: number, memberId: number, requesterId
   if (!team) throw new Error('unauthorized')
 
   await deleteCachedTeamByUserId(requesterId)
+  await deleteTeammate(requesterId, memberId)
   return prisma.member.delete({
     where: {
       id: memberId,
@@ -164,6 +226,16 @@ export async function deleteTeam(teamId: number, userId: number) {
   })
   if (!team) throw new Error('unauthorized')
   await deleteCachedTeamByUserId(userId)
+  // call deleteteammate for all members
+  const allMembers = await prisma.member.findMany({
+    where: {
+      teamId,
+    },
+  })
+  console.log('allMembers', allMembers)
+  for (const member of allMembers) {
+    await deleteTeammate(userId, member.userId)
+  }
   return prisma.team.delete({
     where: {
       id: teamId,

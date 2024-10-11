@@ -87,6 +87,7 @@ model Teammate {
   id         Int      @id @default(autoincrement())
   userId     Int
   teammateId Int
+  count      Int      @default(1)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
   user       User     @relation("UserTeammates", fields: [userId], references: [id], onDelete: Cascade)

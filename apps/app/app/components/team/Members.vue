@@ -124,7 +124,7 @@ watch(open, (newValue) => {
                 />
                 <UButton class="flex-1 justify-center" label="Add member" :loading="loadingMembers" type="submit" />
               </div>
-              <div class="flex w-full content-between gap-2">
+              <div v-if="mainsTeammates > 0" class="flex w-full content-between gap-2">
                 <p class=" content-center items-center text-center">
                   Your teammates :
                 </p>
