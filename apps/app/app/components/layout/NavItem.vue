@@ -1,21 +1,17 @@
 <script setup lang="ts">
-import { capitalize, type PropType } from 'vue'
+import { capitalize } from 'vue'
 import type { Navigation } from '~/utils/navigation'
 
-defineProps({
-  navItem: {
-    type: Object as PropType<Navigation>,
-    required: true,
-  },
-  active: {
-    type: Boolean,
-    default: false,
-  },
-})
+type NavItemProps = {
+  navItem: Navigation
+  active: boolean
+}
+
+const { navItem, active = false } = defineProps<NavItemProps>()
 </script>
 
 <template>
-  <div class="nav-item select-none" :class="{ active }" @click="$router.push(navItem.to)">
+  <div class="nav-item select-none" :class="{ active }" @click="$router.push(navItem.path)">
     <UIcon :name="navItem.icon" class="font-medium" />
     <span class="text-sm font-medium">
       {{ capitalize(navItem.name) }}

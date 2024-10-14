@@ -1,21 +1,10 @@
 <script setup lang="ts">
-import { type publicUser, Role } from '@shelve/types'
-import type { Ref } from 'vue'
-
 const navigations = getNavigation('app')
-const adminNavigations = getNavigation('admin')
 const navItem = navigations.map((nav) => {
   return {
     label: nav.name,
     icon: nav.icon,
-    to: nav.to,
-  }
-})
-const adminNavItem = adminNavigations.map((nav) => {
-  return {
-    label: nav.name,
-    icon: nav.icon,
-    to: nav.to,
+    to: nav.path,
   }
 })
 
