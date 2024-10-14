@@ -11,7 +11,7 @@ const handleProjectNavigation = () => {
   const projectNavigation = {
     title: 'Project Details',
     icon: 'lucide:folder-open',
-    to: route.path,
+    path: route.path,
     name: 'Project Details',
   }
   if (isCryptoRoute) {
