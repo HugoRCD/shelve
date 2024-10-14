@@ -1,4 +1,4 @@
-import { type CreateTeamInput, TeamRole } from '@shelve/types'
+import { type CreateTeamInput, Role, TeamRole } from '@shelve/types'
 import { deleteCachedUserProjects } from '~~/server/app/projectService'
 
 export async function createTeam(createTeamInput: CreateTeamInput, userId: number) {
@@ -200,7 +200,14 @@ export async function removeMember(teamId: number, memberId: number, requesterId
   })
 }
 
-export async function deleteTeam(teamId: number, userId: number) {
+type DeleteTeamInput = {
+  teamId: number
+  userId: number
+  userRole: Role
+}
+
+export async function deleteTeam(deleteTeamInput: DeleteTeamInput) {
+  const { teamId, userId, userRole } = deleteTeamInput
   const team = await prisma.team.findFirst({
     where: {
       id: teamId,
@@ -212,7 +219,7 @@ export async function deleteTeam(teamId: number, userId: number) {
       },
     },
   })
-  if (!team) throw createError({ statusCode: 401, statusMessage: 'unauthorized' })
+  if (userRole !== Role.ADMIN && !team) throw createError({ statusCode: 401, statusMessage: 'unauthorized' })
   await deleteCachedTeamByUserId(userId)
   const allMembers = await prisma.member.findMany({
     where: {
