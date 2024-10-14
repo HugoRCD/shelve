@@ -15,14 +15,14 @@ const handleProjectNavigation = () => {
     name: 'Project Details',
   }
   if (isCryptoRoute) {
-    const indexToReplace = navigations.findIndex((item) => item.to.includes('/app/project/'))
+    const indexToReplace = navigations.findIndex((item) => item.path.includes('/app/project/'))
     if (indexToReplace !== -1) {
       navigations.splice(indexToReplace, 1, projectNavigation)
     } else {
       navigations.unshift(projectNavigation)
     }
   } else {
-    const indexToRemove = navigations.findIndex((item) => item.to.includes('/app/project/'))
+    const indexToRemove = navigations.findIndex((item) => item.path.includes('/app/project/'))
     if (indexToRemove !== -1) {
       navigations.splice(indexToRemove, 1)
     }
@@ -41,7 +41,7 @@ watch(() => route.path, handleProjectNavigation, { immediate: true })
     </div>
     <div class="flex flex-col gap-2">
       <TransitionGroup name="fade" tag="ul" class="flex flex-col gap-2" mode="out-in">
-        <LayoutNavItem v-for="nav in navigations" :key="nav.name" :active="nav.to === $route.path" :nav-item="nav" />
+        <LayoutNavItem v-for="nav in navigations" :key="nav.name" :active="nav.path === $route.path" :nav-item="nav" />
       </TransitionGroup>
     </div>
 
@@ -51,7 +51,7 @@ watch(() => route.path, handleProjectNavigation, { immediate: true })
       <div class="text-xs font-medium text-neutral-500 dark:text-neutral-400">
         Admin
       </div>
-      <LayoutNavItem v-for="nav in adminNavigations" :key="nav.name" :active="nav.to === $route.path" :nav-item="nav" />
+      <LayoutNavItem v-for="nav in adminNavigations" :key="nav.name" :active="nav.path === $route.path" :nav-item="nav" />
     </div>
 
     <div class="flex-1" />

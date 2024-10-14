@@ -13,7 +13,7 @@ const navigation = getNavigation('home')
           v-for="item in navigation"
           :key="item.name"
           class="text-sm text-gray-300 hover:text-gray-400"
-          :to="item.to"
+          :to="item.path"
         >
           {{ item.name }}
         </NuxtLink>
