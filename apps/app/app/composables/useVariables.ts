@@ -129,7 +129,7 @@ export function useVariables(refresh: () => Promise<void>, projectId: string) {
 
     reader.onload = (e) => {
       const content = e.target?.result as string
-      const lines = content.split('\n')
+      const lines = content.split('\n').filter((line) => line.trim() !== '')
       const filteredLines = lines.filter((line) => !line.startsWith('#'))
       const variables = filteredLines.map((line, index) => {
         const [key, value] = line.split('=')
