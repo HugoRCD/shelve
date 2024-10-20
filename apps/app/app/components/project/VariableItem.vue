@@ -39,11 +39,13 @@ const environment = computed(() => selectedEnvironment.value.join('|'))
 const variableToUpdate = computed(() => {
   return {
     ...localVariable,
-    environment: environment.value
+    environment: environment.value,
+    key: autoUppercase.value ? localVariable.key.toUpperCase() : localVariable.key
   }
 })
 
 const showEdit = ref(false)
+const autoUppercase = ref(true)
 </script>
 
 <template>
@@ -100,6 +102,10 @@ const showEdit = ref(false)
             <UButton color="white" variant="soft" @click="showEdit = false">
               Cancel
             </UButton>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-sm font-normal text-gray-500">Auto UPPERCASE</span>
+            <USwitch v-model="autoUppercase" />
           </div>
           <UButton color="red" variant="soft" :loading="deleteLoading" @click="deleteVariable(variable.id, environment)">
             Delete

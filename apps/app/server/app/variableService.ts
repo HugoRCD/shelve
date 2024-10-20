@@ -17,11 +17,15 @@ function getEnvString(env: string) {
 }
 
 async function encryptVariable(variables: VariablesCreateInput['variables']): Promise<VariablesCreateInput['variables']> {
+  const { autoUppercase } = useRuntimeConfig().private
   for (const variable of variables) {
     const encryptedValue = await seal(variable.value, encryptionKey)
     delete variable.index
     variable.environment = getEnvString(variable.environment)
     variable.value = encryptedValue
+    if (autoUppercase) {
+      variable.key = variable.key.toUpperCase()
+    }
   }
   return variables
 }

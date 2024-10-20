@@ -86,6 +86,8 @@ const items = [
   ],
 ]
 
+const autoUppercase = ref(true)
+
 onMounted(() => {
   document.addEventListener('paste', (e) => {
     const { clipboardData } = e
@@ -102,7 +104,7 @@ onMounted(() => {
       if (!key || !value) throw new Error('Invalid .env')
       return {
         index,
-        key: key.replace(/[\n\r'"]+/g, ''),
+        key: autoUppercase.value ? key.replace(/[\n\r'"]+/g, '').toUpperCase() : key.replace(/[\n\r'"]+/g, ''),
         value: value.replace(/[\n\r'"]+/g, ''),
         projectId: parseInt(projectId),
         environment: environment.value
@@ -204,6 +206,10 @@ onMounted(() => {
             <UButton label="Add variable" color="white" icon="heroicons:plus-circle-20-solid" @click="addVariable" />
             <input ref="fileInputRef" type="file" accept="text" style="display: none;" @change="handleFileUpload">
             <UButton label="Import .env" color="white" icon="lucide:download" @click="triggerFileInput" />
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-sm font-normal text-gray-500">Auto UPPERCASE</span>
+            <USwitch v-model="autoUppercase" />
           </div>
           <UButton label="Save" color="primary" :loading="createLoading" type="submit" />
         </div>

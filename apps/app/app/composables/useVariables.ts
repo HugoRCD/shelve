@@ -40,6 +40,8 @@ export function useVariables(refresh: () => Promise<void>, projectId: string) {
     ],
   })
 
+  const autoUppercase = ref(true)
+
   function addVariable() {
     variablesToCreate.value++
     variablesInput.value.variables.push({
@@ -139,7 +141,7 @@ export function useVariables(refresh: () => Promise<void>, projectId: string) {
         }
         return {
           index,
-          key: key.replace(/[\n\r'"]+/g, ''),
+          key: autoUppercase.value ? key.replace(/[\n\r'"]+/g, '').toUpperCase() : key.replace(/[\n\r'"]+/g, ''),
           value: value.replace(/[\n\r'"]+/g, ''),
           projectId: parseInt(projectId),
           environment: environment.value,
@@ -224,6 +226,7 @@ export function useVariables(refresh: () => Promise<void>, projectId: string) {
     removeVariable,
     createVariables,
     updateVariable,
-    deleteVariable
+    deleteVariable,
+    autoUppercase
   }
 }

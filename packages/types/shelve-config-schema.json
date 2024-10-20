@@ -39,6 +39,11 @@
       "type": "string",
       "description": "Name of your env file",
       "default": ".env"
+    },
+    "autoUppercase": {
+      "type": "boolean",
+      "description": "Whether to automatically convert environment variable keys to uppercase",
+      "default": true
     }
   },
   "required": ["project"]
