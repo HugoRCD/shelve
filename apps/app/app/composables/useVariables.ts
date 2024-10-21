@@ -12,7 +12,6 @@ export function useVariables(refresh: () => Promise<void>, projectId: string) {
   const updateLoading = ref(false)
   const deleteLoading = ref(false)
 
-
   const variablesToCreate = ref(1)
 
   const variablesInput = ref<VariablesCreateInput>({
@@ -66,7 +65,6 @@ export function useVariables(refresh: () => Promise<void>, projectId: string) {
       createLoading.value = false
       return
     }
-    console.log('variablesInput', variablesInput.value)
     try {
       await $fetch(`/api/variable`, {
         method: 'POST',

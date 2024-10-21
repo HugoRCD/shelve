@@ -37,7 +37,6 @@ async function decryptVariable(variables: VariablesCreateInput['variables']): Pr
 }
 
 export async function upsertVariable(variablesCreateInput: VariablesCreateInput) {
-  console.log('autoUppercase', variablesCreateInput.autoUppercase)
   const encryptedVariables = await encryptVariable(variablesCreateInput.variables, variablesCreateInput.autoUppercase)
 
   if (variablesCreateInput.variables.length === 1) { // use on main form variable/update
