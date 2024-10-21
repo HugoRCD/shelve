@@ -1,8 +1,6 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-
-const length = ref(8)
-const includeSymbols = ref(false)
+const length = ref(12)
+const includeSymbols = ref(true)
 const isOpen = ref(false)
 const virtualElement = ref({ getBoundingClientRect: () => ({}) })
 
@@ -41,24 +39,25 @@ function onContextMenu(event: MouseEvent) {
 </script>
 
 <template>
-  <div @contextmenu.prevent="onContextMenu">
+  <div class="w-full" @contextmenu.prevent="onContextMenu">
+    <div>
+      <slot />
+    </div>
+
     <UContextMenu v-model="isOpen" :virtual-element>
-      <UCard>
+      <UCard :ui="{ base: 'w-56' }">
         <template #header>
           <h3 class="text-sm font-semibold">
             Generate Password
           </h3>
         </template>
-        <form @submit.prevent="generatePassword">
-          <label for="length">Password Length:</label>
-          <input v-model="length" type="number" min="1" max="25" required>
-
-          <label for="includeSymbols">Include Symbols:</label>
-          <input v-model="includeSymbols" type="checkbox">
-
-          <button type="submit">
-            Generate Password
-          </button>
+        <form class="flex flex-col gap-4" @submit.prevent="generatePassword">
+          <UFormGroup :label="`Password Length (${length})`">
+            <URange v-model="length" :min="5" :max="25" />
+          </UFormGroup>
+          <UCheckbox v-model="includeSymbols" label="Include Symbols" />
+          <UDivider />
+          <UButton label="Generate" type="submit" />
         </form>
       </UCard>
     </UContextMenu>

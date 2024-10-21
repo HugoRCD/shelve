@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { Variable } from '@shelve/types'
 import type { PropType } from 'vue'
-import PasswordGenerator from './PasswordGenerator.vue'
 
 const { refresh, variables, projectId } = defineProps({
   refresh: {
@@ -276,7 +275,7 @@ const handlePasswordGenerated = (password: string, index: number) => {
                 <ProjectVarPrefix v-model="variablesInput.variables[variable - 1]!.key" class="w-full">
                   <UInput v-model="variablesInput.variables[variable - 1]!.key" required class="w-full" placeholder="e.g. API_KEY" />
                 </ProjectVarPrefix>
-                <PasswordGenerator @password-generated="handlePasswordGenerated($event, variable - 1)">
+                <ProjectPasswordGenerator @password-generated="handlePasswordGenerated($event, variable - 1)">
                   <UTextarea
                     v-model="variablesInput.variables[variable - 1]!.value"
                     required
@@ -285,7 +284,7 @@ const handlePasswordGenerated = (password: string, index: number) => {
                     autoresize
                     placeholder="e.g. 123456"
                   />
-                </PasswordGenerator>
+                </ProjectPasswordGenerator>
                 <UButton label="Remove" color="red" @click="removeVariable(variable - 1)" />
               </div>
             </div>
