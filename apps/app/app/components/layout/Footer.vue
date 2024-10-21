@@ -51,6 +51,22 @@ const nav = [
 
 <template>
   <div class="my-6">
+    <div class="relative">
+      <div class="flex">
+        <NuxtLink to="/docs" class="group -mb-px -ml-px flex w-full cursor-pointer justify-between gap-2 border border-gray-800 border-opacity-50 p-4 text-xs text-gray-500 transition-all duration-300 ease-in-out hover:border-opacity-100 hover:bg-gray-800/50 hover:text-gray-200">
+          <span class="text-gray-400">
+            Documentation
+          </span>
+          <UIcon name="lucide:arrow-right" class="ml-1 inline-block text-gray-400 transition-all duration-300 ease-in-out group-hover:-rotate-45" />
+        </NuxtLink>
+        <NuxtLink to="/login" class="group -mb-px -ml-px flex w-full cursor-pointer justify-between gap-2 border border-gray-800 border-opacity-50 p-4 text-xs text-gray-500 transition-all duration-300 ease-in-out hover:border-opacity-100 hover:bg-gray-800/50 hover:text-gray-200">
+          <span class="text-gray-400">
+            Login
+          </span>
+          <UIcon name="lucide:arrow-right" class="ml-1 inline-block text-gray-400 transition-all duration-300 ease-in-out group-hover:-rotate-45" />
+        </NuxtLink>
+      </div>
+    </div>
     <hr class="border-gray-800">
     <footer class="mt-6 flex flex-col justify-around gap-8 p-5 sm:flex-row sm:gap-0">
       <div class="flex flex-col gap-1">

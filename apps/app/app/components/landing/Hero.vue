@@ -21,9 +21,14 @@ defineShortcuts({
         Press <UKbd>S</UKbd> to start your journey
       </p>
       <div class="mt-4 flex flex-col items-center justify-center gap-2 sm:flex-row sm:gap-4">
-        <UButton class="sm:hidden" @click="useRouter().push('/login')">
-          <span class="text-balance">Start your journey <UIcon name="heroicons-outline:arrow-sm-right" class="inline-block size-4" /></span>
-        </UButton>
+        <UButton
+          class="sm:hidden"
+          to="/login"
+          label="Start your journey"
+          icon="lucide:arrow-right"
+          trailing
+          color="gray"
+        />
       </div>
     </div>
 
