@@ -62,17 +62,8 @@ const items = [
         </div>
       </template>
     </UDropdown>
-    <NuxtLink v-else to="/login" class="btn-primary">
-      Login
-    </NuxtLink>
+    <UButton v-else to="/login" label="Login" color="gray" />
   </div>
 </template>
 
-<style scoped>
-.btn-primary {
-  @apply px-4 py-2 text-sm font-semibold text-white;
-  @apply bg-neutral-800 hover:bg-neutral-700;
-  @apply rounded-full shadow-md;
-}
-</style>
 
