@@ -194,7 +194,7 @@ const autoUppercase = useCookie<boolean>('autoUppercase', {
 })
 
 const handlePasswordGenerated = (password: string, index: number) => {
-  variablesInput.value.variables[index].value = password;
+  variablesInput.value.variables[index].value = password
 }
 </script>
 
@@ -276,7 +276,7 @@ const handlePasswordGenerated = (password: string, index: number) => {
                 <ProjectVarPrefix v-model="variablesInput.variables[variable - 1]!.key" class="w-full">
                   <UInput v-model="variablesInput.variables[variable - 1]!.key" required class="w-full" placeholder="e.g. API_KEY" />
                 </ProjectVarPrefix>
-                <PasswordGenerator @passwordGenerated="handlePasswordGenerated($event, variable - 1)">
+                <PasswordGenerator @password-generated="handlePasswordGenerated($event, variable - 1)">
                   <UTextarea
                     v-model="variablesInput.variables[variable - 1]!.value"
                     required
