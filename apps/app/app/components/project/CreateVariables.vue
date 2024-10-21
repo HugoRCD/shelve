@@ -191,6 +191,10 @@ const autoUppercase = useCookie<boolean>('autoUppercase', {
   watch: true,
   default: () => true,
 })
+
+const handlePasswordGenerated = (password: string, index: number) => {
+  variablesInput.value.variables[index].value = password
+}
 </script>
 
 <template>
@@ -271,14 +275,16 @@ const autoUppercase = useCookie<boolean>('autoUppercase', {
                 <ProjectVarPrefix v-model="variablesInput.variables[variable - 1]!.key" class="w-full">
                   <UInput v-model="variablesInput.variables[variable - 1]!.key" required class="w-full" placeholder="e.g. API_KEY" />
                 </ProjectVarPrefix>
-                <UTextarea
-                  v-model="variablesInput.variables[variable - 1]!.value"
-                  required
-                  :rows="1"
-                  class="w-full"
-                  autoresize
-                  placeholder="e.g. 123456"
-                />
+                <ProjectPasswordGenerator @password-generated="handlePasswordGenerated($event, variable - 1)">
+                  <UTextarea
+                    v-model="variablesInput.variables[variable - 1]!.value"
+                    required
+                    :rows="1"
+                    class="w-full"
+                    autoresize
+                    placeholder="e.g. 123456"
+                  />
+                </ProjectPasswordGenerator>
                 <UButton label="Remove" color="red" @click="removeVariable(variable - 1)" />
               </div>
             </div>
