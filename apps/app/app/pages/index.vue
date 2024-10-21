@@ -1,4 +1,8 @@
 <script setup lang="ts">
+definePageMeta({
+  colorMode: 'dark',
+})
+
 const copy = ref(false)
 
 function useClipboard(text: string) {
