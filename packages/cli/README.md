@@ -34,6 +34,7 @@ export default createShelveConfig({
   pushMethod: 'overwrite',
   pullMethod: 'overwrite',
   envFileName: '.env',
+  autoUppercase: true,
 })
 ```
 

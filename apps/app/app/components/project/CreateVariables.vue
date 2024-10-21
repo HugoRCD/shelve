@@ -91,13 +91,6 @@ const border = computed(() => {
   return 'border-[0.5px] border-gray-200 dark:border-gray-800'
 })
 
-const background = computed(() => {
-  if (dragOver.value) {
-    return 'rgba(255, 255, 255, 0.2)' // Utilisation de rgba pour la transparence
-  }
-  return 'rgba(255, 255, 255, 1)' // Fond opaque
-})
-
 const handleFileUpload = (event: Event) => {
   const target = event.target as HTMLInputElement
   const file = target.files ? target.files[0] : null
@@ -156,7 +149,7 @@ function parseEnvFile(file: File) {
   }
 
   reader.onerror = (e) => {
-    console.error('Erreur de lecture du fichier:', e)
+    console.error('Error reading file:', e)
   }
 
   reader.readAsText(file)
