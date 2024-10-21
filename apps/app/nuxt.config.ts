@@ -1,4 +1,3 @@
-import { getIconCollections } from '@egoist/tailwindcss-icons'
 import vue from '@vitejs/plugin-vue'
 
 export default defineNuxtConfig({

@@ -111,6 +111,10 @@ onMounted(() => {
   })
 })
 
+const autoUppercase = useCookie<boolean>('autoUppercase', {
+  watch: true,
+  default: () => true,
+})
 </script>
 
 <template>
@@ -157,7 +161,7 @@ onMounted(() => {
           </UDropdown>
         </div>
       </template>
-      <div :class="{ 'opacity-30': dragOver }" class="flex flex-col gap-4">
+      <div :class="{ 'opacity-30': dragOver }" class="flex flex-col gap-3">
         <div class="flex w-full flex-col gap-4 md:w-1/3">
           <h4 class="text-sm font-semibold">
             Environments
@@ -168,7 +172,14 @@ onMounted(() => {
             <UCheckbox v-model="selectedEnvironment" value="development" label="Development" />
           </div>
         </div>
-        <UDivider class="my-2" />
+        <UDivider class="my-1" />
+        <div class="flex items-center gap-2">
+          <UToggle v-model="autoUppercase" size="xs" />
+          <h3 class="cursor-pointer text-sm font-semibold" @click="autoUppercase = !autoUppercase">
+            Auto uppercase
+          </h3>
+        </div>
+        <UDivider class="my-1" />
         <p class="text-xs font-normal text-gray-500">
           🤫 You can also paste all your environment variables (.env) as key value pairs to prefilled the form
         </p>

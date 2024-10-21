@@ -3,6 +3,10 @@ import type { Variable, VariablesCreateInput } from '@shelve/types'
 export function useVariables(refresh: () => Promise<void>, projectId: string) {
   const selectedEnvironment = ref(['production'])
   const environment = computed(() => selectedEnvironment.value.join('|'))
+  const autoUppercase = useCookie<boolean>('autoUppercase', {
+    watch: true,
+    default: () => true,
+  })
 
   const createLoading = ref(false)
   const updateLoading = ref(false)
@@ -28,6 +32,7 @@ export function useVariables(refresh: () => Promise<void>, projectId: string) {
   const variablesToCreate = ref(1)
 
   const variablesInput = ref<VariablesCreateInput>({
+    autoUppercase: autoUppercase.value,
     projectId: parseInt(projectId),
     variables: [
       {
@@ -61,6 +66,9 @@ export function useVariables(refresh: () => Promise<void>, projectId: string) {
       variable.environment = environment.value
     })
   })
+  watch(autoUppercase, () => {
+    variablesInput.value.autoUppercase = autoUppercase.value
+  })
 
   async function createVariables() {
     createLoading.value = true
@@ -69,6 +77,7 @@ export function useVariables(refresh: () => Promise<void>, projectId: string) {
       createLoading.value = false
       return
     }
+    console.log('variablesInput', variablesInput.value)
     try {
       await $fetch(`/api/variable`, {
         method: 'POST',

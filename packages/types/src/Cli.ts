@@ -48,6 +48,12 @@ export type ShelveConfig = {
    * @default '.env'
    * */
   envFileName: string
+  /**
+   * Automatically uppercase the keys of the variables
+   *
+   * @default true
+   * */
+  autoUppercase: boolean
 }
 
 export type CreateEnvFileInput = {
@@ -96,4 +102,10 @@ export type PushEnvFileInput = {
    * @default false
    */
   confirmChanges: boolean
+  /**
+   * Automatically uppercase the keys of the variables
+   *
+   * @default true
+   * */
+  autoUppercase: boolean
 }

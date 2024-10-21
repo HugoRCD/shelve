@@ -93,7 +93,7 @@ export async function getEnvVariables(projectId: number, environment: string): P
 }
 
 export async function pushEnvFile(input: PushEnvFileInput): Promise<void> {
-  const { variables, projectId, environment, confirmChanges } = input
+  const { variables, projectId, environment, confirmChanges, autoUppercase } = input
   if (confirmChanges) {
     const update = await confirm({
       message: `Are you sure you want to push ${variables.length} variables to ${environment} environment?`,
@@ -106,6 +106,7 @@ export async function pushEnvFile(input: PushEnvFileInput): Promise<void> {
   try {
     const body: VariablesCreateInput = {
       method: 'overwrite',
+      autoUppercase,
       projectId,
       environment,
       variables: variables.map((variable) => ({

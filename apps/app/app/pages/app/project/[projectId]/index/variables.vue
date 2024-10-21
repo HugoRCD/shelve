@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { Variable } from '@shelve/types'
+import { ConfirmModal } from '#components'
 
 const { projectId } = useRoute().params
 
@@ -23,20 +24,35 @@ const isVariableSelected = (variable: Variable) => {
   return selectedVariables.value.some((v) => v.id === variable.id)
 }
 
+const modal = useModal()
+
+function openDeleteModal() {
+  modal.open(ConfirmModal, {
+    title: 'Are you sure?',
+    description: `You are about to delete ${selectedVariables.value.length} variable${selectedVariables.value.length > 1 ? 's' : '' }, this action cannot be undone`,
+    danger: true,
+    onSuccess() {
+      toast.promise(deleteVariables(), {
+        loading: 'Deleting variables...',
+        success: 'Variables have been deleted',
+        error: 'Failed to delete variables',
+      })
+    },
+  })
+}
+
 async function deleteVariables() {
-  if (!confirm('Are you sure you want to delete these variables?')) return
   loading.value = true
   const ids = selectedVariables.value.map((v) => v.id)
   try {
-    const response = await $fetch(`/api/variable`, {
+    await $fetch(`/api/variable`, {
       method: 'DELETE',
       body: {
         variables: ids,
       }
     })
-    toast.success(response.message)
   } catch (error) {
-    toast.error('Couldn\'t delete variables')
+    /* empty */
   }
   selectedVariables.value = []
   await refresh()
@@ -61,7 +77,7 @@ async function deleteVariables() {
               <UButton color="gray" variant="ghost" icon="lucide:clipboard-plus" />
             </UTooltip>
             <UTooltip text="Delete selected variables">
-              <UButton color="red" variant="ghost" icon="heroicons:trash" :loading @click="deleteVariables" />
+              <UButton color="red" variant="ghost" icon="heroicons:trash" :loading @click="openDeleteModal" />
             </UTooltip>
             <UTooltip text="Clear selection">
               <UButton color="gray" variant="ghost" icon="lucide:x" @click="selectedVariables = []" />

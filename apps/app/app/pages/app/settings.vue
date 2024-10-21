@@ -3,6 +3,11 @@ const reduceMotion = useCookie<boolean>('reduceMotion', {
   watch: true,
 })
 
+const autoUppercase = useCookie<boolean>('autoUppercase', {
+  watch: true,
+  default: () => true,
+})
+
 function setPrefersReducedMotion() {
   if (reduceMotion.value) {
     document.documentElement.setAttribute('data-reduce-motion', 'reduce')
@@ -21,6 +26,18 @@ watch(reduceMotion, () => {
     <div style="--stagger: 1" data-animate class="flex flex-col gap-3">
       <div class="flex flex-col gap-1">
         <h2 class="text-lg font-bold">
+          Auto uppercase
+        </h2>
+        <p class="text-sm text-gray-500">
+          Automatically uppercase the keys of the variables
+        </p>
+      </div>
+      <UToggle v-model="autoUppercase" />
+    </div>
+    <UDivider class="my-4" />
+    <div style="--stagger: 2" data-animate class="flex flex-col gap-3">
+      <div class="flex flex-col gap-1">
+        <h2 class="text-lg font-bold">
           Reduce Motion
         </h2>
         <p class="text-sm text-gray-500">
@@ -30,7 +47,7 @@ watch(reduceMotion, () => {
       <UToggle v-model="reduceMotion" />
     </div>
     <UDivider class="my-4" />
-    <div style="--stagger: 2" data-animate class="flex flex-col gap-3">
+    <div style="--stagger: 3" data-animate class="flex flex-col gap-3">
       <h2 class="text-lg font-bold">
         Theme settings
       </h2>
