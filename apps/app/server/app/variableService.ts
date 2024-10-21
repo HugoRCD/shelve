@@ -16,8 +16,9 @@ function getEnvString(env: string) {
   return env.split('|').map((env) => varAssociation[env as Environment]).join('|')
 }
 
-async function encryptVariable(variables: VariablesCreateInput['variables']): Promise<VariablesCreateInput['variables']> {
+async function encryptVariable(variables: VariablesCreateInput['variables'], autoUppercase?: boolean): Promise<VariablesCreateInput['variables']> {
   for (const variable of variables) {
+    if (autoUppercase) variable.key = variable.key.toUpperCase()
     const encryptedValue = await seal(variable.value, encryptionKey)
     delete variable.index
     variable.environment = getEnvString(variable.environment)
@@ -36,7 +37,7 @@ async function decryptVariable(variables: VariablesCreateInput['variables']): Pr
 }
 
 export async function upsertVariable(variablesCreateInput: VariablesCreateInput) {
-  const encryptedVariables = await encryptVariable(variablesCreateInput.variables)
+  const encryptedVariables = await encryptVariable(variablesCreateInput.variables, variablesCreateInput.autoUppercase)
 
   if (variablesCreateInput.variables.length === 1) { // use on main form variable/update
     const [variableCreateInput] = encryptedVariables

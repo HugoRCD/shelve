@@ -63,6 +63,7 @@ export async function getConfig(): Promise<{
       pullMethod: 'overwrite',
       pushMethod: 'overwrite',
       envFileName: '.env',
+      autoUppercase: true,
     }
   })
   return {

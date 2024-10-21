@@ -21,6 +21,7 @@ export type VariableCreateInput = {
 
 export type VariablesCreateInput = {
   method?: 'overwrite' | 'merge';
+  autoUppercase?: boolean;
   environment?: Environment;
   projectId: number;
   variables: VariableCreateInput[];

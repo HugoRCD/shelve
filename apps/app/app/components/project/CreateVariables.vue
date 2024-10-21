@@ -22,16 +22,6 @@ const {
   selectedEnvironment,
   variablesInput,
   variablesToCreate,
-  fileInputRef,
-  dragOver,
-  border,
-  background,
-  handleDragOver,
-  handleDragEnter,
-  handleDragLeave,
-  handleDrop,
-  triggerFileInput,
-  handleFileUpload,
   addVariable,
   removeVariable,
   createVariables,
@@ -86,6 +76,92 @@ const items = [
   ],
 ]
 
+const fileInputRef = ref<HTMLInputElement | null>(null)
+
+const triggerFileInput = () => {
+  fileInputRef.value?.click()
+}
+
+const dragOver = ref(false)
+
+const border = computed(() => {
+  if (dragOver.value) {
+    return 'border-[0.5px] border-primary border-dashed'
+  }
+  return 'border-[0.5px] border-gray-200 dark:border-gray-800'
+})
+
+const background = computed(() => {
+  if (dragOver.value) {
+    return 'rgba(255, 255, 255, 0.2)' // Utilisation de rgba pour la transparence
+  }
+  return 'rgba(255, 255, 255, 1)' // Fond opaque
+})
+
+const handleFileUpload = (event: Event) => {
+  const target = event.target as HTMLInputElement
+  const file = target.files ? target.files[0] : null
+  if (file) {
+    parseEnvFile(file)
+  }
+}
+
+function handleDragEnter(event: DragEvent) {
+  event.preventDefault()
+  dragOver.value = true
+}
+
+function handleDragOver(event: DragEvent) {
+  event.preventDefault()
+}
+
+function handleDragLeave(event: DragEvent) {
+  if (!event.currentTarget.contains(event.relatedTarget as Node)) {
+    dragOver.value = false
+  }
+}
+
+function handleDrop(event: DragEvent) {
+  event.preventDefault()
+  dragOver.value = false
+  const files = event.dataTransfer?.files
+  if (files && files.length > 0) {
+    parseEnvFile(files[0])
+  }
+}
+
+function parseEnvFile(file: File) {
+  const reader = new FileReader()
+
+  reader.onload = (e) => {
+    const content = e.target?.result as string
+    const lines = content.split('\n').filter((line) => line.trim() !== '')
+    const filteredLines = lines.filter((line) => !line.startsWith('#'))
+    const variables = filteredLines.map((line, index) => {
+      const [key, value] = line.split('=')
+      if (!key || !value) {
+        toast.error('Invalid .env file')
+        throw new Error('Invalid .env')
+      }
+      return {
+        index,
+        key: key.replace(/[\n\r'"]+/g, ''),
+        value: value.replace(/[\n\r'"]+/g, ''),
+        projectId: parseInt(projectId),
+        environment: environment.value,
+      }
+    })
+    variablesToCreate.value = variables.length
+    variablesInput.value.variables = variables
+  }
+
+  reader.onerror = (e) => {
+    console.error('Erreur de lecture du fichier:', e)
+  }
+
+  reader.readAsText(file)
+}
+
 onMounted(() => {
   document.addEventListener('paste', (e) => {
     const { clipboardData } = e
@@ -111,6 +187,10 @@ onMounted(() => {
   })
 })
 
+const autoUppercase = useCookie<boolean>('autoUppercase', {
+  watch: true,
+  default: () => true,
+})
 </script>
 
 <template>
@@ -157,7 +237,7 @@ onMounted(() => {
           </UDropdown>
         </div>
       </template>
-      <div :class="{ 'opacity-30': dragOver }" class="flex flex-col gap-4">
+      <div :class="{ 'opacity-30': dragOver }" class="flex flex-col gap-3">
         <div class="flex w-full flex-col gap-4 md:w-1/3">
           <h4 class="text-sm font-semibold">
             Environments
@@ -168,7 +248,14 @@ onMounted(() => {
             <UCheckbox v-model="selectedEnvironment" value="development" label="Development" />
           </div>
         </div>
-        <UDivider class="my-2" />
+        <UDivider class="my-1" />
+        <div class="flex items-center gap-2">
+          <UToggle v-model="autoUppercase" size="xs" />
+          <h3 class="cursor-pointer text-sm font-semibold" @click="autoUppercase = !autoUppercase">
+            Auto uppercase
+          </h3>
+        </div>
+        <UDivider class="my-1" />
         <p class="text-xs font-normal text-gray-500">
           🤫 You can also paste all your environment variables (.env) as key value pairs to prefilled the form
         </p>
@@ -192,7 +279,7 @@ onMounted(() => {
                   autoresize
                   placeholder="e.g. 123456"
                 />
-                <UButton label="Remove" color="red" :disabled="variablesToCreate === 1" @click="removeVariable(variable - 1)" />
+                <UButton label="Remove" color="red" @click="removeVariable(variable - 1)" />
               </div>
             </div>
           </div>
