@@ -36,11 +36,6 @@ export default {
       borderColor: {
         main: 'var(--border-color)',
       },
-      fontFamily: {
-        newsreader: ['Newsreader'],
-        inter: ['Inter'],
-        geist: ['Geist'],
-      }
     },
   },
 } satisfies Config

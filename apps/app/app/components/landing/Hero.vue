@@ -12,8 +12,8 @@ defineShortcuts({
 </script>
 
 <template>
-  <div class="h-96 w-full overflow-hidden">
-    <div class="mx-auto mt-32 w-full max-w-2xl font-inter font-light">
+  <div class="z-20 h-96 w-full overflow-hidden">
+    <div class="mx-auto mt-32 w-full max-w-2xl">
       <div class="text-balance text-center text-3xl sm:text-4xl">
         Meet <span class="font-newsreader font-light italic">{{ title }}</span> a cosy home for all your <span class="font-newsreader font-light italic">projects</span>
       </div>
@@ -21,9 +21,14 @@ defineShortcuts({
         Press <UKbd>S</UKbd> to start your journey
       </p>
       <div class="mt-4 flex flex-col items-center justify-center gap-2 sm:flex-row sm:gap-4">
-        <UButton class="sm:hidden" @click="useRouter().push('/login')">
-          <span class="text-balance">Start your journey <UIcon name="heroicons-outline:arrow-sm-right" class="inline-block size-4" /></span>
-        </UButton>
+        <UButton
+          class="sm:hidden"
+          to="/login"
+          label="Start your journey"
+          icon="lucide:arrow-right"
+          trailing
+          color="gray"
+        />
       </div>
     </div>
 

@@ -39,7 +39,7 @@ const features = [
 <template>
   <div class="mx-auto max-w-5xl">
     <div class="mb-10 flex flex-col items-center justify-center gap-2">
-      <h3 class="from-primary-300 to-primary-400 bg-gradient-to-tr bg-clip-text text-3xl font-bold text-transparent sm:text-4xl">
+      <h3 class="main-gradient">
         <LandingScrambleText label="Features" />
       </h3>
       <p class="max-w-lg text-pretty text-center text-sm text-gray-500 sm:text-base">
@@ -59,8 +59,8 @@ const features = [
             <UIcon :name="feature.icon" class="size-5 fill-white text-gray-300" />
           </div>
 
-          <div class="ml-4 font-semibold text-gray-300">
-            {{ feature.title }} <span v-if="feature.soon" class="ml-1 text-xs text-gray-400">(soon)</span>
+          <div class="ml-4 text-gray-300">
+            {{ feature.title }}<span v-if="feature.soon" class="ml-1 text-xs text-gray-400">(soon)</span>
           </div>
         </div>
 

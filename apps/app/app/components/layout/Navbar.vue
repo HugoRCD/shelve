@@ -3,47 +3,40 @@ const navigation = getNavigation('home')
 </script>
 
 <template>
-  <div>
-    <nav class="fixed inset-x-0 top-0 z-50 flex items-center justify-between bg-neutral-900/50 p-4 backdrop-blur-lg sm:px-5 sm:py-2">
-      <NuxtLink to="/" class="font-newsreader text-2xl font-light italic">
-        Shelve
-      </NuxtLink>
-      <div class="nav-pill">
-        <NuxtLink
-          v-for="item in navigation"
-          :key="item.name"
-          class="text-sm text-gray-300 hover:text-gray-400"
-          :to="item.path"
-        >
-          {{ item.name }}
-        </NuxtLink>
-      </div>
-      <div class="flex items-center gap-5">
-        <LandingGithubStar class="hidden sm:flex" />
-        <AuthState>
-          <DropdownMenu />
-          <template #placeholder>
-            <NuxtLink to="/login" class="btn-primary">
-              Login
+  <div class="z-[99]">
+    <nav class="fixed top-0 flex w-full">
+      <div class="backdrop" />
+      <div class="z-50 flex w-full items-center justify-around p-4 sm:px-5 sm:py-2">
+        <div class="flex gap-2">
+          <NuxtLink to="/" class="font-newsreader text-2xl font-light italic">
+            Shelve
+          </NuxtLink>
+          <UDivider orientation="vertical" class="mx-2" />
+          <div class="flex items-center gap-3">
+            <NuxtLink
+              v-for="item in navigation"
+              :key="item.name"
+              class="font-geist-mono text-sm text-gray-200 hover:text-gray-400"
+              :to="item.path"
+            >
+              {{ item.name }}
             </NuxtLink>
-          </template>
-        </AuthState>
+          </div>
+        </div>
+        <div class="flex items-center gap-5">
+          <LandingGithubStar class="hidden sm:flex" />
+          <AuthState>
+            <DropdownMenu />
+          </AuthState>
+        </div>
       </div>
     </nav>
   </div>
 </template>
 
 <style scoped>
-.nav-pill {
-  @apply flex gap-3 sm:gap-5 rounded-full sm:px-6 sm:py-2;
-  @apply sm:hover:bg-gray-800/50;
-  @apply border border-transparent sm:hover:border-gray-600/50 hover:shadow-lg;
-  @apply transition-colors duration-300;
-}
-
-.btn-primary {
-  @apply px-4 py-2 text-sm font-semibold text-white;
-  @apply bg-neutral-800 hover:bg-neutral-700;
-  @apply rounded-full shadow-md;
+.backdrop {
+  @apply absolute inset-x-0 top-0 z-40 h-40;
+  @apply bg-gradient-to-b from-neutral-900 to-transparent;
 }
 </style>

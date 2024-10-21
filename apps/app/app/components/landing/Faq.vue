@@ -32,7 +32,7 @@ const items = [
 <template>
   <div>
     <div class="mb-10 flex flex-col items-center justify-center gap-2">
-      <h3 class="from-primary-300 to-primary-400 bg-gradient-to-tr bg-clip-text text-3xl font-bold text-transparent sm:text-4xl">
+      <h3 class="main-gradient">
         <LandingScrambleText label="FAQ" />
       </h3>
       <p class="max-w-lg text-center text-sm text-gray-500 sm:text-base">
@@ -41,7 +41,7 @@ const items = [
     </div>
     <div class="mx-auto max-w-3xl">
       <UAccordion
-        color="primary"
+        color="gray"
         variant="ghost"
         size="sm"
         :items
