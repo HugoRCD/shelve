@@ -144,7 +144,7 @@ const columnsTable = computed(() => columns.filter((column) => selectedColumns.v
         </UButton>
       </USelectMenu>
     </div>
-    <UTable v-if="users" :rows="filteredUsers" :columns="columnsTable" :loading="status === 'pending' || updateLoading || deleteLoading">
+    <UTable :rows="filteredUsers" :columns="columnsTable" :loading="status === 'pending' || updateLoading || deleteLoading">
       <template #avatar-data="{ row }">
         <UAvatar :src="row.avatar" :alt="row.name" size="sm" img-class="object-cover" />
       </template>
