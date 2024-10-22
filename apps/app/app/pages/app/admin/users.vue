@@ -129,7 +129,6 @@ const items = (row: publicUser) => [
   ],
 ]
 
-// Selected Columns
 const selectedColumns = ref(columns)
 const columnsTable = computed(() => columns.filter((column) => selectedColumns.value.includes(column)))
 </script>

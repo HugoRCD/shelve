@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const length = ref(12)
+const length = ref(25)
 const includeSymbols = ref(true)
 const isOpen = ref(false)
 const virtualElement = ref({ getBoundingClientRect: () => ({}) })
@@ -45,7 +45,7 @@ function onContextMenu(event: MouseEvent) {
     </div>
 
     <UContextMenu v-model="isOpen" :virtual-element>
-      <UCard :ui="{ base: 'w-56' }">
+      <UCard :ui="{ base: 'w-72' }">
         <template #header>
           <h3 class="text-sm font-semibold">
             Generate Password
@@ -53,7 +53,7 @@ function onContextMenu(event: MouseEvent) {
         </template>
         <form class="flex flex-col gap-4" @submit.prevent="generatePassword">
           <UFormGroup :label="`Password Length (${length})`">
-            <URange v-model="length" :min="5" :max="25" />
+            <URange v-model="length" :min="5" :max="35" />
           </UFormGroup>
           <UCheckbox v-model="includeSymbols" label="Include Symbols" />
           <UDivider />
