@@ -55,8 +55,18 @@ export default defineNuxtConfig({
     '@vueuse/nuxt',
     'nuxt-build-cache',
     'nuxt-auth-utils',
-    '@nuxt/scripts'
+    '@nuxt/scripts',
+    '@nuxtjs/sitemap', // Pdcd0
+    '@nuxtjs/seo' // P158a
   ],
+
+  sitemap: {
+    hostname: process.env.NUXT_PUBLIC_SITE_URL,
+    routes: async () => {
+      const { data } = await $fetch('/api/routes')
+      return data.map(route => route.path)
+    }
+  }, // Paecc
 
   css: ['~/assets/style/main.css'],
 
