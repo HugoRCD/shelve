@@ -14,9 +14,12 @@ defineShortcuts({
 <template>
   <div class="z-20 h-96 w-full overflow-hidden">
     <div class="mx-auto mt-32 w-full max-w-2xl">
-      <div class="text-balance text-center text-3xl sm:text-4xl">
-        Meet <span class="font-newsreader font-light italic">{{ title }}</span> a cosy home for all your <span class="font-newsreader font-light italic">projects</span>
+      <div class="mx-auto max-w-md text-pretty text-center text-3xl sm:text-4xl">
+        The all-in-one developer <span class="font-newsreader font-light italic">workspace</span>
       </div>
+      <p class="mx-auto mt-2 max-w-lg text-center text-gray-400 sm:block">
+        Automate your workflow, manage your projects, and work faster with your team.
+      </p>
       <p class="mt-4 hidden text-center text-gray-400 sm:block">
         Press <UKbd>S</UKbd> to start your journey
       </p>
