@@ -1,3 +1,5 @@
+<img src="../../assets/preview.png" width="100%" alt="Shelve" />
+
 # Shelve CLI
 
 <!-- automd:badges color=black license provider=shields name=@shelve/cli -->
