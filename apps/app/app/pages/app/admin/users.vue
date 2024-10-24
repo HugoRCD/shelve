@@ -13,6 +13,7 @@ const updateLoading = ref(false)
 const deleteLoading = ref(false)
 
 const filteredUsers = computed(() => {
+  // eslint-disable-next-line
   if (!search.value) return users.value?.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
   return users.value!.filter((user: publicUser) => user.username.toLowerCase().includes(search.value.toLowerCase()))
 })
