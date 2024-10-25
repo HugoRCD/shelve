@@ -21,6 +21,17 @@ function useClipboard(text: string) {
     </div>
     <div class="mx-auto mt-16 flex max-w-6xl flex-col gap-16 px-8 sm:flex-row sm:gap-8 sm:px-16">
       <div class="flex w-fit flex-col gap-2">
+        <NuxtLink
+          class="mb-4"
+          href="https://www.producthunt.com/posts/shelve?embed=true&utm_source=badge-featured&utm_medium=badge&utm_souce=badge-shelve"
+          target="_blank"
+        >
+          <img
+            src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=534015&theme=neutral"
+            alt="Shelve - &#0034;The&#0032;simple&#0032;way&#0032;to&#0032;share&#0032;environment&#0032;variables&#0034; | Product Hunt"
+            style="width: 150px;"
+          >
+        </NuxtLink>
         <h3 class="main-gradient">
           <LandingScrambleText label="// Welcome to Shelve" />
         </h3>
