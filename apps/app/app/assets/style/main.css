@@ -29,7 +29,7 @@ html, body, #__nuxt, #__layout {
 }
 
 .main-gradient {
-  @apply font-geist-mono bg-gradient-to-r from-neutral-50 to-neutral-600 to-50% bg-clip-text text-2xl text-transparent;
+  @apply font-geist-mono bg-gradient-to-r from-neutral-50 to-neutral-600 to-50% bg-clip-text text-transparent;
 }
 
 html.light {
