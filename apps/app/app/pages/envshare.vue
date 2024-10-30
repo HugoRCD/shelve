@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const route = useRoute()
-const { data } = route.params
+const id = computed(() => route.query.id)
 
 const value = ref('')
 const reads = ref(1)
@@ -9,8 +9,49 @@ const ttl = ref([
   '7d',
   '30d',
 ])
+const loading = ref(false)
+const shareUrl = ref('')
+
+const sealMode = computed(() => id.value)
+const localId = ref(id)
+const timeLeft = ref('')
+const readsLeft = ref(0)
+
+async function decryptEnvFile() {
+  loading.value = true
+  try {
+    const { decryptedValue, reads, ttl } = await $fetch(`/api/envshare?id=${localId.value}`, {
+      method: 'POST',
+    })
+    value.value = decryptedValue
+    readsLeft.value = reads
+    timeLeft.value = ttl
+    toast.success('EnvShare file has been decrypted')
+  } catch (error) {
+    toast.error('Failed to decrypt EnvShare file')
+  }
+  loading.value = false
+}
 
 const selectedTtl = ref(ttl.value[0])
+
+async function saveEnvFile() {
+  loading.value = true
+  try {
+    shareUrl.value = await $fetch('/api/envshare', {
+      method: 'POST',
+      body: {
+        value: value.value,
+        reads: reads.value,
+        ttl: selectedTtl.value,
+      },
+    })
+    toast.success('EnvShare file has been saved')
+  } catch (error) {
+    toast.error('Failed to save EnvShare file')
+  }
+  loading.value = false
+}
 
 function parseEnvFile(file: File) {
   const reader = new FileReader()
@@ -68,9 +109,9 @@ function handleDrop(event: DragEvent) {
   <div class="mx-auto flex h-full flex-col items-center justify-center">
     <div class="w-full border-y border-gray-500/20">
       <div class="mx-auto flex max-w-2xl justify-center px-5 sm:px-0">
-        <CrossedDiv encrypted-text class="flex w-full justify-center">
+        <CrossedDiv encrypted-text class="w-full">
           <div>
-            <h1 class="main-gradient text-3xl">
+            <h1 class="main-gradient cursor-pointer text-3xl" @click="$router.push('/envshare')">
               <LandingScrambleText label="EnvShare" />
             </h1>
             <p class="text-gray-500">
@@ -80,12 +121,13 @@ function handleDrop(event: DragEvent) {
         </CrossedDiv>
       </div>
     </div>
-    <div class="mx-auto mt-8 flex w-full max-w-2xl flex-col justify-center gap-2 px-5 sm:px-0">
+    <form v-if="!sealMode" class="mx-auto mt-8 flex w-full max-w-2xl flex-col justify-center gap-2 px-5 sm:px-0" @submit.prevent="saveEnvFile">
       <div class="relative w-full">
         <UTextarea
           v-model="value"
           autoresize
           autofocus
+          required
           :rows="5"
           class="w-full"
           placeholder="DATABASE_URL=your_value ..."
@@ -117,9 +159,51 @@ function handleDrop(event: DragEvent) {
         </UFormGroup>
       </div>
       <div class="mt-4 w-full">
-        <UButton block label="Encrypt" color="gray" />
+        <UButton block label="Encrypt" type="submit" color="gray" :loading />
       </div>
-    </div>
+      <div v-if="shareUrl" class="mt-4 flex w-full rounded-lg border border-green-600/20 bg-green-600/10 p-4 shadow-md">
+        <div class="flex w-full items-center justify-between gap-2">
+          <span class="text-sm font-semibold text-green-500/80">
+            Your EnvShare file has been saved
+          </span>
+          <UButton color="green" variant="soft" icon="lucide:copy" label="Copy Share URL" @click="copyToClipboard(shareUrl)" />
+        </div>
+      </div>
+    </form>
+    <form v-else class="mx-auto mt-8 flex w-full max-w-2xl flex-col justify-center gap-2 px-5 sm:px-0" @submit.prevent="decryptEnvFile">
+      <div v-if="!value" class="relative flex w-full flex-col gap-2">
+        <UFormGroup label="Share ID">
+          <UInput v-model="localId" placeholder="o75adqf..." required />
+        </UFormGroup>
+      </div>
+      <div class="mt-4 flex w-full flex-col gap-2">
+        <UTextarea
+          v-if="value"
+          v-model="value"
+          autoresize
+          autofocus
+          :rows="5"
+          class="w-full"
+          placeholder="DATABASE_URL=your_value ..."
+        />
+        <UButton
+          v-if="!value"
+          block
+          label="Decrypt"
+          type="submit"
+          color="gray"
+          :loading
+        />
+      </div>
+      <div class="mt-4 flex w-full items-center justify-between gap-2">
+        <span v-if="timeLeft" class="text-sm font-semibold text-gray-500/80">
+          Time left: {{ timeLeft }}
+        </span>
+        <span v-if="readsLeft" class="text-sm font-semibold text-gray-500/80">
+          Reads left: {{ readsLeft }}
+        </span>
+      </div>
+    </form>
   </div>
 </template>
 
