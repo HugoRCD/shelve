@@ -1,25 +1,10 @@
-version: '3.8'
-
 services:
   shelve:
     image: shelve:latest
     build:
       context: ../apps/shelve
       dockerfile: Dockerfile
-    environment:
-      - NUXT_PUBLIC_SITE_URL=${NUXT_PUBLIC_SITE_URL}
-      - NUXT_PRIVATE_RESEND_API_KEY=${NUXT_PRIVATE_RESEND_API_KEY}
-      - NUXT_PRIVATE_AUTH_SECRET=${NUXT_PRIVATE_AUTH_SECRET}
-      - NUXT_PRIVATE_ENCRYPTION_KEY=${NUXT_PRIVATE_ENCRYPTION_KEY}
-      - NUXT_PRIVATE_REDIS_URL=${NUXT_PRIVATE_REDIS_URL}
-      - NUXT_OAUTH_GITHUB_CLIENT_ID=${NUXT_OAUTH_GITHUB_CLIENT_ID}
-      - NUXT_OAUTH_GITHUB_CLIENT_SECRET=${NUXT_OAUTH_GITHUB_CLIENT_SECRET}
-      - DATABASE_URL=${DATABASE_URL}
-      - NUXT_SESSION_PASSWORD=${NUXT_SESSION_PASSWORD}
-      - SHELVE_TOKEN=${SHELVE_TOKEN}
+    env_file:
+      - ../apps/shelve/.env
     ports:
       - "3000:3000"
-    volumes:
-      - .nuxt:/app/.nuxt
-      - .output:/app/.output
-      - dist:/app/dist
