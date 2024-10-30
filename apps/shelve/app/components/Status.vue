@@ -25,8 +25,8 @@ defineProps({
     </UTooltip>
     <UTooltip v-else :text="inactiveText" :popper="{ placement: 'top' }">
       <span class="relative flex size-3">
-        <span class="absolute inline-flex size-full rounded-full bg-gray-500/80 opacity-75" />
-        <span class="relative inline-flex size-3 scale-90 rounded-full bg-gray-500" />
+        <span class="absolute inline-flex size-full rounded-full bg-neutral-500/80 opacity-75" />
+        <span class="relative inline-flex size-3 scale-90 rounded-full bg-neutral-500" />
       </span>
     </UTooltip>
   </div>

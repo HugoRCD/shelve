@@ -108,7 +108,7 @@ function getProjectManager(manager: string) {
             <h2 class="text-base font-semibold leading-7">
               {{ project.name }}
             </h2>
-            <p class="text-sm leading-6 text-gray-500">
+            <p class="text-sm leading-6 text-neutral-500">
               {{ project.description }}
             </p>
           </div>
@@ -122,7 +122,7 @@ function getProjectManager(manager: string) {
                   <FormGroup v-model="project.avatar" label="Avatar" class="w-full" />
                 </div>
                 <div class="flex justify-end gap-4">
-                  <UButton color="gray" variant="ghost" @click="showEdit = false">
+                  <UButton color="neutral" variant="ghost" @click="showEdit = false">
                     Cancel
                   </UButton>
                   <UButton color="primary" type="submit" trailing :loading="updateLoading">

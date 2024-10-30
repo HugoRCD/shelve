@@ -34,13 +34,13 @@ async function decryptEnvFile() {
   <form class="mx-auto mt-8 flex w-full max-w-2xl flex-col justify-center gap-2 px-5 sm:px-0" @submit.prevent="decryptEnvFile">
     <template v-if="!value">
       <div class="relative flex w-full flex-col gap-2">
-        <UFormGroup label="Share ID">
+        <UFormField label="Share ID">
           <UInput
             v-model="localId"
             placeholder="o75adqf..."
             required
           />
-        </UFormGroup>
+        </UFormField>
       </div>
       <div class="mt-4">
         <UButton

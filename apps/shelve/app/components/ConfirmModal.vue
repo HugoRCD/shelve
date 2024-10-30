@@ -28,12 +28,12 @@ function onCancel() {
           {{ title }}
         </h3>
       </template>
-      <div class="text-gray-300">
+      <div class="text-neutral-300">
         {{ description }}
       </div>
       <template #footer>
         <div class="flex justify-end gap-2">
-          <UButton variant="ghost" color="gray" @click="onCancel">
+          <UButton variant="ghost" color="neutral" @click="onCancel">
             Cancel
           </UButton>
           <UButton :color="danger ? 'red' : 'primary'" @click="onSuccess">

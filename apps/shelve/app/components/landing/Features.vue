@@ -42,7 +42,7 @@ const features = [
       <h3 class="main-gradient text-2xl">
         <LandingScrambleText label="Features" />
       </h3>
-      <p class="max-w-lg text-pretty text-center text-sm text-gray-500 sm:text-base">
+      <p class="max-w-lg text-pretty text-center text-sm text-neutral-500 sm:text-base">
         No more tedious tasks, Shelve has everything you need to manage your projects.
       </p>
     </div>

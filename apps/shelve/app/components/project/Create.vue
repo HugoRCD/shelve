@@ -70,8 +70,9 @@ function importProject() {
 </script>
 
 <template>
-  <div>
+  <USlideover v-model="isOpen" title="Create a new project" description="Its time to create a new project, let's get started!">
     <UButton
+      color="neutral"
       size="xs"
       icon="heroicons:plus-20-solid"
       :loading="projectLoading"
@@ -79,22 +80,13 @@ function importProject() {
       @click="isOpen = true"
     />
 
-    <USlideover v-model="isOpen">
+    <template #content>
       <form class="flex flex-1 overflow-y-auto" @submit.prevent="createProjectFunction">
-        <UCard class="flex flex-1 flex-col" :ui="{ body: { base: 'flex-1' }, ring: '', divide: 'divide-y divide-gray-100 dark:divide-gray-800' }">
-          <template #header>
-            <h3 class="text-lg font-semibold">
-              Create a new project
-            </h3>
-            <p class="text-sm font-normal text-gray-500">
-              Its time to create a new project, let's get started!
-            </p>
-          </template>
-
+        <UCard class="flex flex-1 flex-col">
           <div class="flex flex-col gap-4 p-2">
             <FormGroup v-model="projectCreateInput.name" required label="Project name" />
             <FormGroup v-model="projectCreateInput.description" label="Description" type="textarea" />
-            <UDivider class="my-4" />
+            <!--              <UDivider class="my-4" />-->
             <div class="flex flex-col gap-4">
               <div class="flex items-center justify-between">
                 <div>
@@ -144,7 +136,7 @@ function importProject() {
                 </div>
               </div>
             </div>
-            <UDivider class="my-4" />
+            <!--              <UDivider class="my-4" />-->
             <div class="flex flex-col gap-4">
               <div>
                 <h3 class="font-semibold">
@@ -164,7 +156,7 @@ function importProject() {
                 <FormGroup v-model="projectCreateInput.homepage" label="Homepage" />
               </div>
             </div>
-            <UDivider class="my-4" />
+            <!--              <UDivider class="my-4" />-->
             <div class="flex flex-col gap-4">
               <div>
                 <h3 class="font-semibold">
@@ -180,26 +172,25 @@ function importProject() {
               </div>
             </div>
           </div>
-
-          <template #footer>
-            <div class="flex justify-between">
-              <div>
-                <UButton color="gray" variant="ghost" @click="importProject">
-                  Import project from JSON
-                </UButton>
-              </div>
-              <div class="flex gap-4">
-                <UButton color="gray" variant="ghost" @click="isOpen = false">
-                  Cancel
-                </UButton>
-                <UButton color="primary" type="submit" trailing :loading="createLoading">
-                  Save
-                </UButton>
-              </div>
-            </div>
-          </template>
         </UCard>
       </form>
-    </USlideover>
-  </div>
+    </template>
+    <template #footer>
+      <div class="flex justify-between">
+        <div>
+          <UButton color="gray" variant="ghost" @click="importProject">
+            Import project from JSON
+          </UButton>
+        </div>
+        <div class="flex gap-4">
+          <UButton color="gray" variant="ghost" @click="isOpen = false">
+            Cancel
+          </UButton>
+          <UButton color="primary" type="submit" trailing :loading="createLoading">
+            Save
+          </UButton>
+        </div>
+      </div>
+    </template>
+  </USlideover>
 </template>

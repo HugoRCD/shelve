@@ -18,11 +18,11 @@ if (!projects.value)
     </div>
     <div v-if="!loading">
       <div v-if="projects.length === 0" class="flex h-64 flex-col items-center justify-center gap-4">
-        <UIcon name="heroicons:folder-open" class="size-10 text-gray-400" />
+        <UIcon name="heroicons:folder-open" class="size-10 text-neutral-400" />
         <h2 class="text-lg font-semibold">
           No projects found
         </h2>
-        <p class="text-sm text-gray-500">
+        <p class="text-sm text-neutral-500">
           You don't have any projects yet. Create one now!
         </p>
         <ProjectCreate />
@@ -45,7 +45,7 @@ if (!projects.value)
                 <h3 class="flex flex-col text-lg font-semibold">
                   {{ project.name }}
                 </h3>
-                <div class="text-xs font-normal text-gray-500">
+                <div class="text-xs font-normal text-neutral-500">
                   {{ project.description }}
                 </div>
               </div>

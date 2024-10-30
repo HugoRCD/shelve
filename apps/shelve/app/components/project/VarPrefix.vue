@@ -53,7 +53,7 @@ function addPrefixToInputId(prefix: string) {
           <UButton
             v-for="prefix in prefixList"
             :key="prefix"
-            color="gray"
+            color="neutral"
             icon="heroicons:plus"
             :label="prefix"
             @click="addPrefixToInputId(prefix)"

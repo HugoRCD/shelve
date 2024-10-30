@@ -66,7 +66,7 @@ async function deleteVariables() {
     <Transition name="fade" mode="out-in">
       <div v-if="selectedVariables.length > 0" class="absolute bottom-4 left-1/2 z-20 -translate-x-1/2">
         <div class="flex items-center gap-4 rounded-full border border-neutral-200 bg-white px-5 py-1.5 shadow-md dark:border-neutral-700 dark:bg-neutral-800">
-          <span class="text-nowrap text-sm font-semibold text-gray-900 dark:text-gray-300">
+          <span class="text-nowrap text-sm font-semibold text-neutral-900 dark:text-neutral-300">
             {{ selectedVariables.length }} variable{{ selectedVariables.length > 1 ? 's' : '' }} selected
           </span>
           <div class="flex gap-2">
@@ -74,13 +74,13 @@ async function deleteVariables() {
               text="Copy selected variables (dev) to clipboard"
               @click="copyEnv(selectedVariables, 'development')"
             >
-              <UButton color="gray" variant="ghost" icon="lucide:clipboard-plus" />
+              <UButton color="neutral" variant="ghost" icon="lucide:clipboard-plus" />
             </UTooltip>
             <UTooltip text="Delete selected variables">
               <UButton color="red" variant="ghost" icon="heroicons:trash" :loading @click="openDeleteModal" />
             </UTooltip>
             <UTooltip text="Clear selection">
-              <UButton color="gray" variant="ghost" icon="lucide:x" @click="selectedVariables = []" />
+              <UButton color="neutral" variant="ghost" icon="lucide:x" @click="selectedVariables = []" />
             </UTooltip>
           </div>
         </div>

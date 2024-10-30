@@ -72,7 +72,7 @@ const items = (row: Team) => [
         <h2 class="text-base font-semibold leading-7">
           Teams
         </h2>
-        <p class="text-sm leading-6 text-gray-500">
+        <p class="text-sm leading-6 text-neutral-500">
           Manage your teams
         </p>
       </div>
@@ -117,7 +117,7 @@ const items = (row: Team) => [
         <template #actions-data="{ row }">
           <UDropdown :items="items(row)">
             <UButton
-              color="gray"
+              color="neutral"
               variant="ghost"
               icon="heroicons:ellipsis-horizontal-20-solid"
               :disabled="!isOwner(row)"

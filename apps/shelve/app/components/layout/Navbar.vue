@@ -11,12 +11,12 @@ const navigation = getNavigation('home')
           <NuxtLink to="/" class="font-newsreader text-2xl font-light italic">
             Shelve
           </NuxtLink>
-          <UDivider orientation="vertical" class="mx-2" />
+<!--          <UDivider orientation="vertical" class="mx-2" />-->
           <div class="flex items-center gap-3">
             <NuxtLink
               v-for="item in navigation"
               :key="item.name"
-              class="font-geist-mono text-sm text-gray-200 hover:text-gray-400"
+              class="font-geist-mono text-sm text-neutral-200 hover:text-neutral-400"
               :to="item.path"
             >
               {{ item.name }}
@@ -35,8 +35,10 @@ const navigation = getNavigation('home')
 </template>
 
 <style scoped>
+@import "tailwindcss";
+
 .backdrop {
-  @apply absolute inset-x-0 top-0 z-40 h-40;
+  @apply absolute top-0 z-40 h-40;
   @apply bg-gradient-to-b from-neutral-900 to-transparent;
 }
 </style>

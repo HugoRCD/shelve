@@ -35,11 +35,11 @@ const items = [
 
 <template>
   <div class="flex items-center justify-center">
-    <UDropdown
+    <UDropdownMenu
       v-if="loggedIn"
       :items
       :ui="{
-        background: 'backdrop-blur-3xl border dark:bg-gray-950/95 dark:border-gray-400/10 bg-white',
+        background: 'backdrop-blur-3xl border dark:bg-neutral-950/95 dark:border-neutral-400/10 bg-white',
         ring: 'ring-1 ring-neutral-100 dark:ring-neutral-800',
         divide: 'divide-y divide-neutral-100 dark:divide-neutral-800',
         item: {
@@ -56,13 +56,13 @@ const items = [
           <p>
             Signed in as
           </p>
-          <p class="truncate font-medium text-gray-900 dark:text-white">
+          <p class="truncate font-medium text-neutral-900 dark:text-white">
             {{ item.label }}
           </p>
         </div>
       </template>
-    </UDropdown>
-    <UButton v-else to="/login" label="Login" color="gray" />
+    </UDropdownMenu>
+    <UButton v-else to="/login" label="Login" color="neutral" />
   </div>
 </template>
 

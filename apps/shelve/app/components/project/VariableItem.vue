@@ -47,7 +47,7 @@ const showEdit = ref(false)
 </script>
 
 <template>
-  <UCard :ui="{ background: isSelected && showEdit ? 'ring ring-primary' : isSelected && !showEdit ? 'bg-gray-100 dark:bg-gray-800' : '' }">
+  <UCard :ui="{ background: isSelected && showEdit ? 'ring ring-primary' : isSelected && !showEdit ? 'bg-neutral-100 dark:bg-neutral-800' : '' }">
     <div class="flex w-full items-center justify-between">
       <div class="flex w-full flex-col gap-1" :class="{ 'cursor-pointer': !showEdit }" @click="showEdit ? null : emit('toggleSelected')">
         <h3 class="flex items-center gap-1 text-sm font-semibold sm:text-base">
@@ -56,18 +56,18 @@ const showEdit = ref(false)
           </span>
           <span class="hidden lg:block">{{ variable.key }}</span>
           <UTooltip text="Copy variable to clipboard">
-            <UButton color="gray" variant="ghost" icon="lucide:clipboard-plus" @click.stop="copyToClipboard(`${localVariable.key}=${localVariable.value}`, 'Variable copied to clipboard')" />
+            <UButton color="neutral" variant="ghost" icon="lucide:clipboard-plus" @click.stop="copyToClipboard(`${localVariable.key}=${localVariable.value}`, 'Variable copied to clipboard')" />
           </UTooltip>
           <UTooltip text="Show variable">
-            <UButton color="gray" variant="ghost" icon="lucide:eye" @click.stop="showEdit = !showEdit" />
+            <UButton color="neutral" variant="ghost" icon="lucide:eye" @click.stop="showEdit = !showEdit" />
           </UTooltip>
         </h3>
-        <span class="text-xs font-normal text-gray-500">
+        <span class="text-xs font-normal text-neutral-500">
           {{ capitalize(variable.environment.split("|").join(", ")) }}
         </span>
       </div>
       <div class="flex items-center gap-2">
-        <p class="hidden text-right text-xs font-normal text-gray-500 md:block">
+        <p class="hidden text-right text-xs font-normal text-neutral-500 md:block">
           Last updated: {{ new Date(variable.updatedAt).toLocaleDateString() }}
         </p>
       </div>

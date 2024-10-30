@@ -88,7 +88,7 @@ const border = computed(() => {
   if (dragOver.value) {
     return 'border-[0.5px] border-primary border-dashed'
   }
-  return 'border-[0.5px] border-gray-200 dark:border-gray-800'
+  return 'border-[0.5px] border-neutral-200 dark:border-gray-800'
 })
 
 const handleFileUpload = (event: Event) => {
@@ -247,7 +247,7 @@ const handlePasswordGenerated = (password: string, index: number) => {
         </div>
         <UDivider class="my-1" />
         <div class="flex items-center gap-2">
-          <UToggle v-model="autoUppercase" size="xs" />
+          <USwitch v-model="autoUppercase" size="xs" />
           <h3 class="cursor-pointer text-sm font-semibold" @click="autoUppercase = !autoUppercase">
             Auto uppercase
           </h3>

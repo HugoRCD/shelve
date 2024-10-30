@@ -82,7 +82,7 @@ fetchTokens()
         <h2 class="text-base font-semibold leading-7">
           Tokens
         </h2>
-        <p class="text-sm leading-6 text-gray-500">
+        <p class="text-sm leading-6 text-neutral-500">
           Manage your tokens for the CLI
         </p>
       </div>
@@ -114,14 +114,14 @@ fetchTokens()
               <UIcon name="heroicons-outline:clock" class="size-4 text-red-600" />
             </UTooltip>
             <UTooltip v-else text="Token is active">
-              <UIcon name="heroicons-outline:clock" class="size-4 text-gray-500" />
+              <UIcon name="heroicons-outline:clock" class="size-4 text-neutral-500" />
             </UTooltip>
           </span>
         </template>
         <template #actions-data="{ row }">
           <UDropdown :items="items(row)">
             <UButton
-              color="gray"
+              color="neutral"
               variant="ghost"
               icon="heroicons:ellipsis-horizontal-20-solid"
             />

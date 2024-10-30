@@ -86,7 +86,7 @@ const handleKeyDown = function(event: KeyboardEvent, index: number) {
 <style scoped>
 .digit-box {
   @apply size-12 rounded-md text-center text-2xl text-black dark:text-white outline-none;
-  @apply bg-white dark:bg-neutral-800 ring-2 ring-transparent focus:ring-primary placeholder-gray-600/30;
+  @apply bg-white dark:bg-neutral-800 ring-2 ring-transparent focus:ring-primary placeholder-neutral-600/30;
   @apply border-[1px] dark:border-white/5 border-black/10;
 }
 </style>

@@ -104,20 +104,20 @@ function handleDrop(event: DragEvent) {
         :ui="{ width: 'max-w-4xl' }"
         text="Reads are used to limit the number of times a secret can be read."
       >
-        <UFormGroup label="Reads">
+        <UFormField label="Reads">
           <UInput
             v-model="reads"
             label="Reads"
             type="number"
             min="1"
           />
-        </UFormGroup>
+        </UFormField>
       </UTooltip>
       <UTooltip
         :ui="{ width: 'max-w-4xl' }"
         text="TTL is the time period after which the secret will be deleted."
       >
-        <UFormGroup label="TTL">
+        <UFormField label="TTL">
           <USelect
             v-model="selectedTtl"
             :options="ttl"
@@ -125,7 +125,7 @@ function handleDrop(event: DragEvent) {
             value-attribute="value"
             option-attribute="label"
           />
-        </UFormGroup>
+        </UFormField>
       </UTooltip>
     </div>
     <div class="mt-4 w-full">

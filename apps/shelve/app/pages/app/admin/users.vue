@@ -139,7 +139,7 @@ const columnsTable = computed(() => columns.filter((column) => selectedColumns.v
     <div class="flex flex-col justify-end gap-4 sm:flex-row sm:items-center">
       <UInput v-model="search" label="Search" placeholder="Search a user" icon="heroicons:magnifying-glass-20-solid" />
       <USelectMenu v-model="selectedColumns" :options="columns" multiple>
-        <UButton icon="heroicons:view-columns" color="gray" class="w-full sm:w-40">
+        <UButton icon="heroicons:view-columns" color="neutral" class="w-full sm:w-40">
           Columns
         </UButton>
       </USelectMenu>
@@ -149,21 +149,21 @@ const columnsTable = computed(() => columns.filter((column) => selectedColumns.v
         <UAvatar :src="row.avatar" :alt="row.name" size="sm" img-class="object-cover" />
       </template>
       <template #role-data="{ row }">
-        <UBadge :label="row.role.toUpperCase()" :color="row.role === 'admin' ? 'primary' : 'gray'" />
+        <UBadge :label="row.role.toUpperCase()" :color="row.role === 'admin' ? 'primary' : 'neutral'" />
       </template>
       <template #createdAt-data="{ row }">
-        <span class="text-sm text-gray-500 dark:text-gray-400">
+        <span class="text-sm text-neutral-500 dark:text-neutral-400">
           {{ new Date(row.createdAt).toLocaleString() }}
         </span>
       </template>
       <template #updatedAt-data="{ row }">
-        <span class="text-sm text-gray-500 dark:text-gray-400">
+        <span class="text-sm text-neutral-500 dark:text-neutral-400">
           {{ new Date(row.updatedAt).toLocaleString() }}
         </span>
       </template>
       <template #actions-data="{ row }">
         <UDropdown :items="items(row)">
-          <UButton color="gray" variant="ghost" icon="heroicons:ellipsis-horizontal-20-solid" />
+          <UButton color="neutral" variant="ghost" icon="heroicons:ellipsis-horizontal-20-solid" />
         </UDropdown>
       </template>
     </UTable>

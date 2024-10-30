@@ -32,7 +32,7 @@ const model = defineModel({ type: String, required: true })
 </script>
 
 <template>
-  <UFormGroup :label>
+  <UFormField class="w-full" :label>
     <UTextarea
       v-if="type === 'textarea'"
       v-model="model"
@@ -41,9 +41,10 @@ const model = defineModel({ type: String, required: true })
       :disabled
       :type
       :rows
+      class="w-full"
     />
-    <UInput v-else v-model="model" :placeholder :disabled :type />
-  </UFormGroup>
+    <UInput class="w-full" v-else v-model="model" :placeholder :disabled :type />
+  </UFormField>
 </template>
 
 <style scoped>

@@ -20,6 +20,8 @@ const { navItem, active = false } = defineProps<NavItemProps>()
 </template>
 
 <style scoped>
+@import "tailwindcss";
+
 .nav-item {
   @apply cursor-pointer rounded-lg px-3 py-1.5 flex flex-row items-center gap-2 transition-transform duration-200 ease-in-out;
 }

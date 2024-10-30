@@ -40,7 +40,7 @@ function useClipboard(text: string) {
         <h3 class="main-gradient text-2xl">
           <LandingScrambleText label="// Welcome to Shelve" />
         </h3>
-        <span class="text-sm text-gray-500 sm:text-base">
+        <span class="text-sm text-neutral-500 sm:text-base">
           Shelve is the best place to manage your projects, alone or with your team. Store your project secrets, data, files and more in one place.
           Use our CLI to manage your projects without leaving your terminal.
         </span>
@@ -51,7 +51,7 @@ function useClipboard(text: string) {
             class="flex items-center justify-center gap-4 rounded-md bg-white/5 px-4 py-2 backdrop-blur-lg"
             @click="useClipboard('npm install -g @shelve/cli')"
           >
-            <div class="flex cursor-pointer items-center justify-center gap-2 text-sm text-gray-300">
+            <div class="flex cursor-pointer items-center justify-center gap-2 text-sm text-neutral-300">
               <span>
                 npm install -g @shelve/cli
               </span>
@@ -74,7 +74,7 @@ function useClipboard(text: string) {
 
           <div class="relative flex items-center justify-center">
             <div class="flex size-16 items-center justify-center rounded-full border border-white/25 bg-white/5 p-3 shadow-xl">
-              <UIcon name="lucide:lock" class="size-8 text-gray-300" />
+              <UIcon name="lucide:lock" class="size-8 text-neutral-300" />
             </div>
           </div>
         </div>

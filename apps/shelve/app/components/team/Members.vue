@@ -84,7 +84,7 @@ watch(open, (newValue) => {
           <form @submit.prevent="upsertMemberFunction(teamId, member.user.email, member.role)">
             <div class="flex flex-col gap-2">
               <p class="flex gap-2 text-sm font-semibold leading-6">
-                <span class="text-gray-200">{{ member.user.username }}</span>
+                <span class="text-neutral-200">{{ member.user.username }}</span>
                 <span>({{ member.user.email }})</span>
               </p>
               <div v-if="user?.role === Role.ADMIN" class="flex gap-2">
@@ -105,7 +105,7 @@ watch(open, (newValue) => {
     </UPopover>
     <UPopover v-if="members.find(member => member.user.id === user?.id)?.role === TeamRole.OWNER" v-model:open="open" :popper="{ arrow: true }">
       <UTooltip text="Add member" :ui="{ popper: { placement: 'top' } }">
-        <span class="flex size-8 cursor-pointer items-center justify-center rounded-full border border-dashed border-gray-400">+</span>
+        <span class="flex size-8 cursor-pointer items-center justify-center rounded-full border border-dashed border-neutral-400">+</span>
       </UTooltip>
       <template #panel>
         <UCard>

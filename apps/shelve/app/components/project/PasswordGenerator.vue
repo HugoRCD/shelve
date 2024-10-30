@@ -52,9 +52,9 @@ function onContextMenu(event: MouseEvent) {
           </h3>
         </template>
         <form class="flex flex-col gap-4" @submit.prevent="generatePassword">
-          <UFormGroup :label="`Password Length (${length})`">
+          <UFormField :label="`Password Length (${length})`">
             <URange v-model="length" :min="5" :max="35" />
-          </UFormGroup>
+          </UFormField>
           <UCheckbox v-model="includeSymbols" label="Include Symbols" />
           <UDivider />
           <UButton label="Generate" type="submit" />

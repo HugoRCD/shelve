@@ -1,23 +1,15 @@
 export default defineAppConfig({
   ui: {
-    primary: 'accent',
-    gray: 'neutral',
-    button: {
-      default: {
-        size: 'xs',
-        loadingIcon: 'lucide:loader',
-      }
+    colors: {
+      primary: 'blue',
+      neutral: 'neutral',
     },
     card: {
-      body: {
-        padding: 'p-3 sm:p-3',
-      },
-      header: {
-        padding: 'p-3 sm:p-3',
-      },
-      footer: {
-        padding: 'p-3 sm:p-3',
-      },
+      slots: {
+        header: 'p-4 sm:p-4',
+        footer: 'p-4 sm:p-4',
+        body: 'p-4 sm:p-4',
+      }
     }
   },
   title: 'Shelve',
