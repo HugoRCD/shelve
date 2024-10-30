@@ -20,6 +20,7 @@ export default defineNuxtConfig({
 
   routeRules: {
     '/': { isr: true, prerender: true },
+    '/vault': { isr: true, prerender: true },
     '/login': { isr: true, prerender: true },
     '/app/**': { ssr: false, robots: false },
   },

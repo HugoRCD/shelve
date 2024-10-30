@@ -10,8 +10,9 @@ useSeoMeta({
   ogTitle: 'Vault by Shelve - Share Secrets Securely',
   ogDescription: 'Securely share sensitive data with customizable expiration and read limits. No account needed.',
   ogImage: '/vault-social-preview.jpg',
-  ogUrl: 'https://shelve.dev/vault',
+  ogUrl: 'https://shelve.hrcd.fr/vault',
   ogType: 'website',
+  ogSiteName: 'Shelve',
 
   twitterTitle: 'Vault by Shelve - Secure Secret Sharing',
   twitterDescription: 'Share sensitive data securely with expiration time and read limits.',
