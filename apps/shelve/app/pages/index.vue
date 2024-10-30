@@ -32,7 +32,7 @@ function useClipboard(text: string) {
             style="width: 150px;"
           >
         </NuxtLink>
-        <h3 class="main-gradient">
+        <h3 class="main-gradient text-2xl">
           <LandingScrambleText label="// Welcome to Shelve" />
         </h3>
         <span class="text-sm text-gray-500 sm:text-base">
