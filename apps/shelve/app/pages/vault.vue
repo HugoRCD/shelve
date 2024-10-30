@@ -3,7 +3,6 @@ const route = useRoute()
 const id = computed(() => route.query.id)
 
 const sealMode = computed(() => id.value)
-
 </script>
 
 <template>
