@@ -39,7 +39,7 @@ class EnvShareService {
     const config = useRuntimeConfig()
     this.encryptionKey = config.private.encryptionKey
     this.siteUrl = config.public.siteUrl
-    this.storage = useStorage('cache')
+    this.storage = useStorage('envshare')
   }
 
   private generateKey(id: string): string {
