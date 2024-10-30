@@ -144,23 +144,33 @@ function handleDrop(event: DragEvent) {
         <input type="file" accept="text" style="display: none;" @change="handleFileUpload">
       </div>
       <div class="mt-2 flex w-full items-end justify-between gap-2">
-        <UFormGroup label="Reads">
-          <UInput
-            v-model="reads"
-            label="Reads"
-            type="number"
-            min="1"
-          />
-        </UFormGroup>
-        <UFormGroup label="TTL">
-          <USelect
-            v-model="selectedTtl"
-            :options="ttl"
-            default-value="1d"
-            value-attribute="value"
-            option-attribute="label"
-          />
-        </UFormGroup>
+        <UTooltip
+          :ui="{ width: 'max-w-4xl' }"
+          text="Reads are used to limit the number of times a secret can be read."
+        >
+          <UFormGroup label="Reads">
+            <UInput
+              v-model="reads"
+              label="Reads"
+              type="number"
+              min="1"
+            />
+          </UFormGroup>
+        </UTooltip>
+        <UTooltip
+          :ui="{ width: 'max-w-4xl' }"
+          text="TTL is the time period after which the secret will be deleted."
+        >
+          <UFormGroup label="TTL">
+            <USelect
+              v-model="selectedTtl"
+              :options="ttl"
+              default-value="1d"
+              value-attribute="value"
+              option-attribute="label"
+            />
+          </UFormGroup>
+        </UTooltip>
       </div>
       <div class="mt-4 w-full">
         <UButton block label="Encrypt" type="submit" color="gray" :loading />
