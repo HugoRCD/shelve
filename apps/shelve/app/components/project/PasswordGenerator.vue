@@ -2,7 +2,6 @@
 const length = ref(25)
 const includeSymbols = ref(true)
 const isOpen = ref(false)
-const virtualElement = ref({ getBoundingClientRect: () => ({}) })
 
 const emit = defineEmits(['passwordGenerated'])
 
@@ -23,43 +22,36 @@ function generatePassword() {
   emit('passwordGenerated', password)
 }
 
-function onContextMenu(event: MouseEvent) {
-  const top = event.clientY
-  const left = event.clientX
-
-  virtualElement.value.getBoundingClientRect = () => ({
-    width: 0,
-    height: 0,
-    top,
-    left
-  })
-
-  isOpen.value = true
-}
+const items = [
+  [
+    {
+      label: 'Copy to clipboard',
+    },
+  ],
+]
 </script>
 
 <template>
-  <div class="w-full" @contextmenu.prevent="onContextMenu">
-    <div>
-      <slot />
+  <UPopover v-model:open="isOpen">
+    <div class="w-full">
+      <div>
+        <slot />
+      </div>
     </div>
-
-    <UContextMenu v-model="isOpen" :virtual-element>
-      <UCard :ui="{ base: 'w-72' }">
-        <template #header>
-          <h3 class="text-sm font-semibold">
-            Generate Password
-          </h3>
-        </template>
+    <template #content>
+      <div class="w-72 flex flex-col gap-4 p-4">
+        <h3 class="text-sm font-semibold">
+          Generate Password
+        </h3>
         <form class="flex flex-col gap-4" @submit.prevent="generatePassword">
           <UFormField :label="`Password Length (${length})`">
-            <URange v-model="length" :min="5" :max="35" />
+            <USlider v-model="length" :min="5" :max="35" />
           </UFormField>
           <UCheckbox v-model="includeSymbols" label="Include Symbols" />
-          <UDivider />
+          <!--          <UDivider />-->
           <UButton label="Generate" type="submit" />
         </form>
-      </UCard>
-    </UContextMenu>
-  </div>
+      </div>
+    </template>
+  </UPopover>
 </template>

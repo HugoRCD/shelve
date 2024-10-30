@@ -229,9 +229,9 @@ const handlePasswordGenerated = (password: string, index: number) => {
               Manage your environment variables
             </p>
           </div>
-          <UDropdown :items>
+          <UDropdownMenu :items>
             <UButton color="gray" variant="ghost" icon="heroicons:ellipsis-horizontal-20-solid" />
-          </UDropdown>
+          </UDropdownMenu>
         </div>
       </template>
       <div :class="{ 'opacity-30': dragOver }" class="flex flex-col gap-3">
@@ -240,19 +240,19 @@ const handlePasswordGenerated = (password: string, index: number) => {
             Environments
           </h4>
           <div class="flex select-none gap-4">
-            <UCheckbox v-model="selectedEnvironment" value="production" label="Production" />
-            <UCheckbox v-model="selectedEnvironment" value="preview" label="Staging" />
-            <UCheckbox v-model="selectedEnvironment" value="development" label="Development" />
+            <UCheckbox v-model="selectedEnvironment.production" name="production" label="Production" />
+            <UCheckbox v-model="selectedEnvironment.preview" name="preview" label="Staging" />
+            <UCheckbox v-model="selectedEnvironment.development" name="development" label="Development" />
           </div>
         </div>
-        <UDivider class="my-1" />
+<!--        <UDivider class="my-1" />-->
         <div class="flex items-center gap-2">
           <USwitch v-model="autoUppercase" size="xs" />
           <h3 class="cursor-pointer text-sm font-semibold" @click="autoUppercase = !autoUppercase">
             Auto uppercase
           </h3>
         </div>
-        <UDivider class="my-1" />
+<!--        <UDivider class="my-1" />-->
         <p class="text-xs font-normal text-gray-500">
           🤫 You can also paste all your environment variables (.env) as key value pairs to prefilled the form
         </p>
@@ -287,9 +287,9 @@ const handlePasswordGenerated = (password: string, index: number) => {
       <template #footer>
         <div :class="{ 'opacity-30': dragOver }" class="flex justify-between gap-4">
           <div class="flex gap-2">
-            <UButton label="Add variable" color="white" icon="heroicons:plus-circle-20-solid" @click="addVariable" />
+            <UButton label="Add variable" color="neutral" variant="soft" icon="heroicons:plus-circle-20-solid" @click="addVariable" />
             <input ref="fileInputRef" type="file" accept="text" style="display: none;" @change="handleFileUpload">
-            <UButton label="Import .env" color="white" icon="lucide:download" @click="triggerFileInput" />
+            <UButton label="Import .env" color="neutral" variant="soft" icon="lucide:download" @click="triggerFileInput" />
           </div>
           <UButton label="Save" color="primary" :loading="createLoading" type="submit" />
         </div>

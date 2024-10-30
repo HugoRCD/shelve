@@ -47,7 +47,7 @@ const showEdit = ref(false)
 </script>
 
 <template>
-  <UCard :ui="{ background: isSelected && showEdit ? 'ring ring-primary' : isSelected && !showEdit ? 'bg-neutral-100 dark:bg-neutral-800' : '' }">
+  <UCard :ui="{ root: isSelected && showEdit ? 'ring ring-primary' : isSelected && !showEdit ? 'bg-neutral-100 dark:bg-neutral-800' : '' }">
     <div class="flex w-full items-center justify-between">
       <div class="flex w-full flex-col gap-1" :class="{ 'cursor-pointer': !showEdit }" @click="showEdit ? null : emit('toggleSelected')">
         <h3 class="flex items-center gap-1 text-sm font-semibold sm:text-base">
@@ -101,7 +101,7 @@ const showEdit = ref(false)
               Cancel
             </UButton>
           </div>
-          <UButton color="red" variant="soft" :loading="deleteLoading" @click="deleteVariable(variable.id, environment)">
+          <UButton color="error" variant="soft" :loading="deleteLoading" @click="deleteVariable(variable.id, environment)">
             Delete
           </UButton>
         </div>

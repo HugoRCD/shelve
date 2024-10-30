@@ -10,25 +10,7 @@ const prefixList = computed(() => {
 
 const key = defineModel({ type: String })
 
-const { x, y } = useMouse()
-const { y: windowY } = useWindowScroll()
-
 const isOpen = ref(false)
-const virtualElement = ref({ getBoundingClientRect: () => ({}) })
-
-function onContextMenu() {
-  const top = unref(y) - unref(windowY)
-  const left = unref(x)
-
-  virtualElement.value.getBoundingClientRect = () => ({
-    width: 0,
-    height: 0,
-    top,
-    left
-  })
-
-  isOpen.value = true
-}
 
 function addPrefixToInputId(prefix: string) {
   if (key.value?.startsWith(prefix)) return
@@ -37,30 +19,31 @@ function addPrefixToInputId(prefix: string) {
 </script>
 
 <template>
-  <div class="w-full" @contextmenu.prevent="onContextMenu">
-    <div>
-      <slot />
+  <UPopover v-model:open="isOpen">
+    <div class="w-full">
+      <div>
+        <slot />
+      </div>
     </div>
-
-    <UContextMenu v-model="isOpen" :virtual-element>
-      <UCard>
-        <template #header>
-          <h3 class="text-sm font-semibold">
-            Add Prefix to your variable
-          </h3>
-        </template>
+    <template #content>
+      <div class="p-4 flex flex-col gap-2">
+        <h3 class="text-sm font-semibold">
+          Add Prefix to your variable
+        </h3>
         <div class="flex flex-wrap gap-2">
           <UButton
             v-for="prefix in prefixList"
             :key="prefix"
+            size="xs"
+            variant="soft"
             color="neutral"
             icon="heroicons:plus"
             :label="prefix"
             @click="addPrefixToInputId(prefix)"
           />
         </div>
-      </UCard>
-    </UContextMenu>
-  </div>
+      </div>
+    </template>
+  </UPopover>
 </template>
 

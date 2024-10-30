@@ -2,15 +2,12 @@
 import type { Project } from '@shelve/types'
 import type { PropType, Ref } from 'vue'
 
-const props = defineProps({
-  project: {
-    type: Object as PropType<Project>,
-  },
-  loading: {
-    type: Boolean,
-    default: false,
-  },
-})
+type ProjectProps = {
+  project: Project
+  loading: boolean
+}
+
+const props = defineProps<ProjectProps>()
 
 const showEdit = ref(false)
 const showDelete = ref(false)
@@ -113,29 +110,31 @@ function getProjectManager(manager: string) {
             </p>
           </div>
           <UModal v-model="showEdit">
-            <UCard class="p-2">
-              <form class="flex flex-col gap-4" @submit.prevent="updateCurrentProject">
-                <FormGroup v-model="project.name" label="Name" />
-                <FormGroup v-model="project.description" label="Description" type="textarea" />
-                <div class="flex items-center gap-4">
-                  <UAvatar :src="project.avatar" size="xl" :alt="project.name" />
-                  <FormGroup v-model="project.avatar" label="Avatar" class="w-full" />
-                </div>
-                <div class="flex justify-end gap-4">
-                  <UButton color="neutral" variant="ghost" @click="showEdit = false">
-                    Cancel
-                  </UButton>
-                  <UButton color="primary" type="submit" trailing :loading="updateLoading">
-                    Save
-                  </UButton>
-                </div>
-              </form>
-            </UCard>
+            <template #body>
+              <UCard class="p-2">
+                <form class="flex flex-col gap-4" @submit.prevent="updateCurrentProject">
+                  <FormGroup v-model="project.name" label="Name" />
+                  <FormGroup v-model="project.description" label="Description" type="textarea" />
+                  <div class="flex items-center gap-4">
+                    <UAvatar :src="project.avatar" size="xl" :alt="project.name" />
+                    <FormGroup v-model="project.avatar" label="Avatar" class="w-full" />
+                  </div>
+                  <div class="flex justify-end gap-4">
+                    <UButton color="neutral" variant="ghost" @click="showEdit = false">
+                      Cancel
+                    </UButton>
+                    <UButton color="primary" type="submit" trailing :loading="updateLoading">
+                      Save
+                    </UButton>
+                  </div>
+                </form>
+              </UCard>
+            </template>
           </UModal>
         </div>
-        <UDropdown v-if="project.ownerId === user?.id" :items>
+        <UDropdownMenu v-if="project.ownerId === user?.id" :items>
           <UButton color="gray" variant="ghost" icon="heroicons:ellipsis-horizontal-20-solid" />
-        </UDropdown>
+        </UDropdownMenu>
       </div>
       <div v-if="project.projectManager || project.repository || project.homepage" class="mt-6 flex flex-wrap gap-4 sm:flex-row sm:items-center">
         <NuxtLink v-if="project.projectManager" target="_blank" :to="project.projectManager">
@@ -176,27 +175,29 @@ function getProjectManager(manager: string) {
       </div>
     </div>
     <UModal v-model="showDelete">
-      <UCard class="p-2">
-        <form class="flex flex-col gap-6" @submit.prevent="deleteProjectFunction">
-          <div>
-            <h2 class="text-lg font-semibold leading-7">
-              Are you sure you want to delete this project?
-            </h2>
-            <p class="text-sm leading-6 text-gray-500">
-              This action cannot be undone.
-            </p>
-          </div>
-          <FormGroup v-model="projectName" :label="`Type the project name '${project.name}' to confirm`" />
-          <div class="flex justify-end gap-4">
-            <UButton color="gray" variant="ghost" @click="showDelete = false">
-              Cancel
-            </UButton>
-            <UButton color="red" type="submit" trailing :loading="deleteLoading" :disabled="projectName !== project.name">
-              Delete
-            </UButton>
-          </div>
-        </form>
-      </UCard>
+      <template #body>
+        <UCard class="p-2">
+          <form class="flex flex-col gap-6" @submit.prevent="deleteProjectFunction">
+            <div>
+              <h2 class="text-lg font-semibold leading-7">
+                Are you sure you want to delete this project?
+              </h2>
+              <p class="text-sm leading-6 text-gray-500">
+                This action cannot be undone.
+              </p>
+            </div>
+            <FormGroup v-model="projectName" :label="`Type the project name '${project.name}' to confirm`" />
+            <div class="flex justify-end gap-4">
+              <UButton color="gray" variant="ghost" @click="showDelete = false">
+                Cancel
+              </UButton>
+              <UButton color="red" type="submit" trailing :loading="deleteLoading" :disabled="projectName !== project.name">
+                Delete
+              </UButton>
+            </div>
+          </form>
+        </UCard>
+      </template>
     </UModal>
   </div>
 </template>

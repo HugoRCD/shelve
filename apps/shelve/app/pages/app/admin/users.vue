@@ -162,9 +162,9 @@ const columnsTable = computed(() => columns.filter((column) => selectedColumns.v
         </span>
       </template>
       <template #actions-data="{ row }">
-        <UDropdown :items="items(row)">
+        <UDropdownMenu :items="items(row)">
           <UButton color="neutral" variant="ghost" icon="heroicons:ellipsis-horizontal-20-solid" />
-        </UDropdown>
+        </UDropdownMenu>
       </template>
     </UTable>
   </div>

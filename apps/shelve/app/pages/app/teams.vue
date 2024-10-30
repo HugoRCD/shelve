@@ -115,14 +115,14 @@ const items = (row: Team) => [
           <TeamMembers :team-id="row.id" :members="row.members" />
         </template>
         <template #actions-data="{ row }">
-          <UDropdown :items="items(row)">
+          <UDropdownMenu :items="items(row)">
             <UButton
               color="neutral"
               variant="ghost"
               icon="heroicons:ellipsis-horizontal-20-solid"
               :disabled="!isOwner(row)"
             />
-          </UDropdown>
+          </UDropdownMenu>
         </template>
       </UTable>
     </div>

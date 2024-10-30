@@ -12,7 +12,8 @@ const {
 } = useProjects()
 
 if (!currentProject.value)
-  fetchCurrentProject(+projectId)
+  await fetchCurrentProject(+projectId)
+
 
 async function refresh() {
   await fetchCurrentProject(+projectId)
@@ -49,8 +50,8 @@ const links = [
 <template>
   <div class="flex flex-col">
     <ProjectMainSection :project="currentProject" :loading="currentLoading" />
-    <UHorizontalNavigation :links class="mt-8 hidden border-b border-neutral-200 dark:border-neutral-800 md:block" />
-    <UVerticalNavigation :links class="mt-8 border-b border-neutral-200 pb-2 dark:border-neutral-800 md:hidden" />
+    <UNavigationMenu orientation="horizontal" :items="links" class="mt-8 hidden border-b border-neutral-200 dark:border-neutral-800 md:block" />
+    <UNavigationMenu orientation="vertical" :items="links" class="mt-8 border-b border-neutral-200 pb-2 dark:border-neutral-800 md:hidden" />
     <NuxtPage />
   </div>
 </template>

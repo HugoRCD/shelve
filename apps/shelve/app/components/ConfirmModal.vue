@@ -22,26 +22,28 @@ function onCancel() {
 
 <template>
   <UModal>
-    <UCard>
-      <template #header>
-        <h3 class="text-lg font-semibold">
-          {{ title }}
-        </h3>
-      </template>
-      <div class="text-neutral-300">
-        {{ description }}
-      </div>
-      <template #footer>
-        <div class="flex justify-end gap-2">
-          <UButton variant="ghost" color="neutral" @click="onCancel">
-            Cancel
-          </UButton>
-          <UButton :color="danger ? 'red' : 'primary'" @click="onSuccess">
-            Confirm
-          </UButton>
+    <template #body>
+      <UCard>
+        <template #header>
+          <h3 class="text-lg font-semibold">
+            {{ title }}
+          </h3>
+        </template>
+        <div class="text-neutral-300">
+          {{ description }}
         </div>
-      </template>
-    </UCard>
+        <template #footer>
+          <div class="flex justify-end gap-2">
+            <UButton variant="ghost" color="neutral" @click="onCancel">
+              Cancel
+            </UButton>
+            <UButton :color="danger ? 'red' : 'primary'" @click="onSuccess">
+              Confirm
+            </UButton>
+          </div>
+        </template>
+      </UCard>
+    </template>
   </UModal>
 </template>
 

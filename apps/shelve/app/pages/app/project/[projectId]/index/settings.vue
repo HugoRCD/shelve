@@ -83,8 +83,8 @@ async function removeTeamFromProject(teamId: number) {
                   <UButton
                     v-if="projectTeam.members.find(member => member.userId === user?.id)?.role === TeamRole.OWNER"
                     variant="soft"
-                    color="red"
-                    class="text-xs"
+                    color="error"
+                    size="xs"
                     :loading="removeLoading"
                     label="Unlink"
                     icon="lucide:unlink"
@@ -106,7 +106,7 @@ async function removeTeamFromProject(teamId: number) {
             </div>
           </div>
         </div>
-        <UDivider class="my-2" />
+<!--        <UDivider class="my-2" />-->
         <div class="flex flex-col gap-4">
           <div>
             <h3 class="font-semibold">
@@ -131,7 +131,7 @@ async function removeTeamFromProject(teamId: number) {
             </div>
           </div>
         </div>
-        <UDivider class="my-2" />
+<!--        <UDivider class="my-2" />-->
         <div class="flex flex-col gap-4">
           <div>
             <h3 class="font-semibold">

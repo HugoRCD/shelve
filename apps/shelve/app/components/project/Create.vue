@@ -110,10 +110,10 @@ function importProject() {
                   </div>
                   <UButton
                     variant="soft"
-                    color="red"
-                    class="text-xs"
+                    color="error"
+                    size="xs"
                     label="Unlink"
-                    icon=":lucide-unlink"
+                    icon="lucide:unlink"
                     @click="removeTeam"
                   />
                 </div>

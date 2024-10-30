@@ -19,6 +19,7 @@ const {
 } = useTeams()
 
 const { user } = useUserSession()
+const isOwner = computed(() => members.find(member => member.user.id === user.value?.id)?.role === TeamRole.OWNER)
 
 const roles = [
   {
@@ -77,8 +78,10 @@ watch(open, (newValue) => {
 
 <template>
   <UAvatarGroup v-if="!display">
-    <UPopover arrow v-for="member in members" :key="member.id">
-      <TeamMember :member />
+    <UPopover arrow v-for="member in members" :key="member.id" :slots="{ open }">
+      <div>
+        <TeamMember :member />
+      </div>
       <template #content>
         <UCard>
           <form @submit.prevent="upsertMemberFunction(teamId, member.user.email, member.role)">
@@ -96,16 +99,16 @@ watch(open, (newValue) => {
                   option-attribute="label"
                 />
                 <UButton label="Update" :loading="loadingMembers" type="submit" />
-                <UButton color="red" variant="soft" label="Remove" :loading="loadingRemove" @click="removeMemberFunction(teamId, member.id)" />
+                <UButton color="error" variant="soft" label="Remove" :loading="loadingRemove" @click="removeMemberFunction(teamId, member.id)" />
               </div>
             </div>
           </form>
         </UCard>
       </template>
     </UPopover>
-    <UPopover arrow v-if="members.find(member => member.user.id === user?.id)?.role === TeamRole.OWNER" v-model:open="open">
+    <UPopover arrow v-if="isOwner" v-model:open="open">
       <UTooltip text="Add member" :content="{ side: 'top' }">
-        <span @click="open = true" class="flex size-8 cursor-pointer items-center justify-center rounded-full border border-dashed border-neutral-400">+</span>
+        <span @click="open = true" class="flex size-7 cursor-pointer items-center justify-center rounded-full border border-dashed border-neutral-400">+</span>
       </UTooltip>
       <template #content>
         <UCard>
