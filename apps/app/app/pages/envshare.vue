@@ -171,30 +171,38 @@ function handleDrop(event: DragEvent) {
       </div>
     </form>
     <form v-else class="mx-auto mt-8 flex w-full max-w-2xl flex-col justify-center gap-2 px-5 sm:px-0" @submit.prevent="decryptEnvFile">
-      <div v-if="!value" class="relative flex w-full flex-col gap-2">
-        <UFormGroup label="Share ID">
-          <UInput v-model="localId" placeholder="o75adqf..." required />
-        </UFormGroup>
-      </div>
-      <div class="mt-4 flex w-full flex-col gap-2">
-        <UTextarea
-          v-if="value"
-          v-model="value"
-          autoresize
-          autofocus
-          :rows="5"
-          class="w-full"
-          placeholder="DATABASE_URL=your_value ..."
-        />
-        <UButton
-          v-if="!value"
-          block
-          label="Decrypt"
-          type="submit"
-          color="gray"
-          :loading
-        />
-      </div>
+      <template v-if="!value">
+        <div class="relative flex w-full flex-col gap-2">
+          <UFormGroup label="Share ID">
+            <UInput
+              v-model="localId"
+              placeholder="o75adqf..."
+              required
+            />
+          </UFormGroup>
+        </div>
+        <div class="mt-4">
+          <UButton
+            block
+            label="Decrypt"
+            type="submit"
+            color="gray"
+            :loading
+          />
+        </div>
+      </template>
+      <template v-else>
+        <div class="mt-4">
+          <UTextarea
+            v-model="value"
+            autoresize
+            autofocus
+            :rows="5"
+            class="w-full"
+            placeholder="DATABASE_URL=your_value ..."
+          />
+        </div>
+      </template>
       <div class="mt-4 flex w-full items-center justify-between gap-2">
         <span v-if="timeLeft" class="text-sm font-semibold text-gray-500/80">
           Time left: {{ timeLeft }}

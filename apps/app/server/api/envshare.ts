@@ -1,28 +1,72 @@
 import { H3Event } from 'h3'
 import { seal, unseal } from '@shelve/crypto'
 
-const { encryptionKey } = useRuntimeConfig().private
-const { siteUrl } = useRuntimeConfig().public
+type EncryptRequest = {
+  value: string
+  reads: number
+  ttl: number
+}
+
+class EnvShareService {
+
+  private readonly storage: Storage
+  private readonly encryptionKey: string
+  private readonly siteUrl: string
+  private readonly PREFIX = 'envshare:'
+
+  constructor() {
+    const config = useRuntimeConfig()
+    this.encryptionKey = config.private.encryptionKey
+    this.siteUrl = config.public.siteUrl
+    this.storage = useStorage('cache')
+  }
+
+  private generateKey(id: string): string {
+    return `${this.PREFIX}${id}`
+  }
+
+  private generateRandomId(): string {
+    return Math.random().toString(36).slice(2)
+  }
+
+  async decrypt(id: string): Promise<{ decryptedValue: string }> {
+    const key = this.generateKey(id)
+    const value = await this.storage.getItem(key)
+
+    if (!value) {
+      throw createError({
+        statusCode: 400,
+        statusMessage: 'Invalid id'
+      })
+    }
+
+    const decryptedValue = await unseal(value, this.encryptionKey)
+    return { decryptedValue }
+  }
+
+  async encrypt(data: EncryptRequest): Promise<string> {
+    const encryptedValue = await seal(data.value, this.encryptionKey)
+    const randomId = this.generateRandomId()
+    const key = this.generateKey(randomId)
+
+    await this.storage.setItem(key, encryptedValue)
+    return this.generateShareUrl(randomId)
+  }
+
+  private generateShareUrl(id: string): string {
+    return `${this.siteUrl}/envshare?id=${id}`
+  }
+
+}
 
 export default defineEventHandler(async (event: H3Event) => {
-  const storage = await useStorage('cache')
-  const body = await readBody(event)
+  const service = new EnvShareService()
   const { id } = await getQuery(event)
-  // if id -> unseal mode
+
   if (id) {
-    const key = `envshare:${id}`
-    const value = await storage.getItem(key)
-    if (!value) throw createError({ statusCode: 400, statusMessage: 'Invalid id' })
-    const decryptedValue = await unseal(value, encryptionKey)
-    return {
-      decryptedValue,
-    }
+    return service.decrypt(id)
   }
-  // if not id -> seal mode
-  const { value, reads, ttl } = body
-  const encryptedValue = await seal(value, encryptionKey)
-  const randomId = Math.random().toString(36).slice(2)
-  const key = `envshare:${randomId}`
-  await storage.setItem(key, encryptedValue)
-  return `${siteUrl}/envshare?id=${randomId}`
+
+  const body = await readBody(event)
+  return service.encrypt(body)
 })
