@@ -3,6 +3,11 @@ definePageMeta({
   layout: 'app',
   middleware: 'protected',
 })
+
+useHead({
+  title: 'App',
+})
+
 const { isOnline } = useNetwork()
 </script>
 
