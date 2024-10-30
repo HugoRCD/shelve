@@ -9,6 +9,7 @@ useScriptPlausibleAnalytics({
 })
 
 const { title, link, description, ogImage } = useAppConfig()
+
 useHead({
   title: title,
   link: link,

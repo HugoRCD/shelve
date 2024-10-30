@@ -26,6 +26,7 @@
     "@nuxt/image": "^1.8.1",
     "@nuxt/scripts": "^0.9.5",
     "@nuxt/ui": "^2.18.7",
+    "@nuxtjs/seo": "^2.0.0-rc.23",
     "@prisma/client": "^5.21.1",
     "@shelve/crypto": "workspace:*",
     "@shelve/types": "workspace:*",
