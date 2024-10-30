@@ -1,4 +1,5 @@
-@import "animations.css";
+@import "tailwindcss";
+@import "@nuxt/ui";
 
 /* Global styles, css resets, etc. */
 html, body, #__nuxt, #__layout {
@@ -17,6 +18,13 @@ html, body, #__nuxt, #__layout {
     border-radius: 5px;
 }
 
+@theme {
+  --font-family-newsreader: 'Newsreader', serif;
+  --font-family-inter: 'Inter', sans-serif;
+  --font-family-geist: 'Geist', sans-serif;
+  --font-family-geist-mono: 'GeistMono', sans-serif;
+}
+
 .font-geist-mono {
     font-family: 'GeistMono', sans-serif;
 }
@@ -29,9 +37,9 @@ html, body, #__nuxt, #__layout {
     font-family: 'Newsreader', serif;
 }
 
-.main-gradient {
+/*.main-gradient {
   @apply font-geist-mono bg-gradient-to-r from-neutral-50 to-neutral-600 to-50% bg-clip-text text-transparent;
-}
+}*/
 
 html.light {
     --primary-color: rgb(255, 255, 255);
