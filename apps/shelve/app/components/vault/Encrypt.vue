@@ -120,7 +120,7 @@ function handleDrop(event: DragEvent) {
         <UFormField label="TTL">
           <USelect
             v-model="selectedTtl"
-            :options="ttl"
+            :items="ttl"
             default-value="1d"
             value-attribute="value"
             option-attribute="label"

@@ -76,10 +76,10 @@ watch(open, (newValue) => {
 </script>
 
 <template>
-  <UAvatarGroup v-if="!display" :ui="{ ring: 'ring-0' }">
-    <UPopover v-for="member in members" :key="member.id" :popper="{ arrow: true }">
+  <UAvatarGroup v-if="!display">
+    <UPopover arrow v-for="member in members" :key="member.id">
       <TeamMember :member />
-      <template #panel>
+      <template #content>
         <UCard>
           <form @submit.prevent="upsertMemberFunction(teamId, member.user.email, member.role)">
             <div class="flex flex-col gap-2">
@@ -91,7 +91,7 @@ watch(open, (newValue) => {
                 <USelect
                   v-model="member.role"
                   label="Role"
-                  :options="roles"
+                  :items="roles"
                   value-attribute="value"
                   option-attribute="label"
                 />
@@ -103,11 +103,11 @@ watch(open, (newValue) => {
         </UCard>
       </template>
     </UPopover>
-    <UPopover v-if="members.find(member => member.user.id === user?.id)?.role === TeamRole.OWNER" v-model:open="open" :popper="{ arrow: true }">
-      <UTooltip text="Add member" :ui="{ popper: { placement: 'top' } }">
-        <span class="flex size-8 cursor-pointer items-center justify-center rounded-full border border-dashed border-neutral-400">+</span>
+    <UPopover arrow v-if="members.find(member => member.user.id === user?.id)?.role === TeamRole.OWNER" v-model:open="open">
+      <UTooltip text="Add member" :content="{ side: 'top' }">
+        <span @click="open = true" class="flex size-8 cursor-pointer items-center justify-center rounded-full border border-dashed border-neutral-400">+</span>
       </UTooltip>
-      <template #panel>
+      <template #content>
         <UCard>
           <form @submit.prevent="upsertMemberFunction(teamId, newMember.email, newMember.role)">
             <div class="flex flex-col gap-2">
@@ -116,7 +116,7 @@ watch(open, (newValue) => {
                 <USelect
                   v-model="newMember.role"
                   label="Role"
-                  :options="roles"
+                  :items="roles"
                   value-attribute="value"
                   option-attribute="label"
                 />

@@ -14,6 +14,10 @@ defineProps({
     type: String as PropType<'text' | 'email' | 'password' | 'textarea'>,
     default: 'text',
   },
+  autofocus: {
+    type: Boolean,
+    default: false,
+  },
   placeholder: {
     type: String,
     required: false
@@ -37,13 +41,14 @@ const model = defineModel({ type: String, required: true })
       v-if="type === 'textarea'"
       v-model="model"
       autoresize
+      :autofocus
       :placeholder
       :disabled
       :type
       :rows
       class="w-full"
     />
-    <UInput class="w-full" v-else v-model="model" :placeholder :disabled :type />
+    <UInput class="w-full" v-else v-model="model" :placeholder :autofocus :disabled :type />
   </UFormField>
 </template>
 

@@ -29,11 +29,11 @@ async function createTeamFunction(name: string) {
 
 <template>
   <div>
-    <UPopover :popper="{ arrow: true }">
+    <UPopover arrow>
       <UButton :variant :color>
         <slot />
       </UButton>
-      <template #panel>
+      <template #content>
         <form @submit.prevent="createTeamFunction(teamName)">
           <UCard>
             <div class="flex flex-col gap-2">

@@ -4,6 +4,14 @@ export default defineAppConfig({
       primary: 'blue',
       neutral: 'neutral',
     },
+    button: {
+      slots: {
+        base: 'cursor-pointer'
+      }
+    },
+    icons: {
+      loading: 'lucide:loader',
+    },
     card: {
       slots: {
         header: 'p-4 sm:p-4',

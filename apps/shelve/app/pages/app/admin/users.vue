@@ -138,7 +138,7 @@ const columnsTable = computed(() => columns.filter((column) => selectedColumns.v
   <div class="mt-1 flex flex-col gap-4">
     <div class="flex flex-col justify-end gap-4 sm:flex-row sm:items-center">
       <UInput v-model="search" label="Search" placeholder="Search a user" icon="heroicons:magnifying-glass-20-solid" />
-      <USelectMenu v-model="selectedColumns" :options="columns" multiple>
+      <USelectMenu v-model="selectedColumns" :items="columns" multiple>
         <UButton icon="heroicons:view-columns" color="neutral" class="w-full sm:w-40">
           Columns
         </UButton>

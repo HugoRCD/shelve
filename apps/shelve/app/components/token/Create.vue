@@ -30,7 +30,7 @@ async function createToken() {
       <UButton variant="solid" color="primary">
         Create a token
       </UButton>
-      <template #panel>
+      <template #content>
         <form @submit.prevent="createToken(tokenName)">
           <UCard>
             <div class="flex flex-col gap-2">
