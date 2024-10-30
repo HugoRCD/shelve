@@ -34,9 +34,9 @@ export default defineNuxtConfig({
         driver: 'redis',
         url: process.env.NUXT_PRIVATE_REDIS_URL,
       },
-      envshare: {
+      vault: {
         driver: 'redis',
-        url: process.env.NUXT_PRIVATE_REDIS_URL,
+        url: process.env.NUXT_PRIVATE_VAULT_URL,
       },
     }
   },

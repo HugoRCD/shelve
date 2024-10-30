@@ -22,12 +22,12 @@ type DecryptResponse = {
   ttl: string
 }
 
-class EnvShareService {
+class VaultService {
 
   private readonly storage: Storage
   private readonly encryptionKey: string
   private readonly siteUrl: string
-  private readonly PREFIX = 'envshare:'
+  private readonly PREFIX = 'vault:'
 
   private readonly TTL_MAP = {
     '1d': 24 * 60 * 60, // 1 day in seconds
@@ -39,7 +39,7 @@ class EnvShareService {
     const config = useRuntimeConfig()
     this.encryptionKey = config.private.encryptionKey
     this.siteUrl = config.public.siteUrl
-    this.storage = useStorage('envshare')
+    this.storage = useStorage('vault')
   }
 
   private generateKey(id: string): string {
@@ -150,19 +150,19 @@ class EnvShareService {
   }
 
   private generateShareUrl(id: string): string {
-    return `${this.siteUrl}/envshare?id=${id}`
+    return `${this.siteUrl}/vault?id=${id}`
   }
 
 }
 
 export default defineEventHandler(async (event: H3Event) => {
-  const service = new EnvShareService()
+  const vault = new VaultService()
   const { id } = await getQuery(event)
 
   if (id) {
-    return service.decrypt(id)
+    return vault.decrypt(id)
   }
 
   const body = await readBody(event)
-  return service.encrypt(body)
+  return vault.encrypt(body)
 })

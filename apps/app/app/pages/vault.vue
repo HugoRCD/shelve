@@ -20,18 +20,18 @@ const readsLeft = ref(0)
 async function decryptEnvFile() {
   loading.value = true
   try {
-    const { decryptedValue, reads, ttl } = await $fetch(`/api/envshare?id=${localId.value}`, {
+    const { decryptedValue, reads, ttl } = await $fetch(`/api/vault?id=${localId.value}`, {
       method: 'POST',
     })
     value.value = decryptedValue
     readsLeft.value = reads
     timeLeft.value = ttl
-    toast.success('EnvShare file has been decrypted')
+    toast.success('Your secret(s) has been decrypted')
   } catch (error) {
     if (error.statusCode === 400) {
       toast.error(error.statusMessage)
     } else {
-      toast.error('Failed to decrypt EnvShare file')
+      toast.error('Failed to decrypt your secret(s)')
     }
   }
   loading.value = false
@@ -42,7 +42,7 @@ const selectedTtl = ref(ttl.value[0])
 async function saveEnvFile() {
   loading.value = true
   try {
-    shareUrl.value = await $fetch('/api/envshare', {
+    shareUrl.value = await $fetch('/api/vault', {
       method: 'POST',
       body: {
         value: value.value,
@@ -50,9 +50,9 @@ async function saveEnvFile() {
         ttl: selectedTtl.value,
       },
     })
-    toast.success('EnvShare file has been saved')
+    toast.success('Your secret(s) has been saved')
   } catch (error) {
-    toast.error('Failed to save EnvShare file')
+    toast.error('Failed to save your secret(s)')
   }
   loading.value = false
 }
@@ -115,11 +115,11 @@ function handleDrop(event: DragEvent) {
       <div class="mx-auto flex max-w-2xl justify-center px-5 sm:px-0">
         <CrossedDiv encrypted-text class="w-full">
           <div>
-            <h1 class="main-gradient cursor-pointer text-3xl" @click="$router.push('/envshare')">
-              <LandingScrambleText label="EnvShare" />
+            <h1 class="main-gradient cursor-pointer text-3xl" @click="$router.push('/vault')">
+              <LandingScrambleText label="Vault" />
             </h1>
             <p class="text-gray-500">
-              EnvShare is a small utility to share secrets.
+              Vault is a small utility to share secrets.
             </p>
           </div>
         </CrossedDiv>
@@ -168,7 +168,7 @@ function handleDrop(event: DragEvent) {
       <div v-if="shareUrl" class="mt-4 flex w-full rounded-lg border border-green-600/20 bg-green-600/10 p-4 shadow-md">
         <div class="flex w-full items-center justify-between gap-2">
           <span class="text-sm font-semibold text-green-500/80">
-            Your EnvShare file has been saved
+            Your secret(s) has been saved
           </span>
           <UButton color="green" variant="soft" icon="lucide:copy" label="Copy Share URL" @click="copyToClipboard(shareUrl)" />
         </div>
