@@ -3,6 +3,11 @@ definePageMeta({
   colorMode: 'dark',
 })
 
+useHead({
+  title: 'Shelve',
+  titleTemplate: 'Shelve',
+})
+
 const copy = ref(false)
 
 function useClipboard(text: string) {

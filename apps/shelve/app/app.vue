@@ -12,7 +12,6 @@ const { title, link, description, ogImage } = useAppConfig()
 
 useHead({
   title: title,
-  titleTemplate: title,
   link: link,
 })
 

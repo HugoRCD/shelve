@@ -2,6 +2,10 @@
 definePageMeta({
   colorMode: 'dark',
 })
+
+useHead({
+  title: 'Documentation'
+})
 </script>
 
 <template>
