@@ -23,8 +23,7 @@ const items = [
     {
       label: 'Sign out',
       icon: 'heroicons:arrow-left-on-rectangle',
-      iconClass: 'text-red-500 dark:text-red-500',
-      click: () => {
+      onSelect: () => {
         navigateTo('/')
         clear()
       }
@@ -62,7 +61,7 @@ const items = [
         </div>
       </template>
     </UDropdownMenu>
-    <UButton v-else to="/login" label="Login" color="neutral" />
+    <UButton v-else to="/login" label="Login" color="neutral" variant="soft" />
   </div>
 </template>
 

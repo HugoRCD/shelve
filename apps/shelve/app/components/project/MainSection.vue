@@ -48,12 +48,12 @@ const items = [
     {
       label: 'Edit project',
       icon: 'lucide:pen-line',
-      click: () => showEdit.value = !showEdit.value
+      onSelect: () => showEdit.value = !showEdit.value
     },
     {
       label: 'Export project data',
       icon: 'lucide:download',
-      click: () => {
+      onSelect: () => {
         const sanitizedProject = JSON.parse(JSON.stringify(project.value))
         delete sanitizedProject.id
         delete sanitizedProject.ownerId
@@ -71,7 +71,7 @@ const items = [
       label: 'Delete project',
       icon: 'lucide:trash',
       iconClass: 'text-red-500 dark:text-red-500',
-      click: () => showDelete.value = !showDelete.value
+      onSelect: () => showDelete.value = !showDelete.value
     }
   ]
 ]
@@ -109,26 +109,24 @@ function getProjectManager(manager: string) {
               {{ project.description }}
             </p>
           </div>
-          <UModal v-model="showEdit">
+          <UModal v-model:open="showEdit" title="Edit project" description="Update your project settings">
             <template #body>
-              <UCard class="p-2">
-                <form class="flex flex-col gap-4" @submit.prevent="updateCurrentProject">
-                  <FormGroup v-model="project.name" label="Name" />
-                  <FormGroup v-model="project.description" label="Description" type="textarea" />
-                  <div class="flex items-center gap-4">
-                    <UAvatar :src="project.avatar" size="xl" :alt="project.name" />
-                    <FormGroup v-model="project.avatar" label="Avatar" class="w-full" />
-                  </div>
-                  <div class="flex justify-end gap-4">
-                    <UButton color="neutral" variant="ghost" @click="showEdit = false">
-                      Cancel
-                    </UButton>
-                    <UButton color="primary" type="submit" trailing :loading="updateLoading">
-                      Save
-                    </UButton>
-                  </div>
-                </form>
-              </UCard>
+              <form class="flex flex-col gap-4" @submit.prevent="updateCurrentProject">
+                <FormGroup v-model="project.name" label="Name" />
+                <FormGroup v-model="project.description" label="Description" type="textarea" />
+                <div class="flex items-center gap-4">
+                  <UAvatar :src="project.avatar" size="xl" :alt="project.name" />
+                  <FormGroup v-model="project.avatar" label="Avatar" class="w-full" />
+                </div>
+                <div class="flex justify-end gap-4">
+                  <UButton color="neutral" variant="ghost" @click="showEdit = false">
+                    Cancel
+                  </UButton>
+                  <UButton color="primary" type="submit" trailing :loading="updateLoading">
+                    Save
+                  </UButton>
+                </div>
+              </form>
             </template>
           </UModal>
         </div>
@@ -142,7 +140,7 @@ function getProjectManager(manager: string) {
             color="gray"
             :icon="getProjectManager(project.projectManager)?.icon"
             :label="`Open ${getProjectManager(project.projectManager)?.label}`"
-            :ui="{ icon: { base: 'dark:fill-white fill-black' } }"
+            :ui="{ leadingIcon: 'dark:fill-white fill-black' }"
           />
         </NuxtLink>
         <NuxtLink v-if="project.repository" target="_blank" :to="project.repository">
@@ -150,7 +148,7 @@ function getProjectManager(manager: string) {
             color="gray"
             icon="custom:github"
             label="Open repository"
-            :ui="{ icon: { base: 'dark:fill-white fill-black' } }"
+            :ui="{ leadingIcon: 'dark:fill-white fill-black' }"
           />
         </NuxtLink>
         <NuxtLink v-if="project.homepage" target="_blank" :to="project.homepage">
@@ -174,7 +172,7 @@ function getProjectManager(manager: string) {
         </div>
       </div>
     </div>
-    <UModal v-model="showDelete">
+    <UModal v-model:open="showDelete">
       <template #body>
         <UCard class="p-2">
           <form class="flex flex-col gap-6" @submit.prevent="deleteProjectFunction">
