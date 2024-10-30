@@ -34,7 +34,7 @@ watch(reduceMotion, () => {
       </div>
       <USwitch v-model="autoUppercase" />
     </div>
-<!--    <UDivider class="my-4" />-->
+    <!--    <UDivider class="my-4" />-->
     <div style="--stagger: 2" data-animate class="flex flex-col gap-3">
       <div class="flex flex-col gap-1">
         <h2 class="text-lg font-bold">
@@ -46,7 +46,7 @@ watch(reduceMotion, () => {
       </div>
       <USwitch v-model="reduceMotion" />
     </div>
-<!--    <UDivider class="my-4" />-->
+    <!--    <UDivider class="my-4" />-->
     <div style="--stagger: 3" data-animate class="flex flex-col gap-3">
       <h2 class="text-lg font-bold">
         Theme settings

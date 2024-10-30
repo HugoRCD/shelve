@@ -17,7 +17,7 @@
     "typecheck": "turbo typecheck"
   },
   "devDependencies": {
-    "@hrcd/eslint-config": "^2.1.1",
+    "@hrcd/eslint-config": "edge",
     "automd": "^0.3.12",
     "eslint": "^9.13.0",
     "turbo": "^2.2.3",

@@ -78,7 +78,7 @@ watch(open, (newValue) => {
 
 <template>
   <UAvatarGroup v-if="!display">
-    <UPopover arrow v-for="member in members" :key="member.id" :slots="{ open }">
+    <UPopover v-for="member in members" :key="member.id" arrow :slots="{ open }">
       <div>
         <TeamMember :member />
       </div>
@@ -106,9 +106,9 @@ watch(open, (newValue) => {
         </UCard>
       </template>
     </UPopover>
-    <UPopover arrow v-if="isOwner" v-model:open="open">
+    <UPopover v-if="isOwner" v-model:open="open" arrow>
       <UTooltip text="Add member" :content="{ side: 'top' }">
-        <span @click="open = true" class="flex size-7 cursor-pointer items-center justify-center rounded-full border border-dashed border-neutral-400">+</span>
+        <span class="flex size-7 cursor-pointer items-center justify-center rounded-full border border-dashed border-neutral-400" @click="open = true">+</span>
       </UTooltip>
       <template #content>
         <UCard>

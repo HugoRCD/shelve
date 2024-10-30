@@ -11,7 +11,7 @@ const navigation = getNavigation('home')
           <NuxtLink to="/" class="font-newsreader text-2xl font-light italic">
             Shelve
           </NuxtLink>
-<!--          <UDivider orientation="vertical" class="mx-2" />-->
+          <!--          <UDivider orientation="vertical" class="mx-2" />-->
           <div class="flex items-center gap-3">
             <NuxtLink
               v-for="item in navigation"

@@ -48,7 +48,15 @@ const model = defineModel({ type: String, required: true })
       :rows
       class="w-full"
     />
-    <UInput class="w-full" v-else v-model="model" :placeholder :autofocus :disabled :type />
+    <UInput
+      v-else
+      v-model="model"
+      class="w-full"
+      :placeholder
+      :autofocus
+      :disabled
+      :type
+    />
   </UFormField>
 </template>
 
