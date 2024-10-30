@@ -28,7 +28,11 @@ async function decryptEnvFile() {
     timeLeft.value = ttl
     toast.success('EnvShare file has been decrypted')
   } catch (error) {
-    toast.error('Failed to decrypt EnvShare file')
+    if (error.statusCode === 400) {
+      toast.error(error.statusMessage)
+    } else {
+      toast.error('Failed to decrypt EnvShare file')
+    }
   }
   loading.value = false
 }

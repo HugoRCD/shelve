@@ -7,6 +7,19 @@ type EncryptRequest = {
   ttl: number
 }
 
+type StoredData = {
+  encryptedValue: string
+  reads: number
+  createdAt: number
+  ttl: number
+}
+
+type DecryptResponse = {
+  decryptedValue: string
+  readsLeft: number
+  timeLeft: number
+}
+
 class EnvShareService {
 
   private readonly storage: Storage
@@ -29,19 +42,59 @@ class EnvShareService {
     return Math.random().toString(36).slice(2)
   }
 
-  async decrypt(id: string): Promise<{ decryptedValue: string }> {
-    const key = this.generateKey(id)
-    const value = await this.storage.getItem(key)
+  private calculateTimeLeft(createdAt: number, ttl: number): number {
+    const now = Date.now()
+    const expiresAt = createdAt + ttl * 1000 // Convert ttl to milliseconds
+    return Math.max(0, Math.floor((expiresAt - now) / 1000)) // Return remaining seconds
+  }
 
-    if (!value) {
+  async decrypt(id: string): Promise<DecryptResponse> {
+    const key = this.generateKey(id)
+    const storedData = await this.storage.getItem<StoredData>(key)
+
+    if (!storedData) {
       throw createError({
         statusCode: 400,
-        statusMessage: 'Invalid id'
+        statusMessage: 'Invalid id or link has expired'
       })
     }
 
-    const decryptedValue = await unseal(value, this.encryptionKey)
-    return { decryptedValue }
+    const { encryptedValue, reads, createdAt, ttl } = storedData
+    const timeLeft = this.calculateTimeLeft(createdAt, ttl)
+
+    if (timeLeft <= 0) {
+      await this.storage.removeItem(key)
+      throw createError({
+        statusCode: 400,
+        statusMessage: 'Link has expired'
+      })
+    }
+
+    if (reads <= 0) {
+      await this.storage.removeItem(key)
+      throw createError({
+        statusCode: 400,
+        statusMessage: 'Maximum number of reads reached'
+      })
+    }
+
+    const decryptedValue = await unseal(encryptedValue, this.encryptionKey)
+
+    const updatedReads = reads - 1
+    await this.storage.setItem(key, {
+      ...storedData,
+      reads: updatedReads
+    })
+
+    if (updatedReads === 0) {
+      await this.storage.removeItem(key)
+    }
+
+    return {
+      decryptedValue,
+      reads: updatedReads,
+      ttl: timeLeft
+    }
   }
 
   async encrypt(data: EncryptRequest): Promise<string> {
@@ -49,7 +102,14 @@ class EnvShareService {
     const randomId = this.generateRandomId()
     const key = this.generateKey(randomId)
 
-    await this.storage.setItem(key, encryptedValue)
+    const storedData: StoredData = {
+      encryptedValue,
+      reads: data.reads,
+      createdAt: Date.now(),
+      ttl: data.ttl
+    }
+
+    await this.storage.setItem(key, storedData)
     return this.generateShareUrl(randomId)
   }
 
