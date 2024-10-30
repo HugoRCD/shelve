@@ -60,9 +60,7 @@ watch(() => route.path, handleProjectNavigation, { immediate: true })
         <SettingThemeToggle size="size-5" />
       </UTooltip>
       <UTooltip text="Need help?" placement="top">
-        <NuxtLink to="https://github.com/HugoRCD/shelve/issues">
-          <UIcon name="lucide:life-buoy" size="size-5" />
-        </NuxtLink>
+        <UButton color="neutral" variant="ghost" icon="lucide:life-buoy" to="https://github.com/HugoRCD/shelve/issues" />
       </UTooltip>
     </div>
   </div>

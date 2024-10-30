@@ -27,12 +27,12 @@ const { navItem, active = false } = defineProps<NavItemProps>()
 }
 
 .nav-item:hover {
-  @apply bg-neutral-100 dark:bg-neutral-800;
+  @apply bg-neutral-100 text-white dark:bg-neutral-800;
   @apply border-neutral-200 dark:border-neutral-700;
 }
 
 .nav-item.active {
-  @apply bg-neutral-100 dark:bg-neutral-800;
+  @apply bg-neutral-100 text-white dark:bg-neutral-800;
   @apply border-neutral-200 dark:border-neutral-700;
   @apply shadow-sm;
 }
