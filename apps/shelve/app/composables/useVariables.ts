@@ -53,7 +53,7 @@ export function useVariables(refresh: () => Promise<void>, projectId: string) {
     variablesInput.value.variables.splice(index, 1)
   }
 
-  watch(selectedEnvironment, () => {
+  watch(environment, () => {
     variablesInput.value.variables.forEach((variable) => {
       variable.environment = environment.value
     })

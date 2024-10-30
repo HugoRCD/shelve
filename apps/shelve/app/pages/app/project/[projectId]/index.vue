@@ -50,8 +50,22 @@ const links = [
 <template>
   <div class="flex flex-col">
     <ProjectMainSection :project="currentProject" :loading="currentLoading" />
-    <UNavigationMenu orientation="horizontal" :items="links" class="mt-8 hidden border-b border-neutral-200 dark:border-neutral-800 md:block" />
-    <UNavigationMenu orientation="vertical" :items="links" class="mt-8 border-b border-neutral-200 pb-2 dark:border-neutral-800 md:hidden" />
+    <div class="mt-8 mb-4 border-b border-neutral-200 dark:border-neutral-800">
+      <UNavigationMenu
+        color="neutral"
+        orientation="horizontal"
+        :items="links"
+        class="hidden md:block"
+      />
+      <UNavigationMenu
+        highlight
+        variant="link"
+        color="neutral"
+        orientation="vertical"
+        :items="links"
+        class="md:hidden"
+      />
+    </div>
     <NuxtPage />
   </div>
 </template>

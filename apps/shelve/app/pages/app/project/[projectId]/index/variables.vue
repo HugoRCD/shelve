@@ -61,7 +61,7 @@ async function deleteVariables() {
 </script>
 
 <template>
-  <div class="mt-6 flex flex-col gap-4">
+  <div class="flex flex-col gap-4">
     <ProjectCreateVariables :variables :project-id :refresh />
     <Transition name="fade" mode="out-in">
       <div v-if="selectedVariables.length > 0" class="absolute bottom-4 left-1/2 z-20 -translate-x-1/2">
@@ -77,7 +77,7 @@ async function deleteVariables() {
               <UButton color="neutral" variant="ghost" icon="lucide:clipboard-plus" />
             </UTooltip>
             <UTooltip text="Delete selected variables">
-              <UButton color="red" variant="ghost" icon="heroicons:trash" :loading @click="openDeleteModal" />
+              <UButton color="error" variant="ghost" icon="heroicons:trash" :loading @click="openDeleteModal" />
             </UTooltip>
             <UTooltip text="Clear selection">
               <UButton color="neutral" variant="ghost" icon="lucide:x" @click="selectedVariables = []" />

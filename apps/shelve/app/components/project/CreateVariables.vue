@@ -278,7 +278,7 @@ const handlePasswordGenerated = (password: string, index: number) => {
                     placeholder="e.g. 123456"
                   />
                 </ProjectPasswordGenerator>
-                <UButton label="Remove" color="red" @click="removeVariable(variable - 1)" />
+                <UButton label="Remove" color="error" @click="removeVariable(variable - 1)" />
               </div>
             </div>
           </div>
