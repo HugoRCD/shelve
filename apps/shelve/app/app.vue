@@ -12,9 +12,7 @@ const { title, link, description, ogImage } = useAppConfig()
 useHead({
   title: title,
   link: link,
-  meta: [
-    { name: 'sitemap', content: 'https://shelve.hrcd.fr/sitemap.xml' }
-  ]
+  meta: [{ name: 'sitemap', content: 'https://shelve.hrcd.fr/sitemap.xml' }]
 })
 
 useSeoMeta({
