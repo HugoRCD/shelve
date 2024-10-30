@@ -21,10 +21,14 @@ export default defineNuxtConfig({
   routeRules: {
     '/': { isr: true, prerender: true },
     '/login': { isr: true, prerender: true },
-    '/app/**': { ssr: false },
+    '/app/**': { ssr: false, robots: false },
   },
 
   nitro: {
+    prerender: {
+      crawlLinks: true,
+      routes: ['/sitemap.xml']
+    },
     rollupConfig: {
       // @ts-expect-error - vue is an external plugin
       plugins: [vue()]
@@ -60,17 +64,20 @@ export default defineNuxtConfig({
     'nuxt-build-cache',
     'nuxt-auth-utils',
     '@nuxt/scripts',
-    '@nuxtjs/sitemap', // Pdcd0
-    '@nuxtjs/seo' // P158a
+    '@nuxtjs/seo',
   ],
 
+  site: {
+    url: process.env.NUXT_PUBLIC_SITE_URL,
+    name: 'Shelve',
+    description: 'Shelve is a project management tool for developers teams',
+    defaultLocale: 'en',
+    indexable: true,
+  },
+
   sitemap: {
-    hostname: process.env.NUXT_PUBLIC_SITE_URL,
-    routes: async () => {
-      const { data } = await $fetch('/api/routes')
-      return data.map(route => route.path)
-    }
-  }, // Paecc
+    exclude: ['/app/**'],
+  },
 
   css: ['~/assets/style/main.css'],
 

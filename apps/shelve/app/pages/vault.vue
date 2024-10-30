@@ -1,4 +1,26 @@
 <script setup lang="ts">
+useHead({
+  title: 'Vault by Shelve - Secure Secret Sharing Platform',
+})
+
+useSeoMeta({
+  title: 'Vault by Shelve - Secure Secret Sharing Platform',
+  description: 'Share sensitive data and environment variables securely without an account. Set expiration time, control number of reads, and ensure encrypted transmission.',
+
+  ogTitle: 'Vault by Shelve - Share Secrets Securely',
+  ogDescription: 'Securely share sensitive data with customizable expiration and read limits. No account needed.',
+  ogImage: '/path-to-vault-preview-image.jpg',
+  ogUrl: 'https://shelve.dev/vault',
+  ogType: 'website',
+
+  twitterTitle: 'Vault by Shelve - Secure Secret Sharing',
+  twitterDescription: 'Share sensitive data securely with expiration time and read limits.',
+  twitterCard: 'summary_large_image',
+  twitterImage: '/path-to-vault-preview-image.jpg',
+
+  author: 'Hugo Richard',
+})
+
 const route = useRoute()
 const id = computed(() => route.query.id)
 
