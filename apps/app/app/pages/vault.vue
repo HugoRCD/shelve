@@ -110,122 +110,131 @@ function handleDrop(event: DragEvent) {
 </script>
 
 <template>
-  <div class="mx-auto flex h-full flex-col items-center justify-center">
-    <div class="w-full border-y border-gray-500/20">
-      <div class="mx-auto flex max-w-2xl justify-center px-5 sm:px-0">
-        <CrossedDiv encrypted-text class="w-full">
-          <div>
-            <h1 class="main-gradient cursor-pointer text-3xl" @click="$router.push('/vault')">
-              <LandingScrambleText label="Vault" />
-            </h1>
-            <p class="text-gray-500">
-              Vault is a small utility to share secrets.
-            </p>
-          </div>
-        </CrossedDiv>
-      </div>
-    </div>
-    <form v-if="!sealMode" class="mx-auto mt-8 flex w-full max-w-2xl flex-col justify-center gap-2 px-5 sm:px-0" @submit.prevent="saveEnvFile">
-      <div class="relative w-full">
-        <UTextarea
-          v-model="value"
-          autoresize
-          autofocus
-          required
-          :rows="5"
-          class="w-full"
-          placeholder="DATABASE_URL=your_value ..."
-          :ui="{ base: border }"
-          @dragenter.prevent="handleDragEnter"
-          @dragover.prevent="handleDragOver"
-          @dragleave.prevent="handleDragLeave"
-          @drop.prevent="handleDrop"
-        />
-        <input type="file" accept="text" style="display: none;" @change="handleFileUpload">
-      </div>
-      <div class="mt-2 flex w-full items-end justify-between gap-2">
-        <UTooltip
-          :ui="{ width: 'max-w-4xl' }"
-          text="Reads are used to limit the number of times a secret can be read."
-        >
-          <UFormGroup label="Reads">
-            <UInput
-              v-model="reads"
-              label="Reads"
-              type="number"
-              min="1"
-            />
-          </UFormGroup>
-        </UTooltip>
-        <UTooltip
-          :ui="{ width: 'max-w-4xl' }"
-          text="TTL is the time period after which the secret will be deleted."
-        >
-          <UFormGroup label="TTL">
-            <USelect
-              v-model="selectedTtl"
-              :options="ttl"
-              default-value="1d"
-              value-attribute="value"
-              option-attribute="label"
-            />
-          </UFormGroup>
-        </UTooltip>
-      </div>
-      <div class="mt-4 w-full">
-        <UButton block label="Encrypt" type="submit" color="gray" :loading />
-      </div>
-      <div v-if="shareUrl" class="mt-4 flex w-full rounded-lg border border-green-600/20 bg-green-600/10 p-4 shadow-md">
-        <div class="flex w-full items-center justify-between gap-2">
-          <span class="text-sm font-semibold text-green-500/80">
-            Your secret(s) has been saved
-          </span>
-          <UButton color="green" variant="soft" icon="lucide:copy" label="Copy Share URL" @click="copyToClipboard(shareUrl)" />
+  <div class="mx-auto my-8 flex h-full flex-col items-center justify-around gap-2 sm:my-0">
+    <div class="flex w-full flex-col items-center justify-center">
+      <div class="w-full border-y border-gray-500/20">
+        <div class="mx-auto flex max-w-2xl justify-center px-5 sm:px-0">
+          <CrossedDiv encrypted-text class="w-full">
+            <div>
+              <h1 class="main-gradient cursor-pointer text-3xl" @click="$router.push('/vault')">
+                <LandingScrambleText label="Vault" />
+              </h1>
+              <p class="text-gray-500">
+                Vault is a small utility to share secrets.
+              </p>
+            </div>
+          </CrossedDiv>
         </div>
       </div>
-    </form>
-    <form v-else class="mx-auto mt-8 flex w-full max-w-2xl flex-col justify-center gap-2 px-5 sm:px-0" @submit.prevent="decryptEnvFile">
-      <template v-if="!value">
-        <div class="relative flex w-full flex-col gap-2">
-          <UFormGroup label="Share ID">
-            <UInput
-              v-model="localId"
-              placeholder="o75adqf..."
-              required
-            />
-          </UFormGroup>
+      <form v-if="!sealMode" class="mx-auto mt-8 flex w-full max-w-2xl flex-col justify-center gap-2 px-5 sm:px-0" @submit.prevent="saveEnvFile">
+        <div class="relative w-full">
+          <UTextarea
+            v-model="value"
+            autoresize
+            autofocus
+            required
+            :rows="5"
+            class="w-full"
+            placeholder="DATABASE_URL=your_value ..."
+            :ui="{ base: border }"
+            @dragenter.prevent="handleDragEnter"
+            @dragover.prevent="handleDragOver"
+            @dragleave.prevent="handleDragLeave"
+            @drop.prevent="handleDrop"
+          />
+          <input type="file" accept="text" style="display: none;" @change="handleFileUpload">
         </div>
-        <div class="mt-4">
+        <div class="mt-2 flex w-full items-end justify-between gap-2">
+          <UTooltip
+            :ui="{ width: 'max-w-4xl' }"
+            text="Reads are used to limit the number of times a secret can be read."
+          >
+            <UFormGroup label="Reads">
+              <UInput
+                v-model="reads"
+                label="Reads"
+                type="number"
+                min="1"
+              />
+            </UFormGroup>
+          </UTooltip>
+          <UTooltip
+            :ui="{ width: 'max-w-4xl' }"
+            text="TTL is the time period after which the secret will be deleted."
+          >
+            <UFormGroup label="TTL">
+              <USelect
+                v-model="selectedTtl"
+                :options="ttl"
+                default-value="1d"
+                value-attribute="value"
+                option-attribute="label"
+              />
+            </UFormGroup>
+          </UTooltip>
+        </div>
+        <div class="mt-4 w-full">
           <UButton
             block
-            label="Decrypt"
+            label="Encrypt"
             type="submit"
             color="gray"
             :loading
           />
         </div>
-      </template>
-      <template v-else>
-        <div class="mt-4">
-          <UTextarea
-            v-model="value"
-            autoresize
-            autofocus
-            :rows="5"
-            class="w-full"
-            placeholder="DATABASE_URL=your_value ..."
-          />
+        <div v-if="shareUrl" class="mt-4 flex w-full rounded-lg border border-green-600/20 bg-green-600/10 p-4 shadow-md">
+          <div class="flex w-full items-center justify-between gap-2">
+            <span class="text-sm font-semibold text-green-500/80">
+              Your secret(s) has been saved
+            </span>
+            <UButton color="green" variant="soft" icon="lucide:copy" label="Copy Share URL" @click="copyToClipboard(shareUrl)" />
+          </div>
         </div>
-      </template>
-      <div class="mt-4 flex w-full items-center justify-between gap-2">
-        <span v-if="timeLeft" class="text-sm font-semibold text-gray-500/80">
-          Time left: {{ timeLeft }}
-        </span>
-        <span v-if="readsLeft" class="text-sm font-semibold text-gray-500/80">
-          Reads left: {{ readsLeft }}
-        </span>
-      </div>
-    </form>
+      </form>
+      <form v-else class="mx-auto mt-8 flex w-full max-w-2xl flex-col justify-center gap-2 px-5 sm:px-0" @submit.prevent="decryptEnvFile">
+        <template v-if="!value">
+          <div class="relative flex w-full flex-col gap-2">
+            <UFormGroup label="Share ID">
+              <UInput
+                v-model="localId"
+                placeholder="o75adqf..."
+                required
+              />
+            </UFormGroup>
+          </div>
+          <div class="mt-4">
+            <UButton
+              block
+              label="Decrypt"
+              type="submit"
+              color="gray"
+              :loading
+            />
+          </div>
+        </template>
+        <template v-else>
+          <div class="mt-4">
+            <UTextarea
+              v-model="value"
+              autoresize
+              autofocus
+              :rows="5"
+              class="w-full"
+              placeholder="DATABASE_URL=your_value ..."
+            />
+          </div>
+        </template>
+        <div class="mt-4 flex w-full items-center justify-between gap-2">
+          <span v-if="timeLeft" class="text-sm font-semibold text-gray-500/80">
+            Time left: {{ timeLeft }}
+          </span>
+          <span v-if="readsLeft" class="text-sm font-semibold text-gray-500/80">
+            Reads left: {{ readsLeft }}
+          </span>
+        </div>
+      </form>
+    </div>
+    <VaultFaq />
   </div>
 </template>
 
