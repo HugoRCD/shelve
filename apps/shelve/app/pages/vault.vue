@@ -10,7 +10,7 @@ useSeoMeta({
 
   ogTitle: 'Vault by Shelve - Share Secrets Securely',
   ogDescription: 'Securely share sensitive data with customizable expiration and read limits. No account needed.',
-  ogImage: '/vault-social-preview.jpg',
+  ogImage: 'https://shelve.hrcd.fr/vault-social-preview.jpg',
   ogUrl: 'https://shelve.hrcd.fr/vault',
   ogType: 'website',
   ogSiteName: 'Shelve',
@@ -18,7 +18,7 @@ useSeoMeta({
   twitterTitle: 'Vault by Shelve - Secure Secret Sharing',
   twitterDescription: 'Share sensitive data securely with expiration time and read limits.',
   twitterCard: 'summary_large_image',
-  twitterImage: '/vault-social-preview.jpg',
+  twitterImage: 'https://shelve.hrcd.fr/vault-social-preview.jpg',
 
   author: 'Hugo Richard',
 })
