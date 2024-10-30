@@ -16,7 +16,9 @@
     "prisma:generate": "prisma generate",
     "prisma:pull": "prisma db pull",
     "prisma:push": "prisma db push",
-    "prisma:migrate": "prisma migrate dev"
+    "prisma:migrate": "prisma migrate dev",
+    "docker:build": "docker build -t shelve:latest .",
+    "docker:up": "docker-compose up"
   },
   "devDependencies": {
     "@iconify-json/lucide": "^1.2.10",
