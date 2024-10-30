@@ -1,23 +1,25 @@
 import { H3Event } from 'h3'
 import { seal, unseal } from '@shelve/crypto'
 
+type TTLFormat = '1d' | '7d' | '30d'
+
 type EncryptRequest = {
   value: string
   reads: number
-  ttl: number
+  ttl: TTLFormat
 }
 
 type StoredData = {
   encryptedValue: string
   reads: number
   createdAt: number
-  ttl: number
+  ttl: TTLFormat
 }
 
 type DecryptResponse = {
   decryptedValue: string
-  readsLeft: number
-  timeLeft: number
+  reads: number
+  ttl: string
 }
 
 class EnvShareService {
@@ -26,6 +28,12 @@ class EnvShareService {
   private readonly encryptionKey: string
   private readonly siteUrl: string
   private readonly PREFIX = 'envshare:'
+
+  private readonly TTL_MAP = {
+    '1d': 24 * 60 * 60, // 1 day in seconds
+    '7d': 7 * 24 * 60 * 60, // 7 days in seconds
+    '30d': 30 * 24 * 60 * 60 // 30 days in seconds
+  }
 
   constructor() {
     const config = useRuntimeConfig()
@@ -42,10 +50,38 @@ class EnvShareService {
     return Math.random().toString(36).slice(2)
   }
 
-  private calculateTimeLeft(createdAt: number, ttl: number): number {
+  private calculateTimeLeft(createdAt: number, ttl: TTLFormat): number {
+    const ttlInSeconds = this.TTL_MAP[ttl]
     const now = Date.now()
-    const expiresAt = createdAt + ttl * 1000 // Convert ttl to milliseconds
-    return Math.max(0, Math.floor((expiresAt - now) / 1000)) // Return remaining seconds
+    const expiresAt = createdAt + (ttlInSeconds * 1000)
+    return Math.max(0, Math.floor((expiresAt - now) / 1000))
+  }
+
+  private formatTimeLeft(seconds: number): string {
+    if (seconds <= 0) return 'Expired'
+
+    const days = Math.floor(seconds / (24 * 60 * 60))
+    const hours = Math.floor((seconds % (24 * 60 * 60)) / (60 * 60))
+    const minutes = Math.floor((seconds % (60 * 60)) / 60)
+
+    const parts = []
+
+    if (days > 0) {
+      parts.push(`${days}d`)
+    }
+    if (hours > 0) {
+      parts.push(`${hours}h`)
+    }
+    if (minutes > 0) {
+      parts.push(`${minutes}m`)
+    }
+
+    // If less than a minute left
+    if (parts.length === 0) {
+      return 'Less than 1 minute'
+    }
+
+    return parts.join(' ')
   }
 
   async decrypt(id: string): Promise<DecryptResponse> {
@@ -93,7 +129,7 @@ class EnvShareService {
     return {
       decryptedValue,
       reads: updatedReads,
-      ttl: timeLeft
+      ttl: this.formatTimeLeft(timeLeft)
     }
   }
 
