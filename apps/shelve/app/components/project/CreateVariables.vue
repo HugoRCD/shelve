@@ -193,7 +193,7 @@ const handlePasswordGenerated = (password: string, index: number) => {
 <template>
   <form id="varCreation" class="relative duration-500" @submit.prevent="createVariables">
     <UCard
-      :ui="{ base: border }"
+      :ui="{ root: border }"
       class="duration-500"
       @dragenter.prevent="handleDragEnter"
       @dragover.prevent="handleDragOver"
@@ -245,14 +245,14 @@ const handlePasswordGenerated = (password: string, index: number) => {
             <UCheckbox v-model="selectedEnvironment.development" name="development" label="Development" />
           </div>
         </div>
-        <!--        <UDivider class="my-1" />-->
+        <UDivider class="my-1" />
         <div class="flex items-center gap-2">
           <USwitch v-model="autoUppercase" size="xs" />
           <h3 class="cursor-pointer text-sm font-semibold" @click="autoUppercase = !autoUppercase">
             Auto uppercase
           </h3>
         </div>
-        <!--        <UDivider class="my-1" />-->
+        <UDivider class="my-1" />
         <p class="text-xs font-normal text-neutral-500">
           🤫 You can also paste all your environment variables (.env) as key value pairs to prefilled the form
         </p>
@@ -287,9 +287,23 @@ const handlePasswordGenerated = (password: string, index: number) => {
       <template #footer>
         <div :class="{ 'opacity-30': dragOver }" class="flex justify-between gap-4">
           <div class="flex gap-2">
-            <UButton label="Add variable" color="neutral" variant="soft" icon="heroicons:plus-circle-20-solid" @click="addVariable" />
+            <UButton
+              label="Add variable"
+              color="neutral"
+              size="xs"
+              variant="soft"
+              icon="heroicons:plus-circle-20-solid"
+              @click="addVariable"
+            />
             <input ref="fileInputRef" type="file" accept="text" style="display: none;" @change="handleFileUpload">
-            <UButton label="Import .env" color="neutral" variant="soft" icon="lucide:download" @click="triggerFileInput" />
+            <UButton
+              label="Import .env"
+              color="neutral"
+              size="xs"
+              variant="soft"
+              icon="lucide:download"
+              @click="triggerFileInput"
+            />
           </div>
           <UButton label="Save" color="primary" :loading="createLoading" type="submit" />
         </div>

@@ -138,6 +138,8 @@ function getProjectManager(manager: string) {
         <NuxtLink v-if="project.projectManager" target="_blank" :to="project.projectManager">
           <UButton
             color="neutral"
+            variant="soft"
+            size="xs"
             :icon="getProjectManager(project.projectManager)?.icon"
             :label="`Open ${getProjectManager(project.projectManager)?.label}`"
             :ui="{ leadingIcon: 'dark:fill-white fill-black' }"
@@ -146,6 +148,8 @@ function getProjectManager(manager: string) {
         <NuxtLink v-if="project.repository" target="_blank" :to="project.repository">
           <UButton
             color="neutral"
+            variant="soft"
+            size="xs"
             icon="custom:github"
             label="Open repository"
             :ui="{ leadingIcon: 'dark:fill-white fill-black' }"
@@ -154,6 +158,8 @@ function getProjectManager(manager: string) {
         <NuxtLink v-if="project.homepage" target="_blank" :to="project.homepage">
           <UButton
             color="neutral"
+            variant="soft"
+            size="xs"
             icon="heroicons:home"
             label="Open homepage"
           />
@@ -173,7 +179,7 @@ function getProjectManager(manager: string) {
       </div>
     </div>
     <UModal v-model:open="showDelete">
-      <template #body>
+      <template #content>
         <UCard class="p-2">
           <form class="flex flex-col gap-6" @submit.prevent="deleteProjectFunction">
             <div>
@@ -189,7 +195,7 @@ function getProjectManager(manager: string) {
               <UButton color="neutral" variant="ghost" @click="showDelete = false">
                 Cancel
               </UButton>
-              <UButton color="red" type="submit" trailing :loading="deleteLoading" :disabled="projectName !== project.name">
+              <UButton color="error" type="submit" trailing :loading="deleteLoading" :disabled="projectName !== project.name">
                 Delete
               </UButton>
             </div>

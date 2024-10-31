@@ -83,7 +83,7 @@ function importProject() {
       <form id="createForm" class="flex flex-col gap-4" @submit.prevent="createProjectFunction">
         <FormGroup v-model="projectCreateInput.name" autofocus required label="Project name" />
         <FormGroup v-model="projectCreateInput.description" label="Description" type="textarea" />
-        <!--              <UDivider class="my-4" />-->
+        <UDivider class="my-4" />
         <div class="flex flex-col gap-4">
           <div class="flex items-center justify-between">
             <div>
@@ -133,7 +133,7 @@ function importProject() {
             </div>
           </div>
         </div>
-        <!--              <UDivider class="my-4" />-->
+        <UDivider class="my-4" />
         <div class="flex flex-col gap-4">
           <div>
             <h3 class="font-semibold">
@@ -153,7 +153,7 @@ function importProject() {
             <FormGroup v-model="projectCreateInput.homepage" label="Homepage" />
           </div>
         </div>
-        <!--              <UDivider class="my-4" />-->
+        <UDivider class="my-4" />
         <div class="flex flex-col gap-4">
           <div>
             <h3 class="font-semibold">

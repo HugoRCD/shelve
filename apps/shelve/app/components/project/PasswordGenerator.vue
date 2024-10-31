@@ -48,7 +48,7 @@ const items = [
             <USlider v-model="length" :min="5" :max="35" />
           </UFormField>
           <UCheckbox v-model="includeSymbols" label="Include Symbols" />
-          <!--          <UDivider />-->
+          <UDivider />
           <UButton label="Generate" type="submit" />
         </form>
       </div>

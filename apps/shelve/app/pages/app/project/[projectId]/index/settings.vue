@@ -106,7 +106,7 @@ async function removeTeamFromProject(teamId: number) {
             </div>
           </div>
         </div>
-        <!--        <UDivider class="my-2" />-->
+        <UDivider class="my-2" />
         <div class="flex flex-col gap-4">
           <div>
             <h3 class="font-semibold">
@@ -131,7 +131,7 @@ async function removeTeamFromProject(teamId: number) {
             </div>
           </div>
         </div>
-        <!--        <UDivider class="my-2" />-->
+        <UDivider class="my-2" />
         <div class="flex flex-col gap-4">
           <div>
             <h3 class="font-semibold">
