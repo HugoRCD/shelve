@@ -59,7 +59,7 @@ watch(() => route.path, handleProjectNavigation, { immediate: true })
       <UTooltip text="Change theme" :content="{ side: 'top' }">
         <SettingThemeToggle size="size-5" />
       </UTooltip>
-      <UTooltip text="Need help?":content="{ side: 'top' }">
+      <UTooltip text="Need help?" :content="{ side: 'top' }">
         <UButton color="neutral" variant="ghost" icon="lucide:life-buoy" to="https://github.com/HugoRCD/shelve/issues" />
       </UTooltip>
     </div>
