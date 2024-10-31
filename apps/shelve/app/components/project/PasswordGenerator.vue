@@ -32,11 +32,11 @@ const items = [
 </script>
 
 <template>
-  <UPopover v-model:open="isOpen">
-    <div class="w-full">
-      <div>
-        <slot />
-      </div>
+  <UPopover v-model:open="isOpen" arrow>
+    <div>
+      <UTooltip :content="{ side: 'top' }" text="Generate a random password">
+        <UButton variant="soft" color="neutral" icon="lucide:lock-keyhole" />
+      </UTooltip>
     </div>
     <template #content>
       <div class="w-72 flex flex-col gap-4 p-4">

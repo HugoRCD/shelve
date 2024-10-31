@@ -19,14 +19,14 @@ function addPrefixToInputId(prefix: string) {
 </script>
 
 <template>
-  <UPopover v-model:open="isOpen">
-    <div class="w-full">
-      <div>
-        <slot />
-      </div>
+  <UPopover v-model:open="isOpen" arrow>
+    <div>
+      <UTooltip :content="{ side: 'top' }" text="Add common prefix to your variable">
+        <UButton variant="soft" color="neutral" icon="lucide:list-start" />
+      </UTooltip>
     </div>
     <template #content>
-      <div class="p-4 flex flex-col gap-2">
+      <div class="p-4 flex w-full flex-col gap-3">
         <h3 class="text-sm font-semibold">
           Add Prefix to your variable
         </h3>
@@ -42,6 +42,10 @@ function addPrefixToInputId(prefix: string) {
             @click="addPrefixToInputId(prefix)"
           />
         </div>
+        <NuxtLink :to="`/app/project/${project.id}/settings#variable-prefix`" class="text-xs text-neutral-500 dark:text-neutral-400 flex gap-1 hover:underline">
+          Create variable prefix
+          <UIcon name="lucide:external-link" class="mt-0.5" />
+        </NuxtLink>
       </div>
     </template>
   </UPopover>

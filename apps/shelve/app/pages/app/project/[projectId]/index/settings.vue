@@ -132,7 +132,7 @@ async function removeTeamFromProject(teamId: number) {
           </div>
         </div>
         <UDivider class="my-2" />
-        <div class="flex flex-col gap-4">
+        <div id="variable-prefix" class="flex flex-col gap-4" :class="$route.hash === '#variable-prefix' ? 'ring ring-[var(--ui-primary)] rounded-lg p-4' : ''">
           <div>
             <h3 class="font-semibold">
               Environment Variables Prefix

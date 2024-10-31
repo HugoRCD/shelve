@@ -265,10 +265,11 @@ const handlePasswordGenerated = (password: string, index: number) => {
           <div v-for="variable in variablesToCreate" :key="variable" class="flex flex-col gap-4">
             <div class="flex flex-col gap-2">
               <div class="flex flex-col items-start gap-2 sm:flex-row">
-                <ProjectVarPrefix v-model="variablesInput.variables[variable - 1]!.key" class="w-full">
+                <div class="w-full flex gap-1">
                   <UInput v-model="variablesInput.variables[variable - 1]!.key" required class="w-full" placeholder="e.g. API_KEY" />
-                </ProjectVarPrefix>
-                <ProjectPasswordGenerator @password-generated="handlePasswordGenerated($event, variable - 1)">
+                  <ProjectVarPrefix v-model="variablesInput.variables[variable - 1]!.key" />
+                </div>
+                <div class="w-full flex gap-1">
                   <UTextarea
                     v-model="variablesInput.variables[variable - 1]!.value"
                     required
@@ -277,7 +278,8 @@ const handlePasswordGenerated = (password: string, index: number) => {
                     autoresize
                     placeholder="e.g. 123456"
                   />
-                </ProjectPasswordGenerator>
+                  <ProjectPasswordGenerator @password-generated="handlePasswordGenerated($event, variable - 1)" />
+                </div>
                 <UButton label="Remove" color="error" @click="removeVariable(variable - 1)" />
               </div>
             </div>

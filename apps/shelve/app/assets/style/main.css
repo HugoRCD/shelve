@@ -37,50 +37,6 @@ html, body, #__nuxt, #__layout {
     font-family: 'Newsreader', serif;
 }
 
-/*.main-gradient {
+.main-gradient {
   @apply font-geist-mono bg-gradient-to-r from-neutral-50 to-neutral-600 to-50% bg-clip-text text-transparent;
-}*/
-
-html.light {
-    --primary-color: rgb(255, 255, 255);
-    --primary-hover-color: rgb(255, 255, 255, 0.9);
-
-    --secondary-color: rgb(245, 245, 245);
-    --secondary-hover-color: rgb(245, 245, 245, 0.9);
-
-    --inverted-color: rgb(2,2,2);
-    --inverted-hover-color: rgb(2,2,2,0.9);
-
-    --accent-color: rgb(40, 83, 255);
-    --accent-light-color: rgb(40, 83, 255, 0.1);
-    --accent-hover-color: rgb(40, 83, 255, 0.9);
-
-    --text-primary: rgb(2,2,2);
-    --text-secondary: rgb(61, 61, 61);
-    --text-tertiary: rgb(96, 96, 96);
-    --text-inverted: rgb(255,255,255);
-
-    --border-color: rgba(0,0,0,0.1);
-}
-
-html.dark {
-    --primary-color: rgb(2,2,2);
-    --primary-hover-color: rgb(2,2,2,0.9);
-
-    --secondary-color: rgb(19, 19, 19);
-    --secondary-hover-color: rgb(19, 19, 19, 0.9);
-
-    --inverted-color: rgb(255, 255, 255);
-    --inverted-hover-color: rgb(255, 255, 255, 0.9);
-
-    --accent-color: rgb(7, 78, 255);
-    --accent-light-color: rgb(7, 78, 255, 0.1);
-    --accent-hover-color: rgb(7, 78, 255, 0.9);
-
-    --text-primary: rgb(248,243,238);
-    --text-secondary: rgb(200,200,200);
-    --text-tertiary: rgb(150,150,150);
-    --text-inverted: rgb(255,255,255);
-
-    --border-color: rgba(255,255,255,0.1);
 }

@@ -79,7 +79,7 @@ watch(open, (newValue) => {
 <template>
   <UAvatarGroup v-if="!display">
     <UPopover v-for="member in members" :key="member.id" arrow :slots="{ open }">
-      <div>
+      <div class="cursor-pointer">
         <TeamMember :member />
       </div>
       <template #content>
