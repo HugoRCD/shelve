@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Role, type Team, TeamRole } from '@shelve/types'
 import type { TableColumn } from '@nuxt/ui'
+import { ConfirmModal } from '#components'
 
 const { user } = useUserSession()
 
@@ -12,19 +13,14 @@ const {
   fetchTeams,
   deleteTeam,
 } = useTeams()
-fetchTeams()
+
+if (!teams.value)
+  await fetchTeams()
 
 const filteredTeams = computed(() => {
   if (!search.value) return teams.value
   return teams.value!.filter((team: Team) => team.name.toLowerCase().includes(search.value.toLowerCase()))
 })
-
-const deleteLoading = ref(false)
-async function deleteTeamFunction(teamId: number) {
-  deleteLoading.value = true
-  await deleteTeam(teamId)
-  deleteLoading.value = false
-}
 
 const columns: TableColumn<Team>[] = [
   {
@@ -41,8 +37,11 @@ const columns: TableColumn<Team>[] = [
   },
 ]
 
+const currentTeamMemberUserId = computed(() => teamMembers.value.find(member => member.userId === user.value?.id)?.userId)
+
 const isOwner = (team: Team) => team.members.find(member => member.userId === user.value?.id)?.role === TeamRole.OWNER || user.value?.role === Role.ADMIN
 
+const modal = useModal()
 const items = (row: Team) => [
   [
     {
@@ -58,7 +57,18 @@ const items = (row: Team) => [
       iconClass: 'text-red-500 dark:text-red-500',
       disabled: !isOwner(row),
       onSelect: () => {
-        deleteTeamFunction(row.id)
+        modal.open(ConfirmModal, {
+          title: 'Are you sure?',
+          description: `You are about to delete ${row.name}, this action cannot be undone.`,
+          danger: true,
+          onSuccess() {
+            toast.promise(deleteTeam(row.id), {
+              loading: 'Deleting team...',
+              success: 'Team has been deleted',
+              error: 'Failed to delete team',
+            })
+          },
+        })
       },
     },
   ],
@@ -116,12 +126,12 @@ const items = (row: Team) => [
           <TeamMembers :team-id="row.original.id" :members="row.original.members" />
         </template>
         <template #actions-cell="{ row }">
-          <UDropdownMenu :items="items(row)">
+          <UDropdownMenu :items="items(row.original)">
             <UButton
               color="neutral"
               variant="ghost"
               icon="heroicons:ellipsis-horizontal-20-solid"
-              :disabled="!isOwner(row)"
+              :disabled="!isOwner(row.original)"
             />
           </UDropdownMenu>
         </template>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Role, type Token } from '@shelve/types'
+import { type Token } from '@shelve/types'
 import type { TableColumn } from '@nuxt/ui'
 import { ConfirmModal } from '#components'
 
@@ -82,7 +82,6 @@ async function deleteToken(token: Token) {
   await $fetch(`/api/tokens/${token.id}`, {
     method: 'DELETE',
   })
-  toast.success('Token deleted')
   await fetchTokens()
 }
 
