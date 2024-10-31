@@ -37,7 +37,6 @@ const items = (row: Token) => [
     {
       label: 'Delete',
       icon: 'lucide:trash',
-      iconClass: 'text-red-500 dark:text-red-500',
       onSelect: () => {
         deleteToken(row)
       },
@@ -94,11 +93,11 @@ fetchTokens()
     <Teleport defer to="#action-items">
       <div class="hidden items-center justify-end gap-2 sm:flex">
         <TokenCreate v-model:search="search" @create="fetchTokens" />
-        <UInput v-model="search" placeholder="Search tokens" />
+        <UInput v-model="search" size="xs" placeholder="Search tokens" />
       </div>
     </Teleport>
     <div style="--stagger: 2" data-animate class="mt-6">
-      <UTable :columns :data="filteredTokens" :loading :items-per-page="10">
+      <UTable :columns :data="filteredTokens" :loading>
         <template #token-cell="{ row }">
           <TokenToggle :token="row.token" />
         </template>

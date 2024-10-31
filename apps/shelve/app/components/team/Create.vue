@@ -30,7 +30,7 @@ async function createTeamFunction(name: string) {
 <template>
   <div>
     <UPopover arrow>
-      <UButton :variant :color>
+      <UButton :variant size="xs" :color>
         <slot />
       </UButton>
       <template #content>

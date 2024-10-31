@@ -83,6 +83,7 @@ const items = (row: Team) => [
         <UInput
           v-model="search"
           label="Search"
+          size="xs"
           placeholder="Search a team"
           icon="heroicons:magnifying-glass-20-solid"
         />
