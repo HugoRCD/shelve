@@ -77,20 +77,20 @@ watch(reduceMotion, () => {
           class="flex cursor-pointer flex-col gap-2 rounded-lg border border-neutral-700 bg-[#131113] p-4 shadow-md hover:border-neutral-600 hover:bg-neutral-900"
           @click="$colorMode.preference = 'dark'"
         >
-          <h3 class="text-lg font-semibold text-gray-100">
+          <h3 class="text-lg font-semibold text-neutral-100">
             Sideral Night
           </h3>
-          <p class="text-sm text-gray-400">
+          <p class="text-sm text-neutral-400">
             Sideral Night theme is the theme for all people who like keeping it dark.
           </p>
           <div class="mt-2 flex flex-col gap-1">
             <div class="flex gap-2">
-              <div class="h-3 w-1/2 rounded-full bg-gray-700" />
-              <div class="h-3 w-1/4 rounded-full bg-gray-700" />
+              <div class="h-3 w-1/2 rounded-full bg-neutral-700" />
+              <div class="h-3 w-1/4 rounded-full bg-neutral-700" />
             </div>
             <div class="flex gap-2">
-              <div class="h-3 w-1/4 rounded-full bg-gray-700" />
-              <div class="h-3 w-1/2 rounded-full bg-gray-700" />
+              <div class="h-3 w-1/4 rounded-full bg-neutral-700" />
+              <div class="h-3 w-1/2 rounded-full bg-neutral-700" />
             </div>
           </div>
         </div>

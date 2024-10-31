@@ -13,10 +13,10 @@ useHead({
     <div class="w-full border-y border-neutral-500/20">
       <div class="mx-auto max-w-4xl">
         <CrossedDiv encrypted-text>
-          <h3 class="main-gradient font-geist-mono text-2xl font-bold sm:text-4xl">
+          <h3 class="main-gradient font-geist-mono text-2xl sm:text-3xl">
             <LandingScrambleText label="// The documentation is coming soon" />
           </h3>
-          <p class="max-w-lg text-sm leading-6 text-neutral-300">
+          <p class="max-w-lg text-sm leading-6 text-neutral-500">
             We are working hard to provide you with the best documentation possible.
           </p>
         </CrossedDiv>

@@ -131,13 +131,13 @@ function getProjectManager(manager: string) {
           </UModal>
         </div>
         <UDropdownMenu v-if="project.ownerId === user?.id" :items>
-          <UButton color="gray" variant="ghost" icon="heroicons:ellipsis-horizontal-20-solid" />
+          <UButton color="neutral" variant="ghost" icon="heroicons:ellipsis-horizontal-20-solid" />
         </UDropdownMenu>
       </div>
       <div v-if="project.projectManager || project.repository || project.homepage" class="mt-6 flex flex-wrap gap-4 sm:flex-row sm:items-center">
         <NuxtLink v-if="project.projectManager" target="_blank" :to="project.projectManager">
           <UButton
-            color="gray"
+            color="neutral"
             :icon="getProjectManager(project.projectManager)?.icon"
             :label="`Open ${getProjectManager(project.projectManager)?.label}`"
             :ui="{ leadingIcon: 'dark:fill-white fill-black' }"
@@ -145,7 +145,7 @@ function getProjectManager(manager: string) {
         </NuxtLink>
         <NuxtLink v-if="project.repository" target="_blank" :to="project.repository">
           <UButton
-            color="gray"
+            color="neutral"
             icon="custom:github"
             label="Open repository"
             :ui="{ leadingIcon: 'dark:fill-white fill-black' }"
@@ -153,7 +153,7 @@ function getProjectManager(manager: string) {
         </NuxtLink>
         <NuxtLink v-if="project.homepage" target="_blank" :to="project.homepage">
           <UButton
-            color="gray"
+            color="neutral"
             icon="heroicons:home"
             label="Open homepage"
           />
@@ -180,13 +180,13 @@ function getProjectManager(manager: string) {
               <h2 class="text-lg font-semibold leading-7">
                 Are you sure you want to delete this project?
               </h2>
-              <p class="text-sm leading-6 text-gray-500">
+              <p class="text-sm leading-6 text-neutral-500">
                 This action cannot be undone.
               </p>
             </div>
             <FormGroup v-model="projectName" :label="`Type the project name '${project.name}' to confirm`" />
             <div class="flex justify-end gap-4">
-              <UButton color="gray" variant="ghost" @click="showDelete = false">
+              <UButton color="neutral" variant="ghost" @click="showDelete = false">
                 Cancel
               </UButton>
               <UButton color="red" type="submit" trailing :loading="deleteLoading" :disabled="projectName !== project.name">

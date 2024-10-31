@@ -47,7 +47,7 @@ async function decryptEnvFile() {
           block
           label="Decrypt"
           type="submit"
-          color="gray"
+          color="neutral"
           :loading
         />
       </div>
@@ -65,10 +65,10 @@ async function decryptEnvFile() {
       </div>
     </template>
     <div class="mt-4 flex w-full items-center justify-between gap-2">
-      <span v-if="timeLeft" class="text-sm font-semibold text-gray-500/80">
+      <span v-if="timeLeft" class="text-sm font-semibold text-neutral-500/80">
         Time left: {{ timeLeft }}
       </span>
-      <span v-if="readsLeft" class="text-sm font-semibold text-gray-500/80">
+      <span v-if="readsLeft" class="text-sm font-semibold text-neutral-500/80">
         Reads left: {{ readsLeft }}
       </span>
     </div>

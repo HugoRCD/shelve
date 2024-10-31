@@ -88,7 +88,7 @@ const border = computed(() => {
   if (dragOver.value) {
     return 'border-[0.5px] border-primary border-dashed'
   }
-  return 'border-[0.5px] border-neutral-200 dark:border-gray-800'
+  return 'border-[0.5px] border-neutral-200 dark:border-neutral-800'
 })
 
 const handleFileUpload = (event: Event) => {
@@ -225,12 +225,12 @@ const handlePasswordGenerated = (password: string, index: number) => {
             <h2 class="text-lg font-semibold">
               Environment Variables
             </h2>
-            <p class="text-sm font-normal text-gray-500">
+            <p class="text-sm font-normal text-neutral-500">
               Manage your environment variables
             </p>
           </div>
           <UDropdownMenu :items>
-            <UButton color="gray" variant="ghost" icon="heroicons:ellipsis-horizontal-20-solid" />
+            <UButton color="neutral" variant="ghost" icon="heroicons:ellipsis-horizontal-20-solid" />
           </UDropdownMenu>
         </div>
       </template>
@@ -253,13 +253,13 @@ const handlePasswordGenerated = (password: string, index: number) => {
           </h3>
         </div>
         <!--        <UDivider class="my-1" />-->
-        <p class="text-xs font-normal text-gray-500">
+        <p class="text-xs font-normal text-neutral-500">
           🤫 You can also paste all your environment variables (.env) as key value pairs to prefilled the form
         </p>
         <div class="mb-4 flex flex-col gap-2">
           <div class="hidden items-center sm:flex">
-            <span class="w-full text-sm font-normal text-gray-500">Key</span>
-            <span class="w-full text-sm font-normal text-gray-500">Value</span>
+            <span class="w-full text-sm font-normal text-neutral-500">Key</span>
+            <span class="w-full text-sm font-normal text-neutral-500">Value</span>
             <div class="w-[100px]" />
           </div>
           <div v-for="variable in variablesToCreate" :key="variable" class="flex flex-col gap-4">
