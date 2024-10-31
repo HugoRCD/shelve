@@ -103,14 +103,14 @@ const items = (row: Team) => [
     </div>
     <div style="--stagger: 3" data-animate class="mt-6">
       <UTable :columns :data="filteredTeams" :loading>
-        <template #empty-state>
+        <!--        <template #empty-state>
           <div class="flex flex-col items-center justify-center gap-3 py-6">
             <span class="text-sm italic">No teams here</span>
             <TeamCreate>
               Create a team
             </TeamCreate>
           </div>
-        </template>
+        </template>-->
         <template #members-cell="{ row }">
           <TeamMembers :team-id="row.original.id" :members="row.original.members" />
         </template>

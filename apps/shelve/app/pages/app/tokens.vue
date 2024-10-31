@@ -15,10 +15,16 @@ const columns = [
   {
     accessorKey: 'createdAt',
     header: 'Created',
+    cell: ({ row }) => {
+      return new Date(row.getValue('createdAt')).toLocaleString()
+    }
   },
   {
     accessorKey: 'updatedAt',
     header: 'Last Used',
+    cell: ({ row }) => {
+      return new Date(row.getValue('updatedAt')).toLocaleString()
+    }
   },
   {
     accessorKey: 'actions',
@@ -96,18 +102,15 @@ fetchTokens()
         <template #token-cell="{ row }">
           <TokenToggle :token="row.token" />
         </template>
-        <template #empty-state>
+        <!--        <template #empty-state>
           <div class="flex flex-col items-center justify-center gap-3 py-6">
             <span class="text-sm italic">No tokens here</span>
             <TokenCreate @create="fetchTokens" />
           </div>
-        </template>
-        <template #createdAt-cell="{ row }">
-          {{ new Date(row.createdAt).toLocaleString() }}
-        </template>
+        </template>-->
         <template #updatedAt-cell="{ row }">
           <span class="flex items-center gap-1">
-            {{ new Date(row.updatedAt).toLocaleString() }}
+            {{ row.updatedAt }}
             <UTooltip v-if="!isTokenActive(row)" text="Token seems to be inactive">
               <UIcon name="heroicons-outline:clock" class="size-4 text-red-600" />
             </UTooltip>

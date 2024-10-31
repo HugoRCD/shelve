@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import type { publicUser } from '@shelve/types'
 import { Role } from '@shelve/types'
+import type { TableColumn } from '@nuxt/ui'
 import { ConfirmModal } from '#components'
-// import type { TableColumn } from '@nuxt/ui'
 
 const { data: users, status, refresh } = useFetch<publicUser[]>('/api/admin/users', {
   method: 'GET',
@@ -12,9 +12,7 @@ const { data: users, status, refresh } = useFetch<publicUser[]>('/api/admin/user
 const search = ref('')
 const updateLoading = ref(false)
 const deleteLoading = ref(false)
-
 const filteredUsers = computed(() => {
-  // eslint-disable-next-line
   if (!search.value) return users.value?.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
   return users.value!.filter((user: publicUser) => user.username.toLowerCase().includes(search.value.toLowerCase()))
 })
@@ -47,7 +45,7 @@ async function deleteUser(id: number) {
   deleteLoading.value = false
 }
 // : TableColumn<publicUser>[]
-const columns = [
+const columns: TableColumn<publicUser>[] = [
   {
     accessorKey: 'avatar',
     header: 'Avatar',
@@ -67,10 +65,16 @@ const columns = [
   {
     accessorKey: 'createdAt',
     header: 'Created At',
+    cell: ({ row }) => {
+      return new Date(row.getValue('createdAt')).toLocaleString()
+    }
   },
   {
     accessorKey: 'updatedAt',
     header: 'Updated At',
+    cell: ({ row }) => {
+      return new Date(row.getValue('updatedAt')).toLocaleString()
+    }
   },
   {
     accessorKey: 'actions',
@@ -135,20 +139,10 @@ const items = (row: publicUser) => [
     </div>
     <UTable :data="filteredUsers" :columns :loading="status === 'pending' || updateLoading || deleteLoading">
       <template #avatar-cell="{ row }">
-        <UAvatar :src="row.avatar" :alt="row.name" size="sm" img-class="object-cover" />
+        <UAvatar :src="row.original.avatar" :alt="row.name" size="sm" img-class="object-cover" />
       </template>
       <template #role-cell="{ row }">
         <UBadge :label="row.role.toUpperCase()" :color="row.role === 'admin' ? 'primary' : 'neutral'" />
-      </template>
-      <template #createdAt-cell="{ row }">
-        <span class="text-sm text-neutral-500 dark:text-neutral-400">
-          {{ new Date(row.createdAt).toLocaleString() }}
-        </span>
-      </template>
-      <template #updatedAt-cell="{ row }">
-        <span class="text-sm text-neutral-500 dark:text-neutral-400">
-          {{ new Date(row.updatedAt).toLocaleString() }}
-        </span>
       </template>
       <template #actions-cell="{ row }">
         <UDropdownMenu :items="items(row)">
@@ -158,7 +152,3 @@ const items = (row: publicUser) => [
     </UTable>
   </div>
 </template>
-
-<style scoped>
-
-</style>
