@@ -45,7 +45,7 @@ async function deleteUser(id: number) {
   } catch (error) { /* empty */ }
   deleteLoading.value = false
 }
-// : TableColumn<publicUser>[]
+
 const columns: TableColumn<publicUser>[] = [
   {
     accessorKey: 'avatar',
@@ -84,6 +84,7 @@ const columns: TableColumn<publicUser>[] = [
 ]
 
 const modal = useModal()
+
 const items = (row: publicUser) => [
   [
     {
@@ -143,7 +144,7 @@ const items = (row: publicUser) => [
         <UAvatar :src="row.original.avatar" :alt="row.name" size="sm" img-class="object-cover" />
       </template>
       <template #role-cell="{ row }">
-        <UBadge :label="row.role.toUpperCase()" :color="row.role === 'admin' ? 'primary' : 'neutral'" />
+        <UBadge :label="row.original.role.toUpperCase()" :color="row.original.role === 'admin' ? 'primary' : 'neutral'" variant="subtle" />
       </template>
       <template #actions-cell="{ row }">
         <UDropdownMenu :items="items(row)">

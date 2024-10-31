@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import type { Token } from '@shelve/types'
-// import type { TableColumn } from '@nuxt/ui'
+import type { TableColumn } from '@nuxt/ui'
 
-// : TableColumn<Token>[]
-const columns = [
+const columns: TableColumn<Token>[] = [
   {
     accessorKey: 'name',
     header: 'Name',
@@ -55,9 +54,13 @@ const filteredTokens = computed(() => {
 
 async function fetchTokens() {
   loading.value = true
-  tokens.value = await $fetch<Token[]>('/api/tokens', {
-    method: 'GET',
-  })
+  try {
+    tokens.value = await $fetch<Token[]>('/api/tokens', {
+      method: 'GET',
+    })
+  } catch (error) {
+    toast.error('Failed to fetch tokens')
+  }
   loading.value = false
 }
 
@@ -69,8 +72,8 @@ async function deleteToken(token: Token) {
   await fetchTokens()
 }
 
-function isTokenActive(token: Token) {
-  const updatedAt = new Date(token.updatedAt)
+function isTokenActive(value: string) {
+  const updatedAt = new Date(value)
   const oneWeekAgo = new Date(Date.now() - 1000 * 60 * 60 * 24 * 7)
   return updatedAt > oneWeekAgo
 }
@@ -99,7 +102,7 @@ fetchTokens()
     <div style="--stagger: 2" data-animate class="mt-6">
       <UTable :columns :data="filteredTokens" :loading>
         <template #token-cell="{ row }">
-          <TokenToggle :token="row.token" />
+          <TokenToggle :token="row.original.token" />
         </template>
         <!--        <template #empty-state>
           <div class="flex flex-col items-center justify-center gap-3 py-6">
@@ -109,12 +112,16 @@ fetchTokens()
         </template>-->
         <template #updatedAt-cell="{ row }">
           <span class="flex items-center gap-1">
-            {{ row.updatedAt }}
-            <UTooltip v-if="!isTokenActive(row)" text="Token seems to be inactive">
-              <UIcon name="heroicons-outline:clock" class="size-4 text-red-600" />
+            {{ row.original.updatedAt }}
+            <UTooltip v-if="!isTokenActive( row.original.updatedAt)" text="Token seems to be inactive">
+              <div>
+                <UIcon name="heroicons-outline:clock" class="size-4 text-red-600" />
+              </div>
             </UTooltip>
             <UTooltip v-else text="Token is active">
-              <UIcon name="heroicons-outline:clock" class="size-4 text-neutral-500" />
+              <div>
+                <UIcon name="heroicons-outline:clock" class="size-4 text-neutral-500" />
+              </div>
             </UTooltip>
           </span>
         </template>

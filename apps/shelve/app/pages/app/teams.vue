@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Role, type Team, TeamRole } from '@shelve/types'
-// import type { TableColumn } from '@nuxt/ui'
+import type { TableColumn } from '@nuxt/ui'
 
 const { user } = useUserSession()
 
@@ -25,8 +25,8 @@ async function deleteTeamFunction(teamId: number) {
   await deleteTeam(teamId)
   deleteLoading.value = false
 }
-// : TableColumn<Team>[]
-const columns = [
+
+const columns: TableColumn<Team>[] = [
   {
     accessorKey: 'name',
     header: 'Name',
