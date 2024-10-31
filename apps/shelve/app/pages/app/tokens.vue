@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import type { Token } from '@shelve/types'
+import { Role, type Token } from '@shelve/types'
 import type { TableColumn } from '@nuxt/ui'
+import { ConfirmModal } from '#components'
 
 const columns: TableColumn<Token>[] = [
   {
@@ -37,7 +38,18 @@ const items = (row: Token) => [
       label: 'Delete',
       icon: 'lucide:trash',
       onSelect: () => {
-        deleteToken(row)
+        modal.open(ConfirmModal, {
+          title: 'Are you sure?',
+          description: `You are about to delete ${row.name} token which is currently ${isTokenActive(row.updatedAt) ? 'active' : 'inactive'}, this action cannot be undone.`,
+          danger: true,
+          onSuccess() {
+            toast.promise(deleteToken(row), {
+              loading: 'Deleting token...',
+              success: 'Token has been deleted',
+              error: 'Failed to delete token',
+            })
+          },
+        })
       },
     },
   ],
@@ -63,6 +75,8 @@ async function fetchTokens() {
   }
   loading.value = false
 }
+
+const modal = useModal()
 
 async function deleteToken(token: Token) {
   await $fetch(`/api/tokens/${token.id}`, {
@@ -126,7 +140,7 @@ fetchTokens()
           </span>
         </template>
         <template #actions-cell="{ row }">
-          <UDropdownMenu :items="items(row)">
+          <UDropdownMenu :items="items(row.original)">
             <UButton
               color="neutral"
               variant="ghost"
