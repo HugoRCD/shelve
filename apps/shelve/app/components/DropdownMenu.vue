@@ -37,18 +37,9 @@ const items = [
     <UDropdownMenu
       v-if="loggedIn"
       :items
-      :ui="{
-        background: 'backdrop-blur-3xl border dark:bg-neutral-950/95 dark:border-neutral-400/10 bg-white',
-        ring: 'ring-1 ring-neutral-100 dark:ring-neutral-800',
-        divide: 'divide-y divide-neutral-100 dark:divide-neutral-800',
-        item: {
-          active: 'bg-neutral-100 dark:bg-neutral-800',
-          disabled: 'cursor-text select-text'
-        }
-      }"
       :popper="{ placement: 'bottom-start' }"
     >
-      <UAvatar :src="user.avatar" :alt="user.username" />
+      <UAvatar :src="user.avatar" :alt="user.username" class="cursor-pointer" />
 
       <template #account="{ item }">
         <div class="text-left">

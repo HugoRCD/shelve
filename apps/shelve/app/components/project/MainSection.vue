@@ -178,29 +178,19 @@ function getProjectManager(manager: string) {
         </div>
       </div>
     </div>
-    <UModal v-model:open="showDelete">
-      <template #content>
-        <UCard class="p-2">
-          <form class="flex flex-col gap-6" @submit.prevent="deleteProjectFunction">
-            <div>
-              <h2 class="text-lg font-semibold leading-7">
-                Are you sure you want to delete this project?
-              </h2>
-              <p class="text-sm leading-6 text-neutral-500">
-                This action cannot be undone.
-              </p>
-            </div>
-            <FormGroup v-model="projectName" :label="`Type the project name '${project.name}' to confirm`" />
-            <div class="flex justify-end gap-4">
-              <UButton color="neutral" variant="ghost" @click="showDelete = false">
-                Cancel
-              </UButton>
-              <UButton color="error" type="submit" trailing :loading="deleteLoading" :disabled="projectName !== project.name">
-                Delete
-              </UButton>
-            </div>
-          </form>
-        </UCard>
+    <UModal v-model:open="showDelete" title="Are you sure you want to delete this project?" description="This action cannot be undone">
+      <template #body>
+        <form class="flex flex-col gap-6" @submit.prevent="deleteProjectFunction">
+          <FormGroup v-model="projectName" :label="`Type the project name '${project.name}' to confirm`" />
+          <div class="flex justify-end gap-4">
+            <UButton color="neutral" variant="ghost" @click="showDelete = false">
+              Cancel
+            </UButton>
+            <UButton color="error" type="submit" trailing :loading="deleteLoading" :disabled="projectName !== project.name">
+              Delete
+            </UButton>
+          </div>
+        </form>
       </template>
     </UModal>
   </div>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Role, type Team, TeamRole } from '@shelve/types'
+// import type { TableColumn } from '@nuxt/ui'
 
 const { user } = useUserSession()
 
@@ -24,20 +25,19 @@ async function deleteTeamFunction(teamId: number) {
   await deleteTeam(teamId)
   deleteLoading.value = false
 }
-
+// : TableColumn<Team>[]
 const columns = [
   {
-    key: 'name',
-    label: 'Name',
-    sortable: true,
+    accessorKey: 'name',
+    header: 'Name',
   },
   {
-    key: 'members',
-    label: 'Members',
+    accessorKey: 'members',
+    header: 'Members',
   },
   {
-    key: 'actions',
-    label: 'Actions',
+    accessorKey: 'actions',
+    header: 'Actions',
   },
 ]
 
@@ -57,7 +57,7 @@ const items = (row: Team) => [
       icon: 'lucide:trash',
       iconClass: 'text-red-500 dark:text-red-500',
       disabled: !isOwner(row),
-      click: () => {
+      onSelect: () => {
         deleteTeamFunction(row.id)
       },
     },
@@ -102,7 +102,7 @@ const items = (row: Team) => [
       />
     </div>
     <div style="--stagger: 3" data-animate class="mt-6">
-      <UTable :columns :rows="filteredTeams" :loading :items-per-page="10">
+      <UTable :columns :data="filteredTeams" :loading>
         <template #empty-state>
           <div class="flex flex-col items-center justify-center gap-3 py-6">
             <span class="text-sm italic">No teams here</span>
@@ -111,10 +111,10 @@ const items = (row: Team) => [
             </TeamCreate>
           </div>
         </template>
-        <template #members-data="{ row }">
-          <TeamMembers :team-id="row.id" :members="row.members" />
+        <template #members-cell="{ row }">
+          <TeamMembers :team-id="row.original.id" :members="row.original.members" />
         </template>
-        <template #actions-data="{ row }">
+        <template #actions-cell="{ row }">
           <UDropdownMenu :items="items(row)">
             <UButton
               color="neutral"

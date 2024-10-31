@@ -2,6 +2,7 @@
 import type { publicUser } from '@shelve/types'
 import { Role } from '@shelve/types'
 import { ConfirmModal } from '#components'
+// import type { TableColumn } from '@nuxt/ui'
 
 const { data: users, status, refresh } = useFetch<publicUser[]>('/api/admin/users', {
   method: 'GET',
@@ -45,39 +46,35 @@ async function deleteUser(id: number) {
   } catch (error) { /* empty */ }
   deleteLoading.value = false
 }
-
+// : TableColumn<publicUser>[]
 const columns = [
   {
-    key: 'avatar',
-    label: 'Avatar',
+    accessorKey: 'avatar',
+    header: 'Avatar',
   },
   {
-    key: 'username',
-    label: 'Username',
-    sortable: true,
+    accessorKey: 'username',
+    header: 'Username',
   },
   {
-    key: 'email',
-    label: 'Email',
-    sortable: true,
+    accessorKey: 'email',
+    header: 'Email',
   },
   {
-    key: 'role',
-    label: 'Role',
+    accessorKey: 'role',
+    header: 'Role',
   },
   {
-    key: 'createdAt',
-    label: 'Created At',
-    sortable: true,
+    accessorKey: 'createdAt',
+    header: 'Created At',
   },
   {
-    key: 'updatedAt',
-    label: 'Updated At',
-    sortable: true,
+    accessorKey: 'updatedAt',
+    header: 'Updated At',
   },
   {
-    key: 'actions',
-    label: 'Actions',
+    accessorKey: 'actions',
+    header: 'Actions',
   },
 ]
 
@@ -87,7 +84,7 @@ const items = (row: publicUser) => [
     {
       label: 'Set as Admin',
       icon: 'heroicons:shield-check-20-solid',
-      click: () => {
+      onSelect: () => {
         if (row.role === Role.ADMIN) {
           toast.success('User is already an admin')
           return
@@ -98,7 +95,7 @@ const items = (row: publicUser) => [
     {
       label: 'Set as User',
       icon: 'heroicons:user-circle-20-solid',
-      click: () => {
+      onSelect: () => {
         changeUserRole(row.id, Role.USER)
       },
     },
@@ -108,7 +105,7 @@ const items = (row: publicUser) => [
       label: 'Delete',
       icon: 'heroicons:trash-20-solid',
       iconClass: 'text-red-500 dark:text-red-500',
-      click: () => {
+      onSelect: () => {
         if (row.role === Role.ADMIN) {
           toast.error('Cannot delete admin')
           return
@@ -129,39 +126,31 @@ const items = (row: publicUser) => [
     },
   ],
 ]
-
-const selectedColumns = ref(columns)
-const columnsTable = computed(() => columns.filter((column) => selectedColumns.value.includes(column)))
 </script>
 
 <template>
   <div class="mt-1 flex flex-col gap-4">
     <div class="flex flex-col justify-end gap-4 sm:flex-row sm:items-center">
       <UInput v-model="search" label="Search" placeholder="Search a user" icon="heroicons:magnifying-glass-20-solid" />
-      <USelectMenu v-model="selectedColumns" :items="columns" multiple>
-        <UButton icon="heroicons:view-columns" color="neutral" class="w-full sm:w-40">
-          Columns
-        </UButton>
-      </USelectMenu>
     </div>
-    <UTable :rows="filteredUsers" :columns="columnsTable" :loading="status === 'pending' || updateLoading || deleteLoading">
-      <template #avatar-data="{ row }">
+    <UTable :data="filteredUsers" :columns :loading="status === 'pending' || updateLoading || deleteLoading">
+      <template #avatar-cell="{ row }">
         <UAvatar :src="row.avatar" :alt="row.name" size="sm" img-class="object-cover" />
       </template>
-      <template #role-data="{ row }">
+      <template #role-cell="{ row }">
         <UBadge :label="row.role.toUpperCase()" :color="row.role === 'admin' ? 'primary' : 'neutral'" />
       </template>
-      <template #createdAt-data="{ row }">
+      <template #createdAt-cell="{ row }">
         <span class="text-sm text-neutral-500 dark:text-neutral-400">
           {{ new Date(row.createdAt).toLocaleString() }}
         </span>
       </template>
-      <template #updatedAt-data="{ row }">
+      <template #updatedAt-cell="{ row }">
         <span class="text-sm text-neutral-500 dark:text-neutral-400">
           {{ new Date(row.updatedAt).toLocaleString() }}
         </span>
       </template>
-      <template #actions-data="{ row }">
+      <template #actions-cell="{ row }">
         <UDropdownMenu :items="items(row)">
           <UButton color="neutral" variant="ghost" icon="heroicons:ellipsis-horizontal-20-solid" />
         </UDropdownMenu>

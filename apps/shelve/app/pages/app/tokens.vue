@@ -1,30 +1,28 @@
 <script setup lang="ts">
 import type { Token } from '@shelve/types'
+// import type { TableColumn } from '@nuxt/ui'
 
+// : TableColumn<Token>[]
 const columns = [
   {
-    key: 'name',
-    label: 'Name',
-    sortable: true,
+    accessorKey: 'name',
+    header: 'Name',
   },
   {
-    key: 'token',
-    label: 'Token',
-    sortable: true,
+    accessorKey: 'token',
+    header: 'Token',
   },
   {
-    key: 'createdAt',
-    label: 'Created',
-    sortable: true,
+    accessorKey: 'createdAt',
+    header: 'Created',
   },
   {
-    key: 'updatedAt',
-    label: 'Last Used',
-    sortable: true,
+    accessorKey: 'updatedAt',
+    header: 'Last Used',
   },
   {
-    key: 'actions',
-    label: '',
+    accessorKey: 'actions',
+    header: 'Actions',
   },
 ]
 
@@ -34,7 +32,7 @@ const items = (row: Token) => [
       label: 'Delete',
       icon: 'lucide:trash',
       iconClass: 'text-red-500 dark:text-red-500',
-      click: () => {
+      onSelect: () => {
         deleteToken(row)
       },
     },
@@ -94,8 +92,8 @@ fetchTokens()
       </div>
     </Teleport>
     <div style="--stagger: 2" data-animate class="mt-6">
-      <UTable :columns :rows="filteredTokens" :loading :items-per-page="10">
-        <template #token-data="{ row }">
+      <UTable :columns :data="filteredTokens" :loading :items-per-page="10">
+        <template #token-cell="{ row }">
           <TokenToggle :token="row.token" />
         </template>
         <template #empty-state>
@@ -104,10 +102,10 @@ fetchTokens()
             <TokenCreate @create="fetchTokens" />
           </div>
         </template>
-        <template #createdAt-data="{ row }">
+        <template #createdAt-cell="{ row }">
           {{ new Date(row.createdAt).toLocaleString() }}
         </template>
-        <template #updatedAt-data="{ row }">
+        <template #updatedAt-cell="{ row }">
           <span class="flex items-center gap-1">
             {{ new Date(row.updatedAt).toLocaleString() }}
             <UTooltip v-if="!isTokenActive(row)" text="Token seems to be inactive">
@@ -118,14 +116,14 @@ fetchTokens()
             </UTooltip>
           </span>
         </template>
-        <template #actions-data="{ row }">
-          <UDropdown :items="items(row)">
+        <template #actions-cell="{ row }">
+          <UDropdownMenu :items="items(row)">
             <UButton
               color="neutral"
               variant="ghost"
               icon="heroicons:ellipsis-horizontal-20-solid"
             />
-          </UDropdown>
+          </UDropdownMenu>
         </template>
       </UTable>
     </div>

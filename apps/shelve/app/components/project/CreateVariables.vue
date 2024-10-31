@@ -38,17 +38,17 @@ const items = [
     {
       label: 'For production',
       icon: 'lucide:clipboard',
-      click: () => copyEnv(variables!, 'production')
+      onSelect: () => copyEnv(variables!, 'production')
     },
     {
       label: 'For preview',
       icon: 'lucide:clipboard',
-      click: () => copyEnv(variables!, 'preview')
+      onSelect: () => copyEnv(variables!, 'preview')
     },
     {
       label: 'For development',
       icon: 'lucide:clipboard',
-      click: () => copyEnv(variables!, 'development')
+      onSelect: () => copyEnv(variables!, 'development')
     }
   ],
   [
@@ -61,17 +61,17 @@ const items = [
     {
       label: 'For production',
       icon: 'lucide:download',
-      click: () => downloadEnv(variables!, 'production')
+      onSelect: () => downloadEnv(variables!, 'production')
     },
     {
       label: 'For preview',
       icon: 'lucide:download',
-      click: () => downloadEnv(variables!, 'preview')
+      onSelect: () => downloadEnv(variables!, 'preview')
     },
     {
       label: 'For development',
       icon: 'lucide:download',
-      click: () => downloadEnv(variables!, 'development')
+      onSelect: () => downloadEnv(variables!, 'development')
     }
   ],
 ]
