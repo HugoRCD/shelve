@@ -2,7 +2,9 @@
   "name": "@shelve/crypto",
   "version": "1.0.0",
   "type": "module",
-  "private": true,
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "dev": "bun run src/index.ts"
   },

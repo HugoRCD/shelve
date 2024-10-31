@@ -1,8 +1,10 @@
 {
   "name": "@shelve/types",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
-  "private": true,
+  "publishConfig": {
+    "access": "public"
+  },
   "files": [
     "index.ts"
   ],
