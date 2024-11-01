@@ -1,0 +1,26 @@
+name: Publish Any Commit
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: 📦 Install dependencies
+        run: bun install
+
+      - name: 🚀 Prepare
+        run: bun run dev:prepare
+
+      - name: 🛠️ Build
+        run: bun run build
+
+      - name: 🚀 Continuous Release
+        run: bunx pkg-pr-new publish './packages/cli'

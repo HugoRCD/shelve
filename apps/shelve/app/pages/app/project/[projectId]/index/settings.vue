@@ -50,7 +50,7 @@ async function removeTeamFromProject(teamId: number) {
 </script>
 
 <template>
-  <form class="mt-6 flex flex-col gap-4" @submit.prevent="updateCurrentProject">
+  <form class="flex flex-col gap-4" @submit.prevent="updateCurrentProject">
     <UCard :ui="{ background: 'bg-white dark:bg-neutral-950' }">
       <template #header>
         <div class="flex items-center">

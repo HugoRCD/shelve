@@ -280,7 +280,9 @@ const handlePasswordGenerated = (password: string, index: number) => {
                   />
                   <ProjectPasswordGenerator @password-generated="handlePasswordGenerated($event, variable - 1)" />
                 </div>
-                <UButton label="Remove" color="error" @click="removeVariable(variable - 1)" />
+                <UTooltip text="Remove variable" :content="{ side: 'top' }">
+                  <UButton icon="lucide:x" variant="soft" color="error" @click="removeVariable(variable - 1)" />
+                </UTooltip>
               </div>
             </div>
           </div>

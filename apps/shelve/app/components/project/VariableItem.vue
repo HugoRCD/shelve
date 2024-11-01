@@ -99,11 +99,11 @@ const showEdit = ref(false)
         </div>
         <hr class="border-1 border-black/10 dark:border-white/5">
         <div class="flex justify-between gap-4">
-          <div>
+          <div class="flex gap-2">
             <UButton color="primary" type="submit" trailing :loading="updateLoading">
               Save
             </UButton>
-            <UButton color="white" variant="soft" @click="showEdit = false">
+            <UButton color="neutral" variant="soft" @click="showEdit = false">
               Cancel
             </UButton>
           </div>
