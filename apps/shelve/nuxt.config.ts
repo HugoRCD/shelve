@@ -25,6 +25,7 @@ export default defineNuxtConfig({
   },
 
   nitro: {
+    preset: 'bun',
     prerender: {
       routes: ['/sitemap.xml']
     },

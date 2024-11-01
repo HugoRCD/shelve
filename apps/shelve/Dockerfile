@@ -32,8 +32,8 @@ FROM oven/bun:latest
 WORKDIR /app
 
 # Copy build output from the build stage
-COPY --from=build /app/apps/shelve/.output ./app/.output
+COPY --from=build /app/apps/shelve/.output .output
 
 EXPOSE 3000
 
-CMD ["bun", ".output/server/index.mjs"]
+CMD ["bun", "run", ".output/server/index.mjs"]
