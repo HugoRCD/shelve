@@ -6,14 +6,16 @@
       "dependsOn": ["^build"],
       "outputs": [
         "**/dist/**",
-        "**/.output/**"
+        "**/.output/**",
+        "**/.nuxt/**"
       ]
     },
     "generate" : {
       "dependsOn": ["^generate"],
       "outputs": [
         "**/dist/**",
-        "**/.output/**"
+        "**/.output/**",
+        "**/.nuxt/**"
       ]
     },
     "dev": {
@@ -23,7 +25,9 @@
     "dev:prepare": {
       "cache": false,
       "outputs": [
-        "**/dist/**"
+        "**/dist/**",
+        "**/.output/**",
+        "**/.nuxt/**"
       ]
     },
     "lint": {},
