@@ -1,13 +1,10 @@
 import type { publicUser, User, CreateUserInput, UpdateUserInput } from '@shelve/types'
-import { PrismaClient } from '@prisma/client'
 
 export class UserService {
 
-  private readonly prisma: PrismaClient
   private readonly storage: Storage
 
   constructor() {
-    this.prisma = usePrisma()
     this.storage = useStorage('redis')
   }
 
@@ -15,7 +12,7 @@ export class UserService {
    * Creates or updates a user
    */
   async upsertUser(createUserInput: CreateUserInput): Promise<publicUser> {
-    const foundUser = await this.prisma.user.findUnique({
+    const foundUser = await prisma.user.findUnique({
       where: {
         username: createUserInput.username,
       },
@@ -23,7 +20,7 @@ export class UserService {
 
     const newUsername = this.generateUniqueUsername(createUserInput.username, foundUser)
 
-    const user = await this.prisma.user.upsert({
+    const user = await prisma.user.upsert({
       where: {
         email: createUserInput.email,
       },
@@ -42,8 +39,8 @@ export class UserService {
   /**
    * Retrieves a user by email
    */
-  async getUserByEmail(email: string): Promise<User | null> {
-    return this.prisma.user.findUnique({
+  getUserByEmail(email: string): Promise<User | null> {
+    return prisma.user.findUnique({
       where: { email },
     })
   }
@@ -52,7 +49,7 @@ export class UserService {
    * Deletes a user by ID
    */
   async deleteUser(userId: number): Promise<void> {
-    await this.prisma.user.delete({
+    await prisma.user.delete({
       where: { id: userId },
     })
   }
@@ -67,7 +64,7 @@ export class UserService {
       await this.validateUsername(newUsername)
     }
 
-    const updatedUser = await this.prisma.user.update({
+    const updatedUser = await prisma.user.update({
       where: { id: user.id },
       data: updateUserInput,
     })
@@ -96,7 +93,7 @@ export class UserService {
    * Validates if a username is available
    */
   private async validateUsername(username: string): Promise<void> {
-    const usernameTaken = await this.prisma.user.findFirst({
+    const usernameTaken = await prisma.user.findFirst({
       where: { username },
     })
 
