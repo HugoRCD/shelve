@@ -27,17 +27,17 @@ jobs:
           bun-version: latest
 
       - name: 📦 Install
-        if: steps.check.outputs.changed == 'true'
+        if: steps.changes.outputs.src == 'true'
         run: bun install
 
       - name: 🚀 Prepare
-        if: steps.check.outputs.changed == 'true'
+        if: steps.changes.outputs.src == 'true'
         run: bun run dev:prepare
 
       - name: 🛠️ Build
-        if: steps.check.outputs.changed == 'true'
+        if: steps.changes.outputs.src == 'true'
         run: bun run build
 
       - name: 🚀 Continuous Release
-        if: steps.check.outputs.changed == 'true'
+        if: steps.changes.outputs.src == 'true'
         run: bunx pkg-pr-new publish './packages/cli'
