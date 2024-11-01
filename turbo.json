@@ -1,6 +1,6 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "globalDependencies": ["**/.env"],
+  "globalDependencies": [".env"],
   "tasks": {
     "build": {
       "outputs": [
@@ -11,8 +11,8 @@
     "generate" : {
       "dependsOn": ["^generate"],
       "outputs": [
-        "dist/**",
-        ".output/**"
+        "**/dist/**",
+        "**/.output/**"
       ]
     },
     "dev": {
