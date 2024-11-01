@@ -5,15 +5,15 @@
     "build": {
       "dependsOn": ["^build"],
       "outputs": [
-        "dist/**",
-        ".output/**"
+        "**/dist/**",
+        "**/.output/**"
       ]
     },
     "generate" : {
       "dependsOn": ["^generate"],
       "outputs": [
-        "dist/**",
-        ".output/**"
+        "**/dist/**",
+        "**/.output/**"
       ]
     },
     "dev": {
@@ -21,7 +21,10 @@
       "persistent": true
     },
     "dev:prepare": {
-      "cache": false
+      "cache": false,
+      "outputs": [
+        "**/dist/**"
+      ]
     },
     "lint": {},
     "lint:fix": {},

@@ -4,18 +4,18 @@
   "type": "module",
   "repository": "https://github.com/HugoRCD/shelve",
   "scripts": {
-    "build": "turbo build",
+    "build": "turbo run build",
     "build:app": "turbo run build --filter=@shelve/app",
     "build:cli": "turbo run build --filter=@shelve/cli",
-    "dev": "turbo dev --filter=@shelve/app",
-    "dev:app": "turbo dev --filter=@shelve/app",
-    "dev:cli": "turbo dev --filter=@shelve/cli",
+    "dev": "turbo run dev --filter=@shelve/app",
+    "dev:app": "turbo run dev --filter=@shelve/app",
+    "dev:cli": "turbo run dev --filter=@shelve/cli",
     "dev:prepare": "turbo run dev:prepare",
     "generate": "turbo run generate",
-    "lint": "turbo lint",
-    "lint:fix": "turbo lint:fix",
-    "test": "turbo test",
-    "typecheck": "turbo typecheck"
+    "lint": "turbo run lint",
+    "lint:fix": "turbo run lint:fix",
+    "test": "turbo run test",
+    "typecheck": "turbo run typecheck"
   },
   "devDependencies": {
     "@hrcd/eslint-config": "edge",
