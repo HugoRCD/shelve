@@ -4,10 +4,19 @@ FROM oven/bun:latest AS build
 WORKDIR /app
 
 # Copy necessary files
+# Copy root package.json and lockfile
+COPY package.json ./
+COPY bun.lockb ./
+
+# Copy the api package.json
+COPY apps/shelve/package.json ./apps/shelve/package.json
+
+# Copy the rest of the application
 COPY . .
 
 # Install dependencies
 RUN bun install
+
 
 # Build the application
 RUN bun run build
