@@ -2,18 +2,21 @@
   "name": "@shelve/crypto",
   "version": "1.0.0",
   "type": "module",
-  "private": true,
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
-    "dev": "bun run src/index.ts"
+    "dev": "bun run src/index.ts",
+    "build": "unbuild",
+    "release": "bun run build && npm publish"
   },
-  "files": [
-    "index.ts"
-  ],
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./dist/index.mjs"
   },
-  "main": "index.ts",
-  "types": "index.ts",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "./dist"
+  ],
   "devDependencies": {
     "@types/crypto-js": "^4.2.2",
     "typescript": "latest"
