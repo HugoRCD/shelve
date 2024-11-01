@@ -56,13 +56,11 @@ watch(() => route.path, handleProjectNavigation, { immediate: true })
 
     <div class="flex-1" />
     <div class="flex flex-row justify-between">
-      <UTooltip text="Change theme" placement="top">
+      <UTooltip text="Change theme" :content="{ side: 'top' }">
         <SettingThemeToggle size="size-5" />
       </UTooltip>
-      <UTooltip text="Need help?" placement="top">
-        <NuxtLink to="https://github.com/HugoRCD/shelve/issues">
-          <UIcon name="lucide:life-buoy" size="size-5" />
-        </NuxtLink>
+      <UTooltip text="Need help?" :content="{ side: 'top' }">
+        <UButton color="neutral" variant="ghost" icon="lucide:life-buoy" to="https://github.com/HugoRCD/shelve/issues" />
       </UTooltip>
     </div>
   </div>

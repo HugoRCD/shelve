@@ -28,6 +28,7 @@ export function useTeams() {
         },
       })
       teams.value.push(response)
+      toast.success('Team created')
     } catch (error) {
       toast.error('Failed to create team')
     }
@@ -88,10 +89,8 @@ export function useTeams() {
       await $fetch(`/api/teams/${teamId}`, {
         method: 'DELETE',
       })
-      toast.success('Team deleted')
     } catch (error) {
       if (error.statusCode === 401) return toast.error('You need to be an admin to delete a team')
-      toast.error('Failed to delete team')
     }
   }
 

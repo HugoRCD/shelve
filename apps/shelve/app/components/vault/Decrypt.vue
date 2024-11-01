@@ -34,20 +34,20 @@ async function decryptEnvFile() {
   <form class="mx-auto mt-8 flex w-full max-w-2xl flex-col justify-center gap-2 px-5 sm:px-0" @submit.prevent="decryptEnvFile">
     <template v-if="!value">
       <div class="relative flex w-full flex-col gap-2">
-        <UFormGroup label="Share ID">
+        <UFormField label="Share ID">
           <UInput
             v-model="localId"
             placeholder="o75adqf..."
             required
           />
-        </UFormGroup>
+        </UFormField>
       </div>
       <div class="mt-4">
         <UButton
           block
           label="Decrypt"
           type="submit"
-          color="gray"
+          color="neutral"
           :loading
         />
       </div>
@@ -65,10 +65,10 @@ async function decryptEnvFile() {
       </div>
     </template>
     <div class="mt-4 flex w-full items-center justify-between gap-2">
-      <span v-if="timeLeft" class="text-sm font-semibold text-gray-500/80">
+      <span v-if="timeLeft" class="text-sm font-semibold text-neutral-500/80">
         Time left: {{ timeLeft }}
       </span>
-      <span v-if="readsLeft" class="text-sm font-semibold text-gray-500/80">
+      <span v-if="readsLeft" class="text-sm font-semibold text-neutral-500/80">
         Reads left: {{ readsLeft }}
       </span>
     </div>

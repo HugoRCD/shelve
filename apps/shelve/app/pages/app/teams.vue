@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { Role, type Team, TeamRole } from '@shelve/types'
+import type { TableColumn } from '@nuxt/ui'
+import { ConfirmModal } from '#components'
 
 const { user } = useUserSession()
 
@@ -11,38 +13,35 @@ const {
   fetchTeams,
   deleteTeam,
 } = useTeams()
-fetchTeams()
+
+if (!teams.value)
+  await fetchTeams()
 
 const filteredTeams = computed(() => {
   if (!search.value) return teams.value
   return teams.value!.filter((team: Team) => team.name.toLowerCase().includes(search.value.toLowerCase()))
 })
 
-const deleteLoading = ref(false)
-async function deleteTeamFunction(teamId: number) {
-  deleteLoading.value = true
-  await deleteTeam(teamId)
-  deleteLoading.value = false
-}
-
-const columns = [
+const columns: TableColumn<Team>[] = [
   {
-    key: 'name',
-    label: 'Name',
-    sortable: true,
+    accessorKey: 'name',
+    header: 'Name',
   },
   {
-    key: 'members',
-    label: 'Members',
+    accessorKey: 'members',
+    header: 'Members',
   },
   {
-    key: 'actions',
-    label: 'Actions',
+    accessorKey: 'actions',
+    header: 'Actions',
   },
 ]
 
+const currentTeamMemberUserId = computed(() => teamMembers.value.find(member => member.userId === user.value?.id)?.userId)
+
 const isOwner = (team: Team) => team.members.find(member => member.userId === user.value?.id)?.role === TeamRole.OWNER || user.value?.role === Role.ADMIN
 
+const modal = useModal()
 const items = (row: Team) => [
   [
     {
@@ -57,8 +56,19 @@ const items = (row: Team) => [
       icon: 'lucide:trash',
       iconClass: 'text-red-500 dark:text-red-500',
       disabled: !isOwner(row),
-      click: () => {
-        deleteTeamFunction(row.id)
+      onSelect: () => {
+        modal.open(ConfirmModal, {
+          title: 'Are you sure?',
+          description: `You are about to delete ${row.name}, this action cannot be undone.`,
+          danger: true,
+          onSuccess() {
+            toast.promise(deleteTeam(row.id), {
+              loading: 'Deleting team...',
+              success: 'Team has been deleted',
+              error: 'Failed to delete team',
+            })
+          },
+        })
       },
     },
   ],
@@ -72,7 +82,7 @@ const items = (row: Team) => [
         <h2 class="text-base font-semibold leading-7">
           Teams
         </h2>
-        <p class="text-sm leading-6 text-gray-500">
+        <p class="text-sm leading-6 text-neutral-500">
           Manage your teams
         </p>
       </div>
@@ -83,6 +93,7 @@ const items = (row: Team) => [
         <UInput
           v-model="search"
           label="Search"
+          size="xs"
           placeholder="Search a team"
           icon="heroicons:magnifying-glass-20-solid"
         />
@@ -102,27 +113,27 @@ const items = (row: Team) => [
       />
     </div>
     <div style="--stagger: 3" data-animate class="mt-6">
-      <UTable :columns :rows="filteredTeams" :loading :items-per-page="10">
-        <template #empty-state>
+      <UTable :columns :data="filteredTeams" :loading>
+        <!--        <template #empty-state>
           <div class="flex flex-col items-center justify-center gap-3 py-6">
             <span class="text-sm italic">No teams here</span>
             <TeamCreate>
               Create a team
             </TeamCreate>
           </div>
+        </template>-->
+        <template #members-cell="{ row }">
+          <TeamMembers :team-id="row.original.id" :members="row.original.members" />
         </template>
-        <template #members-data="{ row }">
-          <TeamMembers :team-id="row.id" :members="row.members" />
-        </template>
-        <template #actions-data="{ row }">
-          <UDropdown :items="items(row)">
+        <template #actions-cell="{ row }">
+          <UDropdownMenu :items="items(row.original)">
             <UButton
-              color="gray"
+              color="neutral"
               variant="ghost"
               icon="heroicons:ellipsis-horizontal-20-solid"
-              :disabled="!isOwner(row)"
+              :disabled="!isOwner(row.original)"
             />
-          </UDropdown>
+          </UDropdownMenu>
         </template>
       </UTable>
     </div>

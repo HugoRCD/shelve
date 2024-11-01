@@ -1,8 +1,12 @@
 import type { Variable, VariablesCreateInput } from '@shelve/types'
 
 export function useVariables(refresh: () => Promise<void>, projectId: string) {
-  const selectedEnvironment = ref(['production'])
-  const environment = computed(() => selectedEnvironment.value.join('|'))
+  const selectedEnvironment = ref({
+    production: true,
+    preview: false,
+    development: false,
+  })
+  const environment = computed(() => Object.keys(selectedEnvironment.value).filter(key => selectedEnvironment.value[key]).join('|'))
   const autoUppercase = useCookie<boolean>('autoUppercase', {
     watch: true,
     default: () => true,
@@ -49,7 +53,7 @@ export function useVariables(refresh: () => Promise<void>, projectId: string) {
     variablesInput.value.variables.splice(index, 1)
   }
 
-  watch(selectedEnvironment, () => {
+  watch(environment, () => {
     variablesInput.value.variables.forEach((variable) => {
       variable.environment = environment.value
     })

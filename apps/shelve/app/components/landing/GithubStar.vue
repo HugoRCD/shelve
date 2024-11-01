@@ -21,7 +21,7 @@ await fetchRepo()
 
 <template>
   <NuxtLink
-    class="flex items-center gap-2 text-gray-200"
+    class="flex items-center gap-2 text-neutral-200"
     to="https://github.com/HugoRCD/shelve"
   >
     <UIcon name="custom:github" class="fill-white text-xl" />

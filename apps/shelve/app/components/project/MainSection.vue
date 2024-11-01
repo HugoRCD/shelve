@@ -2,15 +2,12 @@
 import type { Project } from '@shelve/types'
 import type { PropType, Ref } from 'vue'
 
-const props = defineProps({
-  project: {
-    type: Object as PropType<Project>,
-  },
-  loading: {
-    type: Boolean,
-    default: false,
-  },
-})
+type ProjectProps = {
+  project: Project
+  loading: boolean
+}
+
+const props = defineProps<ProjectProps>()
 
 const showEdit = ref(false)
 const showDelete = ref(false)
@@ -51,12 +48,12 @@ const items = [
     {
       label: 'Edit project',
       icon: 'lucide:pen-line',
-      click: () => showEdit.value = !showEdit.value
+      onSelect: () => showEdit.value = !showEdit.value
     },
     {
       label: 'Export project data',
       icon: 'lucide:download',
-      click: () => {
+      onSelect: () => {
         const sanitizedProject = JSON.parse(JSON.stringify(project.value))
         delete sanitizedProject.id
         delete sanitizedProject.ownerId
@@ -74,7 +71,7 @@ const items = [
       label: 'Delete project',
       icon: 'lucide:trash',
       iconClass: 'text-red-500 dark:text-red-500',
-      click: () => showDelete.value = !showDelete.value
+      onSelect: () => showDelete.value = !showDelete.value
     }
   ]
 ]
@@ -108,12 +105,12 @@ function getProjectManager(manager: string) {
             <h2 class="text-base font-semibold leading-7">
               {{ project.name }}
             </h2>
-            <p class="text-sm leading-6 text-gray-500">
+            <p class="text-sm leading-6 text-neutral-500">
               {{ project.description }}
             </p>
           </div>
-          <UModal v-model="showEdit">
-            <UCard class="p-2">
+          <UModal v-model:open="showEdit" title="Edit project" description="Update your project settings">
+            <template #body>
               <form class="flex flex-col gap-4" @submit.prevent="updateCurrentProject">
                 <FormGroup v-model="project.name" label="Name" />
                 <FormGroup v-model="project.description" label="Description" type="textarea" />
@@ -122,7 +119,7 @@ function getProjectManager(manager: string) {
                   <FormGroup v-model="project.avatar" label="Avatar" class="w-full" />
                 </div>
                 <div class="flex justify-end gap-4">
-                  <UButton color="gray" variant="ghost" @click="showEdit = false">
+                  <UButton color="neutral" variant="ghost" @click="showEdit = false">
                     Cancel
                   </UButton>
                   <UButton color="primary" type="submit" trailing :loading="updateLoading">
@@ -130,33 +127,39 @@ function getProjectManager(manager: string) {
                   </UButton>
                 </div>
               </form>
-            </UCard>
+            </template>
           </UModal>
         </div>
-        <UDropdown v-if="project.ownerId === user?.id" :items>
-          <UButton color="gray" variant="ghost" icon="heroicons:ellipsis-horizontal-20-solid" />
-        </UDropdown>
+        <UDropdownMenu v-if="project.ownerId === user?.id" :items>
+          <UButton color="neutral" variant="ghost" icon="heroicons:ellipsis-horizontal-20-solid" />
+        </UDropdownMenu>
       </div>
       <div v-if="project.projectManager || project.repository || project.homepage" class="mt-6 flex flex-wrap gap-4 sm:flex-row sm:items-center">
         <NuxtLink v-if="project.projectManager" target="_blank" :to="project.projectManager">
           <UButton
-            color="gray"
+            color="neutral"
+            variant="soft"
+            size="xs"
             :icon="getProjectManager(project.projectManager)?.icon"
             :label="`Open ${getProjectManager(project.projectManager)?.label}`"
-            :ui="{ icon: { base: 'dark:fill-white fill-black' } }"
+            :ui="{ leadingIcon: 'dark:fill-white fill-black' }"
           />
         </NuxtLink>
         <NuxtLink v-if="project.repository" target="_blank" :to="project.repository">
           <UButton
-            color="gray"
+            color="neutral"
+            variant="soft"
+            size="xs"
             icon="custom:github"
             label="Open repository"
-            :ui="{ icon: { base: 'dark:fill-white fill-black' } }"
+            :ui="{ leadingIcon: 'dark:fill-white fill-black' }"
           />
         </NuxtLink>
         <NuxtLink v-if="project.homepage" target="_blank" :to="project.homepage">
           <UButton
-            color="gray"
+            color="neutral"
+            variant="soft"
+            size="xs"
             icon="heroicons:home"
             label="Open homepage"
           />
@@ -175,28 +178,20 @@ function getProjectManager(manager: string) {
         </div>
       </div>
     </div>
-    <UModal v-model="showDelete">
-      <UCard class="p-2">
+    <UModal v-model:open="showDelete" title="Are you sure you want to delete this project?" description="This action cannot be undone">
+      <template #body>
         <form class="flex flex-col gap-6" @submit.prevent="deleteProjectFunction">
-          <div>
-            <h2 class="text-lg font-semibold leading-7">
-              Are you sure you want to delete this project?
-            </h2>
-            <p class="text-sm leading-6 text-gray-500">
-              This action cannot be undone.
-            </p>
-          </div>
           <FormGroup v-model="projectName" :label="`Type the project name '${project.name}' to confirm`" />
           <div class="flex justify-end gap-4">
-            <UButton color="gray" variant="ghost" @click="showDelete = false">
+            <UButton color="neutral" variant="ghost" @click="showDelete = false">
               Cancel
             </UButton>
-            <UButton color="red" type="submit" trailing :loading="deleteLoading" :disabled="projectName !== project.name">
+            <UButton color="error" type="submit" trailing :loading="deleteLoading" :disabled="projectName !== project.name">
               Delete
             </UButton>
           </div>
         </form>
-      </UCard>
+      </template>
     </UModal>
   </div>
 </template>

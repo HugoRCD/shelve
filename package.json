@@ -10,6 +10,7 @@
     "dev": "turbo dev --filter=@shelve/app",
     "dev:app": "turbo dev --filter=@shelve/app",
     "dev:cli": "turbo dev --filter=@shelve/cli",
+    "dev:prepare": "turbo run dev:prepare",
     "generate": "turbo run generate",
     "lint": "turbo lint",
     "lint:fix": "turbo lint:fix",
@@ -17,11 +18,11 @@
     "typecheck": "turbo typecheck"
   },
   "devDependencies": {
-    "@hrcd/eslint-config": "^2.1.1",
+    "@hrcd/eslint-config": "edge",
     "automd": "^0.3.12",
     "eslint": "^9.13.0",
     "turbo": "^2.2.3",
-    "typescript": "5.6.3"
+    "typescript": "^5.6.3"
   },
   "engines": {
     "node": ">=20.18.0"

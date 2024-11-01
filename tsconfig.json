@@ -1,0 +1,3 @@
+{
+  "extends": "./apps/shelve/tsconfig.json"
+}

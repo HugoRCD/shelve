@@ -70,7 +70,7 @@ function importProject() {
 </script>
 
 <template>
-  <div>
+  <USlideover v-model:open="isOpen" title="Create a new project" description="Its time to create a new project, let's get started!">
     <UButton
       size="xs"
       icon="heroicons:plus-20-solid"
@@ -79,127 +79,113 @@ function importProject() {
       @click="isOpen = true"
     />
 
-    <USlideover v-model="isOpen">
-      <form class="flex flex-1 overflow-y-auto" @submit.prevent="createProjectFunction">
-        <UCard class="flex flex-1 flex-col" :ui="{ body: { base: 'flex-1' }, ring: '', divide: 'divide-y divide-gray-100 dark:divide-gray-800' }">
-          <template #header>
-            <h3 class="text-lg font-semibold">
-              Create a new project
-            </h3>
-            <p class="text-sm font-normal text-gray-500">
-              Its time to create a new project, let's get started!
-            </p>
-          </template>
-
-          <div class="flex flex-col gap-4 p-2">
-            <FormGroup v-model="projectCreateInput.name" required label="Project name" />
-            <FormGroup v-model="projectCreateInput.description" label="Description" type="textarea" />
-            <UDivider class="my-4" />
-            <div class="flex flex-col gap-4">
-              <div class="flex items-center justify-between">
-                <div>
-                  <h3 class="font-semibold">
-                    Team Members
+    <template #body>
+      <form id="createForm" class="flex flex-col gap-4" @submit.prevent="createProjectFunction">
+        <FormGroup v-model="projectCreateInput.name" autofocus required label="Project name" />
+        <FormGroup v-model="projectCreateInput.description" label="Description" type="textarea" />
+        <UDivider class="my-4" />
+        <div class="flex flex-col gap-4">
+          <div class="flex items-center justify-between">
+            <div>
+              <h3 class="font-semibold">
+                Team Members
+              </h3>
+              <p class="text-pretty text-xs text-neutral-500 dark:text-neutral-400">
+                Add team members to your project
+              </p>
+            </div>
+            <TeamCreate variant="soft">
+              Create a team
+            </TeamCreate>
+          </div>
+          <div>
+            <USkeleton v-if="loading" class="h-8" />
+            <div v-else>
+              <div v-if="projectCreateInput.team" class="flex items-center justify-between">
+                <div class="flex flex-col gap-2">
+                  <h3 class="text-xs font-semibold text-neutral-600 dark:text-neutral-400">
+                    {{ projectCreateInput.team.name }}
                   </h3>
+                  <TeamMembers :team-id="projectCreateInput.team.id" :members="projectCreateInput.team.members" display />
+                </div>
+                <UButton
+                  variant="soft"
+                  color="error"
+                  size="xs"
+                  label="Unlink"
+                  icon="lucide:unlink"
+                  @click="removeTeam"
+                />
+              </div>
+              <div v-else class="flex flex-col gap-4">
+                <div v-if="teams.length !== 0" class="flex flex-col gap-4">
+                  <div v-for="team in teams" :key="team.id" class="divide-y divide-neutral-100 dark:divide-neutral-800">
+                    <ProjectTeamAssign :team :project-id="0" is-emit @add-team="addTeam" />
+                  </div>
+                </div>
+                <div v-else class="flex flex-col items-center justify-center gap-2">
                   <p class="text-pretty text-xs text-neutral-500 dark:text-neutral-400">
-                    Add team members to your project
+                    You don't have any teams yet
                   </p>
+                  <TeamCreate>Create one</TeamCreate>
                 </div>
-                <TeamCreate variant="soft">
-                  Create a team
-                </TeamCreate>
-              </div>
-              <div>
-                <USkeleton v-if="loading" class="h-8" />
-                <div v-else>
-                  <div v-if="projectCreateInput.team" class="flex items-center justify-between">
-                    <div class="flex flex-col gap-2">
-                      <h3 class="text-xs font-semibold text-neutral-600 dark:text-neutral-400">
-                        {{ projectCreateInput.team.name }}
-                      </h3>
-                      <TeamMembers :team-id="projectCreateInput.team.id" :members="projectCreateInput.team.members" display />
-                    </div>
-                    <UButton
-                      variant="soft"
-                      color="red"
-                      class="text-xs"
-                      label="Unlink"
-                      icon=":lucide-unlink"
-                      @click="removeTeam"
-                    />
-                  </div>
-                  <div v-else class="flex flex-col gap-4">
-                    <div v-if="teams.length !== 0" class="flex flex-col gap-4">
-                      <div v-for="team in teams" :key="team.id" class="divide-y divide-gray-100 dark:divide-gray-800">
-                        <ProjectTeamAssign :team :project-id="0" is-emit @add-team="addTeam" />
-                      </div>
-                    </div>
-                    <div v-else class="flex flex-col items-center justify-center gap-2">
-                      <p class="text-pretty text-xs text-neutral-500 dark:text-neutral-400">
-                        You don't have any teams yet
-                      </p>
-                      <TeamCreate>Create one</TeamCreate>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <UDivider class="my-4" />
-            <div class="flex flex-col gap-4">
-              <div>
-                <h3 class="font-semibold">
-                  Quick Links
-                </h3>
-                <p class="text-pretty text-xs text-neutral-500 dark:text-neutral-400">
-                  Add quick links to your project repository, homepage, etc...
-                </p>
-              </div>
-              <div>
-                <FormGroup v-model="projectCreateInput.repository" label="Repository" />
-              </div>
-              <div>
-                <FormGroup v-model="projectCreateInput.projectManager" label="Project Manager" />
-              </div>
-              <div>
-                <FormGroup v-model="projectCreateInput.homepage" label="Homepage" />
-              </div>
-            </div>
-            <UDivider class="my-4" />
-            <div class="flex flex-col gap-4">
-              <div>
-                <h3 class="font-semibold">
-                  Avatar
-                </h3>
-                <p class="text-pretty text-xs text-neutral-500 dark:text-neutral-400">
-                  Add an avatar to your project
-                </p>
-              </div>
-              <div class="flex flex-col items-center justify-center gap-4">
-                <FormGroup v-model="projectCreateInput.avatar" label="Project avatar" class="w-full" />
-                <UAvatar :src="projectCreateInput.avatar" size="3xl" :alt="projectCreateInput.name" />
               </div>
             </div>
           </div>
-
-          <template #footer>
-            <div class="flex justify-between">
-              <div>
-                <UButton color="gray" variant="ghost" @click="importProject">
-                  Import project from JSON
-                </UButton>
-              </div>
-              <div class="flex gap-4">
-                <UButton color="gray" variant="ghost" @click="isOpen = false">
-                  Cancel
-                </UButton>
-                <UButton color="primary" type="submit" trailing :loading="createLoading">
-                  Save
-                </UButton>
-              </div>
-            </div>
-          </template>
-        </UCard>
+        </div>
+        <UDivider class="my-4" />
+        <div class="flex flex-col gap-4">
+          <div>
+            <h3 class="font-semibold">
+              Quick Links
+            </h3>
+            <p class="text-pretty text-xs text-neutral-500 dark:text-neutral-400">
+              Add quick links to your project repository, homepage, etc...
+            </p>
+          </div>
+          <div>
+            <FormGroup v-model="projectCreateInput.repository" label="Repository" />
+          </div>
+          <div>
+            <FormGroup v-model="projectCreateInput.projectManager" label="Project Manager" />
+          </div>
+          <div>
+            <FormGroup v-model="projectCreateInput.homepage" label="Homepage" />
+          </div>
+        </div>
+        <UDivider class="my-4" />
+        <div class="flex flex-col gap-4">
+          <div>
+            <h3 class="font-semibold">
+              Avatar
+            </h3>
+            <p class="text-pretty text-xs text-neutral-500 dark:text-neutral-400">
+              Add an avatar to your project
+            </p>
+          </div>
+          <div class="flex flex-col items-center justify-center gap-4">
+            <FormGroup v-model="projectCreateInput.avatar" label="Project avatar" class="w-full" />
+            <UAvatar :src="projectCreateInput.avatar" size="3xl" :alt="projectCreateInput.name" />
+          </div>
+        </div>
       </form>
-    </USlideover>
-  </div>
+    </template>
+    <template #footer>
+      <div class="flex w-full justify-between">
+        <div>
+          <UButton color="neutral" variant="ghost" @click="importProject">
+            Import project from JSON
+          </UButton>
+        </div>
+        <div class="flex gap-4">
+          <UButton color="neutral" variant="ghost" @click="isOpen = false">
+            Cancel
+          </UButton>
+          <UButton color="primary" type="submit" trailing :loading="createLoading" form="createForm">
+            Create
+          </UButton>
+        </div>
+      </div>
+    </template>
+  </USlideover>
 </template>

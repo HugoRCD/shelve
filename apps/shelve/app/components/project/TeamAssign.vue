@@ -51,8 +51,7 @@ async function addTeamToProject(teamId: number) {
     </div>
     <div class="flex gap-4">
       <UButton
-        color="primary"
-        class="text-xs"
+        size="xs"
         :loading
         label="Link"
         icon="lucide:link"

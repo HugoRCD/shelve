@@ -33,8 +33,14 @@ const {
 
 const emit = defineEmits(['toggleSelected'])
 const localVariable = variable
-const selectedEnvironment = ref(variable.environment.split('|'))
-const environment = computed(() => selectedEnvironment.value.join('|'))
+
+const selectedEnvironment = ref({
+  production: variable.environment.includes('production'),
+  preview: variable.environment.includes('preview'),
+  development: variable.environment.includes('development'),
+})
+
+const environment = computed(() => Object.keys(selectedEnvironment.value).filter(key => selectedEnvironment.value[key]).join('|'))
 
 const variableToUpdate = computed(() => {
   return {
@@ -47,7 +53,7 @@ const showEdit = ref(false)
 </script>
 
 <template>
-  <UCard :ui="{ background: isSelected && showEdit ? 'ring ring-primary' : isSelected && !showEdit ? 'bg-gray-100 dark:bg-gray-800' : '' }">
+  <UCard :ui="{ root: isSelected && !showEdit ? 'bg-neutral-100 dark:bg-neutral-800' : '' }">
     <div class="flex w-full items-center justify-between">
       <div class="flex w-full flex-col gap-1" :class="{ 'cursor-pointer': !showEdit }" @click="showEdit ? null : emit('toggleSelected')">
         <h3 class="flex items-center gap-1 text-sm font-semibold sm:text-base">
@@ -56,18 +62,18 @@ const showEdit = ref(false)
           </span>
           <span class="hidden lg:block">{{ variable.key }}</span>
           <UTooltip text="Copy variable to clipboard">
-            <UButton color="gray" variant="ghost" icon="lucide:clipboard-plus" @click.stop="copyToClipboard(`${localVariable.key}=${localVariable.value}`, 'Variable copied to clipboard')" />
+            <UButton color="neutral" variant="ghost" icon="lucide:clipboard-plus" @click.stop="copyToClipboard(`${localVariable.key}=${localVariable.value}`, 'Variable copied to clipboard')" />
           </UTooltip>
           <UTooltip text="Show variable">
-            <UButton color="gray" variant="ghost" icon="lucide:eye" @click.stop="showEdit = !showEdit" />
+            <UButton color="neutral" variant="ghost" icon="lucide:eye" @click.stop="showEdit = !showEdit" />
           </UTooltip>
         </h3>
-        <span class="text-xs font-normal text-gray-500">
+        <span class="text-xs font-normal text-neutral-500">
           {{ capitalize(variable.environment.split("|").join(", ")) }}
         </span>
       </div>
       <div class="flex items-center gap-2">
-        <p class="hidden text-right text-xs font-normal text-gray-500 md:block">
+        <p class="hidden text-right text-xs font-normal text-neutral-500 md:block">
           Last updated: {{ new Date(variable.updatedAt).toLocaleDateString() }}
         </p>
       </div>
@@ -85,23 +91,23 @@ const showEdit = ref(false)
               Environments
             </h4>
             <div class="flex flex-col gap-4">
-              <UCheckbox v-model="selectedEnvironment" value="production" label="Production" />
-              <UCheckbox v-model="selectedEnvironment" value="preview" label="Staging" />
-              <UCheckbox v-model="selectedEnvironment" value="development" label="Development" />
+              <UCheckbox v-model="selectedEnvironment.production" name="production" label="Production" />
+              <UCheckbox v-model="selectedEnvironment.preview" name="preview" label="Staging" />
+              <UCheckbox v-model="selectedEnvironment.development" name="development" label="Development" />
             </div>
           </div>
         </div>
         <hr class="border-1 border-black/10 dark:border-white/5">
         <div class="flex justify-between gap-4">
-          <div>
+          <div class="flex gap-2">
             <UButton color="primary" type="submit" trailing :loading="updateLoading">
               Save
             </UButton>
-            <UButton color="white" variant="soft" @click="showEdit = false">
+            <UButton color="neutral" variant="soft" @click="showEdit = false">
               Cancel
             </UButton>
           </div>
-          <UButton color="red" variant="soft" :loading="deleteLoading" @click="deleteVariable(variable.id, environment)">
+          <UButton color="error" variant="soft" :loading="deleteLoading" @click="deleteVariable(variable.id, environment)">
             Delete
           </UButton>
         </div>

@@ -14,6 +14,10 @@ defineProps({
     type: String as PropType<'text' | 'email' | 'password' | 'textarea'>,
     default: 'text',
   },
+  autofocus: {
+    type: Boolean,
+    default: false,
+  },
   placeholder: {
     type: String,
     required: false
@@ -32,18 +36,28 @@ const model = defineModel({ type: String, required: true })
 </script>
 
 <template>
-  <UFormGroup :label>
+  <UFormField class="w-full" :label>
     <UTextarea
       v-if="type === 'textarea'"
       v-model="model"
       autoresize
+      :autofocus
       :placeholder
       :disabled
       :type
       :rows
+      class="w-full"
     />
-    <UInput v-else v-model="model" :placeholder :disabled :type />
-  </UFormGroup>
+    <UInput
+      v-else
+      v-model="model"
+      class="w-full"
+      :placeholder
+      :autofocus
+      :disabled
+      :type
+    />
+  </UFormField>
 </template>
 
 <style scoped>

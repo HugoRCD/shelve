@@ -20,17 +20,19 @@ const { navItem, active = false } = defineProps<NavItemProps>()
 </template>
 
 <style scoped>
+@import "tailwindcss";
+
 .nav-item {
   @apply cursor-pointer rounded-lg px-3 py-1.5 flex flex-row items-center gap-2 transition-transform duration-200 ease-in-out;
 }
 
 .nav-item:hover {
-  @apply bg-neutral-100 dark:bg-neutral-800;
+  @apply bg-neutral-100 text-white dark:bg-neutral-800;
   @apply border-neutral-200 dark:border-neutral-700;
 }
 
 .nav-item.active {
-  @apply bg-neutral-100 dark:bg-neutral-800;
+  @apply bg-neutral-100 text-white dark:bg-neutral-800;
   @apply border-neutral-200 dark:border-neutral-700;
   @apply shadow-sm;
 }
