@@ -1,6 +1,12 @@
 # Stage 1: Build Stage
 FROM oven/bun:latest AS build
 
+ARG TURBO_TEAM
+ENV TURBO_TEAM=$TURBO_TEAM
+
+ARG TURBO_TOKEN
+ENV TURBO_TOKEN=$TURBO_TOKEN
+
 WORKDIR /app
 
 # Copy necessary files
@@ -26,7 +32,8 @@ FROM oven/bun:latest
 WORKDIR /app
 
 # Copy build output from the build stage
-COPY --from=build /app/.output /app/.output
+COPY --from=build /app/apps/shelve/.output ./app/.output
 
-# Set the entrypoint
-ENTRYPOINT ["bun", "run", "start"]
+EXPOSE 3000
+
+CMD ["bun", ".output/server/index.mjs"]

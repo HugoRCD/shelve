@@ -63,28 +63,6 @@ Commands:
   help [command]      display help for command
 ```
 
-## Docker
-
-### Building the Docker Image
-
-To build the Docker image for the Shelve application, run the following command:
-
-```sh
-npm run docker:build
-```
-
-This command will create a Docker image named `shelve:latest`.
-
-### Starting the Application with Docker Compose
-
-To start the Shelve application using Docker Compose, run the following command:
-
-```sh
-npm run docker:up
-```
-
-This command will start the application and make it accessible at `http://localhost:3000`.
-
 <!-- automd:fetch url="gh:hugorcd/markdown/main/src/local_development.md" -->
 
 <details>
