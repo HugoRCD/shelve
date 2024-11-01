@@ -1,5 +1,5 @@
-import { H3Event } from 'h3'
-import { updateProject } from '~~/server/app/projectService'
+import type { H3Event } from 'h3'
+import { updateProject } from '~~/server/services/project.service'
 
 export default eventHandler(async (event: H3Event) => {
   const { user } = event.context

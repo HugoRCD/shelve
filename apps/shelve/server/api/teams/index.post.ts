@@ -1,6 +1,6 @@
-import { H3Event } from 'h3'
+import type { H3Event } from 'h3'
 import type { CreateTeamInput } from '@shelve/types'
-import { createTeam } from '~~/server/app/teamsService'
+import { createTeam } from '~~/server/services/teams.service'
 
 export default eventHandler(async (event: H3Event) => {
   const { user } = event.context

@@ -1,5 +1,5 @@
-import { H3Event } from 'h3'
-import { removeMember } from '~~/server/app/teamsService'
+import type { H3Event } from 'h3'
+import { removeMember } from '~~/server/services/teams.service'
 
 export default eventHandler(async (event: H3Event) => {
   const { user } = event.context

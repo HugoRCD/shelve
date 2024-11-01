@@ -1,5 +1,5 @@
-import { H3Event } from 'h3'
-import { deleteVariables } from '~~/server/app/variableService'
+import type { H3Event } from 'h3'
+import { deleteVariables } from '~~/server/services/variable.service'
 
 export default defineEventHandler(async (event: H3Event) => {
   const { user } = event.context

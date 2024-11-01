@@ -1,5 +1,5 @@
-import { H3Event } from 'h3'
-import { createToken } from '~~/server/app/tokenService'
+import type { H3Event } from 'h3'
+import { createToken } from '~~/server/services/token.service'
 
 export default defineEventHandler(async (event: H3Event) => {
   const { user } = event.context

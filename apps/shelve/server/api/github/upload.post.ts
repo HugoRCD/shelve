@@ -1,5 +1,5 @@
-import { H3Event } from 'h3'
-import { uploadFile } from '~~/server/app/githubService'
+import type { H3Event } from 'h3'
+import { uploadFile } from '~~/server/services/github.service'
 
 export default defineEventHandler(async (event: H3Event) => {
   const formData = await readMultipartFormData(event)

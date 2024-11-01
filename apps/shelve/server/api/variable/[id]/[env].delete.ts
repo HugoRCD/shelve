@@ -1,5 +1,5 @@
-import { H3Event } from 'h3'
-import { deleteVariable } from '~~/server/app/variableService'
+import type { H3Event } from 'h3'
+import { deleteVariable } from '~~/server/services/variable.service'
 
 export default eventHandler(async (event: H3Event) => {
   const id = getRouterParam(event, 'id') as string
