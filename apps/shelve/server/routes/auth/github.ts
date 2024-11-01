@@ -1,4 +1,4 @@
-import { upsertUser } from '~~/server/services/user.service'
+import { UserService } from '~~/server/services/user.service'
 
 export default defineOAuthGitHubEventHandler({
   config: {
@@ -6,8 +6,9 @@ export default defineOAuthGitHubEventHandler({
     scope: ['repo', 'user:email'],
   },
   async onSuccess(event, { user, tokens }) {
+    const userService = new UserService()
     try {
-      const _user = await upsertUser({
+      const _user = await userService.upsertUser({
         email: user.email,
         avatar: user.avatar_url,
         username: user.login,
