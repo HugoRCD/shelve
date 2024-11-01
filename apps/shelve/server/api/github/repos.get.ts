@@ -1,6 +1,7 @@
 import type { H3Event } from 'h3'
-import { getUserRepos } from '~~/server/services/github.service'
+import { GitHubService } from '~~/server/services/github.service'
 
 export default defineEventHandler(async (event: H3Event) => {
-  return await getUserRepos(event)
+  const githubService = new GitHubService()
+  return await githubService.getUserRepos(event)
 })
