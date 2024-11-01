@@ -10,12 +10,13 @@
     "build": "unbuild",
     "release": "bun run build && npm publish"
   },
+  "main": "./dist/index.mjs",
   "exports": {
     ".": "./dist/index.mjs"
   },
   "types": "./dist/index.d.ts",
   "files": [
-    "./dist"
+    "dist"
   ],
   "devDependencies": {
     "@types/crypto-js": "^4.2.2",
