@@ -17,7 +17,6 @@ COPY . .
 # Install dependencies
 RUN bun install
 
-
 # Build the application
 RUN bun run build
 

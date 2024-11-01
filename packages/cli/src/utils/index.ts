@@ -34,9 +34,7 @@ export async function isLatestVersion(): Promise<boolean> {
 export async function installLatest(): Promise<void> {
   s.start('Updating Shelve CLI')
   await addDependency('@shelve/cli@latest', {
-    packageManager: 'npm',
     silent: true,
-    global: true
   })
   s.stop('Updating Shelve CLI')
 }
