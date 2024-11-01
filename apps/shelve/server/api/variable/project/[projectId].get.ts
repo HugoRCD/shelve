@@ -1,8 +1,9 @@
 import type { H3Event } from 'h3'
-import { getVariablesByProjectId } from '~~/server/services/variable.service'
+import { VariableService } from '~~/server/services/variable.service'
 
 export default eventHandler(async (event: H3Event) => {
   const id = getRouterParam(event, 'projectId') as string
   if (!id) throw createError({ statusCode: 400, statusMessage: 'missing params' })
-  return await getVariablesByProjectId(parseInt(id))
+  const variableService = new VariableService()
+  return await variableService.getVariablesByProjectId(+id)
 })

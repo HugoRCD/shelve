@@ -1,130 +1,212 @@
 import type { Environment, User, Variable, VariablesCreateInput } from '@shelve/types'
 import { unseal, seal } from '@shelve/crypto'
 
-const varAssociation = {
-  production: 'production',
-  preview: 'preview',
-  staging: 'preview',
-  development: 'development',
-  prod: 'production',
-  dev: 'development',
-}
+export class VariableService {
 
-const { encryptionKey } = useRuntimeConfig().private
+  private readonly encryptionKey: string
 
-function getEnvString(env: string) {
-  return env.split('|').map((env) => varAssociation[env as Environment]).join('|')
-}
+  private readonly ENV_ASSOCIATION = {
+    production: 'production',
+    preview: 'preview',
+    staging: 'preview',
+    development: 'development',
+    prod: 'production',
+    dev: 'development',
+  } as const
 
-async function encryptVariable(variables: VariablesCreateInput['variables'], autoUppercase?: boolean): Promise<VariablesCreateInput['variables']> {
-  for (const variable of variables) {
-    if (autoUppercase) variable.key = variable.key.toUpperCase()
-    const encryptedValue = await seal(variable.value, encryptionKey)
-    delete variable.index
-    variable.environment = getEnvString(variable.environment)
-    variable.value = encryptedValue
+  constructor() {
+    this.encryptionKey = useRuntimeConfig().private.encryptionKey
   }
-  return variables
-}
 
-async function decryptVariable(variables: VariablesCreateInput['variables']): Promise<VariablesCreateInput['variables']> {
-  for (const variable of variables) {
-    const decryptedValue = await unseal(variable.value, encryptionKey)
-    variable.environment = getEnvString(variable.environment)
-    variable.value = decryptedValue
-  }
-  return variables
-}
+  /**
+   * Upsert variables
+   */
+  async upsertVariable(variablesCreateInput: VariablesCreateInput): Promise<Variable | Variable[]> {
+    const encryptedVariables = await this.encryptVariables(
+      variablesCreateInput.variables,
+      variablesCreateInput.autoUppercase
+    )
 
-export async function upsertVariable(variablesCreateInput: VariablesCreateInput) {
-  const encryptedVariables = await encryptVariable(variablesCreateInput.variables, variablesCreateInput.autoUppercase)
-
-  if (variablesCreateInput.variables.length === 1) { // use on main form variable/update
-    const [variableCreateInput] = encryptedVariables
-    if (!variableCreateInput) throw new Error('Invalid variable')
-    return prisma.variables.upsert({
-      where: { id: variableCreateInput.id || -1 },
-      update: variableCreateInput,
-      create: variableCreateInput,
-    })
-  } // use on edit form variable/update or with CLI push command
-  const method = variablesCreateInput.method || 'merge'
-  if (method === 'overwrite') {
-    await prisma.variables.deleteMany({ where: {
-      projectId: variablesCreateInput.projectId,
-      environment: varAssociation[variablesCreateInput.environment]
-    } })
-    return prisma.variables.createMany({
-      data: encryptedVariables,
-      skipDuplicates: true,
-    })
-  }
-  const existingVariables = await prisma.variables.findMany({
-    where: {
-      projectId: variablesCreateInput.projectId,
-      key: {
-        in: encryptedVariables.map(variable => variable.key)
-      }
-    },
-    select: {
-      id: true,
+    if (variablesCreateInput.variables.length === 1) {
+      return this.upsertSingleVariable(encryptedVariables[0])
     }
-  })
-  for (const variable of encryptedVariables) {
-    if (existingVariables.some(existingVariable => existingVariable.id === variable.id)) {
-      await prisma.variables.update({
-        where: { id: variable.id },
-        data: variable,
+
+    return this.upsertMultipleVariables(
+      encryptedVariables,
+      variablesCreateInput.projectId,
+      variablesCreateInput.method || 'merge',
+      variablesCreateInput.environment
+    )
+  }
+
+  /**
+   * Get variables by project ID
+   */
+  async getVariablesByProjectId(projectId: number, environment?: Environment): Promise<Variable[]> {
+    const where = this.buildVariableQuery(projectId, environment)
+    const variables = await prisma.variables.findMany({
+      where,
+      orderBy: { updatedAt: 'desc' }
+    })
+    return this.decryptVariables(variables)
+  }
+
+  /**
+   * Delete single variable
+   */
+  async deleteVariable(id: number, environment: string): Promise<void> {
+    const envs = environment.split('|').map((env) => decodeURIComponent(env))
+    await prisma.variables.delete({
+      where: {
+        id,
+        environment: { in: envs },
+      },
+    })
+  }
+
+  /**
+   * Delete multiple variables
+   */
+  async deleteVariables(variablesId: number[], user: User): Promise<void> {
+    await this.validateVariablesOwnership(variablesId, user)
+    await prisma.variables.deleteMany({
+      where: { id: { in: variablesId } }
+    })
+  }
+
+  /**
+   * Private helper methods
+   */
+  private async encryptVariables(
+    variables: VariablesCreateInput['variables'],
+    autoUppercase?: boolean
+  ): Promise<VariablesCreateInput['variables']> {
+    return Promise.all(variables.map(async (variable) => {
+      const processed = { ...variable }
+      if (autoUppercase) {
+        processed.key = processed.key.toUpperCase()
+      }
+      processed.value = await seal(processed.value, this.encryptionKey)
+      processed.environment = this.getEnvString(processed.environment)
+      delete processed.index
+      return processed
+    }))
+  }
+
+  private async decryptVariables(
+    variables: VariablesCreateInput['variables']
+  ): Promise<VariablesCreateInput['variables']> {
+    return Promise.all(variables.map(async (variable) => {
+      const processed = { ...variable }
+      processed.value = await unseal(processed.value, this.encryptionKey)
+      processed.environment = this.getEnvString(processed.environment)
+      return processed
+    }))
+  }
+
+  private getEnvString(env: string): string {
+    return env.split('|')
+      .map((env) => this.ENV_ASSOCIATION[env as Environment])
+      .join('|')
+  }
+
+  private async upsertSingleVariable(variable: Variable): Promise<Variable> {
+    if (!variable) {
+      throw createError({
+        statusCode: 400,
+        message: 'Invalid variable'
       })
     }
-    await prisma.variables.create({
-      data: variable,
+
+    return prisma.variables.upsert({
+      where: { id: variable.id || -1 },
+      update: variable,
+      create: variable,
     })
   }
-  return encryptedVariables
-}
 
-export async function getVariablesByProjectId(projectId: number, environment?: Environment): Promise<Variable[]> {
-  const options = environment ? {
-    projectId,
-    environment: {
-      contains: varAssociation[environment],
+  private async upsertMultipleVariables(
+    variables: Variable[],
+    projectId: number,
+    method: 'merge' | 'overwrite',
+    environment: Environment
+  ): Promise<Variable[]> {
+    if (method === 'overwrite') {
+      await this.deleteExistingVariables(projectId, environment)
+      await prisma.variables.createMany({
+        data: variables,
+        skipDuplicates: true,
+      })
+      return variables
     }
-  } : { projectId }
-  const variables = await prisma.variables.findMany({ where: options, orderBy: { updatedAt: 'desc' } })
-  return await decryptVariable(variables)
-}
 
-export async function deleteVariable(id: number, environment: string): Promise<void> {
-  const envs = environment.split('|').map((env) => decodeURIComponent(env))
-  await prisma.variables.delete({
-    where: {
-      id,
-      environment: {
-        in: envs,
-      },
-    },
-  })
-}
+    return this.mergeVariables(variables, projectId)
+  }
 
-export async function deleteVariables(variablesId: number[], user: User): Promise<void> {
-  const variables = await prisma.variables.findMany({
-    where: {
-      id: {
-        in: variablesId
+  private async deleteExistingVariables(projectId: number, environment: Environment): Promise<void> {
+    await prisma.variables.deleteMany({
+      where: {
+        projectId,
+        environment: this.ENV_ASSOCIATION[environment]
       }
-    },
-    select: {
-      id: true,
-      project: {
-        select: {
-          ownerId: true
+    })
+  }
+
+  private async mergeVariables(variables: Variable[], projectId: number): Promise<Variable[]> {
+    const existingVariables = await prisma.variables.findMany({
+      where: {
+        projectId,
+        key: { in: variables.map(v => v.key) }
+      },
+      select: { id: true }
+    })
+
+    for (const variable of variables) {
+      if (existingVariables.some(ev => ev.id === variable.id)) {
+        await prisma.variables.update({
+          where: { id: variable.id },
+          data: variable,
+        })
+      } else {
+        await prisma.variables.create({
+          data: variable,
+        })
+      }
+    }
+
+    return variables
+  }
+
+  private buildVariableQuery(projectId: number, environment?: Environment) {
+    if (!environment) return { projectId }
+    return {
+      projectId,
+      environment: {
+        contains: this.ENV_ASSOCIATION[environment],
+      }
+    }
+  }
+
+  private async validateVariablesOwnership(variablesId: number[], user: User): Promise<void> {
+    const variables = await prisma.variables.findMany({
+      where: {
+        id: { in: variablesId }
+      },
+      select: {
+        id: true,
+        project: {
+          select: { ownerId: true }
         }
       }
+    })
+
+    const hasPermission = variables.every(v => v.project.ownerId === user.id)
+    if (!hasPermission) {
+      throw createError({
+        statusCode: 403,
+        message: 'You do not have permission to delete these variables'
+      })
     }
-  })
-  if (!variables.every(variable => variable.project.ownerId === user.id)) {
-    throw new Error('You do not have permission to delete these variables')
   }
-  await prisma.variables.deleteMany({ where: { id: { in: variables.map(variable => variable.id) } } })
+
 }
