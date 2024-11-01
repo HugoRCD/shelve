@@ -1,8 +1,9 @@
 import type { H3Event } from 'h3'
-import { getUserByAuthToken } from '~~/server/services/token.service'
+import { TokenService } from '~~/server/services/token.service'
 
 export default eventHandler(async (event: H3Event) => {
+  const tokenService = new TokenService()
   const authToken = getCookie(event, 'authToken') || ''
 
-  return await getUserByAuthToken(authToken)
+  return await tokenService.getUserByAuthToken(authToken)
 })

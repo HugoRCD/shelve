@@ -1,5 +1,5 @@
-import { Role } from '@shelve/types'
 import type { H3Event } from 'h3'
+import { Role } from '@shelve/types'
 
 export default defineEventHandler((event: H3Event) => {
   const protectedRoutes = ['/api/admin']

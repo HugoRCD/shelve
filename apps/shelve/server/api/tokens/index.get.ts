@@ -1,8 +1,9 @@
 import type { H3Event } from 'h3'
-import { getTokensByUserId } from '~~/server/services/token.service'
+import { TokenService } from '~~/server/services/token.service'
 
 export default defineEventHandler((event: H3Event) => {
+  const tokenService = new TokenService()
   const { user } = event.context
 
-  return getTokensByUserId(user.id)
+  return tokenService.getTokensByUserId(user.id)
 })
