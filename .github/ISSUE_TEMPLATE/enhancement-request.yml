@@ -1,6 +1,7 @@
 name: "🌈 Enhancement request"
 description: Suggest an idea or enhancement for the project.
 labels: ["enhancement"]
+title: "enhancement: "
 body:
   - type: markdown
     attributes:

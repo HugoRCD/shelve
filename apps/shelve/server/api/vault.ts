@@ -1,26 +1,6 @@
-import { H3Event } from 'h3'
+import type { DecryptResponse, EncryptRequest, StoredData, TTLFormat } from '@shelve/types'
+import type { H3Event } from 'h3'
 import { seal, unseal } from '@shelve/crypto'
-
-type TTLFormat = '1d' | '7d' | '30d'
-
-type EncryptRequest = {
-  value: string
-  reads: number
-  ttl: TTLFormat
-}
-
-type StoredData = {
-  encryptedValue: string
-  reads: number
-  createdAt: number
-  ttl: TTLFormat
-}
-
-type DecryptResponse = {
-  decryptedValue: string
-  reads: number
-  ttl: string
-}
 
 class VaultService {
 
