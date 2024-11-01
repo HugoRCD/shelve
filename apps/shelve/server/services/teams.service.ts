@@ -1,5 +1,5 @@
 import { type CreateTeamInput, Role, TeamRole } from '@shelve/types'
-import { deleteCachedUserProjects } from '~~/server/app/projectService'
+import { deleteCachedUserProjects } from '~~/server/services/project.service'
 
 export async function createTeam(createTeamInput: CreateTeamInput, userId: number) {
   await deleteCachedTeamByUserId(userId)
