@@ -10,6 +10,7 @@
     "dev": "turbo dev --filter=@shelve/app",
     "dev:app": "turbo dev --filter=@shelve/app",
     "dev:cli": "turbo dev --filter=@shelve/cli",
+    "dev:prepare": "turbo run dev:prepare",
     "generate": "turbo run generate",
     "lint": "turbo lint",
     "lint:fix": "turbo lint:fix",
