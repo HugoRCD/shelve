@@ -42,7 +42,7 @@ const features = [
       <h3 class="main-gradient text-2xl">
         <LandingScrambleText label="Features" />
       </h3>
-      <p class="max-w-lg text-pretty text-center text-sm text-gray-500 sm:text-base">
+      <p class="max-w-lg text-pretty text-center text-sm text-neutral-500 sm:text-base">
         No more tedious tasks, Shelve has everything you need to manage your projects.
       </p>
     </div>
@@ -56,15 +56,15 @@ const features = [
       >
         <div class="flex items-center">
           <div class="flex items-center justify-center rounded border border-white/5 bg-white/5 p-1">
-            <UIcon :name="feature.icon" class="size-5 fill-white text-gray-300" />
+            <UIcon :name="feature.icon" class="size-5 fill-white text-neutral-300" />
           </div>
 
-          <div class="ml-4 text-gray-300">
-            {{ feature.title }}<span v-if="feature.soon" class="ml-1 text-xs text-gray-400">(soon)</span>
+          <div class="ml-4 text-neutral-300">
+            {{ feature.title }}<span v-if="feature.soon" class="ml-1 text-xs text-neutral-400">(soon)</span>
           </div>
         </div>
 
-        <div class="ml-11 pl-0.5 text-sm text-gray-500">
+        <div class="ml-11 pl-0.5 text-sm text-neutral-500">
           {{ feature.description }}
         </div>
       </div>

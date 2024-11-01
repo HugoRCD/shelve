@@ -1,5 +1,4 @@
-import { H3Event } from 'h3'
-
+import type { H3Event } from 'h3'
 
 export default eventHandler(async (event: H3Event) => {
   const paramName = getRouterParam(event, 'name')

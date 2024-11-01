@@ -1,0 +1,43 @@
+name: Publish Any Commit
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check if there are changes
+        uses: dorny/paths-filter@v3
+        id: changes
+        with:
+          filters: |
+            src:
+              - 'packages/cli/src/**'
+              - 'packages/cli/package.json'
+              - 'bun.lockb'
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: 📦 Install
+        if: steps.check.outputs.changed == 'true'
+        run: bun install
+
+      - name: 🚀 Prepare
+        if: steps.check.outputs.changed == 'true'
+        run: bun run dev:prepare
+
+      - name: 🛠️ Build
+        if: steps.check.outputs.changed == 'true'
+        run: bun run build
+
+      - name: 🚀 Continuous Release
+        if: steps.check.outputs.changed == 'true'
+        run: bunx pkg-pr-new publish './packages/cli'

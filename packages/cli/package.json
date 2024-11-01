@@ -46,16 +46,16 @@
     "npm-registry-fetch": "^18.0.2",
     "nypm": "^0.3.12",
     "ofetch": "^1.4.1",
-    "semver": "^7.6.3",
-    "unbuild": "^2.0.0"
+    "semver": "^7.6.3"
   },
   "devDependencies": {
-    "@shelve/types": "workspace:*",
+    "@shelve/types": "*",
     "@types/bun": "^1.1.12",
     "@types/npm-registry-fetch": "^8.0.7",
     "@types/semver": "^7.5.8",
     "eslint": "^9.13.0",
     "release-it": "^17.10.0",
+    "unbuild": "^2.0.0",
     "vitest": "^2.1.3"
   }
 }

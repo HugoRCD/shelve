@@ -1,30 +1,34 @@
 <script setup lang="ts">
-import type { Token } from '@shelve/types'
+import { type Token } from '@shelve/types'
+import type { TableColumn } from '@nuxt/ui'
+import { ConfirmModal } from '#components'
 
-const columns = [
+const columns: TableColumn<Token>[] = [
   {
-    key: 'name',
-    label: 'Name',
-    sortable: true,
+    accessorKey: 'name',
+    header: 'Name',
   },
   {
-    key: 'token',
-    label: 'Token',
-    sortable: true,
+    accessorKey: 'token',
+    header: 'Token',
   },
   {
-    key: 'createdAt',
-    label: 'Created',
-    sortable: true,
+    accessorKey: 'createdAt',
+    header: 'Created',
+    cell: ({ row }) => {
+      return new Date(row.getValue('createdAt')).toLocaleString()
+    }
   },
   {
-    key: 'updatedAt',
-    label: 'Last Used',
-    sortable: true,
+    accessorKey: 'updatedAt',
+    header: 'Last Used',
+    cell: ({ row }) => {
+      return new Date(row.getValue('updatedAt')).toLocaleString()
+    }
   },
   {
-    key: 'actions',
-    label: '',
+    accessorKey: 'actions',
+    header: 'Actions',
   },
 ]
 
@@ -33,9 +37,19 @@ const items = (row: Token) => [
     {
       label: 'Delete',
       icon: 'lucide:trash',
-      iconClass: 'text-red-500 dark:text-red-500',
-      click: () => {
-        deleteToken(row)
+      onSelect: () => {
+        modal.open(ConfirmModal, {
+          title: 'Are you sure?',
+          description: `You are about to delete ${row.name} token which is currently ${isTokenActive(row.updatedAt) ? 'active' : 'inactive'}, this action cannot be undone.`,
+          danger: true,
+          onSuccess() {
+            toast.promise(deleteToken(row), {
+              loading: 'Deleting token...',
+              success: 'Token has been deleted',
+              error: 'Failed to delete token',
+            })
+          },
+        })
       },
     },
   ],
@@ -52,22 +66,27 @@ const filteredTokens = computed(() => {
 
 async function fetchTokens() {
   loading.value = true
-  tokens.value = await $fetch<Token[]>('/api/tokens', {
-    method: 'GET',
-  })
+  try {
+    tokens.value = await $fetch<Token[]>('/api/tokens', {
+      method: 'GET',
+    })
+  } catch (error) {
+    toast.error('Failed to fetch tokens')
+  }
   loading.value = false
 }
+
+const modal = useModal()
 
 async function deleteToken(token: Token) {
   await $fetch(`/api/tokens/${token.id}`, {
     method: 'DELETE',
   })
-  toast.success('Token deleted')
   await fetchTokens()
 }
 
-function isTokenActive(token: Token) {
-  const updatedAt = new Date(token.updatedAt)
+function isTokenActive(value: string) {
+  const updatedAt = new Date(value)
   const oneWeekAgo = new Date(Date.now() - 1000 * 60 * 60 * 24 * 7)
   return updatedAt > oneWeekAgo
 }
@@ -82,7 +101,7 @@ fetchTokens()
         <h2 class="text-base font-semibold leading-7">
           Tokens
         </h2>
-        <p class="text-sm leading-6 text-gray-500">
+        <p class="text-sm leading-6 text-neutral-500">
           Manage your tokens for the CLI
         </p>
       </div>
@@ -90,42 +109,43 @@ fetchTokens()
     <Teleport defer to="#action-items">
       <div class="hidden items-center justify-end gap-2 sm:flex">
         <TokenCreate v-model:search="search" @create="fetchTokens" />
-        <UInput v-model="search" placeholder="Search tokens" />
+        <UInput v-model="search" size="xs" placeholder="Search tokens" />
       </div>
     </Teleport>
     <div style="--stagger: 2" data-animate class="mt-6">
-      <UTable :columns :rows="filteredTokens" :loading :items-per-page="10">
-        <template #token-data="{ row }">
-          <TokenToggle :token="row.token" />
+      <UTable :columns :data="filteredTokens" :loading>
+        <template #token-cell="{ row }">
+          <TokenToggle :token="row.original.token" />
         </template>
-        <template #empty-state>
+        <!--        <template #empty-state>
           <div class="flex flex-col items-center justify-center gap-3 py-6">
             <span class="text-sm italic">No tokens here</span>
             <TokenCreate @create="fetchTokens" />
           </div>
-        </template>
-        <template #createdAt-data="{ row }">
-          {{ new Date(row.createdAt).toLocaleString() }}
-        </template>
-        <template #updatedAt-data="{ row }">
+        </template>-->
+        <template #updatedAt-cell="{ row }">
           <span class="flex items-center gap-1">
-            {{ new Date(row.updatedAt).toLocaleString() }}
-            <UTooltip v-if="!isTokenActive(row)" text="Token seems to be inactive">
-              <UIcon name="heroicons-outline:clock" class="size-4 text-red-600" />
+            {{ row.original.updatedAt }}
+            <UTooltip v-if="!isTokenActive( row.original.updatedAt)" text="Token seems to be inactive">
+              <div>
+                <UIcon name="heroicons-outline:clock" class="size-4 text-red-600" />
+              </div>
             </UTooltip>
             <UTooltip v-else text="Token is active">
-              <UIcon name="heroicons-outline:clock" class="size-4 text-gray-500" />
+              <div>
+                <UIcon name="heroicons-outline:clock" class="size-4 text-neutral-500" />
+              </div>
             </UTooltip>
           </span>
         </template>
-        <template #actions-data="{ row }">
-          <UDropdown :items="items(row)">
+        <template #actions-cell="{ row }">
+          <UDropdownMenu :items="items(row.original)">
             <UButton
-              color="gray"
+              color="neutral"
               variant="ghost"
               icon="heroicons:ellipsis-horizontal-20-solid"
             />
-          </UDropdown>
+          </UDropdownMenu>
         </template>
       </UTable>
     </div>

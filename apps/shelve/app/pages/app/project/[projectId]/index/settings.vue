@@ -50,7 +50,7 @@ async function removeTeamFromProject(teamId: number) {
 </script>
 
 <template>
-  <form class="mt-6 flex flex-col gap-4" @submit.prevent="updateCurrentProject">
+  <form class="flex flex-col gap-4" @submit.prevent="updateCurrentProject">
     <UCard :ui="{ background: 'bg-white dark:bg-neutral-950' }">
       <template #header>
         <div class="flex items-center">
@@ -83,8 +83,8 @@ async function removeTeamFromProject(teamId: number) {
                   <UButton
                     v-if="projectTeam.members.find(member => member.userId === user?.id)?.role === TeamRole.OWNER"
                     variant="soft"
-                    color="red"
-                    class="text-xs"
+                    color="error"
+                    size="xs"
                     :loading="removeLoading"
                     label="Unlink"
                     icon="lucide:unlink"
@@ -132,7 +132,7 @@ async function removeTeamFromProject(teamId: number) {
           </div>
         </div>
         <UDivider class="my-2" />
-        <div class="flex flex-col gap-4">
+        <div id="variable-prefix" class="flex flex-col gap-4" :class="$route.hash === '#variable-prefix' ? 'ring ring-[var(--ui-primary)] rounded-lg p-4' : ''">
           <div>
             <h3 class="font-semibold">
               Environment Variables Prefix

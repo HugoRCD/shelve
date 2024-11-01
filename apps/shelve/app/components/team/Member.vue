@@ -11,7 +11,7 @@ defineProps({
 </script>
 
 <template>
-  <UTooltip :text="member.user.username || member.user.email" :ui="{ popper: { placement: 'top' } }">
+  <UTooltip :text="member.user.username || member.user.email" :content="{ side: 'top' }">
     <UAvatar
       :src="member.user.avatar"
       :alt="member.user.username"

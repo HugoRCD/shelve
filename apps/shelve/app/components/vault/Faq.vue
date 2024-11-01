@@ -19,12 +19,12 @@ const items = [
       <h3 class="main-gradient text-2xl">
         <LandingScrambleText label="FAQ" />
       </h3>
-      <p class="max-w-lg text-center text-sm text-gray-500 sm:text-base">
+      <p class="max-w-lg text-center text-sm text-neutral-500 sm:text-base">
         Frequently asked questions about Vault.
       </p>
     </div>
     <UAccordion
-      color="gray"
+      color="neutral"
       variant="ghost"
       size="sm"
       :items

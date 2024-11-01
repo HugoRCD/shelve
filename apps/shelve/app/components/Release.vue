@@ -13,7 +13,7 @@ defineProps({
 <template>
   <article :id="content.title" class="flex flex-col justify-between gap-4 sm:flex-row sm:gap-8">
     <div class="flex flex-col gap-2">
-      <span class="text-nowrap text-gray-300">
+      <span class="text-nowrap text-neutral-300">
         {{ new Date(content.date).toLocaleDateString("en-US", {
           month: "short",
           day: "numeric",
@@ -32,7 +32,7 @@ defineProps({
       >
       <ContentRenderer
         :value="content"
-        class="prose prose-h2:text-gray-200"
+        class="prose prose-h2:text-neutral-200"
       />
     </div>
   </article>

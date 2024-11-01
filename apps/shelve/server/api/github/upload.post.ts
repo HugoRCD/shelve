@@ -1,5 +1,5 @@
-import { H3Event } from 'h3'
-import { uploadFile } from '~~/server/app/githubService'
+import type { H3Event } from 'h3'
+import { GitHubService } from '~~/server/services/github.service'
 
 export default defineEventHandler(async (event: H3Event) => {
   const formData = await readMultipartFormData(event)
@@ -17,9 +17,10 @@ export default defineEventHandler(async (event: H3Event) => {
       statusMessage: 'No file provided'
     })
   }
+  const gitHubService = new GitHubService()
 
   const file = new File([fileField.data], fileField.filename, { type: fileField.type })
   const repoName = 'astra'
 
-  return await uploadFile(event, file, repoName)
+  return await gitHubService.uploadFile(event, file, repoName)
 })

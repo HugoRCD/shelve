@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { publicUser } from '@shelve/types'
 import { Role } from '@shelve/types'
+import type { TableColumn } from '@nuxt/ui'
 import { ConfirmModal } from '#components'
 
 const { data: users, status, refresh } = useFetch<publicUser[]>('/api/admin/users', {
@@ -11,7 +12,6 @@ const { data: users, status, refresh } = useFetch<publicUser[]>('/api/admin/user
 const search = ref('')
 const updateLoading = ref(false)
 const deleteLoading = ref(false)
-
 const filteredUsers = computed(() => {
   // eslint-disable-next-line
   if (!search.value) return users.value?.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
@@ -46,48 +46,51 @@ async function deleteUser(id: number) {
   deleteLoading.value = false
 }
 
-const columns = [
+const columns: TableColumn<publicUser>[] = [
   {
-    key: 'avatar',
-    label: 'Avatar',
+    accessorKey: 'avatar',
+    header: 'Avatar',
   },
   {
-    key: 'username',
-    label: 'Username',
-    sortable: true,
+    accessorKey: 'username',
+    header: 'Username',
   },
   {
-    key: 'email',
-    label: 'Email',
-    sortable: true,
+    accessorKey: 'email',
+    header: 'Email',
   },
   {
-    key: 'role',
-    label: 'Role',
+    accessorKey: 'role',
+    header: 'Role',
   },
   {
-    key: 'createdAt',
-    label: 'Created At',
-    sortable: true,
+    accessorKey: 'createdAt',
+    header: 'Created At',
+    cell: ({ row }) => {
+      return new Date(row.getValue('createdAt')).toLocaleString()
+    }
   },
   {
-    key: 'updatedAt',
-    label: 'Updated At',
-    sortable: true,
+    accessorKey: 'updatedAt',
+    header: 'Updated At',
+    cell: ({ row }) => {
+      return new Date(row.getValue('updatedAt')).toLocaleString()
+    }
   },
   {
-    key: 'actions',
-    label: 'Actions',
+    accessorKey: 'actions',
+    header: 'Actions',
   },
 ]
 
 const modal = useModal()
+
 const items = (row: publicUser) => [
   [
     {
       label: 'Set as Admin',
       icon: 'heroicons:shield-check-20-solid',
-      click: () => {
+      onSelect: () => {
         if (row.role === Role.ADMIN) {
           toast.success('User is already an admin')
           return
@@ -98,7 +101,7 @@ const items = (row: publicUser) => [
     {
       label: 'Set as User',
       icon: 'heroicons:user-circle-20-solid',
-      click: () => {
+      onSelect: () => {
         changeUserRole(row.id, Role.USER)
       },
     },
@@ -108,7 +111,7 @@ const items = (row: publicUser) => [
       label: 'Delete',
       icon: 'heroicons:trash-20-solid',
       iconClass: 'text-red-500 dark:text-red-500',
-      click: () => {
+      onSelect: () => {
         if (row.role === Role.ADMIN) {
           toast.error('Cannot delete admin')
           return
@@ -129,47 +132,25 @@ const items = (row: publicUser) => [
     },
   ],
 ]
-
-const selectedColumns = ref(columns)
-const columnsTable = computed(() => columns.filter((column) => selectedColumns.value.includes(column)))
 </script>
 
 <template>
   <div class="mt-1 flex flex-col gap-4">
     <div class="flex flex-col justify-end gap-4 sm:flex-row sm:items-center">
       <UInput v-model="search" label="Search" placeholder="Search a user" icon="heroicons:magnifying-glass-20-solid" />
-      <USelectMenu v-model="selectedColumns" :options="columns" multiple>
-        <UButton icon="heroicons:view-columns" color="gray" class="w-full sm:w-40">
-          Columns
-        </UButton>
-      </USelectMenu>
     </div>
-    <UTable :rows="filteredUsers" :columns="columnsTable" :loading="status === 'pending' || updateLoading || deleteLoading">
-      <template #avatar-data="{ row }">
-        <UAvatar :src="row.avatar" :alt="row.name" size="sm" img-class="object-cover" />
+    <UTable :data="filteredUsers" :columns :loading="status === 'pending' || updateLoading || deleteLoading">
+      <template #avatar-cell="{ row }">
+        <UAvatar :src="row.original.avatar" :alt="row.name" size="sm" img-class="object-cover" />
       </template>
-      <template #role-data="{ row }">
-        <UBadge :label="row.role.toUpperCase()" :color="row.role === 'admin' ? 'primary' : 'gray'" />
+      <template #role-cell="{ row }">
+        <UBadge :label="row.original.role.toUpperCase()" :color="row.original.role === 'admin' ? 'primary' : 'neutral'" variant="subtle" />
       </template>
-      <template #createdAt-data="{ row }">
-        <span class="text-sm text-gray-500 dark:text-gray-400">
-          {{ new Date(row.createdAt).toLocaleString() }}
-        </span>
-      </template>
-      <template #updatedAt-data="{ row }">
-        <span class="text-sm text-gray-500 dark:text-gray-400">
-          {{ new Date(row.updatedAt).toLocaleString() }}
-        </span>
-      </template>
-      <template #actions-data="{ row }">
-        <UDropdown :items="items(row)">
-          <UButton color="gray" variant="ghost" icon="heroicons:ellipsis-horizontal-20-solid" />
-        </UDropdown>
+      <template #actions-cell="{ row }">
+        <UDropdownMenu :items="items(row)">
+          <UButton color="neutral" variant="ghost" icon="heroicons:ellipsis-horizontal-20-solid" />
+        </UDropdownMenu>
       </template>
     </UTable>
   </div>
 </template>
-
-<style scoped>
-
-</style>

@@ -1,10 +1,11 @@
-import type { Project } from "./Project";
-import type { User } from "./User";
+import { Role } from './User'
+import type { Project } from './Project'
+import type { User } from './User'
 
 export enum TeamRole {
-  OWNER = "owner",
-  ADMIN = "admin",
-  DEVELOPER = "developer",
+  OWNER = 'owner',
+  ADMIN = 'admin',
+  DEVELOPER = 'developer',
 }
 
 export type Member = {
@@ -36,4 +37,10 @@ export type UpdateTeamInput = {
   name: string;
   members: Member[];
   projects: Project[];
+}
+
+export type DeleteTeamInput = {
+  teamId: number
+  userId: number
+  userRole: Role
 }

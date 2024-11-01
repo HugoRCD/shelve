@@ -44,7 +44,7 @@ const border = computed(() => {
   if (dragOver.value) {
     return 'border-[0.5px] border-primary border-dashed'
   }
-  return 'border-[0.5px] border-gray-200 dark:border-gray-800'
+  return 'border-[0.5px] border-neutral-200 dark:border-neutral-800'
 })
 
 const handleFileUpload = (event: Event) => {
@@ -101,31 +101,35 @@ function handleDrop(event: DragEvent) {
     </div>
     <div class="mt-2 flex w-full items-end justify-between gap-2">
       <UTooltip
-        :ui="{ width: 'max-w-4xl' }"
+        :content="{
+          side: 'top',
+        }"
         text="Reads are used to limit the number of times a secret can be read."
       >
-        <UFormGroup label="Reads">
+        <UFormField label="Reads">
           <UInput
             v-model="reads"
             label="Reads"
             type="number"
             min="1"
           />
-        </UFormGroup>
+        </UFormField>
       </UTooltip>
       <UTooltip
-        :ui="{ width: 'max-w-4xl' }"
+        :content="{
+          side: 'top',
+        }"
         text="TTL is the time period after which the secret will be deleted."
       >
-        <UFormGroup label="TTL">
+        <UFormField label="TTL">
           <USelect
             v-model="selectedTtl"
-            :options="ttl"
+            :items="ttl"
             default-value="1d"
             value-attribute="value"
             option-attribute="label"
           />
-        </UFormGroup>
+        </UFormField>
       </UTooltip>
     </div>
     <div class="mt-4 w-full">
@@ -133,7 +137,7 @@ function handleDrop(event: DragEvent) {
         block
         label="Encrypt"
         type="submit"
-        color="gray"
+        color="neutral"
         :loading
       />
     </div>

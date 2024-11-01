@@ -30,7 +30,7 @@ async function updateCurrentUser() {
           <h2 class="text-base font-semibold leading-7">
             Personal Information
           </h2>
-          <p class="text-sm leading-6 text-gray-500">
+          <p class="text-sm leading-6 text-neutral-500">
             Update your personal information
           </p>
         </div>

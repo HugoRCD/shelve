@@ -137,3 +137,6 @@ dist
 .idea
 
 .config/shelve*
+
+*/dist/
+*/.output/

@@ -10,25 +10,7 @@ const prefixList = computed(() => {
 
 const key = defineModel({ type: String })
 
-const { x, y } = useMouse()
-const { y: windowY } = useWindowScroll()
-
 const isOpen = ref(false)
-const virtualElement = ref({ getBoundingClientRect: () => ({}) })
-
-function onContextMenu() {
-  const top = unref(y) - unref(windowY)
-  const left = unref(x)
-
-  virtualElement.value.getBoundingClientRect = () => ({
-    width: 0,
-    height: 0,
-    top,
-    left
-  })
-
-  isOpen.value = true
-}
 
 function addPrefixToInputId(prefix: string) {
   if (key.value?.startsWith(prefix)) return
@@ -37,30 +19,35 @@ function addPrefixToInputId(prefix: string) {
 </script>
 
 <template>
-  <div class="w-full" @contextmenu.prevent="onContextMenu">
+  <UPopover v-model:open="isOpen" arrow>
     <div>
-      <slot />
+      <UTooltip :content="{ side: 'top' }" text="Add common prefix to your variable">
+        <UButton variant="soft" color="neutral" icon="lucide:list-start" />
+      </UTooltip>
     </div>
-
-    <UContextMenu v-model="isOpen" :virtual-element>
-      <UCard>
-        <template #header>
-          <h3 class="text-sm font-semibold">
-            Add Prefix to your variable
-          </h3>
-        </template>
+    <template #content>
+      <div class="p-4 flex w-full flex-col gap-3">
+        <h3 class="text-sm font-semibold">
+          Add Prefix to your variable
+        </h3>
         <div class="flex flex-wrap gap-2">
           <UButton
             v-for="prefix in prefixList"
             :key="prefix"
-            color="gray"
+            size="xs"
+            variant="soft"
+            color="neutral"
             icon="heroicons:plus"
             :label="prefix"
             @click="addPrefixToInputId(prefix)"
           />
         </div>
-      </UCard>
-    </UContextMenu>
-  </div>
+        <NuxtLink :to="`/app/project/${project.id}/settings#variable-prefix`" class="text-xs text-neutral-500 dark:text-neutral-400 flex gap-1 hover:underline">
+          Create variable prefix
+          <UIcon name="lucide:external-link" class="mt-0.5" />
+        </NuxtLink>
+      </div>
+    </template>
+  </UPopover>
 </template>
 

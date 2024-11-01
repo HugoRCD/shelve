@@ -8,7 +8,7 @@ defineProps({
 
 <template>
   <div class="linebreak">
-    <div class="absolute flex w-full -translate-y-1/2 items-center justify-center text-gray-400">
+    <div class="absolute flex w-full -translate-y-1/2 items-center justify-center text-neutral-400">
       <span class="bg-white/50 px-2 dark:bg-neutral-800">
         {{ text }}
       </span>
