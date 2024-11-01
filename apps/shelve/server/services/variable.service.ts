@@ -77,7 +77,7 @@ export class VariableService {
   /**
    * Private helper methods
    */
-  private async encryptVariables(
+  private encryptVariables(
     variables: VariablesCreateInput['variables'],
     autoUppercase?: boolean
   ): Promise<VariablesCreateInput['variables']> {
@@ -93,7 +93,7 @@ export class VariableService {
     }))
   }
 
-  private async decryptVariables(
+  private decryptVariables(
     variables: VariablesCreateInput['variables']
   ): Promise<VariablesCreateInput['variables']> {
     return Promise.all(variables.map(async (variable) => {
@@ -110,7 +110,7 @@ export class VariableService {
       .join('|')
   }
 
-  private async upsertSingleVariable(variable: Variable): Promise<Variable> {
+  private upsertSingleVariable(variable: Variable): Promise<Variable> {
     if (!variable) {
       throw createError({
         statusCode: 400,
