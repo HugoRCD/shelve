@@ -1,4 +1,4 @@
-import type { CreateTeamInput, Team, Member } from '@shelve/types'
+import type { CreateTeamInput, DeleteTeamInput, Team, Member } from '@shelve/types'
 import { Role, TeamRole } from '@shelve/types'
 import { ProjectService } from '~~/server/services/project.service'
 

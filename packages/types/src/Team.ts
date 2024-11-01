@@ -1,4 +1,4 @@
-import { Role } from '../dist/index'
+import { Role } from './User'
 import type { Project } from './Project'
 import type { User } from './User'
 
@@ -39,7 +39,7 @@ export type UpdateTeamInput = {
   projects: Project[];
 }
 
-type DeleteTeamInput = {
+export type DeleteTeamInput = {
   teamId: number
   userId: number
   userRole: Role
