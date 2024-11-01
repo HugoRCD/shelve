@@ -3,10 +3,9 @@
   "globalDependencies": ["**/.env"],
   "tasks": {
     "build": {
-      "dependsOn": ["^build"],
       "outputs": [
-        "dist/**",
-        ".output/**"
+        "**/dist/**",
+        "**/.output/**"
       ]
     },
     "generate" : {
