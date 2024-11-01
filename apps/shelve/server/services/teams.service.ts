@@ -1,6 +1,6 @@
 import type { CreateTeamInput, Team, Member } from '@shelve/types'
 import { Role, TeamRole } from '@shelve/types'
-import { deleteCachedUserProjects } from '~~/server/services/project.service'
+import { ProjectService } from '~~/server/services/project.service'
 
 export class TeamService {
 
@@ -37,11 +37,12 @@ export class TeamService {
    * Upsert team member
    */
   async upsertMember(teamId: number, addMemberInput: { email: string; role: TeamRole }, requesterId: number): Promise<Member> {
+    const projectService = new ProjectService()
     const team = await this.validateTeamAccess(teamId, requesterId)
     const user = await this.findUserByEmail(addMemberInput.email)
 
     await this.deleteCachedTeamByUserId(requesterId)
-    await deleteCachedUserProjects(requesterId)
+    await projectService.deleteCachedUserProjects(requesterId)
 
     const member = await prisma.member.upsert({
       where: {
@@ -76,9 +77,10 @@ export class TeamService {
    * Remove team member
    */
   async removeMember(teamId: number, memberId: number, requesterId: number): Promise<Member> {
+    const projectService = new ProjectService()
     await this.validateTeamAccess(teamId, requesterId)
     await this.deleteCachedTeamByUserId(requesterId)
-    await deleteCachedUserProjects(requesterId)
+    await projectService.deleteCachedUserProjects(requesterId)
 
     const member = await this.getMemberById(memberId)
     await this.deleteTeammate(member.userId, requesterId)

@@ -1,10 +1,11 @@
 import type { H3Event } from 'h3'
-import { createProject } from '~~/server/services/project.service'
+import { ProjectService } from '~~/server/services/project.service'
 
 export default eventHandler(async (event: H3Event) => {
+  const projectService = new ProjectService()
   const { user } = event.context
   const projectCreateInput = await readBody(event)
   delete projectCreateInput.variables
   projectCreateInput.name = projectCreateInput.name.trim()
-  return await createProject(projectCreateInput, user.id)
+  return await projectService.createProject(projectCreateInput, user.id)
 })
