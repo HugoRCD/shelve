@@ -46,7 +46,7 @@ export class ProjectService {
   /**
    * Get project by ID
    */
-  async getProjectById(id: number): Promise<Project> {
+  getProjectById(id: number): Promise<Project> {
     return cachedFunction(() => {
       return prisma.project.findUnique({
         where: { id },
@@ -62,7 +62,7 @@ export class ProjectService {
   /**
    * Get all projects for a user
    */
-  async getProjectsByUserId(userId: number): Promise<Project[]> {
+  getProjectsByUserId(userId: number): Promise<Project[]> {
     return cachedFunction(async () => {
       const [projects, teams] = await Promise.all([
         this.getUserProjects(userId),
@@ -178,13 +178,13 @@ export class ProjectService {
     return projectData
   }
 
-  private async getUserProjects(userId: number) {
+  private getUserProjects(userId: number) {
     return prisma.project.findMany({
       where: { ownerId: userId },
     })
   }
 
-  private async getUserTeamProjects(userId: number) {
+  private getUserTeamProjects(userId: number) {
     return prisma.team.findMany({
       where: {
         members: {
