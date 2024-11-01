@@ -19,7 +19,8 @@
   ],
   "devDependencies": {
     "@types/crypto-js": "^4.2.2",
-    "typescript": "latest"
+    "typescript": "latest",
+    "unbuild": "^2.0.0"
   },
   "dependencies": {
     "crypto-js": "^4.2.0",
