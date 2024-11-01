@@ -1,7 +1,8 @@
 import type { H3Event } from 'h3'
-import { getTeammatesByUserId } from '~~/server/services/teammate.service'
+import { TeammateService } from '~~/server/services/teammate.service'
 
 export default eventHandler((event: H3Event) => {
+  const teammateService = new TeammateService()
   const { user } = event.context
-  return getTeammatesByUserId(user.id)
+  return teammateService.getTeammatesByUserId(user.id)
 })
