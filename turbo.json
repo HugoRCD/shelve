@@ -1,8 +1,9 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "globalDependencies": [".env"],
+  "globalDependencies": ["**/.env"],
   "tasks": {
     "build": {
+      "dependsOn": ["^build"],
       "outputs": [
         "**/dist/**",
         "**/.output/**"
@@ -20,7 +21,10 @@
       "persistent": true
     },
     "dev:prepare": {
-      "cache": false
+      "cache": false,
+      "outputs": [
+        "**/dist/**"
+      ]
     },
     "lint": {},
     "lint:fix": {},
