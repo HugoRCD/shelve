@@ -1,36 +1,61 @@
 <script lang="ts" setup>
 const navigation = getNavigation('home')
+
+const items = navigation.map((item) => ({
+  ...item,
+  to: item.path,
+  label: item.title,
+  slot: item.name.toLowerCase(),
+}))
+
+const githubStars = ref('0')
+async function fetchRepo() {
+  try {
+    const res = await $fetch('https://ungh.cc/repos/hugorcd/shelve') as { repo: RepoType }
+    githubStars.value = res.repo.stars.toString()
+  } catch (e) { /* empty */ }
+}
+
+await fetchRepo()
+
+const githubItem = {
+  label: 'GitHub',
+  icon: 'i-simple-icons-github',
+  badge: githubStars.value,
+  to: 'https://github.com/HugoRCD/shelve',
+  target: '_blank'
+}
+
+items.push(githubItem)
 </script>
 
 <template>
-  <div class="z-[99]">
-    <nav class="fixed top-0 flex w-full">
-      <div class="backdrop" />
-      <div class="z-50 flex w-full items-center justify-around p-4 sm:px-5 sm:py-2">
-        <div class="flex gap-2">
+  <div class="z-[99] relative">
+    <div class="backdrop" />
+    <div class="fixed top-0 flex w-full">
+      <div class="z-50 flex w-full items-center justify-between sm:justify-around p-4 sm:px-5 sm:py-2">
+        <div class="flex items-center gap-4">
           <NuxtLink to="/" class="font-newsreader text-2xl font-light italic">
             Shelve
           </NuxtLink>
-          <UDivider orientation="vertical" class="mx-2" />
-          <div class="flex items-center gap-3">
-            <NuxtLink
-              v-for="item in navigation"
-              :key="item.name"
-              class="font-geist-mono text-sm text-neutral-200 hover:text-neutral-400"
-              :to="item.path"
-            >
-              {{ item.name }}
-            </NuxtLink>
-          </div>
+          <UNavigationMenu :items color="neutral" class="hidden sm:flex">
+            <template #components-trailing>
+              <UBadge label="44" variant="subtle" size="sm" />
+            </template>
+          </UNavigationMenu>
         </div>
-        <div class="flex items-center gap-5">
-          <LandingGithubStar class="hidden sm:flex" />
+        <div class="flex items-center gap-2">
+          <div class="flex sm:hidden">
+            <UDropdownMenu :items>
+              <UButton color="neutral" variant="ghost" icon="lucide:menu" />
+            </UDropdownMenu>
+          </div>
           <AuthState>
             <DropdownMenu />
           </AuthState>
         </div>
       </div>
-    </nav>
+    </div>
   </div>
 </template>
 
