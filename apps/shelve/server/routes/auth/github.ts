@@ -1,4 +1,4 @@
-import { upsertUser } from '~~/server/app/userService'
+import { upsertUser } from '~~/server/services/user.service'
 
 export default defineOAuthGitHubEventHandler({
   config: {
