@@ -7,5 +7,28 @@ services:
     restart: always
     env_file:
       - ./apps/shelve/.env
+    environment:
+      # Runtime essentials
+      - DATABASE_URL=${DATABASE_URL}
+      - NUXT_PRIVATE_REDIS_URL=${NUXT_PRIVATE_REDIS_URL}
+      - NUXT_PRIVATE_ENCRYPTION_KEY=${NUXT_PRIVATE_ENCRYPTION_KEY}
+      - NUXT_SESSION_PASSWORD=${NUXT_SESSION_PASSWORD}
+      - NUXT_PRIVATE_AUTH_SECRET=${NUXT_PRIVATE_AUTH_SECRET}
+
+      # OAuth
+      - NUXT_OAUTH_GITHUB_CLIENT_ID=${NUXT_OAUTH_GITHUB_CLIENT_ID}
+      - NUXT_OAUTH_GITHUB_CLIENT_SECRET=${NUXT_OAUTH_GITHUB_CLIENT_SECRET}
+
+      # Public configs
+      - NUXT_PUBLIC_SITE_URL=${NUXT_PUBLIC_SITE_URL}
+
+      # Optional services
+      - NUXT_PRIVATE_RESEND_API_KEY=${NUXT_PRIVATE_RESEND_API_KEY}
+      - NUXT_PRIVATE_VAULT_URL=${NUXT_PRIVATE_VAULT_URL}
     ports:
       - "3000:3000"
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:3000/api/hello" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
