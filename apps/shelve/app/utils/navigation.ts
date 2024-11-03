@@ -58,6 +58,12 @@ export function getNavigation(where: Where): Navigation[] {
           icon: 'heroicons:users',
           title: 'Users',
         },
+        {
+          name: 'Tests',
+          path: '/app/admin/tests',
+          icon: 'lucide:flask-conical',
+          title: 'Tests',
+        },
       ]
     default:
       return []

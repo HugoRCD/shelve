@@ -79,7 +79,7 @@ export class EmailService {
         redirectUrl: this.siteUrl,
       })
     } catch (error) {
-      return `<h1>Welcome to Shelve, ${username}!</h1>`
+      return `<h1>Welcome to Shelve, ${username || email}!</h1>`
     }
   }
 

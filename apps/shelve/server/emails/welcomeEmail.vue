@@ -52,11 +52,6 @@ defineProps({
             </Link> to see what's coming next.
           </Text>
           <Text class="mb-4 text-left text-[#000000]">
-            3. Join our <Link :href="`${redirectUrl}/community`" class="text-[#2C3BF5]">
-              community
-            </Link> to connect with other users and share your experiences.
-          </Text>
-          <Text class="mb-4 text-left text-[#000000]">
             4. Start a new project and invite your team members to collaborate.
           </Text>
           <Section class="my-[32px] text-center">
