@@ -11,6 +11,7 @@
     "dev:app": "turbo run dev --filter=@shelve/app",
     "dev:cli": "turbo run dev --filter=@shelve/cli",
     "dev:prepare": "turbo run dev:prepare",
+    "prisma:generate": "turbo run prisma:generate",
     "generate": "turbo run generate",
     "lint": "turbo run lint",
     "lint:fix": "turbo run lint:fix",

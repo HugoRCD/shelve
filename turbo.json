@@ -30,6 +30,7 @@
         "**/.nuxt/**"
       ]
     },
+    "prisma:generate": {},
     "lint": {},
     "lint:fix": {},
     "test": {},

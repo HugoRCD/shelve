@@ -23,6 +23,8 @@ COPY . .
 # Install dependencies
 RUN bun install
 
+RUN bun run prisma:generate
+
 # Build the application
 RUN bun run build
 

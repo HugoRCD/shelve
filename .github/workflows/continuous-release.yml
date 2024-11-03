@@ -2,12 +2,10 @@ name: Publish Any Commit
 on: [push, pull_request]
 
 jobs:
-  build:
+  check-changes:
     runs-on: ubuntu-latest
-    env:
-      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-      TURBO_TEAM: ${{ vars.TURBO_TEAM }}
-
+    outputs:
+      src: ${{ steps.changes.outputs.src }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -21,6 +19,17 @@ jobs:
               - 'packages/cli/src/**'
               - 'packages/cli/package.json'
               - 'bun.lockb'
+
+  build:
+    needs: check-changes
+    if: needs.check-changes.outputs.src == 'true'
+    runs-on: ubuntu-latest
+    env:
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
       - uses: oven-sh/setup-bun@v2
         with:
