@@ -42,13 +42,19 @@ defineProps({
             We're excited to have you on board. Here are some next steps to get you started:
           </Text>
           <Text class="mb-4 text-left text-[#000000]">
-            1. Explore our <Link :href="`${redirectUrl}/docs`" class="text-[#2C3BF5]">documentation</Link> to learn more about Shelve's features.
+            1. Explore our <Link :href="`${redirectUrl}/docs`" class="text-[#2C3BF5]">
+              documentation
+            </Link> to learn more about Shelve's features.
           </Text>
           <Text class="mb-4 text-left text-[#000000]">
-            2. Check out our <Link :href="`${redirectUrl}/roadmap`" class="text-[#2C3BF5]">roadmap</Link> to see what's coming next.
+            2. Check out our <Link :href="`${redirectUrl}/roadmap`" class="text-[#2C3BF5]">
+              roadmap
+            </Link> to see what's coming next.
           </Text>
           <Text class="mb-4 text-left text-[#000000]">
-            3. Join our <Link :href="`${redirectUrl}/community`" class="text-[#2C3BF5]">community</Link> to connect with other users and share your experiences.
+            3. Join our <Link :href="`${redirectUrl}/community`" class="text-[#2C3BF5]">
+              community
+            </Link> to connect with other users and share your experiences.
           </Text>
           <Text class="mb-4 text-left text-[#000000]">
             4. Start a new project and invite your team members to collaborate.
