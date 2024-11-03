@@ -47,13 +47,12 @@ jobs:
             type=raw,value=latest,enable={{is_default_branch}}
 
       - name: Build and push Docker image
-        run: |
-          docker compose build
-          docker tag shelve:latest ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
-          docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
-
-          if [[ $GITHUB_REF == refs/tags/* ]]; then
-            VERSION=${GITHUB_REF#refs/tags/v}
-            docker tag shelve:latest ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:$VERSION
-            docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:$VERSION
-          fi
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./apps/shelve/Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
