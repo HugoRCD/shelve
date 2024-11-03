@@ -19,7 +19,7 @@ COPY apps/shelve/package.json ./apps/shelve/package.json
 
 COPY . .
 
-RUN bun pm trust && bun install
+RUN bun install --no-install-links && bun run build
 
 RUN bun run build
 
