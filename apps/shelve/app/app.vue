@@ -2,7 +2,7 @@
 import { Toaster } from 'vue-sonner'
 
 useScriptPlausibleAnalytics({
-  domain: 'shelve.hrcd.fr',
+  domain: 'shelve.cloud',
   scriptInput: {
     src: 'https://analytics.hrcd.fr/js/script.js',
   }
@@ -24,7 +24,7 @@ useSeoMeta({
   twitterDescription: description,
   twitterCard: 'summary_large_image',
   twitterImage: ogImage,
-  ogUrl: 'https://shelve.hrcd.fr',
+  ogUrl: 'https://shelve.cloud',
   ogImage: ogImage,
   ogSiteName: title,
   ogTitle: title,

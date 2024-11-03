@@ -8,7 +8,7 @@ export type ShelveConfig = {
    * */
   project: string
   /**
-   * The token to authenticate with Shelve created using the app (https://shelve.hrcd.fr/app/tokens) or your own Shelve instance
+   * The token to authenticate with Shelve created using the app (https://shelve.cloud/app/tokens) or your own Shelve instance
    *
    * @default process.env.SHELVE_TOKEN
    * */
@@ -16,7 +16,7 @@ export type ShelveConfig = {
   /**
    * The URL of the Shelve instance can be overridden with the `SHELVE_URL` environment variable
    *
-   * @default https://shelve.hrcd.fr
+   * @default https://shelve.cloud
    * @fallback process.env.SHELVE_URL
    * */
   url: string

@@ -22,7 +22,7 @@ export default defineAppConfig({
   },
   title: 'Shelve',
   description: 'Shelve, is a project management tool for developers, etc... to make project creation and management easier.',
-  ogImage: 'https://shelve.hrcd.fr/og.png',
+  ogImage: 'https://shelve.cloud/og.png',
   email: 'contact@hrcd.fr',
   phone: '(+33) 6 21 56 22 18',
   socials: [

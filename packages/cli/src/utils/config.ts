@@ -58,7 +58,7 @@ export async function getConfig(): Promise<{
       project: process.env.SHELVE_PROJECT,
       // @ts-expect-error to provide error message we let token be undefined
       token: process.env.SHELVE_TOKEN,
-      url: process.env.SHELVE_URL || 'https://shelve.hrcd.fr',
+      url: process.env.SHELVE_URL || 'https://shelve.cloud',
       confirmChanges: false,
       pullMethod: 'overwrite',
       pushMethod: 'overwrite',
