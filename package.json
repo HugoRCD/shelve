@@ -20,7 +20,7 @@
   "devDependencies": {
     "@hrcd/eslint-config": "edge",
     "automd": "^0.3.12",
-    "eslint": "^9.13.0",
+    "eslint": "^9.14.0",
     "turbo": "^2.2.3",
     "typescript": "^5.6.3"
   },
