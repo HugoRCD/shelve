@@ -1,0 +1,11 @@
+services:
+  shelve:
+    container_name: app
+    build:
+      context: .
+      dockerfile: ./apps/shelve/Dockerfile
+    restart: always
+    env_file:
+      - ./apps/shelve/.env
+    ports:
+      - "3000:3000"

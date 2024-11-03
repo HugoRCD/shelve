@@ -49,7 +49,7 @@
     "semver": "^7.6.3"
   },
   "devDependencies": {
-    "@shelve/types": "workspace:*",
+    "@shelve/types": "*",
     "@types/bun": "^1.1.13",
     "@types/npm-registry-fetch": "^8.0.7",
     "@types/semver": "^7.5.8",
