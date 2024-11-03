@@ -13,7 +13,26 @@ env:
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
+  check-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      src: ${{ steps.changes.outputs.src }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check if there are changes
+        uses: dorny/paths-filter@v3
+        id: changes
+        with:
+          filters: |
+            src:
+              - 'apps/shelve/**'
+              - 'bun.lockb'
+
   build-and-push:
+    needs: check-changes
+    if: needs.check-changes.outputs.src == 'true'
     runs-on: ubuntu-latest
     permissions:
       contents: read
