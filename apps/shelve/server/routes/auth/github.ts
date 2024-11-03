@@ -28,7 +28,6 @@ export default defineOAuthGitHubEventHandler({
         },
         loggedInAt: new Date().toISOString(),
       })
-      await emailService.sendWelcomeEmail(user.email, user.login)
       return sendRedirect(event, '/app/projects')
     } catch (error) {
       console.error('GitHub OAuth error:', error)

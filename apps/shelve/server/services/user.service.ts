@@ -1,4 +1,5 @@
 import type { publicUser, User, CreateUserInput, UpdateUserInput } from '@shelve/types'
+import { EmailService } from '~~/server/services/resend.service'
 
 export class UserService {
 
@@ -30,8 +31,12 @@ export class UserService {
       create: {
         ...createUserInput,
         username: newUsername,
-      },
-    })
+      }
+    }) as User
+    if (user.createdAt === user.updatedAt) {
+      const emailService = new EmailService()
+      await emailService.sendWelcomeEmail(user.email, user.username)
+    }
 
     return this.formatUser(user)
   }
