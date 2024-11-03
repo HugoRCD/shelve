@@ -10,7 +10,7 @@
 
 <!-- /automd -->
 
-The Shelve CLI serves as a command-line interface designed for the [Shelve](https://shelve.hrcd.fr/) platform. This tool enables users to authenticate with Shelve, facilitating the seamless transfer of environment variables for project collaboration within a team directly through the terminal interface.
+The Shelve CLI serves as a command-line interface designed for the [Shelve](https://shelve.cloud/) platform. This tool enables users to authenticate with Shelve, facilitating the seamless transfer of environment variables for project collaboration within a team directly through the terminal interface.
 
 ## Installation
 
@@ -31,7 +31,7 @@ import { createShelveConfig } from "@shelve/cli"
 export default createShelveConfig({
   project: "my-project", // only required field
   token: "my-token",
-  url: "https://shelve.hrcd.fr",
+  url: "https://shelve.cloud",
   confirmChanges: false,
   pushMethod: 'overwrite',
   pullMethod: 'overwrite',
