@@ -35,7 +35,6 @@ export async function useApi(): Promise<typeof ofetch> {
       Cookie: `authToken=${token}`
     },
     onResponseError(ctx) {
-      console.log(ctx)
       if (ctx.response.status === 401) onCancel('Authentication failed, please verify your token')
       if (ctx.response.status === 500) onCancel('Internal server error, please try again later')
     }
