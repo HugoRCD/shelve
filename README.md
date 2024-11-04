@@ -77,6 +77,26 @@ Commands:
 
 <!-- /automd -->
 
+## Self-Hosting with Docker
+
+To self-host the Shelve application using the Docker image available on GitHub, follow these steps:
+
+1. **Pull the Docker Image**:
+    ```sh
+    docker pull ghcr.io/hugorcd/shelve:latest
+    ```
+
+2. **Run the Docker Container**:
+    ```sh
+    docker run -d -p 8080:80 --name shelve-app ghcr.io/hugorcd/shelve:latest
+    ```
+
+3. **Access the Application**:
+   Open your browser and navigate to `http://localhost:8080` to access the Shelve application.
+
+Ensure you have Docker installed and running on your machine before executing these commands. For more information on Docker, refer to the [official Docker documentation](https://docs.docker.com/get-docker/).
+
+
 <!-- automd:fetch url="gh:hugorcd/markdown/main/src/contributions.md" -->
 
 ## Contributing
