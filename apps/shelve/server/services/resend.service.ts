@@ -6,13 +6,13 @@ import welcomeEmail from '~~/server/emails/welcomeEmail.vue'
 export class EmailService {
 
   private readonly resend: Resend
-  private readonly siteUrl: string
+  private readonly appUrl: string
   private readonly SENDER = 'HugoRCD <contact@hrcd.fr>'
 
   constructor() {
     const config = useRuntimeConfig()
     this.resend = new Resend(config.private.resendApiKey)
-    this.siteUrl = config.public.siteUrl
+    this.appUrl = config.public.appUrl
   }
 
   /**
@@ -62,7 +62,7 @@ export class EmailService {
     try {
       return await render(verifyOtp, {
         otp,
-        redirectUrl: `${this.siteUrl}/login?email=${email}&otp=${otp}`,
+        redirectUrl: `${this.appUrl}/login?email=${email}&otp=${otp}`,
       })
     } catch (error) {
       return `<h1>OTP: ${otp}</h1>`
@@ -76,7 +76,7 @@ export class EmailService {
     try {
       return await render(welcomeEmail, {
         username,
-        redirectUrl: this.siteUrl,
+        redirectUrl: this.appUrl,
       })
     } catch (error) {
       return `<h1>Welcome to Shelve, ${username || email}!</h1>`

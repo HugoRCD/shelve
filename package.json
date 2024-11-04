@@ -6,9 +6,11 @@
   "scripts": {
     "build": "turbo run build",
     "build:app": "turbo run build --filter=@shelve/app",
+    "build:lp": "turbo run build --filter=@shelve/lp",
     "build:cli": "turbo run build --filter=@shelve/cli",
     "dev": "turbo run dev --filter=@shelve/app",
     "dev:app": "turbo run dev --filter=@shelve/app",
+    "dev:lp": "turbo run dev --filter=@shelve/lp",
     "dev:cli": "turbo run dev --filter=@shelve/cli",
     "dev:prepare": "turbo run dev:prepare",
     "prisma:generate": "turbo run prisma:generate",

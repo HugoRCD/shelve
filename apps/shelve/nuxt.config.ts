@@ -18,17 +18,10 @@ export default defineNuxtConfig({
     componentIslands: true,
   },
 
-  routeRules: {
-    '/': { isr: true, prerender: true },
-    '/vault': { isr: true, prerender: true },
-    '/app/**': { ssr: false, robots: false },
-  },
+  ssr: false,
 
   nitro: {
     preset: process.env.NITRO_PRESET || 'bun',
-    prerender: {
-      routes: ['/sitemap.xml']
-    },
     rollupConfig: {
       // @ts-expect-error - vue is an external plugin
       plugins: [vue()]
@@ -38,16 +31,12 @@ export default defineNuxtConfig({
         driver: 'redis',
         url: process.env.NUXT_PRIVATE_REDIS_URL,
       },
-      vault: {
-        driver: 'redis',
-        url: process.env.NUXT_PRIVATE_VAULT_URL,
-      },
     }
   },
 
   runtimeConfig: {
     public: {
-      siteUrl: process.env.NUXT_PUBLIC_SITE_URL,
+      appUrl: process.env.NUXT_PUBLIC_APP_URL,
     },
     private: {
       resendApiKey: process.env.NUXT_PRIVATE_RESEND_API_KEY,
@@ -56,28 +45,12 @@ export default defineNuxtConfig({
   },
 
   modules: [
-    '@nuxt/content',
     '@nuxt/image',
     '@nuxt/ui',
-    '@nuxt/fonts',
     '@vueuse/nuxt',
     'nuxt-build-cache',
-    'nuxt-auth-utils',
-    '@nuxt/scripts',
-    '@nuxtjs/seo',
+    'nuxt-auth-utils'
   ],
-
-  site: {
-    url: process.env.NUXT_PUBLIC_SITE_URL,
-    name: 'Shelve',
-    description: 'Shelve is a project management tool for developers teams',
-    defaultLocale: 'en',
-    indexable: true,
-  },
-
-  sitemap: {
-    exclude: ['/app/**'],
-  },
 
   css: ['~/assets/style/main.css'],
 
