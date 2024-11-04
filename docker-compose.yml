@@ -79,7 +79,7 @@ services:
       - shelve-network
   shelve_redis:
     container_name: shelve_redis
-    image: redis:7.0-alpine
+    image: redis:7.4-alpine
     restart: always
     volumes:
       - redis:/data
