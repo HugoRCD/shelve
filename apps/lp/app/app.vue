@@ -34,16 +34,16 @@ useSeoMeta({
 
 <template>
   <Html lang="en">
-  <Body class="selection:bg-primary font-geist relative overflow-x-hidden bg-white text-black selection:text-inverted dark:bg-neutral-950 dark:text-white">
-  <UApp :tooltip="{ delayDuration: 0 }">
-    <NuxtLayout>
-      <NuxtPage />
-    </NuxtLayout>
-    <Toaster
-      close-button
-      position="top-center"
-    />
-  </UApp>
-  </Body>
+    <Body class="selection:bg-primary font-geist relative overflow-x-hidden bg-white text-black selection:text-inverted dark:bg-neutral-950 dark:text-white">
+      <UApp :tooltip="{ delayDuration: 0 }">
+        <NuxtLayout>
+          <NuxtPage />
+        </NuxtLayout>
+        <Toaster
+          close-button
+          position="top-center"
+        />
+      </UApp>
+    </Body>
   </Html>
 </template>

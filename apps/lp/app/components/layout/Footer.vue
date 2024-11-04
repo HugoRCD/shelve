@@ -63,7 +63,8 @@ const nav = [
         </NuxtLink>
         <NuxtLink
           :to="`app.${siteUrl}/login`"
-          class="group -mb-px -ml-px flex w-full cursor-pointer justify-between gap-2 border border-neutral-800 border-opacity-50 p-4 text-xs text-neutral-500 transition-all duration-300 ease-in-out hover:border-opacity-100 hover:bg-neutral-800/50 hover:text-neutral-200">
+          class="group -mb-px -ml-px flex w-full cursor-pointer justify-between gap-2 border border-neutral-800 border-opacity-50 p-4 text-xs text-neutral-500 transition-all duration-300 ease-in-out hover:border-opacity-100 hover:bg-neutral-800/50 hover:text-neutral-200"
+        >
           <span class="text-neutral-400">
             Login
           </span>
