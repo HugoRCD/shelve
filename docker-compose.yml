@@ -52,6 +52,8 @@ services:
     restart: always
     ports:
       - "3001:3000"
+    environment:
+      - NUXT_PUBLIC_SITE_URL=${NUXT_PUBLIC_SITE_URL}
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:3000/" ]
       interval: 30s

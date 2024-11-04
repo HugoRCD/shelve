@@ -1,8 +1,6 @@
 <script setup lang="ts">
 const { title } = useAppConfig()
 
-const { siteUrl } = useRuntimeConfig().public
-
 defineShortcuts({
   s: {
     usingInput: true,

@@ -1,6 +1,4 @@
 <script setup lang="ts">
-const { siteUrl } = useRuntimeConfig().public
-
 const nav = [
   {
     name: 'Support',
@@ -62,7 +60,7 @@ const nav = [
           <UIcon name="lucide:arrow-right" class="ml-1 inline-block text-neutral-400 transition-all duration-300 ease-in-out group-hover:-rotate-45" />
         </NuxtLink>
         <NuxtLink
-          :to="`app.${siteUrl}/login`"
+          to="https://app.shelve.cloud/login"
           class="group -mb-px -ml-px flex w-full cursor-pointer justify-between gap-2 border border-neutral-800 border-opacity-50 p-4 text-xs text-neutral-500 transition-all duration-300 ease-in-out hover:border-opacity-100 hover:bg-neutral-800/50 hover:text-neutral-200"
         >
           <span class="text-neutral-400">

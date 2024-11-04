@@ -37,6 +37,7 @@ async function decryptEnvFile() {
         <UFormField label="Share ID">
           <UInput
             v-model="localId"
+            class="w-full"
             placeholder="o75adqf..."
             required
           />

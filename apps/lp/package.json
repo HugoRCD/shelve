@@ -20,6 +20,7 @@
     "vue-router": "latest",
     "vue-sonner": "^1.2.5",
     "@shelve/types": "*",
+    "@shelve/crypto": "*",
     "@tsparticles/engine": "^3.5.0",
     "@tsparticles/slim": "^3.5.0",
     "@nuxt/image": "^1.8.1",

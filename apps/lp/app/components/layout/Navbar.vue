@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 const navigation = getNavigation('home')
-const { siteUrl } = useRuntimeConfig().public
 
 const items = navigation.map((item) => ({
   ...item,

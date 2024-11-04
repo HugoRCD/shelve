@@ -146,7 +146,14 @@ function handleDrop(event: DragEvent) {
         <span class="text-sm font-semibold text-green-500/80">
           Your secret(s) has been saved
         </span>
-        <UButton color="green" variant="soft" icon="lucide:copy" label="Copy Share URL" @click="copyToClipboard(shareUrl)" />
+        <UButton
+          color="success"
+          size="sm"
+          variant="soft"
+          icon="lucide:copy"
+          label="Copy Share URL"
+          @click="copyToClipboard(shareUrl)"
+        />
       </div>
     </div>
   </form>

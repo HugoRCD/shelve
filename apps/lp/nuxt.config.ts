@@ -26,13 +26,22 @@ export default defineNuxtConfig({
     public: {
       siteUrl: process.env.NUXT_PUBLIC_SITE_URL,
     },
+    private: {
+      encryptionKey: process.env.NUXT_PRIVATE_ENCRYPTION_KEY,
+    },
   },
 
   nitro: {
     preset: process.env.NITRO_PRESET || 'bun',
     prerender: {
-      routes: ['/sitemap.xml']
+      routes: ['/sitemap.xml', '/vault']
     },
+    storage: {
+      vault: {
+        driver: 'redis',
+        url: process.env.NUXT_PRIVATE_VAULT_URL,
+      },
+    }
   },
 
   site: {
