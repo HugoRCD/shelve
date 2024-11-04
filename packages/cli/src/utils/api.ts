@@ -6,7 +6,7 @@ import { onCancel } from './index'
 
 export async function getToken(): Promise<string> {
   const token = await password({
-    message: 'Please provide a valid token (you can generate one on https://shelve.cloud/app/tokens)',
+    message: 'Please provide a valid token (you can generate one on https://app.shelve.cloud/tokens)',
     validate(value) {
       if (value.length === 0) return `Value is required!`
     },
