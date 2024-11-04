@@ -1,0 +1,35 @@
+{
+  "name": "@shelve/lp",
+  "description": "Shelve is a project management tool for developers teams",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "start": "node .output/server/index.mjs",
+    "postinstall": "nuxt prepare",
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix .",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "nuxt": "^3.14.0",
+    "vue": "latest",
+    "vue-router": "latest",
+    "vue-sonner": "^1.2.5",
+    "@shelve/types": "*",
+    "@shelve/crypto": "*",
+    "@tsparticles/engine": "^3.5.0",
+    "@tsparticles/slim": "^3.5.0",
+    "@nuxt/image": "^1.8.1",
+    "@nuxt/scripts": "^0.9.5",
+    "@nuxt/ui": "https://pkg.pr.new/@nuxt/ui@845f85a",
+    "@nuxtjs/seo": "^2.0.0-rc.23",
+    "@iconify-json/heroicons": "^1.2.1",
+    "@iconify-json/lucide": "^1.2.11",
+    "@iconify-json/simple-icons": "^1.2.10",
+    "@nuxt/content": "^2.13.4"
+  }
+}

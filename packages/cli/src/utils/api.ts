@@ -6,7 +6,7 @@ import { onCancel } from './index'
 
 export async function getToken(): Promise<string> {
   const token = await password({
-    message: 'Please provide a valid token (you can generate one on https://shelve.cloud/app/tokens)',
+    message: 'Please provide a valid token (you can generate one on https://app.shelve.cloud/tokens)',
     validate(value) {
       if (value.length === 0) return `Value is required!`
     },
@@ -35,7 +35,6 @@ export async function useApi(): Promise<typeof ofetch> {
       Cookie: `authToken=${token}`
     },
     onResponseError(ctx) {
-      console.log(ctx)
       if (ctx.response.status === 401) onCancel('Authentication failed, please verify your token')
       if (ctx.response.status === 500) onCancel('Internal server error, please try again later')
     }

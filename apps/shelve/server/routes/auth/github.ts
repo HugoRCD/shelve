@@ -1,4 +1,5 @@
 import { UserService } from '~~/server/services/user.service'
+import { EmailService } from '~~/server/services/resend.service'
 
 export default defineOAuthGitHubEventHandler({
   config: {
@@ -7,6 +8,7 @@ export default defineOAuthGitHubEventHandler({
   },
   async onSuccess(event, { user, tokens }) {
     const userService = new UserService()
+    const emailService = new EmailService()
     try {
       const _user = await userService.upsertUser({
         email: user.email,
@@ -26,7 +28,7 @@ export default defineOAuthGitHubEventHandler({
         },
         loggedInAt: new Date().toISOString(),
       })
-      return sendRedirect(event, '/app/projects')
+      return sendRedirect(event, '/')
     } catch (error) {
       console.error('GitHub OAuth error:', error)
       return sendRedirect(event, '/login?error=github')

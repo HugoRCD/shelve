@@ -21,7 +21,7 @@ COPY . .
 
 RUN bun install
 
-RUN bun run build
+RUN bun run build:app
 
 # Stage 2: Final Stage
 FROM oven/bun:latest
@@ -29,6 +29,8 @@ FROM oven/bun:latest
 WORKDIR /app
 
 COPY --from=build /app/apps/shelve/.output .output
+
+RUN apt-get update && apt-get install -y curl
 
 EXPOSE 3000
 

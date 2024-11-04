@@ -31,7 +31,7 @@ import { createShelveConfig } from "@shelve/cli"
 export default createShelveConfig({
   project: "my-project", // only required field
   token: "my-token",
-  url: "https://shelve.cloud",
+  url: "https://app.shelve.cloud",
   confirmChanges: false,
   pushMethod: 'overwrite',
   pullMethod: 'overwrite',

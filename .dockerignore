@@ -1,13 +1,21 @@
-node_modules
-Dockerfile*
-docker-compose*
-.dockerignore
+# Versioning
 .git
 .gitignore
-README.md
-LICENSE
-.vscode
-helm-charts
-.env
+.github
+
+# Dependencies
+**/node_modules
+**/dist
+**/.next
+**/.nuxt
+**/.output
+
+# Dev files
+*.md
+*.log
+.env*
 .editorconfig
-.idea
+
+# CI/CD
+.gitlab-ci.yml
+.circleci

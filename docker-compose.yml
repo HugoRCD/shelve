@@ -1,30 +1,26 @@
 services:
-  shelve:
-    container_name: app
+  shelve_app:
+    container_name: shelve_app
     build:
       context: .
       dockerfile: ./apps/shelve/Dockerfile
     restart: always
-    env_file:
-      - ./apps/shelve/.env
     environment:
       # Runtime essentials
-      - DATABASE_URL=${DATABASE_URL}
-      - NUXT_PRIVATE_REDIS_URL=${NUXT_PRIVATE_REDIS_URL}
-      - NUXT_PRIVATE_ENCRYPTION_KEY=${NUXT_PRIVATE_ENCRYPTION_KEY}
-      - NUXT_SESSION_PASSWORD=${NUXT_SESSION_PASSWORD}
-      - NUXT_PRIVATE_AUTH_SECRET=${NUXT_PRIVATE_AUTH_SECRET}
+      - DATABASE_URL=${DATABASE_URL} # DATABASE_URL=postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@shelve_db:5432/${POSTGRES_DB:-postgres}
+      - NUXT_PRIVATE_REDIS_URL=${NUXT_PRIVATE_REDIS_URL:-redis://shelve_redis:6379} # NUXT_PRIVATE_REDIS_URL=redis://shelve_redis:6379
+      - NUXT_PRIVATE_ENCRYPTION_KEY=${NUXT_PRIVATE_ENCRYPTION_KEY} # Encryption key for securing sensitive data
+      - NUXT_SESSION_PASSWORD=${NUXT_SESSION_PASSWORD} # Password for session management
 
       # OAuth
-      - NUXT_OAUTH_GITHUB_CLIENT_ID=${NUXT_OAUTH_GITHUB_CLIENT_ID}
-      - NUXT_OAUTH_GITHUB_CLIENT_SECRET=${NUXT_OAUTH_GITHUB_CLIENT_SECRET}
+      - NUXT_OAUTH_GITHUB_CLIENT_ID=${NUXT_OAUTH_GITHUB_CLIENT_ID} # Client ID for GitHub OAuth
+      - NUXT_OAUTH_GITHUB_CLIENT_SECRET=${NUXT_OAUTH_GITHUB_CLIENT_SECRET} # Client secret for GitHub OAuth
 
       # Public configs
-      - NUXT_PUBLIC_SITE_URL=${NUXT_PUBLIC_SITE_URL}
+      - NUXT_PUBLIC_APP_URL=${NUXT_PUBLIC_APP_URL} # Public URL of your application
 
       # Optional services
-      - NUXT_PRIVATE_RESEND_API_KEY=${NUXT_PRIVATE_RESEND_API_KEY}
-      - NUXT_PRIVATE_VAULT_URL=${NUXT_PRIVATE_VAULT_URL}
+      - NUXT_PRIVATE_RESEND_API_KEY=${NUXT_PRIVATE_RESEND_API_KEY} # API key for the Resend service (optional)
     ports:
       - "3000:3000"
     healthcheck:
@@ -47,7 +43,58 @@ services:
           memory: 512M
     networks:
       - shelve-network
+  shelve_lp:
+    container_name: shelve_lp
+    build:
+      context: .
+      dockerfile: ./apps/lp/Dockerfile
+    restart: always
+    ports:
+      - "3001:3000"
+    environment:
+      - NUXT_PUBLIC_SITE_URL=${NUXT_PUBLIC_SITE_URL} # Public URL of the site
+      - NUXT_PRIVATE_VAULT_URL=${NUXT_PRIVATE_VAULT_URL} # URL of the vault service
+      - NUXT_PRIVATE_ENCRYPTION_KEY=${NUXT_PRIVATE_ENCRYPTION_KEY} # Encryption key for securing sensitive data
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:3000/api/hello" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+  shelve_db:
+    container_name: shelve_db
+    image: postgres:17-alpine
+    restart: always
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres} # PostgreSQL user
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres} # PostgreSQL password
+      POSTGRES_DB: ${POSTGRES_DB:-postgres} # PostgreSQL database name
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "postgres" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - shelve-network
+  shelve_redis:
+    container_name: shelve_redis
+    image: redis:7.4-alpine
+    restart: always
+    volumes:
+      - redis:/data
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - shelve-network
 
 networks:
   shelve-network:
     driver: bridge
+
+volumes:
+  postgres:
+  redis:
