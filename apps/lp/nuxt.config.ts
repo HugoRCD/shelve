@@ -18,7 +18,6 @@ export default defineNuxtConfig({
     '@nuxt/image',
     '@nuxt/ui',
     'nuxt-build-cache',
-    'vue-sonner/nuxt',
     '@nuxt/scripts',
     '@nuxtjs/seo',
   ],
@@ -42,6 +41,15 @@ export default defineNuxtConfig({
     description: 'Shelve is a project management tool for developers teams',
     defaultLocale: 'en',
     indexable: true,
+  },
+
+  imports: {
+    presets: [
+      {
+        from: 'vue-sonner',
+        imports: ['toast']
+      }
+    ]
   },
 
   css: ['~/assets/style/main.css'],

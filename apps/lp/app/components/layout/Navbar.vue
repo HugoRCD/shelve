@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 const navigation = getNavigation('home')
+const { siteUrl } = useRuntimeConfig().public
 
 const items = navigation.map((item) => ({
   ...item,
@@ -52,11 +53,10 @@ items.push(githubItem)
           </div>
           <div>
             <UButton
-              variant="ghost"
+              variant="soft"
               color="neutral"
-              icon="lucide:menu"
-              label="Menu"
-              @click="$router.push('/menu')"
+              label="Login"
+              @click="navigateTo(`https://app.shelve.cloud/login`, { external: true })"
             />
           </div>
         </div>

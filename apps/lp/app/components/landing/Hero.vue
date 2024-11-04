@@ -7,7 +7,7 @@ defineShortcuts({
   s: {
     usingInput: true,
     handler: () => {
-      navigateTo(`app.${siteUrl}/login`)
+      navigateTo(`https://app.shelve.cloud/login`, { external: true })
     }
   }
 })
@@ -28,7 +28,7 @@ defineShortcuts({
       <div class="mt-4 flex flex-col items-center justify-center gap-2 sm:flex-row sm:gap-4">
         <UButton
           class="sm:hidden"
-          :to="`app.${siteUrl}/login`"
+          :to="`https://app.shelve.cloud/login`"
           label="Start your journey"
           icon="lucide:arrow-right"
           trailing
