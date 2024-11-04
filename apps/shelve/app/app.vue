@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { Toaster } from 'vue-sonner'
-
 useScriptPlausibleAnalytics({
   domain: 'shelve.cloud',
   scriptInput: {

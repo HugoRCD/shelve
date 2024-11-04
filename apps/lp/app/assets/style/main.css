@@ -1,0 +1,42 @@
+@import "tailwindcss";
+@import "@nuxt/ui";
+
+/* Global styles, css resets, etc. */
+html, body, #__nuxt, #__layout {
+    width: 100%;
+    height: 100%;
+    overscroll-behavior: none;
+}
+
+::-webkit-scrollbar {
+    width: 5px;
+    height: 2px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--ui-bg-inverted);
+    border-radius: 5px;
+}
+
+@theme {
+  --font-family-newsreader: 'Newsreader', serif;
+  --font-family-inter: 'Inter', sans-serif;
+  --font-family-geist: 'Geist', sans-serif;
+  --font-family-geist-mono: 'GeistMono', sans-serif;
+}
+
+.font-geist-mono {
+    font-family: 'GeistMono', sans-serif;
+}
+
+.font-geist {
+    font-family: 'Geist', sans-serif;
+}
+
+.font-newsreader {
+    font-family: 'Newsreader', serif;
+}
+
+.main-gradient {
+  @apply font-geist-mono bg-gradient-to-r from-neutral-50 to-neutral-600 to-50% bg-clip-text text-transparent;
+}

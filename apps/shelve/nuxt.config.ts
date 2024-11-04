@@ -59,11 +59,11 @@ export default defineNuxtConfig({
     '@nuxt/content',
     '@nuxt/image',
     '@nuxt/ui',
-    '@nuxt/fonts',
     '@vueuse/nuxt',
     'nuxt-build-cache',
     'nuxt-auth-utils',
     '@nuxt/scripts',
+    'vue-sonner/nuxt',
     '@nuxtjs/seo',
   ],
 
@@ -87,15 +87,6 @@ export default defineNuxtConfig({
     timeline: {
       enabled: true,
     },
-  },
-
-  imports: {
-    presets: [
-      {
-        from: 'vue-sonner',
-        imports: ['toast']
-      }
-    ]
   },
 
   icon: {
