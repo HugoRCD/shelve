@@ -3,6 +3,10 @@ import { Role, type Team, TeamRole } from '@shelve/types'
 import type { TableColumn } from '@nuxt/ui'
 import { ConfirmModal } from '#components'
 
+definePageMeta({
+  middleware: 'protected',
+})
+
 const { user } = useUserSession()
 
 const search = ref('')

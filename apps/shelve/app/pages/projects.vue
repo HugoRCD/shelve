@@ -1,6 +1,7 @@
 <script setup lang="ts">
 definePageMeta({
-  path: '/'
+  middleware: 'protected',
+  path: '/',
 })
 
 const {

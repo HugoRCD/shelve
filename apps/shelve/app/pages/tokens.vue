@@ -3,6 +3,10 @@ import { type Token } from '@shelve/types'
 import type { TableColumn } from '@nuxt/ui'
 import { ConfirmModal } from '#components'
 
+definePageMeta({
+  middleware: 'protected',
+})
+
 const columns: TableColumn<Token>[] = [
   {
     accessorKey: 'name',

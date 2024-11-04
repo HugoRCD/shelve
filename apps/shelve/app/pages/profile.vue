@@ -1,4 +1,8 @@
 <script setup lang="ts">
+definePageMeta({
+  middleware: 'protected',
+})
+
 const { user } = useUserSession()
 
 const updateLoading = ref(false)

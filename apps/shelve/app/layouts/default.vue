@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import UserDropdown from '~/components/UserDropdown.vue'
-
 const pages = [...getNavigation('app'), ...getNavigation('admin')]
 const route = useRoute()
 

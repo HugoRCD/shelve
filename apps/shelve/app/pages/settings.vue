@@ -1,4 +1,8 @@
 <script setup lang="ts">
+definePageMeta({
+  middleware: 'protected',
+})
+
 const reduceMotion = useCookie<boolean>('reduceMotion', {
   watch: true,
 })
