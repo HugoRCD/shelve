@@ -31,7 +31,7 @@
     "node": ">=20.18.0"
   },
   "packageManager": "bun@1.1.26",
-  "trustedDependencies": ["@shelve/app"],
+  "trustedDependencies": ["@shelve/app", "@shelve/lp"],
   "workspaces": [
     "apps/*",
     "packages/*"
