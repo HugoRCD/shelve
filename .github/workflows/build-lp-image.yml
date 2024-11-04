@@ -1,4 +1,4 @@
-name: Build and Push Docker Image
+name: Build and Push Landing Page Docker Image
 
 on:
   push:
@@ -27,7 +27,7 @@ jobs:
         with:
           filters: |
             src:
-              - 'apps/shelve/**'
+              - 'apps/lp/**'
               - 'bun.lockb'
 
   build-and-push:
