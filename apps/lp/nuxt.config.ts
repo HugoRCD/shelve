@@ -11,6 +11,7 @@ export default defineNuxtConfig({
   routeRules: {
     '/': { isr: true, prerender: true },
     '/vault': { isr: true, prerender: true },
+    '/docs': { isr: true, prerender: true },
   },
 
   modules: [
