@@ -49,13 +49,11 @@ export default defineNuxtConfig({
   },
 
   modules: [
-    '@nuxt/content',
     '@nuxt/image',
     '@nuxt/ui',
     '@vueuse/nuxt',
     'nuxt-build-cache',
-    'nuxt-auth-utils',
-    '@nuxtjs/seo',
+    'nuxt-auth-utils'
   ],
 
   css: ['~/assets/style/main.css'],

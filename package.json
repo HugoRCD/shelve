@@ -6,6 +6,7 @@
   "scripts": {
     "build": "turbo run build",
     "build:app": "turbo run build --filter=@shelve/app",
+    "build:lp": "turbo run build --filter=@shelve/lp",
     "build:cli": "turbo run build --filter=@shelve/cli",
     "dev": "turbo run dev --filter=@shelve/app",
     "dev:app": "turbo run dev --filter=@shelve/app",
