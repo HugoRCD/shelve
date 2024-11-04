@@ -27,22 +27,22 @@ const links = [
   {
     label: 'Environment Variables',
     icon: 'lucide:container',
-    to: `/app/project/${projectId}/variables`
+    to: `/project/${projectId}/variables`
   },
   {
     label: 'Files',
     icon: 'lucide:files',
-    to: `/app/project/${projectId}/files`
+    to: `/project/${projectId}/files`
   },
   {
     label: 'Keys',
     icon: 'heroicons:key',
-    to: `/app/project/${projectId}/keys`
+    to: `/project/${projectId}/keys`
   },
   {
     label: 'Settings',
     icon: 'heroicons:cog',
-    to: `/app/project/${projectId}/settings`
+    to: `/project/${projectId}/settings`
   },
 ]
 </script>

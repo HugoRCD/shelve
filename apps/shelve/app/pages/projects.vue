@@ -1,4 +1,8 @@
 <script setup lang="ts">
+definePageMeta({
+  path: '/'
+})
+
 const {
   projects,
   loading,
@@ -31,7 +35,7 @@ if (!projects.value)
         <NuxtLink
           v-for="project in projects"
           :key="project.id"
-          :to="`/app/project/${project.id}`"
+          :to="`/project/${project.id}`"
         >
           <UCard class="h-full">
             <div class="flex w-full items-start gap-4">

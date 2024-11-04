@@ -40,7 +40,7 @@ async function deleteProjectFunction() {
   await deleteProject(+projectId)
   deleteLoading.value = false
   showDelete.value = false
-  navigateTo('/app/projects')
+  navigateTo('/')
 }
 
 const items = [
@@ -150,7 +150,7 @@ function getProjectManager(manager: string) {
             color="neutral"
             variant="soft"
             size="xs"
-            icon="custom:github"
+            icon="simple-icons:github"
             label="Open repository"
             :ui="{ leadingIcon: 'dark:fill-white fill-black' }"
           />
