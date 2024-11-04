@@ -33,7 +33,7 @@ const { user, fetch } = useUserSession()
       </p>
       <div class="mt-4 flex flex-col items-center justify-center gap-8">
         <a href="/auth/github" class="flex items-center gap-2 rounded-md bg-neutral-200 px-5 py-1.5 text-sm text-black transition-colors duration-300 hover:bg-neutral-300 dark:bg-neutral-800 dark:text-white dark:hover:bg-neutral-700">
-          <UIcon name="custom:github" class="size-5 fill-current" />
+          <UIcon name="simple-icons:github" class="size-5 fill-current" />
           <span>
             Sign in with GitHub
           </span>

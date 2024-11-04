@@ -1,10 +1,12 @@
 <script setup lang="ts">
+import UserDropdown from '~/components/UserDropdown.vue'
+
 const pages = [...getNavigation('app'), ...getNavigation('admin')]
 const route = useRoute()
 
 const navigation = computed(() => {
-  if (route.path.includes('/app/project'))
-    return { title: 'Project Details', to: '/app/project', name: 'project', icon: 'lucide:folder-open' }
+  if (route.path.includes('/project'))
+    return { title: 'Project Details', to: '/project', name: 'project', icon: 'lucide:folder-open' }
   return pages.find((page) => page.path === route.path) || null
 })
 </script>
@@ -30,7 +32,7 @@ const navigation = computed(() => {
           <div id="action-items">
             <!-- action-items -->
           </div>
-          <DropdownMenu />
+          <UserDropdown />
         </div>
       </div>
       <div class="flex h-full flex-col gap-4 overflow-y-auto px-3 py-6 sm:px-6">
