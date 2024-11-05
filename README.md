@@ -135,3 +135,5 @@ Made by [@HugoRCD](https://github.com/HugoRCD), [@CavallucciJohann](https://gith
 _🤖 auto updated with [automd](https://automd.unjs.io) (last updated: Fri Oct 11 2024)_
 
 <!-- /automd -->
+
+https://github.com/user-attachments/assets/6ddd4277-5e97-4c32-a58d-27fc50387264
