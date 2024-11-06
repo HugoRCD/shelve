@@ -8,16 +8,19 @@ services:
     env_file:
       - ./apps/shelve/.env
     environment:
-      - DATABASE_URL=${DATABASE_URL}
+      - DATABASE_URL=${DATABASE_URL:-postgres://postgres:postgres@shelve_db:5432/postgres}
       - NUXT_PRIVATE_REDIS_URL=${NUXT_PRIVATE_REDIS_URL:-redis://shelve_redis:6379}
       - NUXT_PRIVATE_ENCRYPTION_KEY=${NUXT_PRIVATE_ENCRYPTION_KEY}
       - NUXT_SESSION_PASSWORD=${NUXT_SESSION_PASSWORD}
       - NUXT_OAUTH_GITHUB_CLIENT_ID=${NUXT_OAUTH_GITHUB_CLIENT_ID}
       - NUXT_OAUTH_GITHUB_CLIENT_SECRET=${NUXT_OAUTH_GITHUB_CLIENT_SECRET}
-      - NUXT_PUBLIC_APP_URL=${NUXT_PUBLIC_APP_URL}
+      - NUXT_PUBLIC_APP_URL=${NUXT_PUBLIC_APP_URL:-http://localhost:3000}
       - NUXT_PRIVATE_RESEND_API_KEY=${NUXT_PRIVATE_RESEND_API_KEY}
     ports:
       - "3000:3000"
+    depends_on:
+      - shelve_db
+      - shelve_redis
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:3000/api/hello" ]
       interval: 30s

@@ -3,7 +3,7 @@ import { EmailService } from '~~/server/services/resend.service'
 
 export class UserService {
 
-  private readonly storage: Storage
+  private readonly storage
 
   constructor() {
     this.storage = useStorage('redis')

@@ -7,8 +7,6 @@ export type User = {
   id: number;
   username: string | null;
   email: string;
-  password: string | null;
-  otp: string | null;
   avatar: string;
   role: Role | string;
   createdAt: Date;
@@ -23,13 +21,6 @@ export type publicUser = {
   role: Role;
   createdAt: string | Date;
   updatedAt: string | Date;
-};
-
-export type CreateUserInput = {
-  email: string;
-  password?: string;
-  avatar?: string;
-  username?: string;
 };
 
 export type UpdateUserInput = {

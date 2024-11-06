@@ -12,6 +12,7 @@ export default eventHandler(async (event: H3Event) => {
   const updatedUser = await userService.updateUser(user, updateUserInput, authToken)
   await setUserSession(event, {
     user: {
+      id: updatedUser.id,
       username: updatedUser.username,
       email: updatedUser.email,
       avatar: updatedUser.avatar,

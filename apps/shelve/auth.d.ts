@@ -1,7 +1,7 @@
 // auth.d.ts
 declare module '#auth-utils' {
   type User = {
-    id: string
+    id: number
     email: string
     username: string
     avatar: string
@@ -10,7 +10,7 @@ declare module '#auth-utils' {
 
   type UserSession = {
     user: User
-    secure: {
+    secure?: {
       githubToken?: string
     }
     loggedInAt: string
