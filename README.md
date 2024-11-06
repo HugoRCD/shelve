@@ -96,6 +96,33 @@ To self-host the Shelve application using the Docker image available on GitHub, 
 
 Ensure you have Docker installed and running on your machine before executing these commands. For more information on Docker, refer to the [official Docker documentation](https://docs.docker.com/get-docker/).
 
+## Self-Hosting with docker-compose
+
+To self-host the Shelve application using the community `docker-compose` configuration, follow these steps:
+
+1. **Clone the Repository**:
+    ```sh
+    git clone https://github.com/HugoRCD/shelve.git
+    cd shelve
+    ```
+
+2. **Copy the Example Environment File**:
+    ```sh
+    cp apps/shelve/.env.example apps/shelve/.env
+    ```
+
+3. **Update Environment Variables**:
+   Edit the `apps/shelve/.env` file and update the necessary environment variables.
+
+4. **Run docker-compose**:
+    ```sh
+    docker-compose -f docker-compose.community.yml up -d
+    ```
+
+5. **Access the Application**:
+   Open your browser and navigate to `http://localhost:3000` to access the Shelve application.
+
+Ensure you have Docker and docker-compose installed and running on your machine before executing these commands. For more information on Docker and docker-compose, refer to the official Docker documentation.
 
 <!-- automd:fetch url="gh:hugorcd/markdown/main/src/contributions.md" -->
 
