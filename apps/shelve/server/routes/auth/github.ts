@@ -7,10 +7,8 @@ export default defineOAuthGitHubEventHandler({
     scope: ['repo', 'user:email'],
   },
   async onSuccess(event, { user, tokens }) {
-    const userService = new UserService()
-    const emailService = new EmailService()
     try {
-      const _user = await userService.upsertUser({
+      const _user = await new UserService().upsertUser({
         email: user.email,
         avatar: user.avatar_url,
         username: user.login,
@@ -19,13 +17,7 @@ export default defineOAuthGitHubEventHandler({
         secure: {
           githubToken: tokens.access_token,
         },
-        user: {
-          id: _user.id,
-          username: _user.username,
-          email: user.email,
-          avatar: user.avatar_url,
-          role: _user.role,
-        },
+        user: _user,
         loggedInAt: new Date().toISOString(),
       })
       return sendRedirect(event, '/')

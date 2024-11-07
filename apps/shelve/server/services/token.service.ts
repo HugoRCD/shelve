@@ -28,36 +28,25 @@ export class TokenService {
 
     const user = await prisma.user.findUnique({
       where: { id: userId },
-      select: {
-        id: true,
-        username: true,
-        email: true,
-        role: true,
-      },
     })
+    if (!user) throw createError({ statusCode: 400, statusMessage: 'User not found' })
 
     await this.updateUsedAt(foundToken.id)
-    return user
+    return user as User // TODO: fix type
   }
 
-  /**
-   * Get all tokens for a user
-   */
   async getTokensByUserId(userId: number): Promise<Token[]> {
     const tokens = await prisma.token.findMany({
       where: { userId },
       orderBy: { createdAt: 'desc' },
     })
 
-    return Promise.all(tokens.map(async (token) => ({
+    return Promise.all(tokens.map(async (token): Promise<Token> => ({
       ...token,
-      token: await unseal(token.token, this.encryptionKey)
+      token: await unseal(token.token, this.encryptionKey) as string
     })))
   }
 
-  /**
-   * Create a new token for a user
-   */
   async createToken({ name, userId }: { name: string; userId: number }): Promise<void> {
     const token = this.generateUserToken(userId)
     const encryptedToken = await seal(token, this.encryptionKey)
@@ -71,20 +60,14 @@ export class TokenService {
     })
   }
 
-  /**
-   * Update token's last used timestamp
-   */
-  private async updateUsedAt(tokenId: string): Promise<void> {
+  private async updateUsedAt(tokenId: number): Promise<void> {
     await prisma.token.update({
       where: { id: tokenId },
       data: { updatedAt: new Date() },
     })
   }
 
-  /**
-   * Delete a token for a user
-   */
-  private deleteUserToken(id: string, userId: number): Promise<void> {
+  deleteUserToken(id: number, userId: number): Promise<Token> {
     return prisma.token.delete({
       where: {
         id,
@@ -93,9 +76,6 @@ export class TokenService {
     })
   }
 
-  /**
-   * Generate a new token for a user
-   */
   private generateUserToken(userId: number): string {
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
     let token = ''
@@ -138,9 +118,7 @@ export class TokenService {
   private async findMatchingToken(tokens: Token[], authToken: string): Promise<Token | null> {
     for (const token of tokens) {
       const decryptedToken = await unseal(token.token, this.encryptionKey)
-      if (decryptedToken === authToken) {
-        return token
-      }
+      if (decryptedToken === authToken) return token
     }
     return null
   }

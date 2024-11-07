@@ -2,7 +2,7 @@ import { H3Event } from 'h3'
 
 type GitHubRepo = {
   name: string
-  owner: string
+  owner: { login: string }
 }
 
 export class GitHubService {
@@ -17,16 +17,15 @@ export class GitHubService {
    */
   async getUserRepos(event: H3Event): Promise<GitHubRepo[]> {
     const { user, secure } = await getUserSession(event)
-    const { githubToken } = secure
 
-    const repos = await $fetch(`${this.GITHUB_API}/user/repos?per_page=${this.REPOS_PER_PAGE}`, {
+    const repos = await $fetch<GitHubRepo[]>(`${this.GITHUB_API}/user/repos?per_page=${this.REPOS_PER_PAGE}`, {
       headers: {
-        Authorization: `token ${githubToken}`,
+        Authorization: `token ${secure?.githubToken}`,
       },
     })
 
     console.log(`Found ${repos.length} repositories for user ${user.username}`)
-    console.log(repos.map(repo => ({
+    console.log(repos.map((repo: GitHubRepo) => ({
       name: repo.name,
       owner: repo.owner.login,
     })))
@@ -39,7 +38,6 @@ export class GitHubService {
    */
   async uploadFile(event: H3Event, file: File, repoName: string): Promise<any> {
     const { user, secure } = await getUserSession(event)
-    const { githubToken } = secure
 
     const content = await this.getFileContent(file)
     const uploadUrl = this.buildUploadUrl(user.username, repoName, file.name)
@@ -47,7 +45,7 @@ export class GitHubService {
     return await $fetch(uploadUrl, {
       method: 'PUT',
       headers: {
-        Authorization: `token ${githubToken}`,
+        Authorization: `token ${secure?.githubToken}`,
       },
       body: {
         message: this.DEFAULT_COMMIT_MESSAGE,

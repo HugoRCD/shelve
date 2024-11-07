@@ -1,10 +1,11 @@
 import type { CreateTeamInput, DeleteTeamInput, Team, Member } from '@shelve/types'
 import { Role, TeamRole } from '@shelve/types'
+import type { Storage, StorageValue } from 'unstorage'
 import { ProjectService } from '~~/server/services/project.service'
 
 export class TeamService {
 
-  private readonly storage: Storage
+  private readonly storage: Storage<StorageValue>
   private readonly CACHE_TTL = 60 * 60 // 1 hour
   private readonly CACHE_PREFIX = 'nitro:functions:getTeamByUserId:userId:'
 

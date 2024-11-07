@@ -27,9 +27,8 @@ export class VariableService {
       variablesCreateInput.autoUppercase
     )
 
-    if (variablesCreateInput.variables.length === 1) {
+    if (variablesCreateInput.variables.length === 1)
       return this.upsertSingleVariable(encryptedVariables[0])
-    }
 
     return this.upsertMultipleVariables(
       encryptedVariables,
@@ -93,12 +92,10 @@ export class VariableService {
     }))
   }
 
-  private decryptVariables(
-    variables: VariablesCreateInput['variables']
-  ): Promise<VariablesCreateInput['variables']> {
+  private decryptVariables(variables: VariablesCreateInput['variables']): Promise<VariablesCreateInput['variables']> {
     return Promise.all(variables.map(async (variable) => {
       const processed = { ...variable }
-      processed.value = await unseal(processed.value, this.encryptionKey)
+      processed.value = await unseal(processed.value, this.encryptionKey) as string
       processed.environment = this.getEnvString(processed.environment)
       return processed
     }))

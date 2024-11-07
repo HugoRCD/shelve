@@ -7,7 +7,7 @@ export default eventHandler(async (event: H3Event) => {
   if (!id) throw createError({ statusCode: 400, statusMessage: 'Missing params' })
   const teamService = new TeamService()
   await teamService.deleteTeam({
-    teamId: parseInt(id),
+    teamId: +id,
     userId: user.id,
     userRole: user.role,
   })

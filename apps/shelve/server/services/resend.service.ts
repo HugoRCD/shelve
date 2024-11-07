@@ -39,7 +39,7 @@ export class EmailService {
    * Send welcome email
    */
   async sendWelcomeEmail(email: string, username: string): Promise<void> {
-    const template = await this.generateWelcomeTemplate(email, username)
+    const template = await this.generateWelcomeTemplate(username)
 
     try {
       await this.resend.emails.send({
@@ -72,14 +72,14 @@ export class EmailService {
   /**
    * Generate welcome email template
    */
-  private async generateWelcomeTemplate(email: string, username: string): Promise<string> {
+  private async generateWelcomeTemplate(username: string): Promise<string> {
     try {
       return await render(welcomeEmail, {
-        username,
+        username: username,
         redirectUrl: this.appUrl,
       })
     } catch (error) {
-      return `<h1>Welcome to Shelve, ${username || email}!</h1>`
+      return `<h1>Welcome to Shelve, ${username}!</h1>`
     }
   }
 
