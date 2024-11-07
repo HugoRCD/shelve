@@ -54,7 +54,8 @@ export function useTeams() {
       else
         team.members.push(_member)
       teams.value.splice(index, 1, team)
-      toast.success('Member added')
+      const hasBeenCreated = new Date(_member.createdAt).getTime() === new Date(_member.updatedAt).getTime()
+      toast.success(hasBeenCreated ? 'Member added' : 'Member updated')
     } catch (error: any) {
       if (error.statusCode === 401)
         return toast.error('You need to be an admin to add a member')
