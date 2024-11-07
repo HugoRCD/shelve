@@ -1,9 +1,6 @@
 import { Role } from '@shelve/types'
 
-export default defineNuxtRouteMiddleware((): Promise<void> => {
+export default defineNuxtRouteMiddleware(() => {
   const { user } = useUserSession()
-  if (!user.value.role === Role.ADMIN) {
-    toast.error('You need to be an admin to access this page.')
-    return '/'
-  }
+  if (user.value?.role !== Role.ADMIN) return navigateTo('/')
 })

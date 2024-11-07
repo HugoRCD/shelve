@@ -1,9 +1,10 @@
-import type { publicUser, User, CreateUserInput, UpdateUserInput } from '@shelve/types'
+import type { CreateUserInput, UpdateUserInput, PublicUser, User } from '@shelve/types'
+import type { Storage, StorageValue } from 'unstorage'
 import { EmailService } from '~~/server/services/resend.service'
 
 export class UserService {
 
-  private readonly storage: Storage
+  private readonly storage: Storage<StorageValue>
 
   constructor() {
     this.storage = useStorage('redis')
@@ -12,14 +13,17 @@ export class UserService {
   /**
    * Creates or updates a user
    */
-  async upsertUser(createUserInput: CreateUserInput): Promise<publicUser> {
+  async upsertUser(createUserInput: CreateUserInput): Promise<PublicUser> {
     const foundUser = await prisma.user.findUnique({
       where: {
         username: createUserInput.username,
       },
+      select: {
+        username: true,
+      }
     })
 
-    const newUsername = this.generateUniqueUsername(createUserInput.username, foundUser)
+    const username = this.generateUniqueUsername(createUserInput.username, foundUser)
 
     const user = await prisma.user.upsert({
       where: {
@@ -30,15 +34,15 @@ export class UserService {
       },
       create: {
         ...createUserInput,
-        username: newUsername,
+        username,
       }
-    }) as User
+    })
     if (user.createdAt === user.updatedAt) {
       const emailService = new EmailService()
       await emailService.sendWelcomeEmail(user.email, user.username)
     }
 
-    return this.formatUser(user)
+    return user
   }
 
   /**
@@ -53,34 +57,23 @@ export class UserService {
   /**
    * Updates a user's information
    */
-  async updateUser(user: User, updateUserInput: UpdateUserInput, authToken: string): Promise<publicUser> {
-    const newUsername = updateUserInput.username
+  async updateUser(updateUserInput: UpdateUserInput): Promise<PublicUser> {
+    const { currentUser, data } = updateUserInput
 
-    if (newUsername && newUsername !== user.username) {
-      await this.validateUsername(newUsername)
+    if (data.username && data.username !== currentUser.username) {
+      await this.validateUsername(data.username)
     }
 
-    const updatedUser = await prisma.user.update({
-      where: { id: user.id },
-      data: updateUserInput,
+    return prisma.user.update({
+      where: { id: currentUser.id },
+      data,
     })
-
-    await this.removeCachedUserToken(authToken)
-    return this.formatUser(updatedUser)
-  }
-
-  /**
-   * Removes a cached user token
-   */
-  private async removeCachedUserToken(authToken: string): Promise<void> {
-    const cacheKey = this.generateCacheKey(authToken)
-    await this.storage.removeItem(cacheKey)
   }
 
   /**
    * Generates a unique username if the original is taken
    */
-  private generateUniqueUsername(username: string, existingUser: User | null): string {
+  private generateUniqueUsername(username: string, existingUser: { username: string } | null): string {
     if (!existingUser) return username
     return `${username}_#${Math.floor(Math.random() * 1000)}`
   }
@@ -99,21 +92,6 @@ export class UserService {
         message: 'Username already taken'
       })
     }
-  }
-
-  /**
-   * Generates a cache key for user tokens
-   */
-  private generateCacheKey(authToken: string): string {
-    return `nitro:functions:getUserByAuthToken:authToken:${authToken}.json`
-  }
-
-  /**
-   * Formats a user object for public consumption
-   */
-  private formatUser(user: User): publicUser {
-    // Implement your user formatting logic here
-    return user as publicUser
   }
 
 }

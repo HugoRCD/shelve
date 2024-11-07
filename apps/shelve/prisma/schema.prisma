@@ -7,12 +7,23 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum TeamRole {
+  OWNER
+  ADMIN
+  DEVELOPER
+}
+
+enum Role {
+  ADMIN
+  USER
+}
+
 model User {
   id         Int        @id @default(autoincrement())
-  username   String?    @unique
+  username   String     @unique
   email      String     @unique
   avatar     String     @default("https://i.imgur.com/6VBx3io.png") @db.VarChar(500)
-  role       String     @default("user")
+  role       Role       @default(USER)
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
   projects   Project[]
@@ -26,7 +37,7 @@ model Member {
   id        Int      @id @default(autoincrement())
   userId    Int
   teamId    Int
-  role      String   @default("developer")
+  role      TeamRole @default(DEVELOPER)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -92,5 +103,6 @@ model Teammate {
   updatedAt  DateTime @updatedAt
   user       User     @relation("UserTeammates", fields: [userId], references: [id], onDelete: Cascade)
   teammate   User     @relation("UserTeammateOf", fields: [teammateId], references: [id], onDelete: Cascade)
+
   @@unique([userId, teammateId])
 }

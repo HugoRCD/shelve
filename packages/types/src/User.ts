@@ -1,41 +1,33 @@
 export enum Role {
-  ADMIN = 'admin',
-  USER = 'user',
+  ADMIN = 'ADMIN',
+  USER = 'USER',
 }
 
 export type User = {
-  id: number;
-  username: string | null;
-  email: string;
-  password: string | null;
-  otp: string | null;
-  avatar: string;
-  role: Role | string;
-  createdAt: Date;
-  updatedAt: Date;
-};
-
-export type publicUser = {
   id: number;
   username: string;
   email: string;
   avatar: string;
   role: Role;
-  createdAt: string | Date;
-  updatedAt: string | Date;
+  createdAt: Date;
+  updatedAt: Date;
 };
+
+export type PublicUser = Omit<User, 'createdAt' | 'updatedAt'>;
 
 export type CreateUserInput = {
   email: string;
-  password?: string;
+  username: string;
   avatar?: string;
-  username?: string;
 };
 
 export type UpdateUserInput = {
-  username?: string;
-  password?: string;
-  email?: string;
-  avatar?: string;
-  role?: Role;
+  currentUser: User;
+  data: {
+    username?: string;
+    password?: string;
+    email?: string;
+    avatar?: string;
+    role?: Role;
+  }
 };

@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import type { publicUser } from '@shelve/types'
-import { Role } from '@shelve/types'
+import { Role, type User } from '@shelve/types'
 import type { TableColumn } from '@nuxt/ui'
 import { ConfirmModal } from '#components'
 
-const { data: users, status, refresh } = useFetch<publicUser[]>('/api/admin/users', {
+const { data: users, status, refresh } = useFetch<User[]>('/api/admin/users', {
   method: 'GET',
   watch: false,
 })
@@ -15,7 +14,7 @@ const deleteLoading = ref(false)
 const filteredUsers = computed(() => {
   // eslint-disable-next-line
   if (!search.value) return users.value?.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
-  return users.value!.filter((user: publicUser) => user.username.toLowerCase().includes(search.value.toLowerCase()))
+  return users.value!.filter((user: User) => user.username.toLowerCase().includes(search.value.toLowerCase()))
 })
 
 async function changeUserRole(id: number, role: string) {
@@ -46,7 +45,7 @@ async function deleteUser(id: number) {
   deleteLoading.value = false
 }
 
-const columns: TableColumn<publicUser>[] = [
+const columns: TableColumn<User>[] = [
   {
     accessorKey: 'avatar',
     header: 'Avatar',
@@ -85,7 +84,7 @@ const columns: TableColumn<publicUser>[] = [
 
 const modal = useModal()
 
-const items = (row: publicUser) => [
+const items = (row: User) => [
   [
     {
       label: 'Set as Admin',
@@ -144,7 +143,7 @@ const items = (row: publicUser) => [
         <UAvatar :src="row.original.avatar" :alt="row.name" size="sm" img-class="object-cover" />
       </template>
       <template #role-cell="{ row }">
-        <UBadge :label="row.original.role.toUpperCase()" :color="row.original.role === 'admin' ? 'primary' : 'neutral'" variant="subtle" />
+        <UBadge :label="row.original.role.toUpperCase()" :color="row.original.role === Role.ADMIN ? 'primary' : 'neutral'" variant="subtle" />
       </template>
       <template #actions-cell="{ row }">
         <UDropdownMenu :items="items(row)">

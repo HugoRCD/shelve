@@ -1,9 +1,10 @@
 import type { DecryptResponse, EncryptRequest, StoredData, TTLFormat } from '@shelve/types'
 import { seal, unseal } from '@shelve/crypto'
+import type { Storage, StorageValue } from 'unstorage'
 
 export class VaultService {
 
-  private readonly storage: Storage
+  private readonly storage: Storage<StorageValue>
   private readonly encryptionKey: string
   private readonly siteUrl: string
   private readonly PREFIX = 'vault:'

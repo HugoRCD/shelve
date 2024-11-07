@@ -1,8 +1,9 @@
-import type { CreateProjectInput, ProjectUpdateInput, Team } from '@shelve/types'
+import type { CreateProjectInput, ProjectUpdateInput, Team, Project } from '@shelve/types'
+import type { Storage, StorageValue } from 'unstorage'
 
 export class ProjectService {
 
-  private readonly storage: Storage
+  private readonly storage: Storage<StorageValue>
   private readonly CACHE_TTL = 60 * 60 // 1 hour
   private readonly CACHE_PREFIX = {
     projects: 'nitro:functions:getProjectsByUserId:userId:',
@@ -224,7 +225,7 @@ export class ProjectService {
     }
   }
 
-  private async deleteCachedUserProjects(userId: number): Promise<void> {
+  async deleteCachedUserProjects(userId: number): Promise<void> {
     await this.storage.removeItem(`${this.CACHE_PREFIX.projects}${userId}.json`)
   }
 

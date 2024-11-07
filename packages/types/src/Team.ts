@@ -3,9 +3,9 @@ import type { Project } from './Project'
 import type { User } from './User'
 
 export enum TeamRole {
-  OWNER = 'owner',
-  ADMIN = 'admin',
-  DEVELOPER = 'developer',
+  OWNER = 'OWNER',
+  ADMIN = 'ADMIN',
+  DEVELOPER = 'DEVELOPER',
 }
 
 export type Member = {

@@ -1,10 +1,11 @@
 import type { CreateTeamInput, DeleteTeamInput, Team, Member } from '@shelve/types'
 import { Role, TeamRole } from '@shelve/types'
+import type { Storage, StorageValue } from 'unstorage'
 import { ProjectService } from '~~/server/services/project.service'
 
 export class TeamService {
 
-  private readonly storage: Storage
+  private readonly storage: Storage<StorageValue>
   private readonly CACHE_TTL = 60 * 60 // 1 hour
   private readonly CACHE_PREFIX = 'nitro:functions:getTeamByUserId:userId:'
 
@@ -12,9 +13,6 @@ export class TeamService {
     this.storage = useStorage('cache')
   }
 
-  /**
-   * Create a new team
-   */
   async createTeam(createTeamInput: CreateTeamInput, userId: number): Promise<Team> {
     await this.deleteCachedTeamByUserId(userId)
     return prisma.team.create({
@@ -33,9 +31,6 @@ export class TeamService {
     })
   }
 
-  /**
-   * Upsert team member
-   */
   async upsertMember(teamId: number, addMemberInput: { email: string; role: TeamRole }, requesterId: number): Promise<Member> {
     const projectService = new ProjectService()
     const team = await this.validateTeamAccess(teamId, requesterId)
@@ -83,6 +78,7 @@ export class TeamService {
     await projectService.deleteCachedUserProjects(requesterId)
 
     const member = await this.getMemberById(memberId)
+    if (!member) throw createError({ statusCode: 404, statusMessage: 'Member not found' })
     await this.deleteTeammate(member.userId, requesterId)
     await this.deleteTeammate(requesterId, member.userId)
 
@@ -113,22 +109,20 @@ export class TeamService {
   /**
    * Get teams by user ID
    */
-  getTeamByUserId(userId: number): Promise<Team[]> {
-    return cachedFunction(() => {
-      return prisma.team.findMany({
-        where: {
-          members: {
-            some: { userId }
-          }
-        },
-        include: this.getTeamInclude()
-      })
-    }, {
-      maxAge: this.CACHE_TTL,
-      name: 'getTeamByUserId',
-      getKey: (userId: number) => `userId:${userId}`,
-    })(userId)
-  }
+  getTeamsByUserId = cachedFunction((userId): Promise<Team[]> => {
+    return prisma.team.findMany({
+      where: {
+        members: {
+          some: { userId }
+        }
+      },
+      include: this.getTeamInclude()
+    })
+  }, {
+    maxAge: this.CACHE_TTL,
+    name: 'getTeamByUserId',
+    getKey: (userId: number) => `userId:${userId}`,
+  })
 
   /**
    * Private helper methods

@@ -1,7 +1,7 @@
 import type { Variable, VariablesCreateInput } from '@shelve/types'
 
 export function useVariables(refresh: () => Promise<void>, projectId: string) {
-  const selectedEnvironment = ref({
+  const selectedEnvironment: Ref<Record<string, boolean>> = ref({
     production: true,
     preview: false,
     development: false,

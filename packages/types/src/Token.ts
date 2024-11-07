@@ -7,5 +7,5 @@ export type Token = {
   createdAt: Date;
   updatedAt: Date;
   userId: number;
-  user: User;
+  user?: User;
 };
