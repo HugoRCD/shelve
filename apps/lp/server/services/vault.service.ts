@@ -94,7 +94,7 @@ export class VaultService {
       })
     }
 
-    const decryptedValue = await unseal(encryptedValue, this.encryptionKey)
+    const decryptedValue = await unseal(encryptedValue, this.encryptionKey) as string
 
     const updatedReads = reads - 1
     await this.storage.setItem(key, {

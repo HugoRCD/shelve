@@ -7,7 +7,7 @@ services:
     restart: always
     environment:
       # Runtime essentials
-      - DATABASE_URL=${DATABASE_URL} # DATABASE_URL=postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@shelve_db:5432/${POSTGRES_DB:-postgres}
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@shelve_db:5432/${POSTGRES_DB:-postgres}
       - NUXT_PRIVATE_REDIS_URL=${NUXT_PRIVATE_REDIS_URL:-redis://shelve_redis:6379} # NUXT_PRIVATE_REDIS_URL=redis://shelve_redis:6379
       - NUXT_PRIVATE_ENCRYPTION_KEY=${NUXT_PRIVATE_ENCRYPTION_KEY} # Encryption key for securing sensitive data
       - NUXT_SESSION_PASSWORD=${NUXT_SESSION_PASSWORD} # Password for session management
@@ -67,9 +67,9 @@ services:
     volumes:
       - postgres:/var/lib/postgresql/data
     environment:
-      POSTGRES_USER: ${POSTGRES_USER:-postgres} # PostgreSQL user
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres} # PostgreSQL password
-      POSTGRES_DB: ${POSTGRES_DB:-postgres} # PostgreSQL database name
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-postgres}
     healthcheck:
       test: [ "CMD", "pg_isready", "-U", "postgres" ]
       interval: 30s

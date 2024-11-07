@@ -1,4 +1,10 @@
+/*
 import vue from '@vitejs/plugin-vue'
+rollupConfig: {
+  // @ts-expect-error - vue is an external plugin
+  plugins: [vue()]
+},
+*/
 
 export default defineNuxtConfig({
   app: {
@@ -22,10 +28,6 @@ export default defineNuxtConfig({
 
   nitro: {
     preset: process.env.NITRO_PRESET || 'bun',
-    rollupConfig: {
-      // @ts-expect-error - vue is an external plugin
-      plugins: [vue()]
-    },
     storage: {
       cache: {
         driver: 'redis',

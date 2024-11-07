@@ -1,3 +1,4 @@
+/*
 import { Resend } from 'resend'
 import { render } from '@vue-email/render'
 import verifyOtp from '~~/server/emails/verifyOtp.vue'
@@ -15,9 +16,9 @@ export class EmailService {
     this.appUrl = config.public.appUrl
   }
 
-  /**
+  /!**
    * Send OTP verification email
-   */
+   *!/
   async sendOtp(email: string, otp: string): Promise<void> {
     const template = await this.generateOtpTemplate(email, otp)
 
@@ -35,9 +36,9 @@ export class EmailService {
     }
   }
 
-  /**
+  /!**
    * Send welcome email
-   */
+   *!/
   async sendWelcomeEmail(email: string, username: string): Promise<void> {
     const template = await this.generateWelcomeTemplate(username)
 
@@ -55,9 +56,9 @@ export class EmailService {
     }
   }
 
-  /**
+  /!**
    * Generate OTP email template
-   */
+   *!/
   private async generateOtpTemplate(email: string, otp: string): Promise<string> {
     try {
       return await render(verifyOtp, {
@@ -69,9 +70,9 @@ export class EmailService {
     }
   }
 
-  /**
+  /!**
    * Generate welcome email template
-   */
+   *!/
   private async generateWelcomeTemplate(username: string): Promise<string> {
     try {
       return await render(welcomeEmail, {
@@ -84,3 +85,4 @@ export class EmailService {
   }
 
 }
+*/

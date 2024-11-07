@@ -1,6 +1,6 @@
-import type { CreateUserInput, UpdateUserInput, PublicUser, User } from '@shelve/types'
+import type { CreateUserInput, UpdateUserInput, PublicUser } from '@shelve/types'
 import type { Storage, StorageValue } from 'unstorage'
-import { EmailService } from '~~/server/services/resend.service'
+// import { EmailService } from '~~/server/services/resend.service'
 
 export class UserService {
 
@@ -37,10 +37,10 @@ export class UserService {
         username,
       }
     })
-    if (user.createdAt === user.updatedAt) {
+    /*if (user.createdAt === user.updatedAt) {
       const emailService = new EmailService()
       await emailService.sendWelcomeEmail(user.email, user.username)
-    }
+    }*/
 
     return user
   }
