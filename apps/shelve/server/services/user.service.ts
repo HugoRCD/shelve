@@ -1,14 +1,7 @@
 import type { CreateUserInput, UpdateUserInput, PublicUser } from '@shelve/types'
-import type { Storage, StorageValue } from 'unstorage'
 // import { EmailService } from '~~/server/services/resend.service'
 
 export class UserService {
-
-  private readonly storage: Storage<StorageValue>
-
-  constructor() {
-    this.storage = useStorage('redis')
-  }
 
   /**
    * Creates or updates a user
