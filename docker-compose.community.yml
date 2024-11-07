@@ -1,12 +1,14 @@
+# documentation: https://shelve.cloud/docs
+# slogan: Shelve, is a project management tool for developers, etc... to make project creation and management easier.
+# tags: environment variables, projects management
+# logo: https://raw.githubusercontent.com/hugorcd/shelve/main/assets/logo.svg
+# port: 3000
+
 services:
   shelve_app:
+    image: ghcr.io/hugorcd/shelve:latest
     container_name: shelve_app
-    build:
-      context: .
-      dockerfile: ./apps/shelve/Dockerfile
     restart: always
-    env_file:
-      - ./apps/shelve/.env
     environment:
       - DATABASE_URL=${DATABASE_URL:-postgres://postgres:postgres@shelve_db:5432/postgres}
       - NUXT_PRIVATE_REDIS_URL=${NUXT_PRIVATE_REDIS_URL:-redis://shelve_redis:6379}
@@ -16,11 +18,10 @@ services:
       - NUXT_OAUTH_GITHUB_CLIENT_SECRET=${NUXT_OAUTH_GITHUB_CLIENT_SECRET}
       - NUXT_PUBLIC_APP_URL=${NUXT_PUBLIC_APP_URL:-http://localhost:3000}
       - NUXT_PRIVATE_RESEND_API_KEY=${NUXT_PRIVATE_RESEND_API_KEY}
-    ports:
-      - "3000:3000"
     depends_on:
       - shelve_db
       - shelve_redis
+    command: bunx prisma migrate deploy --schema ./prisma/schema.prisma --force-reset
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:3000/api/hello" ]
       interval: 30s
