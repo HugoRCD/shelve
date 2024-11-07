@@ -114,22 +114,20 @@ export class TeamService {
   /**
    * Get teams by user ID
    */
-  getTeamByUserId(userId: number): Promise<Team[]> {
-    return cachedFunction(() => {
-      return prisma.team.findMany({
-        where: {
-          members: {
-            some: { userId }
-          }
-        },
-        include: this.getTeamInclude()
-      })
-    }, {
-      maxAge: this.CACHE_TTL,
-      name: 'getTeamByUserId',
-      getKey: (userId: number) => `userId:${userId}`,
-    })(userId)
-  }
+  getTeamsByUserId = cachedFunction((userId): Promise<Team[]> => {
+    return prisma.team.findMany({
+      where: {
+        members: {
+          some: { userId }
+        }
+      },
+      include: this.getTeamInclude()
+    })
+  }, {
+    maxAge: this.CACHE_TTL,
+    name: 'getTeamByUserId',
+    getKey: (userId: number) => `userId:${userId}`,
+  })
 
   /**
    * Private helper methods
