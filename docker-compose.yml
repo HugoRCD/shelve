@@ -8,7 +8,7 @@ services:
     environment:
       # Runtime essentials
       - DATABASE_URL=postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@shelve_db:5432/${POSTGRES_DB:-postgres}
-      - NUXT_PRIVATE_REDIS_URL=${NUXT_PRIVATE_REDIS_URL:-redis://shelve_redis:6379} # NUXT_PRIVATE_REDIS_URL=redis://shelve_redis:6379
+      - NUXT_PRIVATE_REDIS_URL=${NUXT_PRIVATE_REDIS_URL:-redis://shelve_redis:6379}
       - NUXT_PRIVATE_ENCRYPTION_KEY=${NUXT_PRIVATE_ENCRYPTION_KEY} # Encryption key for securing sensitive data
       - NUXT_SESSION_PASSWORD=${NUXT_SESSION_PASSWORD} # Password for session management
 
@@ -17,7 +17,7 @@ services:
       - NUXT_OAUTH_GITHUB_CLIENT_SECRET=${NUXT_OAUTH_GITHUB_CLIENT_SECRET} # Client secret for GitHub OAuth
 
       # Public configs
-      - NUXT_PUBLIC_APP_URL=${NUXT_PUBLIC_APP_URL} # Public URL of your application
+      - NUXT_PUBLIC_APP_URL=${NUXT_PUBLIC_APP_URL:-http://localhost:3000}
 
       # Optional services
       - NUXT_PRIVATE_RESEND_API_KEY=${NUXT_PRIVATE_RESEND_API_KEY} # API key for the Resend service (optional)
