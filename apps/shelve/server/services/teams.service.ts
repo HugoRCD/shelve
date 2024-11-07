@@ -13,9 +13,6 @@ export class TeamService {
     this.storage = useStorage('cache')
   }
 
-  /**
-   * Create a new team
-   */
   async createTeam(createTeamInput: CreateTeamInput, userId: number): Promise<Team> {
     await this.deleteCachedTeamByUserId(userId)
     return prisma.team.create({
@@ -34,9 +31,6 @@ export class TeamService {
     })
   }
 
-  /**
-   * Upsert team member
-   */
   async upsertMember(teamId: number, addMemberInput: { email: string; role: TeamRole }, requesterId: number): Promise<Member> {
     const projectService = new ProjectService()
     const team = await this.validateTeamAccess(teamId, requesterId)
@@ -84,6 +78,7 @@ export class TeamService {
     await projectService.deleteCachedUserProjects(requesterId)
 
     const member = await this.getMemberById(memberId)
+    if (!member) throw createError({ statusCode: 404, statusMessage: 'Member not found' })
     await this.deleteTeammate(member.userId, requesterId)
     await this.deleteTeammate(requesterId, member.userId)
 

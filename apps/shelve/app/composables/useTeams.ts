@@ -37,7 +37,7 @@ export function useTeams() {
 
   async function upsertMember(teamId: number, email: string, role: TeamRole) {
     try {
-      const response = await $fetch<Member>(`/api/teams/${teamId}/members`, {
+      const _member = await $fetch<Member>(`/api/teams/${teamId}/members`, {
         method: 'POST',
         body: {
           email,
@@ -48,12 +48,11 @@ export function useTeams() {
       const team = teams.value[index]
       if (!team)
         return toast.error('Failed to update member')
-      const memberIndex = team.members.findIndex((member) => member.id === response.id)
-      if (memberIndex !== -1) {
-        team.members[memberIndex] = response
-      } else {
-        team.members.push(response)
-      }
+      const memberIndex = team.members.findIndex((member) => member.id === _member.id)
+      if (memberIndex !== -1)
+        team.members[memberIndex] = _member
+      else
+        team.members.push(_member)
       teams.value.splice(index, 1, team)
       toast.success('Member added')
     } catch (error: any) {
