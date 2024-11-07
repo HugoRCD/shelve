@@ -56,8 +56,9 @@ export function useTeams() {
       }
       teams.value.splice(index, 1, team)
       toast.success('Member added')
-    } catch (error) {
-      if (error.statusCode === 401) return toast.error('You need to be an admin to add a member')
+    } catch (error: any) {
+      if (error.statusCode === 401)
+        return toast.error('You need to be an admin to add a member')
       toast.error('Failed to add member')
     }
   }
@@ -77,8 +78,9 @@ export function useTeams() {
       }
       teams.value.splice(index, 1, team)
       toast.success('Member removed')
-    } catch (error) {
-      if (error.statusCode === 401) return toast.error('You need to be an admin to remove a member')
+    } catch (error: any) {
+      if (error.statusCode === 401)
+        return toast.error('You need to be an admin to remove a member')
       toast.error('Failed to remove member')
     }
   }
@@ -89,8 +91,9 @@ export function useTeams() {
       await $fetch(`/api/teams/${teamId}`, {
         method: 'DELETE',
       })
-    } catch (error) {
-      if (error.statusCode === 401) return toast.error('You need to be an admin to delete a team')
+    } catch (error: any) {
+      if (error.statusCode === 401)
+        return toast.error('You need to be an admin to delete a team')
     }
   }
 
