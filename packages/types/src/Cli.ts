@@ -1,6 +1,6 @@
 import type { Env, Environment } from './Variables'
 
-export const SHELVE_JSON_SCHEMA = 'https://raw.githubusercontent.com/HugoRCD/shelve/main/packages/types/shelveConfigSchema.json'
+export const SHELVE_JSON_SCHEMA = 'https://raw.githubusercontent.com/HugoRCD/shelve/main/packages/types/shelve-config-schema.json'
 
 export type ShelveConfig = {
   /**
