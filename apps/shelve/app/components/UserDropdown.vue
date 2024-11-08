@@ -1,6 +1,17 @@
 <script setup lang="ts">
+import { Role } from '@shelve/types'
+
 const navigations = getNavigation('app')
 const navItem = navigations.map((nav) => {
+  return {
+    label: nav.name,
+    icon: nav.icon,
+    to: nav.path,
+  }
+})
+
+const adminNavigations = getNavigation('admin')
+const adminNavItem = adminNavigations.map((nav) => {
   return {
     label: nav.name,
     icon: nav.icon,
@@ -19,6 +30,7 @@ const items = [
     }
   ],
   navItem,
+  ...(user.value?.role === Role.ADMIN ? [adminNavItem] : []),
   [
     {
       label: 'Sign out',
@@ -55,5 +67,3 @@ const items = [
     <UButton v-else to="/login" label="Login" color="neutral" variant="soft" />
   </div>
 </template>
-
-
