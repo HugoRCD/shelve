@@ -24,7 +24,7 @@
     "@iconify-json/simple-icons": "^1.2.10",
     "@nuxt/devtools": "^1.6.0",
     "@nuxt/image": "^1.8.1",
-    "@nuxt/ui": "https://pkg.pr.new/@nuxt/ui@845f85a",
+    "@nuxt/ui": "https://pkg.pr.new/@nuxt/ui@503f701",
     "@prisma/client": "^5.21.1",
     "@shelve/cli": "*",
     "@shelve/crypto": "*",

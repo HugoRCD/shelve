@@ -1,21 +1,27 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "globalDependencies": ["**/.env"],
+  "globalDependencies": [
+    "**/.env"
+  ],
   "tasks": {
     "build": {
-      "dependsOn": ["^build"],
+      "dependsOn": [
+        "^build"
+      ],
       "outputs": [
-        "**/dist/**",
-        "**/.output/**",
-        "**/.nuxt/**"
+        "dist/**",
+        ".output/**",
+        ".nuxt/**"
       ]
     },
-    "generate" : {
-      "dependsOn": ["^generate"],
+    "generate": {
+      "dependsOn": [
+        "^generate"
+      ],
       "outputs": [
-        "**/dist/**",
-        "**/.output/**",
-        "**/.nuxt/**"
+        "dist/**",
+        ".output/**",
+        ".nuxt/**"
       ]
     },
     "dev": {
@@ -25,9 +31,9 @@
     "dev:prepare": {
       "cache": false,
       "outputs": [
-        "**/dist/**",
-        "**/.output/**",
-        "**/.nuxt/**"
+        "dist/**",
+        ".output/**",
+        ".nuxt/**"
       ]
     },
     "prisma:generate": {},

@@ -6,7 +6,9 @@
 
 services:
   shelve_app:
-    image: ghcr.io/hugorcd/shelve:latest
+    build:
+      context: ../
+      dockerfile: ./apps/shelve/Dockerfile
     container_name: shelve_app
     restart: always
     environment:
@@ -23,6 +25,10 @@ services:
         condition: service_healthy
       shelve_db:
         condition: service_healthy
+      prisma_migrate:
+        condition: service_completed_successfully
+    ports:
+      - "3000:3000"
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:3000/api/hello" ]
       interval: 30s
@@ -74,7 +80,9 @@ services:
     networks:
       - shelve-network
   prisma_migrate:
-    image: ghcr.io/hugorcd/shelve:latest
+    build:
+      context: ../
+      dockerfile: ./apps/shelve/Dockerfile
     container_name: prisma_migrate
     environment:
       - DATABASE_URL=${DATABASE_URL:-postgres://postgres:postgres@shelve_db:5432/postgres}

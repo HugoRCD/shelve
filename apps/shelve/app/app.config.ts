@@ -6,6 +6,7 @@ export default defineAppConfig({
     },
     button: {
       slots: {
+        // @ts-expect-error Nuxt UI types error
         base: 'cursor-pointer'
       }
     },
