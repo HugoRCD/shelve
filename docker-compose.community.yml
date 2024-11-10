@@ -1,7 +1,7 @@
 # documentation: https://shelve.cloud/docs
-# slogan: Shelve, is a project management tool for developers, etc... to make project creation and management easier.
+# slogan: Shelve - Secure environment sharing for collaborative development
 # tags: environment variables, projects management
-# logo: https://raw.githubusercontent.com/hugorcd/shelve/main/assets/logo.svg
+# logo: svgs/shelve.svg
 # port: 3000
 
 services:
