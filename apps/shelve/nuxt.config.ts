@@ -31,7 +31,7 @@ export default defineNuxtConfig({
     storage: {
       cache: {
         driver: 'redis',
-        url: process.env.NUXT_PRIVATE_REDIS_URL,
+        url: process.env.NUXT_PRIVATE_REDIS_URL || 'redis://shelve_redis:6379',
       },
     }
   },
