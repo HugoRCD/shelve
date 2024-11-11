@@ -18,11 +18,6 @@ enum Role {
   USER
 }
 
-enum AuthType {
-  GITHUB
-  GOOGLE
-}
-
 model User {
   id         Int        @id @default(autoincrement())
   username   String     @unique

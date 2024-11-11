@@ -16,6 +16,7 @@ declare module '#auth-utils' {
     user: User
     secure?: {
       githubToken?: string
+      googleToken?: string
     }
     loggedInAt: string
   }

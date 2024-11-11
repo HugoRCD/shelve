@@ -2,25 +2,16 @@
   "name": "@shelve/types",
   "version": "1.0.1",
   "type": "module",
-  "publishConfig": {
-    "access": "public"
-  },
-  "scripts": {
-    "dev": "bun run src/index.ts",
-    "dev:prepare": "unbuild",
-    "build": "unbuild",
-    "release": "bun run build && npm publish"
-  },
-  "main": "./dist/index.mjs",
-  "exports": {
-    ".": "./dist/index.mjs"
-  },
-  "types": "./dist/index.d.ts",
+  "private": true,
   "files": [
-    "dist"
+    "index.ts"
   ],
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "main": "index.ts",
+  "types": "index.ts",
   "devDependencies": {
-    "typescript": "latest",
-    "unbuild": "^2.0.0"
+    "typescript": "latest"
   }
 }
