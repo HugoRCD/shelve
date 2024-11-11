@@ -31,7 +31,6 @@ if (route.query.error === 'github' || route.query.error === 'google') {
         If you gained access to {{ title }}, you can enter your credentials here
       </p>
       <div class="mt-4 flex flex-col items-center justify-center gap-4">
-        {{ githubEnabled }} {{ googleEnabled }}
         <a
           v-if="githubEnabled"
           href="/auth/github"
