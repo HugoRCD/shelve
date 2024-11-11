@@ -6,12 +6,10 @@ export default defineOAuthGoogleEventHandler({
   },
   async onSuccess(event, { user, tokens }) {
     try {
-      console.log('User', user)
-      console.log('Tokens', tokens)
       const _user = await new UserService().upsertUser({
         email: user.email,
-        avatar: user.avatar_url,
-        username: user.login,
+        avatar: user.picture,
+        username: `${user.given_name}_${user.family_name}`,
       })
       await setUserSession(event, {
         secure: {
