@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { title, githubEnabled, googleEnabled } = useAppConfig()
+const { title } = useAppConfig()
 
 definePageMeta({
   layout: 'auth',
@@ -31,7 +31,6 @@ if (route.query.error === 'github' || route.query.error === 'google') {
       </p>
       <div class="mt-4 flex flex-col items-center justify-center gap-4">
         <a
-          v-if="githubEnabled"
           href="/auth/github"
           class="flex items-center gap-2 rounded-md bg-neutral-200 px-5 py-1.5 text-sm text-black transition-colors duration-300 hover:bg-neutral-300 dark:bg-neutral-800 dark:text-white dark:hover:bg-neutral-700"
         >
@@ -41,7 +40,6 @@ if (route.query.error === 'github' || route.query.error === 'google') {
           </span>
         </a>
         <a
-          v-if="googleEnabled"
           href="/auth/google"
           class="flex items-center gap-2 rounded-md bg-neutral-200 px-5 py-1.5 text-sm text-black transition-colors duration-300 hover:bg-neutral-300 dark:bg-neutral-800 dark:text-white dark:hover:bg-neutral-700"
         >
