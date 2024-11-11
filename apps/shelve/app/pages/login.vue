@@ -8,8 +8,8 @@ definePageMeta({
 
 const route = useRoute()
 
-if (route.query.error === 'github') {
-  toast.error('An error occurred while logging in with GitHub.', {
+if (route.query.error === 'github' || route.query.error === 'google') {
+  toast.error(`An error occurred while logging in with ${route.query.error}.`, {
     duration: Infinity,
     closeButton: false,
     action: {
@@ -18,8 +18,6 @@ if (route.query.error === 'github') {
     }
   })
 }
-
-const { user, fetch } = useUserSession()
 </script>
 
 <template>
@@ -36,6 +34,12 @@ const { user, fetch } = useUserSession()
           <UIcon name="simple-icons:github" class="size-5 fill-current" />
           <span>
             Sign in with GitHub
+          </span>
+        </a>
+        <a href="/auth/google" class="flex items-center gap-2 rounded-md bg-neutral-200 px-5 py-1.5 text-sm text-black transition-colors duration-300 hover:bg-neutral-300 dark:bg-neutral-800 dark:text-white dark:hover:bg-neutral-700">
+          <UIcon name="simple-icons:google" class="size-5 fill-current" />
+          <span>
+            Sign in with Google
           </span>
         </a>
       </div>
