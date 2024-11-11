@@ -16,10 +16,6 @@ const nav = [
         name: 'Roadmap',
         to: 'https://volta.net/HugoRCD/shelve',
       },
-      {
-        name: 'Status',
-        to: 'https://shelve.betteruptime.com/',
-      }
     ],
   },
   {
@@ -80,6 +76,9 @@ const nav = [
           © {{ new Date().getFullYear() }} - Made with 💚 by <NuxtLink to="https://hrcd.fr/" class="text-neutral-400 hover:text-neutral-200">
             HugoRCD
           </NuxtLink>
+        </div>
+        <div style="color-scheme: none;" class="mt-4">
+          <iframe src="https://status.shelve.cloud/badge?theme=dark" height="30" />
         </div>
       </div>
       <div class="flex gap-10">
