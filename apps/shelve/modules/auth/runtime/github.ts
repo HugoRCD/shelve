@@ -1,5 +1,4 @@
 import { UserService } from '~~/server/services/user.service'
-import { EmailService } from '~~/server/services/resend.service'
 
 export default defineOAuthGitHubEventHandler({
   config: {
