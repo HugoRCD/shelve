@@ -1,6 +1,5 @@
 <script setup lang="ts">
-const { title } = useAppConfig()
-const { githubEnabled, googleEnabled } = useRuntimeConfig().public
+const { title, githubEnabled, googleEnabled } = useAppConfig()
 
 definePageMeta({
   layout: 'auth',

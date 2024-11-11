@@ -5,20 +5,20 @@ export default defineNuxtModule({
     name: '@shelve/auth',
   },
   setup(options, nuxt) {
-    const { resolve } = createResolver(import.meta.url)
+    nuxt.hook('ready', () => {
+      let isGithubEnabled = false
+      let isGoogleEnabled = false
 
-    let isGithubEnabled = false
-    let isGoogleEnabled = false
+      if (process.env.NUXT_OAUTH_GITHUB_CLIENT_ID && process.env.NUXT_OAUTH_GITHUB_CLIENT_SECRET)
+        isGithubEnabled = true
+      if (process.env.NUXT_OAUTH_GOOGLE_CLIENT_ID && process.env.NUXT_OAUTH_GOOGLE_CLIENT_SECRET)
+        isGoogleEnabled = true
 
-    if (process.env.NUXT_OAUTH_GITHUB_CLIENT_ID && process.env.NUXT_OAUTH_GITHUB_CLIENT_SECRET)
-      isGithubEnabled = true
-    if (process.env.NUXT_OAUTH_GOOGLE_CLIENT_ID && process.env.NUXT_OAUTH_GOOGLE_CLIENT_SECRET)
-      isGoogleEnabled = true
+      nuxt.options.appConfig.googleEnabled = isGoogleEnabled
+      nuxt.options.appConfig.githubEnabled = isGithubEnabled
+    })
 
-    nuxt.options.runtimeConfig.public.googleEnabled = isGoogleEnabled
-    nuxt.options.runtimeConfig.public.githubEnabled = isGithubEnabled
-
-    if (isGithubEnabled) {
+    /*if (isGithubEnabled) {
       addServerHandler({
         route: '/auth/github',
         handler: resolve('./runtime/github')
@@ -30,6 +30,6 @@ export default defineNuxtModule({
         route: '/auth/google',
         handler: resolve('./runtime/google')
       })
-    }
+    }*/
   }
 })
