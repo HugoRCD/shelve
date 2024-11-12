@@ -5,7 +5,7 @@
       <div class="flex items-center gap-4">
         <span class="text-sm text-neutral-500">
           Want to go back to homepage ?
-          <NuxtLink to="https//shelve.cloud" class="text-[var(--ui-primary)] ml-1 transition duration-300 ease-in-out hover:underline">
+          <NuxtLink to="/" class="text-[var(--ui-primary)] ml-1 transition duration-300 ease-in-out hover:underline">
             Click here
           </NuxtLink>
         </span>
