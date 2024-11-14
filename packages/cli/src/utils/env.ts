@@ -69,8 +69,7 @@ export async function getEnvFile(): Promise<Env[]> {
     const envFileContent = envFile.split('\n').filter((item) => item && !item.startsWith('#')).join('\n')
     if (!envFileContent) return []
     return envFileContent.split('\n').map((item) => {
-      const [key, ...valueParts] = item.split('=')
-      const value = valueParts.join('=')
+      const [key, value] = item.split(/=(.+)/) // split on the first = and the rest of the line
       if (!key || !value) {
         onCancel(`${ envFileName } file is invalid`)
       }
@@ -139,24 +138,4 @@ export async function generateEnvExampleFile(): Promise<void> {
   } catch (e) {
     onCancel(`Failed to generate ${envExampleFile} file`)
   }
-}
-
-export function copyEnv(variables: Variable[], env: 'production' | 'preview' | 'development') {
-  if (variables.length === 0) return
-  const envVariables = variables.filter((variable) => variable.environment.includes(env))
-  const envString = envVariables.map((variable) => `${variable.key}=${variable.value}`).join('\n')
-  copyToClipboard(envString, 'Copied to clipboard')
-}
-
-export function downloadEnv(variables: Variable[], env: 'production' | 'preview' | 'development') {
-  if (variables.length === 0) return
-  const envVariables = variables.filter((variable) => variable.environment.includes(env))
-  const envString = envVariables.map((variable) => `${variable.key}=${variable.value}`).join('\n')
-  const blob = new Blob([envString], { type: 'text/plain' })
-  const url = URL.createObjectURL(blob)
-  const a = document.createElement('a')
-  a.href = url
-  a.download = `.env.${env}`
-  a.click()
-  URL.revokeObjectURL(url)
 }

@@ -109,7 +109,7 @@ function handleDragOver(event: DragEvent) {
 }
 
 function handleDragLeave(event: DragEvent) {
-  if (!event.currentTarget.contains(event.relatedTarget as Node)) {
+  if (!event.currentTarget?.contains(event.relatedTarget as Node)) {
     dragOver.value = false
   }
 }
@@ -131,8 +131,7 @@ function parseEnvFile(file: File) {
     const lines = content.split('\n').filter((line) => line.trim() !== '')
     const filteredLines = lines.filter((line) => !line.startsWith('#'))
     const variables = filteredLines.map((line, index) => {
-      const [key, ...valueParts] = line.split('=')
-      const value = valueParts.join('=')
+      const [key, value] = line.split(/=(.+)/) // split on the first = and the rest of the line
       if (!key || !value) {
         toast.error('Invalid .env file')
         throw new Error('Invalid .env')
@@ -168,8 +167,7 @@ onMounted(() => {
     const pastedDataArrayFiltered = pastedDataArray.filter((data) => data !== '')
     variablesToCreate.value = pastedDataArrayFiltered.length
     variablesInput.value.variables = pastedDataArrayFiltered.map((data, index) => {
-      const [key, ...valueParts] = data.split('=')
-      const value = valueParts.join('=')
+      const [key, value] = data.split(/=(.+)/) // split on the first = and the rest of the line
       if (!key || !value) throw new Error('Invalid .env')
       return {
         index,

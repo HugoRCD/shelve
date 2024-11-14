@@ -34,9 +34,8 @@ export class ProjectService {
 
     const existingProject = await this.findProjectById(projectId)
 
-    if (existingProject.name !== project.name) {
-      await this.validateProjectName(project.name, userId)
-    }
+    if (existingProject.name !== project.name)
+      await this.validateProjectName(project.name, userId, projectId)
 
     return prisma.project.update({
       where: { id: projectId },
@@ -127,8 +126,8 @@ export class ProjectService {
   /**
    * Private helper methods
    */
-  private async validateProjectName(name: string, userId: number): Promise<void> {
-    const exists = await this.isProjectAlreadyExists(name, userId)
+  private async validateProjectName(name: string, userId: number, projectId?: number): Promise<void> {
+    const exists = await this.isProjectAlreadyExists(name, userId, projectId)
     if (exists) {
       throw createError({
         statusCode: 400,
@@ -137,16 +136,16 @@ export class ProjectService {
     }
   }
 
-  private async isProjectAlreadyExists(name: string, userId: number): Promise<boolean> {
-    const project = await prisma.project.findFirst({
-      where: {
-        name: {
-          equals: name,
-          mode: 'insensitive',
-        },
-        ownerId: userId,
+  private async isProjectAlreadyExists(name: string, userId: number, projectId?: number): Promise<boolean> {
+    const where: { name: { equals: string; mode: 'insensitive' }, ownerId: number } & { id?: { not: number } } = {
+      name: {
+        equals: name,
+        mode: 'insensitive',
       },
-    })
+      ownerId: userId,
+    }
+    if (projectId) where.id = { not: projectId }
+    const project = await prisma.project.findFirst({ where })
     return !!project
   }
 
