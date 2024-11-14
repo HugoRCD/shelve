@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { capitalize } from 'vue'
-import type { Navigation } from '~/utils/navigation'
 
 type NavItemProps = {
   navItem: Navigation

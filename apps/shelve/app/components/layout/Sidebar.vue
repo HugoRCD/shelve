@@ -40,7 +40,7 @@ watch(() => route.path, handleProjectNavigation, { immediate: true })
       </NuxtLink>
     </div>
     <div class="flex flex-col gap-2">
-      <TransitionGroup name="fade" tag="ul" class="flex flex-col gap-2" mode="out-in">
+      <TransitionGroup name="bezier" tag="ul" class="flex flex-col gap-2" mode="out-in">
         <LayoutNavItem v-for="nav in navigations" :key="nav.name" :active="nav.path === $route.path" :nav-item="nav" />
       </TransitionGroup>
     </div>
@@ -66,20 +66,22 @@ watch(() => route.path, handleProjectNavigation, { immediate: true })
   </div>
 </template>
 
-<style scoped>
-.fade-move,
-.fade-enter-active,
-.fade-leave-active {
+<style>
+/* Bezier effect */
+
+.bezier-move,
+.bezier-enter-active,
+.bezier-leave-active {
   transition: all 0.5s cubic-bezier(0.55, 0, 0.1, 1);
 }
 
-.fade-enter-from,
-.fade-leave-to {
+.bezier-enter-from,
+.bezier-leave-to {
   opacity: 0;
   transform: scaleY(0.01) translate(30px, 0);
 }
 
-.fade-leave-active {
+.bezier-leave-active {
   position: absolute;
 }
 </style>
