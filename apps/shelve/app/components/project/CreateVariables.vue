@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { Variable } from '@shelve/types'
-import type { PropType } from 'vue'
 
 type CreateVariablesProps = {
   refresh: () => Promise<void>
@@ -32,17 +31,17 @@ const items = [
     {
       label: 'For production',
       icon: 'lucide:clipboard',
-      onSelect: () => copyEnv(variables!, 'production')
+      onSelect: () => copyEnv(variables, 'production')
     },
     {
       label: 'For preview',
       icon: 'lucide:clipboard',
-      onSelect: () => copyEnv(variables!, 'preview')
+      onSelect: () => copyEnv(variables, 'preview')
     },
     {
       label: 'For development',
       icon: 'lucide:clipboard',
-      onSelect: () => copyEnv(variables!, 'development')
+      onSelect: () => copyEnv(variables, 'development')
     }
   ],
   [
@@ -55,17 +54,17 @@ const items = [
     {
       label: 'For production',
       icon: 'lucide:download',
-      onSelect: () => downloadEnv(variables!, 'production')
+      onSelect: () => downloadEnv(variables, 'production')
     },
     {
       label: 'For preview',
       icon: 'lucide:download',
-      onSelect: () => downloadEnv(variables!, 'preview')
+      onSelect: () => downloadEnv(variables, 'preview')
     },
     {
       label: 'For development',
       icon: 'lucide:download',
-      onSelect: () => downloadEnv(variables!, 'development')
+      onSelect: () => downloadEnv(variables, 'development')
     }
   ],
 ]

@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import type { PropType } from 'vue'
-
 type GroupProps = {
   label?: string
   required?: boolean

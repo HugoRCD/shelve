@@ -1,28 +1,15 @@
 <script setup lang="ts">
 import type { Variable } from '@shelve/types'
-import type { PropType } from 'vue'
 
-const { refresh, variable, projectId } = defineProps({
-  refresh: {
-    type: Function,
-    required: true,
-  },
-  variables: {
-    type: Array as PropType<Variable[]>,
-  },
-  variable: {
-    type: Object as PropType<Variable>,
-    required: true
-  },
-  projectId: {
-    type: String,
-    required: true,
-  },
-  isSelected: {
-    type: Boolean,
-    required: true
-  }
-})
+type ProjectVariableProps = {
+  refresh: () => Promise<void>
+  variables: Variable[]
+  variable: Variable
+  projectId: string
+  isSelected: boolean
+}
+
+const { refresh, variable, projectId } = defineProps<ProjectVariableProps>()
 
 const {
   updateLoading,
