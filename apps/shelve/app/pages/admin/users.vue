@@ -146,7 +146,7 @@ const items = (row: User) => [
         <UBadge :label="row.original.role.toUpperCase()" :color="row.original.role === Role.ADMIN ? 'primary' : 'neutral'" variant="subtle" />
       </template>
       <template #actions-cell="{ row }">
-        <UDropdownMenu :items="items(row)">
+        <UDropdownMenu :items="items(row.original)">
           <UButton color="neutral" variant="ghost" icon="heroicons:ellipsis-horizontal-20-solid" />
         </UDropdownMenu>
       </template>

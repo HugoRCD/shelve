@@ -20,22 +20,10 @@ html, body, #__nuxt, #__layout {
 }
 
 @theme {
-  --font-family-newsreader: 'Newsreader', serif;
-  --font-family-inter: 'Inter', sans-serif;
-  --font-family-geist: 'Geist', sans-serif;
-  --font-family-geist-mono: 'GeistMono', sans-serif;
-}
-
-.font-geist-mono {
-    font-family: 'GeistMono', sans-serif;
-}
-
-.font-geist {
-    font-family: 'Geist', sans-serif;
-}
-
-.font-newsreader {
-    font-family: 'Newsreader', serif;
+  --font-newsreader: 'Newsreader', serif;
+  --font-inter: 'Inter', sans-serif;
+  --font-geist: 'Geist', sans-serif;
+  --font-geist-mono: 'Geist Mono', sans-serif;
 }
 
 .main-gradient {
