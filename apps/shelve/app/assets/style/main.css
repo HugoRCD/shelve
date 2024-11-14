@@ -23,19 +23,7 @@ html, body, #__nuxt, #__layout {
   --font-newsreader: 'Newsreader', serif;
   --font-inter: 'Inter', sans-serif;
   --font-geist: 'Geist', sans-serif;
-  --font-geist-mono: 'GeistMono', sans-serif;
-}
-
-.font-geist-mono {
-    font-family: 'GeistMono', sans-serif;
-}
-
-.font-geist {
-    font-family: 'Geist', sans-serif;
-}
-
-.font-newsreader {
-    font-family: 'Newsreader', serif;
+  --font-geist-mono: 'Geist Mono', sans-serif;
 }
 
 .main-gradient {
