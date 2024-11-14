@@ -131,7 +131,8 @@ function parseEnvFile(file: File) {
     const lines = content.split('\n').filter((line) => line.trim() !== '')
     const filteredLines = lines.filter((line) => !line.startsWith('#'))
     const variables = filteredLines.map((line, index) => {
-      const [key, value] = line.split('=')
+      const [key, ...valueParts] = line.split('=')
+      const value = valueParts.join('=')
       if (!key || !value) {
         toast.error('Invalid .env file')
         throw new Error('Invalid .env')
@@ -167,7 +168,8 @@ onMounted(() => {
     const pastedDataArrayFiltered = pastedDataArray.filter((data) => data !== '')
     variablesToCreate.value = pastedDataArrayFiltered.length
     variablesInput.value.variables = pastedDataArrayFiltered.map((data, index) => {
-      const [key, value] = data.split('=')
+      const [key, ...valueParts] = data.split('=')
+      const value = valueParts.join('=')
       if (!key || !value) throw new Error('Invalid .env')
       return {
         index,

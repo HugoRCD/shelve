@@ -13,10 +13,16 @@ const shareUrl = ref('')
 async function saveEnvFile() {
   loading.value = true
   try {
+    const lines = value.value.split('\n').filter((line) => line.trim() !== '')
+    const variables = lines.map((line) => {
+      const [key, ...valueParts] = line.split('=')
+      const value = valueParts.join('=')
+      return { key, value }
+    })
     shareUrl.value = await $fetch('/api/vault', {
       method: 'POST',
       body: {
-        value: value.value,
+        value: variables.map((variable) => `${variable.key}=${variable.value}`).join('\n'),
         reads: reads.value,
         ttl: selectedTtl.value,
       },

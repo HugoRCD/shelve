@@ -15,7 +15,13 @@ async function decryptEnvFile() {
     const { decryptedValue, reads, ttl } = await $fetch(`/api/vault?id=${localId.value}`, {
       method: 'POST',
     })
-    value.value = decryptedValue
+    const lines = decryptedValue.split('\n').filter((line) => line.trim() !== '')
+    const variables = lines.map((line) => {
+      const [key, ...valueParts] = line.split('=')
+      const value = valueParts.join('=')
+      return `${key}=${value}`
+    })
+    value.value = variables.join('\n')
     readsLeft.value = reads
     timeLeft.value = ttl
     toast.success('Your secret(s) has been decrypted')
