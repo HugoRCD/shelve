@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { Project } from '@shelve/types'
-import type { PropType, Ref } from 'vue'
+import type { Ref } from 'vue'
 
 type ProjectProps = {
   project: Project
