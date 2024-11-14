@@ -14,10 +14,10 @@ The Shelve CLI serves as a command-line interface designed for the [Shelve](http
 
 ## Installation
 
-Install the package globally:
+Install the package locally:
 
 ```sh
-npm install -g @shelve/cli
+bun a -d @shelve/cli
 ```
 
 ## Configuration
