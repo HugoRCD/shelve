@@ -46,37 +46,37 @@ export class ProjectService {
   /**
    * Get project by ID
    */
-  getProjectById(id: number): Promise<Project> {
-    return cachedFunction(() => {
-      return prisma.project.findUnique({
-        where: { id },
-        include: this.getProjectInclude()
-      })
-    }, {
-      maxAge: this.CACHE_TTL,
-      name: 'getProjectById',
-      getKey: (id: number) => `projectId:${id}`,
-    })(id)
-  }
+  getProjectById = cachedFunction((projectId: number, userId: number): Promise<Project> => {
+    const hasAccess = this.hasAccessToProject(projectId, userId)
+    if (!hasAccess) throw createError({ statusCode: 401, statusMessage: 'Unauthorized' })
+    return prisma.project.findUnique({
+      where: {
+        id: projectId,
+      },
+      include: this.getProjectInclude()
+    })
+  }, {
+    maxAge: this.CACHE_TTL,
+    name: 'getProjectById',
+    getKey: (projectId: number) => `projectId:${projectId}`,
+  })
 
   /**
    * Get all projects for a user
    */
-  getProjectsByUserId(userId: number): Promise<Project[]> {
-    return cachedFunction(async () => {
-      const [projects, teams] = await Promise.all([
-        this.getUserProjects(userId),
-        this.getUserTeamProjects(userId)
-      ])
+  getProjectsByUserId = cachedFunction(async (userId: number): Promise<Project[]> => {
+    const [projects, teams] = await Promise.all([
+      this.getUserProjects(userId),
+      this.getUserTeamProjects(userId)
+    ])
 
-      const teamProjects = teams.map(team => team.projects)
-      return this.removeDuplicateProjects([...projects, ...teamProjects].flat())
-    }, {
-      maxAge: this.CACHE_TTL,
-      name: 'getProjectsByUserId',
-      getKey: (userId: number) => `userId:${userId}`,
-    })(userId)
-  }
+    const teamProjects = teams.map(team => team.projects)
+    return this.removeDuplicateProjects([...projects, ...teamProjects].flat())
+  }, {
+    maxAge: this.CACHE_TTL,
+    name: 'getProjectsByUserId',
+    getKey: (userId: number) => `userId:${userId}`,
+  })
 
   /**
    * Add team to project
@@ -162,12 +162,12 @@ export class ProjectService {
     return project
   }
 
-  private buildProjectData(project: CreateProjectInput, userId: number): CreateProjectInputWithAll {
+  private buildProjectData(project: CreateProjectInput, userId: number) {
     const projectData = {
       ...project,
       ownerId: userId,
       users: { connect: { id: userId } }
-    } as CreateProjectInputWithAll
+    }
 
     if (project.team) {
       projectData.team = {
@@ -230,6 +230,32 @@ export class ProjectService {
 
   private async deleteCachedProjectById(id: number): Promise<void> {
     await this.storage.removeItem(`${this.CACHE_PREFIX.project}${id}.json`)
+  }
+
+  private async hasAccessToProject(projectId: number, userId: number): Promise<boolean> {
+    const findProject = await prisma.project.findFirst({
+      where: {
+        id: projectId,
+        OR: [
+          {
+            ownerId: userId,
+          },
+          {
+            team: {
+              members: {
+                some: {
+                  userId,
+                }
+              }
+            }
+          }
+        ],
+      },
+      select: {
+        id: true,
+      }
+    })
+    return !!findProject
   }
 
 }

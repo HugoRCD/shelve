@@ -2,19 +2,13 @@
 import type { Variable } from '@shelve/types'
 import type { PropType } from 'vue'
 
-const { refresh, variables, projectId } = defineProps({
-  refresh: {
-    type: Function as PropType<() => Promise<void>>,
-    required: true,
-  },
-  variables: {
-    type: Array as PropType<Variable[]>,
-  },
-  projectId: {
-    type: String,
-    required: true,
-  },
-})
+type CreateVariablesProps = {
+  refresh: () => Promise<void>
+  variables: Variable[]
+  projectId: string
+}
+
+const { refresh, variables, projectId } = defineProps<CreateVariablesProps>()
 
 const {
   createLoading,
@@ -185,9 +179,7 @@ const autoUppercase = useCookie<boolean>('autoUppercase', {
   default: () => true,
 })
 
-const handlePasswordGenerated = (password: string, index: number) => {
-  variablesInput.value.variables[index].value = password
-}
+const handlePasswordGenerated = (password: string, index: number) => variablesInput.value.variables[index].value = password
 </script>
 
 <template>
