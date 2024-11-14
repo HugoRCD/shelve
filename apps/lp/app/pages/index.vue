@@ -49,11 +49,11 @@ function useClipboard(text: string) {
         <div class="absolute bottom-16 z-20 flex w-full items-center justify-center [mask-image:linear-gradient(to_bottom,white,transparent)]">
           <div
             class="flex items-center justify-center gap-4 rounded-md bg-white/5 px-4 py-2 backdrop-blur-lg"
-            @click="useClipboard('npm install -g @shelve/cli')"
+            @click="useClipboard('bun a -d @shelve/cli')"
           >
             <div class="flex cursor-pointer items-center justify-center gap-2 text-sm text-neutral-300">
               <span>
-                npm install -g @shelve/cli
+                bun a -d @shelve/cli
               </span>
               <UIcon v-if="!copy" name="lucide:copy" />
               <UIcon v-else name="lucide:check" class="text-primary-400 text-lg" />
