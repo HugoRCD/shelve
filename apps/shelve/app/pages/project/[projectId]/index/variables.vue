@@ -2,7 +2,7 @@
 import type { Variable } from '@shelve/types'
 import { ConfirmModal } from '#components'
 
-const { projectId } = useRoute().params
+const { projectId } = useRoute().params as { projectId: string }
 
 const { data: variables, status, refresh } = useFetch<Variable[]>(`/api/variable/project/${projectId}`, {
   method: 'GET',
@@ -62,8 +62,8 @@ async function deleteVariables() {
 
 <template>
   <div class="flex flex-col gap-4">
-    <ProjectCreateVariables :variables :project-id :refresh />
-    <Transition name="fade" mode="out-in">
+    <ProjectCreateVariables v-if="projectId && variables" :variables :project-id :refresh />
+    <Transition name="bezier" mode="out-in">
       <div v-if="selectedVariables.length > 0" class="absolute bottom-4 left-1/2 z-20 -translate-x-1/2">
         <div class="flex items-center gap-4 rounded-full border border-neutral-200 bg-white px-5 py-1.5 shadow-md dark:border-neutral-700 dark:bg-neutral-800">
           <span class="text-nowrap text-sm font-semibold text-neutral-900 dark:text-neutral-300">

@@ -34,9 +34,8 @@ export class ProjectService {
 
     const existingProject = await this.findProjectById(projectId)
 
-    if (existingProject.name !== project.name) {
-      await this.validateProjectName(project.name, userId)
-    }
+    if (existingProject.name !== project.name)
+      await this.validateProjectName(project.name, userId, projectId)
 
     return prisma.project.update({
       where: { id: projectId },
@@ -47,37 +46,37 @@ export class ProjectService {
   /**
    * Get project by ID
    */
-  getProjectById(id: number): Promise<Project> {
-    return cachedFunction(() => {
-      return prisma.project.findUnique({
-        where: { id },
-        include: this.getProjectInclude()
-      })
-    }, {
-      maxAge: this.CACHE_TTL,
-      name: 'getProjectById',
-      getKey: (id: number) => `projectId:${id}`,
-    })(id)
-  }
+  getProjectById = cachedFunction((projectId: number, userId: number): Promise<Project> => {
+    const hasAccess = this.hasAccessToProject(projectId, userId)
+    if (!hasAccess) throw createError({ statusCode: 401, statusMessage: 'Unauthorized' })
+    return prisma.project.findUnique({
+      where: {
+        id: projectId,
+      },
+      include: this.getProjectInclude()
+    })
+  }, {
+    maxAge: this.CACHE_TTL,
+    name: 'getProjectById',
+    getKey: (projectId: number) => `projectId:${projectId}`,
+  })
 
   /**
    * Get all projects for a user
    */
-  getProjectsByUserId(userId: number): Promise<Project[]> {
-    return cachedFunction(async () => {
-      const [projects, teams] = await Promise.all([
-        this.getUserProjects(userId),
-        this.getUserTeamProjects(userId)
-      ])
+  getProjectsByUserId = cachedFunction(async (userId: number): Promise<Project[]> => {
+    const [projects, teams] = await Promise.all([
+      this.getUserProjects(userId),
+      this.getUserTeamProjects(userId)
+    ])
 
-      const teamProjects = teams.map(team => team.projects)
-      return this.removeDuplicateProjects([...projects, ...teamProjects].flat())
-    }, {
-      maxAge: this.CACHE_TTL,
-      name: 'getProjectsByUserId',
-      getKey: (userId: number) => `userId:${userId}`,
-    })(userId)
-  }
+    const teamProjects = teams.map(team => team.projects)
+    return this.removeDuplicateProjects([...projects, ...teamProjects].flat())
+  }, {
+    maxAge: this.CACHE_TTL,
+    name: 'getProjectsByUserId',
+    getKey: (userId: number) => `userId:${userId}`,
+  })
 
   /**
    * Add team to project
@@ -127,8 +126,8 @@ export class ProjectService {
   /**
    * Private helper methods
    */
-  private async validateProjectName(name: string, userId: number): Promise<void> {
-    const exists = await this.isProjectAlreadyExists(name, userId)
+  private async validateProjectName(name: string, userId: number, projectId?: number): Promise<void> {
+    const exists = await this.isProjectAlreadyExists(name, userId, projectId)
     if (exists) {
       throw createError({
         statusCode: 400,
@@ -137,16 +136,16 @@ export class ProjectService {
     }
   }
 
-  private async isProjectAlreadyExists(name: string, userId: number): Promise<boolean> {
-    const project = await prisma.project.findFirst({
-      where: {
-        name: {
-          equals: name,
-          mode: 'insensitive',
-        },
-        ownerId: userId,
+  private async isProjectAlreadyExists(name: string, userId: number, projectId?: number): Promise<boolean> {
+    const where: { name: { equals: string; mode: 'insensitive' }, ownerId: number } & { id?: { not: number } } = {
+      name: {
+        equals: name,
+        mode: 'insensitive',
       },
-    })
+      ownerId: userId,
+    }
+    if (projectId) where.id = { not: projectId }
+    const project = await prisma.project.findFirst({ where })
     return !!project
   }
 
@@ -163,12 +162,12 @@ export class ProjectService {
     return project
   }
 
-  private buildProjectData(project: CreateProjectInput, userId: number): CreateProjectInputWithAll {
+  private buildProjectData(project: CreateProjectInput, userId: number) {
     const projectData = {
       ...project,
       ownerId: userId,
       users: { connect: { id: userId } }
-    } as CreateProjectInputWithAll
+    }
 
     if (project.team) {
       projectData.team = {
@@ -231,6 +230,32 @@ export class ProjectService {
 
   private async deleteCachedProjectById(id: number): Promise<void> {
     await this.storage.removeItem(`${this.CACHE_PREFIX.project}${id}.json`)
+  }
+
+  private async hasAccessToProject(projectId: number, userId: number): Promise<boolean> {
+    const findProject = await prisma.project.findFirst({
+      where: {
+        id: projectId,
+        OR: [
+          {
+            ownerId: userId,
+          },
+          {
+            team: {
+              members: {
+                some: {
+                  userId,
+                }
+              }
+            }
+          }
+        ],
+      },
+      select: {
+        id: true,
+      }
+    })
+    return !!findProject
   }
 
 }

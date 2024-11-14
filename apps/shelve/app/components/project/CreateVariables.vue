@@ -2,19 +2,13 @@
 import type { Variable } from '@shelve/types'
 import type { PropType } from 'vue'
 
-const { refresh, variables, projectId } = defineProps({
-  refresh: {
-    type: Function as PropType<() => Promise<void>>,
-    required: true,
-  },
-  variables: {
-    type: Array as PropType<Variable[]>,
-  },
-  projectId: {
-    type: String,
-    required: true,
-  },
-})
+type CreateVariablesProps = {
+  refresh: () => Promise<void>
+  variables: Variable[]
+  projectId: string
+}
+
+const { refresh, variables, projectId } = defineProps<CreateVariablesProps>()
 
 const {
   createLoading,
@@ -109,7 +103,7 @@ function handleDragOver(event: DragEvent) {
 }
 
 function handleDragLeave(event: DragEvent) {
-  if (!event.currentTarget.contains(event.relatedTarget as Node)) {
+  if (!event.currentTarget?.contains(event.relatedTarget as Node)) {
     dragOver.value = false
   }
 }
@@ -131,7 +125,7 @@ function parseEnvFile(file: File) {
     const lines = content.split('\n').filter((line) => line.trim() !== '')
     const filteredLines = lines.filter((line) => !line.startsWith('#'))
     const variables = filteredLines.map((line, index) => {
-      const [key, value] = line.split('=')
+      const [key, value] = line.split(/=(.+)/) // split on the first = and the rest of the line
       if (!key || !value) {
         toast.error('Invalid .env file')
         throw new Error('Invalid .env')
@@ -167,7 +161,7 @@ onMounted(() => {
     const pastedDataArrayFiltered = pastedDataArray.filter((data) => data !== '')
     variablesToCreate.value = pastedDataArrayFiltered.length
     variablesInput.value.variables = pastedDataArrayFiltered.map((data, index) => {
-      const [key, value] = data.split('=')
+      const [key, value] = data.split(/=(.+)/) // split on the first = and the rest of the line
       if (!key || !value) throw new Error('Invalid .env')
       return {
         index,
@@ -185,9 +179,7 @@ const autoUppercase = useCookie<boolean>('autoUppercase', {
   default: () => true,
 })
 
-const handlePasswordGenerated = (password: string, index: number) => {
-  variablesInput.value.variables[index].value = password
-}
+const handlePasswordGenerated = (password: string, index: number) => variablesInput.value.variables[index].value = password
 </script>
 
 <template>

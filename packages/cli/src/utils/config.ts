@@ -16,7 +16,7 @@ export async function createShelveConfig(projectName?: string): Promise<string> 
     const projects = await getProjects()
 
     project = await select({
-      message: 'Select the project:',
+      message: 'Select the current project:',
       options: projects.map(project => ({
         value: project.name,
         label: project.name

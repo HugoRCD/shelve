@@ -69,7 +69,7 @@ export async function getEnvFile(): Promise<Env[]> {
     const envFileContent = envFile.split('\n').filter((item) => item && !item.startsWith('#')).join('\n')
     if (!envFileContent) return []
     return envFileContent.split('\n').map((item) => {
-      const [key, value] = item.split('=')
+      const [key, value] = item.split(/=(.+)/) // split on the first = and the rest of the line
       if (!key || !value) {
         onCancel(`${ envFileName } file is invalid`)
       }
