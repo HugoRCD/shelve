@@ -38,12 +38,12 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      appUrl: process.env.NUXT_PUBLIC_APP_URL || 'http://localhost:3000',
+      appUrl: '',
     },
     private: {
-      resendApiKey: process.env.NUXT_PRIVATE_RESEND_API_KEY,
-      encryptionKey: process.env.NUXT_PRIVATE_ENCRYPTION_KEY,
-      adminUsers: process.env.ADMIN_USERS,
+      resendApiKey: '',
+      encryptionKey: '',
+      adminEmails: '',
     },
   },
 

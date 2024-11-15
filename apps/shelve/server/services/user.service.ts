@@ -19,7 +19,7 @@ export class UserService {
     const username = this.generateUniqueUsername(createUserInput.username, foundUser)
 
     const config = useRuntimeConfig()
-    const adminUsers = config.private.adminUsers?.split(',') || []
+    const adminEmails = config.private.adminEmails?.split(',') || []
 
     const user = await prisma.user.upsert({
       where: {
@@ -31,7 +31,7 @@ export class UserService {
       create: {
         ...createUserInput,
         username,
-        role: adminUsers.includes(createUserInput.email) ? Role.ADMIN : undefined,
+        role: adminEmails.includes(createUserInput.email) ? Role.ADMIN : undefined,
       }
     })
 
