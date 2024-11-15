@@ -181,7 +181,7 @@ function getProjectManager(manager: string) {
     <UModal v-model:open="showDelete" title="Are you sure you want to delete this project?" description="This action cannot be undone">
       <template #body>
         <form class="flex flex-col gap-6" @submit.prevent="deleteProjectFunction">
-          <FormGroup v-model="projectName" :label="`Type the project name '${project.name}' to confirm`" />
+          <FormGroup v-model="projectName" autofocus :label="`Type the project name '${project.name}' to confirm`" />
           <div class="flex justify-end gap-4">
             <UButton color="neutral" variant="ghost" @click="showDelete = false">
               Cancel

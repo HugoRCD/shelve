@@ -45,8 +45,8 @@ export function useVariables(refresh: () => Promise<void>, projectId: string) {
 
   function removeVariable(index: number) {
     if (variablesToCreate.value === 1) {
-      variablesInput.value.variables[index].key = ''
-      variablesInput.value.variables[index].value = ''
+      variablesInput.value.variables[index]!.key = ''
+      variablesInput.value.variables[index]!.value = ''
       return
     }
     variablesToCreate.value--

@@ -11,7 +11,7 @@ const {
 } = useProjects()
 
 if (!projects.value)
-  fetchProjects()
+  await fetchProjects()
 </script>
 
 <template>
