@@ -24,6 +24,7 @@ services:
       # Optional
       - NUXT_PUBLIC_APP_URL=${NUXT_PUBLIC_APP_URL:-http://localhost:3000}
       - NUXT_PRIVATE_RESEND_API_KEY=${NUXT_PRIVATE_RESEND_API_KEY}
+      - ADMIN_USERS=${ADMIN_USERS}
     depends_on:
       shelve_redis:
         condition: service_healthy
