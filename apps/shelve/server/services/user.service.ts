@@ -1,95 +1,75 @@
-import type { CreateUserInput, UpdateUserInput, PublicUser } from '@shelve/types'
-import { Role } from '@shelve/types'
+import { AuthType, CreateUserInput, UpdateUserInput, User, Role } from '@shelve/types'
 
 export class UserService {
 
-  /**
-   * Creates or updates a user
-   */
-  async upsertUser(createUserInput: CreateUserInput): Promise<PublicUser> {
-    const foundUser = await prisma.user.findUnique({
-      where: {
+  async createUser(createUserInput: CreateUserInput): Promise<User> {
+    const adminEmails = useRuntimeConfig().private.adminEmails?.split(',') || []
+    createUserInput.username = await this.validateUsername(createUserInput.username, createUserInput.authType)
+    const [createdUser] = await db
+      .insert(tables.users)
+      .values({
         username: createUserInput.username,
-      },
-      select: {
-        username: true,
-      }
-    })
-
-    const username = this.generateUniqueUsername(createUserInput.username, foundUser)
-
-    const config = useRuntimeConfig()
-    const adminEmails = config.private.adminEmails?.split(',') || []
-
-    const user = await prisma.user.upsert({
-      where: {
         email: createUserInput.email,
-      },
-      update: {
-        updatedAt: new Date(),
-      },
-      create: {
-        ...createUserInput,
-        username,
+        avatar: createUserInput.avatar,
+        authType: createUserInput.authType,
         role: adminEmails.includes(createUserInput.email) ? Role.ADMIN : undefined,
-      }
-    })
+      })
+      .returning()
+    return createdUser
+  }
 
-    /*if (user.createdAt === user.updatedAt) {
-      const emailService = new EmailService()
-      await emailService.sendWelcomeEmail(user.email, user.username)
-    }*/
+  async updateUser(currentUser: User, updateUserInput: UpdateUserInput) {
+    if (updateUserInput.username)
+      updateUserInput.username = await this.validateUsername(updateUserInput.username, updateUserInput.authType)
+    const [updatedRows] = await db
+      .update(tables.users)
+      .set({
+        username: updateUserInput.username,
+        avatar: updateUserInput.avatar,
+      })
+      .where(eq(tables.users.id, currentUser.id))
+      .returning()
+    return updatedRows
+  }
 
-    return user
+  async deleteUserById(userId: number): Promise<void> {
+    await db.delete(tables.users).where(eq(tables.users.id, userId))
+  }
+
+  async handleOAuthUser(createUserInput: CreateUserInput): Promise<User> {
+    const [foundUser] = await db
+      .select()
+      .from(tables.users)
+      .where(eq(tables.users.username, createUserInput.username))
+
+    if (!foundUser) return this.createUser(createUserInput)
+    console.log('foundUser', foundUser)
+    return foundUser
   }
 
   /**
-   * Deletes a user by ID
+   * Generates a unique username if the original is taken (for OAuth users)
    */
-  async deleteUser(userId: number): Promise<void> {
-    await prisma.user.delete({
-      where: { id: userId },
-    })
-  }
-
-  /**
-   * Updates a user's information
-   */
-  async updateUser(updateUserInput: UpdateUserInput): Promise<PublicUser> {
-    const { currentUser, data } = updateUserInput
-
-    if (data.username && data.username !== currentUser.username) {
-      await this.validateUsername(data.username)
-    }
-
-    return prisma.user.update({
-      where: { id: currentUser.id },
-      data,
-    })
-  }
-
-  /**
-   * Generates a unique username if the original is taken
-   */
-  private generateUniqueUsername(username: string, existingUser: { username: string } | null): string {
-    if (!existingUser) return username
+  private generateUniqueUsername(username: string): string {
     return `${username}_#${Math.floor(Math.random() * 1000)}`
   }
 
   /**
    * Validates if a username is available
    */
-  private async validateUsername(username: string): Promise<void> {
-    const usernameTaken = await prisma.user.findFirst({
-      where: { username },
-    })
-
-    if (usernameTaken) {
-      throw createError({
-        statusCode: 400,
-        message: 'Username already taken'
+  private async validateUsername(username: string, authType: AuthType): Promise<string> {
+    const foundUser = await db
+      .select({
+        username: tables.users.username,
       })
-    }
+      .from(tables.users)
+      .where(eq(tables.users.username, username))
+
+    const usernameTaken = foundUser.length > 0
+    const isOAuthUser = authType === AuthType.GITHUB || authType === AuthType.GOOGLE
+    if (isOAuthUser && usernameTaken) return this.generateUniqueUsername(username)
+    if (usernameTaken) throw createError({ statusCode: 400, message: 'Username already taken' })
+    return username
   }
 
 }

@@ -8,8 +8,8 @@ declare module '#auth-utils' {
     username: string
     avatar: string
     role: Role
-    createdAt?: string
-    updatedAt?: string
+    createdAt: Date
+    updatedAt: Date
   }
 
   type UserSession = {

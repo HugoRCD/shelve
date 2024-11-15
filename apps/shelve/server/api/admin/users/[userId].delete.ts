@@ -6,7 +6,7 @@ export default eventHandler(async (event: H3Event) => {
   const { user } = event.context
   const id = getRouterParam(event, 'userId') as string
   if (!id) throw createError({ statusCode: 400, statusMessage: 'missing params' })
-  if (user.id === parseInt(id)) throw createError({ statusCode: 400, statusMessage: 'you can\'t delete your own account' })
+  if (user.id === +id) throw createError({ statusCode: 400, statusMessage: 'you can\'t delete your own account' })
   await userService.deleteUser(parseInt(id))
   return {
     statusCode: 200,
