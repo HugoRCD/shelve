@@ -1,5 +1,5 @@
 import type { CreateUserInput, UpdateUserInput, PublicUser } from '@shelve/types'
-// import { EmailService } from '~~/server/services/resend.service'
+import { Role } from '@shelve/types'
 
 export class UserService {
 
@@ -18,6 +18,9 @@ export class UserService {
 
     const username = this.generateUniqueUsername(createUserInput.username, foundUser)
 
+    const config = useRuntimeConfig()
+    const adminEmails = config.private.adminEmails?.split(',') || []
+
     const user = await prisma.user.upsert({
       where: {
         email: createUserInput.email,
@@ -28,8 +31,10 @@ export class UserService {
       create: {
         ...createUserInput,
         username,
+        role: adminEmails.includes(createUserInput.email) ? Role.ADMIN : undefined,
       }
     })
+
     /*if (user.createdAt === user.updatedAt) {
       const emailService = new EmailService()
       await emailService.sendWelcomeEmail(user.email, user.username)
