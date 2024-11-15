@@ -23,7 +23,7 @@ provide('project', currentProject)
 provide('loading', currentLoading)
 provide('refresh', refresh)
 
-const links = [
+const items = [
   {
     label: 'Environment Variables',
     icon: 'lucide:container',
@@ -54,7 +54,7 @@ const links = [
       <UNavigationMenu
         color="neutral"
         orientation="horizontal"
-        :items="links"
+        :items
         class="hidden md:block"
       />
       <UNavigationMenu
@@ -62,7 +62,7 @@ const links = [
         variant="link"
         color="neutral"
         orientation="vertical"
-        :items="links"
+        :items
         class="md:hidden"
       />
     </div>
