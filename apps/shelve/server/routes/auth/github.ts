@@ -1,6 +1,6 @@
 import { AuthType } from '@shelve/types'
 import { UserService } from '~~/server/services/user.service'
-import { userSchema } from '~~/server/database'
+import { userSchema } from '~~/server/database/zod'
 
 export default defineOAuthGitHubEventHandler({
   config: {

@@ -1,7 +1,8 @@
-import type { CreateTeamInput, DeleteTeamInput, Team, Member } from '@shelve/types'
-import { Role, TeamRole } from '@shelve/types'
+import type { CreateTeamInput, DeleteTeamInput, Member, Team } from '@shelve/types'
+import { TeamRole } from '@shelve/types'
 import type { Storage, StorageValue } from 'unstorage'
-import { ProjectService } from '~~/server/services/project.service'
+// import { ProjectService } from '~~/server/services/project.service'
+// import { users } from '~~/server/database'
 
 export class TeamService {
 
@@ -13,65 +14,38 @@ export class TeamService {
     this.storage = useStorage('cache')
   }
 
-  async createTeam(createTeamInput: CreateTeamInput, userId: number): Promise<Team> {
-    await this.deleteCachedTeamByUserId(userId)
-    return prisma.team.create({
-      data: {
-        name: createTeamInput.name,
-        members: {
-          create: {
-            role: TeamRole.OWNER,
-            user: {
-              connect: { id: userId },
-            },
-          }
-        },
-      },
-      include: this.getTeamInclude()
-    })
-  }
+  async createTeam(input: CreateTeamInput): Promise<Team> {
+    return await db.transaction(async (tx) => {
+      const [team] = await tx.insert(tables.teams)
+        .values({
+          name: input.name,
+          private: input.private,
+        })
+        .returning()
 
-  async upsertMember(teamId: number, addMemberInput: { email: string; role: TeamRole }, requesterId: number): Promise<Member> {
-    const projectService = new ProjectService()
-    const team = await this.validateTeamAccess(teamId, requesterId)
-    const user = await this.findUserByEmail(addMemberInput.email)
+      await tx.insert(tables.members)
+        .values({
+          userId: input.requester.id,
+          teamId: team.id,
+          role: TeamRole.OWNER
+        })
 
-    await this.deleteCachedTeamByUserId(requesterId)
-    await projectService.deleteCachedUserProjects(requesterId)
-
-    const member = await prisma.member.upsert({
-      where: {
-        id: team.members.find((member) => member.userId === user.id)?.id || -1,
-      },
-      update: {
-        role: addMemberInput.role,
-      },
-      create: {
-        role: addMemberInput.role,
-        teamId,
-        userId: user.id,
-      },
-      include: {
-        user: {
-          select: {
-            id: true,
-            username: true,
-            email: true,
-            avatar: true,
+      const createdTeam = await tx.query.teams.findFirst({
+        where: eq(tables.teams.id, team.id),
+        with: {
+          members: {
+            with: {
+              user: true
+            }
           }
         }
-      }
+      })
+      if (!createdTeam) throw new Error(`Team not found after creation with id ${team.id}`)
+      return createdTeam
     })
-
-    const isUpdated = new Date(member.createdAt).getTime() !== new Date(member.updatedAt).getTime()
-    await this.upsertTeammate(requesterId, user.id, isUpdated)
-    return member
   }
 
-  /**
-   * Remove team member
-   */
-  async removeMember(teamId: number, memberId: number, requesterId: number): Promise<Member> {
+  /*async removeMember(teamId: number, memberId: number, requesterId: number): Promise<Member> {
     const projectService = new ProjectService()
     await this.validateTeamAccess(teamId, requesterId)
     await this.deleteCachedTeamByUserId(requesterId)
@@ -87,9 +61,6 @@ export class TeamService {
     })
   }
 
-  /**
-   * Delete team
-   */
   async deleteTeam(deleteTeamInput: DeleteTeamInput): Promise<Team> {
     const { teamId, userId, userRole } = deleteTeamInput
     const team = await this.validateTeamOwnership(teamId, userId)
@@ -106,9 +77,6 @@ export class TeamService {
     })
   }
 
-  /**
-   * Get teams by user ID
-   */
   getTeamsByUserId = cachedFunction((userId): Promise<Team[]> => {
     return prisma.team.findMany({
       where: {
@@ -124,9 +92,6 @@ export class TeamService {
     getKey: (userId: number) => `userId:${userId}`,
   })
 
-  /**
-   * Private helper methods
-   */
   private async upsertTeammate(userId: number, teammateId: number, isUpdated: boolean): Promise<void> {
     const updateOrCreateTeammate = (userId: number, teammateId: number) => {
       return prisma.teammate.upsert({
@@ -267,7 +232,7 @@ export class TeamService {
         }
       }
     }
-  }
+  }*/
 
 }
 

@@ -1,24 +1,34 @@
-import { AuthType, CreateUserInput, UpdateUserInput, User, Role } from '@shelve/types'
+import { AuthType, CreateUserInput, UpdateUserInput, User, Role, TeamRole } from '@shelve/types'
+import { TeamService } from '~~/server/services/teams.service'
 
 export class UserService {
 
-  async createUser(createUserInput: CreateUserInput): Promise<User> {
+  async createUser(input: CreateUserInput): Promise<User> {
     const adminEmails = useRuntimeConfig().private.adminEmails?.split(',') || []
-    createUserInput.username = await this.validateUsername(createUserInput.username, createUserInput.authType)
+    input.username = await this.validateUsername(input.username, input.authType)
     const [createdUser] = await db
       .insert(tables.users)
       .values({
-        username: createUserInput.username,
-        email: createUserInput.email,
-        avatar: createUserInput.avatar,
-        authType: createUserInput.authType,
-        role: adminEmails.includes(createUserInput.email) ? Role.ADMIN : undefined,
+        username: input.username,
+        email: input.email,
+        avatar: input.avatar,
+        authType: input.authType,
+        role: adminEmails.includes(input.email) ? Role.ADMIN : undefined,
       })
       .returning()
+    await new TeamService().createTeam({
+      name: `${input.username}'s team`,
+      private: true,
+      requester: {
+        id: createdUser.id,
+        role: Role.USER,
+        teamRole: TeamRole.OWNER,
+      }
+    })
     return createdUser
   }
 
-  async updateUser(currentUser: User, updateUserInput: UpdateUserInput) {
+  async updateUser(currentUser: User, updateUserInput: UpdateUserInput): Promise<User> {
     if (updateUserInput.username)
       updateUserInput.username = await this.validateUsername(updateUserInput.username, updateUserInput.authType)
     const [updatedRows] = await db
@@ -36,13 +46,13 @@ export class UserService {
     await db.delete(tables.users).where(eq(tables.users.id, userId))
   }
 
-  async handleOAuthUser(createUserInput: CreateUserInput): Promise<User> {
+  async handleOAuthUser(input: CreateUserInput): Promise<User> {
     const [foundUser] = await db
       .select()
       .from(tables.users)
-      .where(eq(tables.users.username, createUserInput.username))
+      .where(eq(tables.users.username, input.username))
 
-    if (!foundUser) return this.createUser(createUserInput)
+    if (!foundUser) return this.createUser(input)
     console.log('foundUser', foundUser)
     return foundUser
   }
