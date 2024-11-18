@@ -1,5 +1,3 @@
-import { H3Event } from 'h3'
-
 type GitHubRepo = {
   name: string
   owner: { login: string }
@@ -15,7 +13,7 @@ export class GitHubService {
   /**
    * Get user's GitHub repositories
    */
-  async getUserRepos(event: H3Event): Promise<GitHubRepo[]> {
+  async getUserRepos(event): Promise<GitHubRepo[]> {
     const { user, secure } = await getUserSession(event)
 
     const repos = await $fetch<GitHubRepo[]>(`${this.GITHUB_API}/user/repos?per_page=${this.REPOS_PER_PAGE}`, {

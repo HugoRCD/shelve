@@ -79,13 +79,13 @@ export class ProjectService {
     getKey: (teamId: number) => `teamId:${teamId}`,
   })
 
-  async deleteProject(id: string, teamId: number): Promise<Project> {
-    await this.deleteCachedProjectById(parseInt(id))
+  async deleteProject(id: number, teamId: number): Promise<Project> {
+    await this.deleteCachedProjectById(id)
     await this.deleteCachedTeamProjects(teamId)
 
     const [deletedProject] = await db.delete(tables.projects)
       .where(and(
-        eq(tables.projects.id, parseInt(id)),
+        eq(tables.projects.id, id),
         eq(tables.projects.teamId, teamId)
       ))
       .returning()

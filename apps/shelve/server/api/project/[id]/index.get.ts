@@ -1,10 +1,11 @@
-import type { H3Event } from 'h3'
 import { z, zh } from 'h3-zod'
 import { ProjectService } from '~~/server/services/project.service'
 
-export default eventHandler(async (event: H3Event) => {
-  const id = getRouterParam(event, 'id') as string
-  if (!id) throw createError({ statusCode: 400, statusMessage: 'Missing params' })
-  const projectService = new ProjectService()
-  return await projectService.getProjectById(+id, event.context.user.id)
+export default eventHandler(async (event) => {
+  const { id } = await zh.useValidatedParams(event, {
+    id: z.string({
+      required_error: 'Project id is required',
+    }).transform((value) => parseInt(value, 10)),
+  })
+  return await new ProjectService().getProjectById(id, event.context.user.id)
 })

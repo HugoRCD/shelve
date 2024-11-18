@@ -3,7 +3,6 @@ import type { RemoveMemberInput } from '@shelve/types'
 import { TeamService } from '~~/server/services/teams.service'
 
 export default eventHandler(async (event) => {
-  const { user } = event.context
   const params = await zh.useValidatedParams(event, {
     teamId: z.number({
       required_error: 'Missing teamId',
@@ -12,14 +11,15 @@ export default eventHandler(async (event) => {
       required_error: 'Missing memberId',
     }),
   })
-  const input = {
+  const { user } = event.context
+  const input: RemoveMemberInput = {
     teamId: params.teamId,
     memberId: params.id,
     requester: {
       id: user.id,
       role: user.role,
     },
-  } as RemoveMemberInput
+  }
   await new TeamService().removeMember(input)
   return {
     statusCode: 200,

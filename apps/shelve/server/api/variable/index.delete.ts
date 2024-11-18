@@ -1,7 +1,6 @@
-import type { H3Event } from 'h3'
 import { VariableService } from '~~/server/services/variable.service'
 
-export default defineEventHandler(async (event: H3Event) => {
+export default defineEventHandler(async (event) => {
   const variableService = new VariableService()
   const { user } = event.context
   const body = await readBody(event)

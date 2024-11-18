@@ -28,8 +28,8 @@ export type CreateProjectInput = {
 export type ProjectUpdateInput = {
   id: number;
   name: string;
-  description: string;
-  logo: string;
+  description?: string;
+  logo?: string;
   teamId: number;
   requester: Requester;
 };

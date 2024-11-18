@@ -1,7 +1,6 @@
-import type { H3Event } from 'h3'
 import { z, zh } from 'h3-zod'
 
-export default eventHandler(async (event: H3Event) => {
+export default eventHandler(async (event) => {
   const paramName = getRouterParam(event, 'name')
   if (!paramName) throw createError({ statusCode: 400, statusMessage: 'Missing params' })
   const { user } = event.context

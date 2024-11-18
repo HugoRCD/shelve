@@ -1,7 +1,6 @@
-import type { H3Event } from 'h3'
 import { VaultService } from '~~/server/services/vault.service'
 
-export default defineEventHandler(async (event: H3Event) => {
+export default defineEventHandler(async (event) => {
   const vault = new VaultService()
   const { id } = await getQuery(event)
 

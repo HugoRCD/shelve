@@ -1,7 +1,6 @@
-import type { H3Event } from 'h3'
 import { TokenService } from '~~/server/services/token.service'
 
-export default defineEventHandler(async (event: H3Event) => {
+export default defineEventHandler(async (event) => {
   const protectedRoutes = [
     '/api/auth/logout',
     '/api/user',

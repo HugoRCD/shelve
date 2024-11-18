@@ -1,6 +1,4 @@
-import type { H3Event } from 'h3'
-
-export default eventHandler(async (event: H3Event) => {
+export default eventHandler(async (event) => {
   const { user } = event.context
   const body = await readBody(event)
   const id = getRouterParam(event, 'userId') as string
