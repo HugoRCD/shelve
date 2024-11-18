@@ -1,13 +1,26 @@
-import type { H3Event } from 'h3'
+import { z, zh } from 'h3-zod'
+import type { RemoveMemberInput } from '@shelve/types'
 import { TeamService } from '~~/server/services/teams.service'
 
-export default eventHandler(async (event: H3Event) => {
+export default eventHandler(async (event) => {
   const { user } = event.context
-  const teamId = getRouterParam(event, 'teamId') as string
-  const memberId = getRouterParam(event, 'id') as string
-  if (!teamId || !memberId) throw createError({ statusCode: 400, statusMessage: 'Missing params' })
-  const teamService = new TeamService()
-  await teamService.removeMember(+teamId, +memberId, user.id)
+  const params = await zh.useValidatedParams(event, {
+    teamId: z.number({
+      required_error: 'Missing teamId',
+    }),
+    id: z.number({
+      required_error: 'Missing memberId',
+    }),
+  })
+  const input = {
+    teamId: params.teamId,
+    memberId: params.id,
+    requester: {
+      id: user.id,
+      role: user.role,
+    },
+  } as RemoveMemberInput
+  await new TeamService().removeMember(input)
   return {
     statusCode: 200,
     message: 'Member removed',

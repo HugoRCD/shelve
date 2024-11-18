@@ -1,8 +1,17 @@
-import type { CreateTeamInput, DeleteTeamInput, Member, Team } from '@shelve/types'
-import { TeamRole } from '@shelve/types'
+import type {
+  AddMemberInput,
+  CreateTeamInput,
+  DeleteTeamInput,
+  Member,
+  RemoveMemberInput,
+  Team,
+  UpdateMemberInput,
+  User,
+  ValidateAccess
+} from '@shelve/types'
+import { Role, TeamRole, } from '@shelve/types'
 import type { Storage, StorageValue } from 'unstorage'
 // import { ProjectService } from '~~/server/services/project.service'
-// import { users } from '~~/server/database'
 
 export class TeamService {
 
@@ -45,194 +54,154 @@ export class TeamService {
     })
   }
 
-  /*async removeMember(teamId: number, memberId: number, requesterId: number): Promise<Member> {
-    const projectService = new ProjectService()
-    await this.validateTeamAccess(teamId, requesterId)
-    await this.deleteCachedTeamByUserId(requesterId)
-    await projectService.deleteCachedUserProjects(requesterId)
+  async deleteTeam(input: DeleteTeamInput): Promise<void> {
+    const { teamId, requester } = input
+    await this.validateTeamAccess({ teamId, requester }, TeamRole.OWNER)
+    await this.deleteCachedTeamByUserId(requester.id)
+    await this.deleteCachedTeamByUserId(teamId)
 
-    const member = await this.getMemberById(memberId)
-    if (!member) throw createError({ statusCode: 404, statusMessage: 'Member not found' })
-    await this.deleteTeammate(member.userId, requesterId)
-    await this.deleteTeammate(requesterId, member.userId)
-
-    return prisma.member.delete({
-      where: { id: memberId },
-    })
+    await db.delete(tables.teams).where(eq(tables.teams.id, teamId))
   }
 
-  async deleteTeam(deleteTeamInput: DeleteTeamInput): Promise<Team> {
-    const { teamId, userId, userRole } = deleteTeamInput
-    const team = await this.validateTeamOwnership(teamId, userId)
-
-    if (userRole !== Role.ADMIN && !team) {
-      throw createError({ statusCode: 401, statusMessage: 'unauthorized' })
+  async addMember(input: AddMemberInput): Promise<Member> {
+    const { teamId, email, role, requester } = input
+    await this.validateTeamAccess({ teamId, requester }, TeamRole.ADMIN)
+    const foundedMember = await this.isUserAlreadyMember(teamId, email)
+    if (foundedMember) {
+      return await this.updateMember({
+        teamId,
+        memberId: foundedMember.id,
+        role,
+        requester
+      })
     }
+    const user = await this.getUserByEmail(email)
+    await this.deleteCachedTeamByUserId(requester.id)
+    await this.deleteCachedTeamByUserId(user.id)
 
-    await this.deleteCachedTeamByUserId(userId)
-    await this.cleanupTeammates(teamId, userId)
+    await db.insert(tables.members)
+      .values({
+        userId: user.id,
+        teamId,
+        role,
+      })
+      .returning()
 
-    return prisma.team.delete({
-      where: { id: teamId },
+    const member = await db.query.members.findFirst({
+      where: eq(tables.members.userId, user.id),
+      with: {
+        user: true
+      }
     })
+    if (!member) throw new Error(`Member not found after creation with id ${user.id}`)
+    return member
   }
 
-  getTeamsByUserId = cachedFunction((userId): Promise<Team[]> => {
-    return prisma.team.findMany({
-      where: {
-        members: {
-          some: { userId }
-        }
-      },
-      include: this.getTeamInclude()
+  async updateMember(input: UpdateMemberInput): Promise<Member> {
+    const { teamId, memberId, role, requester } = input
+    await this.validateTeamAccess({ teamId, requester }, TeamRole.ADMIN)
+    await this.deleteCachedTeamByUserId(requester.id)
+    await this.deleteCachedTeamByUserId(memberId)
+
+    await db.update(tables.members)
+      .set({
+        role
+      })
+      .where(eq(tables.members.id, memberId))
+
+    const member = await db.query.members.findFirst({
+      where: eq(tables.members.id, memberId),
+      with: {
+        user: true
+      }
     })
+    if (!member) throw new Error(`Member not found with id ${memberId}`)
+    return member
+  }
+
+  async removeMember(input: RemoveMemberInput): Promise<void> {
+    const { teamId, memberId, requester } = input
+    await this.validateTeamAccess({ teamId, requester }, TeamRole.ADMIN)
+    await this.deleteCachedTeamByUserId(requester.id)
+    await this.deleteCachedTeamByUserId(memberId)
+
+    const member = await db.query.members.findFirst({
+      where: eq(tables.members.id, memberId),
+      with: {
+        user: true
+      }
+    })
+    if (!member) throw new Error(`Member not found with id ${memberId}`)
+    await db.delete(tables.members).where(eq(tables.members.id, memberId))
+  }
+
+  getTeamsByUserId = cachedFunction(async (userId): Promise<Team[]> => {
+    const teams = await db.query.teams.findMany({
+      where: eq(tables.members.userId, userId),
+      with: {
+        members: {
+          with: {
+            user: true
+          }
+        }
+      }
+    })
+    if (!teams) throw new Error(`Teams not found for user with id ${userId}`)
+    return teams
   }, {
     maxAge: this.CACHE_TTL,
     name: 'getTeamByUserId',
     getKey: (userId: number) => `userId:${userId}`,
   })
 
-  private async upsertTeammate(userId: number, teammateId: number, isUpdated: boolean): Promise<void> {
-    const updateOrCreateTeammate = (userId: number, teammateId: number) => {
-      return prisma.teammate.upsert({
-        where: {
-          userId_teammateId: { userId, teammateId },
-        },
-        update: {
-          updatedAt: new Date(),
-          count: {
-            increment: isUpdated ? 0 : 1,
-          },
-        },
-        create: {
-          userId,
-          teammateId,
-        },
-      })
-    }
-
-    await Promise.all([
-      updateOrCreateTeammate(userId, teammateId),
-      updateOrCreateTeammate(teammateId, userId),
-    ])
-  }
-
-  private async deleteTeammate(userId: number, requesterId: number): Promise<void> {
-    if (!await this.isTeamMate(userId, requesterId)) return
-
-    const updatedUser = await prisma.teammate.update({
-      where: {
-        userId_teammateId: {
-          userId: requesterId,
-          teammateId: userId,
-        },
-      },
-      data: {
-        count: { decrement: 1 },
-      },
-      select: { count: true },
+  private async isUserAlreadyMember(teamId: number, email: string): Promise<Member | undefined> {
+    const user = await this.getUserByEmail(email)
+    if (!user) throw new Error(`User not found with email ${email}`)
+    return await db.query.members.findFirst({
+      where: and(eq(tables.members.teamId, teamId), eq(tables.members.id, user.id)),
+      with: {
+        user: true
+      }
     })
-
-    if (updatedUser.count === 0) {
-      await prisma.teammate.delete({
-        where: {
-          userId_teammateId: {
-            userId: requesterId,
-            teammateId: userId,
-          },
-        },
-      })
-    }
   }
 
-  private async isTeamMate(userId: number, requesterId: number): Promise<boolean> {
-    const foundedTeamMate = await prisma.teammate.findFirst({
-      where: {
-        userId: { equals: userId },
-        teammateId: { equals: requesterId },
-      },
-    })
-    return !!foundedTeamMate
-  }
-
-  private async validateTeamAccess(teamId: number, requesterId: number): Promise<Team> {
-    const team = await prisma.team.findFirst({
-      where: {
-        id: teamId,
+  private async validateTeamAccess(input: ValidateAccess, minRole: TeamRole = TeamRole.MEMBER): Promise<boolean> {
+    const { teamId, requester } = input
+    const team = await db.query.teams.findFirst({
+      where: eq(tables.teams.id, teamId),
+      with: {
         members: {
-          some: {
-            userId: requesterId,
-            role: { in: [TeamRole.ADMIN, TeamRole.OWNER] },
+          with: {
+            user: true
           }
-        },
-      },
-      include: { members: true },
+        }
+      }
     })
-    if (!team) throw createError({ statusCode: 401, statusMessage: 'unauthorized' })
-    return team
-  }
-
-  private validateTeamOwnership(teamId: number, userId: number): Promise<Team> {
-    return prisma.team.findFirst({
-      where: {
-        id: teamId,
-        members: {
-          some: {
-            userId,
-            role: TeamRole.OWNER,
-          }
-        },
-      },
-    })
-  }
-
-  private async findUserByEmail(email: string) {
-    const user = await prisma.user.findFirst({
-      where: { email: email.trim() },
-    })
-    if (!user) throw createError({ statusCode: 400, statusMessage: 'user not found' })
-    return user
-  }
-
-  private getMemberById(memberId: number) {
-    return prisma.member.findFirst({
-      where: { id: memberId },
-      select: { userId: true },
-    })
-  }
-
-  private async cleanupTeammates(teamId: number, userId: number): Promise<void> {
-    const allMembers = await prisma.member.findMany({
-      where: { teamId },
-    })
-
-    for (const member of allMembers) {
-      if (member.userId === userId) continue
-      await this.deleteTeammate(member.userId, userId)
-      await this.deleteTeammate(userId, member.userId)
+    if (!team) throw new Error(`Team not found with id ${teamId}`)
+    if (requester.role === Role.ADMIN) return true
+    const member = team.members.find(member => member.userId === requester.id)
+    if (!member) throw new Error('Unauthorized: Member does not belong to the team')
+    const orderRole = {
+      [TeamRole.OWNER]: 0,
+      [TeamRole.ADMIN]: 1,
+      [TeamRole.MEMBER]: 2,
     }
+    if (orderRole[member.role] > orderRole[minRole])
+      throw new Error('Unauthorized: Member does not have the required role')
+    return true
   }
 
   private deleteCachedTeamByUserId(userId: number): Promise<void> {
     return this.storage.removeItem(`${this.CACHE_PREFIX}${userId}.json`)
   }
 
-  private getTeamInclude() {
-    return {
-      members: {
-        include: {
-          user: {
-            select: {
-              id: true,
-              username: true,
-              email: true,
-              avatar: true,
-            }
-          }
-        }
-      }
-    }
-  }*/
+  private async getUserByEmail(email: string): Promise<User> {
+    const user = await db.query.users.findFirst({
+      where: eq(tables.users.email, email)
+    })
+    if (!user) throw new Error(`User not found with email ${email}`)
+    return user
+  }
 
 }
 

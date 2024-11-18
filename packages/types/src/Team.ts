@@ -27,10 +27,9 @@ export type Team = {
   members: Member[];
 };
 
-type Requester = {
+export type Requester = {
   id: number;
   role: Role;
-  teamRole: TeamRole;
 }
 
 export type CreateTeamInput = {
@@ -50,4 +49,29 @@ export type UpdateTeamInput = {
 export type DeleteTeamInput = {
   teamId: number
   requester: Requester
+}
+
+export type AddMemberInput = {
+  teamId: number;
+  email: string;
+  role: TeamRole;
+  requester: Requester;
+}
+
+export type UpdateMemberInput = {
+  teamId: number;
+  memberId: number;
+  role: TeamRole;
+  requester: Requester;
+}
+
+export type RemoveMemberInput = {
+  teamId: number;
+  memberId: number;
+  requester: Requester;
+}
+
+export type ValidateAccess = {
+  teamId: number;
+  requester: Requester;
 }

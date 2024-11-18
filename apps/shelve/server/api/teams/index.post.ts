@@ -1,5 +1,5 @@
 import { z, zh } from 'h3-zod'
-import { type CreateTeamInput, TeamRole } from '@shelve/types'
+import type { CreateTeamInput } from '@shelve/types'
 import { TeamService } from '~~/server/services/teams.service'
 
 export default eventHandler(async (event) => {
@@ -16,7 +16,6 @@ export default eventHandler(async (event) => {
     requester: {
       id: user.id,
       role: user.role,
-      teamRole: TeamRole.OWNER
     }
   } as CreateTeamInput
   return await new TeamService().createTeam(input)
