@@ -21,6 +21,7 @@ export type CreateProjectInput = {
   repository?: string;
   projectManager?: string;
   homepage?: string;
+  variablePrefix?: string;
   teamId: number;
 };
 
@@ -29,6 +30,10 @@ export type ProjectUpdateInput = {
   name: string;
   description?: string;
   logo?: string;
+  homepage?: string;
+  repository?: string;
+  projectManager?: string;
+  variablePrefix?: string;
   teamId: number;
   requester: Requester;
 };

@@ -13,6 +13,10 @@ export default eventHandler(async (event) => {
       required_error: 'Project name is required',
     }).min(1).max(255).trim(),
     description: z.string().optional(),
+    homepage: z.string().optional(),
+    projectManager: z.string().optional(),
+    variablePrefix: z.string().optional(),
+    repository: z.string().optional(),
     logo: z.string().optional(),
     teamId: z.number({
       required_error: 'Team ID is required',
@@ -23,6 +27,10 @@ export default eventHandler(async (event) => {
     id: id,
     name: body.name,
     description: body.description,
+    homepage: body.homepage,
+    projectManager: body.projectManager,
+    variablePrefix: body.variablePrefix,
+    repository: body.repository,
     logo: body.logo,
     teamId: body.teamId,
     requester: {
