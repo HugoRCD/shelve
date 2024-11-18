@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { CreateProjectInput, Team } from '@shelve/types'
+import type { CreateProjectInput } from '@shelve/types'
 
 const defaultTeam = useDefaultTeam()
 

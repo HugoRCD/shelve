@@ -29,6 +29,7 @@ export class TeamService {
         .values({
           name: input.name,
           private: input.private,
+          logo: input.logo
         })
         .returning()
 

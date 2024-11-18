@@ -21,6 +21,7 @@ export type Member = {
 export type Team = {
   id: number;
   name: string;
+  logo: string;
   private: boolean;
   createdAt: Date;
   updatedAt: Date;
@@ -35,12 +36,14 @@ export type Requester = {
 export type CreateTeamInput = {
   name: string;
   private: boolean;
+  logo?: string;
   requester: Requester;
 };
 
 export type UpdateTeamInput = {
   id: number;
   name?: string;
+  logo?: string;
   members?: Member[];
   projects?: Project[];
   requester: Requester;

@@ -32,6 +32,7 @@ export const users = pgTable('users', {
 export const teams = pgTable('teams', {
   id: integer().primaryKey().generatedByDefaultAsIdentity(),
   name: varchar().notNull(),
+  logo: varchar().default('https://i.imgur.com/6VBx3io.png').notNull(),
   private: boolean().default(true).notNull(),
   ...timestamps,
 })
