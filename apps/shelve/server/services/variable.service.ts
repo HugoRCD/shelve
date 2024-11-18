@@ -136,7 +136,7 @@ export class VariableService {
       .join('|')
   }
 
-  private buildEnvironmentQuery(projectId: number, environment?: Environment) {
+  private buildEnvironmentQuery(projectId: number, environment?: string) {
     if (!environment) {
       return eq(tables.variables.projectId, projectId)
     }
@@ -147,7 +147,7 @@ export class VariableService {
     )
   }
 
-  private async deleteProjectVariables(projectId: number, environment?: Environment): Promise<void> {
+  private async deleteProjectVariables(projectId: number, environment?: string): Promise<void> {
     await db.delete(tables.variables)
       .where(this.buildEnvironmentQuery(projectId, environment))
   }

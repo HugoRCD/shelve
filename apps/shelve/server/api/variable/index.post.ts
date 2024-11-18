@@ -15,7 +15,7 @@ const baseSchema = z.object({
     required_error: 'Project ID is required',
   }).positive(),
   autoUppercase: z.boolean().optional(),
-  environment: z.enum(['production', 'preview', 'staging', 'development']).optional(),
+  environment: z.string().optional(),
 })
 
 const createVariablesSchema = baseSchema.extend({

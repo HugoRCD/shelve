@@ -21,7 +21,8 @@ export function useVariables(refresh: () => Promise<void>, projectId: string) {
   const variablesInput = ref<CreateVariablesInput & { type: 'multiple' | 'single' }>({
     type: 'multiple',
     autoUppercase: autoUppercase.value,
-    projectId: parseInt(projectId),
+    projectId: +projectId,
+    environment: environment.value,
     variables: [
       {
         index: 1,
@@ -29,6 +30,10 @@ export function useVariables(refresh: () => Promise<void>, projectId: string) {
         value: '',
       },
     ],
+  })
+
+  watch(environment, () => {
+    variablesInput.value.environment = environment.value
   })
 
   function addVariable() {
@@ -94,11 +99,14 @@ export function useVariables(refresh: () => Promise<void>, projectId: string) {
       return
     }
     try {
-      await $fetch(`/api/variable`, {
-        method: 'POST',
+      await $fetch(`/api/variable/${variable.id}`, {
+        method: 'PUT',
         body: {
-          projectId: parseInt(projectId),
-          variables: [variable]
+          projectId: +projectId,
+          key: variable.key,
+          value: variable.value,
+          env: variable.environment,
+          autoUppercase: autoUppercase.value,
         },
       })
       toast.success('Your variable has been updated')

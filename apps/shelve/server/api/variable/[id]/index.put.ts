@@ -9,21 +9,21 @@ export default eventHandler(async (event) => {
     }).transform((value) => parseInt(value, 10)),
   })
   const body = await zh.useValidatedBody(event, {
-    id: z.string({
-      required_error: 'id is required',
-    }).transform((value) => parseInt(value, 10)),
+    projectId: z.number({
+      required_error: 'Project ID is required',
+    }).positive(),
     key: z.string({
       required_error: 'Variable key is required',
     }).min(1).max(255).trim().optional(),
     value: z.string({
       required_error: 'Variable value is required',
     }).min(1).max(255).trim().optional(),
-    env: z.enum(['production', 'preview', 'staging', 'development']).optional(),
+    env: z.string().optional(),
     autoUppercase: z.boolean().optional(),
   })
   const input: UpdateVariableInput = {
     id: params.id,
-    projectId: body.id,
+    projectId: body.projectId,
     key: body.key,
     value: body.value,
     environment: body.env,
