@@ -58,6 +58,15 @@ export const projects = pgTable('projects', {
   ...timestamps,
 })
 
+export const variables = pgTable('variables', {
+  id: integer().primaryKey().generatedByDefaultAsIdentity(),
+  projectId: integer().references(() => projects.id, { onDelete: 'cascade' }).notNull(),
+  key: varchar().notNull(),
+  value: varchar().notNull(),
+  environment: varchar().notNull(),
+  ...timestamps,
+})
+
 export const tokens = pgTable('tokens', {
   id: integer().primaryKey().generatedByDefaultAsIdentity(),
   token: varchar().notNull(),
@@ -86,6 +95,13 @@ export const projectsRelations = relations(projects, ({ one }) => ({
   team: one(teams, {
     fields: [projects.teamId],
     references: [teams.id],
+  })
+}))
+
+export const variablesRelations = relations(variables, ({ one }) => ({
+  project: one(projects, {
+    fields: [variables.projectId],
+    references: [projects.id],
   })
 }))
 

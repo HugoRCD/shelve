@@ -1,4 +1,4 @@
-import type { Variable, VariablesCreateInput } from '@shelve/types'
+import type { Variable, CreateVariablesInput } from '@shelve/types'
 
 export function useVariables(refresh: () => Promise<void>, projectId: string) {
   const selectedEnvironment: Ref<Record<string, boolean>> = ref({
@@ -18,7 +18,8 @@ export function useVariables(refresh: () => Promise<void>, projectId: string) {
 
   const variablesToCreate = ref(1)
 
-  const variablesInput = ref<VariablesCreateInput>({
+  const variablesInput = ref<CreateVariablesInput & { type: 'multiple' | 'single' }>({
+    type: 'multiple',
     autoUppercase: autoUppercase.value,
     projectId: parseInt(projectId),
     variables: [
@@ -26,8 +27,6 @@ export function useVariables(refresh: () => Promise<void>, projectId: string) {
         index: 1,
         key: '',
         value: '',
-        environment: 'production',
-        projectId: parseInt(projectId),
       },
     ],
   })
@@ -38,8 +37,6 @@ export function useVariables(refresh: () => Promise<void>, projectId: string) {
       index: variablesToCreate.value,
       key: '',
       value: '',
-      environment: environment.value,
-      projectId: parseInt(projectId),
     })
   }
 
@@ -53,11 +50,6 @@ export function useVariables(refresh: () => Promise<void>, projectId: string) {
     variablesInput.value.variables.splice(index, 1)
   }
 
-  watch(environment, () => {
-    variablesInput.value.variables.forEach((variable) => {
-      variable.environment = environment.value
-    })
-  })
   watch(autoUppercase, () => {
     variablesInput.value.autoUppercase = autoUppercase.value
   })
@@ -77,14 +69,13 @@ export function useVariables(refresh: () => Promise<void>, projectId: string) {
       toast.success('Your variables have been created')
       variablesToCreate.value = 1
       variablesInput.value = {
-        projectId: parseInt(projectId),
+        type: 'multiple',
+        projectId: +projectId,
         variables: [
           {
             index: 1,
             key: '',
             value: '',
-            environment: 'production',
-            projectId: parseInt(projectId),
           },
         ],
       }

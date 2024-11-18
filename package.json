@@ -13,7 +13,6 @@
     "dev:lp": "turbo dev --filter=@shelve/lp",
     "dev:cli": "turbo dev --filter=@shelve/cli",
     "dev:prepare": "turbo dev:prepare",
-    "prisma:generate": "turbo prisma:generate",
     "generate": "turbo generate",
     "lint": "turbo lint",
     "lint:fix": "turbo lint:fix",

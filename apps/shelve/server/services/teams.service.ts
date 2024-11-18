@@ -1,17 +1,20 @@
 import type {
-  AddMemberInput,
+  User,
+  Member,
+  Team,
   CreateTeamInput,
   DeleteTeamInput,
-  Member,
-  RemoveMemberInput,
-  Team,
+  AddMemberInput,
   UpdateMemberInput,
-  User,
+  RemoveMemberInput,
+  UpdateTeamInput,
   ValidateAccess
 } from '@shelve/types'
-import { Role, TeamRole, } from '@shelve/types'
+import {
+  Role,
+  TeamRole,
+} from '@shelve/types'
 import type { Storage, StorageValue } from 'unstorage'
-// import { ProjectService } from '~~/server/services/project.service'
 
 export class TeamService {
 
@@ -32,6 +35,7 @@ export class TeamService {
           logo: input.logo
         })
         .returning()
+      if (!team) throw new Error('Team not found after creation')
 
       await tx.insert(tables.members)
         .values({
@@ -53,6 +57,30 @@ export class TeamService {
       if (!createdTeam) throw new Error(`Team not found after creation with id ${team.id}`)
       return createdTeam
     })
+  }
+
+  async updateTeam(input: UpdateTeamInput): Promise<Team> {
+    const { id, requester, ...data } = input
+    await this.validateTeamAccess({ teamId: id, requester }, TeamRole.OWNER)
+    await this.deleteCachedTeamByUserId(requester.id)
+    await this.deleteCachedTeamByUserId(id)
+
+    await db.update(tables.teams)
+      .set(data)
+      .where(eq(tables.teams.id, id))
+
+    const updatedTeam = await db.query.teams.findFirst({
+      where: eq(tables.teams.id, id),
+      with: {
+        members: {
+          with: {
+            user: true
+          }
+        }
+      }
+    })
+    if (!updatedTeam) throw new Error(`Team not found with id ${id}`)
+    return updatedTeam
   }
 
   async deleteTeam(input: DeleteTeamInput): Promise<void> {

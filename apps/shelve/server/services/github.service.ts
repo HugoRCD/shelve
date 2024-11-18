@@ -1,3 +1,5 @@
+import type { H3Event } from 'h3'
+
 type GitHubRepo = {
   name: string
   owner: { login: string }
@@ -13,7 +15,7 @@ export class GitHubService {
   /**
    * Get user's GitHub repositories
    */
-  async getUserRepos(event): Promise<GitHubRepo[]> {
+  async getUserRepos(event: H3Event): Promise<GitHubRepo[]> {
     const { user, secure } = await getUserSession(event)
 
     const repos = await $fetch<GitHubRepo[]>(`${this.GITHUB_API}/user/repos?per_page=${this.REPOS_PER_PAGE}`, {
@@ -22,7 +24,7 @@ export class GitHubService {
       },
     })
 
-    console.log(`Found ${repos.length} repositories for user ${user.username}`)
+    console.log(`Found ${repos.length} repositories for user ${user!.username}`)
     console.log(repos.map((repo: GitHubRepo) => ({
       name: repo.name,
       owner: repo.owner.login,
@@ -38,7 +40,7 @@ export class GitHubService {
     const { user, secure } = await getUserSession(event)
 
     const content = await this.getFileContent(file)
-    const uploadUrl = this.buildUploadUrl(user.username, repoName, file.name)
+    const uploadUrl = this.buildUploadUrl(user!.username, repoName, file.name)
 
     return await $fetch(uploadUrl, {
       method: 'PUT',

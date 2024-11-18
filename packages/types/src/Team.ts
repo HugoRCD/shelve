@@ -1,6 +1,5 @@
-import { Role } from './User'
-import type { Project } from './Project'
 import type { User } from './User'
+import { Role } from './User'
 
 export enum TeamRole {
   OWNER = 'owner',
@@ -44,8 +43,6 @@ export type UpdateTeamInput = {
   id: number;
   name?: string;
   logo?: string;
-  members?: Member[];
-  projects?: Project[];
   requester: Requester;
 }
 

@@ -14,7 +14,6 @@ const {
 if (!currentProject.value)
   await fetchCurrentProject(+projectId)
 
-
 async function refresh() {
   await fetchCurrentProject(+projectId)
 }

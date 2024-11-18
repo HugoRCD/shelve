@@ -1,4 +1,4 @@
-import type { Requester, Team } from './Team'
+import type { Requester } from './Team'
 
 export type Project = {
   id: number;
@@ -12,7 +12,6 @@ export type Project = {
   teamId: number;
   createdAt: Date;
   updatedAt: Date;
-  // variables?: Variable[];
 };
 
 export type CreateProjectInput = {

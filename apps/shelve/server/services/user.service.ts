@@ -1,4 +1,5 @@
-import { AuthType, CreateUserInput, UpdateUserInput, User, Role, TeamRole } from '@shelve/types'
+import type { CreateUserInput, UpdateUserInput, User } from '@shelve/types'
+import { AuthType, Role } from '@shelve/types'
 import { TeamService } from '~~/server/services/teams.service'
 
 export class UserService {
@@ -16,6 +17,7 @@ export class UserService {
         role: adminEmails.includes(input.email) ? Role.ADMIN : undefined,
       })
       .returning()
+    if (!createdUser) throw createError({ statusCode: 500, message: 'Failed to create user' })
     await new TeamService().createTeam({
       name: `${input.username}'s team`,
       private: true,
@@ -38,6 +40,7 @@ export class UserService {
       })
       .where(eq(tables.users.id, currentUser.id))
       .returning()
+    if (!updatedRows) throw createError({ statusCode: 404, message: 'User not found' })
     return updatedRows
   }
 

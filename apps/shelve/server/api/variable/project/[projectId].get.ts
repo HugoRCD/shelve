@@ -7,5 +7,5 @@ export default eventHandler(async (event) => {
       required_error: 'projectId is required',
     }).transform((value) => parseInt(value, 10)),
   })
-  return await new VariableService().getVariablesByProjectId(projectId)
+  return await new VariableService().getProjectVariables(projectId)
 })

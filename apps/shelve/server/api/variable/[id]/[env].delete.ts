@@ -1,4 +1,5 @@
 import { zh, z } from 'h3-zod'
+import type { Environment } from '@shelve/types'
 import { VariableService } from '~~/server/services/variable.service'
 
 export default eventHandler(async (event) => {
@@ -8,9 +9,9 @@ export default eventHandler(async (event) => {
     }).transform((value) => parseInt(value, 10)),
     env: z.string({
       required_error: 'env is required',
-    })
+    }).transform((value) => value as Environment),
   })
-  await new VariableService().deleteVariable(id, env)
+  await new VariableService().deleteVariable(id)
   return {
     statusCode: 200,
     message: 'Variable deleted',

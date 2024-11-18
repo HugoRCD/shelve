@@ -80,15 +80,15 @@ services:
       retries: 3
     networks:
       - shelve-network
-  prisma_migrate:
+  drizzle_migrate:
     image: ghcr.io/hugorcd/shelve:latest
-    container_name: prisma_migrate
+    container_name: drizzle_migrate
     environment:
       - DATABASE_URL=${DATABASE_URL:-postgres://postgres:postgres@shelve_db:5432/postgres}
     depends_on:
       shelve_db:
         condition: service_healthy
-    command: bunx prisma migrate deploy --schema ./prisma/schema.prisma
+    command: bunx drizzle-kit migrate
     restart: no
     networks:
       - shelve-network

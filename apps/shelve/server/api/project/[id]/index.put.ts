@@ -30,5 +30,5 @@ export default eventHandler(async (event) => {
       role: user.role,
     }
   }
-  return new ProjectService().updateProject(input)
+  return await new ProjectService().updateProject(input)
 })

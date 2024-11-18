@@ -27,7 +27,7 @@ export function useProjects() {
 
   async function fetchCurrentProject(projectId: number) {
     currentLoading.value = true
-    currentProject.value = await $fetch<Project>(`/api/project?teamId=${projectId}`, {
+    currentProject.value = await $fetch<Project>(`/api/project/${projectId}`, {
       method: 'GET',
     })
     currentLoading.value = false

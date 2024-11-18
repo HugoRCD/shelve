@@ -21,6 +21,7 @@ export class ProjectService {
     const [createdProject] = await db.insert(tables.projects)
       .values(input)
       .returning()
+    if (!createdProject) throw new Error('Project not found after creation')
 
     return createdProject
   }
@@ -38,6 +39,7 @@ export class ProjectService {
       .set(input)
       .where(eq(tables.projects.id, input.id))
       .returning()
+    if (!updatedProject) throw new Error('Project not found after update')
 
     return updatedProject
   }
@@ -79,18 +81,16 @@ export class ProjectService {
     getKey: (teamId: number) => `teamId:${teamId}`,
   })
 
-  async deleteProject(id: number, teamId: number): Promise<Project> {
+  async deleteProject(id: number, teamId: number): Promise<void> {
     await this.deleteCachedProjectById(id)
     await this.deleteCachedTeamProjects(teamId)
 
-    const [deletedProject] = await db.delete(tables.projects)
+    await db.delete(tables.projects)
       .where(and(
         eq(tables.projects.id, id),
         eq(tables.projects.teamId, teamId)
       ))
       .returning()
-
-    return deletedProject
   }
 
   private async validateProjectName(name: string, teamId: number, projectId?: number): Promise<void> {
@@ -134,12 +134,15 @@ export class ProjectService {
 
   private async hasAccessToProject(projectId: number, userId: number): Promise<boolean> {
     const project = await db.query.projects.findFirst({
-      where: and(
-        eq(tables.projects.id, projectId),
-        eq(tables.members.userId, userId)
-      ),
-      columns: {
-        id: true
+      where: eq(tables.projects.id, projectId),
+      with: {
+        team: {
+          with: {
+            members: {
+              where: eq(tables.members.userId, userId)
+            }
+          }
+        }
       }
     })
 

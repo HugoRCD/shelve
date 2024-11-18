@@ -10,26 +10,36 @@ export type Variable = {
   updatedAt: Date;
 };
 
-export type VariableCreateInput = {
-  index?: number;
-  id?: number;
+export type CreateVariableInput = {
   key: string;
   value: string;
   projectId: number;
   environment: string;
+  autoUppercase?: boolean;
 };
 
-export type VariablesCreateInput = {
-  method?: 'overwrite' | 'merge';
+export type CreateVariablesInput = {
+  projectId: number;
   autoUppercase?: boolean;
   environment?: Environment;
-  projectId: number;
-  variables: VariableCreateInput[];
+  method?: 'overwrite' | 'merge';
+  variables: {
+    index?: number;
+    key: string;
+    value: string;
+  }[];
 };
+
+export type UpdateVariableInput = {
+  id: number;
+  projectId: number;
+  key?: string;
+  value?: string;
+  environment?: string;
+  autoUppercase?: boolean;
+}
 
 export type Env = {
   key: string;
   value: string;
 }
-
-export type EnvFile = Env[];

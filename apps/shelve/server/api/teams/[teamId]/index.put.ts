@@ -1,5 +1,5 @@
 import { z, zh } from 'h3-zod'
-import { type AddMemberInput, TeamRole } from '@shelve/types'
+import type { UpdateTeamInput } from '@shelve/types'
 import { TeamService } from '~~/server/services/teams.service'
 
 export default eventHandler(async (event) => {
@@ -9,20 +9,22 @@ export default eventHandler(async (event) => {
     }),
   })
   const body = await zh.useValidatedBody(event, {
-    email: z.string({
-      required_error: 'Missing new member email',
-    }).email().trim(),
-    role: z.nativeEnum(TeamRole).default(TeamRole.MEMBER)
+    name: z.string().optional(),
+    logo: z.string().optional(),
   })
   const { user } = event.context
-  const input: AddMemberInput = {
-    teamId: params.teamId,
-    email: body.email,
-    role: body.role,
+  const input: UpdateTeamInput = {
+    id: params.teamId,
+    name: body.name,
+    logo: body.logo,
     requester: {
       id: user.id,
       role: user.role,
-    },
+    }
   }
-  return await new TeamService().addMember(input)
+  await new TeamService().updateTeam(input)
+  return {
+    statusCode: 200,
+    message: 'Team deleted',
+  }
 })

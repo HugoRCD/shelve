@@ -32,11 +32,7 @@ async function updateCurrentProject() {
 const deleteLoading = ref(false)
 async function deleteProjectFunction() {
   deleteLoading.value = true
-  if (project.value.ownerId !== user.value?.id) {
-    toast.error('You are not the owner of this project')
-    deleteLoading.value = false
-    return
-  }
+  // TODO: Add permission check
   await deleteProject(+projectId)
   deleteLoading.value = false
   showDelete.value = false
@@ -100,7 +96,7 @@ function getProjectManager(manager: string) {
     <div v-if="!loading">
       <div class="flex items-start justify-between gap-4">
         <div class="flex items-start gap-4">
-          <UAvatar :src="project.avatar" size="xl" :alt="project.name" />
+          <UAvatar :src="project.logo" size="xl" :alt="project.name" />
           <div>
             <h2 class="text-base font-semibold leading-7">
               {{ project.name }}
@@ -115,8 +111,8 @@ function getProjectManager(manager: string) {
                 <FormGroup v-model="project.name" label="Name" />
                 <FormGroup v-model="project.description" label="Description" type="textarea" />
                 <div class="flex items-center gap-4">
-                  <UAvatar :src="project.avatar" size="xl" :alt="project.name" />
-                  <FormGroup v-model="project.avatar" label="Avatar" class="w-full" />
+                  <UAvatar :src="project.logo" size="xl" :alt="project.name" />
+                  <FormGroup v-model="project.logo" label="Avatar" class="w-full" />
                 </div>
                 <div class="flex justify-end gap-4">
                   <UButton color="neutral" variant="ghost" @click="showEdit = false">
@@ -130,7 +126,7 @@ function getProjectManager(manager: string) {
             </template>
           </UModal>
         </div>
-        <UDropdownMenu v-if="project.ownerId === user?.id" :items>
+        <UDropdownMenu :items>
           <UButton color="neutral" variant="ghost" icon="heroicons:ellipsis-horizontal-20-solid" />
         </UDropdownMenu>
       </div>
