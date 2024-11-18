@@ -1,4 +1,4 @@
-import type { CreateProjectInput, ProjectUpdateInput, Team, Project } from '@shelve/types'
+import type { CreateProjectInput, Project, ProjectUpdateInput } from '@shelve/types'
 import type { Storage, StorageValue } from 'unstorage'
 
 export class ProjectService {
@@ -17,142 +17,126 @@ export class ProjectService {
   /**
    * Create a new project
    */
-  async createProject(project: CreateProjectInput, userId: number): Promise<Project> {
-    await this.deleteCachedUserProjects(userId)
-    await this.validateProjectName(project.name, userId)
+  async createProject(project: CreateProjectInput, teamId: number): Promise<Project> {
+    await this.validateProjectName(project.name, teamId)
 
-    const projectData = this.buildProjectData(project, userId)
-    return prisma.project.create({ data: projectData })
+    const [createdProject] = await db.insert(tables.projects)
+      .values({
+        name: project.name,
+        teamId,
+      })
+      .returning()
+
+    return createdProject
   }
 
-  /**
-   * Update existing project
-   */
-  async updateProject(project: ProjectUpdateInput, projectId: number, userId: number): Promise<Project> {
-    await this.deleteCachedUserProjects(userId)
-    await this.deleteCachedProjectById(projectId)
+  async updateProject(project: ProjectUpdateInput): Promise<Project> {
+    await this.deleteCachedProjectById(project.id)
 
-    const existingProject = await this.findProjectById(projectId)
+    const existingProject = await this.findProjectById(project.id)
 
     if (existingProject.name !== project.name)
-      await this.validateProjectName(project.name, userId, projectId)
+      await this.validateProjectName(project.name, existingProject.teamId, project.id)
 
-    return prisma.project.update({
-      where: { id: projectId },
-      data: project,
-    })
+    const [updatedProject] = await db.update(tables.projects)
+      .set(project)
+      .where(eq(tables.projects.id, project.id))
+      .returning()
+
+    return updatedProject
   }
 
-  /**
-   * Get project by ID
-   */
-  getProjectById = cachedFunction((projectId: number, userId: number): Promise<Project> => {
-    const hasAccess = this.hasAccessToProject(projectId, userId)
+  getProjectById = cachedFunction(async (projectId: number, userId: number): Promise<Project> => {
+    const hasAccess = await this.hasAccessToProject(projectId, userId)
     if (!hasAccess) throw createError({ statusCode: 401, statusMessage: 'Unauthorized' })
-    return prisma.project.findUnique({
-      where: {
-        id: projectId,
-      },
-      include: this.getProjectInclude()
+
+    const project = await db.query.projects.findFirst({
+      where: eq(tables.projects.id, projectId),
+      with: {
+        team: {
+          with: {
+            members: {
+              with: {
+                user: true
+              }
+            }
+          }
+        }
+      }
     })
+
+    if (!project) throw new Error(`Project not found with id ${projectId}`)
+    return project
   }, {
     maxAge: this.CACHE_TTL,
     name: 'getProjectById',
     getKey: (projectId: number) => `projectId:${projectId}`,
   })
 
-  /**
-   * Get all projects for a user
-   */
   getProjectsByUserId = cachedFunction(async (userId: number): Promise<Project[]> => {
-    const [projects, teams] = await Promise.all([
-      this.getUserProjects(userId),
-      this.getUserTeamProjects(userId)
-    ])
-
-    const teamProjects = teams.map(team => team.projects)
-    return this.removeDuplicateProjects([...projects, ...teamProjects].flat())
+    return await db.query.projects.findMany({
+      where: eq(tables.members.userId, userId),
+      with: {
+        team: {
+          with: {
+            members: {
+              with: {
+                user: true
+              }
+            }
+          }
+        }
+      }
+    })
   }, {
     maxAge: this.CACHE_TTL,
     name: 'getProjectsByUserId',
     getKey: (userId: number) => `userId:${userId}`,
   })
 
-  /**
-   * Add team to project
-   */
-  async addTeamToProject(projectId: number, teamId: number): Promise<Project> {
-    await this.deleteCachedProjectById(projectId)
-    return prisma.project.update({
-      where: { id: projectId },
-      data: {
-        team: {
-          connect: { id: teamId }
-        }
-      }
-    })
-  }
-
-  /**
-   * Remove team from project
-   */
-  async removeTeamFromProject(projectId: number, teamId: number): Promise<Project> {
-    await this.deleteCachedProjectById(projectId)
-    return prisma.project.update({
-      where: { id: projectId },
-      data: {
-        team: {
-          disconnect: { id: teamId }
-        }
-      }
-    })
-  }
-
-  /**
-   * Delete project
-   */
-  async deleteProject(id: string, userId: number): Promise<Project> {
-    await this.deleteCachedUserProjects(userId)
+  async deleteProject(id: string, teamId: number): Promise<Project> {
     await this.deleteCachedProjectById(parseInt(id))
 
-    return prisma.project.delete({
-      where: {
-        id: parseInt(id),
-        ownerId: userId,
-      }
-    })
+    const [deletedProject] = await db.delete(tables.projects)
+      .where(and(
+        eq(tables.projects.id, parseInt(id)),
+        eq(tables.projects.teamId, teamId)
+      ))
+      .returning()
+
+    return deletedProject
   }
 
-  /**
-   * Private helper methods
-   */
-  private async validateProjectName(name: string, userId: number, projectId?: number): Promise<void> {
-    const exists = await this.isProjectAlreadyExists(name, userId, projectId)
+  private async validateProjectName(name: string, teamId: number, projectId?: number): Promise<void> {
+    const exists = await this.isProjectAlreadyExists(name, teamId, projectId)
     if (exists) {
       throw createError({
         statusCode: 400,
-        message: 'Project already exists'
+        message: 'Project already exists in this team'
       })
     }
   }
 
-  private async isProjectAlreadyExists(name: string, userId: number, projectId?: number): Promise<boolean> {
-    const where: { name: { equals: string; mode: 'insensitive' }, ownerId: number } & { id?: { not: number } } = {
-      name: {
-        equals: name,
-        mode: 'insensitive',
-      },
-      ownerId: userId,
-    }
-    if (projectId) where.id = { not: projectId }
-    const project = await prisma.project.findFirst({ where })
+  private async isProjectAlreadyExists(name: string, teamId: number, projectId?: number): Promise<boolean> {
+    const conditions = [
+      eq(tables.projects.teamId, teamId),
+      ilike(tables.projects.name, name)
+    ]
+
+    if (projectId) conditions.push(not(eq(tables.projects.id, projectId)))
+
+    const project = await db.query.projects.findFirst({
+      where: and(...conditions)
+    })
+
     return !!project
   }
 
   private async findProjectById(id: number): Promise<Project> {
-    const project = await prisma.project.findFirst({
-      where: { id },
+    const project = await db.query.projects.findFirst({
+      where: eq(tables.projects.id, id)
     })
+
     if (!project) {
       throw createError({
         statusCode: 404,
@@ -162,66 +146,18 @@ export class ProjectService {
     return project
   }
 
-  private buildProjectData(project: CreateProjectInput, userId: number) {
-    const projectData = {
-      ...project,
-      ownerId: userId,
-      users: { connect: { id: userId } }
-    }
-
-    if (project.team) {
-      projectData.team = {
-        connect: { id: project.team.id }
-      } as Team & { connect: { id: number } }
-    }
-
-    return projectData
-  }
-
-  private getUserProjects(userId: number) {
-    return prisma.project.findMany({
-      where: { ownerId: userId },
-    })
-  }
-
-  private getUserTeamProjects(userId: number) {
-    return prisma.team.findMany({
-      where: {
-        members: {
-          some: { userId }
-        }
-      },
-      include: {
-        projects: true,
+  private async hasAccessToProject(projectId: number, userId: number): Promise<boolean> {
+    const project = await db.query.projects.findFirst({
+      where: and(
+        eq(tables.projects.id, projectId),
+        eq(tables.members.userId, userId)
+      ),
+      columns: {
+        id: true
       }
     })
-  }
 
-  private removeDuplicateProjects(projects: Project[]): Project[] {
-    return projects.filter((project, index, self) =>
-      self.findIndex(p => p.id === project.id) === index
-    )
-  }
-
-  private getProjectInclude() {
-    return {
-      team: {
-        include: {
-          members: {
-            include: {
-              user: {
-                select: {
-                  id: true,
-                  username: true,
-                  email: true,
-                  avatar: true,
-                }
-              }
-            }
-          }
-        }
-      }
-    }
+    return !!project
   }
 
   async deleteCachedUserProjects(userId: number): Promise<void> {
@@ -230,32 +166,6 @@ export class ProjectService {
 
   private async deleteCachedProjectById(id: number): Promise<void> {
     await this.storage.removeItem(`${this.CACHE_PREFIX.project}${id}.json`)
-  }
-
-  private async hasAccessToProject(projectId: number, userId: number): Promise<boolean> {
-    const findProject = await prisma.project.findFirst({
-      where: {
-        id: projectId,
-        OR: [
-          {
-            ownerId: userId,
-          },
-          {
-            team: {
-              members: {
-                some: {
-                  userId,
-                }
-              }
-            }
-          }
-        ],
-      },
-      select: {
-        id: true,
-      }
-    })
-    return !!findProject
   }
 
 }

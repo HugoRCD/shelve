@@ -1,39 +1,36 @@
-import type { Variable } from './Variables'
-import type { User } from './User'
-import type { Team } from './Team'
+import type { Requester, Team } from './Team'
 
 export type Project = {
   id: number;
   name: string;
-  description?: string;
-  repository?: string;
-  projectManager?: string;
-  homepage?: string;
-  variablePrefix?: string;
-  avatar?: string;
-  ownerId: number;
-  users: User[];
-  team: Team;
+  description: string | null;
+  repository: string | null;
+  projectManager: string | null;
+  homepage: string | null;
+  variablePrefix: string | null;
+  logo: string | null;
   teamId: number;
   createdAt: Date;
   updatedAt: Date;
-  variables?: Variable[];
+  // variables?: Variable[];
 };
 
 export type CreateProjectInput = {
   name: string;
   description: string;
-  avatar: string;
+  logo: string;
   repository: string;
   projectManager: string;
   homepage: string;
-  team?: Team;
+  teamId: number;
 };
 
 export type ProjectUpdateInput = {
+  id: number;
   name: string;
   description: string;
-  avatar: string;
-  ownerId: number;
+  logo: string;
+  teamId: number;
+  requester: Requester;
 };
 

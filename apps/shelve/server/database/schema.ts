@@ -44,6 +44,19 @@ export const members = pgTable('members', {
   ...timestamps,
 })
 
+export const projects = pgTable('projects', {
+  id: integer().primaryKey().generatedByDefaultAsIdentity(),
+  name: varchar().notNull(),
+  teamId: integer().references(() => teams.id, { onDelete: 'cascade' }).notNull(),
+  description: varchar(),
+  repository: varchar(),
+  projectManager: varchar(),
+  homepage: varchar(),
+  variablePrefix: varchar(),
+  logo: varchar(),
+  ...timestamps,
+})
+
 export const tokens = pgTable('tokens', {
   id: integer().primaryKey().generatedByDefaultAsIdentity(),
   token: varchar().notNull(),
@@ -53,7 +66,8 @@ export const tokens = pgTable('tokens', {
 })
 
 export const teamsRelations = relations(teams, ({ many }) => ({
-  members: many(members)
+  members: many(members),
+  projects: many(projects),
 }))
 
 export const membersRelations = relations(members, ({ one }) => ({
@@ -64,6 +78,13 @@ export const membersRelations = relations(members, ({ one }) => ({
   user: one(users, {
     fields: [members.userId],
     references: [users.id],
+  })
+}))
+
+export const projectsRelations = relations(projects, ({ one }) => ({
+  team: one(teams, {
+    fields: [projects.teamId],
+    references: [teams.id],
   })
 }))
 
