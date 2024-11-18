@@ -1,10 +1,11 @@
-import type { H3Event } from 'h3'
+import { z, zh } from 'h3-zod'
 import { TokenService } from '~~/server/services/token.service'
 
-export default defineEventHandler((event: H3Event) => {
-  const tokenService = new TokenService()
-  const token = getRouterParam(event, 'token') as string
-  if (!token) throw createError({ statusCode: 400, statusMessage: 'Missing params' })
-
-  return tokenService.getUserByAuthToken(token)
+export default defineEventHandler(async (event) => {
+  const { token } = await zh.useValidatedParams(event, {
+    token: z.string({
+      required_error: 'Cannot get token without token'
+    }).trim()
+  })
+  return new TokenService().getUserByAuthToken(token)
 })

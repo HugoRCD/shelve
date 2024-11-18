@@ -44,6 +44,14 @@ export const members = pgTable('members', {
   ...timestamps,
 })
 
+export const tokens = pgTable('tokens', {
+  id: integer().primaryKey().generatedByDefaultAsIdentity(),
+  token: varchar().notNull(),
+  name: varchar().notNull(),
+  userId: integer().references(() => users.id, { onDelete: 'cascade' }).notNull(),
+  ...timestamps,
+})
+
 export const teamsRelations = relations(teams, ({ many }) => ({
   members: many(members)
 }))
@@ -55,6 +63,13 @@ export const membersRelations = relations(members, ({ one }) => ({
   }),
   user: one(users, {
     fields: [members.userId],
+    references: [users.id],
+  })
+}))
+
+export const tokensRelations = relations(tokens, ({ one }) => ({
+  user: one(users, {
+    fields: [tokens.userId],
     references: [users.id],
   })
 }))

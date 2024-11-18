@@ -1,12 +1,11 @@
-import type { H3Event } from 'h3'
+import { z, zh } from 'h3-zod'
 import { TokenService } from '~~/server/services/token.service'
 
-export default defineEventHandler(async (event: H3Event) => {
-  const tokenService = new TokenService()
-  const { user } = event.context
-  const id = getRouterParam(event, 'id') as string
-
-  if (!id) throw createError({ statusCode: 400, statusMessage: 'Missing params' })
-
-  await tokenService.deleteUserToken(+id, user.id)
+export default defineEventHandler(async (event) => {
+  const params = await zh.useValidatedParams(event, {
+    id: z.number({
+      required_error: 'Cannot delete token without id'
+    })
+  })
+  await new TokenService().deleteUserToken(params.id, event.context.user.id)
 })
