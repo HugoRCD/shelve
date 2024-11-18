@@ -22,7 +22,6 @@ export class UserService {
       requester: {
         id: createdUser.id,
         role: Role.USER,
-        teamRole: TeamRole.OWNER,
       }
     })
     return createdUser

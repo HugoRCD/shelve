@@ -15,6 +15,13 @@
       "when": 1731943730265,
       "tag": "0001_luxuriant_doctor_octopus",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1731945490620,
+      "tag": "0002_early_raza",
+      "breakpoints": true
     }
   ]
 }

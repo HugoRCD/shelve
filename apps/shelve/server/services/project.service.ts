@@ -14,33 +14,29 @@ export class ProjectService {
     this.storage = useStorage('cache')
   }
 
-  /**
-   * Create a new project
-   */
-  async createProject(project: CreateProjectInput, teamId: number): Promise<Project> {
-    await this.validateProjectName(project.name, teamId)
+  async createProject(input: CreateProjectInput): Promise<Project> {
+    await this.validateProjectName(input.name, input.teamId)
+    await this.deleteCachedTeamProjects(input.teamId)
 
     const [createdProject] = await db.insert(tables.projects)
-      .values({
-        name: project.name,
-        teamId,
-      })
+      .values(input)
       .returning()
 
     return createdProject
   }
 
-  async updateProject(project: ProjectUpdateInput): Promise<Project> {
-    await this.deleteCachedProjectById(project.id)
+  async updateProject(input: ProjectUpdateInput): Promise<Project> {
+    await this.deleteCachedProjectById(input.id)
+    await this.deleteCachedTeamProjects(input.teamId)
 
-    const existingProject = await this.findProjectById(project.id)
+    const existingProject = await this.findProjectById(input.id)
 
-    if (existingProject.name !== project.name)
-      await this.validateProjectName(project.name, existingProject.teamId, project.id)
+    if (existingProject.name !== input.name)
+      await this.validateProjectName(input.name, existingProject.teamId, input.id)
 
     const [updatedProject] = await db.update(tables.projects)
-      .set(project)
-      .where(eq(tables.projects.id, project.id))
+      .set(input)
+      .where(eq(tables.projects.id, input.id))
       .returning()
 
     return updatedProject
@@ -73,29 +69,19 @@ export class ProjectService {
     getKey: (projectId: number) => `projectId:${projectId}`,
   })
 
-  getProjectsByUserId = cachedFunction(async (userId: number): Promise<Project[]> => {
+  getProjectsByTeamId = cachedFunction(async (teamId: number): Promise<Project[]> => {
     return await db.query.projects.findMany({
-      where: eq(tables.members.userId, userId),
-      with: {
-        team: {
-          with: {
-            members: {
-              with: {
-                user: true
-              }
-            }
-          }
-        }
-      }
+      where: eq(tables.projects.teamId, teamId)
     })
   }, {
     maxAge: this.CACHE_TTL,
-    name: 'getProjectsByUserId',
-    getKey: (userId: number) => `userId:${userId}`,
+    name: 'getProjectsByTeamId',
+    getKey: (teamId: number) => `teamId:${teamId}`,
   })
 
   async deleteProject(id: string, teamId: number): Promise<Project> {
     await this.deleteCachedProjectById(parseInt(id))
+    await this.deleteCachedTeamProjects(teamId)
 
     const [deletedProject] = await db.delete(tables.projects)
       .where(and(
@@ -160,8 +146,8 @@ export class ProjectService {
     return !!project
   }
 
-  async deleteCachedUserProjects(userId: number): Promise<void> {
-    await this.storage.removeItem(`${this.CACHE_PREFIX.projects}${userId}.json`)
+  async deleteCachedTeamProjects(teamId: number): Promise<void> {
+    await this.storage.removeItem(`${this.CACHE_PREFIX.projects}${teamId}.json`)
   }
 
   private async deleteCachedProjectById(id: number): Promise<void> {

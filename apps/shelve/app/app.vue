@@ -37,6 +37,11 @@ const reduceMotion = useCookie<boolean>('reduceMotion', {
 })
 
 if (import.meta.client) setPrefersReducedMotion(reduceMotion.value)
+
+const { fetchTeams } = useTeams()
+
+if (!fetchTeams())
+  await fetchTeams()
 </script>
 
 <template>

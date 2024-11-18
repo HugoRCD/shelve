@@ -5,8 +5,13 @@ export const useUserTeams = () => {
   return useState<Team[]>('teams')
 }
 
+export const useDefaultTeam = () => {
+  return useState<Team>('defaultTeam')
+}
+
 export function useTeams() {
   const teams = useUserTeams()
+  const defaultTeam = useDefaultTeam()
   const loading = ref(false)
   const createLoading = ref(false)
 
@@ -15,6 +20,8 @@ export function useTeams() {
     teams.value = await $fetch<Team[]>('/api/teams', {
       method: 'GET',
     })
+    if (!teams) throw new Error('Failed to fetch teams')
+    defaultTeam.value = teams.value.find((team) => team.private) || teams.value[0] as Team
     loading.value = false
   }
 

@@ -8,8 +8,8 @@ type TeamMemberProps = {
 }
 
 const open = ref(false)
-const mainsTeammates = ref([])
-const teammateLoading = ref(false)
+// const mainsTeammates = ref([])
+// const teammateLoading = ref(false)
 
 const { members, teamId, display = false } = defineProps<TeamMemberProps>()
 
@@ -23,8 +23,8 @@ const isOwner = computed(() => members.find(member => member.user.id === user.va
 
 const roles = [
   {
-    label: 'Developer',
-    value: TeamRole.DEVELOPER,
+    label: 'Member',
+    value: TeamRole.MEMBER,
   },
   {
     label: 'Admin',
@@ -40,7 +40,7 @@ const roles = [
 
 const newMember = ref({
   email: '',
-  role: TeamRole.DEVELOPER,
+  role: TeamRole.MEMBER,
 })
 
 const loadingMembers = ref(false)
@@ -48,7 +48,7 @@ async function upsertMemberFunction(teamId: number, email: string, role: TeamRol
   loadingMembers.value = true
   await upsertMember(teamId, email, role)
   newMember.value.email = ''
-  newMember.value.role = TeamRole.DEVELOPER
+  newMember.value.role = TeamRole.MEMBER
   loadingMembers.value = false
 }
 
@@ -59,21 +59,21 @@ async function removeMemberFunction(teamId: number, memberId: number) {
   loadingRemove.value = false
 }
 
-async function loadTeammates() {
+/*async function loadTeammates() {
   mainsTeammates.value = await $fetch<Member[]>('/api/user/teammate', {
     method: 'GET',
   })
   teammateLoading.value = true
-}
+}*/
 
-watch(open, (newValue) => {
+/*watch(open, (newValue) => {
   if (newValue) {
     loadTeammates()
   } else {
     newMember.value.email = ''
     teammateLoading.value = false
   }
-})
+})*/
 </script>
 
 <template>
@@ -125,7 +125,7 @@ watch(open, (newValue) => {
                 />
                 <UButton class="flex-1 justify-center" label="Add member" :loading="loadingMembers" type="submit" />
               </div>
-              <div v-if="mainsTeammates.length > 0" class="flex w-full content-between gap-2">
+              <!--              <div v-if="mainsTeammates.length > 0" class="flex w-full content-between gap-2">
                 <p class=" content-center items-center text-center">
                   Your teammates :
                 </p>
@@ -152,7 +152,7 @@ watch(open, (newValue) => {
                     </UAvatarGroup>
                   </div>
                 </div>
-              </div>
+              </div>-->
             </div>
           </form>
         </UCard>

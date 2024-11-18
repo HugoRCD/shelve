@@ -17,11 +17,11 @@ export type Project = {
 
 export type CreateProjectInput = {
   name: string;
-  description: string;
-  logo: string;
-  repository: string;
-  projectManager: string;
-  homepage: string;
+  description?: string;
+  logo?: string;
+  repository?: string;
+  projectManager?: string;
+  homepage?: string;
   teamId: number;
 };
 

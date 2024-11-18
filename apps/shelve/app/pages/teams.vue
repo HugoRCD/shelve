@@ -41,7 +41,7 @@ const columns: TableColumn<Team>[] = [
   },
 ]
 
-const currentTeamMemberUserId = computed(() => teamMembers.value.find(member => member.userId === user.value?.id)?.userId)
+// const currentTeamMemberUserId = computed(() => teamMembers.value.find(member => member.userId === user.value?.id)?.userId)
 
 const isOwner = (team: Team) => team.members.find(member => member.userId === user.value?.id)?.role === TeamRole.OWNER || user.value?.role === Role.ADMIN
 

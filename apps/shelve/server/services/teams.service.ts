@@ -136,16 +136,21 @@ export class TeamService {
   }
 
   getTeamsByUserId = cachedFunction(async (userId): Promise<Team[]> => {
-    const teams = await db.query.teams.findMany({
+    const memberOf = await db.query.members.findMany({
       where: eq(tables.members.userId, userId),
       with: {
-        members: {
+        team: {
           with: {
-            user: true
+            members: {
+              with: {
+                user: true
+              }
+            }
           }
         }
       }
     })
+    const teams = memberOf.map(member => member.team)
     if (!teams) throw new Error(`Teams not found for user with id ${userId}`)
     return teams
   }, {

@@ -1,4 +1,5 @@
 import type { H3Event } from 'h3'
+import { z, zh } from 'h3-zod'
 import { ProjectService } from '~~/server/services/project.service'
 
 export default eventHandler(async (event: H3Event) => {
