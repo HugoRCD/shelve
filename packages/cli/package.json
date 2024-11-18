@@ -39,7 +39,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@clack/prompts": "^0.7.0",
+    "@clack/prompts": "^0.8.1",
     "c12": "^2.0.1",
     "commander": "^12.1.0",
     "consola": "^3.2.3",
@@ -53,8 +53,8 @@
     "@types/bun": "^1.1.13",
     "@types/npm-registry-fetch": "^8.0.7",
     "@types/semver": "^7.5.8",
-    "eslint": "^9.14.0",
+    "eslint": "^9.15.0",
     "unbuild": "^2.0.0",
-    "vitest": "^2.1.4"
+    "vitest": "^2.1.5"
   }
 }
