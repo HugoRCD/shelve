@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { Role } from '@shelve/types'
-import TeamManager from '~/components/team/TeamManager.vue'
 
 const { user } = useUserSession()
 const teamNavigations = getNavigation('team')

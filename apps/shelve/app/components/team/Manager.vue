@@ -54,7 +54,6 @@ const groups = computed(() => [
       block
       trailing-icon="lucide:grip"
     />
-
     <template #content>
       <UCommandPalette
         v-model:search-term="newTeamName"
@@ -75,7 +74,7 @@ const groups = computed(() => [
           >
             <div class="flex flex-col gap-2 items-center mb-4">
               <UIcon name="lucide:users" class="size-8" />
-              <h3 class="text-3xl font-light font-newsreader italic text-pretty max-w-sm">
+              <h3 class="text-2xl font-light font-newsreader italic text-pretty max-w-sm">
                 Looks like you don't have any team yet.
               </h3>
               <p class="text-sm text-neutral-500">
