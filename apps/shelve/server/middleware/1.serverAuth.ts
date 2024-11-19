@@ -15,12 +15,11 @@ export default defineEventHandler(async (event) => {
   if (!protectedRoutes.some((route) => event.path?.startsWith(route))) {
     return
   }
-  const tokenService = new TokenService()
 
   const authToken = getCookie(event, 'authToken')
 
   if (authToken) {
-    const user = await tokenService.getUserByAuthToken(authToken)
+    const user = await new TokenService().getUserByAuthToken(authToken)
     if (!user) throw createError({ statusCode: 401, statusMessage: 'Invalid token' })
     event.context.user = user
     return
