@@ -122,9 +122,13 @@ function getEnvFile(file: File) {
 
   reader.onload = (e) => {
     const content = e.target?.result as string
-    const variables = parseEnvFile(content, true)
-    variablesToCreate.value = variables.length
-    variablesInput.value.variables = variables
+    try {
+      const variables = parseEnvFile(content, true)
+      variablesToCreate.value = variables.length
+      variablesInput.value.variables = variables
+    } catch (error) {
+      toast.error('Invalid .env file')
+    }
   }
 
   reader.onerror = (e) => {
@@ -142,9 +146,13 @@ onMounted(() => {
     if (!e.target?.closest('#varCreation')) return
     if (!content.includes('=')) return
     e.preventDefault()
-    const variables = parseEnvFile(content, true)
-    variablesToCreate.value = variables.length
-    variablesInput.value.variables = variables
+    try {
+      const variables = parseEnvFile(content, true)
+      variablesToCreate.value = variables.length
+      variablesInput.value.variables = variables
+    } catch (error) {
+      toast.error('Invalid .env content')
+    }
   })
 })
 

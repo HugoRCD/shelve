@@ -58,6 +58,7 @@ export async function createProject(name: string): Promise<Project> {
       method: 'POST',
       body: {
         name: name.charAt(0).toUpperCase() + name.slice(1),
+        teamId: 1,
       }
     })
     s.stop('Creating project')

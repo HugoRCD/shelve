@@ -18,8 +18,7 @@ export function useVariables(refresh: () => Promise<void>, projectId: string) {
 
   const variablesToCreate = ref(1)
 
-  const variablesInput = ref<CreateVariablesInput & { type: 'multiple' | 'single' }>({
-    type: 'multiple',
+  const variablesInput = ref<CreateVariablesInput>({
     autoUppercase: autoUppercase.value,
     projectId: +projectId,
     environment: environment.value,
@@ -74,7 +73,6 @@ export function useVariables(refresh: () => Promise<void>, projectId: string) {
       toast.success('Your variables have been created')
       variablesToCreate.value = 1
       variablesInput.value = {
-        type: 'multiple',
         projectId: +projectId,
         variables: [
           {

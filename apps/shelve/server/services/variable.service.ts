@@ -17,23 +17,6 @@ export class VariableService {
     this.encryptionKey = useRuntimeConfig().private.encryptionKey
   }
 
-  // Single Variable Operations
-  async createVariable(input: CreateVariableInput): Promise<Variable> {
-    const encryptedValue = await seal(input.value, this.encryptionKey)
-
-    const [createdVariable] = await db.insert(tables.variables)
-      .values({
-        projectId: input.projectId,
-        key: input.autoUppercase ? input.key.toUpperCase() : input.key,
-        value: encryptedValue,
-        environment: this.normalizeEnvironment(input.environment)
-      })
-      .returning()
-    if (!createdVariable) throw createError({ statusCode: 500, message: 'Failed to create variable' })
-
-    return this.decryptVariable(createdVariable)
-  }
-
   async updateVariable(input: UpdateVariableInput): Promise<Variable> {
     const variable = await this.getVariableById(input.id)
 
@@ -71,6 +54,14 @@ export class VariableService {
     }
 
     return this.decryptVariable(variable)
+  }
+
+  async getVariableByIdAndEnv(projectId: number, environment: Environment): Promise<Variable[]> {
+    const variables = await db.query.variables.findMany({
+      where: this.buildEnvironmentQuery(projectId, environment)
+    })
+
+    return await this.decryptVariables(variables)
   }
 
   async deleteVariable(id: number): Promise<void> {

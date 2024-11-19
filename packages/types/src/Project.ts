@@ -23,6 +23,7 @@ export type CreateProjectInput = {
   homepage?: string;
   variablePrefix?: string;
   teamId: number;
+  requester: Requester;
 };
 
 export type ProjectUpdateInput = {

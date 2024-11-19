@@ -8,6 +8,7 @@ const { user } = useUserSession()
 
 const project = inject('project') as Ref<Project>
 const loading = inject('loading') as Ref<boolean>
+const route = useRoute()
 
 const { status: updateStatus, error: updateError, execute } = useFetch(`/api/project/${projectId}`, {
   method: 'PUT',
@@ -65,48 +66,6 @@ async function removeTeamFromProject(teamId: number) {
         </div>
       </template>
       <div class="flex flex-col gap-4">
-        <div class="ga-4 flex flex-col">
-          <div>
-            <h3 class="font-semibold">
-              Project team <span v-if="project && project.team" class="text-sm text-neutral-500 dark:text-neutral-400">({{ project.team.name }})</span>
-            </h3>
-            <p class="text-pretty text-xs text-neutral-500 dark:text-neutral-400">
-              Link a team to your project
-            </p>
-          </div>
-          <div class="mt-4 flex flex-col gap-4">
-            <div>
-              <USkeleton v-if="teamsLoading && !userTeams" class="h-8" />
-              <div v-else>
-                <div v-if="project && projectTeam" class="flex items-center justify-between">
-                  <TeamMembers :team-id="project.teamId" :members="projectTeam.members" />
-                  <UButton
-                    v-if="projectTeam.members.find(member => member.userId === user?.id)?.role === TeamRole.OWNER"
-                    variant="soft"
-                    color="error"
-                    size="xs"
-                    :loading="removeLoading"
-                    label="Unlink"
-                    icon="lucide:unlink"
-                    @click="removeTeamFromProject(project.teamId)"
-                  />
-                </div>
-                <div v-else class="flex flex-col gap-4">
-                  <div v-if="userTeams.length !== 0" class="flex flex-col gap-4">
-                    <ProjectTeamAssign v-for="team in userTeams" :key="team.id" :team :project-id="project.id" />
-                  </div>
-                  <div v-else class="flex flex-col items-center justify-center gap-2">
-                    <p class="text-pretty text-xs text-neutral-500 dark:text-neutral-400">
-                      You don't have any teams yet
-                    </p>
-                    <TeamCreate>Create one</TeamCreate>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <UDivider class="my-2" />
         <div class="flex flex-col gap-4">
           <div>
             <h3 class="font-semibold">
@@ -132,7 +91,7 @@ async function removeTeamFromProject(teamId: number) {
           </div>
         </div>
         <UDivider class="my-2" />
-        <div id="variable-prefix" class="flex flex-col gap-4" :class="$route.hash === '#variable-prefix' ? 'ring ring-[var(--ui-primary)] rounded-lg p-4' : ''">
+        <div id="variable-prefix" class="flex flex-col gap-4" :class="route.hash === '#variable-prefix' ? 'ring ring-[var(--ui-primary)] rounded-lg p-4' : ''">
           <div>
             <h3 class="font-semibold">
               Environment Variables Prefix

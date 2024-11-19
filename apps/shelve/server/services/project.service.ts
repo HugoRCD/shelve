@@ -6,7 +6,7 @@ export class ProjectService {
   private readonly storage: Storage<StorageValue>
   private readonly CACHE_TTL = 60 * 60 // 1 hour
   private readonly CACHE_PREFIX = {
-    projects: 'nitro:functions:getProjectsByUserId:userId:',
+    projects: 'nitro:functions:getProjectsByTeamId:teamId:',
     project: 'nitro:functions:getProjectById:projectId:'
   }
 
