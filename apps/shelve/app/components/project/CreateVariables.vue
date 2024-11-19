@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { Variable } from '@shelve/types'
+import { parseEnvFile } from '@shelve/utils'
 
 type CreateVariablesProps = {
   refresh: () => Promise<void>
@@ -88,7 +89,7 @@ const handleFileUpload = (event: Event) => {
   const target = event.target as HTMLInputElement
   const file = target.files ? target.files[0] : null
   if (file) {
-    parseEnvFile(file)
+    getEnvFile(file)
   }
 }
 
@@ -112,31 +113,16 @@ function handleDrop(event: DragEvent) {
   dragOver.value = false
   const files = event.dataTransfer?.files
   if (files && files.length > 0) {
-    parseEnvFile(files[0])
+    getEnvFile(files[0])
   }
 }
 
-function parseEnvFile(file: File) {
+function getEnvFile(file: File) {
   const reader = new FileReader()
 
   reader.onload = (e) => {
     const content = e.target?.result as string
-    const lines = content.split('\n').filter((line) => line.trim() !== '')
-    const filteredLines = lines.filter((line) => !line.startsWith('#'))
-    const variables = filteredLines.map((line, index) => {
-      const [key, value] = line.split(/=(.+)/) // split on the first = and the rest of the line
-      if (!key || !value) {
-        toast.error('Invalid .env file')
-        throw new Error('Invalid .env')
-      }
-      return {
-        index,
-        key: key.replace(/[\n\r'"]+/g, ''),
-        value: value.replace(/[\n\r'"]+/g, ''),
-        projectId: parseInt(projectId),
-        environment: environment.value,
-      }
-    })
+    const variables = parseEnvFile(content, true)
     variablesToCreate.value = variables.length
     variablesInput.value.variables = variables
   }
@@ -152,24 +138,13 @@ onMounted(() => {
   document.addEventListener('paste', (e) => {
     const { clipboardData } = e
     if (!clipboardData) return
-    const pastedData = clipboardData.getData('text')
+    const content = clipboardData.getData('text')
     if (!e.target?.closest('#varCreation')) return
-    if (!pastedData.includes('=')) return
+    if (!content.includes('=')) return
     e.preventDefault()
-    const pastedDataArray = pastedData.split('\n')
-    const pastedDataArrayFiltered = pastedDataArray.filter((data) => data !== '')
-    variablesToCreate.value = pastedDataArrayFiltered.length
-    variablesInput.value.variables = pastedDataArrayFiltered.map((data, index) => {
-      const [key, value] = data.split(/=(.+)/) // split on the first = and the rest of the line
-      if (!key || !value) throw new Error('Invalid .env')
-      return {
-        index,
-        key: key.replace(/[\n\r'"]+/g, ''),
-        value: value.replace(/[\n\r'"]+/g, ''),
-        projectId: parseInt(projectId),
-        environment: environment.value
-      }
-    })
+    const variables = parseEnvFile(content, true)
+    variablesToCreate.value = variables.length
+    variablesInput.value.variables = variables
   })
 })
 
