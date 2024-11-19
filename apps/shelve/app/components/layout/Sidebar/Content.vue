@@ -7,8 +7,6 @@ const teamNavigations = getNavigation('team')
 const userNavigations = getNavigation('user')
 const adminNavigations = getNavigation('admin')
 
-const team = useCurrentTeam()
-
 const route = useRoute()
 const handleProjectNavigation = () => {
   const isCryptoRoute = route.path.includes('/project/')
@@ -37,7 +35,7 @@ watch(() => route.path, handleProjectNavigation, { immediate: true })
 </script>
 
 <template>
-  <div class="flex flex-col gap-4 p-4 sm:w-[250px]">
+  <div class="flex h-full flex-col gap-4 p-4 sm:w-[250px]">
     <div class="mb-2 flex items-center justify-between gap-2">
       <NuxtLink to="/" class="font-newsreader text-2xl font-light italic">
         Shelve

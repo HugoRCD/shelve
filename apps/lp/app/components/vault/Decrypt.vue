@@ -19,7 +19,7 @@ async function decryptEnvFile() {
     readsLeft.value = reads
     timeLeft.value = ttl
     toast.success('Your secret(s) has been decrypted')
-  } catch (error) {
+  } catch (error: any) {
     if (error.statusCode === 400) {
       toast.error(error.statusMessage)
     } else {

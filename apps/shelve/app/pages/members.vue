@@ -85,10 +85,11 @@ const items = (row: Member) => [
     <Teleport defer to="#action-items">
       <div class="flex gap-1">
         <TeamAddMember v-if="members" :members />
-        <UInput v-model="search" label="Search" placeholder="Search a user" icon="heroicons:magnifying-glass-20-solid" />
       </div>
     </Teleport>
-    <div class="flex flex-col justify-end gap-4 sm:flex-row sm:items-center" />
+    <div class="flex flex-col justify-end gap-4 sm:flex-row sm:items-center">
+      <UInput v-model="search" label="Search" placeholder="Search a user" icon="heroicons:magnifying-glass-20-solid" />
+    </div>
     <div class="flex flex-col gap-4">
       <div>
         <h2 class="text-lg font-bold">
@@ -103,10 +104,21 @@ const items = (row: Member) => [
           <div class="flex items-center justify-between gap-2">
             <div class="flex items-center gap-2">
               <UAvatar :src="member.user.avatar" :alt="member.user.username" img-class="object-cover" />
-              <span class="text-sm font-semibold">{{ member.user.username }}</span>
-              <UBadge size="sm" :label="member.role.toUpperCase()" variant="subtle" :color="member.role === TeamRole.OWNER ? 'primary' : member.role === TeamRole.ADMIN ? 'success' : 'neutral'" />
+              <div class="flex flex-col gap-1">
+                <div class="flex items-center gap-2">
+                  <span class="text-sm font-semibold">{{ member.user.username }}</span>
+                  <UBadge size="sm" :label="member.role.toUpperCase()" variant="subtle" :color="member.role === TeamRole.OWNER ? 'primary' : member.role === TeamRole.ADMIN ? 'success' : 'neutral'" />
+                </div>
+                <span class="text-xs text-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-300 cursor-pointer" @click="copyToClipboard(member.user.email)">
+                  {{ member.user.email }}
+                </span>
+              </div>
             </div>
             <div class="flex gap-2">
+              <div class="flex flex-col gap-1">
+                <span class="text-xs text-neutral-500 hidden sm:flex">CreatedAt: {{ new Date(member.createdAt).toLocaleString() }}</span>
+                <span class="text-xs text-neutral-500 hidden sm:flex">UpdatedAt: {{ new Date(member.updatedAt).toLocaleString() }}</span>
+              </div>
               <UDropdownMenu :items="items(member)">
                 <UButton color="neutral" variant="ghost" icon="heroicons:ellipsis-horizontal-20-solid" />
               </UDropdownMenu>
