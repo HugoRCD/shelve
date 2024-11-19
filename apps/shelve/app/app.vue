@@ -40,6 +40,21 @@ if (import.meta.client) setPrefersReducedMotion(reduceMotion.value)
 
 const { fetchTeams } = useTeams()
 
+defineShortcuts({
+  'p': () => {
+    navigateTo('/')
+  },
+  'm': () => {
+    navigateTo('/members')
+  },
+  't': () => {
+    navigateTo('/tokens')
+  },
+  's': () => {
+    navigateTo('/settings')
+  },
+})
+
 if (!fetchTeams())
   await fetchTeams()
 </script>

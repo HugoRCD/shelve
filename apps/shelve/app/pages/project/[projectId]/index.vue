@@ -34,11 +34,6 @@ const items = [
     to: `/project/${projectId}/files`
   },
   {
-    label: 'Keys',
-    icon: 'heroicons:key',
-    to: `/project/${projectId}/keys`
-  },
-  {
     label: 'Settings',
     icon: 'heroicons:cog',
     to: `/project/${projectId}/settings`

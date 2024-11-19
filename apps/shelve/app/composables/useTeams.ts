@@ -30,10 +30,6 @@ export function useTeams() {
   }
 
   async function selectTeam(id: number) {
-    if (teamId.value === id) {
-      toast.info('You are already in this team')
-      return
-    }
     teamId.value = id
     await useProjects().fetchProjects()
     currentTeam.value = teams.value.find((team) => team.id === id) as Team

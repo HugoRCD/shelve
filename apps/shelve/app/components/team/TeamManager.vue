@@ -26,6 +26,7 @@ const groups = computed(() => [
     slot: 'teams',
     items: teams.value.map((team) => ({
       label: team.name,
+      disabled: team.id === teamId.value,
       onSelect: () => {
         selectTeam(team.id)
       }
@@ -45,7 +46,9 @@ const groups = computed(() => [
         size: 'xs',
         alt: currentTeam.name
       }"
+      class="w-full"
       block
+      trailing-icon="lucide:grip"
     />
 
     <template #content>
@@ -53,6 +56,7 @@ const groups = computed(() => [
         v-model:search-term="newTeamName"
         :groups
         placeholder="Search or create a team"
+        :loading
         class="h-80"
       >
         <template #teams-trailing>
