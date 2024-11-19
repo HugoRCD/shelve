@@ -35,12 +35,17 @@ const newMember = ref({
 })
 
 const loadingMembers = ref(false)
-async function addMemberFunction(email: string, role: TeamRole) {
+
+function addMemberFunction(email: string, role: TeamRole) {
   loadingMembers.value = true
-  await addMember(email, role)
+  toast.promise(addMember(email, role), {
+    loading: 'Adding member...',
+    success: 'Member added successfully',
+    error: 'Error adding member',
+  })
+  loadingMembers.value = false
   newMember.value.email = ''
   newMember.value.role = TeamRole.MEMBER
-  loadingMembers.value = false
 }
 </script>
 

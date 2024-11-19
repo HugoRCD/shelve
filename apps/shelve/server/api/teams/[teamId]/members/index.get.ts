@@ -12,5 +12,5 @@ export default eventHandler(async (event) => {
     id: user.id,
     role: user.role,
   }
-  return await new MemberService().getTeamMembers(teamId, requester)
+  return await new MemberService().getTeamMembersById(teamId, requester)
 })

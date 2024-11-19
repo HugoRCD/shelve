@@ -4,12 +4,12 @@ import { MemberService } from '~~/server/services/member.service'
 
 export default eventHandler(async (event) => {
   const params = await zh.useValidatedParams(event, {
-    teamId: z.number({
+    teamId: z.string({
       required_error: 'Missing teamId',
-    }),
-    id: z.number({
+    }).transform((id) => parseInt(id, 10)),
+    id: z.string({
       required_error: 'Missing memberId',
-    }),
+    }).transform((id) => parseInt(id, 10)),
   })
   const { user } = event.context
   const input: RemoveMemberInput = {

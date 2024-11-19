@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { CreateProjectInput } from '@shelve/types'
 
-const defaultTeam = useDefaultTeam()
+const defaultTeam = useCurrentTeam()
 
 const projectCreateInput = ref<CreateProjectInput>({
   name: '',

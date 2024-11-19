@@ -1,12 +1,11 @@
 <script setup lang="ts">
 import type { NuxtError } from '#app'
 
-defineProps({
-  error: {
-    type: Object as () => NuxtError,
-    required: true,
-  },
-})
+type ErrorProps = {
+  error: NuxtError
+}
+
+defineProps<ErrorProps>()
 
 const router = useRouter()
 
@@ -14,6 +13,31 @@ const handleError = () => clearError({ redirect: '/' })
 const goBack = () => {
   clearError()
   router.back()
+}
+
+const clearCache = async () => {
+  if ('caches' in window) {
+    try {
+      const cacheNames = await caches.keys()
+      await Promise.all(cacheNames.map(name => caches.delete(name)))
+      window.location.reload()
+    } catch (err) {
+      console.error('Error clearing cache:', err)
+    }
+  }
+}
+
+const clearCookies = () => {
+  document.cookie.split(';').forEach(cookie => {
+    const [name] = cookie.split('=')
+    document.cookie = `${name?.trim()}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`
+  })
+  window.location.reload()
+}
+
+const clearLocalStorage = () => {
+  localStorage.clear()
+  window.location.reload()
 }
 </script>
 
@@ -47,6 +71,52 @@ const goBack = () => {
           Go back
         </UButton>
       </div>
+
+      <div class="mt-4">
+        <UDrawer
+          title="Error Details"
+          description="View the error details"
+          direction="right"
+          nested
+        >
+          <UButton
+            label="Show Error"
+            color="neutral"
+            variant="soft"
+            trailing-icon="lucide:chevron-right"
+          />
+
+          <template #body>
+            <pre class="text-left whitespace-pre-wrap">{{ error }}</pre>
+          </template>
+        </UDrawer>
+      </div>
+    </div>
+    <div class="absolute bottom-5 right-5 z-10 flex gap-2">
+      <UButton
+        color="neutral"
+        variant="soft"
+        size="sm"
+        @click="clearCache"
+      >
+        Clear Cache
+      </UButton>
+      <UButton
+        color="neutral"
+        variant="soft"
+        size="sm"
+        @click="clearCookies"
+      >
+        Clear Cookies
+      </UButton>
+      <UButton
+        color="neutral"
+        variant="soft"
+        size="sm"
+        @click="clearLocalStorage"
+      >
+        Clear LocalStorage
+      </UButton>
     </div>
   </div>
 </template>

@@ -1,89 +1,22 @@
 <script setup lang="ts">
 import type { Member } from '@shelve/types'
 import { TeamRole } from '@shelve/types'
-import type { TableColumn } from '@nuxt/ui'
 import { ConfirmModal } from '#components'
 
-const currentTeam = useDefaultTeam()
-const teamId = ref(currentTeam.value.id)
+const { updateMember, removeMember } = useTeams()
 
-const { data: members, status, refresh } = useFetch<Member[]>(`/api/teams/${teamId.value}/members`, {
-  method: 'GET',
-  watch: false,
-})
-
-const {
-  updateMember
-} = useTeams()
+const currentTeam = useCurrentTeam()
+const members = computed(() => currentTeam.value.members.filter((member) => member.user.username.toLowerCase().includes(search.value.toLowerCase())))
 
 const search = ref('')
-const updateLoading = ref(false)
-const deleteLoading = ref(false)
 
-const filteredMembers = computed(() => {
-  // eslint-disable-next-line
-  if (!search.value) return members.value?.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
-  return members.value!.filter((member: Member) => member.user.username?.toLowerCase().includes(search.value.toLowerCase()) || member.user.email.toLowerCase().includes(search.value.toLowerCase()))
-})
-
-async function changeMemberRole(memberId: number, role: TeamRole) {
-  try {
-    updateLoading.value = true
-    await updateMember(memberId, role)
-    await refresh()
-  } catch (error) {
-    toast.error('Error updating member role')
-  }
-  updateLoading.value = false
+function changeMemberRole(memberId: number, role: TeamRole) {
+  toast.promise(updateMember(memberId, role), {
+    loading: 'Updating member role...',
+    success: 'Member role updated successfully',
+    error: 'Error updating member role',
+  })
 }
-
-async function deleteMember(id: number) {
-  deleteLoading.value = true
-  try {
-    await $fetch(`/api/teams/${teamId.value}/members/${id}`, {
-      method: 'DELETE',
-    })
-    await refresh()
-  } catch (error) { /* empty */ }
-  deleteLoading.value = false
-}
-
-const columns: TableColumn<Member>[] = [
-  {
-    accessorKey: 'avatar',
-    header: 'Avatar',
-  },
-  {
-    accessorKey: 'user.username',
-    header: 'Username',
-  },
-  {
-    accessorKey: 'user.email',
-    header: 'Email',
-  },
-  {
-    accessorKey: 'role',
-    header: 'Role',
-  },
-  {
-    accessorKey: 'createdAt',
-    header: 'Created At',
-    cell: ({ row }) => {
-      return new Date(row.getValue('createdAt')).toLocaleString()
-    }
-  },
-  {
-    accessorKey: 'updatedAt',
-    header: 'Updated At',
-    cell: ({ row }) => {
-      return new Date(row.getValue('updatedAt')).toLocaleString()
-    }
-  },
-  {
-    accessorKey: 'actions',
-    header: 'Actions',
-  },
-]
 
 const modal = useModal()
 
@@ -134,7 +67,7 @@ const items = (row: Member) => [
           description: `You are about to remove ${row.user.username} from the team.`,
           danger: true,
           onSuccess() {
-            toast.promise(deleteMember(row.id), {
+            toast.promise(removeMember(row.id), {
               loading: 'Removing member...',
               success: 'Member removed successfully',
               error: 'Error removing member',
@@ -150,12 +83,39 @@ const items = (row: Member) => [
 <template>
   <div class="mt-1 flex flex-col gap-4">
     <Teleport defer to="#action-items">
-      <TeamAddMember v-if="members" :members />
+      <div class="flex gap-1">
+        <TeamAddMember v-if="members" :members />
+        <UInput v-model="search" label="Search" placeholder="Search a user" icon="heroicons:magnifying-glass-20-solid" />
+      </div>
     </Teleport>
-    <div class="flex flex-col justify-end gap-4 sm:flex-row sm:items-center">
-      <UInput v-model="search" label="Search" placeholder="Search a user" icon="heroicons:magnifying-glass-20-solid" />
-    </div>
-    <UTable :data="filteredMembers" :columns :loading="status === 'pending' || updateLoading || deleteLoading">
+    <div class="flex flex-col justify-end gap-4 sm:flex-row sm:items-center" />
+    <div class="flex flex-col gap-4">
+      <div>
+        <h2 class="text-lg font-bold">
+          Members
+        </h2>
+        <p class="text-sm text-neutral-500">
+          Manage team members
+        </p>
+      </div>
+      <TransitionGroup name="fade" tag="ul" class="flex flex-col gap-4">
+        <div v-for="member in members" :key="member.id" class="flex flex-col gap-4">
+          <div class="flex items-center justify-between gap-2">
+            <div class="flex items-center gap-2">
+              <UAvatar :src="member.user.avatar" :alt="member.user.username" img-class="object-cover" />
+              <span class="text-sm font-semibold">{{ member.user.username }}</span>
+              <UBadge size="sm" :label="member.role.toUpperCase()" variant="subtle" :color="member.role === TeamRole.OWNER ? 'primary' : member.role === TeamRole.ADMIN ? 'success' : 'neutral'" />
+            </div>
+            <div class="flex gap-2">
+              <UDropdownMenu :items="items(member)">
+                <UButton color="neutral" variant="ghost" icon="heroicons:ellipsis-horizontal-20-solid" />
+              </UDropdownMenu>
+            </div>
+          </div>
+          <USeparator />
+        </div>
+      </TransitionGroup>
+    <!--    <UTable :data="currentTeam.members" :columns :loading="updateLoading || deleteLoading">
       <template #avatar-cell="{ row }">
         <UAvatar :src="row.original.user.avatar" :alt="row.original.user.username" size="sm" img-class="object-cover" />
       </template>
@@ -167,6 +127,21 @@ const items = (row: Member) => [
           <UButton color="neutral" variant="ghost" icon="heroicons:ellipsis-horizontal-20-solid" />
         </UDropdownMenu>
       </template>
-    </UTable>
+    </UTable>-->
+    </div>
   </div>
 </template>
+
+<style scoped>
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.3s;
+}
+
+.fade-enter, .fade-leave-to {
+  opacity: 0;
+}
+
+.fade-enter {
+  transform: translateY(10px);
+}
+</style>

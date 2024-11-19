@@ -5,22 +5,18 @@ export const useUserTeams = () => {
   return useState<Team[]>('teams')
 }
 
-export const useDefaultTeam = () => {
-  return useState<Team>('defaultTeam')
+export const useCurrentTeam = () => {
+  return useState<Team>('team')
 }
 
 export const useTeamId = () => {
-  return useState<number>('teamId', () => {
-    return useCookie<number>('defaultTeamId', {
-      watch: true,
-      default: () => -1
-    })
-  })
+  return useState<number>('teamId')
 }
 
 export function useTeams() {
   const teams = useUserTeams()
-  const defaultTeam = useDefaultTeam()
+  const currentTeam = useCurrentTeam()
+  const teamId = useTeamId()
   const loading = ref(false)
   const createLoading = ref(false)
 
@@ -28,16 +24,8 @@ export function useTeams() {
     loading.value = true
     teams.value = await $fetch<Team[]>('/api/teams', { method: 'GET' })
     if (!teams) throw new Error('Failed to fetch teams')
-    defaultTeam.value = teams.value.find((team) => team.private) || teams.value[0] as Team
-    loading.value = false
-  }
-
-  async function fetchDefaultTeam() {
-    loading.value = true
-    const teamId = useTeamId()
-    const team = await $fetch<Team>(`/api/teams/${teamId.value}`, { method: 'GET' })
-    if (!team) throw new Error('Failed to fetch default team')
-    defaultTeam.value = team
+    currentTeam.value = teams.value.find((team) => team.private) || teams.value[0] as Team
+    teamId.value = currentTeam.value.id
     loading.value = false
   }
 
@@ -59,78 +47,34 @@ export function useTeams() {
   }
 
   async function addMember(email: string, role: TeamRole) {
-    try {
-      const teamId = defaultTeam.value.id
-      const _member = await $fetch<Member>(`/api/teams/${teamId}/members`, {
-        method: 'POST',
-        body: {
-          email,
-          role,
-        },
-      })
-      const index = teams.value.findIndex((team) => team.id === teamId)
-      const team = teams.value[index]
-      if (!team)
-        return toast.error('Failed to add member')
-      const memberIndex = team.members.findIndex((member) => member.id === _member.id)
-      if (memberIndex !== -1)
-        team.members[memberIndex] = _member
-      else
-        team.members.push(_member)
-      teams.value.splice(index, 1, team)
-      toast.success('Member added')
-    } catch (error: any) {
-      if (error.statusCode === 401)
-        return toast.error('You need to be an admin to add a member')
-      toast.error('Failed to add member')
-    }
+    const _member = await $fetch<Member>(`/api/teams/${teamId.value}/members`, {
+      method: 'POST',
+      body: {
+        email,
+        role,
+      },
+    })
+    const member = currentTeam.value.members.find((member) => member.userId === _member.userId)
+    if (!member)
+      currentTeam.value.members.push(_member)
   }
 
   async function updateMember(memberId: number, role: TeamRole) {
-    try {
-      const teamId = defaultTeam.value.id
-      const _member = await $fetch<Member>(`/api/teams/${teamId}/members/${memberId}`, {
-        method: 'PUT',
-        body: {
-          role,
-        },
-      })
-      const team = defaultTeam.value
-      if (!team)
-        return toast.error('Failed to update member')
-      const memberIndex = team.members.findIndex((member) => member.id === memberId)
-      if (memberIndex !== -1)
-        team.members.splice(memberIndex, 1, _member)
-      defaultTeam.value = team
-      toast.success('Member updated')
-    } catch (error: any) {
-      if (error.statusCode === 401)
-        return toast.error('You need to be an admin to update a member')
-      toast.error('Failed to update member')
-    }
+    const _member = await $fetch<Member>(`/api/teams/${teamId.value}/members/${memberId}`, {
+      method: 'PUT',
+      body: {
+        role,
+      },
+    })
+    const index = currentTeam.value.members.findIndex((member) => member.id === memberId)
+    currentTeam.value.members[index] = _member
   }
 
   async function removeMember(memberId: number) {
-    try {
-      const teamId = defaultTeam.value.id
-      await $fetch<Member>(`/api/teams/${teamId}/members/${memberId}`, {
-        method: 'DELETE',
-      })
-      const index = teams.value.findIndex((team) => team.id === teamId)
-      const team = teams.value[index]
-      if (!team)
-        return toast.error('Failed to remove member')
-      const memberIndex = team.members.findIndex((member) => member.id === memberId)
-      if (memberIndex !== -1) {
-        team.members.splice(memberIndex, 1)
-      }
-      teams.value.splice(index, 1, team)
-      toast.success('Member removed')
-    } catch (error: any) {
-      if (error.statusCode === 401)
-        return toast.error('You need to be an admin to remove a member')
-      toast.error('Failed to remove member')
-    }
+    await $fetch<Member>(`/api/teams/${teamId.value}/members/${memberId}`, {
+      method: 'DELETE',
+    })
+    currentTeam.value.members = currentTeam.value.members.filter((member) => member.id !== memberId)
   }
 
   async function deleteTeam(teamId: number) {
@@ -150,7 +94,6 @@ export function useTeams() {
     loading,
     createLoading,
     fetchTeams,
-    fetchDefaultTeam,
     createTeam,
     deleteTeam,
     addMember,

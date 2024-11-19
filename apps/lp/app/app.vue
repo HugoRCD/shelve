@@ -19,7 +19,7 @@ useSeoMeta({
   title,
   description,
   author: 'Hugo Richard',
-  twitter: '@HugoRCD__',
+  twitterCreator: '@HugoRCD__',
   twitterTitle: title,
   twitterDescription: description,
   twitterCard: 'summary_large_image',

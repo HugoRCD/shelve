@@ -133,14 +133,14 @@ export class TeamService {
   }, {
     maxAge: this.CACHE_TTL,
     name: 'getTeamById',
-    getKey: (teamId: number) => `teamId:${teamId}`,
+    getKey: (team: Team) => `teamId:${team.id}`,
   })
 
   async isUserAlreadyMember(teamId: number, email: string): Promise<Member | undefined> {
     const user = await this.getUserByEmail(email)
     if (!user) throw new Error(`User not found with email ${email}`)
     return await db.query.members.findFirst({
-      where: and(eq(tables.members.teamId, teamId), eq(tables.members.id, user.id)),
+      where: and(eq(tables.members.teamId, teamId), eq(tables.members.userId, user.id)),
       with: {
         user: true
       }
@@ -185,7 +185,7 @@ export class TeamService {
     return await this.storage.removeItem(`${this.CACHE_PREFIX.team}${teamId}.json`)
   }
 
-  private async deleteCachedTeamsByUserId(userId: number): Promise<void> {
+  async deleteCachedTeamsByUserId(userId: number): Promise<void> {
     return await this.storage.removeItem(`${this.CACHE_PREFIX.teams}${userId}.json`)
   }
 

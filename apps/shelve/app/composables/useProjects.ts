@@ -1,5 +1,4 @@
 import type { CreateProjectInput, Project } from '@shelve/types'
-import { useDefaultTeam } from '~/composables/useTeams'
 
 export const useUserProjects = () => {
   return useState<Project[]>('projects')
@@ -12,14 +11,14 @@ export const useCurrentProject = () => {
 export function useProjects() {
   const projects = useUserProjects()
   const currentProject = useCurrentProject()
-  const defaultTeam = useDefaultTeam()
+  const teamId = useTeamId()
 
   const loading = ref(false)
   const currentLoading = ref(false)
 
   async function fetchProjects() {
     loading.value = true
-    projects.value = await $fetch<Project[]>(`/api/project?teamId=${defaultTeam.value.id}`, {
+    projects.value = await $fetch<Project[]>(`/api/project?teamId=${teamId.value}`, {
       method: 'GET',
     })
     loading.value = false

@@ -6,7 +6,7 @@ const teamNavigations = getNavigation('team')
 const userNavigations = getNavigation('user')
 const adminNavigations = getNavigation('admin')
 
-const team = useDefaultTeam()
+const team = useCurrentTeam()
 
 const route = useRoute()
 const handleProjectNavigation = () => {
