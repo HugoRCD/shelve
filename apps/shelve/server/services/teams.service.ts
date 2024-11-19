@@ -4,9 +4,6 @@ import type {
   Team,
   CreateTeamInput,
   DeleteTeamInput,
-  AddMemberInput,
-  UpdateMemberInput,
-  RemoveMemberInput,
   UpdateTeamInput,
   ValidateAccess
 } from '@shelve/types'
@@ -21,8 +18,8 @@ export class TeamService {
   private readonly storage: Storage<StorageValue>
   private readonly CACHE_TTL = 60 * 60 // 1 hour
   private readonly CACHE_PREFIX = {
-    team: 'nitro:functions:getTeamByUserId:userId:',
-    members: 'nitro:functions:getTeamMembers:teamId:'
+    team: 'nitro:functions:getTeamById:teamId:',
+    teams: 'nitro:functions:getTeamsByUserId:userId:'
   }
 
   constructor() {
@@ -58,6 +55,7 @@ export class TeamService {
         }
       })
       if (!createdTeam) throw new Error(`Team not found after creation with id ${team.id}`)
+      await this.deleteCachedTeamsByUserId(input.requester.id)
       return createdTeam
     })
   }
@@ -65,8 +63,6 @@ export class TeamService {
   async updateTeam(input: UpdateTeamInput): Promise<Team> {
     const { id, requester, ...data } = input
     await this.validateTeamAccess({ teamId: id, requester }, TeamRole.OWNER)
-    await this.deleteCachedTeamByUserId(requester.id)
-    await this.deleteCachedTeamByUserId(id)
 
     await db.update(tables.teams)
       .set(data)
@@ -83,88 +79,17 @@ export class TeamService {
       }
     })
     if (!updatedTeam) throw new Error(`Team not found with id ${id}`)
+    await this.deleteCachedTeamById(id)
+    await this.deleteCachedTeamsByUserId(requester.id)
     return updatedTeam
   }
 
   async deleteTeam(input: DeleteTeamInput): Promise<void> {
     const { teamId, requester } = input
     await this.validateTeamAccess({ teamId, requester }, TeamRole.OWNER)
-    await this.deleteCachedTeamByUserId(requester.id)
-    await this.deleteCachedTeamByUserId(teamId)
-
     await db.delete(tables.teams).where(eq(tables.teams.id, teamId))
-  }
-
-  async addMember(input: AddMemberInput): Promise<Member> {
-    const { teamId, email, role, requester } = input
-    await this.validateTeamAccess({ teamId, requester }, TeamRole.ADMIN)
-    const foundedMember = await this.isUserAlreadyMember(teamId, email)
-    if (foundedMember) {
-      return await this.updateMember({
-        teamId,
-        memberId: foundedMember.id,
-        role,
-        requester
-      })
-    }
-    const user = await this.getUserByEmail(email)
-    await this.deleteCachedTeamByUserId(requester.id)
-    await this.deleteCachedTeamByUserId(user.id)
-
-    await db.insert(tables.members)
-      .values({
-        userId: user.id,
-        teamId,
-        role,
-      })
-      .returning()
-
-    const member = await db.query.members.findFirst({
-      where: eq(tables.members.userId, user.id),
-      with: {
-        user: true
-      }
-    })
-    if (!member) throw new Error(`Member not found after creation with id ${user.id}`)
-    return member
-  }
-
-  async updateMember(input: UpdateMemberInput): Promise<Member> {
-    const { teamId, memberId, role, requester } = input
-    await this.validateTeamAccess({ teamId, requester }, TeamRole.ADMIN)
-    await this.deleteCachedTeamByUserId(requester.id)
-    await this.deleteCachedTeamByUserId(memberId)
-
-    await db.update(tables.members)
-      .set({
-        role
-      })
-      .where(eq(tables.members.id, memberId))
-
-    const member = await db.query.members.findFirst({
-      where: eq(tables.members.id, memberId),
-      with: {
-        user: true
-      }
-    })
-    if (!member) throw new Error(`Member not found with id ${memberId}`)
-    return member
-  }
-
-  async removeMember(input: RemoveMemberInput): Promise<void> {
-    const { teamId, memberId, requester } = input
-    await this.validateTeamAccess({ teamId, requester }, TeamRole.ADMIN)
-    await this.deleteCachedTeamByUserId(requester.id)
-    await this.deleteCachedTeamByUserId(memberId)
-
-    const member = await db.query.members.findFirst({
-      where: eq(tables.members.id, memberId),
-      with: {
-        user: true
-      }
-    })
-    if (!member) throw new Error(`Member not found with id ${memberId}`)
-    await db.delete(tables.members).where(eq(tables.members.id, memberId))
+    await this.deleteCachedTeamById(teamId)
+    await this.deleteCachedTeamsByUserId(requester.id)
   }
 
   getTeamsByUserId = cachedFunction(async (userId): Promise<Team[]> => {
@@ -187,23 +112,31 @@ export class TeamService {
     return teams
   }, {
     maxAge: this.CACHE_TTL,
-    name: 'getTeamByUserId',
+    name: 'getTeamsByUserId',
     getKey: (userId: number) => `userId:${userId}`,
   })
 
-  getTeamMembers = cachedFunction(async (teamId, requester): Promise<Member[]> => {
+  getTeamById = cachedFunction(async (teamId, requester): Promise<Team> => {
     await this.validateTeamAccess({ teamId, requester })
-    const members = await db.query.members.findMany({
-      where: eq(tables.members.teamId, teamId),
+    const team = await db.query.teams.findFirst({
+      where: eq(tables.teams.id, teamId),
       with: {
-        user: true
+        members: {
+          with: {
+            user: true
+          }
+        }
       }
     })
-    if (!members) throw new Error(`Members not found for team with id ${teamId}`)
-    return members
+    if (!team) throw new Error(`Team not found with id ${teamId}`)
+    return team
+  }, {
+    maxAge: this.CACHE_TTL,
+    name: 'getTeamById',
+    getKey: (teamId: number) => `teamId:${teamId}`,
   })
 
-  private async isUserAlreadyMember(teamId: number, email: string): Promise<Member | undefined> {
+  async isUserAlreadyMember(teamId: number, email: string): Promise<Member | undefined> {
     const user = await this.getUserByEmail(email)
     if (!user) throw new Error(`User not found with email ${email}`)
     return await db.query.members.findFirst({
@@ -214,7 +147,7 @@ export class TeamService {
     })
   }
 
-  private async validateTeamAccess(input: ValidateAccess, minRole: TeamRole = TeamRole.MEMBER): Promise<boolean> {
+  async validateTeamAccess(input: ValidateAccess, minRole: TeamRole = TeamRole.MEMBER): Promise<boolean> {
     const { teamId, requester } = input
     const team = await db.query.teams.findFirst({
       where: eq(tables.teams.id, teamId),
@@ -240,20 +173,20 @@ export class TeamService {
     return true
   }
 
-  private deleteCachedTeamByUserId(userId: number): Promise<void> {
-    return this.storage.removeItem(`${this.CACHE_PREFIX.team}${userId}.json`)
-  }
-
-  private deleteCachedMembersByTeamId(teamId: number): Promise<void> {
-    return this.storage.removeItem(`${this.CACHE_PREFIX.members}${teamId}.json`)
-  }
-
-  private async getUserByEmail(email: string): Promise<User> {
+  async getUserByEmail(email: string): Promise<User> {
     const user = await db.query.users.findFirst({
       where: eq(tables.users.email, email)
     })
     if (!user) throw new Error(`User not found with email ${email}`)
     return user
+  }
+
+  async deleteCachedTeamById(teamId: number): Promise<void> {
+    return await this.storage.removeItem(`${this.CACHE_PREFIX.team}${teamId}.json`)
+  }
+
+  private async deleteCachedTeamsByUserId(userId: number): Promise<void> {
+    return await this.storage.removeItem(`${this.CACHE_PREFIX.teams}${userId}.json`)
   }
 
 }

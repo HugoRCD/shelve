@@ -1,6 +1,6 @@
 import { z, zh } from 'h3-zod'
 import type { RemoveMemberInput } from '@shelve/types'
-import { TeamService } from '~~/server/services/teams.service'
+import { MemberService } from '~~/server/services/member.service'
 
 export default eventHandler(async (event) => {
   const params = await zh.useValidatedParams(event, {
@@ -20,7 +20,7 @@ export default eventHandler(async (event) => {
       role: user.role,
     },
   }
-  await new TeamService().removeMember(input)
+  await new MemberService().removeMember(input)
   return {
     statusCode: 200,
     message: 'Member removed',

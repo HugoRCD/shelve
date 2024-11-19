@@ -131,7 +131,7 @@ dist
 .pnp.*
 
 # Turbo
-.turbo
+.turbo/*
 
 # Intellij
 .idea

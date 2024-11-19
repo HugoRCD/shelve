@@ -1,7 +1,7 @@
 import { z, zh } from 'h3-zod'
 import type { UpdateMemberInput } from '@shelve/types'
 import { TeamRole } from '@shelve/types'
-import { TeamService } from '~~/server/services/teams.service'
+import { MemberService } from '~~/server/services/member.service'
 
 export default eventHandler(async (event) => {
   const params = await zh.useValidatedParams(event, {
@@ -25,5 +25,5 @@ export default eventHandler(async (event) => {
       role: user.role,
     },
   }
-  return new TeamService().updateMember(input)
+  return new MemberService().updateMember(input)
 })

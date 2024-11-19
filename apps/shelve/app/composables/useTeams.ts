@@ -9,6 +9,15 @@ export const useDefaultTeam = () => {
   return useState<Team>('defaultTeam')
 }
 
+export const useTeamId = () => {
+  return useState<number>('teamId', () => {
+    return useCookie<number>('defaultTeamId', {
+      watch: true,
+      default: () => -1
+    })
+  })
+}
+
 export function useTeams() {
   const teams = useUserTeams()
   const defaultTeam = useDefaultTeam()
@@ -17,11 +26,18 @@ export function useTeams() {
 
   async function fetchTeams() {
     loading.value = true
-    teams.value = await $fetch<Team[]>('/api/teams', {
-      method: 'GET',
-    })
+    teams.value = await $fetch<Team[]>('/api/teams', { method: 'GET' })
     if (!teams) throw new Error('Failed to fetch teams')
     defaultTeam.value = teams.value.find((team) => team.private) || teams.value[0] as Team
+    loading.value = false
+  }
+
+  async function fetchDefaultTeam() {
+    loading.value = true
+    const teamId = useTeamId()
+    const team = await $fetch<Team>(`/api/teams/${teamId.value}`, { method: 'GET' })
+    if (!team) throw new Error('Failed to fetch default team')
+    defaultTeam.value = team
     loading.value = false
   }
 
@@ -134,6 +150,7 @@ export function useTeams() {
     loading,
     createLoading,
     fetchTeams,
+    fetchDefaultTeam,
     createTeam,
     deleteTeam,
     addMember,

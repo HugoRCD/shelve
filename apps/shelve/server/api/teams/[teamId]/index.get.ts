@@ -1,5 +1,5 @@
 import { z, zh } from 'h3-zod'
-import { MemberService } from '~~/server/services/member.service'
+import { TeamService } from '~~/server/services/teams.service'
 
 export default eventHandler(async (event) => {
   const { teamId } = await zh.useValidatedParams(event, {
@@ -8,9 +8,8 @@ export default eventHandler(async (event) => {
     }).transform((value) => parseInt(value)),
   })
   const { user } = event.context
-  const requester = {
+  return await new TeamService().getTeamById(teamId, {
     id: user.id,
     role: user.role,
-  }
-  return await new MemberService().getTeamMembers(teamId, requester)
+  })
 })
