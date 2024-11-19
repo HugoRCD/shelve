@@ -1,15 +1,15 @@
-type Where = 'app'| 'admin';
+type Where = 'team' | 'user' | 'admin';
 
 export type Navigation = {
   name: string;
   title: string;
   path: string;
-  icon?: string;
+  icon: string;
 };
 
 export function getNavigation(where: Where): Navigation[] {
   switch (where) {
-    case 'app':
+    case 'team':
       return [
         {
           name: 'Projects',
@@ -18,16 +18,10 @@ export function getNavigation(where: Where): Navigation[] {
           title: 'Projects',
         },
         {
-          name: 'Teams',
-          path: '/teams',
+          name: 'Members',
+          path: '/members',
           icon: 'lucide:users',
-          title: 'Teams',
-        },
-        {
-          name: 'Profile',
-          path: '/profile',
-          icon: 'heroicons:user-circle',
-          title: 'Profile',
+          title: 'Members',
         },
         {
           name: 'Tokens',
@@ -38,6 +32,21 @@ export function getNavigation(where: Where): Navigation[] {
         {
           name: 'Settings',
           path: '/settings',
+          icon: 'heroicons:cog',
+          title: 'Settings',
+        },
+      ]
+    case 'user':
+      return [
+        {
+          name: 'Profile',
+          path: '/user/profile',
+          icon: 'heroicons:user-circle',
+          title: 'Profile',
+        },
+        {
+          name: 'Settings',
+          path: '/user/settings',
           icon: 'heroicons:cog',
           title: 'Settings',
         },

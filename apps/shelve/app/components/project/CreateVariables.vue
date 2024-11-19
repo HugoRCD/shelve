@@ -219,14 +219,14 @@ const handlePasswordGenerated = (password: string, index: number) => variablesIn
             <UCheckbox v-model="selectedEnvironment.development" name="development" label="Development" />
           </div>
         </div>
-        <UDivider class="my-1" />
+        <USeparator class="my-1" />
         <div class="flex items-center gap-2">
           <USwitch v-model="autoUppercase" size="xs" />
           <h3 class="cursor-pointer text-sm font-semibold" @click="autoUppercase = !autoUppercase">
             Auto uppercase
           </h3>
         </div>
-        <UDivider class="my-1" />
+        <USeparator class="my-1" />
         <p class="text-xs font-normal text-neutral-500">
           🤫 You can also paste all your environment variables (.env) as key value pairs to prefilled the form
         </p>

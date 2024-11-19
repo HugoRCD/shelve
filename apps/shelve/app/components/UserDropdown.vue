@@ -1,8 +1,17 @@
 <script setup lang="ts">
 import { Role } from '@shelve/types'
 
-const navigations = getNavigation('app')
-const navItem = navigations.map((nav) => {
+const teamNavigations = getNavigation('team')
+const navItem = teamNavigations.map((nav) => {
+  return {
+    label: nav.name,
+    icon: nav.icon,
+    to: nav.path,
+  }
+})
+
+const userNavigations = getNavigation('user')
+const userNavItem = userNavigations.map((nav) => {
   return {
     label: nav.name,
     icon: nav.icon,
@@ -30,6 +39,7 @@ const items = [
     }
   ],
   navItem,
+  userNavItem,
   ...(user.value?.role === Role.ADMIN ? [adminNavItem] : []),
   [
     {

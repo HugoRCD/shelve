@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const pages = [...getNavigation('app'), ...getNavigation('admin')]
+const pages = [...getNavigation('team'), ...getNavigation('user'), ...getNavigation('admin')]
 const route = useRoute()
 
 const navigation = computed(() => {
@@ -17,7 +17,9 @@ const navigation = computed(() => {
         <div class="flex items-center gap-2">
           <template v-if="navigation">
             <Transition name="slide-to-bottom" mode="out-in">
-              <UIcon :key="navigation.icon" :name="navigation.icon" class="size-5" />
+              <div :key="navigation.icon">
+                <UIcon :name="navigation.icon" class="size-5" />
+              </div>
             </Transition>
             <Transition name="slide-to-top" mode="out-in">
               <h1 :key="navigation.title" class="text-lg font-bold">

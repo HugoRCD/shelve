@@ -55,7 +55,6 @@ export class UserService {
       .where(eq(tables.users.username, input.username))
 
     if (!foundUser) return this.createUser(input)
-    console.log('foundUser', foundUser)
     return foundUser
   }
 

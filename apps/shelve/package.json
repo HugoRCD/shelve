@@ -31,7 +31,7 @@
     "@iconify-json/simple-icons": "^1.2.11",
     "@nuxt/devtools": "^1.6.0",
     "@nuxt/image": "^1.8.1",
-    "@nuxt/ui": "https://pkg.pr.new/@nuxt/ui@e55c0e2",
+    "@nuxt/ui": "https://pkg.pr.new/@nuxt/ui@25091ba",
     "@shelve/crypto": "*",
     "drizzle-orm": "^0.36.2",
     "pg": "^8.13.1",
