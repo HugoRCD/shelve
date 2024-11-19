@@ -10,6 +10,7 @@ const projectCreateInput = ref<CreateProjectInput>({
   repository: '',
   projectManager: '',
   homepage: '',
+  variablePrefix: '',
   teamId: defaultTeam.value?.id,
 })
 

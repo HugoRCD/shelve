@@ -1,5 +1,5 @@
 import { zh, z } from 'h3-zod'
-import { Environment } from '@shelve/types'
+import type { Environment } from '@shelve/types'
 import { VariableService } from '~~/server/services/variable.service'
 
 export default eventHandler(async (event) => {
