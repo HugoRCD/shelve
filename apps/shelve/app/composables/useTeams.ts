@@ -29,16 +29,28 @@ export function useTeams() {
     loading.value = false
   }
 
-  async function createTeam(teamName: string) {
+  async function selectTeam(id: number) {
+    if (teamId.value === id) {
+      toast.info('You are already in this team')
+      return
+    }
+    teamId.value = id
+    await useProjects().fetchProjects()
+    currentTeam.value = teams.value.find((team) => team.id === id) as Team
+  }
+
+  async function createTeam(name: string) {
     createLoading.value = true
     try {
-      const response = await $fetch<Team>('/api/teams', {
+      const team = await $fetch<Team>('/api/teams', {
         method: 'POST',
         body: {
-          name: teamName,
+          name
         },
       })
-      teams.value.push(response)
+      const index = teams.value.findIndex((team) => team.id === teamId.value)
+      if (!index)
+        teams.value.push(team)
       toast.success('Team created')
     } catch (error) {
       toast.error('Failed to create team')
@@ -101,7 +113,7 @@ export function useTeams() {
       method: 'DELETE',
     })
     teams.value = teams.value.filter((team) => team.id !== teamId.value)
-    currentTeam.value = teams.value[0] as Team
+    await selectTeam(teams.value[0]!.id)
   }
 
   return {
@@ -109,6 +121,7 @@ export function useTeams() {
     loading,
     createLoading,
     fetchTeams,
+    selectTeam,
     createTeam,
     updateTeam,
     deleteTeam,

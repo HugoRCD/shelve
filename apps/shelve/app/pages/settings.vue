@@ -57,7 +57,7 @@ const open = ref(false)
       </div>
       <div style="--stagger: 2" data-animate class="mt-6 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-6">
         <div class="sm:col-span-3">
-          <FormGroup v-model="team.name" label="Username" />
+          <FormGroup v-model="team.name" label="Name" />
         </div>
         <div class="sm:col-span-4">
           <FormGroup v-model="team.logo" label="Logo" />

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Role } from '@shelve/types'
+import TeamManager from '~/components/team/TeamManager.vue'
 
 const { user } = useUserSession()
 const teamNavigations = getNavigation('team')
@@ -37,13 +38,14 @@ watch(() => route.path, handleProjectNavigation, { immediate: true })
 
 <template>
   <div class="flex flex-col gap-4 p-4 sm:w-[250px]">
-    <div class="mb-4 flex items-center justify-between gap-2">
+    <div class="mb-2 flex items-center justify-between gap-2">
       <NuxtLink to="/" class="font-newsreader text-2xl font-light italic">
         Shelve
       </NuxtLink>
-      <UBadge color="neutral" variant="soft" class="ml-2">
-        {{ team?.name }}
-      </UBadge>
+    </div>
+
+    <div>
+      <TeamManager />
     </div>
 
     <!-- Team -->
