@@ -1,5 +1,6 @@
 import { z, zh } from 'h3-zod'
-import { type AddMemberInput, TeamRole } from '@shelve/types'
+import type { UpdateMemberInput } from '@shelve/types'
+import { TeamRole } from '@shelve/types'
 import { TeamService } from '~~/server/services/teams.service'
 
 export default eventHandler(async (event) => {
@@ -7,22 +8,22 @@ export default eventHandler(async (event) => {
     teamId: z.string({
       required_error: 'Missing teamId',
     }).transform((value) => parseInt(value)),
+    id: z.string({
+      required_error: 'Missing memberId',
+    }).transform((value) => parseInt(value)),
   })
   const body = await zh.useValidatedBody(event, {
-    email: z.string({
-      required_error: 'Missing new member email',
-    }).email().trim(),
-    role: z.nativeEnum(TeamRole).default(TeamRole.MEMBER)
+    role: z.nativeEnum(TeamRole),
   })
   const { user } = event.context
-  const input: AddMemberInput = {
+  const input: UpdateMemberInput = {
     teamId: params.teamId,
-    email: body.email,
+    memberId: params.id,
     role: body.role,
     requester: {
       id: user.id,
       role: user.role,
     },
   }
-  return await new TeamService().addMember(input)
+  return new TeamService().updateMember(input)
 })

@@ -20,7 +20,10 @@ export class TeamService {
 
   private readonly storage: Storage<StorageValue>
   private readonly CACHE_TTL = 60 * 60 // 1 hour
-  private readonly CACHE_PREFIX = 'nitro:functions:getTeamByUserId:userId:'
+  private readonly CACHE_PREFIX = {
+    team: 'nitro:functions:getTeamByUserId:userId:',
+    members: 'nitro:functions:getTeamMembers:teamId:'
+  }
 
   constructor() {
     this.storage = useStorage('cache')
@@ -188,6 +191,18 @@ export class TeamService {
     getKey: (userId: number) => `userId:${userId}`,
   })
 
+  getTeamMembers = cachedFunction(async (teamId, requester): Promise<Member[]> => {
+    await this.validateTeamAccess({ teamId, requester })
+    const members = await db.query.members.findMany({
+      where: eq(tables.members.teamId, teamId),
+      with: {
+        user: true
+      }
+    })
+    if (!members) throw new Error(`Members not found for team with id ${teamId}`)
+    return members
+  })
+
   private async isUserAlreadyMember(teamId: number, email: string): Promise<Member | undefined> {
     const user = await this.getUserByEmail(email)
     if (!user) throw new Error(`User not found with email ${email}`)
@@ -226,7 +241,11 @@ export class TeamService {
   }
 
   private deleteCachedTeamByUserId(userId: number): Promise<void> {
-    return this.storage.removeItem(`${this.CACHE_PREFIX}${userId}.json`)
+    return this.storage.removeItem(`${this.CACHE_PREFIX.team}${userId}.json`)
+  }
+
+  private deleteCachedMembersByTeamId(teamId: number): Promise<void> {
+    return this.storage.removeItem(`${this.CACHE_PREFIX.members}${teamId}.json`)
   }
 
   private async getUserByEmail(email: string): Promise<User> {

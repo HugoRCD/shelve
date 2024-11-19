@@ -140,7 +140,7 @@ const items = (row: User) => [
     </div>
     <UTable :data="filteredUsers" :columns :loading="status === 'pending' || updateLoading || deleteLoading">
       <template #avatar-cell="{ row }">
-        <UAvatar :src="row.original.avatar" :alt="row.name" size="sm" img-class="object-cover" />
+        <UAvatar :src="row.original.avatar" :alt="row.original.username" size="sm" img-class="object-cover" />
       </template>
       <template #role-cell="{ row }">
         <UBadge :label="row.original.role.toUpperCase()" :color="row.original.role === Role.ADMIN ? 'primary' : 'neutral'" variant="subtle" />

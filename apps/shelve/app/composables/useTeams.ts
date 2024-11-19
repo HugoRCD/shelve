@@ -42,8 +42,9 @@ export function useTeams() {
     createLoading.value = false
   }
 
-  async function upsertMember(teamId: number, email: string, role: TeamRole) {
+  async function addMember(email: string, role: TeamRole) {
     try {
+      const teamId = defaultTeam.value.id
       const _member = await $fetch<Member>(`/api/teams/${teamId}/members`, {
         method: 'POST',
         body: {
@@ -54,15 +55,14 @@ export function useTeams() {
       const index = teams.value.findIndex((team) => team.id === teamId)
       const team = teams.value[index]
       if (!team)
-        return toast.error('Failed to update member')
+        return toast.error('Failed to add member')
       const memberIndex = team.members.findIndex((member) => member.id === _member.id)
       if (memberIndex !== -1)
         team.members[memberIndex] = _member
       else
         team.members.push(_member)
       teams.value.splice(index, 1, team)
-      const hasBeenCreated = new Date(_member.createdAt).getTime() === new Date(_member.updatedAt).getTime()
-      toast.success(hasBeenCreated ? 'Member added' : 'Member updated')
+      toast.success('Member added')
     } catch (error: any) {
       if (error.statusCode === 401)
         return toast.error('You need to be an admin to add a member')
@@ -70,8 +70,33 @@ export function useTeams() {
     }
   }
 
-  async function removeMember(teamId: number, memberId: number) {
+  async function updateMember(memberId: number, role: TeamRole) {
     try {
+      const teamId = defaultTeam.value.id
+      const _member = await $fetch<Member>(`/api/teams/${teamId}/members/${memberId}`, {
+        method: 'PUT',
+        body: {
+          role,
+        },
+      })
+      const team = defaultTeam.value
+      if (!team)
+        return toast.error('Failed to update member')
+      const memberIndex = team.members.findIndex((member) => member.id === memberId)
+      if (memberIndex !== -1)
+        team.members.splice(memberIndex, 1, _member)
+      defaultTeam.value = team
+      toast.success('Member updated')
+    } catch (error: any) {
+      if (error.statusCode === 401)
+        return toast.error('You need to be an admin to update a member')
+      toast.error('Failed to update member')
+    }
+  }
+
+  async function removeMember(memberId: number) {
+    try {
+      const teamId = defaultTeam.value.id
       await $fetch<Member>(`/api/teams/${teamId}/members/${memberId}`, {
         method: 'DELETE',
       })
@@ -111,7 +136,8 @@ export function useTeams() {
     fetchTeams,
     createTeam,
     deleteTeam,
-    upsertMember,
+    addMember,
+    updateMember,
     removeMember,
   }
 }

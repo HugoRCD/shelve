@@ -4,9 +4,9 @@ import { TeamService } from '~~/server/services/teams.service'
 
 export default eventHandler(async (event) => {
   const params = await zh.useValidatedParams(event, {
-    teamId: z.number({
+    teamId: z.string({
       required_error: 'Missing teamId',
-    }),
+    }).transform((value) => parseInt(value)),
   })
   const body = await zh.useValidatedBody(event, {
     name: z.string().optional(),
