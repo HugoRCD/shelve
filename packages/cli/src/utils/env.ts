@@ -1,6 +1,12 @@
 import fs from 'fs'
-import type { CreateEnvFileInput, Env, PushEnvFileInput, VariablesCreateInput } from '@shelve/types'
+import type {
+  CreateEnvFileInput,
+  CreateVariablesInput,
+  Env,
+  PushEnvFileInput
+} from '@shelve/types'
 import { confirm, spinner } from '@clack/prompts'
+import { parseEnvFile } from '@shelve/utils'
 import { getConfig, loadShelveConfig } from './config'
 import { getToken, useApi } from './api'
 import { onCancel } from './index'
@@ -66,15 +72,7 @@ export async function getEnvFile(): Promise<Env[]> {
   const isExist = fs.existsSync(envFileName)
   if (isExist) {
     const envFile = fs.readFileSync(envFileName, 'utf8')
-    const envFileContent = envFile.split('\n').filter((item) => item && !item.startsWith('#')).join('\n')
-    if (!envFileContent) return []
-    return envFileContent.split('\n').map((item) => {
-      const [key, value] = item.split(/=(.+)/) // split on the first = and the rest of the line
-      if (!key || !value) {
-        onCancel(`${ envFileName } file is invalid`)
-      }
-      return { key, value }
-    })
+    return parseEnvFile(envFile)
   }
   return []
 }
@@ -104,7 +102,7 @@ export async function pushEnvFile(input: PushEnvFileInput): Promise<void> {
 
   s.start('Pushing variables')
   try {
-    const body: VariablesCreateInput = {
+    const body: CreateVariablesInput = {
       method: 'overwrite',
       autoUppercase,
       projectId,

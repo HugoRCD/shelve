@@ -1,14 +1,22 @@
 {
   "compilerOptions": {
     "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "isolatedModules": true,
-    "module": "ESNext",
-    "moduleResolution": "Bundler",
-    "preserveWatchOutput": true,
+    "allowSyntheticDefaultImports": true,
     "skipLibCheck": true,
+    "target": "ESNext",
+    "module": "ESNext",
+    "noUncheckedIndexedAccess": true,
+    "moduleResolution": "Bundler",
+    "strict": true,
+    "moduleDetection": "force",
+    "isolatedModules": true,
+    "noImplicitAny": true,
+    "allowJs": true,
     "noEmit": true,
-    "strict": true
+    "noUnusedLocals": true,
+    "resolveJsonModule": true,
+    "declaration": true,
+    "types": ["node"],
   },
-  "exclude": ["node_modules"]
+  "include": ["src"]
 }

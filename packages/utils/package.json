@@ -1,0 +1,30 @@
+{
+  "name": "@shelve/utils",
+  "version": "1.0.0",
+  "type": "module",
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "dev": "bun run src/index.ts",
+    "dev:prepare": "unbuild",
+    "build": "unbuild",
+    "release": "bun run build && npm publish",
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix ."
+  },
+  "files": [
+    "./src/index.ts"
+  ],
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "main": "src/index.ts",
+  "devDependencies": {
+    "@types/bun": "latest",
+    "unbuild": "^2.0.0"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  }
+}
