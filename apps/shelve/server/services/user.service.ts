@@ -68,7 +68,7 @@ export class UserService {
   /**
    * Validates if a username is available
    */
-  private async validateUsername(username: string, authType: AuthType): Promise<string> {
+  private async validateUsername(username: string, authType?: AuthType): Promise<string> {
     const foundUser = await db
       .select({
         username: tables.users.username,

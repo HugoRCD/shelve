@@ -46,6 +46,17 @@ export function useTeams() {
     createLoading.value = false
   }
 
+  async function updateTeam(input: { name: string, logo: string }) {
+    const { name, logo } = input
+    currentTeam.value = await $fetch<Team>(`/api/teams/${ teamId.value }`, {
+      method: 'PUT',
+      body: {
+        name,
+        logo,
+      },
+    })
+  }
+
   async function addMember(email: string, role: TeamRole) {
     const _member = await $fetch<Member>(`/api/teams/${teamId.value}/members`, {
       method: 'POST',
@@ -77,16 +88,20 @@ export function useTeams() {
     currentTeam.value.members = currentTeam.value.members.filter((member) => member.id !== memberId)
   }
 
-  async function deleteTeam(teamId: number) {
-    try {
-      teams.value = teams.value.filter((team) => team.id !== teamId)
-      await $fetch(`/api/teams/${teamId}`, {
-        method: 'DELETE',
-      })
-    } catch (error: any) {
-      if (error.statusCode === 401)
-        return toast.error('You need to be an admin to delete a team')
+  async function deleteTeam() {
+    if (teams.value.length === 1) {
+      toast.error('You cannot delete the last team')
+      return
     }
+    if (currentTeam.value.private) {
+      toast.error('You cannot delete the private team')
+      return
+    }
+    await $fetch(`/api/teams/${teamId.value}`, {
+      method: 'DELETE',
+    })
+    teams.value = teams.value.filter((team) => team.id !== teamId.value)
+    currentTeam.value = teams.value[0] as Team
   }
 
   return {
@@ -95,6 +110,7 @@ export function useTeams() {
     createLoading,
     fetchTeams,
     createTeam,
+    updateTeam,
     deleteTeam,
     addMember,
     updateMember,

@@ -22,9 +22,5 @@ export default eventHandler(async (event) => {
       role: user.role,
     }
   }
-  await new TeamService().updateTeam(input)
-  return {
-    statusCode: 200,
-    message: 'Team deleted',
-  }
+  return await new TeamService().updateTeam(input)
 })

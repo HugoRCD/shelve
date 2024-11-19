@@ -38,7 +38,7 @@ export class MemberService {
         role,
       })
       .returning()
-
+    if (!newMember) throw new Error('Failed to add member')
     const member = await this.findMemberById(newMember.id)
     await this.deleteCachedMembersByTeamId(teamId)
     await this.TeamService.deleteCachedTeamsByUserId(member.userId)

@@ -30,5 +30,5 @@ export type UpdateUserInput = {
   id: number;
   username?: string;
   avatar?: string;
-  authType: AuthType;
+  authType?: AuthType;
 };
