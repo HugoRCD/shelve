@@ -1,0 +1,1 @@
+ALTER TABLE "teams" ALTER COLUMN "logo" SET DEFAULT 'https://github.com/HugoRCD/shelve/blob/main/assets/default.png?raw=true';
