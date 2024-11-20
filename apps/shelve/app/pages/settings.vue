@@ -76,7 +76,7 @@ const open = ref(false)
         </UButton>
       </div>
     </form>
-    <div class="mt-6">
+    <div v-if="canBeDeleted" class="mt-6">
       <UCollapsible v-model:open="open">
         <template #content>
           <UAlert
