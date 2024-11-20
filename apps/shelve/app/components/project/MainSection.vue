@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Project } from '@shelve/types'
+import { type Project, TeamRole } from '@shelve/types'
 import type { Ref } from 'vue'
 
 type ProjectProps = {
@@ -14,7 +14,7 @@ const showDelete = ref(false)
 const projectName = ref('')
 const project = toRef(props, 'project') as Ref<Project>
 const { projectId } = useRoute().params as { projectId: string }
-const { user } = useUserSession()
+const teamRole = useTeamRole()
 
 const {
   updateProject,
@@ -33,6 +33,11 @@ const deleteLoading = ref(false)
 async function deleteProjectFunction() {
   deleteLoading.value = true
   // TODO: Add permission check
+  if (teamRole.value !== TeamRole.OWNER) {
+    deleteLoading.value = false
+    toast.error('You do not have permission to delete this project')
+    return
+  }
   await deleteProject(+projectId)
   deleteLoading.value = false
   showDelete.value = false
@@ -67,6 +72,7 @@ const items = [
       label: 'Delete project',
       icon: 'lucide:trash',
       iconClass: 'text-red-500 dark:text-red-500',
+      disabled: teamRole.value !== TeamRole.OWNER,
       onSelect: () => showDelete.value = !showDelete.value
     }
   ]
@@ -112,7 +118,7 @@ function getProjectManager(manager: string) {
                 <FormGroup v-model="project.description" label="Description" type="textarea" />
                 <div class="flex items-center gap-4">
                   <UAvatar :src="project.logo" size="xl" :alt="project.name" />
-                  <FormGroup v-model="project.logo" label="Avatar" class="w-full" />
+                  <FormGroup v-model="project.logo" label="Logo" class="w-full" />
                 </div>
                 <div class="flex justify-end gap-4">
                   <UButton color="neutral" variant="ghost" @click="showEdit = false">

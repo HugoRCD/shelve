@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import type { CreateProjectInput } from '@shelve/types'
 
-const defaultTeam = useCurrentTeam()
-
 const projectCreateInput = ref<Omit<CreateProjectInput, 'teamId'>>({
   name: '',
   description: '',
@@ -93,14 +91,14 @@ function importProject() {
         <div class="flex flex-col gap-4">
           <div>
             <h3 class="font-semibold">
-              Avatar
+              Logo
             </h3>
             <p class="text-pretty text-xs text-neutral-500 dark:text-neutral-400">
-              Add an avatar to your project
+              Add a logo to your project
             </p>
           </div>
           <div class="flex flex-col items-center justify-center gap-4">
-            <FormGroup v-model="projectCreateInput.logo" label="Project avatar" class="w-full" />
+            <FormGroup v-model="projectCreateInput.logo" label="Project Logo" class="w-full" />
             <UAvatar :src="projectCreateInput.logo" size="3xl" :alt="projectCreateInput.name" />
           </div>
         </div>

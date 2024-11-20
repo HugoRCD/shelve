@@ -18,7 +18,7 @@ export function useProjects() {
 
   async function fetchProjects() {
     loading.value = true
-    projects.value = await $fetch<Project[]>(`/api/project?teamId=${teamId.value}`, {
+    projects.value = await $fetch<Project[]>(`/api/teams/projects${teamId.value ? `?teamId=${teamId.value}` : ''}`, {
       method: 'GET',
     })
     loading.value = false
@@ -41,6 +41,7 @@ export function useProjects() {
           teamId: teamId.value,
         }
       })
+      console.log('response', response)
       projects.value.push(response)
       toast.success('Project created')
     } catch (error) {

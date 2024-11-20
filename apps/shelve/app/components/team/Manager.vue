@@ -4,6 +4,7 @@ const teamId = useTeamId()
 const teams = useUserTeams()
 
 const newTeamName = ref('')
+const open = ref(false)
 
 const {
   createTeam,
@@ -40,7 +41,7 @@ const groups = computed(() => [
 </script>
 
 <template>
-  <UModal title="Switch team" description="Select a team to switch to">
+  <UModal v-model:open="open" title="Switch team" description="Select a team to switch to">
     <button v-if="currentTeam" class="nav-item w-full flex items-center justify-between">
       <span class="flex items-center gap-2">
         <UAvatar :src="currentTeam.logo" size="sm" alt="currentTeam.name" />
@@ -54,9 +55,11 @@ const groups = computed(() => [
       <UCommandPalette
         v-model:search-term="newTeamName"
         :groups
+        close
         placeholder="Search or create a team"
         :loading
         class="h-80"
+        @update:open="open = $event"
       >
         <template #teams-trailing="{ item }">
           <span v-if="!item.disabled" class="text-xs text-neutral-500">

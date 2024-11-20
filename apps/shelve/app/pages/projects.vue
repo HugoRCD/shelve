@@ -4,19 +4,13 @@ definePageMeta({
   path: '/',
 })
 
-const { fetchTeams } = useTeams()
 const {
   projects,
   loading,
   fetchProjects,
 } = useProjects()
 
-onMounted(async () => {
-  if (!projects.value) {
-    await fetchTeams()
-    await fetchProjects()
-  }
-})
+await fetchProjects()
 </script>
 
 <template>
@@ -46,7 +40,7 @@ onMounted(async () => {
           <UCard class="h-full">
             <div class="flex w-full items-start gap-4">
               <UAvatar
-                :src="project.avatar"
+                :src="project.logo"
                 :alt="project.name"
                 size="sm"
                 img-class="object-cover"

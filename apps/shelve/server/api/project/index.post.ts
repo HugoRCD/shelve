@@ -15,6 +15,7 @@ export default eventHandler(async (event) => {
     repository: z.string().trim().optional(),
     projectManager: z.string().trim().optional(),
     homepage: z.string().trim().optional(),
+    variablePrefix: z.string().trim().optional(),
   })
   const { user } = event.context
   const input: CreateProjectInput = {
