@@ -29,7 +29,8 @@ You have the option to create a `shelve.config.ts` file to enable type checking 
 import { createShelveConfig } from "@shelve/cli"
 
 export default createShelveConfig({
-  project: "my-project", // only required field
+  project: "my-project",
+  teamId: 1221,
   token: "my-token",
   url: "https://shelve.cloud",
   confirmChanges: false,
@@ -40,7 +41,7 @@ export default createShelveConfig({
 })
 ```
 
-The CLI also has a json schema for the configuration file. that can be used to validate the configuration file. (see it [here](https://raw.githubusercontent.com/HugoRCD/shelve/main/packages/types/shelve-config-schema.json))
+The CLI also has a json schema for the configuration file. that can be used to validate the configuration file. (see it [here](https://raw.githubusercontent.com/HugoRCD/shelve/main/packages/types/schema.json))
 
 ## Usage
 
@@ -159,6 +160,6 @@ Made by [@HugoRCD](https://github.com/HugoRCD), [@CavallucciJohann](https://gith
 
 ---
 
-_🤖 auto updated with [automd](https://automd.unjs.io) (last updated: Fri Oct 11 2024)_
+_🤖 auto updated with [automd](https://automd.unjs.io) (last updated: Wed Nov 20 2024)_
 
 <!-- /automd -->
