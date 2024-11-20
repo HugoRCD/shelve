@@ -1,11 +1,10 @@
-import { Role } from './User'
-import type { Project } from './Project'
 import type { User } from './User'
+import { Role } from './User'
 
 export enum TeamRole {
-  OWNER = 'OWNER',
-  ADMIN = 'ADMIN',
-  DEVELOPER = 'DEVELOPER',
+  OWNER = 'owner',
+  ADMIN = 'admin',
+  MEMBER = 'member',
 }
 
 export type Member = {
@@ -13,34 +12,67 @@ export type Member = {
   userId: number;
   teamId: number;
   role: TeamRole;
+  user: User;
   createdAt: Date;
   updatedAt: Date;
-  team: Team;
-  user: User;
 };
 
 export type Team = {
   id: number;
   name: string;
+  logo: string;
+  private: boolean;
+  privateOf: number | null;
   createdAt: Date;
   updatedAt: Date;
   members: Member[];
-  projects: Project[];
 };
+
+export type Requester = {
+  id: number;
+  role: Role;
+}
 
 export type CreateTeamInput = {
   name: string;
+  private?: boolean;
+  logo?: string;
+  requester: Requester;
 };
 
 export type UpdateTeamInput = {
   id: number;
-  name: string;
-  members: Member[];
-  projects: Project[];
+  name?: string;
+  logo?: string;
+  requester: Requester;
 }
 
 export type DeleteTeamInput = {
   teamId: number
-  userId: number
-  userRole: Role
+  requester: Requester
+}
+
+export type AddMemberInput = {
+  teamId: number;
+  email: string;
+  role: TeamRole;
+  requester: Requester;
+}
+
+export type UpdateMemberInput = {
+  teamId: number;
+  memberId: number;
+  role: TeamRole;
+  requester: Requester;
+}
+
+export type RemoveMemberInput = {
+  teamId: number;
+  memberId: number;
+  requester: Requester;
+}
+
+export type ValidateAccess = {
+  teamId: number;
+  requester: Requester;
 }

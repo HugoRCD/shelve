@@ -11,13 +11,14 @@ export const useCurrentProject = () => {
 export function useProjects() {
   const projects = useUserProjects()
   const currentProject = useCurrentProject()
+  const teamId = useTeamId()
 
   const loading = ref(false)
   const currentLoading = ref(false)
 
   async function fetchProjects() {
     loading.value = true
-    projects.value = await $fetch<Project[]>('/api/project', {
+    projects.value = await $fetch<Project[]>(`/api/project?teamId=${teamId.value}`, {
       method: 'GET',
     })
     loading.value = false
@@ -31,11 +32,14 @@ export function useProjects() {
     currentLoading.value = false
   }
 
-  async function createProject(createProjectInput: CreateProjectInput) {
+  async function createProject(createProjectInput: Omit<CreateProjectInput, 'teamId'>) {
     try {
       const response = await $fetch<Project>('/api/project', {
         method: 'POST',
-        body: createProjectInput,
+        body: {
+          ...createProjectInput,
+          teamId: teamId.value,
+        }
       })
       projects.value.push(response)
       toast.success('Project created')

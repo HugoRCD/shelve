@@ -1,33 +1,84 @@
 import type { Member, Team } from '@shelve/types'
-import { TeamRole } from '@shelve/types'
+import { TeamRole, Role } from '@shelve/types'
 
 export const useUserTeams = () => {
   return useState<Team[]>('teams')
 }
 
+export const useCurrentTeam = () => {
+  return useState<Team>('team')
+}
+
+export const useTeamId = () => {
+  const currentTeam = useCurrentTeam()
+  return computed(() => currentTeam.value?.id)
+}
+
+export const useTeamRole = () => {
+  const currentTeam = useCurrentTeam()
+  const { user } = useUserSession()
+  return computed(() => {
+    if (!currentTeam.value) return null
+    if (user.value!.role === Role.ADMIN) return TeamRole.OWNER
+    const member = currentTeam.value.members.find(member => member.userId === user.value!.id)
+    return member?.role
+  })
+}
+
+export const isPrivateTeam = () => {
+  const currentTeam = useCurrentTeam()
+  return computed(() => currentTeam.value?.private)
+}
+
 export function useTeams() {
   const teams = useUserTeams()
+  const currentTeam = useCurrentTeam()
+  const teamId = useTeamId()
   const loading = ref(false)
   const createLoading = ref(false)
 
+  const lastUsedTeamId = useCookie<number>('lastUsedTeam', {
+    watch: true,
+  })
+
   async function fetchTeams() {
     loading.value = true
-    teams.value = await $fetch<Team[]>('/api/teams', {
-      method: 'GET',
-    })
-    loading.value = false
+
+    try {
+      const fetchedTeams = await $fetch<Team[]>('/api/teams', { method: 'GET' })
+
+      if (!fetchedTeams) throw new Error('Failed to fetch teams')
+
+      teams.value = fetchedTeams
+
+      const privateTeam = teams.value.find(team => team.private)
+      const defaultTeamId = privateTeam ? privateTeam.id : teams.value[0]?.id as number
+
+      lastUsedTeamId.value = lastUsedTeamId.value || defaultTeamId
+      currentTeam.value = teams.value.find(team => team.id === lastUsedTeamId.value) as Team
+    } finally {
+      loading.value = false
+    }
   }
 
-  async function createTeam(teamName: string) {
+  async function selectTeam(id: number) {
+    currentTeam.value = teams.value.find(team => team.id === id) as Team
+    lastUsedTeamId.value = id
+    await useProjects().fetchProjects()
+  }
+
+  async function createTeam(name: string) {
     createLoading.value = true
     try {
-      const response = await $fetch<Team>('/api/teams', {
+      const team = await $fetch<Team>('/api/teams', {
         method: 'POST',
         body: {
-          name: teamName,
+          name
         },
       })
-      teams.value.push(response)
+      const index = teams.value.findIndex((team) => team.id === teamId.value)
+      if (!index)
+        teams.value.push(team)
       toast.success('Team created')
     } catch (error) {
       toast.error('Failed to create team')
@@ -35,66 +86,62 @@ export function useTeams() {
     createLoading.value = false
   }
 
-  async function upsertMember(teamId: number, email: string, role: TeamRole) {
-    try {
-      const _member = await $fetch<Member>(`/api/teams/${teamId}/members`, {
-        method: 'POST',
-        body: {
-          email,
-          role,
-        },
-      })
-      const index = teams.value.findIndex((team) => team.id === teamId)
-      const team = teams.value[index]
-      if (!team)
-        return toast.error('Failed to update member')
-      const memberIndex = team.members.findIndex((member) => member.id === _member.id)
-      if (memberIndex !== -1)
-        team.members[memberIndex] = _member
-      else
-        team.members.push(_member)
-      teams.value.splice(index, 1, team)
-      const hasBeenCreated = new Date(_member.createdAt).getTime() === new Date(_member.updatedAt).getTime()
-      toast.success(hasBeenCreated ? 'Member added' : 'Member updated')
-    } catch (error: any) {
-      if (error.statusCode === 401)
-        return toast.error('You need to be an admin to add a member')
-      toast.error('Failed to add member')
-    }
+  async function updateTeam(input: { name: string, logo: string }) {
+    const { name, logo } = input
+    currentTeam.value = await $fetch<Team>(`/api/teams/${ teamId.value }`, {
+      method: 'PUT',
+      body: {
+        name,
+        logo,
+      },
+    })
   }
 
-  async function removeMember(teamId: number, memberId: number) {
-    try {
-      await $fetch<Member>(`/api/teams/${teamId}/members/${memberId}`, {
-        method: 'DELETE',
-      })
-      const index = teams.value.findIndex((team) => team.id === teamId)
-      const team = teams.value[index]
-      if (!team)
-        return toast.error('Failed to remove member')
-      const memberIndex = team.members.findIndex((member) => member.id === memberId)
-      if (memberIndex !== -1) {
-        team.members.splice(memberIndex, 1)
-      }
-      teams.value.splice(index, 1, team)
-      toast.success('Member removed')
-    } catch (error: any) {
-      if (error.statusCode === 401)
-        return toast.error('You need to be an admin to remove a member')
-      toast.error('Failed to remove member')
-    }
+  async function addMember(email: string, role: TeamRole) {
+    const _member = await $fetch<Member>(`/api/teams/${teamId.value}/members`, {
+      method: 'POST',
+      body: {
+        email,
+        role,
+      },
+    })
+    const member = currentTeam.value.members.find((member) => member.userId === _member.userId)
+    if (!member)
+      currentTeam.value.members.push(_member)
   }
 
-  async function deleteTeam(teamId: number) {
-    try {
-      teams.value = teams.value.filter((team) => team.id !== teamId)
-      await $fetch(`/api/teams/${teamId}`, {
-        method: 'DELETE',
-      })
-    } catch (error: any) {
-      if (error.statusCode === 401)
-        return toast.error('You need to be an admin to delete a team')
+  async function updateMember(memberId: number, role: TeamRole) {
+    const _member = await $fetch<Member>(`/api/teams/${teamId.value}/members/${memberId}`, {
+      method: 'PUT',
+      body: {
+        role,
+      },
+    })
+    const index = currentTeam.value.members.findIndex((member) => member.id === memberId)
+    currentTeam.value.members[index] = _member
+  }
+
+  async function removeMember(memberId: number) {
+    await $fetch<Member>(`/api/teams/${teamId.value}/members/${memberId}`, {
+      method: 'DELETE',
+    })
+    currentTeam.value.members = currentTeam.value.members.filter((member) => member.id !== memberId)
+  }
+
+  async function deleteTeam() {
+    if (teams.value.length === 1) {
+      toast.error('You cannot delete the last team')
+      return
     }
+    if (currentTeam.value.private) {
+      toast.error('You cannot delete the private team')
+      return
+    }
+    await $fetch(`/api/teams/${teamId.value}`, {
+      method: 'DELETE',
+    })
+    teams.value = teams.value.filter((team) => team.id !== teamId.value)
+    await selectTeam(teams.value[0]!.id)
   }
 
   return {
@@ -102,9 +149,12 @@ export function useTeams() {
     loading,
     createLoading,
     fetchTeams,
+    selectTeam,
     createTeam,
+    updateTeam,
     deleteTeam,
-    upsertMember,
+    addMember,
+    updateMember,
     removeMember,
   }
 }

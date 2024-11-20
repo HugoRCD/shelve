@@ -1,24 +1,6 @@
 <script setup lang="ts">
 import { Role } from '@shelve/types'
 
-const navigations = getNavigation('app')
-const navItem = navigations.map((nav) => {
-  return {
-    label: nav.name,
-    icon: nav.icon,
-    to: nav.path,
-  }
-})
-
-const adminNavigations = getNavigation('admin')
-const adminNavItem = adminNavigations.map((nav) => {
-  return {
-    label: nav.name,
-    icon: nav.icon,
-    to: nav.path,
-  }
-})
-
 const { loggedIn, user, clear } = useUserSession()
 
 const items = [
@@ -29,8 +11,6 @@ const items = [
       disabled: true
     }
   ],
-  navItem,
-  ...(user.value?.role === Role.ADMIN ? [adminNavItem] : []),
   [
     {
       label: 'Sign out',
@@ -49,7 +29,11 @@ const items = [
     <UDropdownMenu
       v-if="loggedIn"
       :items
-      :popper="{ placement: 'bottom-start' }"
+      :content="{
+        align: 'start',
+        side: 'right',
+        sideOffset: 8
+      }"
     >
       <UAvatar :src="user.avatar" :alt="user.username" class="cursor-pointer" />
 

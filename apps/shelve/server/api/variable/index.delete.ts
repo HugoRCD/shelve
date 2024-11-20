@@ -1,12 +1,11 @@
-import type { H3Event } from 'h3'
+import { zh, z } from 'h3-zod'
 import { VariableService } from '~~/server/services/variable.service'
 
-export default defineEventHandler(async (event: H3Event) => {
-  const variableService = new VariableService()
-  const { user } = event.context
-  const body = await readBody(event)
-  const variablesId = body.variables
-  await variableService.deleteVariables(variablesId, user)
+export default defineEventHandler(async (event) => {
+  const { variables } = await zh.useValidatedBody(event, {
+    variables: z.array(z.number()).min(1).max(100),
+  })
+  await Promise.all(variables.map(id => new VariableService().deleteVariable(id)))
   return {
     statusCode: 200,
     message: 'Variables deleted',

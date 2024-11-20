@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const pages = [...getNavigation('app'), ...getNavigation('admin')]
+const pages = [...getNavigation('team'), ...getNavigation('user'), ...getNavigation('admin')]
 const route = useRoute()
 
 const navigation = computed(() => {
@@ -11,13 +11,15 @@ const navigation = computed(() => {
 
 <template>
   <div class="max-layout-width relative flex h-screen">
-    <LayoutSidebar class="hidden sm:flex" />
+    <LayoutSidebar />
     <div class="main-container flex flex-1 flex-col overflow-hidden border-l border-l-neutral-200 dark:border-l-neutral-800">
       <div class="flex justify-between gap-1 border-b border-neutral-200 px-5 py-2 dark:border-b-neutral-800">
         <div class="flex items-center gap-2">
           <template v-if="navigation">
             <Transition name="slide-to-bottom" mode="out-in">
-              <UIcon :key="navigation.icon" :name="navigation.icon" class="size-5" />
+              <div :key="navigation.icon">
+                <UIcon :name="navigation.icon" class="size-5" />
+              </div>
             </Transition>
             <Transition name="slide-to-top" mode="out-in">
               <h1 :key="navigation.title" class="text-lg font-bold">
@@ -30,6 +32,7 @@ const navigation = computed(() => {
           <div id="action-items">
             <!-- action-items -->
           </div>
+          <LayoutSidebar mobile />
           <UserDropdown />
         </div>
       </div>

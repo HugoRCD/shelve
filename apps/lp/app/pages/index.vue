@@ -21,10 +21,10 @@ function useClipboard(text: string) {
 
 <template>
   <div class="flex flex-col gap-4">
-    <div class="flex h-full flex-col items-center justify-center gap-3 p-5">
+    <div class="flex h-full flex-col items-center justify-center gap-3 p-5 mb-10">
       <LandingHero class="h-64" />
     </div>
-    <div class="mx-auto mt-16 flex max-w-6xl flex-col gap-16 px-8 sm:flex-row sm:gap-8 sm:px-16">
+    <div class="mx-auto h-64 flex max-w-6xl flex-col gap-16 px-8 sm:flex-row sm:gap-8 sm:px-16">
       <div class="flex w-fit flex-col gap-2">
         <NuxtLink
           class="mb-4"
@@ -61,7 +61,7 @@ function useClipboard(text: string) {
           </div>
         </div>
 
-        <div class="relative -top-12 py-20">
+        <div class="relative -top-12 py-28">
           <div class="absolute inset-0 flex items-center justify-center [mask-image:linear-gradient(to_bottom,white,transparent)]">
             <div class="bg-white/2.5 absolute size-96 rounded-full shadow-xl" />
 
@@ -80,7 +80,7 @@ function useClipboard(text: string) {
         </div>
       </div>
     </div>
-    <div class="flex flex-col gap-16 p-5">
+    <div class="flex flex-col max-sm:mt-64 gap-16 p-5">
       <div>
         <LandingFeatures />
       </div>

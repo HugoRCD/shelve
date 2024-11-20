@@ -1,7 +1,3 @@
-export default eventHandler(() => {
-  return prisma.user.findMany({
-    orderBy: {
-      updatedAt: 'desc',
-    },
-  })
+export default eventHandler(async () => {
+  return await db.query.users.findMany()
 })

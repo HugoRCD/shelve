@@ -12,7 +12,7 @@ useSeoMeta({
   title,
   description,
   author: 'Hugo Richard',
-  twitter: '@HugoRCD__',
+  twitterCreator: '@HugoRCD__',
   twitterTitle: title,
   twitterDescription: description,
   twitterCard: 'summary_large_image',
@@ -37,11 +37,31 @@ const reduceMotion = useCookie<boolean>('reduceMotion', {
 })
 
 if (import.meta.client) setPrefersReducedMotion(reduceMotion.value)
+
+const { fetchTeams } = useTeams()
+
+defineShortcuts({
+  'p': () => {
+    navigateTo('/')
+  },
+  'm': () => {
+    navigateTo('/members')
+  },
+  't': () => {
+    navigateTo('/tokens')
+  },
+  's': () => {
+    navigateTo('/settings')
+  },
+})
+
+if (!fetchTeams())
+  await fetchTeams()
 </script>
 
 <template>
   <Html lang="en">
-    <Body class="selection:bg-primary font-geist relative overflow-x-hidden bg-white text-black selection:text-inverted dark:bg-neutral-950 dark:text-white">
+    <Body class="overscroll-y-none selection:bg-primary font-geist relative overflow-x-hidden bg-white text-black selection:text-inverted dark:bg-neutral-950 dark:text-white">
       <UApp :tooltip="{ delayDuration: 0 }">
         <NuxtLayout>
           <NuxtPage />

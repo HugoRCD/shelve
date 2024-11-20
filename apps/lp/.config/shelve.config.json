@@ -1,4 +1,4 @@
 {
-  "$schema": "https://raw.githubusercontent.com/HugoRCD/shelve/main/packages/types/shelveConfigSchema.json",
+  "$schema": "https://raw.githubusercontent.com/HugoRCD/shelve/main/packages/types/shelve-config-schema.json",
   "project": "shelve-lp"
 }

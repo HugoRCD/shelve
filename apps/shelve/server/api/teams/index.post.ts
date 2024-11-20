@@ -1,12 +1,22 @@
-import type { H3Event } from 'h3'
+import { z, zh } from 'h3-zod'
 import type { CreateTeamInput } from '@shelve/types'
 import { TeamService } from '~~/server/services/teams.service'
 
-export default eventHandler(async (event: H3Event) => {
+export default eventHandler(async (event) => {
   const { user } = event.context
-  const createTeamInput = await readBody(event) as CreateTeamInput
-  if (!createTeamInput.name) throw createError({ statusCode: 400, statusMessage: 'Cannot create team without name' })
-  const teamService = new TeamService()
-  createTeamInput.name = createTeamInput.name.trim()
-  return await teamService.createTeam(createTeamInput, user.id)
+  const body = await zh.useValidatedBody(event, {
+    name: z.string({
+      required_error: 'Cannot create team without name'
+    }).min(3).max(50).trim(),
+    logo: z.string().optional(),
+  })
+  const input: CreateTeamInput = {
+    name: body.name,
+    logo: body.logo,
+    requester: {
+      id: user.id,
+      role: user.role,
+    }
+  }
+  return await new TeamService().createTeam(input)
 })

@@ -26,19 +26,19 @@ export class TokenService {
       })
     }
 
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
+    const user = await db.query.users.findFirst({
+      where: eq(tables.users.id, userId)
     })
     if (!user) throw createError({ statusCode: 400, statusMessage: 'User not found' })
 
     await this.updateUsedAt(foundToken.id)
-    return user as User // TODO: fix type
+    return user
   }
 
   async getTokensByUserId(userId: number): Promise<Token[]> {
-    const tokens = await prisma.token.findMany({
-      where: { userId },
-      orderBy: { createdAt: 'desc' },
+    const tokens = await db.query.tokens.findMany({
+      where: eq(tables.tokens.userId, userId),
+      orderBy: (tokens, { desc }) => [desc(tokens.createdAt)]
     })
 
     return Promise.all(tokens.map(async (token): Promise<Token> => ({
@@ -51,29 +51,34 @@ export class TokenService {
     const token = this.generateUserToken(userId)
     const encryptedToken = await seal(token, this.encryptionKey)
 
-    await prisma.token.create({
-      data: {
+    await db.insert(tables.tokens)
+      .values({
         token: encryptedToken,
         name,
         userId
-      },
-    })
+      })
   }
 
   private async updateUsedAt(tokenId: number): Promise<void> {
-    await prisma.token.update({
-      where: { id: tokenId },
-      data: { updatedAt: new Date() },
-    })
+    await db.update(tables.tokens)
+      .set({
+        updatedAt: new Date()
+      })
+      .where(eq(tables.tokens.id, tokenId))
   }
 
-  deleteUserToken(id: number, userId: number): Promise<Token> {
-    return prisma.token.delete({
-      where: {
-        id,
-        userId,
-      },
-    })
+  async deleteUserToken(id: number, userId: number): Promise<Token> {
+    const [deletedToken] = await db.delete(tables.tokens)
+      .where(
+        and(
+          eq(tables.tokens.id, id),
+          eq(tables.tokens.userId, userId)
+        )
+      )
+      .returning()
+
+    if (!deletedToken) throw new Error(`Token not found with id ${id}`)
+    return deletedToken
   }
 
   private generateUserToken(userId: number): string {
@@ -107,8 +112,8 @@ export class TokenService {
    * Get all tokens for a user
    */
   private getUserTokens(userId: number): Promise<Token[]> {
-    return prisma.token.findMany({
-      where: { userId }
+    return db.query.tokens.findMany({
+      where: eq(tables.tokens.userId, userId)
     })
   }
 

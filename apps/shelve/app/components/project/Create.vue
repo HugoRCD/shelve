@@ -1,13 +1,16 @@
 <script setup lang="ts">
-import type { CreateProjectInput, Team } from '@shelve/types'
+import type { CreateProjectInput } from '@shelve/types'
 
-const projectCreateInput = ref<CreateProjectInput>({
+const defaultTeam = useCurrentTeam()
+
+const projectCreateInput = ref<Omit<CreateProjectInput, 'teamId'>>({
   name: '',
   description: '',
-  avatar: '',
+  logo: '',
   repository: '',
   projectManager: '',
   homepage: '',
+  variablePrefix: '',
 })
 
 const isOpen = ref(false)
@@ -26,23 +29,6 @@ async function createProjectFunction() {
   createLoading.value = false
   await fetchProjects()
 }
-
-function addTeam(team: Team) {
-  projectCreateInput.value.team = team
-}
-
-function removeTeam() {
-  delete projectCreateInput.value.team
-}
-
-const {
-  teams,
-  loading,
-  fetchTeams
-} = useTeams()
-
-if (!teams.value)
-  fetchTeams()
 
 function importProject() {
   const input = document.createElement('input')
@@ -83,57 +69,7 @@ function importProject() {
       <form id="createForm" class="flex flex-col gap-4" @submit.prevent="createProjectFunction">
         <FormGroup v-model="projectCreateInput.name" autofocus required label="Project name" />
         <FormGroup v-model="projectCreateInput.description" label="Description" type="textarea" />
-        <UDivider class="my-4" />
-        <div class="flex flex-col gap-4">
-          <div class="flex items-center justify-between">
-            <div>
-              <h3 class="font-semibold">
-                Team Members
-              </h3>
-              <p class="text-pretty text-xs text-neutral-500 dark:text-neutral-400">
-                Add team members to your project
-              </p>
-            </div>
-            <TeamCreate variant="soft">
-              Create a team
-            </TeamCreate>
-          </div>
-          <div>
-            <USkeleton v-if="loading" class="h-8" />
-            <div v-else>
-              <div v-if="projectCreateInput.team" class="flex items-center justify-between">
-                <div class="flex flex-col gap-2">
-                  <h3 class="text-xs font-semibold text-neutral-600 dark:text-neutral-400">
-                    {{ projectCreateInput.team.name }}
-                  </h3>
-                  <TeamMembers :team-id="projectCreateInput.team.id" :members="projectCreateInput.team.members" display />
-                </div>
-                <UButton
-                  variant="soft"
-                  color="error"
-                  size="xs"
-                  label="Unlink"
-                  icon="lucide:unlink"
-                  @click="removeTeam"
-                />
-              </div>
-              <div v-else class="flex flex-col gap-4">
-                <div v-if="teams.length !== 0" class="flex flex-col gap-4">
-                  <div v-for="team in teams" :key="team.id" class="divide-y divide-neutral-100 dark:divide-neutral-800">
-                    <ProjectTeamAssign :team :project-id="0" is-emit @add-team="addTeam" />
-                  </div>
-                </div>
-                <div v-else class="flex flex-col items-center justify-center gap-2">
-                  <p class="text-pretty text-xs text-neutral-500 dark:text-neutral-400">
-                    You don't have any teams yet
-                  </p>
-                  <TeamCreate>Create one</TeamCreate>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <UDivider class="my-4" />
+        <USeparator class="my-4" />
         <div class="flex flex-col gap-4">
           <div>
             <h3 class="font-semibold">
@@ -153,7 +89,7 @@ function importProject() {
             <FormGroup v-model="projectCreateInput.homepage" label="Homepage" />
           </div>
         </div>
-        <UDivider class="my-4" />
+        <USeparator class="my-4" />
         <div class="flex flex-col gap-4">
           <div>
             <h3 class="font-semibold">
@@ -164,8 +100,8 @@ function importProject() {
             </p>
           </div>
           <div class="flex flex-col items-center justify-center gap-4">
-            <FormGroup v-model="projectCreateInput.avatar" label="Project avatar" class="w-full" />
-            <UAvatar :src="projectCreateInput.avatar" size="3xl" :alt="projectCreateInput.name" />
+            <FormGroup v-model="projectCreateInput.logo" label="Project avatar" class="w-full" />
+            <UAvatar :src="projectCreateInput.logo" size="3xl" :alt="projectCreateInput.name" />
           </div>
         </div>
       </form>

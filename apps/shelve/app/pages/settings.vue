@@ -1,111 +1,104 @@
 <script setup lang="ts">
+import { TeamRole } from '@shelve/types'
+import { ConfirmModal } from '#components'
+
 definePageMeta({
   middleware: 'protected',
 })
 
-const reduceMotion = useCookie<boolean>('reduceMotion', {
-  watch: true,
-})
+const { updateTeam, deleteTeam } = useTeams()
 
-const autoUppercase = useCookie<boolean>('autoUppercase', {
-  watch: true,
-  default: () => true,
-})
+const updateLoading = ref(false)
 
-function setPrefersReducedMotion() {
-  if (reduceMotion.value) {
-    document.documentElement.setAttribute('data-reduce-motion', 'reduce')
-  } else {
-    document.documentElement.removeAttribute('data-reduce-motion')
-  }
+const team = useCurrentTeam()
+const teamRole = useTeamRole()
+const isPrivate = isPrivateTeam()
+
+const canBeDeleted = computed(() => teamRole.value === TeamRole.OWNER && !isPrivate.value)
+
+function updateCurrentTeam() {
+  updateLoading.value = true
+  toast.promise(updateTeam(team.value), {
+    loading: 'Updating team...',
+    success: 'Team updated successfully',
+    error: 'Error updating team',
+  })
+  updateLoading.value = false
 }
 
-watch(reduceMotion, () => {
-  setPrefersReducedMotion()
-})
+const modal = useModal()
+function deleteCurrentTeam() {
+  modal.open(ConfirmModal, {
+    title: 'Delete Team',
+    description: 'Are you sure you want to delete this team?',
+    danger: true,
+    onSuccess: () => {
+      toast.promise(deleteTeam(), {
+        loading: 'Deleting team...',
+        success: 'Team deleted successfully',
+        error: 'Error deleting team',
+      })
+    },
+  })
+}
+
+const open = ref(false)
 </script>
 
 <template>
-  <div class="flex flex-col gap-4 pb-4">
-    <div style="--stagger: 1" data-animate class="flex flex-col gap-3">
-      <div class="flex flex-col gap-1">
-        <h2 class="text-lg font-bold">
-          Auto uppercase
-        </h2>
-        <p class="text-sm text-neutral-500">
-          Automatically uppercase the keys of the variables
-        </p>
-      </div>
-      <USwitch v-model="autoUppercase" />
-    </div>
-    <UDivider class="my-4" />
-    <div style="--stagger: 2" data-animate class="flex flex-col gap-3">
-      <div class="flex flex-col gap-1">
-        <h2 class="text-lg font-bold">
-          Reduce Motion
-        </h2>
-        <p class="text-sm text-neutral-500">
-          Remove all transitions and animations from the site.
-        </p>
-      </div>
-      <USwitch v-model="reduceMotion" />
-    </div>
-    <UDivider class="my-4" />
-    <div style="--stagger: 3" data-animate class="flex flex-col gap-3">
-      <h2 class="text-lg font-bold">
-        Theme settings
-      </h2>
-      <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <div
-          class="flex cursor-pointer flex-col gap-2 rounded-lg border border-neutral-300 bg-[#F8F8F8] p-4 shadow-md hover:border-neutral-400 hover:bg-neutral-200"
-          @click="$colorMode.preference = 'light'"
-        >
-          <h3 class="text-lg font-semibold text-neutral-700">
-            Shining Star
-          </h3>
-          <p class="text-sm text-neutral-500">
-            Shining Star theme is the theme for all people who like keeping it bright.
+  <div class="flex flex-col">
+    <form v-if="team" class="flex flex-col" @submit.prevent="updateCurrentTeam">
+      <div style="--stagger: 1" data-animate class="flex items-center gap-4">
+        <NuxtImg :src="team.logo" class="size-10 rounded-full" />
+        <div>
+          <h2 class="text-base font-semibold leading-7">
+            Team Settings
+          </h2>
+          <p class="text-sm leading-6 text-neutral-500">
+            Manage team settings
           </p>
-          <div class="mt-2 flex flex-col gap-1">
-            <div class="flex gap-2">
-              <div class="h-3 w-1/2 rounded-full bg-neutral-400" />
-              <div class="h-3 w-1/4 rounded-full bg-neutral-400" />
-            </div>
-            <div class="flex gap-2">
-              <div class="h-3 w-1/4 rounded-full bg-neutral-400" />
-              <div class="h-3 w-1/2 rounded-full bg-neutral-400" />
-            </div>
-          </div>
-        </div>
-        <div
-          class="flex cursor-pointer flex-col gap-2 rounded-lg border border-neutral-700 bg-[#131113] p-4 shadow-md hover:border-neutral-600 hover:bg-neutral-900"
-          @click="$colorMode.preference = 'dark'"
-        >
-          <h3 class="text-lg font-semibold text-neutral-100">
-            Sideral Night
-          </h3>
-          <p class="text-sm text-neutral-400">
-            Sideral Night theme is the theme for all people who like keeping it dark.
-          </p>
-          <div class="mt-2 flex flex-col gap-1">
-            <div class="flex gap-2">
-              <div class="h-3 w-1/2 rounded-full bg-neutral-700" />
-              <div class="h-3 w-1/4 rounded-full bg-neutral-700" />
-            </div>
-            <div class="flex gap-2">
-              <div class="h-3 w-1/4 rounded-full bg-neutral-700" />
-              <div class="h-3 w-1/2 rounded-full bg-neutral-700" />
-            </div>
-          </div>
         </div>
       </div>
+      <div style="--stagger: 2" data-animate class="mt-6 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-6">
+        <div class="sm:col-span-3">
+          <FormGroup v-model="team.name" label="Name" />
+        </div>
+        <div class="sm:col-span-4">
+          <FormGroup v-model="team.logo" label="Logo" />
+        </div>
+      </div>
+      <div style="--stagger: 4" data-animate class="mt-6 flex items-center justify-between gap-2">
+        <UButton type="submit" :loading="updateLoading">
+          Save
+        </UButton>
+        <UButton v-if="canBeDeleted" color="error" variant="solid" @click="open = !open">
+          Delete Team
+        </UButton>
+      </div>
+    </form>
+    <div class="mt-6">
+      <UCollapsible v-model:open="open">
+        <template #content>
+          <UAlert
+            title="Delete Team"
+            description="Here you can delete your team. This action is irreversible."
+            color="error"
+            variant="soft"
+            :actions="[
+              {
+                label: 'Delete',
+                color: 'error',
+                variant: 'soft',
+                onClick: deleteCurrentTeam,
+              },
+            ]"
+          />
+        </template>
+      </UCollapsible>
     </div>
   </div>
 </template>
 
 <style scoped>
-.light {
-  background-color: #fff;
-  color: #000;
-}
+
 </style>

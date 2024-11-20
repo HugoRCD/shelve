@@ -1,4 +1,4 @@
-import type { Variable, VariablesCreateInput } from '@shelve/types'
+import type { Variable, CreateVariablesInput } from '@shelve/types'
 
 export function useVariables(refresh: () => Promise<void>, projectId: string) {
   const selectedEnvironment: Ref<Record<string, boolean>> = ref({
@@ -18,18 +18,21 @@ export function useVariables(refresh: () => Promise<void>, projectId: string) {
 
   const variablesToCreate = ref(1)
 
-  const variablesInput = ref<VariablesCreateInput>({
+  const variablesInput = ref<CreateVariablesInput>({
     autoUppercase: autoUppercase.value,
-    projectId: parseInt(projectId),
+    projectId: +projectId,
+    environment: environment.value,
     variables: [
       {
         index: 1,
         key: '',
         value: '',
-        environment: 'production',
-        projectId: parseInt(projectId),
       },
     ],
+  })
+
+  watch(environment, () => {
+    variablesInput.value.environment = environment.value
   })
 
   function addVariable() {
@@ -38,8 +41,6 @@ export function useVariables(refresh: () => Promise<void>, projectId: string) {
       index: variablesToCreate.value,
       key: '',
       value: '',
-      environment: environment.value,
-      projectId: parseInt(projectId),
     })
   }
 
@@ -53,11 +54,6 @@ export function useVariables(refresh: () => Promise<void>, projectId: string) {
     variablesInput.value.variables.splice(index, 1)
   }
 
-  watch(environment, () => {
-    variablesInput.value.variables.forEach((variable) => {
-      variable.environment = environment.value
-    })
-  })
   watch(autoUppercase, () => {
     variablesInput.value.autoUppercase = autoUppercase.value
   })
@@ -77,14 +73,12 @@ export function useVariables(refresh: () => Promise<void>, projectId: string) {
       toast.success('Your variables have been created')
       variablesToCreate.value = 1
       variablesInput.value = {
-        projectId: parseInt(projectId),
+        projectId: +projectId,
         variables: [
           {
             index: 1,
             key: '',
             value: '',
-            environment: 'production',
-            projectId: parseInt(projectId),
           },
         ],
       }
@@ -103,11 +97,14 @@ export function useVariables(refresh: () => Promise<void>, projectId: string) {
       return
     }
     try {
-      await $fetch(`/api/variable`, {
-        method: 'POST',
+      await $fetch(`/api/variable/${variable.id}`, {
+        method: 'PUT',
         body: {
-          projectId: parseInt(projectId),
-          variables: [variable]
+          projectId: +projectId,
+          key: variable.key,
+          value: variable.value,
+          env: variable.environment,
+          autoUppercase: autoUppercase.value,
         },
       })
       toast.success('Your variable has been updated')

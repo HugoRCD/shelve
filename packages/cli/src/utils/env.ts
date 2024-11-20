@@ -1,7 +1,13 @@
 import fs from 'fs'
-import type { CreateEnvFileInput, Env, PushEnvFileInput, VariablesCreateInput } from '@shelve/types'
+import type {
+  CreateEnvFileInput,
+  CreateVariablesInput,
+  Env,
+  PushEnvFileInput
+} from '@shelve/types'
 import { confirm, spinner } from '@clack/prompts'
-import { getConfig, loadShelveConfig } from './config'
+import { parseEnvFile } from '@shelve/utils'
+import { loadShelveConfig } from './config'
 import { getToken, useApi } from './api'
 import { onCancel } from './index'
 
@@ -12,8 +18,7 @@ export function isEnvFileExist(envFileName: string): boolean {
 }
 
 export async function getKeyValue(key: string): Promise<string> {
-  const { config } = await getConfig()
-  const { envFileName } = config
+  const { envFileName } = await loadShelveConfig(false)
   const envFile = await getEnvFile()
   const value = envFile.find((item) => item.key === key)?.value
   if (!value) {
@@ -24,8 +29,7 @@ export async function getKeyValue(key: string): Promise<string> {
 }
 
 export async function mergeEnvFile(variables: Env[] = []): Promise<void> {
-  const { config } = await getConfig()
-  const { envFileName } = config
+  const { envFileName } = await loadShelveConfig(false)
   s.start(`Merging ${envFileName} file`)
   const envFile = await getEnvFile()
   envFile.push(...variables)
@@ -61,20 +65,11 @@ export async function createEnvFile(input: CreateEnvFileInput): Promise<void> {
 }
 
 export async function getEnvFile(): Promise<Env[]> {
-  const { config } = await getConfig()
-  const { envFileName } = config
+  const { envFileName } = await loadShelveConfig(false)
   const isExist = fs.existsSync(envFileName)
   if (isExist) {
     const envFile = fs.readFileSync(envFileName, 'utf8')
-    const envFileContent = envFile.split('\n').filter((item) => item && !item.startsWith('#')).join('\n')
-    if (!envFileContent) return []
-    return envFileContent.split('\n').map((item) => {
-      const [key, value] = item.split(/=(.+)/) // split on the first = and the rest of the line
-      if (!key || !value) {
-        onCancel(`${ envFileName } file is invalid`)
-      }
-      return { key, value }
-    })
+    return parseEnvFile(envFile)
   }
   return []
 }
@@ -104,7 +99,7 @@ export async function pushEnvFile(input: PushEnvFileInput): Promise<void> {
 
   s.start('Pushing variables')
   try {
-    const body: VariablesCreateInput = {
+    const body: CreateVariablesInput = {
       method: 'overwrite',
       autoUppercase,
       projectId,
@@ -124,7 +119,7 @@ export async function pushEnvFile(input: PushEnvFileInput): Promise<void> {
 }
 
 export async function generateEnvExampleFile(): Promise<void> {
-  const { envFileName } = await loadShelveConfig()
+  const { envFileName } = await loadShelveConfig(false)
   const envExampleFile = `${envFileName}.example`
 
   s.start(`Generating ${envExampleFile} file`)

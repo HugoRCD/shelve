@@ -8,6 +8,10 @@ const items = navigation.map((item) => ({
   slot: item.name.toLowerCase(),
 }))
 
+type RepoType = {
+  stars: number
+}
+
 const githubStars = ref('0')
 async function fetchRepo() {
   try {

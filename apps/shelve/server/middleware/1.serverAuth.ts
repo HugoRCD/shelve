@@ -1,7 +1,6 @@
-import type { H3Event } from 'h3'
 import { TokenService } from '~~/server/services/token.service'
 
-export default defineEventHandler(async (event: H3Event) => {
+export default defineEventHandler(async (event) => {
   const protectedRoutes = [
     '/api/auth/logout',
     '/api/user',
@@ -16,13 +15,16 @@ export default defineEventHandler(async (event: H3Event) => {
   if (!protectedRoutes.some((route) => event.path?.startsWith(route))) {
     return
   }
-  const tokenService = new TokenService()
 
   const authToken = getCookie(event, 'authToken')
 
   if (authToken) {
-    const user = await tokenService.getUserByAuthToken(authToken)
+    const user = await new TokenService().getUserByAuthToken(authToken)
     if (!user) throw createError({ statusCode: 401, statusMessage: 'Invalid token' })
+    await setUserSession(event, {
+      user,
+      loggedInAt: new Date().toISOString(),
+    })
     event.context.user = user
     return
   }

@@ -1,4 +1,6 @@
+import { AuthType } from '@shelve/types'
 import { UserService } from '~~/server/services/user.service'
+import { userSchema } from '~~/server/database/zod'
 
 export default defineOAuthGitHubEventHandler({
   config: {
@@ -7,16 +9,17 @@ export default defineOAuthGitHubEventHandler({
   },
   async onSuccess(event, { user, tokens }) {
     try {
-      const _user = await new UserService().upsertUser({
+      const _user = await new UserService().handleOAuthUser({
         email: user.email,
         avatar: user.avatar_url,
         username: user.login,
+        authType: AuthType.GITHUB,
       })
       await setUserSession(event, {
         secure: {
           githubToken: tokens.access_token,
         },
-        user: _user,
+        user: userSchema.parse(_user),
         loggedInAt: new Date().toISOString(),
       })
       return sendRedirect(event, '/')

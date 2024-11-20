@@ -1,6 +1,11 @@
 export enum Role {
-  ADMIN = 'ADMIN',
-  USER = 'USER',
+  ADMIN = 'admin',
+  USER = 'user',
+}
+
+export enum AuthType {
+  GITHUB = 'github',
+  GOOGLE = 'google',
 }
 
 export type User = {
@@ -9,25 +14,21 @@ export type User = {
   email: string;
   avatar: string;
   role: Role;
+  authType: AuthType;
   createdAt: Date;
   updatedAt: Date;
 };
-
-export type PublicUser = Omit<User, 'createdAt' | 'updatedAt'>;
 
 export type CreateUserInput = {
   email: string;
   username: string;
   avatar?: string;
+  authType: AuthType;
 };
 
 export type UpdateUserInput = {
-  currentUser: User;
-  data: {
-    username?: string;
-    password?: string;
-    email?: string;
-    avatar?: string;
-    role?: Role;
-  }
+  id: number;
+  username?: string;
+  avatar?: string;
+  authType?: AuthType;
 };

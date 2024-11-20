@@ -1,9 +1,11 @@
-import type { H3Event } from 'h3'
+import { z, zh } from 'h3-zod'
 import { ProjectService } from '~~/server/services/project.service'
 
-export default eventHandler(async (event: H3Event) => {
-  const projectService = new ProjectService()
-  const { user } = event.context
-  if (!user) throw createError({ statusCode: 401, message: 'Unauthorized' })
-  return await projectService.getProjectsByUserId(user.id)
+export default eventHandler(async (event) => {
+  const query = await zh.useValidatedQuery(event, {
+    teamId: z.string({
+      required_error: 'Team ID is required',
+    }).transform((value) => parseInt(value, 10)),
+  })
+  return await new ProjectService().getProjectsByTeamId(query.teamId)
 })

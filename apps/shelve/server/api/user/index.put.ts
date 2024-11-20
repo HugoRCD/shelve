@@ -1,16 +1,17 @@
-import type { H3Event } from 'h3'
-import type { UpdateUserInput } from '@shelve/types'
+import { AuthType } from '@shelve/types'
+import { zh, z } from 'h3-zod'
 import { UserService } from '~~/server/services/user.service'
 
-export default eventHandler(async (event: H3Event) => {
-  const userService = new UserService()
-  const { user } = event.context
-  const data = await readBody(event) as UpdateUserInput['data']
-  data.username = data.username?.trim()
-  data.email = data.email?.trim()
-  const updatedUser = await userService.updateUser({
-    currentUser: user,
-    data,
+export default eventHandler(async (event) => {
+  const body = await zh.useValidatedBody(event, {
+    username: z.string().min(3).max(50).trim().optional(),
+    email: z.string().email().trim().optional(),
+    avatar: z.string().optional(),
+    authType: z.nativeEnum(AuthType).optional(),
+  })
+  const updatedUser = await new UserService().updateUser(event.context.user, {
+    id: event.context.user.id,
+    ...body,
   })
   await setUserSession(event, {
     user: updatedUser,

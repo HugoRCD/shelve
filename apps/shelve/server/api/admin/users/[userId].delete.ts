@@ -1,13 +1,15 @@
-import type { H3Event } from 'h3'
+import { zh, z } from 'h3-zod'
 import { UserService } from '~~/server/services/user.service'
 
-export default eventHandler(async (event: H3Event) => {
-  const userService = new UserService()
+export default eventHandler(async (event) => {
+  const { userId } = await zh.useValidatedParams(event, {
+    userId: z.string({
+      required_error: 'userId is required',
+    }).transform((value) => parseInt(value, 10)),
+  })
   const { user } = event.context
-  const id = getRouterParam(event, 'userId') as string
-  if (!id) throw createError({ statusCode: 400, statusMessage: 'missing params' })
-  if (user.id === parseInt(id)) throw createError({ statusCode: 400, statusMessage: 'you can\'t delete your own account' })
-  await userService.deleteUser(parseInt(id))
+  if (user.id === userId) throw createError({ statusCode: 400, statusMessage: 'you can\'t delete your own account' })
+  await new UserService().deleteUserById(userId)
   return {
     statusCode: 200,
     message: 'user deleted',

@@ -14,7 +14,6 @@ const {
 if (!currentProject.value)
   await fetchCurrentProject(+projectId)
 
-
 async function refresh() {
   await fetchCurrentProject(+projectId)
 }
@@ -33,11 +32,6 @@ const items = [
     label: 'Files',
     icon: 'lucide:files',
     to: `/project/${projectId}/files`
-  },
-  {
-    label: 'Keys',
-    icon: 'heroicons:key',
-    to: `/project/${projectId}/keys`
   },
   {
     label: 'Settings',

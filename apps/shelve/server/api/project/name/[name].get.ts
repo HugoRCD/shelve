@@ -1,17 +1,23 @@
-import type { H3Event } from 'h3'
+import { z, zh } from 'h3-zod'
+import { TeamService } from '~~/server/services/teams.service'
 
-export default eventHandler(async (event: H3Event) => {
-  const paramName = getRouterParam(event, 'name')
-  if (!paramName) throw createError({ statusCode: 400, statusMessage: 'Missing params' })
-  const { user } = event.context
-  const project = await prisma.project.findFirst({
-    where: {
-      name: {
-        equals: decodeURIComponent(paramName),
-        mode: 'insensitive',
-      },
-      ownerId: user.id,
-    },
+export default eventHandler(async (event) => {
+  const { user } = await requireUserSession(event)
+  const { name } = await zh.useValidatedParams(event, {
+    name: z.string({
+      required_error: 'Project name is required',
+    })
+      .min(1).max(255).trim()
+      .transform((value) => decodeURIComponent(value)),
+  })
+  let { teamId } = await zh.useValidatedQuery(event, {
+    teamId: z.string().transform((value) => parseInt(value, 10)),
+  })
+
+  if (!teamId) teamId = (await new TeamService().getPrivateUserTeam(user.id)).id
+
+  const project = await db.query.projects.findFirst({
+    where: and(ilike(tables.projects.name, name), eq(tables.projects.teamId, teamId)),
   })
 
   if (!project) throw createError({ statusCode: 400, statusMessage: 'Project not found' })

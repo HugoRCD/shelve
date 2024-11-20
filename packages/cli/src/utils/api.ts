@@ -1,6 +1,6 @@
 import { ofetch } from 'ofetch'
 import { isCancel, password } from '@clack/prompts'
-import { getConfig } from './config'
+import { loadShelveConfig } from './config'
 import { mergeEnvFile } from './env'
 import { onCancel } from './index'
 
@@ -19,8 +19,8 @@ export async function getToken(): Promise<string> {
   return token
 }
 
-export async function useApi(): Promise<typeof ofetch> {
-  const { config } = await getConfig()
+export async function useApi(debug: boolean = true): Promise<typeof ofetch> {
+  const config = await loadShelveConfig(false)
   const { url } = config
   let { token } = config
 
@@ -35,6 +35,7 @@ export async function useApi(): Promise<typeof ofetch> {
       Cookie: `authToken=${token}`
     },
     onResponseError(ctx) {
+      if (debug) console.log(ctx.response)
       if (ctx.response.status === 401) onCancel('Authentication failed, please verify your token')
       if (ctx.response.status === 500) onCancel('Internal server error, please try again later')
     }

@@ -5,7 +5,13 @@
   "properties": {
     "project": {
       "type": "string",
-      "description": "The project name"
+      "description": "The project name",
+      "default": "process.env.SHELVE_PROJECT || package_json_name"
+    },
+    "teamId": {
+      "type": "number",
+      "description": "The team ID",
+      "default": "process.env.SHELVE_TEAM_ID || user private team"
     },
     "token": {
       "type": "string",

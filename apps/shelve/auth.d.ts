@@ -1,18 +1,19 @@
 // auth.d.ts
-import type { Role } from '@shelve/types'
+import { AuthType, Role } from '@shelve/types'
 
 declare module '#auth-utils' {
-  type User = {
+  // eslint-disable-next-line
+  interface User {
     id: number
-    email: string
     username: string
+    email: string
     avatar: string
+    authType: AuthType
     role: Role
-    createdAt?: string
-    updatedAt?: string
   }
 
-  type UserSession = {
+  // eslint-disable-next-line
+  interface UserSession {
     user: User
     secure?: {
       githubToken?: string
@@ -20,6 +21,13 @@ declare module '#auth-utils' {
     }
     loggedInAt: string
   }
+
+  // eslint-disable-next-line
+  interface SecureSessionData {
+    githubToken?: string
+    googleToken?: string
+  }
+
 }
 
 export {}

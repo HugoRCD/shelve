@@ -130,16 +130,16 @@ export async function unseal(
 
   const mac = await hmacWithPassword(pass.integrity, { ...opts.integrity, salt: hmacSalt }, macBaseString)
 
-  if (!fixedTimeComparison(mac.digest, hmac)) {
+  if (!fixedTimeComparison(mac.digest, hmac as string)) {
     throw new Error('Bad hmac value')
   }
 
-  const encrypted = base64Decode(encryptedB64)
+  const encrypted = base64Decode(encryptedB64 as string)
 
   const decryptOptions: GenerateKeyOptions<EncryptionAlgorithm> = {
     ...opts.encryption,
     salt: encryptionSalt,
-    iv: base64Decode(encryptionIv),
+    iv: base64Decode(encryptionIv as string),
   }
 
   const decrypted = await decrypt(pass.encryption, decryptOptions, encrypted)
@@ -174,7 +174,7 @@ export async function generateKey(
     throw new Error('Empty password')
   }
 
-  if (options == null || typeof options !== 'object')
+  if (options === null || typeof options !== 'object')
     throw new Error('Bad options')
   if (!(options.algorithm in algorithms))
     throw new Error(`Unknown algorithm: ${options.algorithm}`)

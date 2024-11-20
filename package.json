@@ -13,7 +13,6 @@
     "dev:lp": "turbo dev --filter=@shelve/lp",
     "dev:cli": "turbo dev --filter=@shelve/cli",
     "dev:prepare": "turbo dev:prepare",
-    "prisma:generate": "turbo prisma:generate",
     "generate": "turbo generate",
     "lint": "turbo lint",
     "lint:fix": "turbo lint:fix",
@@ -22,9 +21,10 @@
   },
   "devDependencies": {
     "@hrcd/eslint-config": "edge",
+    "@shelve/cli": "*",
     "automd": "^0.3.12",
-    "eslint": "^9.14.0",
-    "turbo": "^2.2.3",
+    "eslint": "^9.15.0",
+    "turbo": "^2.3.0",
     "typescript": "^5.6.3"
   },
   "engines": {
