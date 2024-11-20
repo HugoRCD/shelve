@@ -1,13 +1,6 @@
 @import "tailwindcss";
 @import "@nuxt/ui";
 
-/* Global styles, css resets, etc. */
-html, body, #__nuxt, #__layout {
-    width: 100%;
-    height: 100%;
-    overscroll-behavior: none;
-}
-
 ::-webkit-scrollbar {
     width: 5px;
     height: 2px;
@@ -16,6 +9,10 @@ html, body, #__nuxt, #__layout {
 ::-webkit-scrollbar-thumb {
     background: var(--ui-bg-inverted);
     border-radius: 5px;
+}
+
+:root {
+  --ui-radius: var(--radius-sm);
 }
 
 @theme {

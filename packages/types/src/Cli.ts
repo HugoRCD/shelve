@@ -1,14 +1,23 @@
 import type { Env, Environment } from './Variables'
 
 export const SHELVE_JSON_SCHEMA = 'https://raw.githubusercontent.com/HugoRCD/shelve/main/packages/types/shelve-config-schema.json'
+export const DEFAULT_URL = 'https://app.shelve.cloud'
 
 export type ShelveConfig = {
   /**
    * The project name
+   *
+   * @default process.env.SHELVE_PROJECT || nearest package.json name
    * */
   project: string
   /**
-   * The token to authenticate with Shelve created using the app (https://shelve.cloud/app/tokens) or your own Shelve instance
+   * The team ID
+   *
+   * @default process.env.SHELVE_TEAM_ID || Your private team will be used
+   */
+  teamId?: number
+  /**
+   * The token to authenticate with Shelve created using the app (https://app.shelve.cloud/tokens) or your own Shelve instance
    *
    * @default process.env.SHELVE_TOKEN
    * */
@@ -16,7 +25,7 @@ export type ShelveConfig = {
   /**
    * The URL of the Shelve instance can be overridden with the `SHELVE_URL` environment variable
    *
-   * @default https://shelve.cloud
+   * @default https://app.shelve.cloud
    * @fallback process.env.SHELVE_URL
    * */
   url: string

@@ -22,6 +22,7 @@ export type Team = {
   name: string;
   logo: string;
   private: boolean;
+  privateOf: number | null;
   createdAt: Date;
   updatedAt: Date;
   members: Member[];

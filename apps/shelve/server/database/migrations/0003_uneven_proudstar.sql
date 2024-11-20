@@ -1,1 +1,0 @@
-ALTER TABLE "teams" ADD COLUMN "logo" varchar DEFAULT 'https://i.imgur.com/6VBx3io.png' NOT NULL;

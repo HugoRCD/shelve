@@ -32,6 +32,7 @@ export class TeamService {
         .values({
           name: input.name,
           private: input.private,
+          privateOf: input.private ? input.requester.id : null,
           logo: input.logo
         })
         .returning()
@@ -135,6 +136,14 @@ export class TeamService {
     name: 'getTeamById',
     getKey: (team: Team) => `teamId:${team.id}`,
   })
+
+  async getPrivateUserTeam(userId: number): Promise<Omit<Team, 'members'>> {
+    const team = await db.query.teams.findFirst({
+      where: and(eq(tables.teams.private, true), eq(tables.teams.privateOf, userId)),
+    })
+    if (!team) throw new Error(`Private team not found for user with id ${userId}`)
+    return team
+  }
 
   async isUserAlreadyMember(teamId: number, email: string): Promise<Member | undefined> {
     const user = await this.getUserByEmail(email)

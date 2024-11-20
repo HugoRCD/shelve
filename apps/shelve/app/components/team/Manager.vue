@@ -40,7 +40,7 @@ const groups = computed(() => [
 </script>
 
 <template>
-  <UModal>
+  <UModal title="Switch team" description="Select a team to switch to">
     <button class="nav-item w-full flex items-center justify-between">
       <span class="flex items-center gap-2">
         <UAvatar :src="currentTeam.logo" size="sm" alt="currentTeam.name" />
@@ -70,7 +70,7 @@ const groups = computed(() => [
           >
             <div class="flex flex-col gap-2 items-center mb-4">
               <UIcon name="lucide:users" class="size-8" />
-              <h3 class="text-2xl font-light font-newsreader italic text-pretty max-w-sm">
+              <h3 class="text-2xl font-light font-newsreader italic text-pretty max-w-xs">
                 Looks like you don't have any team yet.
               </h3>
               <p class="text-sm text-neutral-500">

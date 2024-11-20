@@ -126,7 +126,14 @@ function getProjectManager(manager: string) {
             </template>
           </UModal>
         </div>
-        <UDropdownMenu :items>
+        <UDropdownMenu
+          :items
+          :content="{
+            align: 'start',
+            side: 'right',
+            sideOffset: 8
+          }"
+        >
           <UButton color="neutral" variant="ghost" icon="heroicons:ellipsis-horizontal-20-solid" />
         </UDropdownMenu>
       </div>

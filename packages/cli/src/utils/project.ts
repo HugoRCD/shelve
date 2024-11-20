@@ -1,32 +1,35 @@
 import type { Project } from '@shelve/types'
 import { confirm, isCancel, spinner } from '@clack/prompts'
 import { useApi } from './api'
+import { loadShelveConfig } from './config'
 import { onCancel } from './index'
 
 const s = spinner()
 
 export async function getProjects(): Promise<Project[]> {
+  const { teamId } = await loadShelveConfig(false)
   const api = await useApi()
 
   s.start('Loading projects')
   try {
-    const projects = await api('/project', {
+    const projects = await api(`/teams/projects${ teamId ? `?teamId=${ teamId }` : '' }`, {
       method: 'GET',
     })
     s.stop('Loading projects')
     return projects
   } catch (e) {
-    console.error(e)
     onCancel('Failed to load projects')
   }
 }
 
 export async function getProjectByName(name: string): Promise<Project> {
+  const { teamId } = await loadShelveConfig(false)
   const api = await useApi()
 
   s.start('Fetching project')
   try {
-    const project = await api(`/project/name/${ name }`, {
+    const encodedName = encodeURIComponent(name)
+    const project = await api(`/project/name/${ encodedName }${ teamId ? `?teamId=${ teamId }` : '' }`, {
       method: 'GET',
     })
     s.stop('Fetching project')
@@ -50,6 +53,7 @@ export async function getProjectByName(name: string): Promise<Project> {
 }
 
 export async function createProject(name: string): Promise<Project> {
+  const { teamId } = await loadShelveConfig(false)
   const api = await useApi()
 
   s.start('Creating project')
@@ -58,7 +62,7 @@ export async function createProject(name: string): Promise<Project> {
       method: 'POST',
       body: {
         name: name.charAt(0).toUpperCase() + name.slice(1),
-        teamId: 1,
+        teamId
       }
     })
     s.stop('Creating project')

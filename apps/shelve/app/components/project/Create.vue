@@ -3,7 +3,7 @@ import type { CreateProjectInput } from '@shelve/types'
 
 const defaultTeam = useCurrentTeam()
 
-const projectCreateInput = ref<CreateProjectInput>({
+const projectCreateInput = ref<Omit<CreateProjectInput, 'teamId'>>({
   name: '',
   description: '',
   logo: '',
@@ -11,7 +11,6 @@ const projectCreateInput = ref<CreateProjectInput>({
   projectManager: '',
   homepage: '',
   variablePrefix: '',
-  teamId: defaultTeam.value?.id,
 })
 
 const isOpen = ref(false)

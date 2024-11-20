@@ -5,36 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1731786185705,
-      "tag": "0000_past_starjammers",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1731943730265,
-      "tag": "0001_luxuriant_doctor_octopus",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1731945490620,
-      "tag": "0002_early_raza",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1731953073618,
-      "tag": "0003_uneven_proudstar",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "7",
-      "when": 1731963047511,
-      "tag": "0004_tearful_lord_hawal",
+      "when": 1732100025153,
+      "tag": "0000_romantic_jackal",
       "breakpoints": true
     }
   ]

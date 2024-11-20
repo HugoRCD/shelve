@@ -34,6 +34,7 @@ export const teams = pgTable('teams', {
   name: varchar().notNull(),
   logo: varchar().default('https://i.imgur.com/6VBx3io.png').notNull(),
   private: boolean().default(true).notNull(),
+  privateOf: integer().references(() => users.id, { onDelete: 'cascade' }),
   ...timestamps,
 })
 

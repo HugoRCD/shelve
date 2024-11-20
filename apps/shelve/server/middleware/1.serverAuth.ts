@@ -21,6 +21,10 @@ export default defineEventHandler(async (event) => {
   if (authToken) {
     const user = await new TokenService().getUserByAuthToken(authToken)
     if (!user) throw createError({ statusCode: 401, statusMessage: 'Invalid token' })
+    await setUserSession(event, {
+      user,
+      loggedInAt: new Date().toISOString(),
+    })
     event.context.user = user
     return
   }

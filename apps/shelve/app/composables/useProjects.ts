@@ -32,11 +32,14 @@ export function useProjects() {
     currentLoading.value = false
   }
 
-  async function createProject(createProjectInput: CreateProjectInput) {
+  async function createProject(createProjectInput: Omit<CreateProjectInput, 'teamId'>) {
     try {
       const response = await $fetch<Project>('/api/project', {
         method: 'POST',
-        body: createProjectInput,
+        body: {
+          ...createProjectInput,
+          teamId: teamId.value,
+        }
       })
       projects.value.push(response)
       toast.success('Project created')
