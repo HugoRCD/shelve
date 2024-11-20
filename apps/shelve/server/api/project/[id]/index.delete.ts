@@ -4,7 +4,7 @@ import { ProjectService } from '~~/server/services/project.service'
 export default eventHandler(async (event) => {
   const { id } = await zh.useValidatedParams(event, {
     id: z.string({
-      required_error: 'Project id is required',
+      required_error: 'Project ID is required',
     }).transform((value) => parseInt(value, 10)),
   })
   await new ProjectService().deleteProject(id, event.context.user.id)

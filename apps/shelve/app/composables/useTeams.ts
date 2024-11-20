@@ -20,19 +20,36 @@ export function useTeams() {
   const loading = ref(false)
   const createLoading = ref(false)
 
+  const lastUsedTeamId = useCookie<number>('lastUsedTeam', {
+    watch: true,
+  })
+
   async function fetchTeams() {
     loading.value = true
-    teams.value = await $fetch<Team[]>('/api/teams', { method: 'GET' })
-    if (!teams) throw new Error('Failed to fetch teams')
-    currentTeam.value = teams.value.find((team) => team.private) || teams.value[0] as Team
-    teamId.value = currentTeam.value.id
-    loading.value = false
+
+    try {
+      const fetchedTeams = await $fetch<Team[]>('/api/teams', { method: 'GET' })
+
+      if (!fetchedTeams) throw new Error('Failed to fetch teams')
+
+      teams.value = fetchedTeams
+
+      const privateTeam = teams.value.find(team => team.private)
+      const defaultTeamId = privateTeam ? privateTeam.id : teams.value[0]?.id as number
+
+      lastUsedTeamId.value = lastUsedTeamId.value || defaultTeamId
+      currentTeam.value = teams.value.find(team => team.id === lastUsedTeamId.value) as Team
+      teamId.value = lastUsedTeamId.value
+    } finally {
+      loading.value = false
+    }
   }
 
   async function selectTeam(id: number) {
     teamId.value = id
     await useProjects().fetchProjects()
-    currentTeam.value = teams.value.find((team) => team.id === id) as Team
+    currentTeam.value = teams.value.find(team => team.id === id) as Team
+    lastUsedTeamId.value = id
   }
 
   async function createTeam(name: string) {

@@ -45,23 +45,7 @@ export class ProjectService {
   }
 
   getProjectById = cachedFunction(async (projectId: number, userId: number): Promise<Project> => {
-    const hasAccess = await this.hasAccessToProject(projectId, userId)
-    if (!hasAccess) throw createError({ statusCode: 401, statusMessage: 'Unauthorized' })
-
-    const project = await db.query.projects.findFirst({
-      where: eq(tables.projects.id, projectId),
-      with: {
-        team: {
-          with: {
-            members: {
-              with: {
-                user: true
-              }
-            }
-          }
-        }
-      }
-    })
+    const project = await this.hasAccessToProject(projectId, userId)
 
     if (!project) throw new Error(`Project not found with id ${projectId}`)
     return project
@@ -81,13 +65,14 @@ export class ProjectService {
     getKey: (teamId: number) => `teamId:${teamId}`,
   })
 
-  async deleteProject(id: number, teamId: number): Promise<void> {
-    await this.deleteCachedProjectById(id)
+  async deleteProject(projectId: number, userId: number): Promise<void> {
+    const { teamId } = await this.hasAccessToProject(projectId, userId)
+    await this.deleteCachedProjectById(projectId)
     await this.deleteCachedTeamProjects(teamId)
 
     await db.delete(tables.projects)
       .where(and(
-        eq(tables.projects.id, id),
+        eq(tables.projects.id, projectId),
         eq(tables.projects.teamId, teamId)
       ))
       .returning()
@@ -132,7 +117,7 @@ export class ProjectService {
     return project
   }
 
-  private async hasAccessToProject(projectId: number, userId: number): Promise<boolean> {
+  private async hasAccessToProject(projectId: number, userId: number): Promise<Project> {
     const project = await db.query.projects.findFirst({
       where: eq(tables.projects.id, projectId),
       with: {
@@ -146,7 +131,9 @@ export class ProjectService {
       }
     })
 
-    return !!project
+    if (!project) throw createError({ statusCode: 401, message: 'Unauthorized' })
+
+    return project
   }
 
   async deleteCachedTeamProjects(teamId: number): Promise<void> {
