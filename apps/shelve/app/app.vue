@@ -55,7 +55,10 @@ defineShortcuts({
   },
 })
 
-if (!fetchTeams())
+const { loggedIn } = useUserSession()
+const teams = useUserTeams()
+
+if (loggedIn.value && teams.value.length === 0)
   await fetchTeams()
 </script>
 

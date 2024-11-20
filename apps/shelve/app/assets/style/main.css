@@ -12,6 +12,12 @@
     border-radius: 5px;
 }
 
+html, body, #__nuxt, #__layout {
+  width: 100%;
+  height: 100%;
+  overscroll-behavior: none;
+}
+
 @theme {
   --font-newsreader: 'Newsreader', serif;
   --font-inter: 'Inter', sans-serif;

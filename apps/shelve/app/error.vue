@@ -8,6 +8,7 @@ type ErrorProps = {
 defineProps<ErrorProps>()
 
 const router = useRouter()
+const { clear } = useUserSession()
 
 const handleError = () => clearError({ redirect: '/' })
 const goBack = () => {
@@ -27,12 +28,13 @@ const clearCache = async () => {
   }
 }
 
-const clearCookies = () => {
+const clearCookies = async () => {
   document.cookie.split(';').forEach(cookie => {
     const [name] = cookie.split('=')
     document.cookie = `${name?.trim()}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`
   })
-  window.location.reload()
+  await clear()
+  navigateTo('/login')
 }
 
 const clearLocalStorage = () => {

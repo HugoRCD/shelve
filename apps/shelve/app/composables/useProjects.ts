@@ -1,7 +1,7 @@
 import type { CreateProjectInput, Project } from '@shelve/types'
 
 export const useUserProjects = () => {
-  return useState<Project[]>('projects')
+  return useState<Project[]>('projects', () => [])
 }
 
 export const useCurrentProject = () => {

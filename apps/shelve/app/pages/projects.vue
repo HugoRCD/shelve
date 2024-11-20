@@ -4,14 +4,19 @@ definePageMeta({
   path: '/',
 })
 
+const { fetchTeams } = useTeams()
 const {
   projects,
   loading,
   fetchProjects,
 } = useProjects()
 
-if (!projects.value)
-  await fetchProjects()
+onMounted(async () => {
+  if (!projects.value) {
+    await fetchTeams()
+    await fetchProjects()
+  }
+})
 </script>
 
 <template>

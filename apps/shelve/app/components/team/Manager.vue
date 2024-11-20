@@ -41,7 +41,7 @@ const groups = computed(() => [
 
 <template>
   <UModal title="Switch team" description="Select a team to switch to">
-    <button class="nav-item w-full flex items-center justify-between">
+    <button v-if="currentTeam" class="nav-item w-full flex items-center justify-between">
       <span class="flex items-center gap-2">
         <UAvatar :src="currentTeam.logo" size="sm" alt="currentTeam.name" />
         <span class="text-sm">

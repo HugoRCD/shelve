@@ -2,7 +2,7 @@ import type { Member, Team } from '@shelve/types'
 import { TeamRole, Role } from '@shelve/types'
 
 export const useUserTeams = () => {
-  return useState<Team[]>('teams')
+  return useState<Team[]>('teams', () => [])
 }
 
 export const useCurrentTeam = () => {
@@ -34,6 +34,7 @@ export function useTeams() {
   const teams = useUserTeams()
   const currentTeam = useCurrentTeam()
   const teamId = useTeamId()
+  const { user } = useUserSession()
   const loading = ref(false)
   const createLoading = ref(false)
 
@@ -51,10 +52,8 @@ export function useTeams() {
 
       teams.value = fetchedTeams
 
-      const privateTeam = teams.value.find(team => team.private)
-      const defaultTeamId = privateTeam ? privateTeam.id : teams.value[0]?.id as number
-
-      lastUsedTeamId.value = lastUsedTeamId.value || defaultTeamId
+      const privateTeam = teams.value.find(team => team.private && team.members.some(member => member.userId === user.value!.id))
+      lastUsedTeamId.value = lastUsedTeamId.value || privateTeam!.id
       currentTeam.value = teams.value.find(team => team.id === lastUsedTeamId.value) as Team
     } finally {
       loading.value = false
