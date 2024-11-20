@@ -31,7 +31,7 @@ export class TeamService {
       const [team] = await tx.insert(tables.teams)
         .values({
           name: input.name,
-          private: input.private,
+          private: input.private || false,
           privateOf: input.private ? input.requester.id : null,
           logo: input.logo
         })

@@ -9,11 +9,9 @@ export default eventHandler(async (event) => {
       required_error: 'Cannot create team without name'
     }).min(3).max(50).trim(),
     logo: z.string().optional(),
-    private: z.boolean().default(false),
   })
   const input: CreateTeamInput = {
     name: body.name,
-    private: body.private,
     logo: body.logo,
     requester: {
       id: user.id,

@@ -1,5 +1,5 @@
 import type { Member, Team } from '@shelve/types'
-import { TeamRole } from '@shelve/types'
+import { TeamRole, Role } from '@shelve/types'
 
 export const useUserTeams = () => {
   return useState<Team[]>('teams')
@@ -10,7 +10,24 @@ export const useCurrentTeam = () => {
 }
 
 export const useTeamId = () => {
-  return useState<number>('teamId')
+  const currentTeam = useCurrentTeam()
+  return computed(() => currentTeam.value?.id)
+}
+
+export const useTeamRole = () => {
+  const currentTeam = useCurrentTeam()
+  const { user } = useUserSession()
+  return computed(() => {
+    if (!currentTeam.value) return null
+    if (user.value!.role === Role.ADMIN) return TeamRole.OWNER
+    const member = currentTeam.value.members.find(member => member.userId === user.value!.id)
+    return member?.role
+  })
+}
+
+export const isPrivateTeam = () => {
+  const currentTeam = useCurrentTeam()
+  return computed(() => currentTeam.value?.private)
 }
 
 export function useTeams() {
@@ -39,17 +56,15 @@ export function useTeams() {
 
       lastUsedTeamId.value = lastUsedTeamId.value || defaultTeamId
       currentTeam.value = teams.value.find(team => team.id === lastUsedTeamId.value) as Team
-      teamId.value = lastUsedTeamId.value
     } finally {
       loading.value = false
     }
   }
 
   async function selectTeam(id: number) {
-    teamId.value = id
-    await useProjects().fetchProjects()
     currentTeam.value = teams.value.find(team => team.id === id) as Team
     lastUsedTeamId.value = id
+    await useProjects().fetchProjects()
   }
 
   async function createTeam(name: string) {

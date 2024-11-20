@@ -11,6 +11,10 @@ const { updateTeam, deleteTeam } = useTeams()
 const updateLoading = ref(false)
 
 const team = useCurrentTeam()
+const teamRole = useTeamRole()
+const isPrivate = isPrivateTeam()
+
+const canBeDeleted = computed(() => teamRole.value === TeamRole.OWNER && !isPrivate.value)
 
 function updateCurrentTeam() {
   updateLoading.value = true
@@ -67,7 +71,7 @@ const open = ref(false)
         <UButton type="submit" :loading="updateLoading">
           Save
         </UButton>
-        <UButton color="error" variant="solid" @click="open = !open">
+        <UButton v-if="canBeDeleted" color="error" variant="solid" @click="open = !open">
           Delete Team
         </UButton>
       </div>

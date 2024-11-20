@@ -35,7 +35,7 @@ export type Requester = {
 
 export type CreateTeamInput = {
   name: string;
-  private: boolean;
+  private?: boolean;
   logo?: string;
   requester: Requester;
 };
