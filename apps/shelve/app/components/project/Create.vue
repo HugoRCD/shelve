@@ -23,6 +23,15 @@ const createLoading = ref(false)
 async function createProjectFunction() {
   createLoading.value = true
   await createProject(projectCreateInput.value)
+  projectCreateInput.value = {
+    name: '',
+    description: '',
+    logo: '',
+    repository: '',
+    projectManager: '',
+    homepage: '',
+    variablePrefix: '',
+  }
   isOpen.value = false
   createLoading.value = false
   await fetchProjects()

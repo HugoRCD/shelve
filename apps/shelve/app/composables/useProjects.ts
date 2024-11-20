@@ -41,7 +41,6 @@ export function useProjects() {
           teamId: teamId.value,
         }
       })
-      console.log('response', response)
       projects.value.push(response)
       toast.success('Project created')
     } catch (error) {
