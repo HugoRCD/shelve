@@ -136,11 +136,9 @@ export class VariableService {
   }
 
   getProjectVariables = cachedFunction(async (projectId: number, environment?: EnvType): Promise<Variable[]> => {
-    const variables = await db.query.variables.findMany({
+    return await db.query.variables.findMany({
       where: this.buildEnvironmentQuery(projectId, environment)
     })
-
-    return await this.decryptVariables(variables)
   }, {
     maxAge: this.CACHE_TTL,
     name: 'getVariables',
@@ -154,7 +152,7 @@ export class VariableService {
     }
   }
 
-  private async decryptVariables(variables: Variable[]): Promise<Variable[]> {
+  async decryptVariables(variables: Variable[]): Promise<Variable[]> {
     return await Promise.all(variables.map(this.decryptVariable.bind(this)))
   }
 
