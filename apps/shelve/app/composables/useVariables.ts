@@ -66,7 +66,6 @@ export function useVariables(refresh: () => Promise<void>, projectId: string) {
       return
     }
     try {
-      console.log('variablesInput.value', variablesInput.value)
       await $fetch(`/api/variable`, {
         method: 'POST',
         body: variablesInput.value,
@@ -74,8 +73,9 @@ export function useVariables(refresh: () => Promise<void>, projectId: string) {
       toast.success('Your variables have been created')
       variablesToCreate.value = 1
       variablesInput.value = {
-        autoUppercase: autoUppercase.value,
         projectId: +projectId,
+        autoUppercase: autoUppercase.value,
+        environment: environment.value,
         variables: [
           {
             index: 1,
