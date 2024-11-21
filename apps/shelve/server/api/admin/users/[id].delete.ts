@@ -1,13 +1,14 @@
 import { zh } from 'h3-zod'
-import { ProjectService } from '~~/server/services/project.service'
+import { UserService } from '~~/server/services/user.service'
 import { idParamsSchema } from '~~/server/database/zod'
 
 export default eventHandler(async (event) => {
   const { user } = await requireUserSession(event)
   const { id } = await zh.useValidatedParams(event, idParamsSchema)
-  await new ProjectService().deleteProject(id, user.id)
+  if (user.id === id) throw createError({ statusCode: 400, statusMessage: 'you can\'t delete your own account' })
+  await new UserService().deleteUserById(id)
   return {
     statusCode: 200,
-    message: 'Project deleted',
+    message: 'user deleted',
   }
 })

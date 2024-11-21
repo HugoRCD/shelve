@@ -1,29 +1,27 @@
 import { z, zh } from 'h3-zod'
-import type { UpdateMemberInput } from '@shelve/types'
 import { TeamRole } from '@shelve/types'
 import { MemberService } from '~~/server/services/member.service'
 
 export default eventHandler(async (event) => {
-  const params = await zh.useValidatedParams(event, {
-    teamId: z.string({
-      required_error: 'Missing teamId',
-    }).transform((value) => parseInt(value)),
-    id: z.string({
-      required_error: 'Missing memberId',
-    }).transform((value) => parseInt(value)),
+  const { user } = await requireUserSession(event)
+  const { teamId, memberId } = await zh.useValidatedParams(event, {
+    teamId: z.coerce.number({
+      required_error: 'Missing team ID',
+    }),
+    memberId: z.coerce.number({
+      required_error: 'Missing member ID',
+    })
   })
-  const body = await zh.useValidatedBody(event, {
+  const { role } = await zh.useValidatedBody(event, {
     role: z.nativeEnum(TeamRole),
   })
-  const { user } = event.context
-  const input: UpdateMemberInput = {
-    teamId: params.teamId,
-    memberId: params.id,
-    role: body.role,
+  return new MemberService().updateMember({
+    teamId,
+    memberId,
+    role,
     requester: {
       id: user.id,
       role: user.role,
     },
-  }
-  return new MemberService().updateMember(input)
+  })
 })

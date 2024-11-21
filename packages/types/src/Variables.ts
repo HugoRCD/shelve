@@ -1,4 +1,8 @@
-export type Environment = 'production' | 'preview' | 'development' | 'staging' | 'dev' | 'prod';
+export enum EnvType {
+  DEVELOPMENT = 'development',
+  PREVIEW = 'preview',
+  PRODUCTION = 'production',
+}
 
 export type Variable = {
   id: number;
@@ -8,14 +12,6 @@ export type Variable = {
   environment: string;
   createdAt: Date;
   updatedAt: Date;
-};
-
-export type CreateVariableInput = {
-  key: string;
-  value: string;
-  projectId: number;
-  environment: string;
-  autoUppercase?: boolean;
 };
 
 export type CreateVariablesInput = {

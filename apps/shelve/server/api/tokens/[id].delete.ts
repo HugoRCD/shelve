@@ -1,11 +1,9 @@
-import { z, zh } from 'h3-zod'
+import { zh } from 'h3-zod'
 import { TokenService } from '~~/server/services/token.service'
+import { idParamsSchema } from '~~/server/database/zod'
 
 export default defineEventHandler(async (event) => {
-  const params = await zh.useValidatedParams(event, {
-    id: z.string({
-      required_error: 'Cannot delete token without id'
-    }).transform((value) => parseInt(value, 10))
-  })
-  await new TokenService().deleteUserToken(params.id, event.context.user.id)
+  const { id } = await zh.useValidatedParams(event, idParamsSchema)
+  const { user } = await requireUserSession(event)
+  await new TokenService().deleteUserToken(id, user.id)
 })

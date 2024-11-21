@@ -8,7 +8,7 @@ export default eventHandler(async (event) => {
     teamId: z.string().transform((value) => parseInt(value, 10)).optional()
   })
 
-  if (!teamId) teamId = (await new TeamService().getPrivateUserTeam(user.id)).id
+  if (!teamId) teamId = await new TeamService().getPrivateUserTeamId(user.id)
 
   return await new ProjectService().getProjectsByTeamId(teamId)
 })

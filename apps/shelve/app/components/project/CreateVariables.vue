@@ -215,7 +215,7 @@ const handlePasswordGenerated = (password: string, index: number) => variablesIn
           </h4>
           <div class="flex select-none gap-4">
             <UCheckbox v-model="selectedEnvironment.production" name="production" label="Production" />
-            <UCheckbox v-model="selectedEnvironment.preview" name="preview" label="Staging" />
+            <UCheckbox v-model="selectedEnvironment.preview" name="preview" label="Preview" />
             <UCheckbox v-model="selectedEnvironment.development" name="development" label="Development" />
           </div>
         </div>

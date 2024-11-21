@@ -4,9 +4,9 @@ definePageMeta({
 })
 
 const { projectId } = useRoute().params as { projectId: string }
+const currentProject = useCurrentProject()
 
 const {
-  currentProject,
   currentLoading,
   fetchCurrentProject
 } = useProjects()

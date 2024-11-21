@@ -61,8 +61,10 @@ export function useTeams() {
   }
 
   async function selectTeam(id: number) {
+    const route = useRoute()
     currentTeam.value = teams.value.find(team => team.id === id) as Team
     lastUsedTeamId.value = id
+    if (route.path.includes('/project/')) navigateTo('/')
     await useProjects().fetchProjects()
   }
 

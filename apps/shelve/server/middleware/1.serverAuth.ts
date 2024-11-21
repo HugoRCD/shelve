@@ -25,11 +25,5 @@ export default defineEventHandler(async (event) => {
       user,
       loggedInAt: new Date().toISOString(),
     })
-    event.context.user = user
-    return
   }
-
-  const session = await requireUserSession(event)
-
-  event.context.user = session.user
 })

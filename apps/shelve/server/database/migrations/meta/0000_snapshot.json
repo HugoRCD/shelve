@@ -1,5 +1,5 @@
 {
-  "id": "5607f6db-7fa1-4b61-be92-c281430f3175",
+  "id": "0c8a449b-64b1-4bef-82f3-358341342238",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -233,7 +233,7 @@
           "type": "varchar",
           "primaryKey": false,
           "notNull": true,
-          "default": "'https://i.imgur.com/6VBx3io.png'"
+          "default": "'https://github.com/HugoRCD/shelve/blob/main/assets/default.png?raw=true'"
         },
         "private": {
           "name": "private",
@@ -529,6 +529,15 @@
       "values": [
         "github",
         "google"
+      ]
+    },
+    "public.env_types": {
+      "name": "env_types",
+      "schema": "public",
+      "values": [
+        "development",
+        "preview",
+        "production"
       ]
     },
     "public.roles": {

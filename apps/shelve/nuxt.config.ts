@@ -82,6 +82,11 @@ export default defineNuxtConfig({
         dir: './app/assets/icons'
       },
     ],
+    clientBundle: {
+      scan: true,
+      includeCustomCollections: true
+    },
+    provider: 'iconify'
   },
 
   colorMode: {

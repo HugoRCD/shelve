@@ -11,10 +11,10 @@ export default eventHandler(async (event) => {
       .transform((value) => decodeURIComponent(value)),
   })
   let { teamId } = await zh.useValidatedQuery(event, {
-    teamId: z.string().transform((value) => parseInt(value, 10)),
+    teamId: z.coerce.number().optional(),
   })
 
-  if (!teamId) teamId = (await new TeamService().getPrivateUserTeam(user.id)).id
+  if (!teamId) teamId = await new TeamService().getPrivateUserTeamId(user.id)
 
   const project = await db.query.projects.findFirst({
     where: and(ilike(tables.projects.name, name), eq(tables.projects.teamId, teamId)),

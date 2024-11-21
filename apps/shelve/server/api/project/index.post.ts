@@ -1,8 +1,8 @@
 import { z, zh } from 'h3-zod'
-import type { CreateProjectInput } from '@shelve/types'
 import { ProjectService } from '~~/server/services/project.service'
 
 export default eventHandler(async (event) => {
+  const { user } = await requireUserSession(event)
   const body = await zh.useValidatedBody(event, {
     name: z.string({
       required_error: 'Name is required',
@@ -17,13 +17,11 @@ export default eventHandler(async (event) => {
     homepage: z.string().trim().optional(),
     variablePrefix: z.string().trim().optional(),
   })
-  const { user } = event.context
-  const input: CreateProjectInput = {
+  return await new ProjectService().createProject({
     ...body,
     requester: {
       id: user.id,
       role: user.role,
     }
-  }
-  return await new ProjectService().createProject(input)
+  })
 })

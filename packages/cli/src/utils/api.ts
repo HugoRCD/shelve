@@ -19,7 +19,8 @@ export async function getToken(): Promise<string> {
   return token
 }
 
-export async function useApi(debug: boolean = true): Promise<typeof ofetch> {
+export async function useApi(): Promise<typeof ofetch> {
+  const debug: boolean = process.env.DEBUG === 'true'
   const config = await loadShelveConfig(false)
   const { url } = config
   let { token } = config

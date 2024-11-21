@@ -74,6 +74,8 @@ export function useVariables(refresh: () => Promise<void>, projectId: string) {
       variablesToCreate.value = 1
       variablesInput.value = {
         projectId: +projectId,
+        autoUppercase: autoUppercase.value,
+        environment: environment.value,
         variables: [
           {
             index: 1,

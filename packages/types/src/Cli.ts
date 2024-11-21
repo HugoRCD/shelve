@@ -1,4 +1,4 @@
-import type { Env, Environment } from './Variables'
+import { type Env, EnvType } from './Variables'
 
 export const SHELVE_JSON_SCHEMA = 'https://raw.githubusercontent.com/HugoRCD/shelve/main/packages/types/shelve-config-schema.json'
 export const DEFAULT_URL = 'https://app.shelve.cloud'
@@ -104,7 +104,7 @@ export type PushEnvFileInput = {
   /**
    * The environment to push the variables to
    * */
-  environment: Environment
+  environment: EnvType
   /**
    * Whether to confirm changes before pushing the variables to Shelve
    *

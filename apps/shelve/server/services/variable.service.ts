@@ -1,23 +1,28 @@
-import type { CreateVariableInput, CreateVariablesInput, Environment, UpdateVariableInput, Variable } from '@shelve/types'
+import type { CreateVariablesInput, UpdateVariableInput, Variable } from '@shelve/types'
+import type { Storage, StorageValue } from 'unstorage'
 import { seal, unseal } from '@shelve/crypto'
+import { EnvType } from '@shelve/types'
 
 export class VariableService {
 
   private readonly encryptionKey: string
   private readonly ENV_ASSOCIATION = {
-    production: 'production',
-    preview: 'preview',
-    staging: 'preview',
-    development: 'development',
-    prod: 'production',
-    dev: 'development',
+    production: EnvType.PRODUCTION,
+    preview: EnvType.PREVIEW,
+    development: EnvType.DEVELOPMENT,
   } as const
+  private readonly storage: Storage<StorageValue>
+  private readonly CACHE_TTL = 60 * 60 // 1 hour
+  private readonly CACHE_PREFIX = {
+    variables: 'nitro:functions:getVariables:projectId:'
+  }
 
   constructor() {
     this.encryptionKey = useRuntimeConfig().private.encryptionKey
+    this.storage = useStorage('cache')
   }
 
-  async updateVariable(input: UpdateVariableInput): Promise<Variable> {
+  async updateVariable(input: UpdateVariableInput, decrypt: boolean = true): Promise<Variable> {
     const variable = await this.getVariableById(input.id)
 
     const updateData: Partial<Variable> = {
@@ -35,7 +40,8 @@ export class VariableService {
       .returning()
     if (!updatedVariable) throw createError({ statusCode: 500, message: 'Failed to update variable' })
 
-    return this.decryptVariable(updatedVariable)
+    await this.deleteCachedProjectVariables(updatedVariable.projectId)
+    return decrypt ? this.decryptVariable(updatedVariable) : updatedVariable
   }
 
   async getVariableById(id: number): Promise<Variable> {
@@ -56,7 +62,7 @@ export class VariableService {
     return this.decryptVariable(variable)
   }
 
-  async getVariableByIdAndEnv(projectId: number, environment: Environment): Promise<Variable[]> {
+  async getVariableByIdAndEnv(projectId: number, environment: EnvType): Promise<Variable[]> {
     const variables = await db.query.variables.findMany({
       where: this.buildEnvironmentQuery(projectId, environment)
     })
@@ -75,40 +81,72 @@ export class VariableService {
         message: `Variable not found with id ${id}`
       })
     }
+
+    await this.deleteCachedProjectVariables(result[0].projectId)
   }
 
   // Multiple Variables Operations
   async createVariables(input: CreateVariablesInput): Promise<Variable[]> {
-    const { projectId, variables, environment = 'development', autoUppercase = false, method = 'merge' } = input
+    const {
+      projectId,
+      variables,
+      environment = 'development',
+      autoUppercase = false,
+      method = 'merge'
+    } = input
 
-    if (method === 'overwrite')
-      await this.deleteProjectVariables(projectId, environment)
+    const normalizedEnv = this.normalizeEnvironment(environment)
 
-    const variablesToCreate = await Promise.all(
-      variables.map(async (variable) => ({
-        projectId,
-        key: autoUppercase ? variable.key.toUpperCase() : variable.key,
-        value: await seal(variable.value, this.encryptionKey),
-        environment: this.normalizeEnvironment(environment)
-      }))
+    if (method === 'overwrite') await this.deleteProjectVariables(projectId, normalizedEnv)
+
+    const existingVariables = await this.getVariableByIdAndEnv(projectId, environment as EnvType)
+
+    const variablesToUpsert = await Promise.all(
+      variables.map(async (variable) => {
+        const key = autoUppercase ? variable.key.toUpperCase() : variable.key
+        const existingVariable = existingVariables.find(v =>
+          v.key === key &&
+          v.environment === normalizedEnv
+        )
+
+        if (existingVariable) {
+          return this.updateVariable({
+            id: existingVariable.id,
+            projectId,
+            key,
+            value: variable.value,
+            environment: normalizedEnv
+          }, false)
+        }
+
+        return db.insert(tables.variables)
+          .values({
+            projectId,
+            key,
+            value: await seal(variable.value, this.encryptionKey),
+            environment: normalizedEnv
+          })
+          .returning()
+          .then(([v]) => v)
+      })
     )
 
-    const createdVariables = await db.insert(tables.variables)
-      .values(variablesToCreate)
-      .returning()
-
-    return this.decryptVariables(createdVariables)
+    await this.deleteCachedProjectVariables(projectId)
+    return this.decryptVariables(variablesToUpsert)
   }
 
-  async getProjectVariables(projectId: number, environment?: Environment): Promise<Variable[]> {
+  getProjectVariables = cachedFunction(async (projectId: number, environment?: EnvType): Promise<Variable[]> => {
     const variables = await db.query.variables.findMany({
       where: this.buildEnvironmentQuery(projectId, environment)
     })
 
     return await this.decryptVariables(variables)
-  }
+  }, {
+    maxAge: this.CACHE_TTL,
+    name: 'getVariables',
+    getKey: (projectId: number) => `projectId:${projectId}`
+  })
 
-  // Helper Methods
   private async decryptVariable(variable: Variable): Promise<Variable> {
     return {
       ...variable,
@@ -120,27 +158,30 @@ export class VariableService {
     return await Promise.all(variables.map(this.decryptVariable.bind(this)))
   }
 
-  private normalizeEnvironment(env: string): string {
-    return env.split('|')
-      .map(e => this.ENV_ASSOCIATION[e as Environment] || e)
-      .filter(Boolean)
-      .join('|')
+  private normalizeEnvironment(env: string): EnvType {
+    const envs = env.split('|')
+    return envs.map(e => this.ENV_ASSOCIATION[e as EnvType] || e).filter(Boolean).join('|') as EnvType
   }
 
-  private buildEnvironmentQuery(projectId: number, environment?: string) {
+  private buildEnvironmentQuery(projectId: number, environment?: EnvType) {
     if (!environment) {
       return eq(tables.variables.projectId, projectId)
     }
 
+    const normalizedEnv = this.normalizeEnvironment(environment)
     return and(
       eq(tables.variables.projectId, projectId),
-      like(tables.variables.environment, `%${this.normalizeEnvironment(environment)}%`)
+      eq(tables.variables.environment, normalizedEnv)
     )
   }
 
-  private async deleteProjectVariables(projectId: number, environment?: string): Promise<void> {
+  private async deleteProjectVariables(projectId: number, environment?: EnvType): Promise<void> {
     await db.delete(tables.variables)
       .where(this.buildEnvironmentQuery(projectId, environment))
+  }
+
+  private async deleteCachedProjectVariables(projectId: number): Promise<void> {
+    await this.storage.removeItem(`${this.CACHE_PREFIX.variables}${projectId}.json`)
   }
 
 }

@@ -9,7 +9,7 @@ export class MemberService {
   private readonly TeamService: TeamService
   private readonly CACHE_TTL = 60 * 60 // 1 hour
   private readonly CACHE_PREFIX = {
-    members: 'nitro:functions:getTeamMembersById:teamId:'
+    members: 'nitro:functions:getTeamMembers:teamId:'
   }
 
   constructor() {
@@ -41,8 +41,7 @@ export class MemberService {
     if (!newMember) throw new Error('Failed to add member')
     const member = await this.findMemberById(newMember.id)
     await this.deleteCachedMembersByTeamId(teamId)
-    await this.TeamService.deleteCachedTeamsByUserId(member.userId)
-    await this.TeamService.deleteCachedTeamsByUserId(requester.id)
+    await this.TeamService.deleteCachedForTeamMembers(teamId)
     return member
   }
 
@@ -58,8 +57,7 @@ export class MemberService {
 
     const member = await this.findMemberById(memberId)
     await this.deleteCachedMembersByTeamId(teamId)
-    await this.TeamService.deleteCachedTeamsByUserId(member.userId)
-    await this.TeamService.deleteCachedTeamsByUserId(requester.id)
+    await this.TeamService.deleteCachedForTeamMembers(teamId)
     return member
   }
 
@@ -69,9 +67,8 @@ export class MemberService {
 
     const member = await this.findMemberById(memberId)
     await this.deleteCachedMembersByTeamId(teamId)
-    await this.TeamService.deleteCachedTeamsByUserId(member.userId)
-    await this.TeamService.deleteCachedTeamsByUserId(requester.id)
-    await db.delete(tables.members).where(eq(tables.members.id, memberId))
+    await this.TeamService.deleteCachedForTeamMembers(teamId)
+    await db.delete(tables.members).where(eq(tables.members.id, member.id))
   }
 
   async findMemberById(memberId: number): Promise<Member> {
@@ -97,7 +94,7 @@ export class MemberService {
     return members
   }, {
     maxAge: this.CACHE_TTL,
-    name: 'getTeamMembersById',
+    name: 'getTeamMembers',
     getKey: (teamId) => `teamId:${teamId}`,
   })
 

@@ -10,6 +10,8 @@ declare module '#auth-utils' {
     avatar: string
     authType: AuthType
     role: Role
+    createdAt: Date
+    updatedAt: Date
   }
 
   // eslint-disable-next-line
