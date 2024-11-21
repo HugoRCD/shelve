@@ -5,7 +5,7 @@ export const useUserProjects = () => {
 }
 
 export const useCurrentProject = () => {
-  return useState<Project>('currentProject')
+  return useState<Project | null>('currentProject', () => null)
 }
 
 export function useProjects() {
@@ -76,7 +76,6 @@ export function useProjects() {
 
   return {
     projects,
-    currentProject,
     loading,
     currentLoading,
     fetchProjects,
