@@ -24,7 +24,7 @@ export class VariableService {
     this.storage = useStorage('cache')
   }
 
-  async updateVariable(input: UpdateVariableInput): Promise<Variable> {
+  async updateVariable(input: UpdateVariableInput, decrypt: boolean = true): Promise<Variable> {
     const variable = await this.getVariableById(input.id)
 
     const updateData: Partial<Variable> = {
@@ -43,7 +43,7 @@ export class VariableService {
     if (!updatedVariable) throw createError({ statusCode: 500, message: 'Failed to update variable' })
 
     await this.deleteCachedProjectVariables(updatedVariable.projectId)
-    return this.decryptVariable(updatedVariable)
+    return decrypt ? this.decryptVariable(updatedVariable) : updatedVariable
   }
 
   async getVariableById(id: number): Promise<Variable> {
@@ -89,25 +89,52 @@ export class VariableService {
 
   // Multiple Variables Operations
   async createVariables(input: CreateVariablesInput): Promise<Variable[]> {
-    const { projectId, variables, environment = 'development', autoUppercase = false, method = 'merge' } = input
+    const {
+      projectId,
+      variables,
+      environment = 'development',
+      autoUppercase = false,
+      method = 'merge'
+    } = input
 
-    if (method === 'overwrite') await this.deleteProjectVariables(projectId, environment)
+    const normalizedEnv = this.normalizeEnvironment(environment)
 
-    const variablesToCreate = await Promise.all(
-      variables.map(async (variable) => ({
-        projectId,
-        key: autoUppercase ? variable.key.toUpperCase() : variable.key,
-        value: await seal(variable.value, this.encryptionKey),
-        environment: this.normalizeEnvironment(environment)
-      }))
+    if (method === 'overwrite') await this.deleteProjectVariables(projectId, normalizedEnv)
+
+    const existingVariables = await this.getVariableByIdAndEnv(projectId, environment as Environment)
+
+    const variablesToUpsert = await Promise.all(
+      variables.map(async (variable) => {
+        const key = autoUppercase ? variable.key.toUpperCase() : variable.key
+        const existingVariable = existingVariables.find(v =>
+          v.key === key &&
+          v.environment === normalizedEnv
+        )
+
+        if (existingVariable) {
+          return this.updateVariable({
+            id: existingVariable.id,
+            projectId,
+            key,
+            value: variable.value,
+            environment: normalizedEnv
+          }, false)
+        }
+
+        return db.insert(tables.variables)
+          .values({
+            projectId,
+            key,
+            value: await seal(variable.value, this.encryptionKey),
+            environment: normalizedEnv
+          })
+          .returning()
+          .then(([v]) => v)
+      })
     )
 
-    const createdVariables = await db.insert(tables.variables)
-      .values(variablesToCreate)
-      .returning()
-
     await this.deleteCachedProjectVariables(projectId)
-    return this.decryptVariables(createdVariables)
+    return this.decryptVariables(variablesToUpsert)
   }
 
   getProjectVariables = cachedFunction(async (projectId: number, environment?: string): Promise<Variable[]> => {
@@ -145,9 +172,10 @@ export class VariableService {
       return eq(tables.variables.projectId, projectId)
     }
 
+    const normalizedEnv = this.normalizeEnvironment(environment)
     return and(
       eq(tables.variables.projectId, projectId),
-      like(tables.variables.environment, `%${this.normalizeEnvironment(environment)}%`)
+      eq(tables.variables.environment, normalizedEnv)
     )
   }
 
