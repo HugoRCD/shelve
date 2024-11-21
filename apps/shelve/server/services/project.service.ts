@@ -6,8 +6,8 @@ export class ProjectService {
   private readonly storage: Storage<StorageValue>
   private readonly CACHE_TTL = 60 * 60 // 1 hour
   private readonly CACHE_PREFIX = {
-    projects: 'nitro:functions:getProjectsByTeamId:teamId:',
-    project: 'nitro:functions:getProjectById:projectId:'
+    projects: 'nitro:functions:getProjects:teamId:',
+    project: 'nitro:functions:getProject:projectId:'
   }
 
   constructor() {
@@ -51,7 +51,7 @@ export class ProjectService {
     return project
   }, {
     maxAge: this.CACHE_TTL,
-    name: 'getProjectById',
+    name: 'getProject',
     getKey: (projectId: number) => `projectId:${projectId}`,
   })
 
@@ -61,7 +61,7 @@ export class ProjectService {
     })
   }, {
     maxAge: this.CACHE_TTL,
-    name: 'getProjectsByTeamId',
+    name: 'getProjects',
     getKey: (teamId: number) => `teamId:${teamId}`,
   })
 

@@ -18,8 +18,8 @@ export class TeamService {
   private readonly storage: Storage<StorageValue>
   private readonly CACHE_TTL = 60 * 60 // 1 hour
   private readonly CACHE_PREFIX = {
-    team: 'nitro:functions:getTeamById:teamId:',
-    teams: 'nitro:functions:getTeamsByUserId:userId:'
+    team: 'nitro:functions:getTeam:teamId:',
+    teams: 'nitro:functions:getTeams:userId:'
   }
 
   constructor() {
@@ -81,16 +81,17 @@ export class TeamService {
     })
     if (!updatedTeam) throw new Error(`Team not found with id ${id}`)
     await this.deleteCachedTeamById(id)
-    await this.deleteCachedTeamsByUserId(requester.id)
+    await this.deleteCachedTeamsByUserId(id)
     return updatedTeam
   }
 
   async deleteTeam(input: DeleteTeamInput): Promise<void> {
     const { teamId, requester } = input
     await this.validateTeamAccess({ teamId, requester }, TeamRole.OWNER)
-    await db.delete(tables.teams).where(eq(tables.teams.id, teamId))
+    const [team] = await db.delete(tables.teams).where(eq(tables.teams.id, teamId)).returning({ id: tables.teams.id })
+    if (!team) throw new Error(`Team not found after deletion with id ${teamId}`)
+    await this.deleteCachedTeamsByUserId(teamId)
     await this.deleteCachedTeamById(teamId)
-    await this.deleteCachedTeamsByUserId(requester.id)
   }
 
   getTeamsByUserId = cachedFunction(async (userId): Promise<Team[]> => {
@@ -113,7 +114,7 @@ export class TeamService {
     return teams
   }, {
     maxAge: this.CACHE_TTL,
-    name: 'getTeamsByUserId',
+    name: 'getTeams',
     getKey: (userId: number) => `userId:${userId}`,
   })
 
@@ -133,7 +134,7 @@ export class TeamService {
     return team
   }, {
     maxAge: this.CACHE_TTL,
-    name: 'getTeamById',
+    name: 'getTeam',
     getKey: (team: Team) => `teamId:${team.id}`,
   })
 
@@ -196,6 +197,11 @@ export class TeamService {
 
   async deleteCachedTeamsByUserId(userId: number): Promise<void> {
     return await this.storage.removeItem(`${this.CACHE_PREFIX.teams}${userId}.json`)
+  }
+
+  async deleteCachedForTeamMembers(teamId: number): Promise<void> {
+    const members = await db.query.members.findMany({ where: eq(tables.members.teamId, teamId) })
+    await Promise.all(members.map(member => this.deleteCachedTeamsByUserId(member.userId)))
   }
 
 }
