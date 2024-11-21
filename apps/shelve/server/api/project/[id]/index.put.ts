@@ -1,13 +1,10 @@
 import { z, zh } from 'h3-zod'
-import type { ProjectUpdateInput } from '@shelve/types'
 import { ProjectService } from '~~/server/services/project.service'
+import { idParamsSchema } from '~~/server/database/zod'
 
 export default eventHandler(async (event) => {
-  const { id } = await zh.useValidatedParams(event, {
-    id: z.string({
-      required_error: 'Project ID is required',
-    }).transform((value) => parseInt(value, 10)),
-  })
+  const { user } = await requireUserSession(event)
+  const { id } = await zh.useValidatedParams(event, idParamsSchema)
   const body = await zh.useValidatedBody(event, {
     name: z.string({
       required_error: 'Project name is required',
@@ -22,9 +19,8 @@ export default eventHandler(async (event) => {
       required_error: 'Team ID is required',
     }).positive(),
   })
-  const { user } = event.context
-  const input: ProjectUpdateInput = {
-    id: id,
+  return await new ProjectService().updateProject({
+    id,
     name: body.name,
     description: body.description,
     homepage: body.homepage,
@@ -37,6 +33,5 @@ export default eventHandler(async (event) => {
       id: user.id,
       role: user.role,
     }
-  }
-  return await new ProjectService().updateProject(input)
+  })
 })

@@ -9,8 +9,9 @@ export default eventHandler(async (event) => {
     avatar: z.string().optional(),
     authType: z.nativeEnum(AuthType).optional(),
   })
-  const updatedUser = await new UserService().updateUser(event.context.user, {
-    id: event.context.user.id,
+  const { user } = await requireUserSession(event)
+  const updatedUser = await new UserService().updateUser(user, {
+    id: user.id,
     ...body,
   })
   await setUserSession(event, {

@@ -2,12 +2,12 @@ import { z, zh } from 'h3-zod'
 import { MemberService } from '~~/server/services/member.service'
 
 export default eventHandler(async (event) => {
+  const { user } = await requireUserSession(event)
   const { teamId } = await zh.useValidatedParams(event, {
-    teamId: z.string({
-      required_error: 'Missing teamId',
-    }).transform((value) => parseInt(value)),
+    teamId: z.coerce.number({
+      required_error: 'Missing team ID',
+    }),
   })
-  const { user } = event.context
   const requester = {
     id: user.id,
     role: user.role,

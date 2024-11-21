@@ -74,7 +74,7 @@ export class VariableService {
     const result = await db.delete(tables.variables)
       .where(eq(tables.variables.id, id))
       .returning()
-    console.log(result)
+
     if (!result.length) {
       throw createError({
         statusCode: 404,

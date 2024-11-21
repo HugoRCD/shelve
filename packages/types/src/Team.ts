@@ -41,7 +41,7 @@ export type CreateTeamInput = {
 };
 
 export type UpdateTeamInput = {
-  id: number;
+  teamId: number;
   name?: string;
   logo?: string;
   requester: Requester;

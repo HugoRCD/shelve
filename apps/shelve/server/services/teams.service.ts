@@ -62,15 +62,15 @@ export class TeamService {
   }
 
   async updateTeam(input: UpdateTeamInput): Promise<Team> {
-    const { id, requester, ...data } = input
-    await this.validateTeamAccess({ teamId: id, requester }, TeamRole.OWNER)
+    const { teamId, requester, ...data } = input
+    await this.validateTeamAccess({ teamId, requester }, TeamRole.OWNER)
 
     await db.update(tables.teams)
       .set(data)
-      .where(eq(tables.teams.id, id))
+      .where(eq(tables.teams.id, teamId))
 
     const updatedTeam = await db.query.teams.findFirst({
-      where: eq(tables.teams.id, id),
+      where: eq(tables.teams.id, teamId),
       with: {
         members: {
           with: {
@@ -79,9 +79,9 @@ export class TeamService {
         }
       }
     })
-    if (!updatedTeam) throw new Error(`Team not found with id ${id}`)
-    await this.deleteCachedTeamById(id)
-    await this.deleteCachedTeamsByUserId(id)
+    if (!updatedTeam) throw new Error(`Team not found with id ${teamId}`)
+    await this.deleteCachedTeamById(teamId)
+    await this.deleteCachedTeamsByUserId(teamId)
     return updatedTeam
   }
 
@@ -138,12 +138,13 @@ export class TeamService {
     getKey: (team: Team) => `teamId:${team.id}`,
   })
 
-  async getPrivateUserTeam(userId: number): Promise<Omit<Team, 'members'>> {
+  async getPrivateUserTeamId(userId: number): Promise<number> {
     const team = await db.query.teams.findFirst({
       where: and(eq(tables.teams.private, true), eq(tables.teams.privateOf, userId)),
+      columns: { id: true }
     })
     if (!team) throw new Error(`Private team not found for user with id ${userId}`)
-    return team
+    return team.id
   }
 
   async isUserAlreadyMember(teamId: number, email: string): Promise<Member | undefined> {
