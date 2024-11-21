@@ -7,11 +7,9 @@ export class VariableService {
 
   private readonly encryptionKey: string
   private readonly ENV_ASSOCIATION = {
-    production: 'production',
-    preview: 'preview',
-    development: 'development',
-    prod: 'production',
-    dev: 'development',
+    production: EnvType.PRODUCTION,
+    preview: EnvType.PREVIEW,
+    development: EnvType.DEVELOPMENT,
   } as const
   private readonly storage: Storage<StorageValue>
   private readonly CACHE_TTL = 60 * 60 // 1 hour
@@ -76,7 +74,7 @@ export class VariableService {
     const result = await db.delete(tables.variables)
       .where(eq(tables.variables.id, id))
       .returning()
-
+    console.log(result)
     if (!result.length) {
       throw createError({
         statusCode: 404,
@@ -137,7 +135,7 @@ export class VariableService {
     return this.decryptVariables(variablesToUpsert)
   }
 
-  getProjectVariables = cachedFunction(async (projectId: number, environment?: string): Promise<Variable[]> => {
+  getProjectVariables = cachedFunction(async (projectId: number, environment?: EnvType): Promise<Variable[]> => {
     const variables = await db.query.variables.findMany({
       where: this.buildEnvironmentQuery(projectId, environment)
     })
@@ -160,14 +158,12 @@ export class VariableService {
     return await Promise.all(variables.map(this.decryptVariable.bind(this)))
   }
 
-  private normalizeEnvironment(env: string): string {
-    return env.split('|')
-      .map(e => this.ENV_ASSOCIATION[e as EnvType] || e)
-      .filter(Boolean)
-      .join('|')
+  private normalizeEnvironment(env: string): EnvType {
+    const envs = env.split('|')
+    return envs.map(e => this.ENV_ASSOCIATION[e as EnvType] || e).filter(Boolean).join('|') as EnvType
   }
 
-  private buildEnvironmentQuery(projectId: number, environment?: string) {
+  private buildEnvironmentQuery(projectId: number, environment?: EnvType) {
     if (!environment) {
       return eq(tables.variables.projectId, projectId)
     }
@@ -179,7 +175,7 @@ export class VariableService {
     )
   }
 
-  private async deleteProjectVariables(projectId: number, environment?: string): Promise<void> {
+  private async deleteProjectVariables(projectId: number, environment?: EnvType): Promise<void> {
     await db.delete(tables.variables)
       .where(this.buildEnvironmentQuery(projectId, environment))
   }

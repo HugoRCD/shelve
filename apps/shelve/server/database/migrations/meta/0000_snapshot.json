@@ -1,5 +1,5 @@
 {
-  "id": "ab4b9aa8-8757-4375-ac47-32483a0dc94c",
+  "id": "0c8a449b-64b1-4bef-82f3-358341342238",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -480,8 +480,7 @@
         },
         "environment": {
           "name": "environment",
-          "type": "env_types",
-          "typeSchema": "public",
+          "type": "varchar",
           "primaryKey": false,
           "notNull": true
         },

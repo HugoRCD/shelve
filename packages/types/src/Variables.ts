@@ -9,17 +9,9 @@ export type Variable = {
   key: string;
   value: string;
   projectId: number;
-  environment: EnvType;
+  environment: string;
   createdAt: Date;
   updatedAt: Date;
-};
-
-export type CreateVariableInput = {
-  key: string;
-  value: string;
-  projectId: number;
-  environment: string;
-  autoUppercase?: boolean;
 };
 
 export type CreateVariablesInput = {

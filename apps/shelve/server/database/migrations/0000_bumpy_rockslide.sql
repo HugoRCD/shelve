@@ -60,7 +60,7 @@ CREATE TABLE IF NOT EXISTS "variables" (
 	"projectId" integer NOT NULL,
 	"key" varchar NOT NULL,
 	"value" varchar NOT NULL,
-	"environment" "env_types" NOT NULL,
+	"environment" varchar NOT NULL,
 	"updatedAt" timestamp DEFAULT now() NOT NULL,
 	"createdAt" timestamp DEFAULT now() NOT NULL
 );

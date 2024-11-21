@@ -70,7 +70,7 @@ export const variables = pgTable('variables', {
   projectId: integer().references(() => projects.id, { onDelete: 'cascade' }).notNull(),
   key: varchar().notNull(),
   value: varchar().notNull(),
-  environment: envTypesEnum().notNull(),
+  environment: varchar().notNull(),
   ...timestamps,
 })
 
