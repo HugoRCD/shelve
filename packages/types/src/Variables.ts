@@ -1,11 +1,15 @@
-export type Environment = 'production' | 'preview' | 'development' | 'staging' | 'dev' | 'prod';
+export enum EnvType {
+  DEVELOPMENT = 'development',
+  PREVIEW = 'preview',
+  PRODUCTION = 'production',
+}
 
 export type Variable = {
   id: number;
   key: string;
   value: string;
   projectId: number;
-  environment: string;
+  environment: EnvType;
   createdAt: Date;
   updatedAt: Date;
 };

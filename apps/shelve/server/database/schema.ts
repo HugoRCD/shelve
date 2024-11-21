@@ -1,5 +1,5 @@
 import { boolean, integer, pgEnum, pgTable, varchar } from 'drizzle-orm/pg-core'
-import { AuthType, Role, TeamRole } from '@shelve/types'
+import { AuthType, Role, TeamRole, EnvType } from '@shelve/types'
 import { relations } from 'drizzle-orm'
 import { timestamps } from './column.helpers'
 
@@ -17,6 +17,12 @@ export const rolesEnum = pgEnum('roles', [
 export const authTypesEnum = pgEnum('auth_types', [
   AuthType.GITHUB,
   AuthType.GOOGLE,
+])
+
+export const envTypesEnum = pgEnum('env_types', [
+  EnvType.DEVELOPMENT,
+  EnvType.PREVIEW,
+  EnvType.PRODUCTION,
 ])
 
 export const users = pgTable('users', {
@@ -64,7 +70,7 @@ export const variables = pgTable('variables', {
   projectId: integer().references(() => projects.id, { onDelete: 'cascade' }).notNull(),
   key: varchar().notNull(),
   value: varchar().notNull(),
-  environment: varchar().notNull(),
+  environment: envTypesEnum().notNull(),
   ...timestamps,
 })
 
@@ -112,4 +118,3 @@ export const tokensRelations = relations(tokens, ({ one }) => ({
     references: [users.id],
   })
 }))
-

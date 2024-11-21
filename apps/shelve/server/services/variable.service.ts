@@ -1,6 +1,7 @@
-import type { CreateVariableInput, CreateVariablesInput, Environment, UpdateVariableInput, Variable } from '@shelve/types'
-import { seal, unseal } from '@shelve/crypto'
+import type { CreateVariablesInput, UpdateVariableInput, Variable } from '@shelve/types'
 import type { Storage, StorageValue } from 'unstorage'
+import { seal, unseal } from '@shelve/crypto'
+import { EnvType } from '@shelve/types'
 
 export class VariableService {
 
@@ -8,7 +9,6 @@ export class VariableService {
   private readonly ENV_ASSOCIATION = {
     production: 'production',
     preview: 'preview',
-    staging: 'preview',
     development: 'development',
     prod: 'production',
     dev: 'development',
@@ -64,7 +64,7 @@ export class VariableService {
     return this.decryptVariable(variable)
   }
 
-  async getVariableByIdAndEnv(projectId: number, environment: Environment): Promise<Variable[]> {
+  async getVariableByIdAndEnv(projectId: number, environment: EnvType): Promise<Variable[]> {
     const variables = await db.query.variables.findMany({
       where: this.buildEnvironmentQuery(projectId, environment)
     })
@@ -101,7 +101,7 @@ export class VariableService {
 
     if (method === 'overwrite') await this.deleteProjectVariables(projectId, normalizedEnv)
 
-    const existingVariables = await this.getVariableByIdAndEnv(projectId, environment as Environment)
+    const existingVariables = await this.getVariableByIdAndEnv(projectId, environment as EnvType)
 
     const variablesToUpsert = await Promise.all(
       variables.map(async (variable) => {
@@ -162,7 +162,7 @@ export class VariableService {
 
   private normalizeEnvironment(env: string): string {
     return env.split('|')
-      .map(e => this.ENV_ASSOCIATION[e as Environment] || e)
+      .map(e => this.ENV_ASSOCIATION[e as EnvType] || e)
       .filter(Boolean)
       .join('|')
   }
