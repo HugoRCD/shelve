@@ -28,8 +28,6 @@ services:
         condition: service_healthy
       shelve_db:
         condition: service_healthy
-      prisma_migrate:
-        condition: service_completed_successfully
     ports:
       - "3000:3000"
     healthcheck:
@@ -80,20 +78,6 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
-    networks:
-      - shelve-network
-  drizzle_migrate:
-    build:
-      context: ../
-      dockerfile: ./apps/shelve/Dockerfile
-    container_name: drizzle_migrate
-    environment:
-      - DATABASE_URL=${DATABASE_URL:-postgres://postgres:postgres@shelve_db:5432/postgres}
-    depends_on:
-      shelve_db:
-        condition: service_healthy
-    command: bunx drizzle-kit migrate
-    restart: no
     networks:
       - shelve-network
 
