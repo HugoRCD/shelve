@@ -1,5 +1,6 @@
 import type { CreateVariableInput, CreateVariablesInput, Environment, UpdateVariableInput, Variable } from '@shelve/types'
 import { seal, unseal } from '@shelve/crypto'
+import type { Storage, StorageValue } from 'unstorage'
 
 export class VariableService {
 
@@ -12,9 +13,15 @@ export class VariableService {
     prod: 'production',
     dev: 'development',
   } as const
+  private readonly storage: Storage<StorageValue>
+  private readonly CACHE_TTL = 60 * 60 // 1 hour
+  private readonly CACHE_PREFIX = {
+    variables: 'nitro:functions:getVariables:projectId:'
+  }
 
   constructor() {
     this.encryptionKey = useRuntimeConfig().private.encryptionKey
+    this.storage = useStorage('cache')
   }
 
   async updateVariable(input: UpdateVariableInput): Promise<Variable> {
@@ -35,6 +42,7 @@ export class VariableService {
       .returning()
     if (!updatedVariable) throw createError({ statusCode: 500, message: 'Failed to update variable' })
 
+    await this.deleteCachedProjectVariables(updatedVariable.projectId)
     return this.decryptVariable(updatedVariable)
   }
 
@@ -75,14 +83,15 @@ export class VariableService {
         message: `Variable not found with id ${id}`
       })
     }
+
+    await this.deleteCachedProjectVariables(result[0].projectId)
   }
 
   // Multiple Variables Operations
   async createVariables(input: CreateVariablesInput): Promise<Variable[]> {
     const { projectId, variables, environment = 'development', autoUppercase = false, method = 'merge' } = input
 
-    if (method === 'overwrite')
-      await this.deleteProjectVariables(projectId, environment)
+    if (method === 'overwrite') await this.deleteProjectVariables(projectId, environment)
 
     const variablesToCreate = await Promise.all(
       variables.map(async (variable) => ({
@@ -97,18 +106,22 @@ export class VariableService {
       .values(variablesToCreate)
       .returning()
 
+    await this.deleteCachedProjectVariables(projectId)
     return this.decryptVariables(createdVariables)
   }
 
-  async getProjectVariables(projectId: number, environment?: Environment): Promise<Variable[]> {
+  getProjectVariables = cachedFunction(async (projectId: number, environment?: string): Promise<Variable[]> => {
     const variables = await db.query.variables.findMany({
       where: this.buildEnvironmentQuery(projectId, environment)
     })
 
     return await this.decryptVariables(variables)
-  }
+  }, {
+    maxAge: this.CACHE_TTL,
+    name: 'getVariables',
+    getKey: (projectId: number) => `projectId:${projectId}`
+  })
 
-  // Helper Methods
   private async decryptVariable(variable: Variable): Promise<Variable> {
     return {
       ...variable,
@@ -141,6 +154,10 @@ export class VariableService {
   private async deleteProjectVariables(projectId: number, environment?: string): Promise<void> {
     await db.delete(tables.variables)
       .where(this.buildEnvironmentQuery(projectId, environment))
+  }
+
+  private async deleteCachedProjectVariables(projectId: number): Promise<void> {
+    await this.storage.removeItem(`${this.CACHE_PREFIX.variables}${projectId}.json`)
   }
 
 }

@@ -11,7 +11,7 @@ export default eventHandler(async (event) => {
       .transform((value) => decodeURIComponent(value)),
   })
   let { teamId } = await zh.useValidatedQuery(event, {
-    teamId: z.string().transform((value) => parseInt(value, 10)),
+    teamId: z.string().transform((value) => parseInt(value, 10)).optional(),
   })
 
   if (!teamId) teamId = (await new TeamService().getPrivateUserTeam(user.id)).id

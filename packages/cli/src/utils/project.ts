@@ -24,17 +24,19 @@ export async function getProjects(): Promise<Project[]> {
 
 export async function getProjectByName(name: string): Promise<Project> {
   const { teamId } = await loadShelveConfig(false)
+  const debug: boolean = process.env.DEBUG === 'true'
   const api = await useApi()
 
-  s.start('Fetching project')
+  s.start(`Fetching '${ name }' project${ debug ? ` - Debug mode` : '' }`)
   try {
     const encodedName = encodeURIComponent(name)
     const project = await api(`/project/name/${ encodedName }${ teamId ? `?teamId=${ teamId }` : '' }`, {
       method: 'GET',
     })
-    s.stop('Fetching project')
+    s.stop(`Fetching '${ name }' project${ debug ? ` - Debug mode` : '' }`)
     return project
   } catch (e) {
+    if (debug) console.log(e)
     // @ts-expect-error unknown error
     if (e.response?.status === 400) {
       s.stop('Fetching project')
