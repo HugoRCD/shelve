@@ -1,6 +1,6 @@
 {
   "name": "@shelve/utils",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "type": "module",
   "publishConfig": {
     "access": "public"
@@ -15,8 +15,10 @@
   },
   "exports": {
     ".": {
+      "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs",
-      "require": "./dist/index.cjs"
+      "require": "./dist/index.cjs",
+      "default": "./dist/index.mjs"
     }
   },
   "main": "./dist/index.cjs",
@@ -25,6 +27,10 @@
   "files": [
     "dist"
   ],
+  "sideEffects": false,
+  "engines": {
+    "node": ">=22.11.0"
+  },
   "devDependencies": {
     "@types/bun": "latest",
     "typescript": "latest",

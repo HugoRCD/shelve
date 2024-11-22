@@ -16,7 +16,7 @@
     "noUnusedLocals": true,
     "resolveJsonModule": true,
     "declaration": true,
-    "types": ["node"],
+    "lib": ["ESNext"]
   },
   "include": ["src"]
 }
