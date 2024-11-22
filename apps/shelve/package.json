@@ -18,24 +18,25 @@
     "db:push": "drizzle-kit push"
   },
   "dependencies": {
-    "@vueuse/core": "^11.2.0",
-    "@vueuse/nuxt": "^11.2.0",
-    "drizzle-kit": "^0.28.1",
-    "h3-zod": "^0.5.3",
-    "nuxt": "^3.14.1592",
-    "nuxt-auth-utils": "^0.5.5",
-    "nuxt-build-cache": "^0.1.1",
-    "resend": "^4.0.1",
     "@iconify-json/heroicons": "^1.2.1",
     "@iconify-json/lucide": "^1.2.15",
     "@iconify-json/simple-icons": "^1.2.12",
     "@nuxt/devtools": "^1.6.0",
     "@nuxt/image": "^1.8.1",
     "@nuxt/ui": "3.0.0-alpha.9",
+    "@nuxthub/core": "^0.8.7",
     "@shelve/crypto": "*",
     "@shelve/utils": "*",
+    "@vueuse/core": "^11.2.0",
+    "@vueuse/nuxt": "^11.2.0",
+    "drizzle-kit": "^0.28.1",
     "drizzle-orm": "^0.36.3",
+    "h3-zod": "^0.5.3",
+    "nuxt": "^3.14.1592",
+    "nuxt-auth-utils": "^0.5.5",
+    "nuxt-build-cache": "^0.1.1",
     "pg": "^8.13.1",
+    "resend": "^4.0.1",
     "vue": "^3.5.13",
     "vue-router": "^4.4.5",
     "vue-sonner": "^1.2.5",
@@ -44,6 +45,7 @@
   "devDependencies": {
     "@shelve/types": "*",
     "@types/pg": "^8.11.10",
-    "typescript": "^5.6.3"
+    "typescript": "^5.6.3",
+    "wrangler": "^3.90.0"
   }
 }

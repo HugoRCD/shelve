@@ -50,7 +50,8 @@ export default defineNuxtConfig({
     '@nuxt/ui',
     '@vueuse/nuxt',
     'nuxt-build-cache',
-    'nuxt-auth-utils'
+    'nuxt-auth-utils',
+    '@nuxthub/core',
   ],
 
   css: ['~/assets/style/main.css'],
