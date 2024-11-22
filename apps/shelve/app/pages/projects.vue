@@ -4,13 +4,11 @@ definePageMeta({
   path: '/',
 })
 
-const {
-  projects,
-  loading,
-  fetchProjects,
-} = useProjects()
+const projects = useUserProjects()
 
-fetchProjects()
+const { loading, fetchProjects } = useProjects()
+
+await fetchProjects()
 </script>
 
 <template>

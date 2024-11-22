@@ -1,12 +1,12 @@
-export function getEachLines(content: string): string[] {
+function getEachLines(content: string): string[] {
   return content.split('\n').filter((line) => line.trim() !== '') // remove empty lines
 }
 
-export function removeComments(content: string[]): string[] {
+function removeComments(content: string[]): string[] {
   return content.filter((line) => !line.startsWith('#'))
 }
 
-export function getKeyValue(content: string): { key: string; value: string } {
+function getKeyValue(content: string): { key: string; value: string } {
   const [key, value] = content.split(/=(.+)/) // split on the first = and the rest of the line
   if (!key || !value) {
     throw new Error('Invalid .env')

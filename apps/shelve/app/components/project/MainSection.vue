@@ -32,7 +32,6 @@ async function updateCurrentProject() {
 const deleteLoading = ref(false)
 async function deleteProjectFunction() {
   deleteLoading.value = true
-  // TODO: Add permission check
   if (teamRole.value !== TeamRole.OWNER) {
     deleteLoading.value = false
     toast.error('You do not have permission to delete this project')

@@ -26,7 +26,7 @@ export class TokenService {
       })
     }
 
-    const user = await db.query.users.findFirst({
+    const user = await useDrizzle().query.users.findFirst({
       where: eq(tables.users.id, userId)
     })
     if (!user) throw createError({ statusCode: 400, statusMessage: 'User not found' })
@@ -36,7 +36,7 @@ export class TokenService {
   }
 
   async getTokensByUserId(userId: number): Promise<Token[]> {
-    const tokens = await db.query.tokens.findMany({
+    const tokens = await useDrizzle().query.tokens.findMany({
       where: eq(tables.tokens.userId, userId),
       orderBy: (tokens, { desc }) => [desc(tokens.createdAt)]
     })
@@ -51,7 +51,7 @@ export class TokenService {
     const token = this.generateUserToken(userId)
     const encryptedToken = await seal(token, this.encryptionKey)
 
-    await db.insert(tables.tokens)
+    await useDrizzle().insert(tables.tokens)
       .values({
         token: encryptedToken,
         name,
@@ -60,7 +60,7 @@ export class TokenService {
   }
 
   private async updateUsedAt(tokenId: number): Promise<void> {
-    await db.update(tables.tokens)
+    await useDrizzle().update(tables.tokens)
       .set({
         updatedAt: new Date()
       })
@@ -68,7 +68,7 @@ export class TokenService {
   }
 
   async deleteUserToken(id: number, userId: number): Promise<Token> {
-    const [deletedToken] = await db.delete(tables.tokens)
+    const [deletedToken] = await useDrizzle().delete(tables.tokens)
       .where(
         and(
           eq(tables.tokens.id, id),
@@ -112,7 +112,7 @@ export class TokenService {
    * Get all tokens for a user
    */
   private getUserTokens(userId: number): Promise<Token[]> {
-    return db.query.tokens.findMany({
+    return useDrizzle().query.tokens.findMany({
       where: eq(tables.tokens.userId, userId)
     })
   }

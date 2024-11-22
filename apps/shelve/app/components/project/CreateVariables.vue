@@ -12,7 +12,6 @@ const { refresh, variables, projectId } = defineProps<CreateVariablesProps>()
 
 const {
   createLoading,
-  environment,
   selectedEnvironment,
   variablesInput,
   variablesToCreate,

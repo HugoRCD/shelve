@@ -2,8 +2,6 @@ name: Build and Push Landing Page Docker Image
 
 on:
   push:
-    branches:
-      - main
     tags:
       - 'v*'
   workflow_dispatch:

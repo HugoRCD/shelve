@@ -9,7 +9,7 @@ export default eventHandler(async (event) => {
     role: z.nativeEnum(Role),
   })
   if (user.id === id) throw createError({ statusCode: 400, statusMessage: 'you can\'t update your own role' })
-  await db.update(tables.users)
+  await useDrizzle().update(tables.users)
     .set({
       role
     })

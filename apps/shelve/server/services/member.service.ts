@@ -31,7 +31,7 @@ export class MemberService {
     }
     const user = await this.TeamService.getUserByEmail(email)
 
-    const [newMember] = await db.insert(tables.members)
+    const [newMember] = await useDrizzle().insert(tables.members)
       .values({
         userId: user.id,
         teamId,
@@ -49,7 +49,7 @@ export class MemberService {
     const { teamId, memberId, role, requester } = input
     await this.TeamService.validateTeamAccess({ teamId, requester }, TeamRole.ADMIN)
 
-    await db.update(tables.members)
+    await useDrizzle().update(tables.members)
       .set({
         role
       })
@@ -68,11 +68,11 @@ export class MemberService {
     const member = await this.findMemberById(memberId)
     await this.deleteCachedMembersByTeamId(teamId)
     await this.TeamService.deleteCachedForTeamMembers(teamId)
-    await db.delete(tables.members).where(eq(tables.members.id, member.id))
+    await useDrizzle().delete(tables.members).where(eq(tables.members.id, member.id))
   }
 
   async findMemberById(memberId: number): Promise<Member> {
-    const member = await db.query.members.findFirst({
+    const member = await useDrizzle().query.members.findFirst({
       where: eq(tables.members.id, memberId),
       with: {
         user: true
@@ -84,7 +84,7 @@ export class MemberService {
 
   getTeamMembersById = cachedFunction(async (teamId, requester): Promise<Member[]> => {
     await this.TeamService.validateTeamAccess({ teamId, requester })
-    const members = await db.query.members.findMany({
+    const members = await useDrizzle().query.members.findMany({
       where: eq(tables.members.teamId, teamId),
       with: {
         user: true

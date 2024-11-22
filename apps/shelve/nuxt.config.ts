@@ -1,11 +1,3 @@
-/*
-import vue from '@vitejs/plugin-vue'
-rollupConfig: {
-  // @ts-expect-error - vue is an external plugin
-  plugins: [vue()]
-},
-*/
-
 export default defineNuxtConfig({
   app: {
     head: {
@@ -14,14 +6,10 @@ export default defineNuxtConfig({
     },
   },
 
-  compatibilityDate: '2024-07-05',
+  compatibilityDate: '2024-11-06',
 
   future: {
     compatibilityVersion: 4,
-  },
-
-  experimental: {
-    componentIslands: true,
   },
 
   ssr: false,
@@ -45,6 +33,16 @@ export default defineNuxtConfig({
       encryptionKey: '',
       adminEmails: '',
     },
+    oauth: {
+      google: {
+        clientId: '',
+        clientSecret: '',
+      },
+      github: {
+        clientId: '',
+        clientSecret: '',
+      },
+    }
   },
 
   modules: [
