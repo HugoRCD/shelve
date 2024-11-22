@@ -10,8 +10,8 @@ export type Variable = {
   value: string;
   projectId: number;
   environment: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
 };
 
 export type CreateVariablesInput = {

@@ -27,7 +27,6 @@ export default defineNuxtConfig({
   ssr: false,
 
   nitro: {
-    preset: process.env.NITRO_PRESET || 'bun',
     storage: {
       cache: {
         driver: 'redis',
@@ -45,6 +44,23 @@ export default defineNuxtConfig({
       encryptionKey: '',
       adminEmails: '',
     },
+    oauth: {
+      github: {
+        clientId: '',
+        clientSecret: '',
+      },
+      google: {
+        clientId: '',
+        clientSecret: '',
+      }
+    },
+  },
+
+  hub: {
+    database: true,
+    kv: true,
+    blob: true,
+    cache: true,
   },
 
   modules: [
@@ -52,7 +68,8 @@ export default defineNuxtConfig({
     '@nuxt/ui',
     '@vueuse/nuxt',
     'nuxt-build-cache',
-    'nuxt-auth-utils'
+    'nuxt-auth-utils',
+    '@nuxthub/core'
   ],
 
   css: ['~/assets/style/main.css'],

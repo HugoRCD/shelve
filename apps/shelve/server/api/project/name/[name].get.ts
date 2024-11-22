@@ -16,7 +16,7 @@ export default eventHandler(async (event) => {
 
   if (!teamId) teamId = await new TeamService().getPrivateUserTeamId(user.id)
 
-  const project = await db.query.projects.findFirst({
+  const project = await useDrizzle().query.projects.findFirst({
     where: and(ilike(tables.projects.name, name), eq(tables.projects.teamId, teamId)),
   })
 

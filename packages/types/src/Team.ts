@@ -13,8 +13,8 @@ export type Member = {
   teamId: number;
   role: TeamRole;
   user: User;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
 };
 
 export type Team = {
@@ -23,8 +23,8 @@ export type Team = {
   logo: string;
   private: boolean;
   privateOf: number | null;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
   members: Member[];
 };
 

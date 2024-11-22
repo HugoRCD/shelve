@@ -7,7 +7,7 @@ export class UserService {
   async createUser(input: CreateUserInput): Promise<User> {
     const adminEmails = useRuntimeConfig().private.adminEmails?.split(',') || []
     input.username = await this.validateUsername(input.username, input.authType)
-    const [createdUser] = await db
+    const [createdUser] = await useDrizzle()
       .insert(tables.users)
       .values({
         username: input.username,
@@ -32,7 +32,7 @@ export class UserService {
   async updateUser(currentUser: User, updateUserInput: UpdateUserInput): Promise<User> {
     if (updateUserInput.username)
       updateUserInput.username = await this.validateUsername(updateUserInput.username, updateUserInput.authType)
-    const [updatedRows] = await db
+    const [updatedRows] = await useDrizzle()
       .update(tables.users)
       .set({
         username: updateUserInput.username,
@@ -45,11 +45,11 @@ export class UserService {
   }
 
   async deleteUserById(userId: number): Promise<void> {
-    await db.delete(tables.users).where(eq(tables.users.id, userId))
+    await useDrizzle().delete(tables.users).where(eq(tables.users.id, userId))
   }
 
   async handleOAuthUser(input: CreateUserInput): Promise<User> {
-    const [foundUser] = await db
+    const [foundUser] = await useDrizzle()
       .select()
       .from(tables.users)
       .where(eq(tables.users.username, input.username))
@@ -69,7 +69,7 @@ export class UserService {
    * Validates if a username is available
    */
   private async validateUsername(username: string, authType?: AuthType): Promise<string> {
-    const foundUser = await db
+    const foundUser = await useDrizzle()
       .select({
         username: tables.users.username,
       })

@@ -31,7 +31,7 @@ export class VariableService {
       environment: input.environment ? this.normalizeEnvironment(input.environment) : variable.environment
     }
 
-    const [updatedVariable] = await db.update(tables.variables)
+    const [updatedVariable] = await useDrizzle().update(tables.variables)
       .set(updateData)
       .where(and(
         eq(tables.variables.id, input.id),
@@ -45,7 +45,7 @@ export class VariableService {
   }
 
   async getVariableById(id: number): Promise<Variable> {
-    const variable = await db.query.variables.findFirst({
+    const variable = await useDrizzle().query.variables.findFirst({
       where: eq(tables.variables.id, id),
       with: {
         project: true
@@ -63,7 +63,7 @@ export class VariableService {
   }
 
   async getVariableByIdAndEnv(projectId: number, environment: EnvType): Promise<Variable[]> {
-    const variables = await db.query.variables.findMany({
+    const variables = await useDrizzle().query.variables.findMany({
       where: this.buildEnvironmentQuery(projectId, environment)
     })
 
@@ -71,7 +71,7 @@ export class VariableService {
   }
 
   async deleteVariable(id: number): Promise<void> {
-    const result = await db.delete(tables.variables)
+    const result = await useDrizzle().delete(tables.variables)
       .where(eq(tables.variables.id, id))
       .returning()
 
@@ -119,7 +119,7 @@ export class VariableService {
           }, false)
         }
 
-        return db.insert(tables.variables)
+        return useDrizzle().insert(tables.variables)
           .values({
             projectId,
             key,
@@ -136,7 +136,7 @@ export class VariableService {
   }
 
   getProjectVariables = cachedFunction(async (projectId: number, environment?: EnvType): Promise<Variable[]> => {
-    return await db.query.variables.findMany({
+    return await useDrizzle().query.variables.findMany({
       where: this.buildEnvironmentQuery(projectId, environment)
     })
   }, {
@@ -174,7 +174,7 @@ export class VariableService {
   }
 
   private async deleteProjectVariables(projectId: number, environment?: EnvType): Promise<void> {
-    await db.delete(tables.variables)
+    await useDrizzle().delete(tables.variables)
       .where(this.buildEnvironmentQuery(projectId, environment))
   }
 

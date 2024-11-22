@@ -18,7 +18,7 @@ export class ProjectService {
     await this.validateProjectName(input.name, input.teamId)
     await this.deleteCachedTeamProjects(input.teamId)
 
-    const [createdProject] = await db.insert(tables.projects)
+    const [createdProject] = await useDrizzle().insert(tables.projects)
       .values(input)
       .returning()
     if (!createdProject) throw new Error('Project not found after creation')
@@ -35,7 +35,7 @@ export class ProjectService {
     if (existingProject.name !== input.name)
       await this.validateProjectName(input.name, existingProject.teamId, input.id)
 
-    const [updatedProject] = await db.update(tables.projects)
+    const [updatedProject] = await useDrizzle().update(tables.projects)
       .set(input)
       .where(eq(tables.projects.id, input.id))
       .returning()
@@ -56,7 +56,7 @@ export class ProjectService {
   })
 
   getProjectsByTeamId = cachedFunction(async (teamId: number): Promise<Project[]> => {
-    return await db.query.projects.findMany({
+    return await useDrizzle().query.projects.findMany({
       where: eq(tables.projects.teamId, teamId)
     })
   }, {
@@ -70,7 +70,7 @@ export class ProjectService {
     await this.deleteCachedProjectById(projectId)
     await this.deleteCachedTeamProjects(teamId)
 
-    await db.delete(tables.projects)
+    await useDrizzle().delete(tables.projects)
       .where(and(
         eq(tables.projects.id, projectId),
         eq(tables.projects.teamId, teamId)
@@ -91,12 +91,12 @@ export class ProjectService {
   private async isProjectAlreadyExists(name: string, teamId: number, projectId?: number): Promise<boolean> {
     const conditions = [
       eq(tables.projects.teamId, teamId),
-      ilike(tables.projects.name, name)
+      like(tables.projects.name, name)
     ]
 
     if (projectId) conditions.push(not(eq(tables.projects.id, projectId)))
 
-    const project = await db.query.projects.findFirst({
+    const project = await useDrizzle().query.projects.findFirst({
       where: and(...conditions)
     })
 
@@ -104,7 +104,7 @@ export class ProjectService {
   }
 
   private async findProjectById(id: number): Promise<Project> {
-    const project = await db.query.projects.findFirst({
+    const project = await useDrizzle().query.projects.findFirst({
       where: eq(tables.projects.id, id)
     })
 
@@ -118,7 +118,7 @@ export class ProjectService {
   }
 
   private async hasAccessToProject(projectId: number, userId: number): Promise<Project> {
-    const project = await db.query.projects.findFirst({
+    const project = await useDrizzle().query.projects.findFirst({
       where: eq(tables.projects.id, projectId),
       with: {
         team: {
