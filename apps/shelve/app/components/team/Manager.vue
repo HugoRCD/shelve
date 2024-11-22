@@ -99,6 +99,7 @@ const groups = computed(() => [
 
 .nav-item {
   @apply cursor-pointer rounded-lg px-3 py-2 flex flex-row items-center gap-2 transition-transform duration-200 ease-in-out;
+  @apply focus:outline-none;
   border: 1px solid transparent;
   transition: border-color 0.2s, background-color 0.2s, box-shadow 0.2s, transform 0.2s;
 

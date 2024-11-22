@@ -10,7 +10,7 @@ const {
   fetchProjects,
 } = useProjects()
 
-await fetchProjects()
+fetchProjects()
 </script>
 
 <template>

@@ -5,21 +5,22 @@ import type { Ref } from 'vue'
 const project = inject('project') as Ref<Project>
 
 const prefixList = computed(() => {
-  return project.value.variablePrefix?.replace(/\s/g, '').split(',')
+  return project.value.variablePrefix?.replace(/\s/g, '').split(',').filter(Boolean) || []
 })
 
 const key = defineModel({ type: String })
 
-const isOpen = ref(false)
+const open = ref(false)
 
 function addPrefixToInputId(prefix: string) {
   if (key.value?.startsWith(prefix)) return
   key.value = `${prefix}${key.value}`
+  open.value = false
 }
 </script>
 
 <template>
-  <UPopover v-model:open="isOpen" arrow>
+  <UPopover v-model:open="open" arrow>
     <div>
       <UTooltip :content="{ side: 'top' }" text="Add common prefix to your variable">
         <UButton variant="soft" color="neutral" icon="lucide:list-start" />

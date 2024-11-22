@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const length = ref(25)
 const includeSymbols = ref(true)
-const isOpen = ref(false)
+const open = ref(false)
 
 const emit = defineEmits(['passwordGenerated'])
 
@@ -20,6 +20,7 @@ function generatePassword() {
   }
 
   emit('passwordGenerated', password)
+  open.value = false
 }
 
 const items = [
@@ -32,7 +33,7 @@ const items = [
 </script>
 
 <template>
-  <UPopover v-model:open="isOpen" arrow>
+  <UPopover v-model:open="open" arrow>
     <div>
       <UTooltip :content="{ side: 'top' }" text="Generate a random password">
         <UButton variant="soft" color="neutral" icon="lucide:lock-keyhole" />
