@@ -1,3 +1,7 @@
+import { createResolver } from '@nuxt/kit'
+
+const { resolve } = createResolver(import.meta.url)
+
 export default defineNuxtConfig({
   app: {
     head: {
@@ -15,7 +19,7 @@ export default defineNuxtConfig({
   ssr: false,
 
   nitro: {
-    preset: process.env.NITRO_PRESET || 'bun',
+    preset: 'cloudflare-pages',
     storage: {
       cache: {
         driver: 'redis',
@@ -49,7 +53,6 @@ export default defineNuxtConfig({
     '@nuxt/image',
     '@nuxt/ui',
     '@vueuse/nuxt',
-    'nuxt-build-cache',
     'nuxt-auth-utils',
     '@nuxthub/core',
   ],
@@ -78,7 +81,7 @@ export default defineNuxtConfig({
     customCollections: [
       {
         prefix: 'custom',
-        dir: './app/assets/icons'
+        dir: resolve('./app/assets/icons')
       },
     ],
     clientBundle: {
