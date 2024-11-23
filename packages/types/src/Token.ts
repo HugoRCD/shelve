@@ -3,9 +3,9 @@ import type { User } from './User'
 export type Token = {
   id: number;
   name: string;
-  token: string;
-  createdAt: Date;
-  updatedAt: Date;
   userId: number;
+  token: string;
   user?: User;
+  createdAt: string;
+  updatedAt: string;
 };

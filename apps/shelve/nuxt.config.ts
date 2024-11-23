@@ -16,6 +16,13 @@ export default defineNuxtConfig({
     compatibilityVersion: 4,
   },
 
+  hub: {
+    database: true,
+    kv: true,
+    blob: true,
+    cache: true,
+  },
+
   ssr: false,
 
   nitro: {

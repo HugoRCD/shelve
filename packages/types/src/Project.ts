@@ -10,8 +10,8 @@ export type Project = {
   variablePrefix: string | null;
   logo: string | null;
   teamId: number;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
 };
 
 export type CreateProjectInput = {

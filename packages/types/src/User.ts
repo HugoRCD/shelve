@@ -15,8 +15,8 @@ export type User = {
   avatar: string;
   role: Role;
   authType: AuthType;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
 };
 
 export type CreateUserInput = {

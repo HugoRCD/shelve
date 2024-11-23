@@ -36,7 +36,6 @@
     "h3-zod": "^0.5.3",
     "nuxt": "^3.14.1592",
     "nuxt-auth-utils": "^0.5.5",
-    "pg": "^8.13.1",
     "resend": "^4.0.1",
     "vue": "^3.5.13",
     "vue-router": "^4.4.5",
@@ -45,8 +44,10 @@
   },
   "devDependencies": {
     "@shelve/types": "*",
-    "@types/pg": "^8.11.10",
     "typescript": "^5.6.3",
     "wrangler": "^3.90.0"
+  },
+  "engines": {
+    "node": ">=22.11.0"
   }
 }

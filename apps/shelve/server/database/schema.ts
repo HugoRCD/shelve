@@ -1,83 +1,61 @@
-import { boolean, integer, pgEnum, pgTable, varchar } from 'drizzle-orm/pg-core'
-import { AuthType, Role, TeamRole, EnvType } from '@shelve/types'
+import { AuthType, Role, TeamRole } from '@shelve/types'
+import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core'
 import { relations } from 'drizzle-orm'
 import { timestamps } from './column.helpers'
 
-export const teamRoleEnum = pgEnum('team_role', [
-  TeamRole.OWNER,
-  TeamRole.ADMIN,
-  TeamRole.MEMBER,
-])
-
-export const rolesEnum = pgEnum('roles', [
-  Role.USER,
-  Role.ADMIN,
-])
-
-export const authTypesEnum = pgEnum('auth_types', [
-  AuthType.GITHUB,
-  AuthType.GOOGLE,
-])
-
-export const envTypesEnum = pgEnum('env_types', [
-  EnvType.DEVELOPMENT,
-  EnvType.PREVIEW,
-  EnvType.PRODUCTION,
-])
-
-export const users = pgTable('users', {
-  id: integer().primaryKey().generatedByDefaultAsIdentity(),
-  username: varchar().notNull(),
-  email: varchar().notNull(),
-  avatar: varchar().default('https://i.imgur.com/6VBx3io.png').notNull(),
-  role: rolesEnum().default(Role.USER).notNull(),
-  authType: authTypesEnum().notNull(),
+export const users = sqliteTable('users', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  username: text().notNull(),
+  email: text().notNull(),
+  avatar: text().default('https://i.imgur.com/6VBx3io.png').notNull(),
+  role: text('role', { enum: [Role.USER, Role.ADMIN] }).default(Role.USER).notNull(),
+  authType: text('authType', { enum: [AuthType.GITHUB, AuthType.GOOGLE] }).notNull(),
   ...timestamps,
 })
 
-export const teams = pgTable('teams', {
-  id: integer().primaryKey().generatedByDefaultAsIdentity(),
-  name: varchar().notNull(),
-  logo: varchar().default('https://github.com/HugoRCD/shelve/blob/main/assets/default.png?raw=true').notNull(),
-  private: boolean().default(true).notNull(),
+export const teams = sqliteTable('teams', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  name: text().notNull(),
+  logo: text().default('https://github.com/HugoRCD/shelve/blob/main/assets/default.png?raw=true').notNull(),
+  private: integer({ mode: 'boolean' }).default(true).notNull(),
   privateOf: integer().references(() => users.id, { onDelete: 'cascade' }),
   ...timestamps,
 })
 
-export const members = pgTable('members', {
-  id: integer().primaryKey().generatedByDefaultAsIdentity(),
+export const members = sqliteTable('members', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
   userId: integer().references(() => users.id, { onDelete: 'cascade' }).notNull(),
   teamId: integer().references(() => teams.id, { onDelete: 'cascade' }).notNull(),
-  role: teamRoleEnum().default(TeamRole.MEMBER).notNull(),
+  role: text('role', { enum: [TeamRole.OWNER, TeamRole.ADMIN, TeamRole.MEMBER] }).default(TeamRole.MEMBER).notNull(),
   ...timestamps,
 })
 
-export const projects = pgTable('projects', {
-  id: integer().primaryKey().generatedByDefaultAsIdentity(),
-  name: varchar().notNull(),
+export const projects = sqliteTable('projects', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  name: text().notNull(),
   teamId: integer().references(() => teams.id, { onDelete: 'cascade' }).notNull(),
-  description: varchar(),
-  repository: varchar(),
-  projectManager: varchar(),
-  homepage: varchar(),
-  variablePrefix: varchar(),
-  logo: varchar(),
+  description: text(),
+  repository: text(),
+  projectManager: text(),
+  homepage: text(),
+  variablePrefix: text(),
+  logo: text(),
   ...timestamps,
 })
 
-export const variables = pgTable('variables', {
-  id: integer().primaryKey().generatedByDefaultAsIdentity(),
+export const variables = sqliteTable('variables', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
   projectId: integer().references(() => projects.id, { onDelete: 'cascade' }).notNull(),
-  key: varchar().notNull(),
-  value: varchar().notNull(),
-  environment: varchar().notNull(),
+  key: text().notNull(),
+  value: text().notNull(),
+  environment: text().notNull(),
   ...timestamps,
 })
 
-export const tokens = pgTable('tokens', {
-  id: integer().primaryKey().generatedByDefaultAsIdentity(),
-  token: varchar().notNull(),
-  name: varchar().notNull(),
+export const tokens = sqliteTable('tokens', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  token: text().notNull(),
+  name: text().notNull(),
   userId: integer().references(() => users.id, { onDelete: 'cascade' }).notNull(),
   ...timestamps,
 })

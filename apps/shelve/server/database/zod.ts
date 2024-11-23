@@ -8,8 +8,8 @@ export const userSchema = z.object({
   avatar: z.string(),
   role: z.nativeEnum(Role),
   authType: z.nativeEnum(AuthType),
-  createdAt: z.date(),
-  updatedAt: z.date(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
 })
 
 export const idParamsSchema = z.object({

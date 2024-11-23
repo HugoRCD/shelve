@@ -1,6 +1,7 @@
-import { timestamp } from 'drizzle-orm/pg-core'
+import { text } from 'drizzle-orm/sqlite-core'
+import { sql } from 'drizzle-orm'
 
 export const timestamps = {
-  updatedAt: timestamp().defaultNow().notNull(),
-  createdAt: timestamp().defaultNow().notNull(),
+  createdAt: text().notNull().default(sql`(CURRENT_TIMESTAMP)`),
+  updatedAt: text().notNull().default(sql`(CURRENT_TIMESTAMP)`).$onUpdateFn(() => sql`(CURRENT_TIMESTAMP)`),
 }

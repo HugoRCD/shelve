@@ -27,38 +27,37 @@ export class TeamService {
   }
 
   async createTeam(input: CreateTeamInput): Promise<Team> {
-    return await useDrizzle().transaction(async (tx) => {
-      const [team] = await tx.insert(tables.teams)
-        .values({
-          name: input.name,
-          private: input.private || false,
-          privateOf: input.private ? input.requester.id : null,
-          logo: input.logo
-        })
-        .returning()
-      if (!team) throw new Error('Team not found after creation')
+    const [team] = await useDrizzle().insert(tables.teams)
+      .values({
+        name: input.name,
+        private: input.private || false,
+        privateOf: input.private ? input.requester.id : null,
+        logo: input.logo
+      })
+      .returning()
+    if (!team) throw new Error('Team not found after creation')
 
-      await tx.insert(tables.members)
-        .values({
-          userId: input.requester.id,
-          teamId: team.id,
-          role: TeamRole.OWNER
-        })
+    await useDrizzle().insert(tables.members)
+      .values({
+        userId: input.requester.id,
+        teamId: team.id,
+        role: TeamRole.OWNER
+      })
 
-      const createdTeam = await tx.query.teams.findFirst({
-        where: eq(tables.teams.id, team.id),
-        with: {
-          members: {
-            with: {
-              user: true
-            }
+    const createdTeam = await useDrizzle().query.teams.findFirst({
+      where: eq(tables.teams.id, team.id),
+      with: {
+        members: {
+          with: {
+            user: true
           }
         }
-      })
-      if (!createdTeam) throw new Error(`Team not found after creation with id ${team.id}`)
-      await this.deleteCachedTeamsByUserId(input.requester.id)
-      return createdTeam
+      }
     })
+    if (!createdTeam) throw new Error(`Team not found after creation with id ${team.id}`)
+
+    await this.deleteCachedTeamsByUserId(input.requester.id)
+    return createdTeam
   }
 
   async updateTeam(input: UpdateTeamInput): Promise<Team> {
@@ -150,7 +149,7 @@ export class TeamService {
   async isUserAlreadyMember(teamId: number, email: string): Promise<Member | undefined> {
     const user = await this.getUserByEmail(email)
     if (!user) throw new Error(`User not found with email ${email}`)
-    return await useDrizzle().query.members.findFirst({
+    return useDrizzle().query.members.findFirst({
       where: and(eq(tables.members.teamId, teamId), eq(tables.members.userId, user.id)),
       with: {
         user: true

@@ -23,6 +23,10 @@
   "files": [
     "dist"
   ],
+  "sideEffects": false,
+  "engines": {
+    "node": ">=22.11.0"
+  },
   "devDependencies": {
     "@types/crypto-js": "^4.2.2",
     "typescript": "latest",
