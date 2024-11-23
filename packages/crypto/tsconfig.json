@@ -1,22 +1,14 @@
 {
   "compilerOptions": {
-    "esModuleInterop": true,
+    "target": "ESNext",
+    "module": "ESNext",
     "skipLibCheck": true,
-    "target": "es2022",
-    "allowJs": true,
-    "resolveJsonModule": true,
-    "moduleDetection": "force",
-    "isolatedModules": true,
-    "verbatimModuleSyntax": true,
+    "allowSyntheticDefaultImports": true,
+    "moduleResolution": "Node",
+    "lib": ["WebWorker", "DOM", "DOM.Iterable"],
     "strict": true,
-    "noUncheckedIndexedAccess": true,
-    "noImplicitOverride": true,
-    "module": "Preserve",
     "noEmit": true,
-    "moduleResolution": "Bundler",
-    "declaration": true
+    "types": ["node"]
   },
-  "include": [
-    "src",
-  ]
+  "include": ["src"]
 }

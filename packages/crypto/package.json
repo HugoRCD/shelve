@@ -1,6 +1,6 @@
 {
   "name": "@shelve/crypto",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "type": "module",
   "publishConfig": {
     "access": "public"
@@ -12,14 +12,21 @@
     "release": "bun run build && npm publish"
   },
   "exports": {
+    "./package.json": "./package.json",
     ".": {
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.cjs"
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
     }
   },
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
-  "types": "./dist/index.d.ts",
+  "types": "./dist/index.d.cts",
   "files": [
     "dist"
   ],
@@ -28,12 +35,10 @@
     "node": ">=22.11.0"
   },
   "devDependencies": {
-    "@types/crypto-js": "^4.2.2",
     "typescript": "latest",
     "unbuild": "^2.0.0"
   },
   "dependencies": {
-    "crypto-js": "^4.2.0",
     "uncrypto": "^0.1.3"
   }
 }

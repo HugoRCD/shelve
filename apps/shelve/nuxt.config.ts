@@ -26,6 +26,7 @@ export default defineNuxtConfig({
   ssr: false,
 
   nitro: {
+    minify: false,
     preset: 'cloudflare-pages',
     storage: {
       cache: {

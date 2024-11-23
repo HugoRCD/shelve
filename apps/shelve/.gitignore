@@ -31,3 +31,5 @@ logs
 
 # Nitro
 .nitro/
+
+.wrangler

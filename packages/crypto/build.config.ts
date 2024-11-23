@@ -4,9 +4,12 @@ export default defineBuildConfig({
   declaration: true,
   rollup: {
     esbuild: {
-      target: 'esnext',
+      target: 'ES2022',
+      tsconfigRaw: {
+        compilerOptions: {
+          useDefineForClassFields: false,
+        },
+      },
     },
-    emitCJS: false,
-    cjsBridge: true,
   },
 })
