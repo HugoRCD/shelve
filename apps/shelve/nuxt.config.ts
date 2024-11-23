@@ -103,4 +103,8 @@ export default defineNuxtConfig({
     preference: 'dark',
     fallback: 'dark'
   },
+
+  alias: {
+    'string_decoder': 'string_decoder/',
+  },
 })
