@@ -91,7 +91,7 @@ export class ProjectService {
   private async isProjectAlreadyExists(name: string, teamId: number, projectId?: number): Promise<boolean> {
     const conditions = [
       eq(tables.projects.teamId, teamId),
-      ilike(tables.projects.name, name)
+      like(tables.projects.name, name)
     ]
 
     if (projectId) conditions.push(not(eq(tables.projects.id, projectId)))

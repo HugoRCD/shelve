@@ -26,7 +26,6 @@ export default defineNuxtConfig({
   ssr: false,
 
   nitro: {
-    minify: false,
     preset: 'cloudflare-pages',
     storage: {
       cache: {
@@ -63,6 +62,7 @@ export default defineNuxtConfig({
     '@vueuse/nuxt',
     'nuxt-auth-utils',
     '@nuxthub/core',
+    '@shelve/crypto'
   ],
 
   css: ['~/assets/style/main.css'],

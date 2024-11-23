@@ -17,7 +17,7 @@ export default eventHandler(async (event) => {
   if (!teamId) teamId = await new TeamService().getPrivateUserTeamId(user.id)
 
   const project = await useDrizzle().query.projects.findFirst({
-    where: and(ilike(tables.projects.name, name), eq(tables.projects.teamId, teamId)),
+    where: and(like(tables.projects.name, name), eq(tables.projects.teamId, teamId)),
   })
 
   if (!project) throw createError({ statusCode: 400, statusMessage: 'Project not found' })

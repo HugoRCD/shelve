@@ -1,5 +1,4 @@
 import type { DecryptResponse, EncryptRequest, StoredData, TTLFormat } from '@shelve/types'
-import { seal, unseal } from '@shelve/crypto'
 import type { Storage, StorageValue } from 'unstorage'
 
 export class VaultService {

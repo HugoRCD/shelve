@@ -1,4 +1,4 @@
-import { seal, unseal } from './crypto'
+import { seal, unseal } from './utils/crypto'
 
 /*async function testSeal(): void {
   const password = 'some_not_random_password_that_is_also_long_enough'

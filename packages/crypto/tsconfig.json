@@ -1,14 +1,8 @@
 {
-  "compilerOptions": {
-    "target": "ESNext",
-    "module": "ESNext",
-    "skipLibCheck": true,
-    "allowSyntheticDefaultImports": true,
-    "moduleResolution": "Node",
-    "lib": ["WebWorker", "DOM", "DOM.Iterable"],
-    "strict": true,
-    "noEmit": true,
-    "types": ["node"]
-  },
-  "include": ["src"]
+  "extends": "./.nuxt/tsconfig.json",
+  "exclude": [
+    "dist",
+    "node_modules",
+    "playground",
+  ]
 }
