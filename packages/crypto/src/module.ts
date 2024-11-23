@@ -2,7 +2,7 @@ import {
   defineNuxtModule,
   addServerImportsDir,
   createResolver
-} from 'nuxt/kit'
+} from '@nuxt/kit'
 
 export default defineNuxtModule({
   meta: {
