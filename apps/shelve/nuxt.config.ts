@@ -25,9 +25,6 @@ export default defineNuxtConfig({
   },
 
   runtimeConfig: {
-    public: {
-      appUrl: '',
-    },
     private: {
       resendApiKey: '',
       encryptionKey: '',
