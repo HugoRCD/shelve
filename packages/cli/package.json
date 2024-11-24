@@ -39,7 +39,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@clack/prompts": "^0.8.1",
+    "@clack/prompts": "^0.8.2",
     "c12": "^2.0.1",
     "commander": "^12.1.0",
     "consola": "^3.2.3",
