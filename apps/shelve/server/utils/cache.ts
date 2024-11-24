@@ -34,6 +34,7 @@ export async function deleteCachedProjectVariables(projectId: number): Promise<v
 }
 
 export async function deleteCachedTeamProjects(teamId: number): Promise<void> {
+  await deleteCachedProjectById(teamId)
   await useStorage(STORAGE_TYPE).removeItem(`${CACHE_PREFIX}${CACHE_KEY.projects}${teamId}.json`)
 }
 

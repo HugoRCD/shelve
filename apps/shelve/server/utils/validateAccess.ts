@@ -1,4 +1,4 @@
-import { Role, TeamRole, type ValidateAccess } from '@shelve/types'
+import { Project, Role, TeamRole, type ValidateAccess } from '@shelve/types'
 
 export async function validateAccess(input: ValidateAccess, minRole: TeamRole = TeamRole.MEMBER): Promise<boolean> {
   const { teamId, requester } = input
@@ -24,4 +24,23 @@ export async function validateAccess(input: ValidateAccess, minRole: TeamRole = 
   if (orderRole[member.role] > orderRole[minRole])
     throw new Error('Unauthorized: Member does not have the required role')
   return true
+}
+
+export async function hasAccessToProject(projectId: number, userId: number): Promise<Project> {
+  const project = await useDrizzle().query.projects.findFirst({
+    where: eq(tables.projects.id, projectId),
+    with: {
+      team: {
+        with: {
+          members: {
+            where: eq(tables.members.userId, userId)
+          }
+        }
+      }
+    }
+  })
+
+  if (!project) throw createError({ statusCode: 401, message: 'Unauthorized' })
+
+  return project
 }

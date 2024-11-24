@@ -15,7 +15,6 @@ export class ProjectService {
   }
 
   async updateProject(input: ProjectUpdateInput): Promise<Project> {
-    await deleteCachedProjectById(input.id)
     await deleteCachedTeamProjects(input.teamId)
 
     const existingProject = await this.findProjectById(input.id)
@@ -33,7 +32,7 @@ export class ProjectService {
   }
 
   getProjectById = cachedFunction(async (projectId: number, userId: number): Promise<Project> => {
-    const project = await this.hasAccessToProject(projectId, userId)
+    const project = await hasAccessToProject(projectId, userId)
 
     if (!project) throw new Error(`Project not found with id ${projectId}`)
     return project
@@ -54,8 +53,7 @@ export class ProjectService {
   })
 
   async deleteProject(projectId: number, userId: number): Promise<void> {
-    const { teamId } = await this.hasAccessToProject(projectId, userId)
-    await deleteCachedProjectById(projectId)
+    const { teamId } = await hasAccessToProject(projectId, userId)
     await deleteCachedTeamProjects(teamId)
 
     await useDrizzle().delete(tables.projects)
@@ -102,25 +100,6 @@ export class ProjectService {
         message: 'Project not found'
       })
     }
-    return project
-  }
-
-  private async hasAccessToProject(projectId: number, userId: number): Promise<Project> {
-    const project = await useDrizzle().query.projects.findFirst({
-      where: eq(tables.projects.id, projectId),
-      with: {
-        team: {
-          with: {
-            members: {
-              where: eq(tables.members.userId, userId)
-            }
-          }
-        }
-      }
-    })
-
-    if (!project) throw createError({ statusCode: 401, message: 'Unauthorized' })
-
     return project
   }
 
