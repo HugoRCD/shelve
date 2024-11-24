@@ -32,7 +32,7 @@ export class VariableService {
       .returning()
     if (!updatedVariable) throw createError({ statusCode: 500, message: 'Failed to update variable' })
 
-    await deleteCachedProjectVariables(updatedVariable.projectId)
+    await clearCache('Variables', updatedVariable.projectId)
     return decrypt ? this.decryptVariable(updatedVariable) : updatedVariable
   }
 
@@ -74,7 +74,7 @@ export class VariableService {
       })
     }
 
-    await deleteCachedProjectVariables(result.projectId)
+    await clearCache('Variables', result.projectId)
   }
 
   // Multiple Variables Operations
@@ -123,18 +123,14 @@ export class VariableService {
       })
     )
 
-    await deleteCachedProjectVariables(projectId)
+    await clearCache('Variables', projectId)
     return this.decryptVariables(variablesToUpsert)
   }
 
-  getProjectVariables = cachedFunction(async (projectId: number, environment?: EnvType): Promise<Variable[]> => {
+  getVariables = withCache('Variables', async (projectId: number, environment?: EnvType): Promise<Variable[]> => {
     return await useDrizzle().query.variables.findMany({
       where: this.buildEnvironmentQuery(projectId, environment)
     })
-  }, {
-    maxAge: CACHE_TTL,
-    name: 'getVariables',
-    getKey: (projectId: number) => `projectId:${projectId}`
   })
 
   private async decryptVariable(variable: Variable): Promise<Variable> {

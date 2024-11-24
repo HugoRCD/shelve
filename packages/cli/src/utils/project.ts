@@ -12,7 +12,7 @@ export async function getProjects(): Promise<Project[]> {
 
   s.start('Loading projects')
   try {
-    const projects = await api(`/teams/projects${ teamId ? `?teamId=${ teamId }` : '' }`, {
+    const projects = await api(`/projects${ teamId ? `?teamId=${ teamId }` : '' }`, {
       method: 'GET',
     })
     s.stop('Loading projects')
@@ -30,7 +30,7 @@ export async function getProjectByName(name: string): Promise<Project> {
   s.start(`Fetching '${ name }' project${ debug ? ` - Debug mode` : '' }`)
   try {
     const encodedName = encodeURIComponent(name)
-    const project = await api(`/project/name/${ encodedName }${ teamId ? `?teamId=${ teamId }` : '' }`, {
+    const project = await api(`/projects/name/${ encodedName }${ teamId ? `?teamId=${ teamId }` : '' }`, {
       method: 'GET',
     })
     s.stop(`Fetching '${ name }' project${ debug ? ` - Debug mode` : '' }`)
@@ -60,7 +60,7 @@ export async function createProject(name: string): Promise<Project> {
 
   s.start('Creating project')
   try {
-    const project = await api('/project', {
+    const project = await api('/projects', {
       method: 'POST',
       body: {
         name: name.charAt(0).toUpperCase() + name.slice(1),

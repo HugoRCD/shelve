@@ -1,43 +1,62 @@
-const STORAGE_TYPE = 'cache'
+export const CACHE_TTL = 60 * 60 // 1 hour
 
-const CACHE_PREFIX = 'nitro:functions:'
+export const cacheEntities = {
+  Team: {
+    prefix: 'team',
+    key: 'teamId',
+    ttl: CACHE_TTL,
+    invalidates: []
+  },
+  Teams: {
+    prefix: 'teams',
+    key: 'teamId',
+    ttl: CACHE_TTL,
+    invalidates: []
+  },
+  Members: {
+    prefix: 'members',
+    key: 'teamId',
+    ttl: CACHE_TTL,
+    invalidates: ['Team', 'Teams']
+  },
+  Project: {
+    prefix: 'project',
+    key: 'projectId',
+    ttl: CACHE_TTL,
+    invalidates: []
+  },
+  Projects: {
+    prefix: 'projects',
+    key: 'teamId',
+    ttl: CACHE_TTL,
+    invalidates: ['Project']
+  },
+  Variables: {
+    prefix: 'variables',
+    key: 'projectId',
+    ttl: CACHE_TTL,
+    invalidates: []
+  }
+} as const
 
-const CACHE_KEY = {
-  team: 'getTeam:teamId:',
-  teams: 'getTeams:userId:',
-  members: 'getTeamMembers:teamId:',
-  project: 'getProject:projectId:',
-  projects: 'getProjects:teamId:',
-  variables: 'getVariables:projectId:'
+export function withCache<T>(
+  entity: keyof typeof cacheEntities,
+  fn: (...args: any[]) => Promise<T>
+) {
+  return cachedFunction(fn, {
+    maxAge: cacheEntities[entity].ttl,
+    name: cacheEntities[entity].prefix,
+    getKey: (...args: any[]) => `${cacheEntities[entity].key}:${args.join(':')}`
+  })
 }
 
-export async function deleteCachedMembersByTeamId(teamId: number) {
-  await useStorage(STORAGE_TYPE).removeItem(`${CACHE_PREFIX}${CACHE_KEY.members}${teamId}.json`)
-}
+export async function clearCache(entity: keyof typeof cacheEntities, ...params: any[]) {
+  const storage = useStorage('cache')
+  const config = cacheEntities[entity]
 
-export async function deleteCachedTeamById(teamId: number): Promise<void> {
-  await useStorage(STORAGE_TYPE).removeItem(`${CACHE_PREFIX}${CACHE_KEY.team}${teamId}.json`)
-}
+  await storage.removeItem(`nitro:functions:${config.prefix}:${params.join(':')}`)
 
-export async function deleteCachedTeamsByUserId(userId: number): Promise<void> {
-  await useStorage(STORAGE_TYPE).removeItem(`${CACHE_PREFIX}${CACHE_KEY.teams}${userId}.json`)
-}
-
-export async function deleteCachedForTeamMembers(teamId: number): Promise<void> {
-  await deleteCachedTeamById(teamId)
-  const members = await useDrizzle().query.members.findMany({ where: eq(tables.members.teamId, teamId) })
-  await Promise.all(members.map(member => deleteCachedTeamsByUserId(member.userId)))
-}
-
-export async function deleteCachedProjectVariables(projectId: number): Promise<void> {
-  await useStorage(STORAGE_TYPE).removeItem(`${CACHE_PREFIX}${CACHE_KEY.variables}${projectId}.json`)
-}
-
-export async function deleteCachedTeamProjects(teamId: number): Promise<void> {
-  await deleteCachedProjectById(teamId)
-  await useStorage(STORAGE_TYPE).removeItem(`${CACHE_PREFIX}${CACHE_KEY.projects}${teamId}.json`)
-}
-
-export async function deleteCachedProjectById(id: number): Promise<void> {
-  await useStorage(STORAGE_TYPE).removeItem(`${CACHE_PREFIX}${CACHE_KEY.project}${id}.json`)
+  for (const invalidateEntity of config.invalidates) {
+    await clearCache(invalidateEntity, ...params)
+  }
 }

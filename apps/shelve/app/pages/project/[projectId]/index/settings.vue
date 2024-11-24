@@ -8,7 +8,7 @@ const project = inject('project') as Ref<Project>
 const loading = inject('loading') as Ref<boolean>
 const route = useRoute()
 
-const { status: updateStatus, error: updateError, execute } = useFetch(`/api/project/${projectId}`, {
+const { status: updateStatus, error: updateError, execute } = useFetch(`/api/projects/${projectId}`, {
   method: 'PUT',
   body: project,
   watch: false,

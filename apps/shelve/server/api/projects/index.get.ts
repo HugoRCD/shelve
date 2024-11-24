@@ -10,5 +10,5 @@ export default eventHandler(async (event) => {
 
   if (!teamId) teamId = await new TeamService().getPrivateUserTeamId(user.id)
 
-  return await new ProjectService().getProjectsByTeamId(teamId)
+  return await new ProjectService().getProjects(teamId)
 })

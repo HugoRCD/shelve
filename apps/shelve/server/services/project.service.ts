@@ -4,20 +4,19 @@ export class ProjectService {
 
   async createProject(input: CreateProjectInput): Promise<Project> {
     await this.validateProjectName(input.name, input.teamId)
-    await deleteCachedTeamProjects(input.teamId)
 
     const [createdProject] = await useDrizzle().insert(tables.projects)
       .values(input)
       .returning()
     if (!createdProject) throw new Error('Project not found after creation')
+    await clearCache('Projects', input.teamId)
 
     return createdProject
   }
 
   async updateProject(input: ProjectUpdateInput): Promise<Project> {
-    await deleteCachedTeamProjects(input.teamId)
-
-    const existingProject = await this.findProjectById(input.id)
+    const existingProject = await this.getProject(input.id, input.requester.id)
+    if (!existingProject) throw new Error('Project not found')
 
     if (existingProject.name !== input.name)
       await this.validateProjectName(input.name, existingProject.teamId, input.id)
@@ -27,34 +26,27 @@ export class ProjectService {
       .where(eq(tables.projects.id, input.id))
       .returning()
     if (!updatedProject) throw new Error('Project not found after update')
+    await clearCache('Projects', updatedProject.teamId)
 
     return updatedProject
   }
 
-  getProjectById = cachedFunction(async (projectId: number, userId: number): Promise<Project> => {
+  getProject = withCache('Project', async (projectId: number, userId: number): Promise<Project> => {
     const project = await hasAccessToProject(projectId, userId)
 
-    if (!project) throw new Error(`Project not found with id ${projectId}`)
+    if (!project) throw new Error(`Project not found with id ${ projectId }`)
     return project
-  }, {
-    maxAge: CACHE_TTL,
-    name: 'getProject',
-    getKey: (projectId: number) => `projectId:${projectId}`,
   })
 
-  getProjectsByTeamId = cachedFunction(async (teamId: number): Promise<Project[]> => {
+  getProjects = withCache('Projects', async (teamId: number): Promise<Project[]> => {
     return await useDrizzle().query.projects.findMany({
       where: eq(tables.projects.teamId, teamId)
     })
-  }, {
-    maxAge: CACHE_TTL,
-    name: 'getProjects',
-    getKey: (teamId: number) => `teamId:${teamId}`,
   })
 
   async deleteProject(projectId: number, userId: number): Promise<void> {
     const { teamId } = await hasAccessToProject(projectId, userId)
-    await deleteCachedTeamProjects(teamId)
+    await clearCache('Projects', teamId)
 
     await useDrizzle().delete(tables.projects)
       .where(and(

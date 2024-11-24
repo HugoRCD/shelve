@@ -38,7 +38,7 @@ export class TeamService {
     })
     if (!createdTeam) throw new Error(`Team not found after creation with id ${ team.id }`)
 
-    await deleteCachedTeamsByUserId(input.requester.id)
+    await clearCache('Teams', input.requester.id)
     return createdTeam
   }
 
@@ -61,7 +61,7 @@ export class TeamService {
       }
     })
     if (!updatedTeam) throw new Error(`Team not found with id ${teamId}`)
-    await deleteCachedForTeamMembers(teamId)
+    await clearCache('Teams', teamId)
     return updatedTeam
   }
 
@@ -70,10 +70,10 @@ export class TeamService {
     await validateAccess({ teamId, requester }, TeamRole.OWNER)
     const [team] = await useDrizzle().delete(tables.teams).where(eq(tables.teams.id, teamId)).returning({ id: tables.teams.id })
     if (!team) throw new Error(`Team not found after deletion with id ${teamId}`)
-    await deleteCachedForTeamMembers(teamId)
+    await clearCache('Teams', teamId)
   }
 
-  getTeamsByUserId = cachedFunction(async (userId): Promise<Team[]> => {
+  getTeamsByUserId = withCache('Teams', async (userId): Promise<Team[]> => {
     const memberOf = await useDrizzle().query.members.findMany({
       where: eq(tables.members.userId, userId),
       with: {
@@ -91,13 +91,9 @@ export class TeamService {
     const teams = memberOf.map(member => member.team)
     if (!teams) throw new Error(`Teams not found for user with id ${userId}`)
     return teams
-  }, {
-    maxAge: CACHE_TTL,
-    name: 'getTeams',
-    getKey: (userId: number) => `userId:${userId}`,
   })
 
-  getTeamById = cachedFunction(async (teamId, requester): Promise<Team> => {
+  getTeamById = withCache('Team', async (teamId, requester): Promise<Team> => {
     await validateAccess({ teamId, requester })
     const team = await useDrizzle().query.teams.findFirst({
       where: eq(tables.teams.id, teamId),
@@ -111,10 +107,6 @@ export class TeamService {
     })
     if (!team) throw new Error(`Team not found with id ${teamId}`)
     return team
-  }, {
-    maxAge: CACHE_TTL,
-    name: 'getTeam',
-    getKey: (team: Team) => `teamId:${team.id}`,
   })
 
   async getPrivateUserTeamId(userId: number): Promise<number> {
