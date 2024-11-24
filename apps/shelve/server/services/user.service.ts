@@ -58,16 +58,10 @@ export class UserService {
     return foundUser
   }
 
-  /**
-   * Generates a unique username if the original is taken (for OAuth users)
-   */
   private generateUniqueUsername(username: string): string {
     return `${username}_#${Math.floor(Math.random() * 1000)}`
   }
 
-  /**
-   * Validates if a username is available
-   */
   private async validateUsername(username: string, authType?: AuthType): Promise<string> {
     const foundUser = await useDrizzle()
       .select({

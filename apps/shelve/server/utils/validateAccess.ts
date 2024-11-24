@@ -1,4 +1,4 @@
-import { Role, TeamRole, ValidateAccess } from '@shelve/types'
+import { Role, TeamRole, type ValidateAccess } from '@shelve/types'
 
 export async function validateAccess(input: ValidateAccess, minRole: TeamRole = TeamRole.MEMBER): Promise<boolean> {
   const { teamId, requester } = input

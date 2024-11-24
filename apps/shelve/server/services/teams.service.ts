@@ -1,6 +1,4 @@
 import type {
-  User,
-  Member,
   Team,
   CreateTeamInput,
   DeleteTeamInput,
@@ -63,8 +61,7 @@ export class TeamService {
       }
     })
     if (!updatedTeam) throw new Error(`Team not found with id ${teamId}`)
-    await deleteCachedTeamById(teamId)
-    await deleteCachedTeamsByUserId(teamId)
+    await deleteCachedForTeamMembers(teamId)
     return updatedTeam
   }
 
@@ -73,8 +70,7 @@ export class TeamService {
     await validateAccess({ teamId, requester }, TeamRole.OWNER)
     const [team] = await useDrizzle().delete(tables.teams).where(eq(tables.teams.id, teamId)).returning({ id: tables.teams.id })
     if (!team) throw new Error(`Team not found after deletion with id ${teamId}`)
-    await deleteCachedTeamsByUserId(teamId)
-    await deleteCachedTeamById(teamId)
+    await deleteCachedForTeamMembers(teamId)
   }
 
   getTeamsByUserId = cachedFunction(async (userId): Promise<Team[]> => {
@@ -128,25 +124,6 @@ export class TeamService {
     })
     if (!team) throw new Error(`Private team not found for user with id ${userId}`)
     return team.id
-  }
-
-  async isUserAlreadyMember(teamId: number, email: string): Promise<Member | undefined> {
-    const user = await this.getUserByEmail(email)
-    if (!user) throw new Error(`User not found with email ${email}`)
-    return await useDrizzle().query.members.findFirst({
-      where: and(eq(tables.members.teamId, teamId), eq(tables.members.userId, user.id)),
-      with: {
-        user: true
-      }
-    })
-  }
-
-  async getUserByEmail(email: string): Promise<User> {
-    const user = await useDrizzle().query.users.findFirst({
-      where: eq(tables.users.email, email)
-    })
-    if (!user) throw new Error(`User not found with email ${email}`)
-    return user
   }
 
 }

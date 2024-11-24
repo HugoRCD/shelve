@@ -1,19 +1,12 @@
-import type { AddMemberInput, Member, RemoveMemberInput, UpdateMemberInput } from '@shelve/types'
+import type { AddMemberInput, Member, RemoveMemberInput, UpdateMemberInput, User } from '@shelve/types'
 import { TeamRole } from '@shelve/types'
-import { TeamService } from '~~/server/services/teams.service'
 
 export class MemberService {
-
-  private readonly TeamService: TeamService
-
-  constructor() {
-    this.TeamService = new TeamService()
-  }
 
   async addMember(input: AddMemberInput): Promise<Member> {
     const { teamId, email, role, requester } = input
     await validateAccess({ teamId, requester }, TeamRole.ADMIN)
-    const foundedMember = await this.TeamService.isUserAlreadyMember(teamId, email)
+    const foundedMember = await this.isUserAlreadyMember(teamId, email)
     if (foundedMember) {
       return await this.updateMember({
         teamId,
@@ -22,7 +15,7 @@ export class MemberService {
         requester
       })
     }
-    const user = await this.TeamService.getUserByEmail(email)
+    const user = await this.getUserByEmail(email)
 
     const [newMember] = await useDrizzle().insert(tables.members)
       .values({
@@ -34,7 +27,7 @@ export class MemberService {
     if (!newMember) throw new Error('Failed to add member')
     const member = await this.findMemberById(newMember.id)
     await deleteCachedMembersByTeamId(teamId)
-    await this.TeamService.deleteCachedForTeamMembers(teamId)
+    await deleteCachedForTeamMembers(teamId)
     return member
   }
 
@@ -50,7 +43,7 @@ export class MemberService {
 
     const member = await this.findMemberById(memberId)
     await deleteCachedMembersByTeamId(teamId)
-    await this.TeamService.deleteCachedForTeamMembers(teamId)
+    await deleteCachedForTeamMembers(teamId)
     return member
   }
 
@@ -60,7 +53,7 @@ export class MemberService {
 
     const member = await this.findMemberById(memberId)
     await deleteCachedMembersByTeamId(teamId)
-    await this.TeamService.deleteCachedForTeamMembers(teamId)
+    await deleteCachedForTeamMembers(teamId)
     await useDrizzle().delete(tables.members).where(eq(tables.members.id, member.id))
   }
 
@@ -90,5 +83,24 @@ export class MemberService {
     name: 'getTeamMembers',
     getKey: (teamId) => `teamId:${teamId}`,
   })
+
+  async isUserAlreadyMember(teamId: number, email: string): Promise<Member | undefined> {
+    const user = await this.getUserByEmail(email)
+    if (!user) throw new Error(`User not found with email ${email}`)
+    return await useDrizzle().query.members.findFirst({
+      where: and(eq(tables.members.teamId, teamId), eq(tables.members.userId, user.id)),
+      with: {
+        user: true
+      }
+    })
+  }
+
+  async getUserByEmail(email: string): Promise<User> {
+    const user = await useDrizzle().query.users.findFirst({
+      where: eq(tables.users.email, email)
+    })
+    if (!user) throw new Error(`User not found with email ${email}`)
+    return user
+  }
 
 }
