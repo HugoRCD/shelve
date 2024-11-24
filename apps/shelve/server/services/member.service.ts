@@ -1,25 +1,18 @@
-import type { Storage, StorageValue } from 'unstorage'
 import type { AddMemberInput, Member, RemoveMemberInput, UpdateMemberInput } from '@shelve/types'
 import { TeamRole } from '@shelve/types'
 import { TeamService } from '~~/server/services/teams.service'
 
 export class MemberService {
 
-  private readonly storage: Storage<StorageValue>
   private readonly TeamService: TeamService
-  private readonly CACHE_TTL = 60 * 60 // 1 hour
-  private readonly CACHE_PREFIX = {
-    members: 'nitro:functions:getTeamMembers:teamId:'
-  }
 
   constructor() {
-    this.storage = useStorage('cache')
     this.TeamService = new TeamService()
   }
 
   async addMember(input: AddMemberInput): Promise<Member> {
     const { teamId, email, role, requester } = input
-    await this.TeamService.validateTeamAccess({ teamId, requester }, TeamRole.ADMIN)
+    await validateAccess({ teamId, requester }, TeamRole.ADMIN)
     const foundedMember = await this.TeamService.isUserAlreadyMember(teamId, email)
     if (foundedMember) {
       return await this.updateMember({
@@ -40,14 +33,14 @@ export class MemberService {
       .returning()
     if (!newMember) throw new Error('Failed to add member')
     const member = await this.findMemberById(newMember.id)
-    await this.deleteCachedMembersByTeamId(teamId)
+    await deleteCachedMembersByTeamId(teamId)
     await this.TeamService.deleteCachedForTeamMembers(teamId)
     return member
   }
 
   async updateMember(input: UpdateMemberInput): Promise<Member> {
     const { teamId, memberId, role, requester } = input
-    await this.TeamService.validateTeamAccess({ teamId, requester }, TeamRole.ADMIN)
+    await validateAccess({ teamId, requester }, TeamRole.ADMIN)
 
     await useDrizzle().update(tables.members)
       .set({
@@ -56,17 +49,17 @@ export class MemberService {
       .where(eq(tables.members.id, memberId))
 
     const member = await this.findMemberById(memberId)
-    await this.deleteCachedMembersByTeamId(teamId)
+    await deleteCachedMembersByTeamId(teamId)
     await this.TeamService.deleteCachedForTeamMembers(teamId)
     return member
   }
 
   async removeMember(input: RemoveMemberInput): Promise<void> {
     const { teamId, memberId, requester } = input
-    await this.TeamService.validateTeamAccess({ teamId, requester }, TeamRole.ADMIN)
+    await validateAccess({ teamId, requester }, TeamRole.ADMIN)
 
     const member = await this.findMemberById(memberId)
-    await this.deleteCachedMembersByTeamId(teamId)
+    await deleteCachedMembersByTeamId(teamId)
     await this.TeamService.deleteCachedForTeamMembers(teamId)
     await useDrizzle().delete(tables.members).where(eq(tables.members.id, member.id))
   }
@@ -83,7 +76,7 @@ export class MemberService {
   }
 
   getTeamMembersById = cachedFunction(async (teamId, requester): Promise<Member[]> => {
-    await this.TeamService.validateTeamAccess({ teamId, requester })
+    await validateAccess({ teamId, requester })
     const members = await useDrizzle().query.members.findMany({
       where: eq(tables.members.teamId, teamId),
       with: {
@@ -93,13 +86,9 @@ export class MemberService {
     if (!members) throw new Error(`Members not found for team with id ${teamId}`)
     return members
   }, {
-    maxAge: this.CACHE_TTL,
+    maxAge: CACHE_TTL,
     name: 'getTeamMembers',
     getKey: (teamId) => `teamId:${teamId}`,
   })
-
-  private async deleteCachedMembersByTeamId(teamId: number) {
-    await this.storage.removeItem(`${this.CACHE_PREFIX.members}${teamId}`)
-  }
 
 }
