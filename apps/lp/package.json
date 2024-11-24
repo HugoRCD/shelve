@@ -18,7 +18,7 @@
     "nuxt": "^3.14.1592",
     "vue": "latest",
     "vue-router": "latest",
-    "vue-sonner": "^1.2.5",
+    "vue-sonner": "^1.3.0",
     "@shelve/types": "*",
     "@shelve/crypto": "*",
     "@tsparticles/engine": "^3.6.0",

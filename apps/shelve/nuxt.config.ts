@@ -60,9 +60,10 @@ export default defineNuxtConfig({
     '@nuxt/image',
     '@nuxt/ui',
     '@vueuse/nuxt',
+    'nuxt-build-cache',
     'nuxt-auth-utils',
-    '@nuxthub/core',
     '@shelve/crypto'
+    '@nuxthub/core',
   ],
 
   css: ['~/assets/style/main.css'],

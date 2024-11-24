@@ -1,6 +1,6 @@
 {
+  "name": "@shelve/crypto-playground",
   "private": true,
-  "name": "my-module-playground",
   "type": "module",
   "scripts": {
     "dev": "nuxi dev",

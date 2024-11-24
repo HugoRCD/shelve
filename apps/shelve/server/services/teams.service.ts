@@ -54,7 +54,7 @@ export class TeamService {
         }
       }
     })
-    if (!createdTeam) throw new Error(`Team not found after creation with id ${team.id}`)
+    if (!createdTeam) throw new Error(`Team not found after creation with id ${ team.id }`)
 
     await this.deleteCachedTeamsByUserId(input.requester.id)
     return createdTeam
