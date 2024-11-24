@@ -1,5 +1,5 @@
 name: Publish Any Commit
-on: [push, pull_request]
+on: [push]
 
 jobs:
   check-changes:

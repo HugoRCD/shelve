@@ -1,0 +1,13 @@
+{
+  "name": "@shelve/crypto-playground",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "nuxi dev",
+    "build": "nuxi build",
+    "generate": "nuxi generate"
+  },
+  "dependencies": {
+    "nuxt": "^3.14.1592"
+  }
+}
