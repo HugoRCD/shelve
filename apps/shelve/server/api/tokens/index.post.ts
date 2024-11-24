@@ -1,5 +1,4 @@
 import { z, zh } from 'h3-zod'
-import { TokenService } from '~~/server/services/token.service'
 
 export default defineEventHandler(async (event) => {
   const { name } = await zh.useValidatedBody(event, {
@@ -8,5 +7,36 @@ export default defineEventHandler(async (event) => {
     }).min(3).max(50).trim(),
   })
   const { user } = await requireUserSession(event)
-  return new TokenService().createToken({ name: name, userId: user.id })
+
+  const createdToken = generateUserToken(user.id)
+  const encryptedToken = await seal(createdToken, encryptionKey)
+
+  const [token] = await useDrizzle().insert(tables.tokens)
+    .values({
+      token: encryptedToken,
+      userId: user.id,
+      name
+    })
+    .returning()
+
+  return token
 })
+
+const { encryptionKey } = useRuntimeConfig().private
+
+function generateUserToken(userId: number): string {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+  let token = ''
+  const userIdHash = calculateUserIdHash(userId)
+
+  for (let i = 0; i < TOKEN_LENGTH; i++) {
+    const randomIndex = (Math.floor(Math.random() * characters.length) + userIdHash) % characters.length
+    token += characters.charAt(randomIndex)
+  }
+
+  return `${TOKEN_PREFIX}${userId}_${token}`
+}
+
+function calculateUserIdHash(userId: number): number {
+  return Array.from(String(userId)).reduce((acc, char) => acc + char.charCodeAt(0), 0)
+}
