@@ -21,6 +21,7 @@ export default defineNuxtConfig({
     'nuxt-build-cache',
     '@nuxt/scripts',
     '@nuxtjs/seo',
+    '@shelve/crypto'
   ],
 
   runtimeConfig: {

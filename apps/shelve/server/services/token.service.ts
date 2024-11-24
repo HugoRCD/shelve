@@ -1,4 +1,3 @@
-import { seal, unseal } from '@shelve/crypto'
 import type { Token, User } from '@shelve/types'
 
 export class TokenService {

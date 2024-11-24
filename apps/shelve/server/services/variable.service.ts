@@ -1,6 +1,5 @@
 import type { CreateVariablesInput, UpdateVariableInput, Variable } from '@shelve/types'
 import type { Storage, StorageValue } from 'unstorage'
-import { seal, unseal } from '@shelve/crypto'
 import { EnvType } from '@shelve/types'
 
 export class VariableService {
