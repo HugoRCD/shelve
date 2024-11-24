@@ -62,7 +62,7 @@ export default defineNuxtConfig({
     '@vueuse/nuxt',
     'nuxt-build-cache',
     'nuxt-auth-utils',
-    '@shelve/crypto'
+    '@shelve/crypto',
     '@nuxthub/core',
   ],
 
