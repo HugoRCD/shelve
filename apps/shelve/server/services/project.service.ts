@@ -1,4 +1,4 @@
-import type { CreateProjectInput, Project, ProjectUpdateInput } from '@shelve/types'
+import type { CreateProjectInput, Project, ProjectUpdateInput, Requester } from '@shelve/types'
 
 export class ProjectService {
 
@@ -38,7 +38,8 @@ export class ProjectService {
     return project
   })
 
-  getProjects = withCache('Projects', async (teamId: number): Promise<Project[]> => {
+  getProjects = withCache<Project[]>('Projects', async (teamId: number, requester: Requester) => {
+    await validateAccess({ teamId, requester })
     return await useDrizzle().query.projects.findMany({
       where: eq(tables.projects.teamId, teamId)
     })

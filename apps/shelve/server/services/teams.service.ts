@@ -73,7 +73,7 @@ export class TeamService {
     await clearCache('Teams', teamId)
   }
 
-  getTeamsByUserId = withCache('Teams', async (userId): Promise<Team[]> => {
+  getTeams = withCache<Team[]>('Teams', async (userId) => {
     const memberOf = await useDrizzle().query.members.findMany({
       where: eq(tables.members.userId, userId),
       with: {
@@ -93,7 +93,7 @@ export class TeamService {
     return teams
   })
 
-  getTeamById = withCache('Team', async (teamId, requester): Promise<Team> => {
+  getTeam = withCache<Team>('Team', async (teamId, requester) => {
     await validateAccess({ teamId, requester })
     const team = await useDrizzle().query.teams.findFirst({
       where: eq(tables.teams.id, teamId),

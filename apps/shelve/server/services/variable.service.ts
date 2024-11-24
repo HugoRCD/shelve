@@ -127,7 +127,7 @@ export class VariableService {
     return this.decryptVariables(variablesToUpsert)
   }
 
-  getVariables = withCache('Variables', async (projectId: number, environment?: EnvType): Promise<Variable[]> => {
+  getVariables = withCache<Variable[]>('Variables', async (projectId: number, environment?: EnvType) => {
     return await useDrizzle().query.variables.findMany({
       where: this.buildEnvironmentQuery(projectId, environment)
     })

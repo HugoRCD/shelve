@@ -26,7 +26,7 @@ export class MemberService {
       .returning()
     if (!newMember) throw new Error('Failed to add member')
     const member = await this.findMemberById(newMember.id)
-    await clearCache('Members', teamId)
+    await clearCache('Teams', teamId)
     return member
   }
 
@@ -41,7 +41,7 @@ export class MemberService {
       .where(eq(tables.members.id, memberId))
 
     const member = await this.findMemberById(memberId)
-    await clearCache('Members', teamId)
+    await clearCache('Teams', teamId)
     return member
   }
 
@@ -50,7 +50,7 @@ export class MemberService {
     await validateAccess({ teamId, requester }, TeamRole.ADMIN)
 
     const member = await this.findMemberById(memberId)
-    await clearCache('Members', teamId)
+    await clearCache('Teams', teamId)
     await useDrizzle().delete(tables.members).where(eq(tables.members.id, member.id))
   }
 
@@ -64,18 +64,6 @@ export class MemberService {
     if (!member) throw new Error(`Member not found with id ${memberId}`)
     return member
   }
-
-  getMembers = withCache('Members', async (teamId, requester): Promise<Member[]> => {
-    await validateAccess({ teamId, requester })
-    const members = await useDrizzle().query.members.findMany({
-      where: eq(tables.members.teamId, teamId),
-      with: {
-        user: true
-      }
-    })
-    if (!members) throw new Error(`Members not found for team with id ${ teamId }`)
-    return members
-  })
 
   async isUserAlreadyMember(teamId: number, email: string): Promise<Member | undefined> {
     const user = await this.getUserByEmail(email)

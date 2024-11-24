@@ -8,7 +8,7 @@ export default eventHandler(async (event) => {
       required_error: 'Missing team ID',
     }),
   })
-  return await new TeamService().getTeamById(teamId, {
+  return await new TeamService().getTeam(teamId, {
     id: user.id,
     role: user.role,
   })
