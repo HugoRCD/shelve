@@ -82,18 +82,4 @@ export class ProjectService {
     return !!project
   }
 
-  private async findProjectById(id: number): Promise<Project> {
-    const project = await useDrizzle().query.projects.findFirst({
-      where: eq(tables.projects.id, id)
-    })
-
-    if (!project) {
-      throw createError({
-        statusCode: 404,
-        message: 'Project not found'
-      })
-    }
-    return project
-  }
-
 }

@@ -32,7 +32,7 @@
     "@nuxt/devtools": "^1.6.1",
     "@nuxt/image": "^1.8.1",
     "@nuxt/ui": "3.0.0-alpha.9",
-    "@shelve/crypto": "latest",
+    "@shelve/crypto": "*",
     "@shelve/utils": "*",
     "drizzle-orm": "^0.36.4",
     "pg": "^8.13.1",

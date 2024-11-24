@@ -8,7 +8,7 @@
     "build:app": "turbo build --filter=@shelve/app",
     "build:lp": "turbo build --filter=@shelve/lp",
     "build:cli": "turbo build --filter=@shelve/cli",
-    "dev": "turbo dev --filter=@shelve/app",
+    "dev": "turbo dev --filter=apps/*",
     "dev:app": "turbo dev --filter=@shelve/app",
     "dev:lp": "turbo dev --filter=@shelve/lp",
     "dev:cli": "turbo dev --filter=@shelve/cli",
@@ -31,7 +31,7 @@
     "node": ">=22.11.0"
   },
   "packageManager": "bun@1.1.26",
-  "trustedDependencies": ["@shelve/app", "@shelve/lp", "@shelve/crypto"],
+  "trustedDependencies": ["@shelve/app", "@shelve/lp"],
   "workspaces": [
     "apps/*",
     "packages/*"
