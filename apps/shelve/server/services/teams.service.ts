@@ -61,7 +61,7 @@ export class TeamService {
       }
     })
     if (!updatedTeam) throw new Error(`Team not found with id ${teamId}`)
-    await clearCache('Teams', teamId)
+    await clearCache('Team', teamId)
     return updatedTeam
   }
 
@@ -70,7 +70,7 @@ export class TeamService {
     await validateAccess({ teamId, requester }, TeamRole.OWNER)
     const [team] = await useDrizzle().delete(tables.teams).where(eq(tables.teams.id, teamId)).returning({ id: tables.teams.id })
     if (!team) throw new Error(`Team not found after deletion with id ${teamId}`)
-    await clearCache('Teams', teamId)
+    await clearCache('Team', teamId)
   }
 
   getTeams = withCache<Team[]>('Teams', async (userId) => {
