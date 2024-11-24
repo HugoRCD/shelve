@@ -9,11 +9,3 @@ export function useDrizzle() {
 }
 
 export const tables = schema
-
-export function seal(secret: any, password: string) {
-  return secret
-}
-
-export function unseal(secret: any, password: string) {
-  return secret
-}

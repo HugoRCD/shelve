@@ -27,6 +27,7 @@
     "@nuxt/image": "^1.8.1",
     "@nuxt/ui": "3.0.0-alpha.9",
     "@nuxthub/core": "^0.8.7",
+    "@shelve/crypto": "latest",
     "@shelve/utils": "latest",
     "@vueuse/core": "^11.3.0",
     "@vueuse/nuxt": "^11.3.0",
