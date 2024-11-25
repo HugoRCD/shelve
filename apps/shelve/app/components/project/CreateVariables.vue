@@ -22,54 +22,7 @@ const {
 
 const teamEnv = useTeamEnv()
 
-const items = [
-  [
-    {
-      label: 'Copy .env',
-      disabled: true
-    }
-  ],
-  [
-    {
-      label: 'For production',
-      icon: 'lucide:clipboard',
-      onSelect: () => copyEnv(variables, 'production')
-    },
-    {
-      label: 'For preview',
-      icon: 'lucide:clipboard',
-      onSelect: () => copyEnv(variables, 'preview')
-    },
-    {
-      label: 'For development',
-      icon: 'lucide:clipboard',
-      onSelect: () => copyEnv(variables, 'development')
-    }
-  ],
-  [
-    {
-      label: 'Download .env',
-      disabled: true
-    },
-  ],
-  [
-    {
-      label: 'For production',
-      icon: 'lucide:download',
-      onSelect: () => downloadEnv(variables, 'production')
-    },
-    {
-      label: 'For preview',
-      icon: 'lucide:download',
-      onSelect: () => downloadEnv(variables, 'preview')
-    },
-    {
-      label: 'For development',
-      icon: 'lucide:download',
-      onSelect: () => downloadEnv(variables, 'development')
-    }
-  ],
-]
+const items = actionVariablesItem(variables)
 
 const fileInputRef = ref<HTMLInputElement | null>(null)
 
@@ -204,7 +157,14 @@ const handlePasswordGenerated = (password: string, index: number) => variablesIn
               Manage your environment variables
             </p>
           </div>
-          <UDropdownMenu :items>
+          <UDropdownMenu
+            :items
+            :content="{
+              align: 'start',
+              side: 'right',
+              sideOffset: 8
+            }"
+          >
             <UButton color="neutral" variant="ghost" icon="heroicons:ellipsis-horizontal-20-solid" />
           </UDropdownMenu>
         </div>
@@ -235,7 +195,6 @@ const handlePasswordGenerated = (password: string, index: number) => variablesIn
         <p class="text-xs font-normal text-neutral-500">
           🤫 You can also paste all your environment variables (.env) as key value pairs to prefilled the form
         </p>
-        {{ variablesInput }}
         <div class="mb-4 flex flex-col gap-2">
           <div class="hidden items-center sm:flex">
             <span class="w-full text-sm font-normal text-neutral-500">Key</span>
