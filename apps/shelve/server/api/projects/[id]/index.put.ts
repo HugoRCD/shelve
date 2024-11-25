@@ -1,5 +1,5 @@
 import { z, zh } from 'h3-zod'
-import { ProjectService } from '~~/server/services/project.service'
+import { ProjectsService } from '~~/server/services/projects'
 import { idParamsSchema } from '~~/server/database/zod'
 
 export default eventHandler(async (event) => {
@@ -19,7 +19,7 @@ export default eventHandler(async (event) => {
       required_error: 'Team ID is required',
     }).positive(),
   })
-  return await new ProjectService().updateProject({
+  return await new ProjectsService().updateProject({
     id,
     name: body.name,
     description: body.description,

@@ -27,7 +27,7 @@ async function deleteVariables() {
   loading.value = true
   const ids = selectedVariables.value.map((v: Variable) => v.id)
   try {
-    await $fetch(`/api/variable`, {
+    await $fetch(`/api/variables`, {
       method: 'DELETE',
       body: {
         variables: ids,

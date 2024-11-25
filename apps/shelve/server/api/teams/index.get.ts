@@ -1,6 +1,6 @@
-import { TeamService } from '~~/server/services/teams.service'
+import { TeamsService } from '~~/server/services/teams'
 
 export default eventHandler(async (event) => {
   const { user } = await requireUserSession(event)
-  return new TeamService().getTeams(user.id)
+  return new TeamsService().getTeams(user.id)
 })

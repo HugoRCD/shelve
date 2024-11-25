@@ -6,7 +6,7 @@ import type {
 } from '@shelve/types'
 import { TeamRole } from '@shelve/types'
 
-export class TeamService {
+export class TeamsService {
 
   async createTeam(input: CreateTeamInput): Promise<Team> {
     const [team] = await useDrizzle().insert(tables.teams)

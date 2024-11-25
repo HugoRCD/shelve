@@ -1,5 +1,5 @@
 import { z, zh } from 'h3-zod'
-import { ProjectService } from '~~/server/services/project.service'
+import { ProjectsService } from '~~/server/services/projects'
 
 export default eventHandler(async (event) => {
   const { user } = await requireUserSession(event)
@@ -17,7 +17,7 @@ export default eventHandler(async (event) => {
     homepage: z.string().trim().optional(),
     variablePrefix: z.string().trim().optional(),
   })
-  return await new ProjectService().createProject({
+  return await new ProjectsService().createProject({
     ...body,
     requester: {
       id: user.id,

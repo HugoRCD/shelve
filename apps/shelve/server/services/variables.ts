@@ -1,7 +1,7 @@
 import type { CreateVariablesInput, UpdateVariableInput, Variable } from '@shelve/types'
 import { EnvType } from '@shelve/types'
 
-export class VariableService {
+export class VariablesService {
 
   private readonly encryptionKey: string
   private readonly ENV_ASSOCIATION = {

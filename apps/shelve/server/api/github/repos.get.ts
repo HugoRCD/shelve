@@ -1,6 +1,5 @@
-import { GitHubService } from '~~/server/services/github.service'
+import { GithubService } from '~~/server/services/github'
 
 export default defineEventHandler(async (event) => {
-  const githubService = new GitHubService()
-  return await githubService.getUserRepos(event)
+  return await new GithubService().getUserRepos(event)
 })

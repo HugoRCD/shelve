@@ -1,5 +1,5 @@
 import { z, zh } from 'h3-zod'
-import { MemberService } from '~~/server/services/member.service'
+import { MembersService } from '~~/server/services/members'
 
 export default eventHandler(async (event) => {
   const { user } = await requireUserSession(event)
@@ -11,7 +11,7 @@ export default eventHandler(async (event) => {
       required_error: 'Missing member ID',
     })
   })
-  await new MemberService().removeMember({
+  await new MembersService().removeMember({
     teamId,
     memberId,
     requester: {

@@ -1,7 +1,7 @@
 import type { AddMemberInput, Member, RemoveMemberInput, UpdateMemberInput, User } from '@shelve/types'
 import { TeamRole } from '@shelve/types'
 
-export class MemberService {
+export class MembersService {
 
   async addMember(input: AddMemberInput): Promise<Member> {
     const { teamId, email, role, requester } = input

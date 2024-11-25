@@ -1,6 +1,6 @@
 import type { CreateProjectInput, Project, ProjectUpdateInput, Requester } from '@shelve/types'
 
-export class ProjectService {
+export class ProjectsService {
 
   async createProject(input: CreateProjectInput): Promise<Project> {
     await this.validateProjectName(input.name, input.teamId)
@@ -27,6 +27,7 @@ export class ProjectService {
       .returning()
     if (!updatedProject) throw new Error('Project not found after update')
     await clearCache('Projects', updatedProject.teamId)
+    await clearCache('Project', updatedProject.id)
 
     return updatedProject
   }
@@ -34,20 +35,22 @@ export class ProjectService {
   getProject = withCache('Project', async (projectId: number, userId: number): Promise<Project> => {
     const project = await hasAccessToProject(projectId, userId)
 
-    if (!project) throw new Error(`Project not found with id ${ projectId }`)
+    if (!project) throw new Error(`Project not found with id ${projectId}`)
     return project
   })
 
   getProjects = withCache<Project[]>('Projects', async (teamId: number, requester: Requester) => {
     await validateAccess({ teamId, requester })
     return await useDrizzle().query.projects.findMany({
-      where: eq(tables.projects.teamId, teamId)
+      where: eq(tables.projects.teamId, teamId),
+      orderBy: [desc(tables.projects.updatedAt)]
     })
   })
 
   async deleteProject(projectId: number, userId: number): Promise<void> {
     const { teamId } = await hasAccessToProject(projectId, userId)
     await clearCache('Projects', teamId)
+    await clearCache('Project', projectId)
 
     await useDrizzle().delete(tables.projects)
       .where(and(

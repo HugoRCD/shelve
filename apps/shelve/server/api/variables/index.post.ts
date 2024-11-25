@@ -1,5 +1,5 @@
 import { z, zh } from 'h3-zod'
-import { VariableService } from '~~/server/services/variable.service'
+import { VariablesService } from '~~/server/services/variables'
 
 const schema = z.object({
   projectId: z.number({
@@ -21,7 +21,7 @@ const schema = z.object({
 export default eventHandler(async (event) => {
   const body = await zh.useValidatedBody(event, schema)
 
-  return await new VariableService().createVariables({
+  return await new VariablesService().createVariables({
     projectId: body.projectId,
     variables: body.variables,
     environment: body.environment,
