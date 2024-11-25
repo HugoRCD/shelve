@@ -1,6 +1,17 @@
-import { TokenService } from '~~/server/services/token.service'
+import type { Token } from '@shelve/types'
+
+const { encryptionKey } = useRuntimeConfig().private
 
 export default defineEventHandler(async (event) => {
   const { user } = await requireUserSession(event)
-  return new TokenService().getTokensByUserId(user.id)
+
+  const tokens = await useDrizzle().query.tokens.findMany({
+    where: eq(tables.tokens.userId, user.id),
+    orderBy: (tokens, { desc }) => [desc(tokens.createdAt)]
+  })
+
+  return Promise.all(tokens.map(async (token): Promise<Token> => ({
+    ...token,
+    token: await unseal(token.token, encryptionKey) as string
+  })))
 })

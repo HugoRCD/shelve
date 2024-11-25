@@ -1,5 +1,5 @@
 import { AuthType } from '@shelve/types'
-import { UserService } from '~~/server/services/user.service'
+import { handleOAuthUser } from '~~/server/services/user'
 import { userSchema } from '~~/server/database/zod'
 
 export default defineOAuthGitHubEventHandler({
@@ -9,7 +9,7 @@ export default defineOAuthGitHubEventHandler({
   },
   async onSuccess(event, { user, tokens }) {
     try {
-      const _user = await new UserService().handleOAuthUser({
+      const _user = await handleOAuthUser({
         email: user.email,
         avatar: user.avatar_url,
         username: user.login,

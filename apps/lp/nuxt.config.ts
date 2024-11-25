@@ -1,4 +1,3 @@
-// https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: '2024-04-03',
 
@@ -25,11 +24,8 @@ export default defineNuxtConfig({
   ],
 
   runtimeConfig: {
-    public: {
-      siteUrl: process.env.NUXT_PUBLIC_SITE_URL || 'http://localhost:3000',
-    },
     private: {
-      encryptionKey: process.env.NUXT_PRIVATE_ENCRYPTION_KEY,
+      encryptionKey: '',
     },
   },
 
@@ -47,7 +43,7 @@ export default defineNuxtConfig({
   },
 
   site: {
-    url: process.env.NUXT_PUBLIC_SITE_URL,
+    url: 'https://shelve.cloud',
     name: 'Shelve',
     description: 'Shelve is a project management tool for developers teams',
     defaultLocale: 'en',

@@ -1,5 +1,5 @@
 import { z, zh } from 'h3-zod'
-import { TeamService } from '~~/server/services/teams.service'
+import { TeamsService } from '~~/server/services/teams'
 
 export default eventHandler(async (event) => {
   const { user } = await requireUserSession(event)
@@ -14,7 +14,7 @@ export default eventHandler(async (event) => {
     teamId: z.coerce.number().optional(),
   })
 
-  if (!teamId) teamId = await new TeamService().getPrivateUserTeamId(user.id)
+  if (!teamId) teamId = await new TeamsService().getPrivateUserTeamId(user.id)
 
   const project = await useDrizzle().query.projects.findFirst({
     where: and(ilike(tables.projects.name, name), eq(tables.projects.teamId, teamId)),

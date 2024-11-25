@@ -79,7 +79,7 @@ export async function getEnvVariables(projectId: number, environment: string): P
 
   s.start('Fetching variables')
   try {
-    const variables = await api(`/variable/${projectId}/${environment}`)
+    const variables = await api(`/variables/${projectId}/${environment}`)
     s.stop('Fetching variables')
     return variables
   } catch (e) {
@@ -111,7 +111,7 @@ export async function pushEnvFile(input: PushEnvFileInput): Promise<void> {
         environment
       }))
     }
-    await api(`/variable`, { method: 'POST', body })
+    await api(`/variables`, { method: 'POST', body })
     s.stop('Pushing variables')
   } catch (e) {
     onCancel('Failed to push variables')

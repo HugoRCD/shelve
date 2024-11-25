@@ -1,6 +1,6 @@
 import { z, zh } from 'h3-zod'
 import { TeamRole } from '@shelve/types'
-import { MemberService } from '~~/server/services/member.service'
+import { MembersService } from '~~/server/services/members'
 
 export default eventHandler(async (event) => {
   const { user } = await requireUserSession(event)
@@ -15,13 +15,10 @@ export default eventHandler(async (event) => {
   const { role } = await zh.useValidatedBody(event, {
     role: z.nativeEnum(TeamRole),
   })
-  return new MemberService().updateMember({
+  return new MembersService().updateMember({
     teamId,
     memberId,
     role,
-    requester: {
-      id: user.id,
-      role: user.role,
-    },
+    requester: user
   })
 })

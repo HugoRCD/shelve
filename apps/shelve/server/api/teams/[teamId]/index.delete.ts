@@ -1,5 +1,5 @@
 import { z, zh } from 'h3-zod'
-import { TeamService } from '~~/server/services/teams.service'
+import { TeamsService } from '~~/server/services/teams'
 
 export default eventHandler(async (event) => {
   const { user } = await requireUserSession(event)
@@ -8,12 +8,9 @@ export default eventHandler(async (event) => {
       required_error: 'Missing team ID',
     }),
   })
-  await new TeamService().deleteTeam({
+  await new TeamsService().deleteTeam({
     teamId,
-    requester: {
-      id: user.id,
-      role: user.role,
-    }
+    requester: user
   })
   return {
     statusCode: 200,

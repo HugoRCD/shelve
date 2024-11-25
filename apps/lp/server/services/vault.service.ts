@@ -1,5 +1,6 @@
 import type { DecryptResponse, EncryptRequest, StoredData, TTLFormat } from '@shelve/types'
 import type { Storage, StorageValue } from 'unstorage'
+import type { H3Event } from 'h3'
 
 export class VaultService {
 
@@ -14,10 +15,10 @@ export class VaultService {
     '30d': 30 * 24 * 60 * 60 // 30 days in seconds
   }
 
-  constructor() {
+  constructor(event: H3Event) {
     const config = useRuntimeConfig()
     this.encryptionKey = config.private.encryptionKey
-    this.siteUrl = config.public.siteUrl
+    this.siteUrl = event.context.siteConfigNitroOrigin
     this.storage = useStorage('vault')
   }
 
@@ -129,7 +130,7 @@ export class VaultService {
   }
 
   private generateShareUrl(id: string): string {
-    return `${this.siteUrl}/vault?id=${id}`
+    return `${this.siteUrl}vault?id=${id}`
   }
 
 }

@@ -1,9 +1,12 @@
 import { zh } from 'h3-zod'
-import { ProjectService } from '~~/server/services/project.service'
+import { VariablesService } from '~~/server/services/variables'
 import { idParamsSchema } from '~~/server/database/zod'
 
 export default eventHandler(async (event) => {
-  const { user } = await requireUserSession(event)
   const { id } = await zh.useValidatedParams(event, idParamsSchema)
-  return await new ProjectService().getProjectById(id, user.id)
+  await new VariablesService().deleteVariable(id)
+  return {
+    statusCode: 200,
+    message: 'Variable deleted',
+  }
 })

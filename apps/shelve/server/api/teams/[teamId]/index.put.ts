@@ -1,5 +1,5 @@
 import { z, zh } from 'h3-zod'
-import { TeamService } from '~~/server/services/teams.service'
+import { TeamsService } from '~~/server/services/teams'
 
 export default eventHandler(async (event) => {
   const { user } = await requireUserSession(event)
@@ -12,13 +12,10 @@ export default eventHandler(async (event) => {
     name: z.string().optional(),
     logo: z.string().optional(),
   })
-  return await new TeamService().updateTeam({
+  return await new TeamsService().updateTeam({
     teamId,
     name,
     logo,
-    requester: {
-      id: user.id,
-      role: user.role,
-    }
+    requester: user
   })
 })
