@@ -16,6 +16,10 @@ export default defineNuxtConfig({
     compatibilityVersion: 4,
   },
 
+  experimental: {
+    viewTransition: true,
+  },
+
   hub: {
     database: true,
     kv: true,

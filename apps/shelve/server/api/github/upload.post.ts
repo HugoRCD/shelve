@@ -1,4 +1,4 @@
-import { GitHubService } from '~~/server/services/github.service'
+import { GithubService } from '~~/server/services/github'
 
 export default defineEventHandler(async (event) => {
   const formData = await readMultipartFormData(event)
@@ -16,10 +16,9 @@ export default defineEventHandler(async (event) => {
       statusMessage: 'No file provided'
     })
   }
-  const gitHubService = new GitHubService()
 
   const file = new File([fileField.data], fileField.filename, { type: fileField.type })
   const repoName = 'astra'
 
-  return await gitHubService.uploadFile(event, file, repoName)
+  return await new GithubService().uploadFile(event, file, repoName)
 })

@@ -5,7 +5,7 @@ type GitHubRepo = {
   owner: { login: string }
 }
 
-export class GitHubService {
+export class GithubService {
 
   private readonly GITHUB_API = 'https://api.github.com'
   private readonly REPOS_PER_PAGE = 100

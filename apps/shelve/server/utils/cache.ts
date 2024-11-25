@@ -64,6 +64,7 @@ export function withCache<T>(
 export async function clearCache(entity: keyof typeof cacheEntities, id: number) {
   const storage = useStorage('cache')
   const config = cacheEntities[entity]
+  if (!config) throw new Error(`Entity ${entity} not found in cacheEntities`)
   const cacheString = `nitro:functions:${config.prefix}:${config.key}:${id}.json`
 
   await storage.removeItem(cacheString)

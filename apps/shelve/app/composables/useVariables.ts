@@ -66,7 +66,7 @@ export function useVariables(refresh: () => Promise<void>, projectId: string) {
       return
     }
     try {
-      await $fetch(`/api/variable`, {
+      await $fetch(`/api/variables`, {
         method: 'POST',
         body: variablesInput.value,
       })
@@ -99,7 +99,7 @@ export function useVariables(refresh: () => Promise<void>, projectId: string) {
       return
     }
     try {
-      await $fetch(`/api/variable/${variable.id}`, {
+      await $fetch(`/api/variables/${variable.id}`, {
         method: 'PUT',
         body: {
           projectId: +projectId,
@@ -120,7 +120,7 @@ export function useVariables(refresh: () => Promise<void>, projectId: string) {
   async function deleteVariable(varId: number, varEnv: string) {
     deleteLoading.value = true
     try {
-      await $fetch(`/api/variable/${varId}/${varEnv}`, {
+      await $fetch(`/api/variables/${varId}/${varEnv}`, {
         method: 'DELETE',
       })
       toast.success('Your variable has been deleted')

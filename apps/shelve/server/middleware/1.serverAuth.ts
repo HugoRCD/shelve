@@ -6,7 +6,7 @@ export default defineEventHandler(async (event) => {
     '/api/user',
     '/api/team',
     '/api/projects',
-    '/api/variable',
+    '/api/variables',
     '/api/tokens',
     '/api/admin',
     '/api/protected',

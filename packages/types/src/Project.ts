@@ -1,4 +1,4 @@
-import type { Requester } from './Team'
+import type { User } from './User'
 
 export type Project = {
   id: number;
@@ -23,7 +23,7 @@ export type CreateProjectInput = {
   homepage?: string;
   variablePrefix?: string;
   teamId: number;
-  requester?: Requester;
+  requester?: User;
 };
 
 export type ProjectUpdateInput = {
@@ -36,6 +36,6 @@ export type ProjectUpdateInput = {
   projectManager?: string;
   variablePrefix?: string;
   teamId: number;
-  requester: Requester;
+  requester: User;
 };
 

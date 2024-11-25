@@ -47,6 +47,6 @@
     "@shelve/types": "*",
     "@types/pg": "8.11.10",
     "typescript": "5.7.2"
-    "wrangler": "^3.90.0"
+    "wrangler": "3.90.0"
   }
 }

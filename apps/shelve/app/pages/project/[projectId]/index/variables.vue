@@ -3,7 +3,7 @@ import type { Variable } from '@shelve/types'
 
 const { projectId } = useRoute().params as { projectId: string }
 
-const { data: variables, status, refresh } = useFetch<Variable[]>(`/api/variable/project/${projectId}`, {
+const { data: variables, status, refresh } = useFetch<Variable[]>(`/api/variables/project/${projectId}`, {
   method: 'GET',
   watch: false,
 })

@@ -25,10 +25,3 @@ export type CreateUserInput = {
   avatar?: string;
   authType: AuthType;
 };
-
-export type UpdateUserInput = {
-  id: number;
-  username?: string;
-  avatar?: string;
-  authType?: AuthType;
-};

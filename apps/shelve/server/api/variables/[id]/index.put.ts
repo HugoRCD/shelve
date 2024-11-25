@@ -1,6 +1,6 @@
 import { zh, z } from 'h3-zod'
 import type { UpdateVariableInput } from '@shelve/types'
-import { VariableService } from '~~/server/services/variable.service'
+import { VariablesService } from '~~/server/services/variables'
 import { idParamsSchema } from '~~/server/database/zod'
 
 const bodySchema = z.object({
@@ -28,7 +28,7 @@ export default eventHandler(async (event) => {
     environment: body.env,
     autoUppercase: body.autoUppercase,
   }
-  await new VariableService().updateVariable(input)
+  await new VariablesService().updateVariable(input)
   return {
     statusCode: 200,
     message: 'Variable deleted',
