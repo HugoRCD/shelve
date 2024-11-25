@@ -19,9 +19,6 @@ export default eventHandler(async (event) => {
   })
   return await new ProjectsService().createProject({
     ...body,
-    requester: {
-      id: user.id,
-      role: user.role,
-    }
+    requester: user
   })
 })

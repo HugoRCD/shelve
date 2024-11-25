@@ -19,10 +19,7 @@ export async function createUser(input: CreateUserInput): Promise<User> {
   await new TeamsService().createTeam({
     name: `${input.username}'s team`,
     private: true,
-    requester: {
-      id: createdUser.id,
-      role: Role.USER,
-    }
+    requester: createdUser,
   })
   return createdUser
 }

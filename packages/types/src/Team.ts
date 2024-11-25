@@ -1,5 +1,4 @@
 import type { User } from './User'
-import { Role } from './User'
 
 export enum TeamRole {
   OWNER = 'owner',
@@ -28,51 +27,46 @@ export type Team = {
   members: Member[];
 };
 
-export type Requester = {
-  id: number;
-  role: Role;
-}
-
 export type CreateTeamInput = {
   name: string;
   private?: boolean;
   logo?: string;
-  requester: Requester;
+  requester: User;
 };
 
 export type UpdateTeamInput = {
   teamId: number;
   name?: string;
   logo?: string;
-  requester: Requester;
+  requester: User;
 }
 
 export type DeleteTeamInput = {
   teamId: number
-  requester: Requester
+  requester: User
 }
 
 export type AddMemberInput = {
   teamId: number;
   email: string;
   role: TeamRole;
-  requester: Requester;
+  requester: User;
 }
 
 export type UpdateMemberInput = {
   teamId: number;
   memberId: number;
   role: TeamRole;
-  requester: Requester;
+  requester: User;
 }
 
 export type RemoveMemberInput = {
   teamId: number;
   memberId: number;
-  requester: Requester;
+  requester: User;
 }
 
 export type ValidateAccess = {
   teamId: number;
-  requester: Requester;
+  requester: User;
 }

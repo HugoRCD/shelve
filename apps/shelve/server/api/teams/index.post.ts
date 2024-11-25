@@ -12,9 +12,6 @@ export default eventHandler(async (event) => {
   return await new TeamsService().createTeam({
     name: body.name,
     logo: body.logo,
-    requester: {
-      id: user.id,
-      role: user.role,
-    }
+    requester: user
   })
 })

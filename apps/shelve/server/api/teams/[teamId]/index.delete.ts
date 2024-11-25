@@ -10,10 +10,7 @@ export default eventHandler(async (event) => {
   })
   await new TeamsService().deleteTeam({
     teamId,
-    requester: {
-      id: user.id,
-      role: user.role,
-    }
+    requester: user
   })
   return {
     statusCode: 200,

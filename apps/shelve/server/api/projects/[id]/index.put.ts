@@ -29,9 +29,6 @@ export default eventHandler(async (event) => {
     repository: body.repository,
     logo: body.logo,
     teamId: body.teamId,
-    requester: {
-      id: user.id,
-      role: user.role,
-    }
+    requester: user
   })
 })

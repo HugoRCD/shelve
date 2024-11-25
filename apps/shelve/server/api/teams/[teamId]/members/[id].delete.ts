@@ -14,10 +14,7 @@ export default eventHandler(async (event) => {
   await new MembersService().removeMember({
     teamId,
     memberId,
-    requester: {
-      id: user.id,
-      role: user.role,
-    },
+    requester: user
   })
   return {
     statusCode: 200,

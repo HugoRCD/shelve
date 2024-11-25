@@ -19,9 +19,6 @@ export default eventHandler(async (event) => {
     teamId,
     memberId,
     role,
-    requester: {
-      id: user.id,
-      role: user.role,
-    },
+    requester: user
   })
 })
