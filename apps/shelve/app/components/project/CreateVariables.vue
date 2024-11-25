@@ -2,13 +2,13 @@
 import type { Variable } from '@shelve/types'
 import { parseEnvFile } from '@shelve/utils'
 
-type createVariablesProps = {
+type CreateVariablesProps = {
   refresh: () => Promise<void>
   variables: Variable[]
   projectId: string
 }
 
-const { refresh, variables, projectId } = defineProps<createVariablesProps>()
+const { refresh, variables, projectId } = defineProps<CreateVariablesProps>()
 
 const {
   createLoading,
@@ -235,6 +235,7 @@ const handlePasswordGenerated = (password: string, index: number) => variablesIn
         <p class="text-xs font-normal text-neutral-500">
           🤫 You can also paste all your environment variables (.env) as key value pairs to prefilled the form
         </p>
+        {{ variablesInput }}
         <div class="mb-4 flex flex-col gap-2">
           <div class="hidden items-center sm:flex">
             <span class="w-full text-sm font-normal text-neutral-500">Key</span>
