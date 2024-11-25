@@ -101,11 +101,11 @@ function getProjectManager(manager: string) {
     <div v-if="!loading">
       <div class="flex items-start justify-between gap-4">
         <div class="flex items-start gap-4">
-          <UAvatar :src="project.logo" size="xl" :alt="project.name" />
+          <UAvatar :src="project.logo" size="xl" :alt="project.name" class="logo" />
           <div>
-            <h2 class="text-base font-semibold leading-7">
+            <h3 class="text-base font-semibold leading-7">
               {{ project.name }}
-            </h2>
+            </h3>
             <p class="text-sm leading-6 text-neutral-500">
               {{ project.description }}
             </p>
@@ -203,3 +203,17 @@ function getProjectManager(manager: string) {
     </UModal>
   </div>
 </template>
+
+<style scoped>
+.logo {
+  view-transition-name: project-logo;
+}
+
+h3 {
+  view-transition-name: project-name;
+}
+
+p {
+  view-transition-name: project-description;
+}
+</style>
