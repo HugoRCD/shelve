@@ -1,6 +1,6 @@
 import type { Variable } from '@shelve/types'
 
-export function copyEnv(variables: Variable[], env?: 'production' | 'preview' | 'development') {
+export function copyEnv(variables: Variable[], env: string) {
   if (variables.length === 0) return
   if (env) {
     const envVariables = variables.filter((variable) => variable.environment.includes(env))

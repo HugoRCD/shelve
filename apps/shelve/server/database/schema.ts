@@ -1,5 +1,5 @@
-import { boolean, integer, pgEnum, pgTable, varchar } from 'drizzle-orm/pg-core'
-import { AuthType, Role, TeamRole, EnvType } from '@shelve/types'
+import { boolean, integer, pgEnum, pgTable, varchar, unique, uniqueIndex } from 'drizzle-orm/pg-core'
+import { AuthType, Role, TeamRole } from '@shelve/types'
 import { relations } from 'drizzle-orm'
 import { timestamps } from './column.helpers'
 
@@ -63,9 +63,21 @@ export const variables = pgTable('variables', {
   id: integer().primaryKey().generatedByDefaultAsIdentity(),
   projectId: integer().references(() => projects.id, { onDelete: 'cascade' }).notNull(),
   key: varchar().notNull(),
-  value: varchar().notNull(),
   ...timestamps,
 })
+
+export const variableValues = pgTable('variable_values', {
+  id: integer().primaryKey().generatedByDefaultAsIdentity(),
+  variableId: integer().references(() => variables.id, { onDelete: 'cascade' }).notNull(),
+  environmentId: integer().references(() => environments.id, { onDelete: 'cascade' }).notNull(),
+  value: varchar().notNull(),
+  ...timestamps,
+}, (table) => [
+  uniqueIndex('variable_values_variable_env_idx').on(
+    table.variableId,
+    table.environmentId
+  )
+])
 
 export const tokens = pgTable('tokens', {
   id: integer().primaryKey().generatedByDefaultAsIdentity(),
@@ -79,13 +91,6 @@ export const environments = pgTable('environments', {
   id: integer().primaryKey().generatedByDefaultAsIdentity(),
   name: varchar().notNull(),
   teamId: integer().references(() => teams.id, { onDelete: 'cascade' }).notNull(),
-  ...timestamps,
-})
-
-export const variableEnvironments = pgTable('variable_environments', {
-  id: integer().primaryKey().generatedByDefaultAsIdentity(),
-  variableId: integer().references(() => variables.id, { onDelete: 'cascade' }).notNull(),
-  environmentId: integer().references(() => environments.id, { onDelete: 'cascade' }).notNull(),
   ...timestamps,
 })
 
@@ -117,7 +122,8 @@ export const variablesRelations = relations(variables, ({ one, many }) => ({
   project: one(projects, {
     fields: [variables.projectId],
     references: [projects.id],
-  })
+  }),
+  values: many(variableValues)
 }))
 
 export const tokensRelations = relations(tokens, ({ one }) => ({
@@ -131,16 +137,17 @@ export const environmentsRelations = relations(environments, ({ one, many }) => 
   team: one(teams, {
     fields: [environments.teamId],
     references: [teams.id],
-  })
+  }),
+  values: many(variableValues)
 }))
 
-export const variableEnvironmentsRelations = relations(variableEnvironments, ({ one }) => ({
+export const variableValuesRelations = relations(variableValues, ({ one }) => ({
   variable: one(variables, {
-    fields: [variableEnvironments.variableId],
+    fields: [variableValues.variableId],
     references: [variables.id],
   }),
   environment: one(environments, {
-    fields: [variableEnvironments.environmentId],
+    fields: [variableValues.environmentId],
     references: [environments.id],
   })
 }))

@@ -2,13 +2,13 @@
 import type { Variable } from '@shelve/types'
 import { parseEnvFile } from '@shelve/utils'
 
-type UpsertVariablesProps = {
+type createVariablesProps = {
   refresh: () => Promise<void>
   variables: Variable[]
   projectId: string
 }
 
-const { refresh, variables, projectId } = defineProps<UpsertVariablesProps>()
+const { refresh, variables, projectId } = defineProps<createVariablesProps>()
 
 const {
   createLoading,
@@ -17,7 +17,7 @@ const {
   variablesToCreate,
   addVariable,
   removeVariable,
-  upsertVariables,
+  createVariables,
 } = useVariables(refresh, projectId)
 
 const teamEnv = useTeamEnv()
@@ -166,7 +166,7 @@ const handlePasswordGenerated = (password: string, index: number) => variablesIn
 </script>
 
 <template>
-  <form id="varCreation" class="relative duration-500" @submit.prevent="upsertVariables">
+  <form id="varCreation" class="relative duration-500" @submit.prevent="createVariables">
     <UCard
       :ui="{ root: border }"
       class="duration-500"

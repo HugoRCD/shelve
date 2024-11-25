@@ -1,4 +1,4 @@
-import type { Variable, UpsertVariablesInput } from '@shelve/types'
+import type { Variable, CreateVariablesInput } from '@shelve/types'
 
 export function useVariables(refresh: () => Promise<void>, projectId: string) {
   const teamEnv = useTeamEnv()
@@ -29,7 +29,7 @@ export function useVariables(refresh: () => Promise<void>, projectId: string) {
 
   const variablesToCreate = ref(1)
 
-  const variablesInput = ref<UpsertVariablesInput>({
+  const variablesInput = ref<CreateVariablesInput>({
     autoUppercase: autoUppercase.value,
     projectId: +projectId,
     environmentIds: environmentIds.value,
@@ -69,7 +69,7 @@ export function useVariables(refresh: () => Promise<void>, projectId: string) {
     variablesInput.value.autoUppercase = autoUppercase.value
   })
 
-  async function upsertVariables() {
+  async function createVariables() {
     createLoading.value = true
     if (environmentIds.value.length === 0) {
       toast.error('Please select at least one environment')
@@ -77,9 +77,9 @@ export function useVariables(refresh: () => Promise<void>, projectId: string) {
       return
     }
     try {
-      await $fetch(`/api/variables`, {
+      await $fetch('/api/variables', {
         method: 'POST',
-        body: variablesInput.value,
+        body: variablesInput.value
       })
       toast.success('Your variables have been created')
       variablesToCreate.value = 1
@@ -102,35 +102,20 @@ export function useVariables(refresh: () => Promise<void>, projectId: string) {
     await refresh()
   }
 
-  async function updateVariable(variable: Variable, environmentIds: number[]) {
+  async function updateVariable(variable: Variable) {
     updateLoading.value = true
-    if (variable.environments.length === 0) {
-      toast.error('Please select at least one environment')
-      updateLoading.value = false
-      return
-    }
     try {
-      const input: UpsertVariablesInput = {
-        projectId: +projectId,
-        autoUppercase: autoUppercase.value,
-        environmentIds,
-        variables: [
-          {
-            key: variable.key,
-            value: variable.value,
-          },
-        ],
-      }
-      await $fetch(`/api/variables`, {
-        method: 'POST',
-        body: input
+      await $fetch(`/api/variables/${variable.id}`, {
+        method: 'PUT',
+        body: variable
       })
-      toast.success('Your variable has been updated')
+      toast.success('Variable updated successfully')
+      await refresh()
     } catch (error) {
-      toast.error('An error occurred')
+      console.error(error)
+      toast.error('Failed to update variable')
     }
     updateLoading.value = false
-    await refresh()
   }
 
   async function deleteVariable(id: number) {
@@ -156,7 +141,7 @@ export function useVariables(refresh: () => Promise<void>, projectId: string) {
     variablesToCreate,
     addVariable,
     removeVariable,
-    upsertVariables,
+    createVariables,
     updateVariable,
     deleteVariable
   }

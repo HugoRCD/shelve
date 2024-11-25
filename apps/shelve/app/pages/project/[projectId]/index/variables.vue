@@ -29,13 +29,8 @@ const isVariableSelected = (variable: Variable) => {
     <ProjectVariableSelector v-model="selectedVariables" @refresh="refresh" />
     <div v-if="status !== 'pending'" class="flex flex-col gap-4">
       <div v-for="variable in variables" :key="variable.id">
-        <ProjectVariableItem
-          :project-id
-          :variable
-          :refresh
-          :is-selected="isVariableSelected(variable)"
-          @toggle-selected="toggleVariable(variable)"
-        />
+        <ProjectVariableItem :project-id :variable :refresh :is-selected="isVariableSelected(variable)"
+          @toggle-selected="toggleVariable(variable)" />
       </div>
     </div>
     <div v-else class="flex flex-col gap-4">

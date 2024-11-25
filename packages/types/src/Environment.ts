@@ -6,15 +6,15 @@ export enum EnvType {
 
 export type Environment = {
   id: number
-  teamId: number
   name: string
+  teamId: number
   createdAt: Date
   updatedAt: Date
 }
 
 export type CreateEnvironmentInput = {
-  teamId: number
   name: string
+  teamId: number
 }
 
 export type UpdateEnvironmentInput = {

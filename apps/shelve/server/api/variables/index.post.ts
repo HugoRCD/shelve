@@ -17,17 +17,20 @@ const schema = z.object({
       required_error: 'Variable value is required',
     }).min(1).trim(),
   })).min(1).max(100),
-  method: z.enum(['merge', 'overwrite']).optional(),
 })
 
 export default eventHandler(async (event) => {
   const body = await zh.useValidatedBody(event, schema)
 
-  return await new VariablesService().upsertVariables({
+  const input = {
     projectId: body.projectId,
-    variables: body.variables,
-    environmentIds: body.environmentIds,
     autoUppercase: body.autoUppercase,
-    method: body.method
-  })
+    environmentIds: body.environmentIds,
+    variables: body.variables.map(variable => ({
+      key: variable.key,
+      value: variable.value,
+    }))
+  }
+
+  return await new VariablesService().createVariables(input)
 })

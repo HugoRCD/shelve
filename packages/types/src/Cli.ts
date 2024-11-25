@@ -1,4 +1,4 @@
-import { type Env, EnvType } from './Variables'
+import { type Env } from './Variables'
 
 export const SHELVE_JSON_SCHEMA = 'https://raw.githubusercontent.com/HugoRCD/shelve/main/packages/types/shelve-config-schema.json'
 export const DEFAULT_URL = 'https://app.shelve.cloud'
@@ -30,13 +30,13 @@ export type ShelveConfig = {
    * */
   url: string
   /**
-   * Whether to confirm changes before pushing them to Shelve
+   * Whether to confirm changes before pushing them to Shelve or updating the .env file (locally)
    *
    * @default false
    * */
   confirmChanges: boolean
   /**
-   * Push method to use for .env file (overwrite or append)
+   * Push method to use for .env file (overwrite or merge)
    * Overwrite will replace all existing variables in Shelve app with the ones in the .env file
    * Merge will append the .env file to the existing variables in Shelve app
    *
@@ -44,7 +44,7 @@ export type ShelveConfig = {
    * */
   pushMethod: 'overwrite' | 'merge'
   /**
-   * Pull method to use for .env file (overwrite or append)
+   * Pull method to use for .env file (overwrite or merge)
    * Overwrite will replace the .env file with the variables in Shelve app
    * Merge will append the variables in Shelve app to the .env file
    *
@@ -104,7 +104,7 @@ export type PushEnvFileInput = {
   /**
    * The environment to push the variables to
    * */
-  environment: EnvType
+  environment: number
   /**
    * Whether to confirm changes before pushing the variables to Shelve
    *

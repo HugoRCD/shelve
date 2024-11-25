@@ -1,5 +1,5 @@
 import type { User } from './User'
-import { Environment } from './Environment'
+import type { Environment } from './Environment'
 
 export enum TeamRole {
   OWNER = 'owner',

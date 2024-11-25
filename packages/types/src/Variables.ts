@@ -1,20 +1,25 @@
-import { Environment } from './Environment'
+import type { Environment } from './Environment'
+
+export type VariableValue = {
+  value: string;
+  environmentId: number;
+  environment?: Environment;
+}
 
 export type Variable = {
   id: number;
   key: string;
-  value: string;
-  projectId: number
-  environments: Environment[];
+  projectId: number;
+  values: VariableValue[];
   createdAt: Date;
   updatedAt: Date;
-};
+}
 
-export type UpsertVariablesInput = {
+
+export type CreateVariablesInput = {
   projectId: number;
   autoUppercase?: boolean;
   environmentIds: number[];
-  method?: 'overwrite' | 'merge';
   variables: {
     index?: number;
     key: string;
@@ -25,4 +30,15 @@ export type UpsertVariablesInput = {
 export type Env = {
   key: string;
   value: string;
+}
+
+export type UpdateVariableInput = {
+  id: number;
+  projectId: number;
+  key: string;
+  values: {
+    environmentId: number;
+    value: string;
+  }[];
+  autoUppercase?: boolean;
 }

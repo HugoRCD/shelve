@@ -19,21 +19,18 @@ const {
 } = useVariables(refresh, projectId)
 
 const emit = defineEmits(['toggleSelected'])
-const localVariable = variable
+const localVariable = ref(variable)
 
-const selectedEnvironments = ref<Record<number, boolean>>(
-  {}
-)
-
-const environmentIds = computed(() =>
-  Object.entries(selectedEnvironments.value)
-    .filter(([_, selected]) => selected)
-    .map(([id]) => parseInt(id))
+const environmentsValues = ref<Record<string, string>>(
+  Object.fromEntries(teamEnv.value.map((env) => [env.id, variable.values.find((v) => v.environmentId === env.id)?.value ?? ''])),
 )
 
 const variableToUpdate = computed(() => ({
-  ...localVariable,
-  environmentIds: environmentIds.value
+  ...localVariable.value,
+  values: teamEnv.value.map((env) => ({
+    environmentId: env.id,
+    value: environmentsValues.value[env.id],
+  })).filter((v) => v.value),
 }))
 
 const showEdit = ref(false)
@@ -49,15 +46,15 @@ const showEdit = ref(false)
       >
         <h3 class="flex items-center gap-1 text-sm font-semibold sm:text-base">
           <span class="lg:hidden">
-            {{ variable.key.length > 25 ? variable.key.slice(0, 25) + '...' : variable.key }}
+            {{ localVariable.key.length > 25 ? localVariable.key.slice(0, 25) + '...' : localVariable.key }}
           </span>
-          <span class="hidden lg:block">{{ variable.key }}</span>
+          <span class="hidden lg:block">{{ localVariable.key }}</span>
           <UTooltip text="Copy variable to clipboard">
             <UButton
               color="neutral"
               variant="ghost"
               icon="lucide:clipboard-plus"
-              @click.stop="copyToClipboard(`${localVariable.key}=${localVariable.value}`, 'Variable copied to clipboard')"
+              @click.stop="copyToClipboard(`${localVariable.key}=${localVariable.values}`, 'Variable copied to clipboard')"
             />
           </UTooltip>
           <UTooltip text="Show variable">
@@ -65,7 +62,7 @@ const showEdit = ref(false)
           </UTooltip>
         </h3>
         <span class="text-xs font-normal text-neutral-500">
-          <!--          {{ capitalize(variable.environment.split("|").join(", ")) }}-->
+          <!--          {{ localVariable.environments.map((env) => capitalize(env.name)).join(', ') }}-->
         </span>
       </div>
       <div class="flex items-center gap-2">
@@ -76,25 +73,19 @@ const showEdit = ref(false)
     </div>
     <div v-if="showEdit" class="flex flex-col gap-2 py-2">
       <hr class="border-1 border-black/10">
-      <form class="flex flex-col gap-6" @submit.prevent="updateVariable(variableToUpdate, environmentIds)">
+      <form class="flex flex-col gap-6" @submit.prevent="updateVariable(variableToUpdate)">
+        {{ variableToUpdate }}
+        {{ environmentsValues }}
         <div class="flex flex-col gap-8 sm:flex-row">
-          <div class="flex flex-col gap-4 md:w-2/3">
+          <div class="flex flex-col gap-4 w-full">
             <FormGroup v-model="localVariable.key" label="Key" />
-            <FormGroup v-model="localVariable.value" label="Value" type="textarea" />
-          </div>
-          <div class="flex w-full flex-col gap-4 md:w-1/3">
-            <h4 class="text-sm font-semibold">
-              Environments
-            </h4>
-            <div class="flex flex-col gap-4">
-              <UCheckbox
-                v-for="env in teamEnv"
-                :key="env.id"
-                v-model="selectedEnvironments[env.id]"
-                :name="env.name"
-                :label="capitalize(env.name)"
-              />
-            </div>
+            <FormGroup
+              v-for="env in teamEnv"
+              :key="env.id"
+              v-model="environmentsValues[env.id]"
+              :label="capitalize(env.name)"
+              type="textarea"
+            />
           </div>
         </div>
         <hr class="border-1 border-black/10 dark:border-white/5">
