@@ -1,7 +1,7 @@
 import fs from 'fs'
 import type {
   CreateEnvFileInput,
-  CreateVariablesInput,
+  UpsertVariablesInput,
   Env,
   PushEnvFileInput
 } from '@shelve/types'
@@ -99,7 +99,7 @@ export async function pushEnvFile(input: PushEnvFileInput): Promise<void> {
 
   s.start('Pushing variables')
   try {
-    const body: CreateVariablesInput = {
+    const body: UpsertVariablesInput = {
       method: 'overwrite',
       autoUppercase,
       projectId,

@@ -6,7 +6,9 @@ const schema = z.object({
     required_error: 'Project ID is required',
   }).positive(),
   autoUppercase: z.boolean().optional(),
-  environment: z.string().optional(),
+  environmentIds: z.array(z.number({
+    required_error: 'Environment ID is required',
+  })).min(1),
   variables: z.array(z.object({
     key: z.string({
       required_error: 'Variable key is required',
@@ -21,10 +23,10 @@ const schema = z.object({
 export default eventHandler(async (event) => {
   const body = await zh.useValidatedBody(event, schema)
 
-  return await new VariablesService().createVariables({
+  return await new VariablesService().upsertVariables({
     projectId: body.projectId,
     variables: body.variables,
-    environment: body.environment,
+    environmentIds: body.environmentIds,
     autoUppercase: body.autoUppercase,
     method: body.method
   })

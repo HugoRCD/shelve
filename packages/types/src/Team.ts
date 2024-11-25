@@ -1,4 +1,5 @@
 import type { User } from './User'
+import { Environment } from './Environment'
 
 export enum TeamRole {
   OWNER = 'owner',
@@ -25,6 +26,7 @@ export type Team = {
   createdAt: Date;
   updatedAt: Date;
   members: Member[];
+  environments: Environment[];
 };
 
 export type CreateTeamInput = {

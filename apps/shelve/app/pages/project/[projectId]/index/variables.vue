@@ -30,7 +30,6 @@ const isVariableSelected = (variable: Variable) => {
     <div v-if="status !== 'pending'" class="flex flex-col gap-4">
       <div v-for="variable in variables" :key="variable.id">
         <ProjectVariableItem
-          :variables
           :project-id
           :variable
           :refresh

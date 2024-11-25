@@ -2,23 +2,25 @@
 import type { Variable } from '@shelve/types'
 import { parseEnvFile } from '@shelve/utils'
 
-type CreateVariablesProps = {
+type UpsertVariablesProps = {
   refresh: () => Promise<void>
   variables: Variable[]
   projectId: string
 }
 
-const { refresh, variables, projectId } = defineProps<CreateVariablesProps>()
+const { refresh, variables, projectId } = defineProps<UpsertVariablesProps>()
 
 const {
   createLoading,
-  selectedEnvironment,
+  selectedEnvironments,
   variablesInput,
   variablesToCreate,
   addVariable,
   removeVariable,
-  createVariables,
+  upsertVariables,
 } = useVariables(refresh, projectId)
+
+const teamEnv = useTeamEnv()
 
 const items = [
   [
@@ -164,7 +166,7 @@ const handlePasswordGenerated = (password: string, index: number) => variablesIn
 </script>
 
 <template>
-  <form id="varCreation" class="relative duration-500" @submit.prevent="createVariables">
+  <form id="varCreation" class="relative duration-500" @submit.prevent="upsertVariables">
     <UCard
       :ui="{ root: border }"
       class="duration-500"
@@ -213,9 +215,13 @@ const handlePasswordGenerated = (password: string, index: number) => variablesIn
             Environments
           </h4>
           <div class="flex select-none gap-4">
-            <UCheckbox v-model="selectedEnvironment.production" name="production" label="Production" />
-            <UCheckbox v-model="selectedEnvironment.preview" name="preview" label="Preview" />
-            <UCheckbox v-model="selectedEnvironment.development" name="development" label="Development" />
+            <UCheckbox
+              v-for="env in teamEnv"
+              :key="env.id"
+              v-model="selectedEnvironments[env.id]"
+              :name="env.name"
+              :label="capitalize(env.name)"
+            />
           </div>
         </div>
         <USeparator class="my-1" />
@@ -239,7 +245,12 @@ const handlePasswordGenerated = (password: string, index: number) => variablesIn
             <div class="flex flex-col gap-2">
               <div class="flex flex-col items-start gap-2 sm:flex-row">
                 <div class="w-full flex gap-1">
-                  <UInput v-model="variablesInput.variables[variable - 1]!.key" required class="w-full" placeholder="e.g. API_KEY" />
+                  <UInput
+                    v-model="variablesInput.variables[variable - 1]!.key"
+                    required
+                    class="w-full"
+                    placeholder="e.g. API_KEY"
+                  />
                   <ProjectVariablePrefix v-model="variablesInput.variables[variable - 1]!.key" />
                 </div>
                 <div class="w-full flex gap-1">

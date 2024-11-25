@@ -19,16 +19,10 @@ export const authTypesEnum = pgEnum('auth_types', [
   AuthType.GOOGLE,
 ])
 
-export const envTypesEnum = pgEnum('env_types', [
-  EnvType.DEVELOPMENT,
-  EnvType.PREVIEW,
-  EnvType.PRODUCTION,
-])
-
 export const users = pgTable('users', {
   id: integer().primaryKey().generatedByDefaultAsIdentity(),
-  username: varchar().notNull(),
-  email: varchar().notNull(),
+  username: varchar().unique().notNull(),
+  email: varchar().unique().notNull(),
   avatar: varchar().default('https://i.imgur.com/6VBx3io.png').notNull(),
   role: rolesEnum().default(Role.USER).notNull(),
   authType: authTypesEnum().notNull(),
@@ -70,7 +64,6 @@ export const variables = pgTable('variables', {
   projectId: integer().references(() => projects.id, { onDelete: 'cascade' }).notNull(),
   key: varchar().notNull(),
   value: varchar().notNull(),
-  environment: varchar().notNull(),
   ...timestamps,
 })
 
@@ -82,9 +75,24 @@ export const tokens = pgTable('tokens', {
   ...timestamps,
 })
 
+export const environments = pgTable('environments', {
+  id: integer().primaryKey().generatedByDefaultAsIdentity(),
+  name: varchar().notNull(),
+  teamId: integer().references(() => teams.id, { onDelete: 'cascade' }).notNull(),
+  ...timestamps,
+})
+
+export const variableEnvironments = pgTable('variable_environments', {
+  id: integer().primaryKey().generatedByDefaultAsIdentity(),
+  variableId: integer().references(() => variables.id, { onDelete: 'cascade' }).notNull(),
+  environmentId: integer().references(() => environments.id, { onDelete: 'cascade' }).notNull(),
+  ...timestamps,
+})
+
 export const teamsRelations = relations(teams, ({ many }) => ({
   members: many(members),
   projects: many(projects),
+  environments: many(environments),
 }))
 
 export const membersRelations = relations(members, ({ one }) => ({
@@ -105,7 +113,7 @@ export const projectsRelations = relations(projects, ({ one }) => ({
   })
 }))
 
-export const variablesRelations = relations(variables, ({ one }) => ({
+export const variablesRelations = relations(variables, ({ one, many }) => ({
   project: one(projects, {
     fields: [variables.projectId],
     references: [projects.id],
@@ -116,5 +124,23 @@ export const tokensRelations = relations(tokens, ({ one }) => ({
   user: one(users, {
     fields: [tokens.userId],
     references: [users.id],
+  })
+}))
+
+export const environmentsRelations = relations(environments, ({ one, many }) => ({
+  team: one(teams, {
+    fields: [environments.teamId],
+    references: [teams.id],
+  })
+}))
+
+export const variableEnvironmentsRelations = relations(variableEnvironments, ({ one }) => ({
+  variable: one(variables, {
+    fields: [variableEnvironments.variableId],
+    references: [variables.id],
+  }),
+  environment: one(environments, {
+    fields: [variableEnvironments.environmentId],
+    references: [environments.id],
   })
 }))
