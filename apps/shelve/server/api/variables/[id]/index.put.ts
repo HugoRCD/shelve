@@ -14,9 +14,7 @@ const schema = z.object({
     environmentId: z.number({
       required_error: 'Environment ID is required',
     }),
-    value: z.string({
-      required_error: 'Value is required',
-    }).min(1).trim(),
+    value: z.string().trim()
   })).min(1),
 })
 

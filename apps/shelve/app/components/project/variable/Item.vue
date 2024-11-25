@@ -29,8 +29,8 @@ const variableToUpdate = computed(() => ({
   ...localVariable.value,
   values: teamEnv.value.map((env) => ({
     environmentId: env.id,
-    value: environmentsValues.value[env.id],
-  })).filter((v) => v.value),
+    value: environmentsValues.value[env.id] ?? '',
+  }))
 }))
 
 const showEdit = ref(false)
@@ -61,9 +61,13 @@ const showEdit = ref(false)
             <UButton color="neutral" variant="ghost" icon="lucide:eye" @click.stop="showEdit = !showEdit" />
           </UTooltip>
         </h3>
-        <span class="text-xs font-normal text-neutral-500">
-          <!--          {{ localVariable.environments.map((env) => capitalize(env.name)).join(', ') }}-->
-        </span>
+        <div class="flex flex-col gap-1">
+          <span v-for="env in teamEnv" :key="env.id" class="flex items-center gap-1 text-xs font-normal text-neutral-500">
+            <UIcon v-if="environmentsValues[env.id]" name="lucide:check" class="size-4 text-green-400" />
+            <UIcon v-else name="lucide:x" class="size-4 text-red-400" />
+            {{ capitalize(env.name) }}
+          </span>
+        </div>
       </div>
       <div class="flex items-center gap-2">
         <p class="hidden text-right text-xs font-normal text-neutral-500 md:block">
@@ -72,10 +76,8 @@ const showEdit = ref(false)
       </div>
     </div>
     <div v-if="showEdit" class="flex flex-col gap-2 py-2">
-      <hr class="border-1 border-black/10">
+      <USeparator />
       <form class="flex flex-col gap-6" @submit.prevent="updateVariable(variableToUpdate)">
-        {{ variableToUpdate }}
-        {{ environmentsValues }}
         <div class="flex flex-col gap-8 sm:flex-row">
           <div class="flex flex-col gap-4 w-full">
             <FormGroup v-model="localVariable.key" label="Key" />
@@ -85,10 +87,11 @@ const showEdit = ref(false)
               v-model="environmentsValues[env.id]"
               :label="capitalize(env.name)"
               type="textarea"
+              :rows="2"
             />
           </div>
         </div>
-        <hr class="border-1 border-black/10 dark:border-white/5">
+        <USeparator />
         <div class="flex justify-between gap-4">
           <div class="flex gap-2">
             <UButton color="primary" type="submit" trailing :loading="updateLoading">

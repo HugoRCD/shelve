@@ -135,12 +135,7 @@ export class VariablesService {
       }
     })
 
-    if (!existingVariable) {
-      throw createError({
-        statusCode: 404,
-        message: `Variable not found with id ${id}`
-      })
-    }
+    if (!existingVariable) throw createError({ statusCode: 404, message: `Variable not found with id ${id}` })
 
     const updatedKey = autoUppercase ? key.toUpperCase() : key
     if (updatedKey !== existingVariable.key) {
