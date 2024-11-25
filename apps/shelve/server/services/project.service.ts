@@ -1,36 +1,22 @@
-import type { CreateProjectInput, Project, ProjectUpdateInput } from '@shelve/types'
-import type { Storage, StorageValue } from 'unstorage'
+import type { CreateProjectInput, Project, ProjectUpdateInput, Requester } from '@shelve/types'
 
 export class ProjectService {
 
-  private readonly storage: Storage<StorageValue>
-  private readonly CACHE_TTL = 60 * 60 // 1 hour
-  private readonly CACHE_PREFIX = {
-    projects: 'nitro:functions:getProjects:teamId:',
-    project: 'nitro:functions:getProject:projectId:'
-  }
-
-  constructor() {
-    this.storage = useStorage('cache')
-  }
-
   async createProject(input: CreateProjectInput): Promise<Project> {
     await this.validateProjectName(input.name, input.teamId)
-    await this.deleteCachedTeamProjects(input.teamId)
 
     const [createdProject] = await useDrizzle().insert(tables.projects)
       .values(input)
       .returning()
     if (!createdProject) throw new Error('Project not found after creation')
+    await clearCache('Projects', input.teamId)
 
     return createdProject
   }
 
   async updateProject(input: ProjectUpdateInput): Promise<Project> {
-    await this.deleteCachedProjectById(input.id)
-    await this.deleteCachedTeamProjects(input.teamId)
-
-    const existingProject = await this.findProjectById(input.id)
+    const existingProject = await this.getProject(input.id, input.requester.id)
+    if (!existingProject) throw new Error('Project not found')
 
     if (existingProject.name !== input.name)
       await this.validateProjectName(input.name, existingProject.teamId, input.id)
@@ -40,35 +26,28 @@ export class ProjectService {
       .where(eq(tables.projects.id, input.id))
       .returning()
     if (!updatedProject) throw new Error('Project not found after update')
+    await clearCache('Projects', updatedProject.teamId)
 
     return updatedProject
   }
 
-  getProjectById = cachedFunction(async (projectId: number, userId: number): Promise<Project> => {
-    const project = await this.hasAccessToProject(projectId, userId)
+  getProject = withCache('Project', async (projectId: number, userId: number): Promise<Project> => {
+    const project = await hasAccessToProject(projectId, userId)
 
-    if (!project) throw new Error(`Project not found with id ${projectId}`)
+    if (!project) throw new Error(`Project not found with id ${ projectId }`)
     return project
-  }, {
-    maxAge: this.CACHE_TTL,
-    name: 'getProject',
-    getKey: (projectId: number) => `projectId:${projectId}`,
   })
 
-  getProjectsByTeamId = cachedFunction(async (teamId: number): Promise<Project[]> => {
+  getProjects = withCache<Project[]>('Projects', async (teamId: number, requester: Requester) => {
+    await validateAccess({ teamId, requester })
     return await useDrizzle().query.projects.findMany({
       where: eq(tables.projects.teamId, teamId)
     })
-  }, {
-    maxAge: this.CACHE_TTL,
-    name: 'getProjects',
-    getKey: (teamId: number) => `teamId:${teamId}`,
   })
 
   async deleteProject(projectId: number, userId: number): Promise<void> {
-    const { teamId } = await this.hasAccessToProject(projectId, userId)
-    await this.deleteCachedProjectById(projectId)
-    await this.deleteCachedTeamProjects(teamId)
+    const { teamId } = await hasAccessToProject(projectId, userId)
+    await clearCache('Projects', teamId)
 
     await useDrizzle().delete(tables.projects)
       .where(and(
@@ -101,47 +80,6 @@ export class ProjectService {
     })
 
     return !!project
-  }
-
-  private async findProjectById(id: number): Promise<Project> {
-    const project = await useDrizzle().query.projects.findFirst({
-      where: eq(tables.projects.id, id)
-    })
-
-    if (!project) {
-      throw createError({
-        statusCode: 404,
-        message: 'Project not found'
-      })
-    }
-    return project
-  }
-
-  private async hasAccessToProject(projectId: number, userId: number): Promise<Project> {
-    const project = await useDrizzle().query.projects.findFirst({
-      where: eq(tables.projects.id, projectId),
-      with: {
-        team: {
-          with: {
-            members: {
-              where: eq(tables.members.userId, userId)
-            }
-          }
-        }
-      }
-    })
-
-    if (!project) throw createError({ statusCode: 401, message: 'Unauthorized' })
-
-    return project
-  }
-
-  async deleteCachedTeamProjects(teamId: number): Promise<void> {
-    await this.storage.removeItem(`${this.CACHE_PREFIX.projects}${teamId}.json`)
-  }
-
-  private async deleteCachedProjectById(id: number): Promise<void> {
-    await this.storage.removeItem(`${this.CACHE_PREFIX.project}${id}.json`)
   }
 
 }

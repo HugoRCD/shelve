@@ -1,6 +1,6 @@
 import { AuthType } from '@shelve/types'
 import { zh, z } from 'h3-zod'
-import { UserService } from '~~/server/services/user.service'
+import { validateUsername } from '~~/server/services/user'
 
 export default eventHandler(async (event) => {
   const body = await zh.useValidatedBody(event, {
@@ -10,10 +10,19 @@ export default eventHandler(async (event) => {
     authType: z.nativeEnum(AuthType).optional(),
   })
   const { user } = await requireUserSession(event)
-  const updatedUser = await new UserService().updateUser(user, {
-    id: user.id,
-    ...body,
-  })
+
+  if (body.username) body.username = await validateUsername(body.username, body.authType)
+
+  const [updatedUser] = await useDrizzle()
+    .update(tables.users)
+    .set({
+      username: body.username,
+      avatar: body.avatar,
+    })
+    .where(eq(tables.users.id, user.id))
+    .returning()
+  if (!updatedUser) throw createError({ statusCode: 404, message: 'User not found' })
+
   await setUserSession(event, {
     user: updatedUser,
     loggedInAt: new Date().toISOString(),

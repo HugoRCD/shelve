@@ -18,7 +18,7 @@ export function useProjects() {
 
   async function fetchProjects() {
     loading.value = true
-    projects.value = await $fetch<Project[]>(`/api/teams/projects${teamId.value ? `?teamId=${teamId.value}` : ''}`, {
+    projects.value = await $fetch<Project[]>(`/api/projects${teamId.value ? `?teamId=${teamId.value}` : ''}`, {
       method: 'GET',
     })
     loading.value = false
@@ -26,7 +26,7 @@ export function useProjects() {
 
   async function fetchCurrentProject(projectId: number) {
     currentLoading.value = true
-    currentProject.value = await $fetch<Project>(`/api/project/${projectId}`, {
+    currentProject.value = await $fetch<Project>(`/api/projects/${projectId}`, {
       method: 'GET',
     })
     currentLoading.value = false
@@ -34,7 +34,7 @@ export function useProjects() {
 
   async function createProject(createProjectInput: Omit<CreateProjectInput, 'teamId'>) {
     try {
-      const response = await $fetch<Project>('/api/project', {
+      const response = await $fetch<Project>('/api/projects', {
         method: 'POST',
         body: {
           ...createProjectInput,
@@ -50,7 +50,7 @@ export function useProjects() {
 
   async function updateProject(projectId: number, project: Project) {
     try {
-      const response = await $fetch<Project>(`/api/project/${projectId}`, {
+      const response = await $fetch<Project>(`/api/projects/${projectId}`, {
         method: 'PUT',
         body: project,
       })
@@ -64,7 +64,7 @@ export function useProjects() {
 
   async function deleteProject(projectId: number) {
     try {
-      await $fetch(`/api/project/${projectId}`, {
+      await $fetch(`/api/projects/${projectId}`, {
         method: 'DELETE',
       })
       projects.value = projects.value.filter((project) => project.id !== projectId)

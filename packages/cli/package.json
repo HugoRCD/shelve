@@ -39,25 +39,25 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@clack/prompts": "^0.8.2",
-    "c12": "^2.0.1",
-    "commander": "^12.1.0",
-    "consola": "^3.2.3",
-    "globby": "^14.0.2",
-    "npm-registry-fetch": "^18.0.2",
-    "nypm": "^0.3.12",
-    "ofetch": "^1.4.1",
-    "pkg-types": "^1.2.1",
-    "semver": "^7.6.3"
+    "@clack/prompts": "0.8.2",
+    "c12": "2.0.1",
+    "commander": "12.1.0",
+    "consola": "3.2.3",
+    "globby": "14.0.2",
+    "npm-registry-fetch": "18.0.2",
+    "nypm": "0.3.12",
+    "ofetch": "1.4.1",
+    "pkg-types": "1.2.1",
+    "semver": "7.6.3"
   },
   "devDependencies": {
     "@shelve/types": "*",
     "@shelve/utils": "*",
-    "@types/bun": "^1.1.13",
-    "@types/npm-registry-fetch": "^8.0.7",
-    "@types/semver": "^7.5.8",
-    "eslint": "^9.15.0",
-    "unbuild": "^2.0.0",
-    "vitest": "^2.1.5"
+    "@types/bun": "1.1.13",
+    "@types/npm-registry-fetch": "8.0.7",
+    "@types/semver": "7.5.8",
+    "eslint": "9.15.0",
+    "unbuild": "2.0.0",
+    "vitest": "2.1.5"
   }
 }

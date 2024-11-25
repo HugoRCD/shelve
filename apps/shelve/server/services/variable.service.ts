@@ -1,5 +1,4 @@
 import type { CreateVariablesInput, UpdateVariableInput, Variable } from '@shelve/types'
-import type { Storage, StorageValue } from 'unstorage'
 import { EnvType } from '@shelve/types'
 
 export class VariableService {
@@ -10,15 +9,9 @@ export class VariableService {
     preview: EnvType.PREVIEW,
     development: EnvType.DEVELOPMENT,
   } as const
-  private readonly storage: Storage<StorageValue>
-  private readonly CACHE_TTL = 60 * 60 // 1 hour
-  private readonly CACHE_PREFIX = {
-    variables: 'nitro:functions:getVariables:projectId:'
-  }
 
   constructor() {
     this.encryptionKey = useRuntimeConfig().private.encryptionKey
-    this.storage = useStorage('cache')
   }
 
   async updateVariable(input: UpdateVariableInput, decrypt: boolean = true): Promise<Variable> {
@@ -39,7 +32,7 @@ export class VariableService {
       .returning()
     if (!updatedVariable) throw createError({ statusCode: 500, message: 'Failed to update variable' })
 
-    await this.deleteCachedProjectVariables(updatedVariable.projectId)
+    await clearCache('Variables', updatedVariable.projectId)
     return decrypt ? this.decryptVariable(updatedVariable) : updatedVariable
   }
 
@@ -70,18 +63,18 @@ export class VariableService {
   }
 
   async deleteVariable(id: number): Promise<void> {
-    const result = await useDrizzle().delete(tables.variables)
+    const [result] = await useDrizzle().delete(tables.variables)
       .where(eq(tables.variables.id, id))
       .returning()
 
-    if (!result.length) {
+    if (!result) {
       throw createError({
         statusCode: 404,
         message: `Variable not found with id ${id}`
       })
     }
 
-    await this.deleteCachedProjectVariables(result[0].projectId)
+    await clearCache('Variables', result.projectId)
   }
 
   // Multiple Variables Operations
@@ -118,7 +111,7 @@ export class VariableService {
           }, false)
         }
 
-        return useDrizzle().insert(tables.variables)
+        return await useDrizzle().insert(tables.variables)
           .values({
             projectId,
             key,
@@ -130,18 +123,14 @@ export class VariableService {
       })
     )
 
-    await this.deleteCachedProjectVariables(projectId)
+    await clearCache('Variables', projectId)
     return this.decryptVariables(variablesToUpsert)
   }
 
-  getProjectVariables = cachedFunction(async (projectId: number, environment?: EnvType): Promise<Variable[]> => {
+  getVariables = withCache<Variable[]>('Variables', async (projectId: number, environment?: EnvType) => {
     return await useDrizzle().query.variables.findMany({
       where: this.buildEnvironmentQuery(projectId, environment)
     })
-  }, {
-    maxAge: this.CACHE_TTL,
-    name: 'getVariables',
-    getKey: (projectId: number) => `projectId:${projectId}`
   })
 
   private async decryptVariable(variable: Variable): Promise<Variable> {
@@ -175,10 +164,6 @@ export class VariableService {
   private async deleteProjectVariables(projectId: number, environment?: EnvType): Promise<void> {
     await useDrizzle().delete(tables.variables)
       .where(this.buildEnvironmentQuery(projectId, environment))
-  }
-
-  private async deleteCachedProjectVariables(projectId: number): Promise<void> {
-    await this.storage.removeItem(`${this.CACHE_PREFIX.variables}${projectId}.json`)
   }
 
 }
