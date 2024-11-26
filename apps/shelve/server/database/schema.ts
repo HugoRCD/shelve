@@ -1,4 +1,4 @@
-import { boolean, integer, pgEnum, pgTable, varchar, uniqueIndex } from 'drizzle-orm/pg-core'
+import { boolean, integer, pgEnum, pgTable, varchar, index, uniqueIndex } from 'drizzle-orm/pg-core'
 import { AuthType, Role, TeamRole } from '@shelve/types'
 import { relations } from 'drizzle-orm'
 import { timestamps } from './column.helpers'
@@ -36,7 +36,7 @@ export const teams = pgTable('teams', {
   private: boolean().default(true).notNull(),
   privateOf: integer().references(() => users.id, { onDelete: 'cascade' }),
   ...timestamps,
-})
+}, (table) => [index('teams_private_of_idx').on(table.privateOf)])
 
 export const members = pgTable('members', {
   id: integer().primaryKey().generatedByDefaultAsIdentity(),
@@ -44,7 +44,11 @@ export const members = pgTable('members', {
   teamId: integer().references(() => teams.id, { onDelete: 'cascade' }).notNull(),
   role: teamRoleEnum().default(TeamRole.MEMBER).notNull(),
   ...timestamps,
-})
+}, (table) => [
+  uniqueIndex('members_user_team_idx').on(table.userId, table.teamId),
+  index('members_role_idx').on(table.role),
+  index('members_team_role_idx').on(table.teamId, table.role)
+])
 
 export const projects = pgTable('projects', {
   id: integer().primaryKey().generatedByDefaultAsIdentity(),
@@ -65,8 +69,8 @@ export const variables = pgTable('variables', {
   key: varchar().notNull(),
   ...timestamps,
 }, (table) => [
-  uniqueIndex('idx_variables_project_key').on(table.projectId, table.key),
-  uniqueIndex('idx_variables_project').on(table.projectId)
+  uniqueIndex('variables_project_key_idx').on(table.projectId, table.key),
+  index('variables_key_idx').on(table.key)
 ])
 
 export const variableValues = pgTable('variable_values', {
@@ -95,7 +99,10 @@ export const environments = pgTable('environments', {
   name: varchar().notNull(),
   teamId: integer().references(() => teams.id, { onDelete: 'cascade' }).notNull(),
   ...timestamps,
-})
+}, (table) => [
+  uniqueIndex('environments_team_name_idx').on(table.teamId, table.name),
+  index('environments_team_idx').on(table.teamId),
+])
 
 export const teamsRelations = relations(teams, ({ many }) => ({
   members: many(members),
