@@ -18,7 +18,6 @@ async function refresh() {
   await fetchCurrentProject(+projectId)
 }
 
-provide('project', currentProject)
 provide('loading', currentLoading)
 provide('refresh', refresh)
 
@@ -43,7 +42,7 @@ const items = [
 
 <template>
   <div class="flex flex-col">
-    <ProjectMainSection :project="currentProject" :loading="currentLoading" />
+    <ProjectMainSection v-model="currentProject" :loading="currentLoading" />
     <div class="mt-8 mb-4 border-b border-neutral-200 dark:border-neutral-800">
       <UNavigationMenu
         color="neutral"

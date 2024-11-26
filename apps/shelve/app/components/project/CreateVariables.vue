@@ -12,7 +12,7 @@ const { refresh, variables, projectId } = defineProps<CreateVariablesProps>()
 
 const {
   createLoading,
-  selectedEnvironment,
+  selectedEnvironments,
   variablesInput,
   variablesToCreate,
   addVariable,
@@ -20,54 +20,9 @@ const {
   createVariables,
 } = useVariables(refresh, projectId)
 
-const items = [
-  [
-    {
-      label: 'Copy .env',
-      disabled: true
-    }
-  ],
-  [
-    {
-      label: 'For production',
-      icon: 'lucide:clipboard',
-      onSelect: () => copyEnv(variables, 'production')
-    },
-    {
-      label: 'For preview',
-      icon: 'lucide:clipboard',
-      onSelect: () => copyEnv(variables, 'preview')
-    },
-    {
-      label: 'For development',
-      icon: 'lucide:clipboard',
-      onSelect: () => copyEnv(variables, 'development')
-    }
-  ],
-  [
-    {
-      label: 'Download .env',
-      disabled: true
-    },
-  ],
-  [
-    {
-      label: 'For production',
-      icon: 'lucide:download',
-      onSelect: () => downloadEnv(variables, 'production')
-    },
-    {
-      label: 'For preview',
-      icon: 'lucide:download',
-      onSelect: () => downloadEnv(variables, 'preview')
-    },
-    {
-      label: 'For development',
-      icon: 'lucide:download',
-      onSelect: () => downloadEnv(variables, 'development')
-    }
-  ],
-]
+const teamEnv = useTeamEnv()
+
+const items = actionVariablesItem(variables)
 
 const fileInputRef = ref<HTMLInputElement | null>(null)
 
@@ -202,7 +157,14 @@ const handlePasswordGenerated = (password: string, index: number) => variablesIn
               Manage your environment variables
             </p>
           </div>
-          <UDropdownMenu :items>
+          <UDropdownMenu
+            :items
+            :content="{
+              align: 'start',
+              side: 'right',
+              sideOffset: 8
+            }"
+          >
             <UButton color="neutral" variant="ghost" icon="heroicons:ellipsis-horizontal-20-solid" />
           </UDropdownMenu>
         </div>
@@ -213,9 +175,13 @@ const handlePasswordGenerated = (password: string, index: number) => variablesIn
             Environments
           </h4>
           <div class="flex select-none gap-4">
-            <UCheckbox v-model="selectedEnvironment.production" name="production" label="Production" />
-            <UCheckbox v-model="selectedEnvironment.preview" name="preview" label="Preview" />
-            <UCheckbox v-model="selectedEnvironment.development" name="development" label="Development" />
+            <UCheckbox
+              v-for="env in teamEnv"
+              :key="env.id"
+              v-model="selectedEnvironments[env.id]"
+              :name="env.name"
+              :label="capitalize(env.name)"
+            />
           </div>
         </div>
         <USeparator class="my-1" />
@@ -239,8 +205,13 @@ const handlePasswordGenerated = (password: string, index: number) => variablesIn
             <div class="flex flex-col gap-2">
               <div class="flex flex-col items-start gap-2 sm:flex-row">
                 <div class="w-full flex gap-1">
-                  <UInput v-model="variablesInput.variables[variable - 1]!.key" required class="w-full" placeholder="e.g. API_KEY" />
-                  <ProjectVariablePrefix v-model="variablesInput.variables[variable - 1]!.key" />
+                  <UInput
+                    v-model="variablesInput.variables[variable - 1]!.key"
+                    required
+                    class="w-full"
+                    placeholder="e.g. API_KEY"
+                  />
+                  <VariablePrefix v-model="variablesInput.variables[variable - 1]!.key" />
                 </div>
                 <div class="w-full flex gap-1">
                   <UTextarea
@@ -251,7 +222,7 @@ const handlePasswordGenerated = (password: string, index: number) => variablesIn
                     autoresize
                     placeholder="e.g. 123456"
                   />
-                  <ProjectPasswordGenerator @password-generated="handlePasswordGenerated($event, variable - 1)" />
+                  <VariableGenerator @password-generated="handlePasswordGenerated($event, variable - 1)" />
                 </div>
                 <UTooltip text="Remove variable" :content="{ side: 'top' }">
                   <UButton icon="lucide:x" variant="soft" color="error" @click="removeVariable(variable - 1)" />

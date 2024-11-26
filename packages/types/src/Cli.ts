@@ -1,4 +1,5 @@
-import { type Env, EnvType } from './Variables'
+import type { EnvVar } from './Variables'
+import { Environment } from './Environment'
 
 export const SHELVE_JSON_SCHEMA = 'https://raw.githubusercontent.com/HugoRCD/shelve/main/packages/types/shelve-config-schema.json'
 export const DEFAULT_URL = 'https://app.shelve.cloud'
@@ -30,27 +31,11 @@ export type ShelveConfig = {
    * */
   url: string
   /**
-   * Whether to confirm changes before pushing them to Shelve
+   * Whether to confirm changes before pushing them to Shelve or updating the .env file (locally)
    *
    * @default false
    * */
   confirmChanges: boolean
-  /**
-   * Push method to use for .env file (overwrite or append)
-   * Overwrite will replace all existing variables in Shelve app with the ones in the .env file
-   * Merge will append the .env file to the existing variables in Shelve app
-   *
-   * @default 'overwrite'
-   * */
-  pushMethod: 'overwrite' | 'merge'
-  /**
-   * Pull method to use for .env file (overwrite or append)
-   * Overwrite will replace the .env file with the variables in Shelve app
-   * Merge will append the variables in Shelve app to the .env file
-   *
-   * @default 'overwrite'
-   * */
-  pullMethod: 'overwrite' | 'merge'
   /**
    * Name of your env file
    *
@@ -67,14 +52,6 @@ export type ShelveConfig = {
 
 export type CreateEnvFileInput = {
   /**
-   * The method to use for .env file (overwrite or append)
-   * Overwrite will replace all existing variables in Shelve app with the ones in the .env file
-   * Merge will append the .env file to the existing variables in Shelve app
-   *
-   * @default 'overwrite'
-   * */
-  method: 'overwrite' | 'merge'
-  /**
    * Name of your env file
    *
    * @default '.env'
@@ -83,7 +60,7 @@ export type CreateEnvFileInput = {
   /**
    * The variables to create in the .env file
    * */
-  variables: Env[]
+  variables: EnvVar[]
   /**
    * Whether to confirm changes before updating the .env file
    *
@@ -96,7 +73,7 @@ export type PushEnvFileInput = {
   /**
    * The variables to push to Shelve
    * */
-  variables: Env[]
+  variables: EnvVar[]
   /**
    * The project ID
    * */
@@ -104,7 +81,7 @@ export type PushEnvFileInput = {
   /**
    * The environment to push the variables to
    * */
-  environment: EnvType
+  environment: Environment
   /**
    * Whether to confirm changes before pushing the variables to Shelve
    *

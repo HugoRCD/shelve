@@ -5,6 +5,7 @@ import type {
   UpdateTeamInput,
 } from '@shelve/types'
 import { TeamRole } from '@shelve/types'
+import { EnvironmentsService } from './environments'
 
 export class TeamsService {
 
@@ -33,10 +34,12 @@ export class TeamsService {
           with: {
             user: true
           }
-        }
+        },
+        environments: true
       }
     })
     if (!createdTeam) throw new Error(`Team not found after creation with id ${ team.id }`)
+    await new EnvironmentsService().initializeBaseEnvironments(team.id)
 
     await clearCache('Teams', input.requester.id)
     return createdTeam
@@ -57,7 +60,8 @@ export class TeamsService {
           with: {
             user: true
           }
-        }
+        },
+        environments: true
       }
     })
     if (!updatedTeam) throw new Error(`Team not found with id ${teamId}`)
@@ -83,7 +87,8 @@ export class TeamsService {
               with: {
                 user: true
               }
-            }
+            },
+            environments: true
           }
         }
       }
@@ -102,7 +107,8 @@ export class TeamsService {
           with: {
             user: true
           }
-        }
+        },
+        environments: true
       }
     })
     if (!team) throw new Error(`Team not found with id ${teamId}`)

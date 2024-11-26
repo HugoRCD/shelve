@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import type { Project } from '@shelve/types'
 import type { Ref } from 'vue'
 
 const { projectId } = useRoute().params
 
-const project = inject('project') as Ref<Project>
+const project = useCurrentProject()
 const loading = inject('loading') as Ref<boolean>
 const route = useRoute()
 

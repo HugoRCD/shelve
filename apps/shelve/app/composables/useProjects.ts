@@ -78,6 +78,7 @@ export function useProjects() {
     projects,
     loading,
     currentLoading,
+    currentProject,
     fetchProjects,
     fetchCurrentProject,
     createProject,

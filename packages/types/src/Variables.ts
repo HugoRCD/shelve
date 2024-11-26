@@ -1,24 +1,25 @@
-export enum EnvType {
-  DEVELOPMENT = 'development',
-  PREVIEW = 'preview',
-  PRODUCTION = 'production',
+import type { Environment } from './Environment'
+
+export type VariableValue = {
+  value: string;
+  environmentId: number;
+  environment?: Environment;
 }
 
 export type Variable = {
   id: number;
   key: string;
-  value: string;
   projectId: number;
-  environment: string;
+  values: VariableValue[];
   createdAt: Date;
   updatedAt: Date;
-};
+}
+
 
 export type CreateVariablesInput = {
   projectId: number;
   autoUppercase?: boolean;
-  environment?: string;
-  method?: 'overwrite' | 'merge';
+  environmentIds: number[];
   variables: {
     index?: number;
     key: string;
@@ -26,16 +27,18 @@ export type CreateVariablesInput = {
   }[];
 };
 
+export type EnvVar = {
+  key: string;
+  value: string;
+}
+
 export type UpdateVariableInput = {
   id: number;
   projectId: number;
-  key?: string;
-  value?: string;
-  environment?: string;
-  autoUppercase?: boolean;
-}
-
-export type Env = {
   key: string;
-  value: string;
+  values: {
+    environmentId: number;
+    value: string;
+  }[];
+  autoUppercase?: boolean;
 }

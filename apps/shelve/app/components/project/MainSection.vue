@@ -1,18 +1,17 @@
 <script setup lang="ts">
 import { type Project, TeamRole } from '@shelve/types'
-import type { Ref } from 'vue'
 
 type ProjectProps = {
-  project: Project
   loading: boolean
 }
 
-const props = defineProps<ProjectProps>()
+defineProps<ProjectProps>()
+
+const project = defineModel({ type: Object }) as Ref<Project>
 
 const showEdit = ref(false)
 const showDelete = ref(false)
 const projectName = ref('')
-const project = toRef(props, 'project') as Ref<Project>
 const { projectId } = useRoute().params as { projectId: string }
 const teamRole = useTeamRole()
 
