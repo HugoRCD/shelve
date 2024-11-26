@@ -1,36 +1,32 @@
-import { zh, z } from 'h3-zod'
-import type { UpdateVariableInput } from '@shelve/types'
+import { z, zh } from 'h3-zod'
 import { VariablesService } from '~~/server/services/variables'
 import { idParamsSchema } from '~~/server/database/zod'
 
-const bodySchema = z.object({
+const schema = z.object({
   projectId: z.number({
     required_error: 'Project ID is required',
   }).positive(),
+  autoUppercase: z.boolean().optional(),
   key: z.string({
     required_error: 'Variable key is required',
-  }).min(1).trim().optional(),
-  value: z.string({
-    required_error: 'Variable value is required',
-  }).min(1).trim().optional(),
-  env: z.string().optional(),
-  autoUppercase: z.boolean().optional(),
+  }).min(1).trim(),
+  values: z.array(z.object({
+    environmentId: z.number({
+      required_error: 'Environment ID is required',
+    }),
+    value: z.string().trim()
+  })).min(1),
 })
 
 export default eventHandler(async (event) => {
   const { id } = await zh.useValidatedParams(event, idParamsSchema)
-  const body = await zh.useValidatedBody(event, bodySchema)
-  const input: UpdateVariableInput = {
+  const body = await zh.useValidatedBody(event, schema)
+
+  return await new VariablesService().updateVariable({
     id,
     projectId: body.projectId,
     key: body.key,
-    value: body.value,
-    environment: body.env,
+    values: body.values,
     autoUppercase: body.autoUppercase,
-  }
-  await new VariablesService().updateVariable(input)
-  return {
-    statusCode: 200,
-    message: 'Variable deleted',
-  }
+  })
 })

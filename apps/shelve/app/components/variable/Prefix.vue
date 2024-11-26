@@ -1,11 +1,8 @@
 <script setup lang="ts">
-import type { Project } from '@shelve/types'
-import type { Ref } from 'vue'
-
-const project = inject('project') as Ref<Project>
+const project = useCurrentProject()
 
 const prefixList = computed(() => {
-  return project.value.variablePrefix?.replace(/\s/g, '').split(',').filter(Boolean) || []
+  return project.value?.variablePrefix?.replace(/\s/g, '').split(',').filter(Boolean) || []
 })
 
 const key = defineModel({ type: String })

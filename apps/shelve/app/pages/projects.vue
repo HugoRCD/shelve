@@ -37,7 +37,7 @@ const active = useState('active-project')
           :key="project.id"
           :to="`/project/${project.id}`"
         >
-          <UCard class="h-full" @click.native="active = project.id">
+          <UCard class="h-full" @click="active = project.id">
             <div class="flex w-full items-start gap-4">
               <UAvatar
                 :src="project.logo"

@@ -24,13 +24,12 @@ const isVariableSelected = (variable: Variable) => {
 </script>
 
 <template>
-  <div class="flex flex-col gap-4">
+  <div class="flex flex-col gap-2">
     <ProjectCreateVariables v-if="projectId && variables" :variables :project-id :refresh />
-    <ProjectVariableSelector v-model="selectedVariables" @refresh="refresh" />
+    <VariableSelector v-model="selectedVariables" @refresh="refresh" />
     <div v-if="status !== 'pending'" class="flex flex-col gap-4">
       <div v-for="variable in variables" :key="variable.id">
-        <ProjectVariableItem
-          :variables
+        <VariableItem
           :project-id
           :variable
           :refresh

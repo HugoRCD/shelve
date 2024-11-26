@@ -6,7 +6,9 @@ const schema = z.object({
     required_error: 'Project ID is required',
   }).positive(),
   autoUppercase: z.boolean().optional(),
-  environment: z.string().optional(),
+  environmentIds: z.array(z.number({
+    required_error: 'Environment ID is required',
+  })).min(1),
   variables: z.array(z.object({
     key: z.string({
       required_error: 'Variable key is required',
@@ -15,17 +17,20 @@ const schema = z.object({
       required_error: 'Variable value is required',
     }).min(1).trim(),
   })).min(1).max(100),
-  method: z.enum(['merge', 'overwrite']).optional(),
 })
 
 export default eventHandler(async (event) => {
   const body = await zh.useValidatedBody(event, schema)
 
-  return await new VariablesService().createVariables({
+  const input = {
     projectId: body.projectId,
-    variables: body.variables,
-    environment: body.environment,
     autoUppercase: body.autoUppercase,
-    method: body.method
-  })
+    environmentIds: body.environmentIds,
+    variables: body.variables.map(variable => ({
+      key: variable.key,
+      value: variable.value,
+    }))
+  }
+
+  return await new VariablesService().createVariables(input)
 })

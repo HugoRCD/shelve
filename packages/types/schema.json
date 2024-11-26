@@ -29,18 +29,6 @@
       "description": "Whether to confirm changes before pushing them to Shelve",
       "default": false
     },
-    "pushMethod": {
-      "type": "string",
-      "enum": ["overwrite", "merge"],
-      "description": "Push method to use for .env file (overwrite or append). Overwrite will replace all existing variables in Shelve app with the ones in the .env file. Merge will append the .env file to the existing variables in Shelve app",
-      "default": "overwrite"
-    },
-    "pullMethod": {
-      "type": "string",
-      "enum": ["overwrite", "merge"],
-      "description": "Pull method to use for .env file (overwrite or append). Overwrite will replace the .env file with the variables in Shelve app. Merge will append the variables in Shelve app to the .env file",
-      "default": "overwrite"
-    },
     "envFileName": {
       "type": "string",
       "description": "Name of your env file",

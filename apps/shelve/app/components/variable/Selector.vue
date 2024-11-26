@@ -52,7 +52,7 @@ async function deleteVariables() {
           </span>
           <div class="flex gap-2">
             <UTooltip text="Copy selected variables (dev) to clipboard">
-              <UButton color="neutral" variant="soft" icon="lucide:clipboard-plus" @click="copyEnv(selectedVariables, 'development')" />
+              <UButton color="neutral" variant="soft" icon="lucide:clipboard-plus" @click="copyEnv(selectedVariables)" />
             </UTooltip>
             <UTooltip text="Delete selected variables">
               <UButton color="error" variant="ghost" icon="heroicons:trash" :loading @click="openDeleteModal" />

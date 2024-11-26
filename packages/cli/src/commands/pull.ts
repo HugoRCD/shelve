@@ -1,10 +1,9 @@
-import { intro, isCancel, outro, select } from '@clack/prompts'
+import { intro, outro } from '@clack/prompts'
 import { Command } from 'commander'
-import { EnvType } from '@shelve/types'
 import { loadShelveConfig } from '../utils/config'
 import { getProjectByName } from '../utils/project'
 import { createEnvFile, getEnvVariables } from '../utils/env'
-import { onCancel } from '../utils'
+import { promptEnvironment } from '../utils/environment'
 
 export function pullCommand(program: Command): void {
   program
@@ -13,34 +12,16 @@ export function pullCommand(program: Command): void {
     .description('Pull variables for specified environment to .env file')
     .option('-e, --environment <env>', 'Specify the environment (development, preview, production)')
     .action(async (options) => {
-      const { project, pullMethod, envFileName, confirmChanges } = await loadShelveConfig()
+      const { project, teamId, envFileName, confirmChanges } = await loadShelveConfig()
 
-      intro(`Pulling variable from ${project} project in ${pullMethod} mode`)
+      intro(`Pulling variable from ${project} project`)
 
-      let environment = options.environment as EnvType | undefined
-
-      if (!environment) {
-        environment = await select({
-          message: 'Select the environment:',
-          options: [
-            { value: 'development', label: 'Development' },
-            { value: 'preview', label: 'Preview' },
-            { value: 'production', label: 'Production' },
-          ],
-        }) as EnvType
-
-        if (isCancel(environment)) onCancel('Operation cancelled.')
-      } else {
-        const validEnvironments: EnvType[] = [EnvType.DEVELOPMENT, EnvType.PREVIEW, EnvType.PRODUCTION]
-        if (!validEnvironments.includes(environment)) {
-          onCancel(`Invalid environment: ${environment}. Valid options are: development, preview, production`)
-        }
-      }
+      const environment = await promptEnvironment(teamId)
 
       const projectData = await getProjectByName(project)
-      const variables = await getEnvVariables(projectData.id, environment)
-      await createEnvFile({ method: pullMethod, envFileName, variables, confirmChanges })
-      outro(`Successfully pulled variable from ${environment} environment`)
+      const variables = await getEnvVariables(projectData.id, environment.id)
+      await createEnvFile({ envFileName, variables, confirmChanges })
+      outro(`Successfully pulled variable from ${environment.name} environment`)
       process.exit(0)
     })
 }

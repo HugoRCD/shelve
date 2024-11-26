@@ -1,12 +1,23 @@
 import type { Variable, CreateVariablesInput } from '@shelve/types'
 
 export function useVariables(refresh: () => Promise<void>, projectId: string) {
-  const selectedEnvironment: Ref<Record<string, boolean>> = ref({
-    production: true,
-    preview: false,
-    development: false,
-  })
-  const environment = computed(() => Object.keys(selectedEnvironment.value).filter(key => selectedEnvironment.value[key]).join('|'))
+  const teamEnv = useTeamEnv()
+
+  const selectedEnvironments = ref<Record<number, boolean>>(
+    Object.fromEntries(
+      teamEnv.value.map(env => [
+        env.id,
+        true
+      ])
+    )
+  )
+
+  const environmentIds = computed(() =>
+    Object.entries(selectedEnvironments.value)
+      .filter(([_, selected]) => selected)
+      .map(([id]) => parseInt(id))
+  )
+
   const autoUppercase = useCookie<boolean>('autoUppercase', {
     watch: true,
     default: () => true,
@@ -21,7 +32,7 @@ export function useVariables(refresh: () => Promise<void>, projectId: string) {
   const variablesInput = ref<CreateVariablesInput>({
     autoUppercase: autoUppercase.value,
     projectId: +projectId,
-    environment: environment.value,
+    environmentIds: environmentIds.value,
     variables: [
       {
         index: 1,
@@ -31,8 +42,8 @@ export function useVariables(refresh: () => Promise<void>, projectId: string) {
     ],
   })
 
-  watch(environment, () => {
-    variablesInput.value.environment = environment.value
+  watch(environmentIds, () => {
+    variablesInput.value.environmentIds = environmentIds.value
   })
 
   function addVariable() {
@@ -60,22 +71,22 @@ export function useVariables(refresh: () => Promise<void>, projectId: string) {
 
   async function createVariables() {
     createLoading.value = true
-    if (environment.value.length === 0) {
+    if (environmentIds.value.length === 0) {
       toast.error('Please select at least one environment')
       createLoading.value = false
       return
     }
     try {
-      await $fetch(`/api/variables`, {
+      await $fetch('/api/variables', {
         method: 'POST',
-        body: variablesInput.value,
+        body: variablesInput.value
       })
       toast.success('Your variables have been created')
       variablesToCreate.value = 1
       variablesInput.value = {
         projectId: +projectId,
         autoUppercase: autoUppercase.value,
-        environment: environment.value,
+        environmentIds: environmentIds.value,
         variables: [
           {
             index: 1,
@@ -93,34 +104,24 @@ export function useVariables(refresh: () => Promise<void>, projectId: string) {
 
   async function updateVariable(variable: Variable) {
     updateLoading.value = true
-    if (variable.environment.length === 0) {
-      toast.error('Please select at least one environment')
-      updateLoading.value = false
-      return
-    }
     try {
       await $fetch(`/api/variables/${variable.id}`, {
         method: 'PUT',
-        body: {
-          projectId: +projectId,
-          key: variable.key,
-          value: variable.value,
-          env: variable.environment,
-          autoUppercase: autoUppercase.value,
-        },
+        body: variable
       })
-      toast.success('Your variable has been updated')
+      toast.success('Variable updated successfully')
+      await refresh()
     } catch (error) {
-      toast.error('An error occurred')
+      console.error(error)
+      toast.error('Failed to update variable')
     }
     updateLoading.value = false
-    await refresh()
   }
 
-  async function deleteVariable(varId: number, varEnv: string) {
+  async function deleteVariable(id: number) {
     deleteLoading.value = true
     try {
-      await $fetch(`/api/variables/${varId}/${varEnv}`, {
+      await $fetch(`/api/variables/${id}`, {
         method: 'DELETE',
       })
       toast.success('Your variable has been deleted')
@@ -135,8 +136,7 @@ export function useVariables(refresh: () => Promise<void>, projectId: string) {
     createLoading,
     updateLoading,
     deleteLoading,
-    selectedEnvironment,
-    environment,
+    selectedEnvironments,
     variablesInput,
     variablesToCreate,
     addVariable,

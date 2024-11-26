@@ -69,8 +69,6 @@ export async function loadShelveConfig(check: boolean = true): Promise<ShelveCon
       token: process.env.SHELVE_TOKEN,
       url: process.env.SHELVE_URL || 'https://app.shelve.cloud',
       confirmChanges: false,
-      pullMethod: 'overwrite',
-      pushMethod: 'overwrite',
       envFileName: '.env',
       autoUppercase: true,
     },

@@ -1,4 +1,4 @@
-import type { Member, Team } from '@shelve/types'
+import type { Environment, Member, Team } from '@shelve/types'
 import { TeamRole, Role } from '@shelve/types'
 
 export const useUserTeams = () => {
@@ -7,6 +7,10 @@ export const useUserTeams = () => {
 
 export const useCurrentTeam = () => {
   return useState<Team>('team')
+}
+
+export const useTeamEnv = () => {
+  return useState<Environment[]>('teamEnv', () => [])
 }
 
 export const useTeamId = () => {
@@ -34,6 +38,7 @@ export function useTeams() {
   const teams = useUserTeams()
   const currentTeam = useCurrentTeam()
   const teamId = useTeamId()
+  const teamEnv = useTeamEnv()
   const { user } = useUserSession()
   const loading = ref(false)
   const createLoading = ref(false)
@@ -55,17 +60,20 @@ export function useTeams() {
       const privateTeam = teams.value.find(team => team.private && team.members.some(member => member.userId === user.value!.id))
       lastUsedTeamId.value = lastUsedTeamId.value || privateTeam!.id
       currentTeam.value = teams.value.find(team => team.id === lastUsedTeamId.value) as Team
+      teamEnv.value = currentTeam.value.environments
     } finally {
       loading.value = false
     }
   }
 
   async function selectTeam(id: number) {
+    const projects = useProjects()
     const route = useRoute()
     currentTeam.value = teams.value.find(team => team.id === id) as Team
+    teamEnv.value = currentTeam.value.environments
     lastUsedTeamId.value = id
     if (route.path.includes('/project/')) navigateTo('/')
-    await useProjects().fetchProjects()
+    await projects.fetchProjects()
   }
 
   async function createTeam(name: string) {

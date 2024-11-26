@@ -3,12 +3,12 @@ import type { User } from './User'
 export type Project = {
   id: number;
   name: string;
-  description: string | null;
-  repository: string | null;
-  projectManager: string | null;
-  homepage: string | null;
-  variablePrefix: string | null;
-  logo: string | null;
+  description: string;
+  repository: string;
+  projectManager: string;
+  homepage: string;
+  variablePrefix: string;
+  logo: string;
   teamId: number;
   createdAt: string;
   updatedAt: string;
