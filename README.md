@@ -34,8 +34,6 @@ export default createShelveConfig({
   token: "my-token",
   url: "https://shelve.cloud",
   confirmChanges: false,
-  pushMethod: 'overwrite',
-  pullMethod: 'overwrite',
   envFileName: '.env',
   autoUppercase: true,
 })

@@ -28,7 +28,7 @@
   ],
   "scripts": {
     "build": "unbuild",
-    "dev": "bun src/index.ts",
+    "dev": "DEBUG=true bun src/index.ts",
     "dev:prod": "NODE_ENV=production bun src/index.ts",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",

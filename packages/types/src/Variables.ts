@@ -27,7 +27,7 @@ export type CreateVariablesInput = {
   }[];
 };
 
-export type Env = {
+export type EnvVar = {
   key: string;
   value: string;
 }
