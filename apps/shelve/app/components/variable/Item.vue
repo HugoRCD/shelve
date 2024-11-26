@@ -50,15 +50,7 @@ const showEdit = ref(false)
             {{ localVariable.key.length > 25 ? localVariable.key.slice(0, 25) + '...' : localVariable.key }}
           </span>
           <span class="hidden lg:block">{{ localVariable.key }}</span>
-          <!--          <UTooltip text="Copy variable to clipboard">
-            <UButton
-              color="neutral"
-              variant="ghost"
-              icon="lucide:clipboard-plus"
-              @click.stop="copyToClipboard(`${localVariable.key}=${localVariable.values}`, 'Variable copied to clipboard')"
-            />
-          </UTooltip>-->
-          <UTooltip text="Show variable">
+          <UTooltip text="Show Details">
             <UButton color="neutral" variant="ghost" icon="lucide:eye" @click.stop="showEdit = !showEdit" />
           </UTooltip>
         </h3>
