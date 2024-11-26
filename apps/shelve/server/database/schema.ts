@@ -1,4 +1,4 @@
-import { boolean, integer, pgEnum, pgTable, varchar, unique, uniqueIndex } from 'drizzle-orm/pg-core'
+import { boolean, integer, pgEnum, pgTable, varchar, uniqueIndex } from 'drizzle-orm/pg-core'
 import { AuthType, Role, TeamRole } from '@shelve/types'
 import { relations } from 'drizzle-orm'
 import { timestamps } from './column.helpers'
@@ -64,7 +64,10 @@ export const variables = pgTable('variables', {
   projectId: integer().references(() => projects.id, { onDelete: 'cascade' }).notNull(),
   key: varchar().notNull(),
   ...timestamps,
-})
+}, (table) => [
+  uniqueIndex('idx_variables_project_key').on(table.projectId, table.key),
+  uniqueIndex('idx_variables_project').on(table.projectId)
+])
 
 export const variableValues = pgTable('variable_values', {
   id: integer().primaryKey().generatedByDefaultAsIdentity(),

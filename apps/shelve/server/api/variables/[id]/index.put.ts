@@ -21,12 +21,15 @@ const schema = z.object({
 export default eventHandler(async (event) => {
   const { id } = await zh.useValidatedParams(event, idParamsSchema)
   const body = await zh.useValidatedBody(event, schema)
-
-  return await new VariablesService().updateVariable({
+  await new VariablesService().updateVariable({
     id,
     projectId: body.projectId,
     key: body.key,
     values: body.values,
     autoUppercase: body.autoUppercase,
   })
+  return {
+    statusCode: 200,
+    message: 'Variable updated successfully',
+  }
 })

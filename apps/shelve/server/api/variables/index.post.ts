@@ -31,6 +31,9 @@ export default eventHandler(async (event) => {
       value: variable.value,
     }))
   }
-
-  return await new VariablesService().createVariables(input)
+  await new VariablesService().createVariables(input)
+  return {
+    statusCode: 201,
+    message: 'Variables created successfully',
+  }
 })

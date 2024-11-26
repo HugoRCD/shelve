@@ -1,9 +1,3 @@
-# documentation: https://shelve.cloud/docs
-# slogan: Shelve, is a project management tool for developers, etc... to make project creation and management easier.
-# tags: environment variables, projects management
-# logo: https://raw.githubusercontent.com/hugorcd/shelve/main/assets/logo.svg
-# port: 3000
-
 services:
   shelve_app:
     build:
@@ -16,10 +10,14 @@ services:
       - NUXT_PRIVATE_REDIS_URL=${NUXT_PRIVATE_REDIS_URL:-redis://shelve_redis:6379}
       - NUXT_PRIVATE_ENCRYPTION_KEY=${NUXT_PRIVATE_ENCRYPTION_KEY}
       - NUXT_SESSION_PASSWORD=${NUXT_SESSION_PASSWORD}
+
+      # OAuth configuration
       - NUXT_OAUTH_GITHUB_CLIENT_ID=${NUXT_OAUTH_GITHUB_CLIENT_ID}
       - NUXT_OAUTH_GITHUB_CLIENT_SECRET=${NUXT_OAUTH_GITHUB_CLIENT_SECRET}
       - NUXT_OAUTH_GOOGLE_CLIENT_ID=${NUXT_OAUTH_GOOGLE_CLIENT_ID}
       - NUXT_OAUTH_GOOGLE_CLIENT_SECRET=${NUXT_OAUTH_GOOGLE_CLIENT_SECRET}
+
+      # Optional configuration
       - NUXT_PRIVATE_RESEND_API_KEY=${NUXT_PRIVATE_RESEND_API_KEY}
       - NUXT_PRIVATE_ADMIN_EMAILS=${NUXT_PRIVATE_ADMIN_EMAILS}
     depends_on:

@@ -43,31 +43,28 @@ export class VariablesService {
   }
 
   // Public methods
-  async createVariables(input: CreateVariablesInput): Promise<Variable[]> {
+  async createVariables(input: CreateVariablesInput): Promise<void> {
     const { projectId, variables: varsToCreate, autoUppercase = true, environmentIds } = input
     const db = useDrizzle()
-    const createdVariables: Variable[] = []
 
-    for (const variable of varsToCreate) {
-      const key = autoUppercase ? variable.key.toUpperCase() : variable.key
-      const encryptedValue = await this.encryptValue(variable.value)
+    await Promise.all(
+      varsToCreate.map(async (variable) => {
+        const key = autoUppercase ? variable.key.toUpperCase() : variable.key
+        const encryptedValue = await this.encryptValue(variable.value)
 
-      // Find or create variable
-      const variableId = await this.getOrCreateVariableId(db, projectId, key)
+        // Find or create variable
+        const variableId = await this.getOrCreateVariableId(db, projectId, key)
 
-      // Update values for all environments
-      await Promise.all(environmentIds.map(envId =>
-        this.upsertVariableValue(db, variableId, envId, encryptedValue)
-      ))
-
-      const result = await this.findVariableById(db, variableId)
-      if (result) {
-        createdVariables.push(await this.decryptVariable(result))
-      }
-    }
+        // Update values for all environments
+        await Promise.all(
+          environmentIds.map(envId =>
+            this.upsertVariableValue(db, variableId, envId, encryptedValue)
+          )
+        )
+      })
+    )
 
     await clearCache('Variables', projectId)
-    return createdVariables
   }
 
   getVariables = withCache<Variable[]>('Variables', async (projectId: number, environmentId?: number) => {
@@ -88,7 +85,7 @@ export class VariablesService {
       : variables
   })
 
-  async updateVariable(input: UpdateVariableInput): Promise<Variable> {
+  async updateVariable(input: UpdateVariableInput): Promise<void> {
     const { id, projectId, key, values, autoUppercase = true } = input
     const db = useDrizzle()
 
@@ -107,13 +104,7 @@ export class VariablesService {
       return this.upsertVariableValue(db, id, valueInput.environmentId, encryptedValue)
     }))
 
-    const updated = await this.findVariableById(db, id)
-    if (!updated) {
-      throw createError({ statusCode: 500, message: 'Failed to update variable' })
-    }
-
     await clearCache('Variables', projectId)
-    return this.decryptVariable(updated)
   }
 
   async deleteVariable(id: number): Promise<void> {
