@@ -38,7 +38,7 @@ const showEdit = ref(false)
 
 <template>
   <UCard :ui="{ root: isSelected && !showEdit ? 'bg-neutral-100 dark:bg-neutral-800' : '' }">
-    <div class="flex w-full items-center justify-between">
+    <div class="flex w-full items-start justify-between">
       <div
         class="flex w-full flex-col gap-1"
         :class="{ 'cursor-pointer': !showEdit }"
@@ -79,16 +79,19 @@ const showEdit = ref(false)
       <USeparator />
       <form class="flex flex-col gap-6" @submit.prevent="updateVariable(variableToUpdate)">
         <div class="flex flex-col gap-8 sm:flex-row">
-          <div class="flex flex-col gap-4 w-full">
+          <div class="flex flex-col gap-2 w-full">
             <FormGroup v-model="localVariable.key" label="Key" />
-            <FormGroup
-              v-for="env in teamEnv"
-              :key="env.id"
-              v-model="environmentsValues[env.id]"
-              :label="capitalize(env.name)"
-              type="textarea"
-              :rows="2"
-            />
+            <div class="flex flex-col gap-2">
+              <div v-for="env in teamEnv" :key="env.id" class="p-2 bg-neutral-50 dark:bg-neutral-950 rounded-md">
+                <FormGroup
+                  :key="env.id"
+                  v-model="environmentsValues[env.id]"
+                  :label="capitalize(env.name)"
+                  type="textarea"
+                  :rows="2"
+                />
+              </div>
+            </div>
           </div>
         </div>
         <USeparator />
