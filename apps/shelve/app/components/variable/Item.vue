@@ -10,7 +10,7 @@ type ProjectVariableProps = {
 
 const { refresh, variable, projectId } = defineProps<ProjectVariableProps>()
 const teamEnv = useTeamEnv()
-const teamRole = useTeamRole()
+const teamRole = useTeamRole() //TODO handle roles
 
 const {
   updateLoading,

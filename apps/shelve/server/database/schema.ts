@@ -50,12 +50,12 @@ export const projects = pgTable('projects', {
   id: integer().primaryKey().generatedByDefaultAsIdentity(),
   name: varchar().notNull(),
   teamId: integer().references(() => teams.id, { onDelete: 'cascade' }).notNull(),
-  description: varchar(),
-  repository: varchar(),
-  projectManager: varchar(),
-  homepage: varchar(),
-  variablePrefix: varchar(),
-  logo: varchar(),
+  description: varchar().default('').notNull(),
+  repository: varchar().default('').notNull(),
+  projectManager: varchar().default('').notNull(),
+  homepage: varchar().default('').notNull(),
+  variablePrefix: varchar().default('').notNull(),
+  logo: varchar().default('https://github.com/HugoRCD/shelve/blob/main/assets/default.png?raw=true').notNull(),
   ...timestamps,
 })
 

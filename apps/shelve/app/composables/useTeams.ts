@@ -67,11 +67,13 @@ export function useTeams() {
   }
 
   async function selectTeam(id: number) {
+    const projects = useProjects()
     const route = useRoute()
     currentTeam.value = teams.value.find(team => team.id === id) as Team
+    teamEnv.value = currentTeam.value.environments
     lastUsedTeamId.value = id
     if (route.path.includes('/project/')) navigateTo('/')
-    await useProjects().fetchProjects()
+    await projects.fetchProjects()
   }
 
   async function createTeam(name: string) {
