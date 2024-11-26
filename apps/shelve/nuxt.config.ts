@@ -21,6 +21,11 @@ export default defineNuxtConfig({
   },
 
   hub: {
+    bindings: {
+      hyperdrive: {
+        POSTGRES: '3114004968b64c25a94075e4db3d455d',
+      }
+    },
     database: true,
     kv: true,
     blob: true,

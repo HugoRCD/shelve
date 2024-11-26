@@ -29,26 +29,26 @@ export const users = pgTable('users', {
   ...timestamps,
 })
 
-export const teams = sqliteTable('teams', {
-  id: integer('id').primaryKey({ autoIncrement: true }),
-  name: text().notNull(),
-  logo: text().default('https://github.com/HugoRCD/shelve/blob/main/assets/default.png?raw=true').notNull(),
-  private: integer({ mode: 'boolean' }).default(true).notNull(),
+export const teams = pgTable('teams', {
+  id: integer().primaryKey().generatedByDefaultAsIdentity(),
+  name: varchar().notNull(),
+  logo: varchar().default('https://github.com/HugoRCD/shelve/blob/main/assets/default.png?raw=true').notNull(),
+  private: boolean().default(true).notNull(),
   privateOf: integer().references(() => users.id, { onDelete: 'cascade' }),
   ...timestamps,
 })
 
-export const members = sqliteTable('members', {
-  id: integer('id').primaryKey({ autoIncrement: true }),
+export const members = pgTable('members', {
+  id: integer().primaryKey().generatedByDefaultAsIdentity(),
   userId: integer().references(() => users.id, { onDelete: 'cascade' }).notNull(),
   teamId: integer().references(() => teams.id, { onDelete: 'cascade' }).notNull(),
-  role: text('role', { enum: [TeamRole.OWNER, TeamRole.ADMIN, TeamRole.MEMBER] }).default(TeamRole.MEMBER).notNull(),
+  role: teamRoleEnum().default(TeamRole.MEMBER).notNull(),
   ...timestamps,
 })
 
-export const projects = sqliteTable('projects', {
-  id: integer('id').primaryKey({ autoIncrement: true }),
-  name: text().notNull(),
+export const projects = pgTable('projects', {
+  id: integer().primaryKey().generatedByDefaultAsIdentity(),
+  name: varchar().notNull(),
   teamId: integer().references(() => teams.id, { onDelete: 'cascade' }).notNull(),
   description: varchar().default('').notNull(),
   repository: varchar().default('').notNull(),
@@ -59,8 +59,8 @@ export const projects = sqliteTable('projects', {
   ...timestamps,
 })
 
-export const variables = sqliteTable('variables', {
-  id: integer('id').primaryKey({ autoIncrement: true }),
+export const variables = pgTable('variables', {
+  id: integer().primaryKey().generatedByDefaultAsIdentity(),
   projectId: integer().references(() => projects.id, { onDelete: 'cascade' }).notNull(),
   key: varchar().notNull(),
   ...timestamps,
