@@ -104,8 +104,15 @@ const showEdit = ref(false)
                 </td>
               </tr>
               <tr v-for="env in teamEnv" :key="env.id" class="border-b dark:border-neutral-800 border-neutral-300">
-                <td class="py-2 px-4 text-sm font-medium flex items-start">
-                  {{ capitalize(env.name) }}
+                <td class="py-2 px-4 text-sm font-medium">
+                  <UTooltip :text="`Copy env variables for ${env.name} environment`" :content="{ side: 'top' }">
+                    <span
+                      class="cursor-pointer transition-colors ease-in-out duration-300 text-neutral-500 hover:text-neutral-300"
+                      @click="copyToClipboard(`${localVariable.key}=${environmentsValues[env.id]}`, 'Variable copied to clipboard')"
+                    >
+                      {{ capitalize(env.name) }}
+                    </span>
+                  </UTooltip>
                 </td>
                 <td class="py-2 px-4 w-full">
                   <VariableInput

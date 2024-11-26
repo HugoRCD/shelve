@@ -25,7 +25,8 @@ function copy() {
 <template>
   <UInput
     v-model="model"
-    placeholder="Password"
+    :placeholder="type === 'key' ? 'Type your secret key' : 'EMPTY'"
+    :required="type === 'key'"
     :type="type === 'key' ? 'text' : show ? 'text' : 'password'"
     :variant="type === 'key' ? 'ghost' : 'soft'"
     :ui="{ trailing: 'pe-1', base: 'pe-16' }"
