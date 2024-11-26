@@ -1,4 +1,4 @@
-import { boolean, integer, pgEnum, pgTable, varchar, unique, uniqueIndex } from 'drizzle-orm/pg-core'
+import { boolean, integer, pgEnum, pgTable, varchar, uniqueIndex } from 'drizzle-orm/pg-core'
 import { AuthType, Role, TeamRole } from '@shelve/types'
 import { relations } from 'drizzle-orm'
 import { timestamps } from './column.helpers'
