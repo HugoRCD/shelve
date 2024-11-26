@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Variable } from '@shelve/types'
+import { TeamRole, type Variable } from '@shelve/types'
 
 type ProjectVariableProps = {
   refresh: () => Promise<void>
@@ -10,6 +10,7 @@ type ProjectVariableProps = {
 
 const { refresh, variable, projectId } = defineProps<ProjectVariableProps>()
 const teamEnv = useTeamEnv()
+const teamRole = useTeamRole()
 
 const {
   updateLoading,
@@ -49,14 +50,14 @@ const showEdit = ref(false)
             {{ localVariable.key.length > 25 ? localVariable.key.slice(0, 25) + '...' : localVariable.key }}
           </span>
           <span class="hidden lg:block">{{ localVariable.key }}</span>
-          <UTooltip text="Copy variable to clipboard">
+          <!--          <UTooltip text="Copy variable to clipboard">
             <UButton
               color="neutral"
               variant="ghost"
               icon="lucide:clipboard-plus"
               @click.stop="copyToClipboard(`${localVariable.key}=${localVariable.values}`, 'Variable copied to clipboard')"
             />
-          </UTooltip>
+          </UTooltip>-->
           <UTooltip text="Show variable">
             <UButton color="neutral" variant="ghost" icon="lucide:eye" @click.stop="showEdit = !showEdit" />
           </UTooltip>
@@ -75,43 +76,65 @@ const showEdit = ref(false)
         </p>
       </div>
     </div>
-    <div v-if="showEdit" class="flex flex-col gap-2 py-2">
-      <USeparator />
-      <form class="flex flex-col gap-6" @submit.prevent="updateVariable(variableToUpdate)">
-        <div class="flex flex-col gap-8 sm:flex-row">
-          <div class="flex flex-col gap-2 w-full">
-            <FormGroup v-model="localVariable.key" label="Key" />
-            <div class="flex flex-col gap-2">
-              <div v-for="env in teamEnv" :key="env.id" class="p-2 bg-neutral-50 dark:bg-neutral-950 rounded-md">
-                <FormGroup
-                  :key="env.id"
-                  v-model="environmentsValues[env.id]"
-                  :label="capitalize(env.name)"
-                  type="textarea"
-                  :rows="2"
-                />
-              </div>
-            </div>
-          </div>
+    <div v-if="showEdit" class="flex flex-col gap-2 mt-4">
+      <form class="flex flex-col gap-6 bg-neutral-50 dark:bg-neutral-950 p-2 rounded-md" @submit.prevent="updateVariable(variableToUpdate)">
+        <div class="overflow-x-auto">
+          <table class="w-full">
+            <thead>
+              <tr class="border-b dark:border-neutral-800 border-neutral-300">
+                <th class="py-2 w-24 px-4 text-left text-sm font-medium text-neutral-500">
+                  Environment
+                </th>
+                <th class="py-2 px-4 text-left text-sm font-medium text-neutral-500">
+                  Value
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-b dark:border-neutral-800 border-neutral-300">
+                <td class="py-2 px-4 text-sm font-medium">
+                  Key
+                </td>
+                <td class="py-2 px-4" colspan="2">
+                  <VariableInput
+                    v-model="localVariable.key"
+                    type="key"
+                    class="w-full"
+                  />
+                </td>
+              </tr>
+              <tr v-for="env in teamEnv" :key="env.id" class="border-b dark:border-neutral-800 border-neutral-300">
+                <td class="py-2 px-4 text-sm font-medium flex items-start">
+                  {{ capitalize(env.name) }}
+                </td>
+                <td class="py-2 px-4 w-full">
+                  <VariableInput
+                    v-model="environmentsValues[env.id]"
+                    type="value"
+                    class="w-full"
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
-        <USeparator />
         <div class="flex justify-between gap-4">
-          <div class="flex gap-2">
-            <UButton color="primary" type="submit" trailing :loading="updateLoading">
-              Save
-            </UButton>
-            <UButton color="neutral" variant="soft" @click="showEdit = false">
-              Cancel
-            </UButton>
-          </div>
           <UButton
             color="error"
-            variant="soft"
+            variant="ghost"
             :loading="deleteLoading"
             @click="deleteVariable(variable.id)"
           >
             Delete
           </UButton>
+          <div class="flex gap-2">
+            <UButton color="neutral" variant="soft" @click="showEdit = false">
+              Cancel
+            </UButton>
+            <UButton color="primary" type="submit" trailing :loading="updateLoading" trailing-icon="lucide:save">
+              Save
+            </UButton>
+          </div>
         </div>
       </form>
     </div>

@@ -211,7 +211,7 @@ const handlePasswordGenerated = (password: string, index: number) => variablesIn
                     class="w-full"
                     placeholder="e.g. API_KEY"
                   />
-                  <ProjectVariablePrefix v-model="variablesInput.variables[variable - 1]!.key" />
+                  <VariablePrefix v-model="variablesInput.variables[variable - 1]!.key" />
                 </div>
                 <div class="w-full flex gap-1">
                   <UTextarea
@@ -222,7 +222,7 @@ const handlePasswordGenerated = (password: string, index: number) => variablesIn
                     autoresize
                     placeholder="e.g. 123456"
                   />
-                  <ProjectPasswordGenerator @password-generated="handlePasswordGenerated($event, variable - 1)" />
+                  <VariableGenerator @password-generated="handlePasswordGenerated($event, variable - 1)" />
                 </div>
                 <UTooltip text="Remove variable" :content="{ side: 'top' }">
                   <UButton icon="lucide:x" variant="soft" color="error" @click="removeVariable(variable - 1)" />
