@@ -22,7 +22,7 @@ export type CreateProjectInput = {
   projectManager?: string;
   homepage?: string;
   variablePrefix?: string;
-  teamId?: number;
+  teamId?: number | null;
   requester?: User;
 };
 
