@@ -8,7 +8,7 @@ const adminNavigations = getNavigation('admin')
 
 const route = useRoute()
 const handleProjectNavigation = () => {
-  const isCryptoRoute = route.path.includes('/project/')
+  const isCryptoRoute = route.path.includes('/projects/')
   const projectNavigation = {
     title: 'Project Details',
     icon: 'lucide:folder-open',
@@ -16,14 +16,14 @@ const handleProjectNavigation = () => {
     name: 'Project Details',
   }
   if (isCryptoRoute) {
-    const indexToReplace = teamNavigations.findIndex((item) => item.path.includes('/project/'))
+    const indexToReplace = teamNavigations.findIndex((item) => item.path.includes('/projects/'))
     if (indexToReplace !== -1) {
       teamNavigations.splice(indexToReplace, 1, projectNavigation)
     } else {
       teamNavigations.unshift(projectNavigation)
     }
   } else {
-    const indexToRemove = teamNavigations.findIndex((item) => item.path.includes('/project/'))
+    const indexToRemove = teamNavigations.findIndex((item) => item.path.includes('/projects/'))
     if (indexToRemove !== -1) {
       teamNavigations.splice(indexToRemove, 1)
     }

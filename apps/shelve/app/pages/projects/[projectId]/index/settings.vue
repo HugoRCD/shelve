@@ -3,7 +3,7 @@ import type { Ref } from 'vue'
 
 const { projectId } = useRoute().params
 
-const project = useCurrentProject()
+const project = useProject()
 const loading = inject('loading') as Ref<boolean>
 const route = useRoute()
 

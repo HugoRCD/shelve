@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const project = useCurrentProject()
+const project = useProject()
 
 const prefixList = computed(() => {
   return project.value?.variablePrefix?.replace(/\s/g, '').split(',').filter(Boolean) || []

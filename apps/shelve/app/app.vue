@@ -38,7 +38,7 @@ const reduceMotion = useCookie<boolean>('reduceMotion', {
 
 if (import.meta.client) setPrefersReducedMotion(reduceMotion.value)
 
-const { fetchTeams } = useTeams()
+const { fetchTeams } = useTeamsService()
 
 defineShortcuts({
   'p': () => {
@@ -56,7 +56,7 @@ defineShortcuts({
 })
 
 const { loggedIn } = useUserSession()
-const teams = useUserTeams()
+const teams = useTeams()
 
 if (loggedIn.value && teams.value.length === 0)
   await fetchTeams()

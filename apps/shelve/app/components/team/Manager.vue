@@ -1,7 +1,7 @@
 <script setup lang="ts">
-const currentTeam = useCurrentTeam()
+const currentTeam = useTeam()
 const teamId = useTeamId()
-const teams = useUserTeams()
+const teams = useTeams()
 
 const newTeamName = ref('')
 const open = ref(false)
@@ -9,7 +9,7 @@ const open = ref(false)
 const {
   createTeam,
   selectTeam,
-} = useTeams()
+} = useTeamsService()
 
 const loading = ref(false)
 async function handleCreateTeam() {
