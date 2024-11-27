@@ -14,6 +14,25 @@ We welcome feature suggestions and ideas to improve Shelve. To suggest a new fea
 
 ### Development Setup
 
+#### Monorepo Structure
+Shelve uses a monorepo structure to manage multiple packages and applications.
+The main packages are:
+- `apps/shelve`: The main Shelve application.
+- `apps/lp`: The landing page for Shelve.
+- `packages/cli`: The CLI connected to the Shelve application (push, pull, etc).
+- `packages/crypto`: The encryption and decryption package.
+- `packages/types`: The shared types inside the monorepo.
+- `packages/utils`: The shared utilities inside the monorepo.
+
+The monorepo is managed utilizing [Turborepo](https://turborepo.dev/). With Turborepo, it is possible to execute commands across all packages or target specific packages. Consequently, you will primarily operate from the root of the repository and execute commands such as `bun dev:app` to initiate the Shelve application.
+
+#### Necessary Environment Variables
+- DATABASE_URL (PostgreSQL)
+- NUXT_OAUTH_GITHUB_CLIENT_ID (or google)
+- NUXT_OAUTH_GITHUB_CLIENT_SECRET (or google)
+- NUXT_PRIVATE_REDIS_URL (only for production)
+- NUXT_PRIVATE_ENCRYPTION_KEY
+
 To set up the development environment for Shelve, follow these steps:
 
 1. **Clone the Repository**:
@@ -37,7 +56,7 @@ To set up the development environment for Shelve, follow these steps:
 
 5. **Start the Development Server**:
     ```sh
-    bun dev
+    bun dev:app
     ```
 
 ### PR Process
@@ -65,25 +84,14 @@ To set up the development environment for Shelve, follow these steps:
 
 ### Code Style Guide
 
-- Follow the existing code style and conventions.
+- Follow the existing code style and conventions, the project use the [@hrcd/eslint-config](https://github.com/HugoRCD/eslint-config) ESLint configuration.
 - Use meaningful variable and function names.
 - Write clear and concise comments where necessary.
 - Ensure your code is well-documented.
-
-### Testing Requirements
-
-- Write tests for any new features or bug fixes.
-- Ensure that all tests pass before submitting your PR.
-- Run the following command to execute the tests:
-    ```sh
-    bun test
-    ```
 
 ### Additional Resources
 
 - [Shelve Documentation](https://shelve.cloud/docs)
 - [GitHub Repository](https://github.com/HugoRCD/shelve)
-- [Discord Community](https://discord.gg/shelve)
 
 Thank you for contributing to Shelve! We appreciate your support and look forward to your contributions.
-
