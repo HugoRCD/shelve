@@ -10,7 +10,5 @@ export default eventHandler(async (event) => {
 
   const resolvedTeamId = teamId || await new TeamsService().getPrivateUserTeamId(user.id)
 
-  const environments = await new EnvironmentsService().getEnvironmentsWithVariableCounts(resolvedTeamId)
-
-  return environments
+  return await new EnvironmentsService().getEnvironments(resolvedTeamId)
 })

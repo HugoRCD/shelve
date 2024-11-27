@@ -8,6 +8,7 @@ export type Environment = {
   id: number
   name: string
   teamId: number
+  variablesCount?: number
   createdAt: Date
   updatedAt: Date
 }

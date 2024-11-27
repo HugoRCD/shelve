@@ -13,6 +13,7 @@ const {
 
 const newEnv = ref('')
 const loading = ref(false)
+const ceateLoading = ref(false)
 const updateLoading = ref(false)
 
 const columns = [
@@ -21,7 +22,7 @@ const columns = [
     header: 'Name',
   },
   {
-    accessorKey: 'variableCount',
+    accessorKey: 'variablesCount',
     header: 'Variable Count',
   },
   {
@@ -33,16 +34,16 @@ const columns = [
 async function fetchEnvironments() {
   loading.value = true
   try {
-    const environments = await $fetch<Environment[]>(`/api/environments?teamId=${teamId.value}`)
-    teamEnv.value = environments
+    teamEnv.value = await $fetch<Environment[]>(`/api/environments?teamId=${ teamId.value }`)
   } catch (error) {
     console.error(error)
   }
   loading.value = false
 }
+fetchEnvironments()
 
 async function create() {
-  loading.value = true
+  ceateLoading.value = true
   try {
     if (!newEnv.value) {
       toast.error('Environment name is required')
@@ -63,7 +64,7 @@ async function create() {
   } catch (error) {
     console.error(error)
   }
-  loading.value = false
+  ceateLoading.value = false
 }
 
 async function updateEnv(env: Environment) {
@@ -120,10 +121,6 @@ function updateEnvironment(env: Environment) {
     error: 'Error updating environment',
   })
 }
-
-onMounted(() => {
-  fetchEnvironments()
-})
 </script>
 
 <template>
@@ -140,16 +137,16 @@ onMounted(() => {
         </div>
         <form class="flex items-center gap-2" @submit.prevent="createEnvironment">
           <UInput v-model="newEnv" placeholder="New environment name" required />
-          <UButton label="Create" color="primary" :loading size="sm" type="submit" />
+          <UButton label="Create" color="primary" :loading="ceateLoading" size="sm" type="submit" />
         </form>
       </div>
       <div style="--stagger: 2" data-animate class="mt-6">
-        <UTable :data="teamEnv" :columns>
+        <UTable :data="teamEnv" :columns :loading>
           <template #name-cell="{ row }">
             {{ capitalize(row.original.name) }}
           </template>
           <template #variableCount-cell="{ row }">
-            {{ row.original.variableCount }}
+            {{ row.original.variablesCount }}
           </template>
           <template #actions-cell="{ row }">
             <div class="flex gap-2">
