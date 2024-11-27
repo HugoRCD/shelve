@@ -40,7 +40,7 @@ function addPrefixToInputId(prefix: string) {
             @click="addPrefixToInputId(prefix)"
           />
         </div>
-        <NuxtLink :to="`/project/${project.id}/settings#variable-prefix`" class="text-xs text-neutral-500 dark:text-neutral-400 flex gap-1 hover:underline">
+        <NuxtLink :to="`/projects/${project.id}/settings#variable-prefix`" class="text-xs text-neutral-500 dark:text-neutral-400 flex gap-1 hover:underline">
           Create variable prefix
           <UIcon name="lucide:external-link" class="mt-0.5" />
         </NuxtLink>

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
 import type { Variable } from '@shelve/types'
 
 const { projectId } = useRoute().params as { projectId: string }

@@ -41,7 +41,7 @@ export async function getProjectByName(name: string): Promise<Project> {
     if (e.response?.status === 400) {
       s.stop('Fetching project')
       const shouldCreate = await confirm({
-        message: 'Project not found, do you want to create it?',
+        message: `Project '${ name }' does not exist. Would you like to create it?`,
       })
 
       if (isCancel(shouldCreate) || !shouldCreate) onCancel('Operation cancelled.')
