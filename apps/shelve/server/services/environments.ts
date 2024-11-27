@@ -21,6 +21,23 @@ export class EnvironmentsService {
     })
   }
 
+  async getEnvironmentsWithVariableCounts(teamId: number): Promise<Environment[]> {
+    const environments = await this.getEnvironments(teamId)
+    const db = useDrizzle()
+
+    const environmentsWithCounts = await Promise.all(environments.map(async (env) => {
+      const variableCount = await db.query.variables.count({
+        where: eq(tables.variables.environmentId, env.id)
+      })
+      return {
+        ...env,
+        variableCount
+      }
+    }))
+
+    return environmentsWithCounts
+  }
+
   async updateEnvironment(input: UpdateEnvironmentInput): Promise<Environment> {
     const [environment] = await useDrizzle().update(tables.environments)
       .set({

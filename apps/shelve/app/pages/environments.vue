@@ -3,7 +3,7 @@ import { type Environment, TeamRole } from '@shelve/types'
 import { ConfirmModal } from '#components'
 import { hasAccess } from '~/utils/hasAccess'
 
-const teamEnv = useTeamEnv()
+const teamEnv = ref<Environment[]>([])
 const teamId = useTeamId()
 const teamRole = useTeamRole()
 
@@ -21,10 +21,25 @@ const columns = [
     header: 'Name',
   },
   {
+    accessorKey: 'variableCount',
+    header: 'Variable Count',
+  },
+  {
     accessorKey: 'actions',
     header: 'Actions',
   }
 ]
+
+async function fetchEnvironments() {
+  loading.value = true
+  try {
+    const environments = await $fetch<Environment[]>(`/api/environments?teamId=${teamId.value}`)
+    teamEnv.value = environments
+  } catch (error) {
+    console.error(error)
+  }
+  loading.value = false
+}
 
 async function create() {
   loading.value = true
@@ -43,7 +58,7 @@ async function create() {
         name: newEnv.value
       },
     })
-    await fetchTeams()
+    await fetchEnvironments()
     newEnv.value = ''
   } catch (error) {
     console.error(error)
@@ -59,7 +74,7 @@ async function updateEnv(env: Environment) {
       name: env.name
     },
   })
-  await fetchTeams()
+  await fetchEnvironments()
   updateLoading.value = false
 }
 
@@ -67,7 +82,7 @@ async function deleteEnv(environments: Environment) {
   await $fetch(`/api/teams/${teamId.value}/environments/${environments.id}`, {
     method: 'DELETE',
   })
-  await fetchTeams()
+  await fetchEnvironments()
 }
 
 const modal = useModal()
@@ -105,6 +120,10 @@ function updateEnvironment(env: Environment) {
     error: 'Error updating environment',
   })
 }
+
+onMounted(() => {
+  fetchEnvironments()
+})
 </script>
 
 <template>
@@ -128,6 +147,9 @@ function updateEnvironment(env: Environment) {
         <UTable :data="teamEnv" :columns>
           <template #name-cell="{ row }">
             {{ capitalize(row.original.name) }}
+          </template>
+          <template #variableCount-cell="{ row }">
+            {{ row.original.variableCount }}
           </template>
           <template #actions-cell="{ row }">
             <div class="flex gap-2">
