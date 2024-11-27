@@ -17,7 +17,7 @@ const {
   loading: projectLoading,
   fetchProjects,
   createProject,
-} = useProjects()
+} = useProjectsService()
 
 const createLoading = ref(false)
 async function createProjectFunction() {

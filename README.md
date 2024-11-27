@@ -1,147 +1,159 @@
-<img src="assets/preview.png" width="100%" alt="Shelve" />
+<div align="center">
+  <img src="assets/preview.png" width="100%" alt="Shelve - The all-in-one development workspace" />
 
 # Shelve
-
-<!-- automd:badges color=black license provider=shields name=@shelve/cli -->
+### The all-in-one development workspace
 
 [![npm version](https://img.shields.io/npm/v/@shelve/cli?color=black)](https://npmjs.com/package/@shelve/cli)
 [![npm downloads](https://img.shields.io/npm/dm/@shelve/cli?color=black)](https://npm.chart.dev/@shelve/cli)
 [![license](https://img.shields.io/github/license/HugoRCD/shelve?color=black)](https://github.com/HugoRCD/shelve/blob/main/LICENSE)
 
-<!-- /automd -->
+[Website](https://shelve.cloud) • [Documentation](https://shelve.cloud/docs)
+</div>
 
-The Shelve CLI serves as a command-line interface designed for the [Shelve](https://shelve.cloud/) platform. This tool enables users to authenticate with Shelve, facilitating the seamless transfer of environment variables for project collaboration within a team directly through the terminal interface.
+---
 
-## Installation
-
-Install the package locally:
-
-```sh
-bun a -d @shelve/cli
-```
-
-## Configuration
-
-Configuration is loaded by [unjs/c12](https://github.com/unjs/c12) from cwd. You can use either `shelve.config.json`, `shelve.config.{ts,js,mjs,cjs}` or use the `shelve` field in `package.json`.
-You have the option to create a `shelve.config.ts` file to enable type checking and autocompletion. The file should contain the following content:
-
-```ts title="shelve.config.ts"
-import { createShelveConfig } from "@shelve/cli"
-
-export default createShelveConfig({
-  project: "my-project",
-  teamId: 1221,
-  token: "my-token",
-  url: "https://shelve.cloud",
-  confirmChanges: false,
-  envFileName: '.env',
-  autoUppercase: true,
-})
-```
-
-The CLI also has a json schema for the configuration file. that can be used to validate the configuration file. (see it [here](https://raw.githubusercontent.com/HugoRCD/shelve/main/packages/types/schema.json))
-
-## Usage
-
-```bash
-Usage: shelve [options] [command]
-
-The command-line interface for Shelve
-
-Options:
-  -V, --version       output the version number
-  -h, --help          display help for command
-
-Commands:
-  create|c [options]  Create a new project
-  pull|pl [options]   Pull variables for specified environment to .env file
-  push|ps [options]   Push variables for specified environment to Shelve
-  generate|g          Generate resources for a project
-  upgrade|u           Upgrade the Shelve CLI to the latest version
-  config|cf           Show the current configuration
-  help [command]      display help for command
-```
-
-<!-- automd:fetch url="gh:hugorcd/markdown/main/src/local_development.md" -->
+## 📑 Table of Contents
 
 <details>
-  <summary>Local development</summary>
+<summary>Click to expand</summary>
 
-- Clone this repository
-- Install latest LTS version of [Node.js](https://nodejs.org/en/)
-- Enable [Corepack](https://github.com/nodejs/corepack) using `corepack enable`
-- Install dependencies using `bun install`
+- [📋 Overview](#-overview)
+  - [Vision & Goals](#vision--goals)
+  - [Status & Roadmap](#status--roadmap)
+- [✨ Features](#-features)
+  - [Core Features](#core-features)
+  - [Why Choose Shelve?](#why-choose-shelve)
+- [🛠️ Tech Stack](#-tech-stack)
+- [🤝 Contributing](#-contributing)
+- [📚 Documentation](#-documentation)
+- [💬 Community & Support](#-community--support)
+  - [Community Links](#community-links)
+  - [Where to Ask Questions](#where-to-ask-questions)
+  - [How to Report Bugs](#how-to-report-bugs)
+  - [How to Suggest Features](#how-to-suggest-features)
+- [License & Credits](#license--credits)
+  - [Acknowledgements](#acknowledgements)
 
 </details>
 
-<!-- /automd -->
+## 📋 Overview
 
-## Self-Hosting with Docker
+> 💡 **Shelve** is an all-in-one development workspace that revolutionizes how developers manage environments and collaborate on projects.
 
-To self-host the Shelve application using the Docker image available on GitHub, follow these steps:
+### Vision & Goals
 
-1. **Pull the Docker Image**:
-    ```sh
-    docker pull ghcr.io/hugorcd/shelve:latest
-    ```
+Shelve aims to become the ultimate development workspace by addressing common pain points in modern development workflows:
 
-2. **Run the Docker Container**:
-    ```sh
-    docker run -d -p 8080:80 --name shelve-app ghcr.io/hugorcd/shelve:latest
-    ```
+- 🎯 **Simplify** environment management
+- 🤝 **Enhance** team collaboration
+- 🚀 **Accelerate** development setup
+- 🔒 **Secure** sensitive data
 
-3. **Access the Application**:
-   Open your browser and navigate to `http://localhost:8080` to access the Shelve application.
+### Status & Roadmap
 
-Ensure you have Docker installed and running on your machine before executing these commands. For more information on Docker, refer to the [official Docker documentation](https://docs.docker.com/get-docker/).
+<table>
+  <tr>
+    <td>🏗️ Current Status</td>
+    <td>Active Development</td>
+  </tr>
+  <tr>
+    <td>📅 Next Release</td>
+    <td>v2.0.0 (Q4 2024)</td>
+  </tr>
+</table>
 
-## Self-Hosting with docker-compose
+#### Upcoming Features
 
-To self-host the Shelve application using the community `docker-compose` configuration, follow these steps:
+- 🔄 Ecosystem management for multi-repository synchronization (e.g., [UnJs](https://unjs.io))
+- 🔌 Enhanced integrations (GitHub, Vercel, Coolify) (e.g., environment variable syncing)
+- ⚡️ Automatic project setup with GitHub and Vercel (auto-repo creation, auto-deployment)
+- 🎨 Major UI improvements for a seamless experience (become one of the most beautiful dev tools)
 
-1. **Clone the Repository**:
-    ```sh
-    git clone https://github.com/HugoRCD/shelve.git
-    cd shelve
-    ```
+## ✨ Features
 
-2. **Copy the Example Environment File**:
-    ```sh
-    cp apps/shelve/.env.example apps/shelve/.env
-    ```
+### Core Features
 
-3. **Update Environment Variables**:
-   Edit the `apps/shelve/.env` file and update the necessary environment variables.
+- 🔐 **Environment Management**
+  - Secure variable sharing
+  - Vault system for sharing secrets
+  - Multi-environment support
+  - Auto-formatting and validation
+  - Secure value generator
+  - Drag-and-drop .env file import
 
-4. **Run docker-compose**:
-    ```sh
-    docker-compose -f docker-compose.community.yml up -d
-    ```
+- 🛠️ **Developer Experience**
+  - CLI-first approach
+  - Zero configuration setup
+  - Automatic project detection
+  - Secure value generator
+  - Modern and intuitive interface
 
-5. **Access the Application**:
-   Open your browser and navigate to `http://localhost:3000` to access the Shelve application.
+- 👥 **Team Collaboration**
+  - Team workspaces
+  - Role-based access control
 
-Ensure you have Docker and docker-compose installed and running on your machine before executing these commands. For more information on Docker and docker-compose, refer to the official Docker documentation.
+- 🚀 **Deployment & Integration**
+  - GitHub integration
+  - One-click deploy with Coolify
+  - Self-hostable with Docker support
+  - OAuth authentication
 
-<!-- automd:fetch url="gh:hugorcd/markdown/main/src/contributions.md" -->
+- 🔒 **Security First**
+  - End-to-end encryption
+  - OAuth authentication
+  - Role-based access control
 
-## Contributing
-To start contributing, you can follow these steps:
+### Why Choose Shelve?
 
-1. First raise an issue to discuss the changes you would like to make.
-2. Fork the repository.
-3. Create a branch using conventional commits and the issue number as the branch name. For example, `feat/123` or `fix/456`.
-4. Make changes following the local development steps.
-5. Commit your changes following the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) specification.
-6. If your changes affect the code, run tests using `bun run test`.
-7. Create a pull request following the [Pull Request Template](https://github.com/HugoRCD/markdown/blob/main/src/pull_request_template.md).
-   - To be merged, the pull request must pass the tests/workflow and have at least one approval.
-   - If your changes affect the documentation, make sure to update it.
-   - If your changes affect the code, make sure to update the tests.
-8. Wait for the maintainers to review your pull request.
-9. Once approved, the pull request will be merged in the next release !
+- **All-in-One**: Shelve is not only an environment manager but also a project complete workspace for creating and managing projects.
+- **Free and Open-Source**: Shelve is free to use and open-source, making it accessible to all developers. No more 20$ per month for a simple environment manager feature like some competitors (*cough* Vercel *cough*).
+- **Secure and Private**: Shelve provides end-to-end encryption and secure sharing, ensuring the safety of your data.
+- **Easter Eggs**: Shelve is full of surprises, the more you use it, the more you discover hidden features.
+- **Community-Driven**: Shelve is built by developers, for developers, with a strong focus on community feedback and contributions.
 
-<!-- /automd -->
+## 🛠️ Tech Stack
+
+- **Frontend**: Nuxt, Tailwind CSS
+- **Backend**: Nitro, Bun
+- **Infrastructure**: Turborepo, Docker
+- **Database**: DrizzleORM, PostgreSQL
+- **Mailer**: Resend
+- **Validation**: Zod
+- **CI/CD**: GitHub Actions
+
+## 🤝 Contributing
+
+For more detailed about contributing, please refer to the [Contributing Guide](CONTRIBUTING.md).
+
+## 📚 Documentation
+
+### Full Documentation
+
+For comprehensive documentation, visit the [Shelve Documentation](https://shelve.cloud/docs).
+
+### Self-Hosting
+
+To self-host the Shelve application, refer to the [Self-Hosting Section](./docker/README.md).
+
+## 💬 Community & Support
+
+### Community Links
+- [GitHub Issues](https://github.com/HugoRCD/shelve/issues)
+
+### Where to Ask Questions
+For questions and support, join our [Discord Community](https://discord.gg/shelve) or open an issue on GitHub.
+
+### How to Report Bugs
+To report bugs, open an issue on the [GitHub Issues](https://github.com/HugoRCD/shelve/issues) page.
+
+### How to Suggest Features
+To suggest new features, open an issue on the [GitHub Issues](https://github.com/HugoRCD/shelve/issues) page.
+
+## License & Credits
+
+### Acknowledgements
+We would like to thank all contributors and the open-source community for their support.
 
 <!-- automd:contributors license=Apache author=HugoRCD,CavallucciJohann -->
 
@@ -158,6 +170,6 @@ Made by [@HugoRCD](https://github.com/HugoRCD), [@CavallucciJohann](https://gith
 
 ---
 
-_🤖 auto updated with [automd](https://automd.unjs.io) (last updated: Wed Nov 20 2024)_
+_🤖 auto updated with [automd](https://automd.unjs.io) (last updated: Wed Nov 27 2024)_
 
 <!-- /automd -->

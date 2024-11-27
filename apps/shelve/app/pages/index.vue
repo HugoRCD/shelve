@@ -1,12 +1,11 @@
 <script setup lang="ts">
 definePageMeta({
   middleware: 'protected',
-  path: '/',
 })
 
-const projects = useUserProjects()
+const projects = useProjects()
 
-const { loading, fetchProjects } = useProjects()
+const { loading, fetchProjects } = useProjectsService()
 
 await fetchProjects()
 
@@ -35,7 +34,7 @@ const active = useState('active-project')
         <NuxtLink
           v-for="project in projects"
           :key="project.id"
-          :to="`/project/${project.id}`"
+          :to="`/projects/${project.id}`"
         >
           <UCard class="h-full" @click="active = project.id">
             <div class="flex w-full items-start gap-4">

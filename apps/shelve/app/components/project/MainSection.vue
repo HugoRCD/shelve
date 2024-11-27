@@ -18,7 +18,7 @@ const teamRole = useTeamRole()
 const {
   updateProject,
   deleteProject,
-} = useProjects()
+} = useProjectsService()
 
 const updateLoading = ref(false)
 async function updateCurrentProject() {

@@ -1,6 +1,6 @@
 import type { Variable, CreateVariablesInput } from '@shelve/types'
 
-export function useVariables(refresh: () => Promise<void>, projectId: string) {
+export function useVariablesService(refresh: () => Promise<void>, projectId: string) {
   const teamEnv = useTeamEnv()
 
   const selectedEnvironments = ref<Record<number, boolean>>(

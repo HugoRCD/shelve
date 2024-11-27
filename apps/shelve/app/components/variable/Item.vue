@@ -17,7 +17,7 @@ const {
   deleteLoading,
   updateVariable,
   deleteVariable,
-} = useVariables(refresh, projectId)
+} = useVariablesService(refresh, projectId)
 
 const emit = defineEmits(['toggleSelected'])
 const localVariable = ref(variable)

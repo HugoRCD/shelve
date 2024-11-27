@@ -1,16 +1,23 @@
 import type { CreateProjectInput, Project } from '@shelve/types'
 
-export const useUserProjects = () => {
+/**
+ * All current team projects (load on the '/' route)
+ */
+export function useProjects() {
   return useState<Project[]>('projects', () => [])
 }
 
-export const useCurrentProject = () => {
+/**
+ * Current selected project (active project context)
+ * Only available on route under '/projects/:projectId'
+ */
+export function useProject() {
   return useState<Project | null>('currentProject', () => null)
 }
 
-export function useProjects() {
-  const projects = useUserProjects()
-  const currentProject = useCurrentProject()
+export function useProjectsService() {
+  const projects = useProjects()
+  const currentProject = useProject()
   const teamId = useTeamId()
 
   const loading = ref(false)

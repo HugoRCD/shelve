@@ -7,7 +7,7 @@ const open = ref(false)
 
 const { members } = defineProps<TeamMemberProps>()
 
-const { addMember } = useTeams()
+const { addMember } = useTeamsService()
 
 const { user } = useUserSession()
 const isOwner = computed(() => members.find(member => member.user.id === user.value?.id)?.role === TeamRole.OWNER)

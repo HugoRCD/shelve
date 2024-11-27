@@ -1,25 +1,41 @@
 import type { Environment, Member, Team } from '@shelve/types'
 import { TeamRole, Role } from '@shelve/types'
 
-export const useUserTeams = () => {
+/**
+ * All user teams (always load on app start/refresh)
+ */
+export function useTeams() {
   return useState<Team[]>('teams', () => [])
 }
 
-export const useCurrentTeam = () => {
+/**
+ * Current selected team (current workspace context)
+ */
+export function useTeam() {
   return useState<Team>('team')
 }
 
-export const useTeamEnv = () => {
+/**
+ * Current selected team environments
+ */
+export function useTeamEnv() {
   return useState<Environment[]>('teamEnv', () => [])
 }
 
-export const useTeamId = () => {
-  const currentTeam = useCurrentTeam()
+/**
+ * Current selected team id
+ */
+export function useTeamId() {
+  const currentTeam = useTeam()
   return computed(() => currentTeam.value?.id)
 }
 
-export const useTeamRole = () => {
-  const currentTeam = useCurrentTeam()
+/**
+ * Current selected team user role in the team
+ * If user is an admin, the role is set to OWNER
+ */
+export function useTeamRole() {
+  const currentTeam = useTeam()
   const { user } = useUserSession()
   return computed(() => {
     if (!currentTeam.value) return null
@@ -29,14 +45,18 @@ export const useTeamRole = () => {
   })
 }
 
-export const isPrivateTeam = () => {
-  const currentTeam = useCurrentTeam()
+/**
+ * Check if the current selected team is a private team
+ * Private teams can't be deleted (they act as a default team for a given user)
+ */
+export function isPrivateTeam() {
+  const currentTeam = useTeam()
   return computed(() => currentTeam.value?.private)
 }
 
-export function useTeams() {
-  const teams = useUserTeams()
-  const currentTeam = useCurrentTeam()
+export function useTeamsService() {
+  const teams = useTeams()
+  const currentTeam = useTeam()
   const teamId = useTeamId()
   const teamEnv = useTeamEnv()
   const { user } = useUserSession()
@@ -67,7 +87,7 @@ export function useTeams() {
   }
 
   async function selectTeam(id: number) {
-    const projects = useProjects()
+    const projects = useProjectsService()
     const route = useRoute()
     currentTeam.value = teams.value.find(team => team.id === id) as Team
     teamEnv.value = currentTeam.value.environments

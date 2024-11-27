@@ -4,12 +4,12 @@ definePageMeta({
 })
 
 const { projectId } = useRoute().params as { projectId: string }
-const currentProject = useCurrentProject()
+const currentProject = useProject()
 
 const {
   currentLoading,
   fetchCurrentProject
-} = useProjects()
+} = useProjectsService()
 
 if (!currentProject.value)
   await fetchCurrentProject(+projectId)
@@ -25,17 +25,17 @@ const items = [
   {
     label: 'Environment Variables',
     icon: 'lucide:container',
-    to: `/project/${projectId}/variables`
+    to: `/projects/${projectId}/variables`
   },
   {
     label: 'Files',
     icon: 'lucide:files',
-    to: `/project/${projectId}/files`
+    to: `/projects/${projectId}/files`
   },
   {
     label: 'Settings',
     icon: 'heroicons:cog',
-    to: `/project/${projectId}/settings`
+    to: `/projects/${projectId}/settings`
   },
 ]
 </script>

@@ -3,9 +3,9 @@ import type { Member } from '@shelve/types'
 import { TeamRole } from '@shelve/types'
 import { ConfirmModal } from '#components'
 
-const { updateMember, removeMember } = useTeams()
+const { updateMember, removeMember } = useTeamsService()
 
-const currentTeam = useCurrentTeam()
+const currentTeam = useTeam()
 const members = computed(() => currentTeam.value.members.filter((member) => member.user.username.toLowerCase().includes(search.value.toLowerCase())))
 
 const search = ref('')

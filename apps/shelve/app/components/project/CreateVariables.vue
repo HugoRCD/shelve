@@ -18,7 +18,7 @@ const {
   addVariable,
   removeVariable,
   createVariables,
-} = useVariables(refresh, projectId)
+} = useVariablesService(refresh, projectId)
 
 const teamEnv = useTeamEnv()
 

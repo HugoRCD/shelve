@@ -6,11 +6,11 @@ definePageMeta({
   middleware: 'protected',
 })
 
-const { updateTeam, deleteTeam } = useTeams()
+const { updateTeam, deleteTeam } = useTeamsService()
 
 const updateLoading = ref(false)
 
-const team = useCurrentTeam()
+const team = useTeam()
 const teamRole = useTeamRole()
 const isPrivate = isPrivateTeam()
 

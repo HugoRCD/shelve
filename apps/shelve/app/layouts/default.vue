@@ -3,8 +3,8 @@ const pages = [...getNavigation('team'), ...getNavigation('user'), ...getNavigat
 const route = useRoute()
 
 const navigation = computed(() => {
-  if (route.path.includes('/project'))
-    return { title: 'Project Details', to: '/project', name: 'project', icon: 'lucide:folder-open' }
+  if (route.path.includes('/projects'))
+    return { title: 'Project Details', to: '/projects', name: 'project', icon: 'lucide:folder-open' }
   return pages.find((page) => page.path === route.path) || null
 })
 </script>
