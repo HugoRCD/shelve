@@ -8,10 +8,8 @@ export class EnvironmentsService {
       .values(input)
       .returning()
 
-    if (!environment) throw createError({
-      statusCode: 500,
-      message: 'Failed to create environment'
-    })
+    if (!environment) throw createError({ statusCode: 500, message: 'Failed to create environment' })
+    await clearCache('Team', input.teamId)
 
     return environment
   }
@@ -31,10 +29,8 @@ export class EnvironmentsService {
       .where(eq(tables.environments.id, input.id))
       .returning()
 
-    if (!environment) throw createError({
-      statusCode: 404,
-      message: 'Environment not found'
-    })
+    if (!environment) throw createError({ statusCode: 404, message: 'Environment not found' })
+    await clearCache('Team', input.teamId)
 
     return environment
   }

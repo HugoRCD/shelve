@@ -19,5 +19,6 @@ export type CreateEnvironmentInput = {
 
 export type UpdateEnvironmentInput = {
   id: number
-  name?: string
+  name: string
+  teamId: number
 }

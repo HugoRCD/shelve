@@ -24,6 +24,12 @@ export function getNavigation(where: Where): Navigation[] {
           title: 'Members',
         },
         {
+          name: 'Environments',
+          path: '/environments',
+          icon: 'lucide:cloud',
+          title: 'Environments',
+        },
+        {
           name: 'Tokens',
           path: '/tokens',
           icon: 'heroicons:key',

@@ -1,31 +1,31 @@
 import type { Environment, Member, Team } from '@shelve/types'
-import { TeamRole, Role } from '@shelve/types'
+import { Role, TeamRole } from '@shelve/types'
 
 /**
  * All user teams (always load on app start/refresh)
  */
-export function useTeams() {
+export function useTeams(): Ref<Team[]> {
   return useState<Team[]>('teams', () => [])
 }
 
 /**
  * Current selected team (current workspace context)
  */
-export function useTeam() {
+export function useTeam(): Ref<Team> {
   return useState<Team>('team')
 }
 
 /**
  * Current selected team environments
  */
-export function useTeamEnv() {
+export function useTeamEnv(): Ref<Environment[]> {
   return useState<Environment[]>('teamEnv', () => [])
 }
 
 /**
  * Current selected team id
  */
-export function useTeamId() {
+export function useTeamId(): Ref<number> {
   const currentTeam = useTeam()
   return computed(() => currentTeam.value?.id)
 }
@@ -34,14 +34,14 @@ export function useTeamId() {
  * Current selected team user role in the team
  * If user is an admin, the role is set to OWNER
  */
-export function useTeamRole() {
+export function useTeamRole(): Ref<TeamRole> {
   const currentTeam = useTeam()
   const { user } = useUserSession()
   return computed(() => {
-    if (!currentTeam.value) return null
+    if (!currentTeam.value) return TeamRole.MEMBER
     if (user.value!.role === Role.ADMIN) return TeamRole.OWNER
     const member = currentTeam.value.members.find(member => member.userId === user.value!.id)
-    return member?.role
+    return member?.role || TeamRole.MEMBER
   })
 }
 
@@ -49,7 +49,7 @@ export function useTeamRole() {
  * Check if the current selected team is a private team
  * Private teams can't be deleted (they act as a default team for a given user)
  */
-export function isPrivateTeam() {
+export function isPrivateTeam(): Ref<boolean> {
   const currentTeam = useTeam()
   return computed(() => currentTeam.value?.private)
 }
