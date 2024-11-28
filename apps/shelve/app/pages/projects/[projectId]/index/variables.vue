@@ -11,7 +11,7 @@ const teamEnv = useTeamEnv()
 const selectedVariables = ref<Variable[]>([])
 const searchTerm = ref('')
 const selectedEnvironment = ref([])
-const order = ref('asc')
+const order = ref('desc')
 
 const items = ref(teamEnv.value.map((env) => ({ label: capitalize(env.name), value: env.id })) || [])
 

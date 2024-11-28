@@ -27,6 +27,8 @@
 - [🛠️ Tech Stack](#-tech-stack)
 - [🤝 Contributing](#-contributing)
 - [📚 Documentation](#-documentation)
+  - [Full Documentation](#full-documentation)
+  - [Self-Hosting](#self-hosting)
 - [💬 Community & Support](#-community--support)
   - [Community Links](#community-links)
   - [Where to Ask Questions](#where-to-ask-questions)
