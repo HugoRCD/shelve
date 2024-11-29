@@ -21,10 +21,10 @@ function useClipboard(text: string) {
 
 <template>
   <div class="flex flex-col gap-4">
-    <div class="flex h-full flex-col items-center justify-center gap-3 p-5 mb-10">
+    <div class="flex h-full flex-col items-center justify-center gap-3">
       <LandingHero class="h-64" />
     </div>
-    <div class="mx-auto h-64 flex max-w-6xl flex-col gap-16 px-8 sm:flex-row sm:gap-8 sm:px-16">
+    <div class="mx-auto h-80 sm:h-96 flex max-w-6xl flex-col items-center gap-16 px-8 sm:flex-row sm:gap-8 sm:px-16">
       <div class="flex w-fit flex-col gap-2">
         <NuxtLink
           class="mb-4"
@@ -45,8 +45,8 @@ function useClipboard(text: string) {
           Use our CLI to manage your projects without leaving your terminal.
         </span>
       </div>
-      <div class="relative w-full">
-        <div class="absolute bottom-16 z-20 flex w-full items-center justify-center [mask-image:linear-gradient(to_bottom,white,transparent)]">
+      <div class="relative flex items-center justify-center size-full">
+        <div class="absolute bottom-16 z-20 flex items-center justify-center [mask-image:linear-gradient(to_bottom,white,transparent)]">
           <div
             class="flex items-center justify-center gap-4 rounded-md bg-white/5 px-4 py-2 backdrop-blur-lg"
             @click="useClipboard('bun a -d @shelve/cli')"
@@ -61,7 +61,7 @@ function useClipboard(text: string) {
           </div>
         </div>
 
-        <div class="relative -top-12 py-28">
+        <div class="relative py-28 w-full">
           <div class="absolute inset-0 flex items-center justify-center [mask-image:linear-gradient(to_bottom,white,transparent)]">
             <div class="bg-white/2.5 absolute size-96 rounded-full shadow-xl" />
 

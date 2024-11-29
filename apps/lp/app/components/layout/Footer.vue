@@ -69,8 +69,9 @@ const nav = [
     <hr class="border-neutral-800">
     <footer class="mt-6 flex flex-col justify-around gap-8 p-5 sm:flex-row sm:gap-0">
       <div class="flex flex-col gap-1">
-        <NuxtLink to="/" class="font-newsreader text-2xl font-light italic">
-          Shelve
+        <NuxtLink to="/" class="flex gap-2 items-center">
+          <UIcon name="custom:shelve" class="size-8" />
+          <span class="font-semibold">Shelve</span>
         </NuxtLink>
         <div class="text-xs text-neutral-500">
           © {{ new Date().getFullYear() }} - Made with 💚 by <NuxtLink to="https://hrcd.fr/" class="text-neutral-400 hover:text-neutral-200">

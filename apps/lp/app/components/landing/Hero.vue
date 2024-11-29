@@ -1,6 +1,4 @@
 <script setup lang="ts">
-const { title } = useAppConfig()
-
 defineShortcuts({
   s: {
     usingInput: true,
@@ -12,7 +10,7 @@ defineShortcuts({
 </script>
 
 <template>
-  <div class="z-20 h-96 w-full overflow-hidden">
+  <div class="z-20 h-96 w-full sm:p-0 p-5 relative overflow-hidden">
     <div class="mx-auto mt-32 w-full max-w-2xl">
       <div class="mx-auto max-w-md text-pretty text-center text-3xl sm:text-4xl">
         The all-in-one developer <span class="font-newsreader font-light italic">workspace</span>
@@ -35,28 +33,6 @@ defineShortcuts({
       </div>
     </div>
 
-    <div
-      class="gradient-mask gradient-color pointer-events-none relative -mt-32 h-96 w-screen overflow-hidden before:absolute before:inset-0 before:opacity-40 after:absolute after:-left-1/2 after:top-1/2 after:aspect-[1/0.7] after:w-[200%] after:rounded-[100%] after:border-t after:border-[#7876c566] after:bg-[#121212]"
-    >
-      <LandingSparkles
-        :density="1200"
-        class="gradient-mask-2 absolute inset-x-0 bottom-0 size-full"
-      />
-    </div>
+    <div class="size-60 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 absolute bottom-0 left-0 right-0 mx-auto -mb-40 blur-[200px] -z-1" />
   </div>
 </template>
-
-<style scoped>
-.gradient-mask {
-  mask-image: radial-gradient(closest-side at 50% 50%, white, transparent);
-}
-
-.gradient-mask-2 {
-  mask-image: radial-gradient(closest-side at 50% 50%, white, transparent 85%);
-}
-
-.gradient-color:before {
-  content: '';
-  background: radial-gradient(circle at bottom center, #4C7EFF, transparent 70%);
-}
-</style>
