@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { Role, type User } from '@shelve/types'
+import * as https from 'node:https'
+import { AuthType, Role, type User } from '@shelve/types'
 import type { TableColumn } from '@nuxt/ui'
 import { ConfirmModal } from '#components'
 
@@ -141,6 +142,12 @@ const items = (row: User) => [
     <UTable :data="filteredUsers" :columns :loading="status === 'pending' || updateLoading || deleteLoading">
       <template #avatar-cell="{ row }">
         <UAvatar :src="row.original.avatar" :alt="row.original.username" size="sm" img-class="object-cover" />
+      </template>
+      <template #username-cell="{ row }">
+        <NuxtLink v-if="row.original.authType === AuthType.GITHUB" :to="`https://github.com/${row.original.username}`" target="_blank">
+          <span>{{ row.original.username }}</span>
+        </NuxtLink>
+        <span v-else>{{ row.original.username }}</span>
       </template>
       <template #role-cell="{ row }">
         <UBadge :label="row.original.role.toUpperCase()" :color="row.original.role === Role.ADMIN ? 'primary' : 'neutral'" variant="subtle" />

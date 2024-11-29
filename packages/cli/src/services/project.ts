@@ -1,7 +1,6 @@
 import { Project } from '@shelve/types'
 import { ofetch } from 'ofetch'
-import { useSpinner, capitalize, loadShelveConfig, askBoolean } from '../utils'
-import { ErrorHandler } from '../utils/error-handler'
+import { useLoading, capitalize, loadShelveConfig, askBoolean, handleCancel } from '../utils'
 import { ApiService } from './api'
 
 export class ProjectService {
@@ -11,22 +10,22 @@ export class ProjectService {
   }
 
   static async getProjects(): Promise<Project[]> {
-    const { teamId } = await loadShelveConfig(false)
+    const { teamId } = await loadShelveConfig()
     const api = await this.getApi()
 
-    return useSpinner('Loading projects', () => {
+    return useLoading('Loading projects', () => {
       const query = teamId ? `?teamId=${teamId}` : ''
       return api(`/projects${query}`)
     })
   }
 
   static async getProjectByName(name: string): Promise<Project> {
-    const { teamId } = await loadShelveConfig(false)
+    const { teamId } = await loadShelveConfig()
     const debug = process.env.DEBUG === 'true'
     const api = await this.getApi()
 
     try {
-      return await useSpinner(
+      return await useLoading(
         `Fetching '${name}' project${debug ? ' - Debug mode' : ''}`,
         () => {
           const encodedName = encodeURIComponent(name)
@@ -40,20 +39,20 @@ export class ProjectService {
       if (error.response?.status === 400) {
         const shouldCreate = await askBoolean(`Project '${name}' does not exist. Would you like to create it?`)
 
-        if (!shouldCreate) return ErrorHandler.handleCancel('Operation cancelled.')
+        if (!shouldCreate) return handleCancel('Operation cancelled.')
 
         return this.createProject(name)
       }
 
-      return ErrorHandler.handleError(error)
+      return handleCancel('Failed to fetch project')
     }
   }
 
   static async createProject(name: string): Promise<Project> {
-    const { teamId } = await loadShelveConfig(false)
+    const { teamId } = await loadShelveConfig()
     const api = await this.getApi()
 
-    return useSpinner('Creating project', () => {
+    return useLoading('Creating project', () => {
       return api('/projects', {
         method: 'POST',
         body: {

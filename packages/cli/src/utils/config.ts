@@ -5,7 +5,7 @@ import consola from 'consola'
 import { DEFAULT_URL, SHELVE_JSON_SCHEMA } from '@shelve/types'
 import type { Project, ShelveConfig } from '@shelve/types'
 import { EnvService, FileService, ProjectService } from '../services'
-import { ErrorHandler } from './error-handler'
+import { handleCancel } from './error-handler'
 
 export async function createShelveConfig(projectName?: string): Promise<string> {
   intro(projectName ? `Create configuration for ${projectName}` : 'No configuration file found, create a new one')
@@ -24,10 +24,10 @@ export async function createShelveConfig(projectName?: string): Promise<string> 
       })),
     }) as string
 
-    if (isCancel(project)) ErrorHandler.handleCancel('Operation cancelled.')
+    if (isCancel(project)) handleCancel('Operation cancelled.')
   }
 
-  if (!project) ErrorHandler.handleCancel('Error: no project selected')
+  if (!project) handleCancel('Error: no project selected')
 
   const configFile = JSON.stringify({
     $schema: SHELVE_JSON_SCHEMA,
@@ -42,7 +42,7 @@ export async function createShelveConfig(projectName?: string): Promise<string> 
   return project
 }
 
-export async function loadShelveConfig(check: boolean = true): Promise<ShelveConfig> {
+export async function loadShelveConfig(check: boolean = false): Promise<ShelveConfig> {
   // @ts-expect-error we don't want to specify 'cwd' option
   await setupDotenv({})
 

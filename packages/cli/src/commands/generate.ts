@@ -1,8 +1,7 @@
 import { intro, isCancel, outro, select } from '@clack/prompts'
 import { Command } from 'commander'
-import { getEslintConfig } from '../utils'
+import { getEslintConfig, handleCancel } from '../utils'
 import { EnvService } from '../services'
-import { ErrorHandler } from '../utils/error-handler'
 
 export function generateCommand(program: Command): void {
   program
@@ -20,7 +19,7 @@ export function generateCommand(program: Command): void {
         ]
       })
 
-      if (isCancel(toGenerate)) ErrorHandler.handleCancel('Operation cancelled.')
+      if (isCancel(toGenerate)) handleCancel('Operation cancelled.')
 
       switch (toGenerate) {
         case 'example':
@@ -30,7 +29,7 @@ export function generateCommand(program: Command): void {
           await getEslintConfig()
           break
         default:
-          ErrorHandler.handleCancel('Invalid option')
+          handleCancel('Invalid option')
       }
 
       outro('Done')

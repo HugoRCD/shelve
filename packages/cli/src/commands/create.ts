@@ -1,9 +1,8 @@
 import { Command } from 'commander'
 import { intro, isCancel, outro, text } from '@clack/prompts'
 import { readPackageJSON } from 'pkg-types'
-import { createShelveConfig } from '../utils'
+import { createShelveConfig, handleCancel } from '../utils'
 import { ProjectService } from '../services'
-import { ErrorHandler } from '../utils/error-handler'
 
 export function createCommand(program: Command): void {
   program
@@ -27,7 +26,7 @@ export function createCommand(program: Command): void {
           },
         })
 
-        if (isCancel(name)) ErrorHandler.handleCancel('Operation cancelled.')
+        if (isCancel(name)) handleCancel('Operation cancelled.')
       }
 
       await ProjectService.createProject(name)

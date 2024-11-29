@@ -1,8 +1,8 @@
 import { addDevDependency } from 'nypm'
 import { spinner, note, intro } from '@clack/prompts'
 import { FileService } from '../services'
-import { ErrorHandler } from './error-handler'
 import { askBoolean } from './prompt'
+import { handleCancel } from "./error-handler";
 
 const s = spinner()
 
@@ -38,6 +38,6 @@ export async function getEslintConfig(): Promise<void> {
       s.stop('Installing ESLint and @hrcd/eslint-config')
     }
   } catch (error) {
-    ErrorHandler.handleCancel('Failed to fetch ESLint config')
+    handleCancel('Failed to fetch ESLint config')
   }
 }

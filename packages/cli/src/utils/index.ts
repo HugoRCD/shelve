@@ -8,6 +8,7 @@ export * from './spinner'
 export * from './templates'
 export * from './prompt'
 export * from './config'
+export * from './error-handler'
 
 const s = spinner()
 

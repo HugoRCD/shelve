@@ -10,7 +10,7 @@ export function pushCommand(program: Command): void {
     .description('Push variables for specified environment to Shelve')
     .option('-e, --environment <env>', 'Specify the environment (development, preview, production)')
     .action(async (options) => {
-      const { project, teamId, confirmChanges, autoUppercase } = await loadShelveConfig()
+      const { project, teamId, confirmChanges, autoUppercase } = await loadShelveConfig(true)
 
       intro(`Pushing variable to ${project} project`)
 

@@ -1,8 +1,7 @@
 import type { Environment } from '@shelve/types'
 import { isCancel, select, spinner } from '@clack/prompts'
 import { ofetch } from 'ofetch'
-import { ErrorHandler } from '../utils/error-handler'
-import { capitalize } from '../utils'
+import { capitalize, handleCancel } from '../utils'
 import { ApiService } from './api'
 
 const s = spinner()
@@ -22,7 +21,7 @@ export class EnvironmentService {
       s.stop('Fetching environments')
       return environments
     } catch (e) {
-      ErrorHandler.handleCancel('Failed to fetch environments')
+      handleCancel('Failed to fetch environments')
     }
   }
 
@@ -37,10 +36,10 @@ export class EnvironmentService {
       })),
     })
 
-    if (isCancel(environmentId)) ErrorHandler.handleCancel('Operation cancelled.')
+    if (isCancel(environmentId)) handleCancel('Operation cancelled.')
 
     const environment = environments.find(env => env.id === environmentId)
-    if (!environment) ErrorHandler.handleCancel('Invalid environment')
+    if (!environment) handleCancel('Invalid environment')
 
     return environment
   }

@@ -10,7 +10,7 @@ export function pullCommand(program: Command): void {
     .description('Pull variables for specified environment to .env file')
     .option('-e, --environment <env>', 'Specify the environment (development, preview, production)')
     .action(async (options) => {
-      const { project, teamId, envFileName, confirmChanges } = await loadShelveConfig()
+      const { project, teamId, envFileName, confirmChanges } = await loadShelveConfig(true)
 
       intro(`Pulling variable from ${project} project`)
 

@@ -2,7 +2,7 @@ import { spinner } from '@clack/prompts'
 
 const s = spinner()
 
-export async function useSpinner<T>(
+export async function useLoading<T>(
   message: string,
   callback: () => Promise<T>
 ): Promise<T> {
