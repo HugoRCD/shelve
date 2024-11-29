@@ -41,11 +41,10 @@ export function useProjectsService() {
 
   async function createProject(createProjectInput: Omit<CreateProjectInput, 'teamId'>) {
     try {
-      const response = await $fetch<Project>('/api/projects', {
+      const response = await $fetch<Project>(`/api/projects${teamId.value ? `?teamId=${teamId.value}` : ''}`, {
         method: 'POST',
         body: {
-          ...createProjectInput,
-          teamId: teamId.value,
+          ...createProjectInput
         }
       })
       projects.value.push(response)

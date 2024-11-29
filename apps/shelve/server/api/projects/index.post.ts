@@ -8,7 +8,6 @@ export default eventHandler(async (event) => {
     name: z.string({
       required_error: 'Name is required',
     }).min(1).max(255).trim(),
-    teamId: z.number().nullable(),
     description: z.string().trim().optional(),
     logo: z.string().trim().optional(),
     repository: z.string().trim().optional(),
@@ -16,9 +15,13 @@ export default eventHandler(async (event) => {
     homepage: z.string().trim().optional(),
     variablePrefix: z.string().trim().optional(),
   })
-  if (!body.teamId) body.teamId = await new TeamsService().getPrivateUserTeamId(user.id)
+  const query = await zh.useValidatedQuery(event, z.object({
+    teamId: z.coerce.number().optional()
+  }))
+  if (!query.teamId) query.teamId = await new TeamsService().getPrivateUserTeamId(user.id)
   return await new ProjectsService().createProject({
     ...body,
+    teamId: query.teamId,
     requester: user
   })
 })

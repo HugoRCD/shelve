@@ -1,7 +1,6 @@
-import { intro, isCancel, outro } from '@clack/prompts'
+import { intro, outro } from '@clack/prompts'
 import { loadConfig, setupDotenv } from 'c12'
 import { readPackageJSON } from 'pkg-types'
-import consola from 'consola'
 import { DEFAULT_URL, SHELVE_JSON_SCHEMA } from '@shelve/types'
 import type { Project, ShelveConfig } from '@shelve/types'
 import { FileService, ProjectService } from '../services'
@@ -71,24 +70,16 @@ export async function loadShelveConfig(check: boolean = false): Promise<ShelveCo
   console.log('shelveConf', shelveConf)*/
 
   if (check) {
-    if (configFile === 'shelve.config') {
+    if (configFile === 'shelve.config')
       config.project = await createShelveConfig()
-    }
 
-    if (!config.token) {
-      consola.error('You need to provide a token')
-      process.exit(0)
-    }
+    if (!config.token) handleCancel('You need to provide a token')
 
-    if (!config.project) {
-      consola.error('Please provide a project name')
-      process.exit(0)
-    }
+    if (!config.project) handleCancel('Please provide a project name')
 
     const urlRegex = /^(http|https):\/\/[^ "]+$/
     if (config.url !== DEFAULT_URL && !urlRegex.test(config.url)) {
-      consola.error('Please provide a valid url')
-      process.exit(0)
+      handleCancel('Please provide a valid url')
     }
   }
 

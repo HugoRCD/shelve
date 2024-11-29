@@ -10,11 +10,11 @@ export function pushCommand(program: Command): void {
     .description('Push variables for specified environment to Shelve')
     .option('-e, --environment <env>', 'Specify the environment (development, preview, production)')
     .action(async (options) => {
-      const { project, teamId, confirmChanges, autoUppercase } = await loadShelveConfig(true)
+      const { project, confirmChanges, autoUppercase } = await loadShelveConfig(true)
 
       intro(`Pushing variable to ${project} project`)
 
-      const environment = await EnvironmentService.promptEnvironment(teamId)
+      const environment = await EnvironmentService.promptEnvironment()
 
       const projectData = await ProjectService.getProjectByName(project)
       const variables = await EnvService.getEnvFile()

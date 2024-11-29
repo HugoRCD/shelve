@@ -6,14 +6,14 @@ import { API_ENDPOINTS } from '../constants'
 
 export class EnvironmentService extends BaseService {
 
-  static async getTeamEnvironment(teamId?: number): Promise<Environment[]> {
+  static async getTeamEnvironment(): Promise<Environment[]> {
     return this.withLoading('Fetching environments', async () => {
-      return await this.request<Environment[]>(`${API_ENDPOINTS.environments}${teamId ? `?teamId=${teamId}` : ''}`)
+      return await this.request<Environment[]>(`${API_ENDPOINTS.environments}`)
     })
   }
 
-  static async promptEnvironment(teamId?: number): Promise<Environment> {
-    const environments = await this.getTeamEnvironment(teamId)
+  static async promptEnvironment(): Promise<Environment> {
+    const environments = await this.getTeamEnvironment()
 
     const environmentId = await askSelect('Select the environment:', environments.map(env => ({
       value: env.id,
