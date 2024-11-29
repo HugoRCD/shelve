@@ -60,6 +60,13 @@ export default defineNuxtConfig({
   },
 
   icon: {
+    mode: 'svg',
+    customCollections: [
+      {
+        prefix: 'custom',
+        dir: './app/assets/icons'
+      },
+    ],
     clientBundle: {
       scan: true,
       includeCustomCollections: true

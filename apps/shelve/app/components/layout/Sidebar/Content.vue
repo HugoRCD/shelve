@@ -35,8 +35,9 @@ watch(() => route.path, handleProjectNavigation, { immediate: true })
 
 <template>
   <div class="flex h-full flex-col gap-4 p-4 sm:w-[250px]">
-    <div class="mb-2 flex items-center justify-between gap-2">
-      <NuxtLink to="/" class="font-newsreader text-2xl font-light italic">
+    <div class="mb-2 flex items-center gap-2">
+      <UIcon name="custom:shelve" size="size-5" />
+      <NuxtLink to="/" class="font-geist font-semibold">
         Shelve
       </NuxtLink>
     </div>

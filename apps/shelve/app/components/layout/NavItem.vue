@@ -12,7 +12,7 @@ const { navItem, active = false } = defineProps<NavItemProps>()
 <template>
   <div class="nav-item select-none" :class="{ active }" @click="$router.push(navItem.path)">
     <UIcon :name="navItem.icon" class="font-medium" />
-    <span class="text-sm font-medium">
+    <span class="text-sm">
       {{ capitalize(navItem.name) }}
     </span>
   </div>

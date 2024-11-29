@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import CrossedDiv from '~/components/CrossedDiv.vue'
+
 const { title } = useAppConfig()
 
 definePageMeta({
@@ -21,34 +23,42 @@ if (route.query.error === 'github' || route.query.error === 'google') {
 </script>
 
 <template>
-  <div class="mx-auto flex h-full max-w-sm flex-col items-center justify-center p-5">
-    <div class="flex flex-col items-center justify-center gap-2 text-center">
-      <h1 class="text-center text-3xl leading-9">
-        Login to <span class="font-newsreader font-light italic">{{ title }}</span>
-      </h1>
-      <p class="max-w-sm text-pretty text-sm leading-5 text-tertiary">
-        If you gained access to {{ title }}, you can enter your credentials here
-      </p>
-      <div class="mt-4 flex flex-col items-center justify-center gap-4">
-        <a
-          href="/auth/github"
-          class="flex items-center gap-2 rounded-md bg-neutral-200 px-5 py-1.5 text-sm text-black transition-colors duration-300 hover:bg-neutral-300 dark:bg-neutral-800 dark:text-white dark:hover:bg-neutral-700"
-        >
-          <UIcon name="simple-icons:github" class="size-5 fill-current" />
-          <span>
-            Sign in with GitHub
-          </span>
-        </a>
-        <a
-          href="/auth/google"
-          class="flex items-center gap-2 rounded-md bg-neutral-200 px-5 py-1.5 text-sm text-black transition-colors duration-300 hover:bg-neutral-300 dark:bg-neutral-800 dark:text-white dark:hover:bg-neutral-700"
-        >
-          <UIcon name="simple-icons:google" class="size-5 fill-current" />
-          <span>
-            Sign in with Google
-          </span>
-        </a>
+  <div class="flex overflow-hidden h-full w-full flex-col items-center justify-center">
+    <div class="bg-white rounded-full w-40 h-70 blur-[400px] absolute -top-20 select-none" />
+    <div class="mx-auto w-full flex flex-col items-center justify-center gap-2 text-center">
+      <UIcon name="custom:shelve" class="size-10" />
+      <div class="flex flex-col items-center gap-1">
+        <h1 class="text-center text-3xl leading-9">
+          Signing to <span class="text-primary-500 dark:text-primary-400">{{ title }}</span>
+        </h1>
+        <p class="text-neutral-500 dark:text-neutral-400">
+          Welcome to the future of environment management.
+        </p>
       </div>
+    </div>
+    <div class="relative mt-6">
+      <div class="h-0.5 w-[200rem] bg-neutral-100 dark:bg-neutral-800 absolute -left-[100rem] opacity-20" />
+      <div class="h-[200rem] w-0.5 bg-neutral-100 dark:bg-neutral-800 absolute -top-[100rem] opacity-20 -left-0.5" />
+      <CrossedDiv>
+        <div class="px-8 py-6 flex flex-col items-center justify-center gap-4">
+          <a href="/auth/github">
+            <UButton
+              icon="simple-icons:github"
+              label="Sign in with GitHub"
+              color="neutral"
+            />
+          </a>
+          <a href="/auth/google">
+            <UButton
+              icon="simple-icons:google"
+              label="Sign in with Google"
+              color="neutral"
+            />
+          </a>
+        </div>
+      </CrossedDiv>
+      <div class="h-0.5 w-[200rem] -z-1 bg-neutral-100 dark:bg-neutral-800 absolute -right-[100rem] opacity-20" />
+      <div class="h-[200rem] w-0.5 -z-1 bg-neutral-100 dark:bg-neutral-800 absolute -bottom-[100rem] opacity-20 -right-0.5" />
     </div>
   </div>
 </template>

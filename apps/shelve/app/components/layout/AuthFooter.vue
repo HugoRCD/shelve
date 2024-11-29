@@ -5,9 +5,9 @@
       <div class="flex items-center gap-4">
         <span class="text-sm text-neutral-500">
           Want to go back to homepage ?
-          <NuxtLink to="https://shelve.cloud" class="text-[var(--ui-primary)] ml-1 transition duration-300 ease-in-out hover:underline">
+          <UButton variant="link" color="neutral" to="https://shelve.cloud">
             Click here
-          </NuxtLink>
+          </UButton>
         </span>
       </div>
     </footer>
