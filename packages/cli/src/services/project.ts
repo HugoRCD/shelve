@@ -1,45 +1,32 @@
-import { Project } from '@shelve/types'
-import { ofetch } from 'ofetch'
-import { useLoading, capitalize, loadShelveConfig, askBoolean, handleCancel } from '../utils'
-import { ApiService } from './api'
+import type { Project } from '@shelve/types'
+import { BaseService } from './base'
+import { API_ENDPOINTS, DEBUG } from '../constants'
+import { askBoolean, capitalize, handleCancel, loadShelveConfig, useLoading } from '../utils'
 
-export class ProjectService {
-
-  private static getApi(): Promise<typeof ofetch> {
-    return ApiService.initialize()
-  }
-
+export class ProjectService extends BaseService {
   static async getProjects(): Promise<Project[]> {
     const { teamId } = await loadShelveConfig()
-    const api = await this.getApi()
 
     return useLoading('Loading projects', () => {
       const query = teamId ? `?teamId=${teamId}` : ''
-      return api(`/projects${query}`)
+      return this.request<Project[]>(`${API_ENDPOINTS.projects}${query}`)
     })
   }
 
   static async getProjectByName(name: string): Promise<Project> {
     const { teamId } = await loadShelveConfig()
-    const debug = process.env.DEBUG === 'true'
-    const api = await this.getApi()
 
     try {
-      return await useLoading(
-        `Fetching '${name}' project${debug ? ' - Debug mode' : ''}`,
-        () => {
-          const encodedName = encodeURIComponent(name)
-          const query = teamId ? `?teamId=${teamId}` : ''
-          return api(`/projects/name/${encodedName}${query}`)
-        }
-      )
+      return await useLoading(`Fetching '${name}' project${DEBUG ? ' - Debug mode' : ''}`, () => {
+        const encodedName = encodeURIComponent(name)
+        const query = teamId ? `?teamId=${teamId}` : ''
+        return this.request<Project>(`${API_ENDPOINTS.projects}/name/${encodedName}${query}`)
+      })
     } catch (error: any) {
-      if (debug) console.log(error)
+      if (DEBUG) console.log(error)
 
       if (error.response?.status === 400) {
-        const shouldCreate = await askBoolean(`Project '${name}' does not exist. Would you like to create it?`)
-
-        if (!shouldCreate) return handleCancel('Operation cancelled.')
+        await askBoolean(`Project '${name}' does not exist. Would you like to create it?`)
 
         return this.createProject(name)
       }
@@ -50,10 +37,9 @@ export class ProjectService {
 
   static async createProject(name: string): Promise<Project> {
     const { teamId } = await loadShelveConfig()
-    const api = await this.getApi()
 
     return useLoading('Creating project', () => {
-      return api('/projects', {
+      return this.request<Project>(`${API_ENDPOINTS.projects}`, {
         method: 'POST',
         body: {
           name: capitalize(name),
@@ -62,5 +48,4 @@ export class ProjectService {
       })
     })
   }
-
 }

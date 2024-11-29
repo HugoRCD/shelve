@@ -4,7 +4,7 @@ import { readPackageJSON } from 'pkg-types'
 import consola from 'consola'
 import { DEFAULT_URL, SHELVE_JSON_SCHEMA } from '@shelve/types'
 import type { Project, ShelveConfig } from '@shelve/types'
-import { EnvService, FileService, ProjectService } from '../services'
+import { FileService, ProjectService } from '../services'
 import { handleCancel } from './error-handler'
 
 export async function createShelveConfig(projectName?: string): Promise<string> {
@@ -78,9 +78,6 @@ export async function loadShelveConfig(check: boolean = false): Promise<ShelveCo
     if (configFile === 'shelve.config') {
       config.project = await createShelveConfig()
     }
-
-    const envToken = await EnvService.getKeyValue('SHELVE_TOKEN')
-    if (envToken) config.token = envToken
 
     if (!config.token) {
       consola.error('You need to provide a token')

@@ -1,23 +1,17 @@
 import type { Environment } from '@shelve/types'
 import { isCancel, select, spinner } from '@clack/prompts'
-import { ofetch } from 'ofetch'
 import { capitalize, handleCancel } from '../utils'
-import { ApiService } from './api'
+import { BaseService } from './base'
+import { API_ENDPOINTS } from '../constants'
 
 const s = spinner()
 
-export class EnvironmentService {
-
-  private static getApi(): Promise<typeof ofetch> {
-    return ApiService.initialize()
-  }
+export class EnvironmentService extends BaseService {
 
   static async getTeamEnvironment(teamId?: number): Promise<Environment[]> {
-    const api = await this.getApi()
-
     s.start('Fetching environments')
     try {
-      const environments = await api(`/environments${ teamId ? `?teamId=${ teamId }` : '' }`)
+      const environments = await this.request<Environment[]>(`${API_ENDPOINTS.environments}${teamId ? `?teamId=${teamId}` : ''}`)
       s.stop('Fetching environments')
       return environments
     } catch (e) {
