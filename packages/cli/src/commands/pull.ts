@@ -1,8 +1,7 @@
 import { intro, outro } from '@clack/prompts'
 import { Command } from 'commander'
-import { loadShelveConfig } from '../utils/config'
-import { promptEnvironment } from '../utils/environment'
-import { EnvService, ProjectService } from '../services'
+import { loadShelveConfig } from '../utils'
+import { EnvService, ProjectService, EnvironmentService } from '../services'
 
 export function pullCommand(program: Command): void {
   program
@@ -15,11 +14,12 @@ export function pullCommand(program: Command): void {
 
       intro(`Pulling variable from ${project} project`)
 
-      const environment = await promptEnvironment(teamId)
-
+      const environment = await EnvironmentService.promptEnvironment(teamId)
       const projectData = await ProjectService.getProjectByName(project)
       const variables = await EnvService.getEnvVariables(projectData.id, environment.id)
+
       await EnvService.createEnvFile({ envFileName, variables, confirmChanges })
+
       outro(`Successfully pulled variable from ${environment.name} environment`)
       process.exit(0)
     })

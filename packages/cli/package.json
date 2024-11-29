@@ -28,7 +28,7 @@
   ],
   "scripts": {
     "build": "unbuild",
-    "dev": "DEBUG=true bun src/index.ts",
+    "dev": "DEBUG=false bun src/index.ts",
     "dev:prod": "NODE_ENV=production bun src/index.ts",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
@@ -57,7 +57,7 @@
     "@types/npm-registry-fetch": "8.0.7",
     "@types/semver": "7.5.8",
     "eslint": "9.15.0",
-    "typescript": "^5.7.2",
+    "typescript": "5.7.2",
     "unbuild": "2.0.0",
     "vitest": "2.1.5"
   }

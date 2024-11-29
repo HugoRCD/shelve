@@ -1,9 +1,6 @@
 import { Project } from '@shelve/types'
 import { ofetch } from 'ofetch'
-import { useSpinner } from '../utils/spinner'
-import { capitalize } from '../utils/string'
-import { loadShelveConfig } from '../utils/config'
-import { askBoolean } from '../utils/prompt'
+import { useSpinner, capitalize, loadShelveConfig, askBoolean } from '../utils'
 import { ErrorHandler } from '../utils/error-handler'
 import { ApiService } from './api'
 

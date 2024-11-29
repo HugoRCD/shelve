@@ -1,14 +1,18 @@
-import { cancel, spinner, note } from '@clack/prompts'
+import { spinner, note } from '@clack/prompts'
 import { addDependency } from 'nypm'
 import semver from 'semver'
 import npmFetch from 'npm-registry-fetch'
 import { version } from '../../package.json'
 
+export * from './spinner'
+export * from './templates'
+export * from './prompt'
+export * from './config'
+
 const s = spinner()
 
-export function onCancel(message: string, output: number = 0): never {
-  cancel(message)
-  process.exit(output)
+export function capitalize(str: string): string {
+  return str.charAt(0).toUpperCase() + str.slice(1)
 }
 
 export async function isLatestVersion(): Promise<boolean> {

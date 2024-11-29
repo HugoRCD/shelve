@@ -23,6 +23,8 @@ export async function createShelveConfig(projectName?: string): Promise<string> 
         label: project.name
       })),
     }) as string
+
+    if (isCancel(project)) ErrorHandler.handleCancel('Operation cancelled.')
   }
 
   if (!project) ErrorHandler.handleCancel('Error: no project selected')
@@ -31,13 +33,9 @@ export async function createShelveConfig(projectName?: string): Promise<string> 
     $schema: SHELVE_JSON_SCHEMA,
     project: project.toLowerCase(),
     teamId: projects.find(p => p.name === project)?.teamId
-  }
-  , null,
-  2)
+  }, null, 2)
 
   FileService.write('shelve.config.json', configFile)
-
-  if (isCancel(project)) ErrorHandler.handleCancel('Operation cancelled.')
 
   outro('Configuration file created successfully')
 

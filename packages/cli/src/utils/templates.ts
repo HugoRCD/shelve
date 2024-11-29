@@ -1,7 +1,8 @@
-import fs from 'fs'
 import { addDevDependency } from 'nypm'
-import { spinner, confirm, isCancel, note, intro } from '@clack/prompts'
-import { onCancel } from './index'
+import { spinner, note, intro } from '@clack/prompts'
+import { FileService } from '../services'
+import { ErrorHandler } from './error-handler'
+import { askBoolean } from './prompt'
 
 const s = spinner()
 
@@ -18,17 +19,13 @@ export async function getEslintConfig(): Promise<void> {
     const response = await fetch(templates.eslint)
     const text = await response.text()
 
-    fs.writeFileSync('./eslint.config.js', text)
+    FileService.write('eslint.config.js', text)
 
     s.stop('Fetching ESLint config')
 
     note('ESLint config has been generated', 'ESLint config')
 
-    const install = await confirm({
-      message: 'Do you want to install ESLint and @hrcd/eslint-config?'
-    })
-
-    if (isCancel(install)) onCancel('Operation cancelled.')
+    const install = await askBoolean('Do you want to install ESLint and @hrcd/eslint-config?')
 
     if (install) {
       s.start('Installing eslint and @hrcd/eslint-config')
@@ -41,6 +38,6 @@ export async function getEslintConfig(): Promise<void> {
       s.stop('Installing ESLint and @hrcd/eslint-config')
     }
   } catch (error) {
-    onCancel('Failed to fetch ESLint config')
+    ErrorHandler.handleCancel('Failed to fetch ESLint config')
   }
 }
