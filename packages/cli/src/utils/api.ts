@@ -1,7 +1,7 @@
 import { ofetch } from 'ofetch'
 import { isCancel, password } from '@clack/prompts'
+import { EnvService } from '../services'
 import { loadShelveConfig } from './config'
-import { mergeEnvFile } from './env'
 import { onCancel } from './index'
 
 export async function getToken(): Promise<string> {
@@ -14,7 +14,7 @@ export async function getToken(): Promise<string> {
 
   if (isCancel(token)) onCancel('Operation cancelled.')
 
-  await mergeEnvFile([{ key: 'SHELVE_TOKEN', value: token }])
+  await EnvService.mergeEnvFile([{ key: 'SHELVE_TOKEN', value: token }])
 
   return token
 }

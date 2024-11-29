@@ -1,9 +1,8 @@
 import { intro, outro } from '@clack/prompts'
 import { Command } from 'commander'
 import { loadShelveConfig } from '../utils/config'
-import { getProjectByName } from '../utils/project'
-import { getEnvFile, pushEnvFile } from '../utils/env'
 import { promptEnvironment } from '../utils/environment'
+import { EnvService, ProjectService } from '../services'
 
 export function pushCommand(program: Command): void {
   program
@@ -18,9 +17,9 @@ export function pushCommand(program: Command): void {
 
       const environment = await promptEnvironment(teamId)
 
-      const projectData = await getProjectByName(project)
-      const variables = await getEnvFile()
-      await pushEnvFile({ variables, projectId: projectData.id, environment, confirmChanges, autoUppercase })
+      const projectData = await ProjectService.getProjectByName(project)
+      const variables = await EnvService.getEnvFile()
+      await EnvService.pushEnvFile({ variables, projectId: projectData.id, environment, confirmChanges, autoUppercase })
       outro(`Successfully pushed variable to ${environment.name} environment`)
       process.exit(0)
     })

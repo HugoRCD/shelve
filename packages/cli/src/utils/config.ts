@@ -1,12 +1,11 @@
-import fs from 'fs'
 import { intro, isCancel, outro, select } from '@clack/prompts'
 import { loadConfig, setupDotenv } from 'c12'
 import { readPackageJSON } from 'pkg-types'
 import consola from 'consola'
-import { DEFAULT_URL, Project, SHELVE_JSON_SCHEMA, type ShelveConfig } from '@shelve/types'
-import { getProjects } from './project'
-import { getKeyValue } from './env'
-import { onCancel } from './index'
+import { DEFAULT_URL, SHELVE_JSON_SCHEMA } from '@shelve/types'
+import type { Project, ShelveConfig } from '@shelve/types'
+import { EnvService, FileService, ProjectService } from '../services'
+import { ErrorHandler } from './error-handler'
 
 export async function createShelveConfig(projectName?: string): Promise<string> {
   intro(projectName ? `Create configuration for ${projectName}` : 'No configuration file found, create a new one')
@@ -15,7 +14,7 @@ export async function createShelveConfig(projectName?: string): Promise<string> 
   let projects: Project[] = []
 
   if (!projectName) {
-    projects = await getProjects()
+    projects = await ProjectService.getProjects()
 
     project = await select({
       message: 'Select the current project:',
@@ -26,7 +25,7 @@ export async function createShelveConfig(projectName?: string): Promise<string> 
     }) as string
   }
 
-  if (!project) onCancel('Error: no project selected')
+  if (!project) ErrorHandler.handleCancel('Error: no project selected')
 
   const configFile = JSON.stringify({
     $schema: SHELVE_JSON_SCHEMA,
@@ -36,9 +35,9 @@ export async function createShelveConfig(projectName?: string): Promise<string> 
   , null,
   2)
 
-  fs.writeFileSync('./shelve.config.json', configFile)
+  FileService.write('shelve.config.json', configFile)
 
-  if (isCancel(project)) onCancel('Operation cancelled.')
+  if (isCancel(project)) ErrorHandler.handleCancel('Operation cancelled.')
 
   outro('Configuration file created successfully')
 
@@ -74,12 +73,15 @@ export async function loadShelveConfig(check: boolean = true): Promise<ShelveCon
     },
   })
 
+  /*const shelveConf = await findFile('shelve.json')
+  console.log('shelveConf', shelveConf)*/
+
   if (check) {
     if (configFile === 'shelve.config') {
       config.project = await createShelveConfig()
     }
 
-    const envToken = await getKeyValue('SHELVE_TOKEN')
+    const envToken = await EnvService.getKeyValue('SHELVE_TOKEN')
     if (envToken) config.token = envToken
 
     if (!config.token) {
