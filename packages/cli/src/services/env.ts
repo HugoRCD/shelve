@@ -1,13 +1,9 @@
-import fs from 'fs'
 import type { EnvVar, CreateEnvFileInput, PushEnvFileInput, CreateVariablesInput } from '@shelve/types'
-import { spinner } from '@clack/prompts'
 import { parseEnvFile } from '@shelve/utils'
-import { loadShelveConfig, askBoolean, useLoading, handleCancel } from '../utils'
+import { loadShelveConfig, askBoolean, handleCancel } from '../utils'
 import { FileService } from './file'
 import { BaseService } from './base'
 import { API_ENDPOINTS } from '../constants'
-
-const s = spinner()
 
 export class EnvService extends BaseService {
 
@@ -45,13 +41,13 @@ export class EnvService extends BaseService {
   static async mergeEnvFile(variables: EnvVar[]): Promise<void> {
     const { envFileName } = await loadShelveConfig()
 
-    s.start(`Merging ${envFileName} file`)
-    const envFile = await this.getEnvFile()
-    envFile.push(...variables)
+    await this.withLoading(`Merging ${envFileName} file`, async () => {
+      const envFile = await this.getEnvFile()
+      envFile.push(...variables)
 
-    const content = this.formatEnvContent(envFile)
-    FileService.write(envFileName, content)
-    s.stop(`Merging ${envFileName} file`)
+      const content = this.formatEnvContent(envFile)
+      FileService.write(envFileName, content)
+    })
   }
 
   static async createEnvFile(input: CreateEnvFileInput): Promise<void> {
@@ -61,20 +57,20 @@ export class EnvService extends BaseService {
       await askBoolean(`Are you sure you want to update ${envFileName} file?`)
 
     try {
-      s.start(`Creating ${envFileName} file`)
-      const content = this.formatEnvContent(variables)
+      await this.withLoading(`Creating ${envFileName} file`, async () => {
+        const content = this.formatEnvContent(variables)
 
-      if (FileService.exists(envFileName)) FileService.delete(envFileName)
+        if (FileService.exists(envFileName)) FileService.delete(envFileName)
 
-      FileService.write(envFileName, content)
-      s.stop(`Creating ${envFileName} file`)
+        FileService.write(envFileName, content)
+      })
     } catch (error) {
       handleCancel(`Failed to create ${envFileName} file`)
     }
   }
 
   static async getEnvVariables(projectId: number, environmentId: number): Promise<EnvVar[]> {
-    return useLoading('Fetching variables', () => {
+    return this.withLoading('Fetching variables', () => {
       // const query = teamId ? `?teamId=${teamId}` : ''
       return this.request<EnvVar[]>(`${API_ENDPOINTS.variables}/project/${projectId}/${environmentId}`)
     })
@@ -85,7 +81,7 @@ export class EnvService extends BaseService {
     if (confirmChanges)
       await askBoolean(`Are you sure you want to push ${variables.length} variables to ${environment.name} environment?`)
 
-    await useLoading('Pushing variables', async () => {
+    await this.withLoading('Pushing variables', async () => {
       try {
         const body: CreateVariablesInput = {
           projectId,
@@ -107,17 +103,16 @@ export class EnvService extends BaseService {
     const { envFileName } = await loadShelveConfig()
     const envExampleFile = `${envFileName}.example`
 
-    s.start(`Generating ${envExampleFile} file`)
+    await this.withLoading(`Generating ${envExampleFile} file`, async () => {
+      try {
+        const variables = await this.getEnvFile()
+        const keys = variables.map((variable) => variable.key)
 
-    try {
-      const variables = await this.getEnvFile()
-      const keys = variables.map((variable) => variable.key)
-
-      FileService.write(envExampleFile, this.formatEnvContent(keys.map((key) => ({ key, value: 'your_value' }))))
-      s.stop(`Generating ${envExampleFile} file`)
-    } catch (e) {
-      handleCancel(`Failed to generate ${envExampleFile} file`)
-    }
+        FileService.write(envExampleFile, this.formatEnvContent(keys.map((key) => ({ key, value: 'your_value' }))))
+      } catch (e) {
+        handleCancel(`Failed to generate ${envExampleFile} file`)
+      }
+    })
   }
 
 }

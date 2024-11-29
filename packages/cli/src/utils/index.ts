@@ -4,7 +4,6 @@ import semver from 'semver'
 import npmFetch from 'npm-registry-fetch'
 import { version } from '../../package.json'
 
-export * from './spinner'
 export * from './templates'
 export * from './prompt'
 export * from './config'

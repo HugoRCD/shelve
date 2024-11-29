@@ -1,4 +1,4 @@
-import { intro, isCancel, outro, select } from '@clack/prompts'
+import { intro, isCancel, outro } from '@clack/prompts'
 import { loadConfig, setupDotenv } from 'c12'
 import { readPackageJSON } from 'pkg-types'
 import consola from 'consola'
@@ -6,6 +6,7 @@ import { DEFAULT_URL, SHELVE_JSON_SCHEMA } from '@shelve/types'
 import type { Project, ShelveConfig } from '@shelve/types'
 import { FileService, ProjectService } from '../services'
 import { handleCancel } from './error-handler'
+import { askSelect } from './prompt'
 
 export async function createShelveConfig(projectName?: string): Promise<string> {
   intro(projectName ? `Create configuration for ${projectName}` : 'No configuration file found, create a new one')
@@ -16,15 +17,10 @@ export async function createShelveConfig(projectName?: string): Promise<string> 
   if (!projectName) {
     projects = await ProjectService.getProjects()
 
-    project = await select({
-      message: 'Select the current project:',
-      options: projects.map(project => ({
-        value: project.name,
-        label: project.name
-      })),
-    }) as string
-
-    if (isCancel(project)) handleCancel('Operation cancelled.')
+    project = await askSelect('Select the current project:', projects.map(project => ({
+      value: project.name,
+      label: project.name
+    })))
   }
 
   if (!project) handleCancel('Error: no project selected')

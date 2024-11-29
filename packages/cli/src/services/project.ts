@@ -1,27 +1,29 @@
 import type { Project } from '@shelve/types'
 import { BaseService } from './base'
 import { API_ENDPOINTS, DEBUG } from '../constants'
-import { askBoolean, capitalize, handleCancel, loadShelveConfig, useLoading } from '../utils'
+import { askBoolean, capitalize, handleCancel, loadShelveConfig } from '../utils'
 
 export class ProjectService extends BaseService {
+
   static async getProjects(): Promise<Project[]> {
     const { teamId } = await loadShelveConfig()
+    const query = teamId ? `?teamId=${teamId}` : ''
 
-    return useLoading('Loading projects', () => {
-      const query = teamId ? `?teamId=${teamId}` : ''
-      return this.request<Project[]>(`${API_ENDPOINTS.projects}${query}`)
-    })
+    return this.withLoading('Loading projects', () =>
+      this.request<Project[]>(`${API_ENDPOINTS.projects}${query}`)
+    )
   }
 
   static async getProjectByName(name: string): Promise<Project> {
     const { teamId } = await loadShelveConfig()
+    const encodedName = encodeURIComponent(name)
+    const query = teamId ? `?teamId=${teamId}` : ''
 
     try {
-      return await useLoading(`Fetching '${name}' project${DEBUG ? ' - Debug mode' : ''}`, () => {
-        const encodedName = encodeURIComponent(name)
-        const query = teamId ? `?teamId=${teamId}` : ''
-        return this.request<Project>(`${API_ENDPOINTS.projects}/name/${encodedName}${query}`)
-      })
+      return await this.withLoading(
+        `Fetching '${name}' project${DEBUG ? ' - Debug mode' : ''}`,
+        () => this.request<Project>(`${API_ENDPOINTS.projects}/name/${encodedName}${query}`)
+      )
     } catch (error: any) {
       if (DEBUG) console.log(error)
 
@@ -38,7 +40,7 @@ export class ProjectService extends BaseService {
   static async createProject(name: string): Promise<Project> {
     const { teamId } = await loadShelveConfig()
 
-    return useLoading('Creating project', () => {
+    return this.withLoading(`Creating '${name}' project`, () => {
       return this.request<Project>(`${API_ENDPOINTS.projects}`, {
         method: 'POST',
         body: {

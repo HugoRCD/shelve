@@ -1,11 +1,27 @@
-import { ofetch, type $Fetch } from 'ofetch'
+import { ofetch, type $Fetch, type FetchOptions } from 'ofetch'
 import { handleCancel, loadShelveConfig } from '../utils'
 import { ErrorService } from './error'
-import { isCancel, password } from '@clack/prompts'
+import { isCancel, password, spinner } from '@clack/prompts'
 import { EnvService } from './env'
 
 export abstract class BaseService {
     protected static api: $Fetch
+
+    protected static async withLoading<T>(
+        message: string,
+        callback: () => Promise<T>
+    ): Promise<T> {
+        const s = spinner()
+        try {
+            s.start(message)
+            const result = await callback()
+            s.stop(message)
+            return result
+        } catch (error) {
+            s.stop(message)
+            throw error
+        }
+    }
 
     static async getToken(): Promise<string> {
         const { url } = await loadShelveConfig()
@@ -42,8 +58,8 @@ export abstract class BaseService {
         return this.api
     }
 
-    protected static async request<T>(endpoint: string, options?: RequestInit): Promise<T> {
+    protected static async request<T>(endpoint: string, options?: FetchOptions<'json'>): Promise<T> {
         const api = await this.getApi()
-        return api(endpoint, options)
+        return api<T>(endpoint, options)
     }
 }
