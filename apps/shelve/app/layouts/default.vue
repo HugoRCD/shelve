@@ -22,7 +22,7 @@ const navigation = computed(() => {
               </div>
             </Transition>
             <Transition name="slide-to-top" mode="out-in">
-              <h1 :key="navigation.title" class="text-lg font-bold">
+              <h1 :key="navigation.title" class="text-lg font-semibold">
                 {{ navigation.title }}
               </h1>
             </Transition>

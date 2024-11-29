@@ -19,11 +19,6 @@ html, body, #__nuxt, #__layout {
 
 @theme {
   --font-newsreader: 'Newsreader', serif;
-  --font-inter: 'Inter', sans-serif;
   --font-geist: 'Geist', sans-serif;
   --font-geist-mono: 'Geist Mono', sans-serif;
-}
-
-.main-gradient {
-  @apply font-geist-mono bg-gradient-to-r from-neutral-50 to-neutral-600 to-50% bg-clip-text text-transparent;
 }
