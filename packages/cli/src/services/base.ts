@@ -18,7 +18,7 @@ export abstract class BaseService {
             s.stop(message)
             return result
         } catch (error) {
-            s.stop(message)
+            s.stop(`Failed: ${message.toLowerCase()}.`)
             throw error
         }
     }

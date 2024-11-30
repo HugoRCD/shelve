@@ -1,6 +1,6 @@
 import type { EnvVar, CreateEnvFileInput, PushEnvFileInput, CreateVariablesInput } from '@shelve/types'
 import { parseEnvFile } from '@shelve/utils'
-import { loadShelveConfig, askBoolean, handleCancel } from '../utils'
+import { loadShelveConfig, askBoolean } from '../utils'
 import { FileService } from './file'
 import { BaseService } from './base'
 import { API_ENDPOINTS } from '../constants'
@@ -56,17 +56,13 @@ export class EnvService extends BaseService {
     if (confirmChanges)
       await askBoolean(`Are you sure you want to update ${envFileName} file?`)
 
-    try {
-      await this.withLoading(`Creating ${envFileName} file`, async () => {
-        const content = this.formatEnvContent(variables)
+    await this.withLoading(`Creating ${envFileName} file`, async () => {
+      const content = this.formatEnvContent(variables)
 
-        if (FileService.exists(envFileName)) FileService.delete(envFileName)
+      if (FileService.exists(envFileName)) FileService.delete(envFileName)
 
-        FileService.write(envFileName, content)
-      })
-    } catch (error) {
-      handleCancel(`Failed to create ${envFileName} file`)
-    }
+      FileService.write(envFileName, content)
+    })
   }
 
   static async getEnvVariables(projectId: number, environmentId: number): Promise<EnvVar[]> {
@@ -81,20 +77,16 @@ export class EnvService extends BaseService {
       await askBoolean(`Are you sure you want to push ${variables.length} variables to ${environment.name} environment?`)
 
     await this.withLoading('Pushing variables', async () => {
-      try {
-        const body: CreateVariablesInput = {
-          projectId,
-          autoUppercase,
-          environmentIds: [environment.id],
-          variables: variables.map((variable) => ({
-            key: variable.key,
-            value: variable.value
-          }))
-        }
-        await this.request<EnvVar[]>(API_ENDPOINTS.variables, { method: 'POST', body })
-      } catch (e) {
-        handleCancel('Failed to push variables')
+      const body: CreateVariablesInput = {
+        projectId,
+        autoUppercase,
+        environmentIds: [environment.id],
+        variables: variables.map((variable) => ({
+          key: variable.key,
+          value: variable.value
+        }))
       }
+      await this.request<EnvVar[]>(API_ENDPOINTS.variables, { method: 'POST', body })
     })
   }
 
@@ -103,14 +95,10 @@ export class EnvService extends BaseService {
     const envExampleFile = `${envFileName}.example`
 
     await this.withLoading(`Generating ${envExampleFile} file`, async () => {
-      try {
-        const variables = await this.getEnvFile()
-        const keys = variables.map((variable) => variable.key)
+      const variables = await this.getEnvFile()
+      const keys = variables.map((variable) => variable.key)
 
-        FileService.write(envExampleFile, this.formatEnvContent(keys.map((key) => ({ key, value: 'your_value' }))))
-      } catch (e) {
-        handleCancel(`Failed to generate ${envExampleFile} file`)
-      }
+      FileService.write(envExampleFile, this.formatEnvContent(keys.map((key) => ({ key, value: 'your_value' }))))
     })
   }
 

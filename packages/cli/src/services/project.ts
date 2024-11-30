@@ -16,10 +16,9 @@ export class ProjectService extends BaseService {
     const encodedName = encodeURIComponent(name)
 
     try {
-      return await this.withLoading(
-        `Fetching '${name}' project${DEBUG ? ' - Debug mode' : ''}`,
-        () => this.request<Project>(`${API_ENDPOINTS.projects}/name/${encodedName}`)
-      )
+      return await this.withLoading(`Fetching '${name}' project${DEBUG ? ' - Debug mode' : ''}`, () => {
+        return this.request<Project>(`${API_ENDPOINTS.projects}/name/${encodedName}`)
+      })
     } catch (error: any) {
       if (DEBUG) console.log(error)
 
