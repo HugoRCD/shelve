@@ -6,14 +6,8 @@ export default defineNuxtConfig({
     },
   },
 
-  compatibilityDate: '2024-11-06',
-
   future: {
     compatibilityVersion: 4,
-  },
-
-  experimental: {
-    viewTransition: true,
   },
 
   ssr: false,
@@ -50,50 +44,11 @@ export default defineNuxtConfig({
   },
 
   modules: [
-    '@nuxt/image',
-    '@nuxt/ui',
     '@vueuse/nuxt',
-    'nuxt-build-cache',
     'nuxt-auth-utils',
-    '@shelve/crypto'
   ],
 
   css: ['~/assets/style/main.css'],
 
-  devtools: {
-    enabled: true,
-
-    timeline: {
-      enabled: true,
-    },
-  },
-
-  imports: {
-    presets: [
-      {
-        from: 'vue-sonner',
-        imports: ['toast']
-      }
-    ]
-  },
-
-  icon: {
-    mode: 'svg',
-    customCollections: [
-      {
-        prefix: 'custom',
-        dir: './app/assets/icons'
-      },
-    ],
-    clientBundle: {
-      scan: true,
-      includeCustomCollections: true
-    },
-    provider: 'iconify'
-  },
-
-  colorMode: {
-    preference: 'dark',
-    fallback: 'dark'
-  },
+  extends: '../base',
 })
