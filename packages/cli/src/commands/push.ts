@@ -22,6 +22,5 @@ export function pushCommand(program: Command): void {
       await EnvService.pushEnvFile({ variables, projectId: projectData.id, environment, confirmChanges, autoUppercase })
 
       outro(`Successfully pushed variable to ${environment.name} environment`)
-      process.exit(0)
     })
 }

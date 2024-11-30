@@ -20,12 +20,10 @@ export function pullCommand(program: Command): void {
 
       if (variables.length === 0) {
         outro('No variables found')
-        process.exit(0)
       } else {
         await EnvService.createEnvFile({ envFileName, variables, confirmChanges })
       }
 
       outro(`Successfully pulled variable from ${environment.name} environment`)
-      process.exit(0)
     })
 }

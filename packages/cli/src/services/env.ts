@@ -43,12 +43,15 @@ export class EnvService extends BaseService {
     if (confirmChanges)
       await askBoolean(`Are you sure you want to update ${envFileName} file?`)
 
-    await this.withLoading(`Creating ${envFileName} file`, () => {
+    await this.withLoading(`Creating ${envFileName} file`, async () => {
       const content = this.formatEnvContent(variables)
 
       if (FileService.exists(envFileName)) FileService.delete(envFileName)
 
       FileService.write(envFileName, content)
+
+      // TODO: make withLoading work without setTimeout
+      await new Promise((resolve) => setTimeout(resolve, 10))
     })
   }
 
