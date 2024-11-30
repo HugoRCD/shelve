@@ -2,7 +2,7 @@ import { addDevDependency } from 'nypm'
 import { spinner, note, intro } from '@clack/prompts'
 import { FileService } from '../services'
 import { askBoolean } from './prompt'
-import { handleCancel } from './error-handler'
+import { handleCancel } from '.'
 
 const s = spinner()
 

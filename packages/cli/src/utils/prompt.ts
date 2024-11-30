@@ -1,5 +1,5 @@
 import { confirm, isCancel, select } from '@clack/prompts'
-import { handleCancel } from './error-handler'
+import { handleCancel } from '.'
 
 export async function askBoolean(message: string): Promise<symbol | boolean> {
   const response = await confirm({

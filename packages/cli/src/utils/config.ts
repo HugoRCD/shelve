@@ -4,8 +4,8 @@ import { readPackageJSON } from 'pkg-types'
 import { DEFAULT_URL, SHELVE_JSON_SCHEMA } from '@shelve/types'
 import type { Project, ShelveConfig } from '@shelve/types'
 import { FileService, ProjectService } from '../services'
-import { handleCancel } from './error-handler'
 import { askSelect } from './prompt'
+import { handleCancel } from '.'
 
 export async function createShelveConfig(projectName?: string): Promise<string> {
   intro(projectName ? `Create configuration for ${projectName}` : 'No configuration file found, create a new one')

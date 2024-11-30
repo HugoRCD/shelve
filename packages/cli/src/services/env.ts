@@ -71,7 +71,6 @@ export class EnvService extends BaseService {
 
   static async getEnvVariables(projectId: number, environmentId: number): Promise<EnvVar[]> {
     return this.withLoading('Fetching variables', () => {
-      // const query = teamId ? `?teamId=${teamId}` : ''
       return this.request<EnvVar[]>(`${API_ENDPOINTS.variables}/project/${projectId}/${environmentId}`)
     })
   }
