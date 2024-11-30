@@ -1,14 +1,22 @@
-type Where = 'team' | 'user' | 'admin';
+type Where = 'home' | 'team' | 'user' | 'admin';
 
 export type Navigation = {
   name: string;
   title: string;
   path: string;
-  icon: string;
+  icon?: string;
 };
 
 export function getNavigation(where: Where): Navigation[] {
   switch (where) {
+    case 'home':
+      return [
+        { name: 'Home', path: '/', title: 'Home' },
+        { name: 'Vault', path: '/vault', title: 'Vault' },
+        /*{ name: 'Changelog', path: '/changelog', icon: 'i-heroicons-document-text', title: 'Changelog' },*/
+        { name: 'Docs', path: '/docs', title: 'Docs' },
+        { name: 'Roadmap', path: '/roadmap', title: 'Roadmap' },
+      ]
     case 'team':
       return [
         {

@@ -1,4 +1,11 @@
 export default defineNuxtConfig({
+  app: {
+    head: {
+      viewport: 'width=device-width, initial-scale=1',
+      charset: 'utf-8',
+    },
+  },
+
   devtools: { enabled: true },
 
   modules: [
@@ -42,8 +49,14 @@ export default defineNuxtConfig({
     provider: 'iconify'
   },
 
+  nitro: {
+    preset: process.env.NITRO_PRESET || 'bun',
+  },
+
   colorMode: {
     preference: 'dark',
     fallback: 'dark'
   },
+
+  css: ['./assets/css/base.css'],
 })

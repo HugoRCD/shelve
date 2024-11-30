@@ -22,7 +22,6 @@ export default defineNuxtConfig({
   },
 
   nitro: {
-    preset: process.env.NITRO_PRESET || 'bun',
     prerender: {
       routes: ['/sitemap.xml', '/vault']
     },
@@ -41,8 +40,6 @@ export default defineNuxtConfig({
     defaultLocale: 'en',
     indexable: true,
   },
-
-  css: ['~/assets/style/main.css'],
 
   extends: '../base',
 })

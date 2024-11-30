@@ -1,11 +1,4 @@
 export default defineNuxtConfig({
-  app: {
-    head: {
-      viewport: 'width=device-width, initial-scale=1',
-      charset: 'utf-8',
-    },
-  },
-
   future: {
     compatibilityVersion: 4,
   },
@@ -16,7 +9,6 @@ export default defineNuxtConfig({
     imports: { //TODO this should be fixed in the next release
       dirs: ['server/utils'],
     },
-    preset: process.env.NITRO_PRESET || 'bun',
     storage: {
       cache: {
         driver: 'redis',
@@ -47,8 +39,6 @@ export default defineNuxtConfig({
     '@vueuse/nuxt',
     'nuxt-auth-utils',
   ],
-
-  css: ['~/assets/style/main.css'],
 
   extends: '../base',
 })

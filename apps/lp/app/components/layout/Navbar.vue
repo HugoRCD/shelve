@@ -38,10 +38,7 @@ items.push(githubItem)
     <div class="fixed top-0 flex w-full">
       <div class="fixed w-full top-0 z-40 h-40 bg-gradient-to-b from-neutral-950 to-transparent" />
       <div class="z-50 flex w-full items-center justify-between sm:justify-around p-4 sm:px-5 sm:py-2">
-        <NuxtLink to="/" class="flex gap-2 items-center">
-          <UIcon name="custom:shelve" class="size-8" />
-          <span class="font-semibold">Shelve</span>
-        </NuxtLink>
+        <Logo size="size-8" />
         <div class="flex items-center">
           <UNavigationMenu
             :items
