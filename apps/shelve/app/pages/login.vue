@@ -27,9 +27,9 @@ if (route.query.error === 'github' || route.query.error === 'google') {
       <UIcon name="custom:shelve" class="size-10" />
       <div class="flex flex-col items-center gap-1">
         <h1 class="text-center text-3xl leading-9">
-          Signing to <span class="text-primary-500 dark:text-primary-400">{{ title }}</span>
+          Sign in to {{ title }}
         </h1>
-        <p class="text-neutral-500 dark:text-neutral-400">
+        <p class="text-neutral-500 italic dark:text-neutral-400">
           Welcome to the future of environment management.
         </p>
       </div>
