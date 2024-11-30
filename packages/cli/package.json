@@ -36,7 +36,8 @@
     "release:edge": "bun run test && npm publish --tag edge",
     "start": "node ./dist/index.mjs",
     "test": "bun run build && bun run typecheck && bun run lint && vitest run",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "vitest": "vitest run"
   },
   "dependencies": {
     "@clack/prompts": "0.8.2",

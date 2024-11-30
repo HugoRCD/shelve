@@ -1,12 +1,12 @@
 import type { Environment } from '@shelve/types'
 import { isCancel } from '@clack/prompts'
 import { askSelect, capitalize, handleCancel } from '../utils'
-import { BaseService } from './base'
 import { API_ENDPOINTS } from '../constants'
+import { BaseService } from './base'
 
 export class EnvironmentService extends BaseService {
 
-  static async getTeamEnvironment(): Promise<Environment[]> {
+  static getTeamEnvironment(): Promise<Environment[]> {
     return this.withLoading('Fetching environments', async () => {
       return await this.request<Environment[]>(`${API_ENDPOINTS.environments}`)
     })

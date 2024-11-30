@@ -1,12 +1,11 @@
 import type { Project } from '@shelve/types'
-import { BaseService } from './base'
 import { API_ENDPOINTS, DEBUG } from '../constants'
 import { askBoolean, capitalize, handleCancel } from '../utils'
+import { BaseService } from './base'
 
 export class ProjectService extends BaseService {
 
-  static async getProjects(): Promise<Project[]> {
-
+  static getProjects(): Promise<Project[]> {
     return this.withLoading('Loading projects', () =>
       this.request<Project[]>(`${API_ENDPOINTS.projects}`)
     )
@@ -32,7 +31,7 @@ export class ProjectService extends BaseService {
     }
   }
 
-  static async createProject(name: string): Promise<Project> {
+  static createProject(name: string): Promise<Project> {
     return this.withLoading(`Creating '${name}' project`, () => {
       return this.request<Project>(`${API_ENDPOINTS.projects}`, {
         method: 'POST',
@@ -42,4 +41,5 @@ export class ProjectService extends BaseService {
       })
     })
   }
+
 }
