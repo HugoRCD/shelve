@@ -2,6 +2,7 @@
 useHead({
   title: 'Vault by Shelve - Secure Secret Sharing Platform',
   titleTemplate: 'Vault by Shelve - Secure Secret Sharing Platform',
+  colorMode: 'dark',
 })
 
 useSeoMeta({

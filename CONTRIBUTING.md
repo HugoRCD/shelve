@@ -19,6 +19,7 @@ Shelve uses a monorepo structure to manage multiple packages and applications.
 The main packages are:
 - `apps/shelve`: The main Shelve application.
 - `apps/lp`: The landing page for Shelve.
+- `apps/base`: This is the base layer that contains the shared configuration lp and shelve (components, plugins, etc).
 - `packages/cli`: The CLI connected to the Shelve application (push, pull, etc).
 - `packages/crypto`: The encryption and decryption package.
 - `packages/types`: The shared types inside the monorepo.
