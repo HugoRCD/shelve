@@ -7,6 +7,9 @@ defineProps({
 })
 
 const colorMode = useColorMode()
+const reduceMotion = useCookie<boolean>('reduceMotion', {
+  watch: true,
+})
 
 const switchTheme = () => {
   colorMode.value = colorMode.value === 'dark' ? 'light' : 'dark'
@@ -15,6 +18,10 @@ const switchTheme = () => {
 
 const startViewTransition = (theme) => {
   if (theme === colorMode.value) return
+  if (reduceMotion.value) {
+    switchTheme()
+    return
+  }
   if (!document.startViewTransition) {
     switchTheme()
     return
@@ -94,5 +101,4 @@ const startViewTransition = (theme) => {
     clip-path: polygon(130% 0, -30% 0, -15% 100%, 110% 115%);
   }
 }
-
 </style>

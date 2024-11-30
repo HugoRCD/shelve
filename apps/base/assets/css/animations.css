@@ -159,6 +159,24 @@
   }
 }
 
+/* Blur effect */
+.blur-enter-active,
+.blur-leave-active {
+  transition: opacity 0.5s ease, filter 0.5s ease;
+}
+
+.blur-enter-from,
+.blur-leave-to {
+  opacity: 0;
+  filter: blur(10px);
+}
+
+.blur-enter-to,
+.blur-leave-from {
+  opacity: 1;
+  filter: blur(0px);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .slide-enter-active,
   .slide-leave-active,
