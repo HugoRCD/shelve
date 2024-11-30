@@ -23,7 +23,6 @@
     "@nuxt/scripts": "0.9.5",
     "@nuxt/ui": "3.0.0-alpha.9",
     "@nuxtjs/seo": "2.0.0-rc.23",
-    "@shelve/crypto": "1.2.2",
     "nuxt": "3.14.1592",
     "nuxt-build-cache": "0.1.1",
     "vue": "3.5.13",

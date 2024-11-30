@@ -11,8 +11,7 @@ export default defineNuxtConfig({
   modules: [
     '@nuxt/image',
     '@nuxt/ui',
-    'nuxt-build-cache',
-    '@shelve/crypto'
+    'nuxt-build-cache'
   ],
 
   compatibilityDate: '2024-11-06',
