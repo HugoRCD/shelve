@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import CrossedDiv from '~/components/CrossedDiv.vue'
-
 const { title } = useAppConfig()
 
 definePageMeta({
@@ -37,9 +35,7 @@ if (route.query.error === 'github' || route.query.error === 'google') {
       </div>
     </div>
     <div class="relative mt-6">
-      <div class="h-0.5 w-[200rem] bg-neutral-100 dark:bg-neutral-800 absolute -left-[100rem] opacity-20" />
-      <div class="h-[200rem] w-0.5 bg-neutral-100 dark:bg-neutral-800 absolute -top-[100rem] opacity-20 -left-0.5" />
-      <CrossedDiv>
+      <CrossedDiv line>
         <div class="px-8 py-6 flex flex-col items-center justify-center gap-4">
           <a href="/auth/github">
             <UButton
@@ -57,8 +53,6 @@ if (route.query.error === 'github' || route.query.error === 'google') {
           </a>
         </div>
       </CrossedDiv>
-      <div class="h-0.5 w-[200rem] -z-1 bg-neutral-100 dark:bg-neutral-800 absolute -right-[100rem] opacity-20" />
-      <div class="h-[200rem] w-0.5 -z-1 bg-neutral-100 dark:bg-neutral-800 absolute -bottom-[100rem] opacity-20 -right-0.5" />
     </div>
   </div>
 </template>

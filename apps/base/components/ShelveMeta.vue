@@ -1,11 +1,4 @@
 <script setup lang="ts">
-useScriptPlausibleAnalytics({
-  domain: 'shelve.cloud',
-  scriptInput: {
-    src: 'https://analytics.hrcd.fr/js/script.js',
-  }
-})
-
 const { title, link, description, ogImage } = useAppConfig()
 
 useHead({

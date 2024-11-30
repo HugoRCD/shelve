@@ -1,8 +1,11 @@
 <script setup lang="ts">
+definePageMeta({
+  colorMode: 'dark',
+})
+
 useHead({
   title: 'Vault by Shelve - Secure Secret Sharing Platform',
   titleTemplate: 'Vault by Shelve - Secure Secret Sharing Platform',
-  colorMode: 'dark',
 })
 
 useSeoMeta({
@@ -35,7 +38,7 @@ const sealMode = computed(() => id.value)
     <div class="flex w-full flex-col items-center justify-center">
       <div class="w-full border-y border-neutral-500/20">
         <div class="mx-auto flex max-w-2xl justify-center px-5 sm:px-0">
-          <CrossedDiv encrypted-text class="w-full">
+          <EncryptDiv encrypted-text class="w-full">
             <div>
               <h1 class="main-gradient cursor-pointer text-3xl" @click="$router.push('/vault')">
                 <LandingScrambleText label="Vault" />
@@ -44,7 +47,7 @@ const sealMode = computed(() => id.value)
                 Vault is a small utility to share secrets.
               </p>
             </div>
-          </CrossedDiv>
+          </EncryptDiv>
         </div>
       </div>
       <VaultEncrypt v-if="!sealMode" />
