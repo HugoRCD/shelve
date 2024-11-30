@@ -19,6 +19,9 @@ export default defineNuxtConfig({
   ssr: false,
 
   nitro: {
+    imports: { //TODO this should be fixed in the next release
+      dirs: ['server/utils'],
+    },
     preset: process.env.NITRO_PRESET || 'bun',
     storage: {
       cache: {

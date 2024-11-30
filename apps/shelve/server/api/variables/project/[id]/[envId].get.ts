@@ -22,5 +22,5 @@ export default eventHandler(async (event) => {
       value: value!.value,
     }
   })
-  return variables
+  return variables.filter((variable) => variable.value !== '')
 })

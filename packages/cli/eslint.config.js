@@ -12,6 +12,7 @@ export default createConfig({
   },
   typescript: {
     strict: true,
+    any: true,
   },
   features: {
     packageJson: {

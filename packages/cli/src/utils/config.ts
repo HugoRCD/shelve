@@ -1,12 +1,11 @@
-import fs from 'fs'
-import { intro, isCancel, outro, select } from '@clack/prompts'
+import { intro, outro } from '@clack/prompts'
 import { loadConfig, setupDotenv } from 'c12'
 import { readPackageJSON } from 'pkg-types'
-import consola from 'consola'
-import { DEFAULT_URL, Project, SHELVE_JSON_SCHEMA, type ShelveConfig } from '@shelve/types'
-import { getProjects } from './project'
-import { getKeyValue } from './env'
-import { onCancel } from './index'
+import { DEFAULT_URL, SHELVE_JSON_SCHEMA } from '@shelve/types'
+import type { Project, ShelveConfig } from '@shelve/types'
+import { FileService, ProjectService } from '../services'
+import { askSelect } from './prompt'
+import { handleCancel } from '.'
 
 export async function createShelveConfig(projectName?: string): Promise<string> {
   intro(projectName ? `Create configuration for ${projectName}` : 'No configuration file found, create a new one')
@@ -15,37 +14,30 @@ export async function createShelveConfig(projectName?: string): Promise<string> 
   let projects: Project[] = []
 
   if (!projectName) {
-    projects = await getProjects()
+    projects = await ProjectService.getProjects()
 
-    project = await select({
-      message: 'Select the current project:',
-      options: projects.map(project => ({
-        value: project.name,
-        label: project.name
-      })),
-    }) as string
+    project = await askSelect('Select the current project:', projects.map(project => ({
+      value: project.name,
+      label: project.name
+    })))
   }
 
-  if (!project) onCancel('Error: no project selected')
+  if (!project) handleCancel('Error: no project selected')
 
   const configFile = JSON.stringify({
     $schema: SHELVE_JSON_SCHEMA,
     project: project.toLowerCase(),
     teamId: projects.find(p => p.name === project)?.teamId
-  }
-  , null,
-  2)
+  }, null, 2)
 
-  fs.writeFileSync('./shelve.config.json', configFile)
-
-  if (isCancel(project)) onCancel('Operation cancelled.')
+  FileService.write('shelve.config.json', configFile)
 
   outro('Configuration file created successfully')
 
   return project
 }
 
-export async function loadShelveConfig(check: boolean = true): Promise<ShelveConfig> {
+export async function loadShelveConfig(check: boolean = false): Promise<ShelveConfig> {
   // @ts-expect-error we don't want to specify 'cwd' option
   await setupDotenv({})
 
@@ -74,28 +66,20 @@ export async function loadShelveConfig(check: boolean = true): Promise<ShelveCon
     },
   })
 
+  /*const shelveConf = await findFile('shelve.json')
+  console.log('shelveConf', shelveConf)*/
+
   if (check) {
-    if (configFile === 'shelve.config') {
+    if (configFile === 'shelve.config')
       config.project = await createShelveConfig()
-    }
 
-    const envToken = await getKeyValue('SHELVE_TOKEN')
-    if (envToken) config.token = envToken
+    if (!config.token) handleCancel('You need to provide a token')
 
-    if (!config.token) {
-      consola.error('You need to provide a token')
-      process.exit(0)
-    }
-
-    if (!config.project) {
-      consola.error('Please provide a project name')
-      process.exit(0)
-    }
+    if (!config.project) handleCancel('Please provide a project name')
 
     const urlRegex = /^(http|https):\/\/[^ "]+$/
     if (config.url !== DEFAULT_URL && !urlRegex.test(config.url)) {
-      consola.error('Please provide a valid url')
-      process.exit(0)
+      handleCancel('Please provide a valid url')
     }
   }
 

@@ -1,6 +1,6 @@
 {
   "name": "@shelve/cli",
-  "version": "2.7.1",
+  "version": "2.8.0",
   "description": "The command-line interface for Shelve",
   "homepage": "https://shelve.cloud",
   "bugs": {
@@ -36,19 +36,19 @@
     "release:edge": "bun run test && npm publish --tag edge",
     "start": "node ./dist/index.mjs",
     "test": "bun run build && bun run typecheck && bun run lint && vitest run",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "vitest": "vitest run"
   },
   "dependencies": {
     "@clack/prompts": "0.8.2",
     "c12": "2.0.1",
     "commander": "12.1.0",
-    "consola": "3.2.3",
-    "globby": "14.0.2",
     "npm-registry-fetch": "18.0.2",
     "nypm": "0.3.12",
     "ofetch": "1.4.1",
     "pkg-types": "1.2.1",
-    "semver": "7.6.3"
+    "semver": "7.6.3",
+    "tinyglobby": "^0.2.10"
   },
   "devDependencies": {
     "@shelve/types": "*",
@@ -57,6 +57,7 @@
     "@types/npm-registry-fetch": "8.0.7",
     "@types/semver": "7.5.8",
     "eslint": "9.15.0",
+    "typescript": "5.7.2",
     "unbuild": "2.0.0",
     "vitest": "2.1.5"
   }

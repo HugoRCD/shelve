@@ -1,8 +1,7 @@
 import { intro, isCancel, outro, select } from '@clack/prompts'
 import { Command } from 'commander'
-import { generateEnvExampleFile } from '../utils/env'
-import { onCancel } from '../utils'
-import { getEslintConfig } from '../utils/templates'
+import { getEslintConfig, handleCancel } from '../utils'
+import { EnvService } from '../services'
 
 export function generateCommand(program: Command): void {
   program
@@ -20,17 +19,17 @@ export function generateCommand(program: Command): void {
         ]
       })
 
-      if (isCancel(toGenerate)) onCancel('Operation cancelled.')
+      if (isCancel(toGenerate)) handleCancel('Operation cancelled.')
 
       switch (toGenerate) {
         case 'example':
-          await generateEnvExampleFile()
+          await EnvService.generateEnvExampleFile()
           break
         case 'eslint':
           await getEslintConfig()
           break
         default:
-          onCancel('Invalid option')
+          handleCancel('Invalid option')
       }
 
       outro('Done')

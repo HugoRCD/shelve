@@ -1,9 +1,8 @@
 import { Command } from 'commander'
 import { intro, isCancel, outro, text } from '@clack/prompts'
 import { readPackageJSON } from 'pkg-types'
-import { createProject } from '../utils/project'
-import { onCancel } from '../utils'
-import { createShelveConfig } from '../utils/config'
+import { createShelveConfig, handleCancel } from '../utils'
+import { ProjectService } from '../services'
 
 export function createCommand(program: Command): void {
   program
@@ -15,7 +14,7 @@ export function createCommand(program: Command): void {
     .action(async (options) => {
       let { name } = options
       const { name: packageName } = await readPackageJSON()
-      intro(name ? `Creating project ${name}` : 'Creating a new project')
+      intro(name ? `Creating project '${name}'` : 'Creating a new project')
 
       if (!name) {
         name = await text({
@@ -27,10 +26,10 @@ export function createCommand(program: Command): void {
           },
         })
 
-        if (isCancel(name)) onCancel('Operation cancelled.')
+        if (isCancel(name)) handleCancel('Operation cancelled.')
       }
 
-      await createProject(name)
+      await ProjectService.createProject(name)
 
       outro(`Project ${name} created successfully`)
 

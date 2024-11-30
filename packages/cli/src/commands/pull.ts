@@ -1,9 +1,7 @@
 import { intro, outro } from '@clack/prompts'
 import { Command } from 'commander'
-import { loadShelveConfig } from '../utils/config'
-import { getProjectByName } from '../utils/project'
-import { createEnvFile, getEnvVariables } from '../utils/env'
-import { promptEnvironment } from '../utils/environment'
+import { loadShelveConfig } from '../utils'
+import { EnvService, ProjectService, EnvironmentService } from '../services'
 
 export function pullCommand(program: Command): void {
   program
@@ -12,16 +10,20 @@ export function pullCommand(program: Command): void {
     .description('Pull variables for specified environment to .env file')
     .option('-e, --environment <env>', 'Specify the environment (development, preview, production)')
     .action(async (options) => {
-      const { project, teamId, envFileName, confirmChanges } = await loadShelveConfig()
+      const { project, envFileName, confirmChanges } = await loadShelveConfig(true)
 
       intro(`Pulling variable from ${project} project`)
 
-      const environment = await promptEnvironment(teamId)
+      const environment = await EnvironmentService.promptEnvironment()
+      const projectData = await ProjectService.getProjectByName(project)
+      const variables = await EnvService.getEnvVariables(projectData.id, environment.id)
 
-      const projectData = await getProjectByName(project)
-      const variables = await getEnvVariables(projectData.id, environment.id)
-      await createEnvFile({ envFileName, variables, confirmChanges })
+      if (variables.length === 0) {
+        outro('No variables found')
+      } else {
+        await EnvService.createEnvFile({ envFileName, variables, confirmChanges })
+      }
+
       outro(`Successfully pulled variable from ${environment.name} environment`)
-      process.exit(0)
     })
 }

@@ -1,5 +1,5 @@
 import { expect, it, describe } from 'vitest'
-import { loadShelveConfig } from '../src/utils/config'
+import { loadShelveConfig } from '../src/utils'
 
 describe('loadConfig', () => {
   it('should return a config object', async () => {
