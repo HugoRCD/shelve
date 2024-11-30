@@ -1,5 +1,13 @@
+<script setup lang="ts">
+defineProps<{
+  line?: boolean
+}>()
+</script>
+
 <template>
   <div class="relative -mb-px -ml-px">
+    <div v-if="line" class="h-0.5 w-[200rem] bg-neutral-100 dark:bg-neutral-800 absolute -left-[100rem] opacity-40" />
+    <div v-if="line" class="h-[200rem] w-0.5 bg-neutral-100 dark:bg-neutral-800 absolute -top-[100rem] opacity-40 -left-0.5" />
     <span class="bottom absolute -bottom-px -left-px size-px" />
     <span class="bottom absolute -bottom-px -right-px size-px" />
     <span class="bottom absolute -left-px -top-px size-px" />
@@ -7,6 +15,8 @@
     <div class="relative z-10 flex h-full flex-col justify-center">
       <slot />
     </div>
+    <div v-if="line" class="h-0.5 w-[200rem] -z-1 bg-neutral-100 dark:bg-neutral-800 absolute -right-[100rem] opacity-40" />
+    <div v-if="line" class="h-[200rem] w-0.5 -z-1 bg-neutral-100 dark:bg-neutral-800 absolute -bottom-[100rem] opacity-40 -right-0.5" />
   </div>
 </template>
 

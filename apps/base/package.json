@@ -1,0 +1,17 @@
+{
+  "name": "@shelve/base",
+  "type": "module",
+  "private": true,
+  "version": "0.0.1",
+  "main": "./nuxt.config.ts",
+  "scripts": {
+    "postinstall": "nuxt prepare",
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix ."
+  },
+  "devDependencies": {
+    "nuxt": "3.14.1592",
+    "typescript": "^5.7.2",
+    "iron-webcrypto": "^1.2.1"
+  }
+}

@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import CrossedDiv from '~/components/CrossedDiv.vue'
-
 const { title } = useAppConfig()
 
 definePageMeta({
@@ -9,6 +7,9 @@ definePageMeta({
 })
 
 const route = useRoute()
+const otp = ref(false)
+const focus = ref(false)
+const email = ref('')
 
 if (route.query.error === 'github' || route.query.error === 'google') {
   toast.error(`An error occurred while logging in with ${route.query.error}.`, {
@@ -23,42 +24,43 @@ if (route.query.error === 'github' || route.query.error === 'google') {
 </script>
 
 <template>
-  <div class="flex overflow-hidden h-full w-full flex-col items-center justify-center">
-    <div class="bg-white rounded-full w-40 h-70 blur-[400px] absolute -top-20 select-none" />
+  <div class="flex overflow-hidden size-full flex-col items-center justify-center">
+    <div class="bg-white rounded-full w-50 h-96 blur-[250px] absolute -top-40 select-none" />
     <div class="mx-auto w-full flex flex-col items-center justify-center gap-2 text-center">
       <UIcon name="custom:shelve" class="size-10" />
       <div class="flex flex-col items-center gap-1">
         <h1 class="text-center text-3xl leading-9">
-          Signing to <span class="text-primary-500 dark:text-primary-400">{{ title }}</span>
+          Sign in to {{ title }}
         </h1>
-        <p class="text-neutral-500 dark:text-neutral-400">
+        <p class="text-neutral-500 italic dark:text-neutral-400">
           Welcome to the future of environment management.
         </p>
       </div>
     </div>
     <div class="relative mt-6">
-      <div class="h-0.5 w-[200rem] bg-neutral-100 dark:bg-neutral-800 absolute -left-[100rem] opacity-20" />
-      <div class="h-[200rem] w-0.5 bg-neutral-100 dark:bg-neutral-800 absolute -top-[100rem] opacity-20 -left-0.5" />
-      <CrossedDiv>
-        <div class="px-8 py-6 flex flex-col items-center justify-center gap-4">
+      <CrossedDiv line @mouseover="focus = true" @mouseleave="focus = false">
+        <div
+          class="px-8 py-6 flex flex-col items-center justify-center gap-4 overflow-hidden transition-all delay-200 duration-300 ease-in-out"
+          :style="{
+            height: focus ? '140px' : '120px',
+            width: focus ? '300px' : '250px',
+          }"
+        >
           <a href="/auth/github">
-            <UButton
-              icon="simple-icons:github"
-              label="Sign in with GitHub"
-              color="neutral"
-            />
+            <UButton icon="simple-icons:github" label="Sign in with GitHub" color="neutral" />
           </a>
           <a href="/auth/google">
-            <UButton
-              icon="simple-icons:google"
-              label="Sign in with Google"
-              color="neutral"
-            />
+            <UButton icon="simple-icons:google" label="Sign in with Google" color="neutral" />
           </a>
+          <!--          <UButton icon="lucide:mail" label="Sign in with Email" variant="soft" color="neutral" @click="otp = !otp" />
+          <Transition name="blur" mode="out-in">
+            <div v-show="otp" class="flex items-center gap-2">
+              <UInput v-model="email" label="Email" placeholder="Email" type="email" />
+              <UButton icon="lucide:mail" label="Send OTP" color="neutral" />
+            </div>
+          </Transition>-->
         </div>
       </CrossedDiv>
-      <div class="h-0.5 w-[200rem] -z-1 bg-neutral-100 dark:bg-neutral-800 absolute -right-[100rem] opacity-20" />
-      <div class="h-[200rem] w-0.5 -z-1 bg-neutral-100 dark:bg-neutral-800 absolute -bottom-[100rem] opacity-20 -right-0.5" />
     </div>
   </div>
 </template>

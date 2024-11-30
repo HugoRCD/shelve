@@ -2,11 +2,9 @@ import {
   defineNuxtModule,
   addServerImportsDir,
   createResolver
-} from '@nuxt/kit'
+} from 'nuxt/kit'
 
-export type ModuleOptions = {}
-
-export default defineNuxtModule<ModuleOptions>({
+export default defineNuxtModule({
   meta: {
     name: '@shelve/crypto',
     configKey: 'shelveCrypto'

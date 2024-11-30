@@ -6,7 +6,7 @@ export default defineAppConfig({
     },
     button: {
       slots: {
-        // @ts-expect-error Nuxt UI types error
+        // @ts-expect-error base is not defined
         base: 'cursor-pointer'
       }
     },
@@ -24,7 +24,7 @@ export default defineAppConfig({
   title: 'Shelve',
   description: 'Shelve, is a project management tool for developers, etc... to make project creation and management easier.',
   ogImage: 'https://shelve.cloud/og.png',
-  email: 'contact@hrcd.fr',
+  email: 'contact@shelve.cloud',
   phone: '(+33) 6 21 56 22 18',
   socials: [
     { name: 'github', link: 'https://github.com/HugoRCD' },

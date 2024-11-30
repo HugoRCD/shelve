@@ -1,23 +1,28 @@
 @import "tailwindcss";
 @import "@nuxt/ui";
+@import "./animations.css";
 
 ::-webkit-scrollbar {
-    width: 5px;
-    height: 2px;
+  width: 5px;
+  height: 2px;
 }
 
 ::-webkit-scrollbar-thumb {
-    background: var(--ui-bg-inverted);
-    border-radius: 5px;
+  background: var(--ui-bg-inverted);
+  border-radius: 5px;
 }
 
 :root {
   --ui-radius: var(--radius-sm);
 }
 
+html, body, #__nuxt, #__layout {
+  width: 100%;
+  height: 100%;
+}
+
 @theme {
   --font-newsreader: 'Newsreader', serif;
-  --font-inter: 'Inter', sans-serif;
   --font-geist: 'Geist', sans-serif;
   --font-geist-mono: 'Geist Mono', sans-serif;
 }
