@@ -10,7 +10,7 @@ const { size = 'size-5', text = true } = defineProps<LogoProps>()
 <template>
   <div class="flex items-center gap-2">
     <UIcon name="custom:shelve" :size />
-    <NuxtLink to="/" class="font-semibold" v-if="text" aria-label="Shelve">
+    <NuxtLink v-if="text" to="/" class="font-semibold" aria-label="Shelve">
       Shelve
     </NuxtLink>
   </div>
