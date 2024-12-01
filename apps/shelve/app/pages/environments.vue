@@ -3,7 +3,7 @@ import { type Environment, TeamRole } from '@shelve/types'
 import { ConfirmModal } from '#components'
 import { hasAccess } from '~/utils/hasAccess'
 
-const teamEnv = useTeamEnv()
+const teamEnv = ref<Environment[]>([])
 const teamId = useTeamId()
 const teamRole = useTeamRole()
 
@@ -13,6 +13,7 @@ const {
 
 const newEnv = ref('')
 const loading = ref(false)
+const ceateLoading = ref(false)
 const updateLoading = ref(false)
 
 const columns = [
@@ -21,13 +22,28 @@ const columns = [
     header: 'Name',
   },
   {
+    accessorKey: 'variablesCount',
+    header: 'Variable Count',
+  },
+  {
     accessorKey: 'actions',
     header: 'Actions',
   }
 ]
 
-async function create() {
+async function fetchEnvironments() {
   loading.value = true
+  try {
+    teamEnv.value = await $fetch<Environment[]>(`/api/environments?teamId=${ teamId.value }`)
+  } catch (error) {
+    console.error(error)
+  }
+  loading.value = false
+}
+fetchEnvironments()
+
+async function create() {
+  ceateLoading.value = true
   try {
     if (!newEnv.value) {
       toast.error('Environment name is required')
@@ -43,12 +59,12 @@ async function create() {
         name: newEnv.value
       },
     })
-    await fetchTeams()
+    await fetchEnvironments()
     newEnv.value = ''
   } catch (error) {
     console.error(error)
   }
-  loading.value = false
+  ceateLoading.value = false
 }
 
 async function updateEnv(env: Environment) {
@@ -59,7 +75,7 @@ async function updateEnv(env: Environment) {
       name: env.name
     },
   })
-  await fetchTeams()
+  await fetchEnvironments()
   updateLoading.value = false
 }
 
@@ -67,7 +83,7 @@ async function deleteEnv(environments: Environment) {
   await $fetch(`/api/teams/${teamId.value}/environments/${environments.id}`, {
     method: 'DELETE',
   })
-  await fetchTeams()
+  await fetchEnvironments()
 }
 
 const modal = useModal()
@@ -121,13 +137,16 @@ function updateEnvironment(env: Environment) {
         </div>
         <form class="flex items-center gap-2" @submit.prevent="createEnvironment">
           <UInput v-model="newEnv" placeholder="New environment name" required />
-          <UButton label="Create" color="primary" :loading size="sm" type="submit" />
+          <UButton label="Create" color="primary" :loading="ceateLoading" size="sm" type="submit" />
         </form>
       </div>
       <div style="--stagger: 2" data-animate class="mt-6">
-        <UTable :data="teamEnv" :columns>
+        <UTable :data="teamEnv" :columns :loading>
           <template #name-cell="{ row }">
             {{ capitalize(row.original.name) }}
+          </template>
+          <template #variableCount-cell="{ row }">
+            {{ row.original.variablesCount }}
           </template>
           <template #actions-cell="{ row }">
             <div class="flex gap-2">

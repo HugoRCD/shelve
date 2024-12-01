@@ -17,7 +17,12 @@ export class EnvironmentsService {
   async getEnvironments(teamId: number): Promise<Environment[]> {
     return await useDrizzle().query.environments.findMany({
       where: eq(tables.environments.teamId, teamId),
-      orderBy: [asc(tables.environments.name)]
+      orderBy: [asc(tables.environments.name)],
+      extras: {
+        variablesCount: useDrizzle()
+          .$count(tables.variableValues, eq(tables.variableValues.environmentId, tables.environments.id))
+          .as('variablesCount'),
+      },
     })
   }
 
