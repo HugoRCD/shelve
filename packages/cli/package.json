@@ -44,7 +44,7 @@
     "c12": "2.0.1",
     "commander": "12.1.0",
     "npm-registry-fetch": "18.0.2",
-    "nypm": "0.3.12",
+    "nypm": "0.4.1",
     "ofetch": "1.4.1",
     "pkg-types": "1.2.1",
     "semver": "7.6.3",
@@ -53,12 +53,12 @@
   "devDependencies": {
     "@shelve/types": "*",
     "@shelve/utils": "*",
-    "@types/bun": "1.1.13",
+    "@types/bun": "1.1.14",
     "@types/npm-registry-fetch": "8.0.7",
     "@types/semver": "7.5.8",
-    "eslint": "9.15.0",
+    "eslint": "9.16.0",
     "typescript": "5.7.2",
     "unbuild": "2.0.0",
-    "vitest": "2.1.5"
+    "vitest": "2.1.6"
   }
 }
