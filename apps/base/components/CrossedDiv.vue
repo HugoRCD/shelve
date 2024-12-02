@@ -23,7 +23,6 @@ defineProps<{
 <style scoped>
 .bottom:before {
   --tw-bg-opacity: 1;
-  background-color: rgb(255 255 255 / var(--tw-bg-opacity));
   content: "";
   width: 1px;
   height: 9px;
@@ -33,12 +32,23 @@ defineProps<{
 
 .bottom:after {
   --tw-bg-opacity: 1;
-  background-color: rgb(255 255 255 / var(--tw-bg-opacity));
   content: "";
   width: 9px;
   height: 1px;
   position: absolute;
   left: -4px;
+}
+
+.dark {
+  .bottom:before, .bottom:after {
+    background-color: rgb(255 255 255 / var(--tw-bg-opacity));
+  }
+}
+
+.light {
+  .bottom:before, .bottom:after {
+    background-color: rgb(0 0 0 / var(--tw-bg-opacity));
+  }
 }
 
 .encryption {

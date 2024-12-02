@@ -41,6 +41,7 @@ items.push(githubItem)
         <Logo size="size-8" />
         <div class="flex items-center">
           <UNavigationMenu
+            color="neutral"
             :items
             class="hidden sm:flex"
             :ui="{ link: 'py-1 px-3' }"

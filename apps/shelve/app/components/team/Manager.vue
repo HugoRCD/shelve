@@ -49,7 +49,7 @@ const groups = computed(() => [
           {{ currentTeam.name }}
         </span>
       </span>
-      <span><UIcon name="lucide:grip" class="size-4" /></span>
+      <span><UIcon name="lucide:chevrons-up-down" class="size-4" /></span>
     </button>
     <template #content>
       <UCommandPalette
