@@ -40,23 +40,23 @@ if (route.query.error === 'github' || route.query.error === 'google') {
     <div class="relative mt-6">
       <CrossedDiv line @mouseover="focus = true" @mouseleave="focus = false">
         <div
-          class="px-8 py-6 flex flex-col items-center justify-center gap-4 overflow-hidden transition-all delay-200 duration-300 ease-in-out"
+          class="px-8 py-6 flex flex-col items-center justify-center gap-4 overflow-hidden will-change-auto transition-all delay-200 duration-200 ease-in-out"
           :style="{
             height: focus ? '140px' : '120px',
             width: focus ? '300px' : '250px',
           }"
         >
           <a href="/auth/github">
-            <UButton icon="simple-icons:github" label="Sign in with GitHub" color="neutral" />
+            <UButton icon="simple-icons:github" label="Sign in with GitHub" />
           </a>
           <a href="/auth/google">
-            <UButton icon="simple-icons:google" label="Sign in with Google" color="neutral" />
+            <UButton icon="simple-icons:google" label="Sign in with Google" />
           </a>
-          <!--          <UButton icon="lucide:mail" label="Sign in with Email" variant="soft" color="neutral" @click="otp = !otp" />
+          <!--          <UButton icon="lucide:mail" label="Sign in with Email" variant="soft"  @click="otp = !otp" />
           <Transition name="blur" mode="out-in">
             <div v-show="otp" class="flex items-center gap-2">
               <UInput v-model="email" label="Email" placeholder="Email" type="email" />
-              <UButton icon="lucide:mail" label="Send OTP" color="neutral" />
+              <UButton icon="lucide:mail" label="Send OTP"  />
             </div>
           </Transition>-->
         </div>

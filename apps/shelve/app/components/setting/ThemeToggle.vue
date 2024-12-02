@@ -47,7 +47,7 @@ const startViewTransition = (theme) => {
   <ClientOnly>
     <UButton
       variant="ghost"
-      color="neutral"
+
       square
       aria-label="Theme"
       @click="startViewTransition($colorMode.value === 'light' ? 'dark' : 'light')"

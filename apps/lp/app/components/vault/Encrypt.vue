@@ -137,7 +137,7 @@ function handleDrop(event: DragEvent) {
         block
         label="Encrypt"
         type="submit"
-        color="neutral"
+
         :loading
       />
     </div>

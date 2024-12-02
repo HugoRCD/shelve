@@ -119,10 +119,10 @@ function getProjectManager(manager: string) {
                   <FormGroup v-model="project.logo" label="Logo" class="w-full" />
                 </div>
                 <div class="flex justify-end gap-4">
-                  <UButton color="neutral" variant="ghost" @click="showEdit = false">
+                  <UButton variant="ghost" @click="showEdit = false">
                     Cancel
                   </UButton>
-                  <UButton color="primary" type="submit" trailing :loading="updateLoading">
+                  <UButton type="submit" trailing :loading="updateLoading">
                     Save
                   </UButton>
                 </div>
@@ -138,13 +138,13 @@ function getProjectManager(manager: string) {
             sideOffset: 8
           }"
         >
-          <UButton color="neutral" variant="ghost" icon="heroicons:ellipsis-horizontal-20-solid" />
+          <UButton variant="ghost" icon="heroicons:ellipsis-horizontal-20-solid" />
         </UDropdownMenu>
       </div>
       <div v-if="project.projectManager || project.repository || project.homepage" class="mt-6 flex flex-wrap gap-4 sm:flex-row sm:items-center">
         <NuxtLink v-if="project.projectManager" target="_blank" :to="project.projectManager">
           <UButton
-            color="neutral"
+
             variant="soft"
             size="xs"
             :icon="getProjectManager(project.projectManager)?.icon"
@@ -154,7 +154,7 @@ function getProjectManager(manager: string) {
         </NuxtLink>
         <NuxtLink v-if="project.repository" target="_blank" :to="project.repository">
           <UButton
-            color="neutral"
+
             variant="soft"
             size="xs"
             icon="simple-icons:github"
@@ -164,7 +164,7 @@ function getProjectManager(manager: string) {
         </NuxtLink>
         <NuxtLink v-if="project.homepage" target="_blank" :to="project.homepage">
           <UButton
-            color="neutral"
+
             variant="soft"
             size="xs"
             icon="heroicons:home"
@@ -190,7 +190,7 @@ function getProjectManager(manager: string) {
         <form class="flex flex-col gap-6" @submit.prevent="deleteProjectFunction">
           <FormGroup v-model="projectName" autofocus :label="`Type the project name '${project.name}' to confirm`" />
           <div class="flex justify-end gap-4">
-            <UButton color="neutral" variant="ghost" @click="showDelete = false">
+            <UButton variant="ghost" @click="showDelete = false">
               Cancel
             </UButton>
             <UButton color="error" type="submit" trailing :loading="deleteLoading" :disabled="projectName !== project.name">

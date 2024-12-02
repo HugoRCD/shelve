@@ -41,8 +41,8 @@ items.push(githubItem)
         <Logo size="size-8" />
         <div class="flex items-center">
           <UNavigationMenu
-            :items
             color="neutral"
+            :items
             class="hidden sm:flex"
             :ui="{ link: 'py-1 px-3' }"
           >
@@ -54,15 +54,11 @@ items.push(githubItem)
         <div class="flex items-center gap-2">
           <div class="flex sm:hidden">
             <UDropdownMenu :items>
-              <UButton color="neutral" variant="ghost" icon="lucide:menu" />
+              <UButton variant="ghost" icon="lucide:menu" />
             </UDropdownMenu>
           </div>
           <div>
-            <UButton
-              color="neutral"
-              label="Open App"
-              @click="navigateTo(`https://app.shelve.cloud/login`, { external: true })"
-            />
+            <UButton label="Open App" @click="navigateTo(`https://app.shelve.cloud/login`, { external: true })" />
           </div>
         </div>
       </div>

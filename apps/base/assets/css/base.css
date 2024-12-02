@@ -30,3 +30,24 @@ html, body, #__nuxt, #__layout {
 .main-gradient {
   @apply font-geist-mono bg-gradient-to-r from-neutral-50 to-neutral-600 to-50% bg-clip-text text-transparent;
 }
+
+.bg-stripes {
+  @apply w-full [background-size:4px_4px] opacity-75;
+  @apply dark:[background-image:linear-gradient(-45deg,var(--color-neutral-700)_12.50%,transparent_12.50%,transparent_50%,var(--color-neutral-700)_50%,var(--color-neutral-700)_62.50%,transparent_62.50%,transparent_100%)];
+  @apply not-dark:[background-image:linear-gradient(-45deg,var(--color-neutral-200)_12.50%,transparent_12.50%,transparent_50%,var(--color-neutral-200)_50%,var(--color-neutral-200)_62.50%,transparent_62.50%,transparent_100%)];
+}
+
+.bg-dotted {
+  background-image:
+    radial-gradient(transparent, Canvas),
+    radial-gradient(
+      color-mix(in oklch, Canvastext 33%, Canvas) 0.8px,
+      transparent 1.3px
+    );
+  background-size:
+    200px 200px,
+    40px 40px;
+  background-repeat:
+    round,
+    space;
+}

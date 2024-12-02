@@ -51,7 +51,7 @@ const showEdit = ref(false)
           </span>
           <span class="hidden lg:block">{{ localVariable.key }}</span>
           <UTooltip text="Show Details">
-            <UButton color="neutral" variant="ghost" icon="lucide:eye" @click.stop="showEdit = !showEdit" />
+            <UButton variant="ghost" icon="lucide:eye" @click.stop="showEdit = !showEdit" />
           </UTooltip>
         </h3>
         <div class="flex flex-col gap-1">
@@ -127,10 +127,10 @@ const showEdit = ref(false)
             Delete
           </UButton>
           <div class="flex gap-2">
-            <UButton color="neutral" variant="soft" @click="showEdit = false">
+            <UButton variant="soft" @click="showEdit = false">
               Cancel
             </UButton>
-            <UButton color="primary" type="submit" trailing :loading="updateLoading" trailing-icon="lucide:save">
+            <UButton type="submit" trailing :loading="updateLoading" trailing-icon="lucide:save">
               Save
             </UButton>
           </div>

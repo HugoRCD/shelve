@@ -27,7 +27,7 @@ async function createToken() {
 <template>
   <div class="hidden items-center justify-end gap-2 sm:flex">
     <UPopover arrow>
-      <UButton size="xs" variant="solid" color="primary">
+      <UButton size="xs">
         Create a token
       </UButton>
       <template #content>

@@ -24,7 +24,7 @@ const items = [
       </p>
     </div>
     <UAccordion
-      color="neutral"
+
       variant="ghost"
       size="sm"
       :items

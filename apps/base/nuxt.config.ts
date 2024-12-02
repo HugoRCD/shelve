@@ -41,6 +41,10 @@ export default defineNuxtConfig({
         prefix: 'custom',
         dir: './app/assets/icons'
       },
+      {
+        prefix: 'nucleo',
+        dir: './app/assets/icons/nucleo'
+      },
     ],
     clientBundle: {
       scan: true,

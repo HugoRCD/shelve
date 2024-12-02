@@ -40,12 +40,7 @@ const items = [
       </p>
     </div>
     <div class="mx-auto max-w-3xl">
-      <UAccordion
-        color="neutral"
-        variant="ghost"
-        size="sm"
-        :items
-      />
+      <UAccordion variant="ghost" size="sm" :items />
     </div>
   </div>
 </template>

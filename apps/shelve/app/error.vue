@@ -83,11 +83,9 @@ const clearLocalStorage = () => {
         >
           <UButton
             label="Show Error"
-            color="neutral"
             variant="soft"
             trailing-icon="lucide:chevron-right"
           />
-
           <template #body>
             <pre class="text-left whitespace-pre-wrap">{{ error }}</pre>
           </template>
@@ -96,7 +94,6 @@ const clearLocalStorage = () => {
     </div>
     <div class="absolute bottom-5 right-5 z-10 flex gap-2">
       <UButton
-        color="neutral"
         variant="soft"
         size="sm"
         @click="clearCache"
@@ -104,7 +101,6 @@ const clearLocalStorage = () => {
         Clear Cache
       </UButton>
       <UButton
-        color="neutral"
         variant="soft"
         size="sm"
         @click="clearCookies"
@@ -112,7 +108,6 @@ const clearLocalStorage = () => {
         Clear Cookies
       </UButton>
       <UButton
-        color="neutral"
         variant="soft"
         size="sm"
         @click="clearLocalStorage"

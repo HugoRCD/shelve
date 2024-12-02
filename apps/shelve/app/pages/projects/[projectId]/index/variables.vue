@@ -72,7 +72,7 @@ const isVariableSelected = (variable: Variable) => {
       <div class="flex gap-1">
         <UTooltip :text="order === 'asc' ? 'Oldest first' : 'Newest first'">
           <UButton
-            color="neutral"
+
             icon="lucide:arrow-down"
             variant="soft"
             :ui="{ leadingIcon: order === 'asc' ? 'rotate-180 duration-300 transition-transform' : 'duration-300 transition-transform' }"

@@ -7,7 +7,7 @@ const { size = 'size-5', text = true } = defineProps<{
 
 <template>
   <div class="flex items-center gap-2">
-    <UIcon name="custom:shelve" :size />
+    <UIcon name="custom:shelve" :class="size" />
     <NuxtLink v-if="text" to="/" aria-label="Shelve" class="font-semibold">
       Shelve
     </NuxtLink>

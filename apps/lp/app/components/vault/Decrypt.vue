@@ -48,7 +48,7 @@ async function decryptEnvFile() {
           block
           label="Decrypt"
           type="submit"
-          color="neutral"
+
           :loading
         />
       </div>

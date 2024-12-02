@@ -165,7 +165,7 @@ const handlePasswordGenerated = (password: string, index: number) => variablesIn
               sideOffset: 8
             }"
           >
-            <UButton color="neutral" variant="ghost" icon="heroicons:ellipsis-horizontal-20-solid" />
+            <UButton variant="ghost" icon="heroicons:ellipsis-horizontal-20-solid" />
           </UDropdownMenu>
         </div>
       </template>
@@ -237,7 +237,6 @@ const handlePasswordGenerated = (password: string, index: number) => variablesIn
           <div class="flex gap-2">
             <UButton
               label="Add variable"
-              color="neutral"
               size="xs"
               variant="soft"
               icon="heroicons:plus-circle-20-solid"
@@ -246,14 +245,13 @@ const handlePasswordGenerated = (password: string, index: number) => variablesIn
             <input ref="fileInputRef" type="file" accept="text" style="display: none;" @change="handleFileUpload">
             <UButton
               label="Import .env"
-              color="neutral"
               size="xs"
               variant="soft"
               icon="lucide:download"
               @click="triggerFileInput"
             />
           </div>
-          <UButton label="Save" color="primary" :loading="createLoading" type="submit" />
+          <UButton label="Save" :loading="createLoading" type="submit" />
         </div>
       </template>
     </UCard>

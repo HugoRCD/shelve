@@ -86,7 +86,7 @@ async function updateCurrentProject() {
       </div>
       <template #footer>
         <div class="flex justify-end gap-4">
-          <UButton color="primary" type="submit" :loading="updateStatus === 'pending'">
+          <UButton type="submit" :loading="updateStatus === 'pending'">
             Save
           </UButton>
         </div>

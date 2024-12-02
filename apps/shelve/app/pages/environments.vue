@@ -121,7 +121,7 @@ function updateEnvironment(env: Environment) {
         </div>
         <form class="flex items-center gap-2" @submit.prevent="createEnvironment">
           <UInput v-model="newEnv" placeholder="New environment name" required />
-          <UButton label="Create" color="primary" :loading size="sm" type="submit" />
+          <UButton label="Create" :loading size="sm" type="submit" />
         </form>
       </div>
       <div style="--stagger: 2" data-animate class="mt-6">
@@ -132,14 +132,14 @@ function updateEnvironment(env: Environment) {
           <template #actions-cell="{ row }">
             <div class="flex gap-2">
               <UPopover arrow>
-                <UButton color="primary" variant="soft" icon="heroicons:pencil" />
+                <UButton variant="soft" icon="heroicons:pencil" />
                 <template #content>
                   <UCard>
                     <form @submit.prevent="updateEnvironment(row.original)">
                       <UFormField label="Environment name">
                         <div class="flex items-center gap-2">
                           <UInput v-model="row.original.name" placeholder="New environment name" required />
-                          <UButton label="Update" color="primary" :loading="updateLoading" size="sm" type="submit" />
+                          <UButton label="Update" :loading="updateLoading" size="sm" type="submit" />
                         </div>
                       </UFormField>
                     </form>
