@@ -120,7 +120,7 @@ const items = (row: Member) => [
                 <span class="text-xs text-neutral-500 hidden sm:flex">UpdatedAt: {{ new Date(member.updatedAt).toLocaleString() }}</span>
               </div>
               <UDropdownMenu :items="items(member)">
-                <UButton color="neutral" variant="ghost" icon="heroicons:ellipsis-horizontal-20-solid" />
+                <UButton variant="ghost" icon="heroicons:ellipsis-horizontal-20-solid" />
               </UDropdownMenu>
             </div>
           </div>
@@ -136,7 +136,7 @@ const items = (row: Member) => [
       </template>
       <template #actions-cell="{ row }">
         <UDropdownMenu :items="items(row.original)">
-          <UButton color="neutral" variant="ghost" icon="heroicons:ellipsis-horizontal-20-solid" />
+          <UButton  variant="ghost" icon="heroicons:ellipsis-horizontal-20-solid" />
         </UDropdownMenu>
       </template>
     </UTable>-->

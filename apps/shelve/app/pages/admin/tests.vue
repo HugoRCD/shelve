@@ -40,7 +40,6 @@ async function testNewUserMail() {
         <UButton
           label="Send email"
           variant="soft"
-          color="neutral"
           icon="lucide:mail"
           :loading
           @click="testNewUserMail"

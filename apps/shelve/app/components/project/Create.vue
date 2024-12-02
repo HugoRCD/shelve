@@ -116,15 +116,15 @@ function importProject() {
     <template #footer>
       <div class="flex w-full justify-between">
         <div>
-          <UButton color="neutral" variant="ghost" @click="importProject">
+          <UButton variant="ghost" @click="importProject">
             Import project from JSON
           </UButton>
         </div>
         <div class="flex gap-4">
-          <UButton color="neutral" variant="ghost" @click="isOpen = false">
+          <UButton variant="ghost" @click="isOpen = false">
             Cancel
           </UButton>
-          <UButton color="primary" type="submit" trailing :loading="createLoading" form="createForm">
+          <UButton type="submit" trailing :loading="createLoading" form="createForm">
             Create
           </UButton>
         </div>

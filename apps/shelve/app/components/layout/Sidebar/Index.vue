@@ -7,7 +7,7 @@ const { mobile = false } = defineProps<{
 <template>
   <div class="h-full">
     <UDrawer v-if="mobile">
-      <UButton icon="lucide:menu" size="md" color="neutral" class="flex sm:hidden" variant="soft" />
+      <UButton icon="lucide:menu" size="md" class="flex sm:hidden" variant="soft" />
       <template #content>
         <LayoutSidebarContent />
       </template>

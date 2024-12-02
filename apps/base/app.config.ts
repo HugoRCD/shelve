@@ -1,17 +1,32 @@
 export default defineAppConfig({
   ui: {
     colors: {
-      primary: 'blue',
       neutral: 'neutral',
     },
     button: {
       slots: {
         // @ts-expect-error base is not defined
         base: 'cursor-pointer'
+      },
+      defaultVariants: {
+        // @ts-expect-error not typed
+        color: 'neutral',
       }
     },
     icons: {
       loading: 'lucide:loader',
+    },
+    checkbox: {
+      defaultVariants: {
+        // @ts-expect-error not typed
+        color: 'neutral',
+      }
+    },
+    switch: {
+      defaultVariants: {
+        // @ts-expect-error not typed
+        color: 'neutral',
+      }
     },
     card: {
       slots: {

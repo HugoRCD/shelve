@@ -24,7 +24,7 @@ function onCancel() {
   <UModal :title :description>
     <template #footer>
       <div class="flex w-full justify-end gap-2">
-        <UButton variant="ghost" color="neutral" @click="onCancel">
+        <UButton variant="ghost" @click="onCancel">
           Cancel
         </UButton>
         <UButton :color="danger ? 'error' : 'primary'" @click="onSuccess">

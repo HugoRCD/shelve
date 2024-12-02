@@ -80,6 +80,7 @@ Shelve aims to become the ultimate development workspace by addressing common pa
   - Secure variable sharing
   - Vault system for sharing secrets
   - Multi-environment support
+  - Custom environment support
   - Auto-formatting and validation
   - Secure value generator
   - Drag-and-drop .env file import

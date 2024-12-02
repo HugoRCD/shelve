@@ -36,7 +36,7 @@ const items = [
   <UPopover v-model:open="open" arrow>
     <div>
       <UTooltip :content="{ side: 'top' }" text="Generate a random password">
-        <UButton variant="soft" color="neutral" icon="lucide:lock-keyhole" />
+        <UButton variant="soft" icon="lucide:lock-keyhole" />
       </UTooltip>
     </div>
     <template #content>

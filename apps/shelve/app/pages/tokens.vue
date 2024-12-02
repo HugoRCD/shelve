@@ -145,7 +145,6 @@ fetchTokens()
         <template #actions-cell="{ row }">
           <UDropdownMenu :items="items(row.original)">
             <UButton
-              color="neutral"
               variant="ghost"
               icon="heroicons:ellipsis-horizontal-20-solid"
             />

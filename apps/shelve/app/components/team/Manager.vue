@@ -82,7 +82,6 @@ const groups = computed(() => [
             </div>
             <UButton
               :label="`Create '${newTeamName}' team`"
-              color="primary"
               type="submit"
               :loading
               block

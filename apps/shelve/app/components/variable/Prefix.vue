@@ -20,7 +20,7 @@ function addPrefixToInputId(prefix: string) {
   <UPopover v-model:open="open" arrow>
     <div>
       <UTooltip :content="{ side: 'top' }" text="Add common prefix to your variable">
-        <UButton variant="soft" color="neutral" icon="lucide:list-start" />
+        <UButton variant="soft" icon="lucide:list-start" />
       </UTooltip>
     </div>
     <template #content>
@@ -34,7 +34,6 @@ function addPrefixToInputId(prefix: string) {
             :key="prefix"
             size="xs"
             variant="soft"
-            color="neutral"
             icon="heroicons:plus"
             :label="prefix"
             @click="addPrefixToInputId(prefix)"

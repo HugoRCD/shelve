@@ -28,7 +28,6 @@ defineShortcuts({
           label="Start your journey"
           icon="lucide:arrow-right"
           trailing
-          color="neutral"
         />
       </div>
     </div>

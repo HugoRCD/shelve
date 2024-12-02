@@ -48,6 +48,6 @@ const items = [
         </div>
       </template>
     </UDropdownMenu>
-    <UButton v-else to="/login" label="Login" color="neutral" variant="soft" />
+    <UButton v-else to="/login" label="Login" variant="soft" />
   </div>
 </template>

@@ -35,7 +35,6 @@ function copy() {
       <div>
         <UButton
           v-if="type === 'value'"
-          color="neutral"
           variant="link"
           size="sm"
           :icon="show ? 'lucide:eye-off' : 'lucide:eye'"
