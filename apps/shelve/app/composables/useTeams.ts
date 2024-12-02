@@ -30,6 +30,11 @@ export function useTeamId(): Ref<number> {
   return computed(() => currentTeam.value?.id)
 }
 
+export function useTeamSlug(): Ref<string> {
+  const currentTeam = useTeam()
+  return computed(() => currentTeam.value?.slug)
+}
+
 /**
  * Current selected team user role in the team
  * If user is an admin, the role is set to OWNER
@@ -55,6 +60,7 @@ export function isPrivateTeam(): Ref<boolean> {
 }
 
 export function useTeamsService() {
+  const router = useRouter()
   const teams = useTeams()
   const currentTeam = useTeam()
   const teamId = useTeamId()
@@ -88,11 +94,10 @@ export function useTeamsService() {
 
   async function selectTeam(id: number) {
     const projects = useProjectsService()
-    const route = useRoute()
     currentTeam.value = teams.value.find(team => team.id === id) as Team
     teamEnv.value = currentTeam.value.environments
     lastUsedTeamId.value = id
-    if (route.path.includes('/project/')) navigateTo('/')
+    await router.push(`/${ currentTeam.value.slug }`)
     await projects.fetchProjects()
   }
 
@@ -115,15 +120,12 @@ export function useTeamsService() {
     createLoading.value = false
   }
 
-  async function updateTeam(input: { name: string, logo: string }) {
-    const { name, logo } = input
+  async function updateTeam(input: { name: string, logo: string, slug: string }) {
     currentTeam.value = await $fetch<Team>(`/api/teams/${ teamId.value }`, {
       method: 'PUT',
-      body: {
-        name,
-        logo,
-      },
+      body: input
     })
+    await router.push(`/${ currentTeam.value.slug }`)
   }
 
   async function addMember(email: string, role: TeamRole) {

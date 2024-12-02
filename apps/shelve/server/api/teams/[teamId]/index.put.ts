@@ -8,14 +8,16 @@ export default eventHandler(async (event) => {
       required_error: 'Missing team ID',
     }),
   })
-  const { name, logo } = await zh.useValidatedBody(event, {
+  const { name, logo, slug } = await zh.useValidatedBody(event, {
     name: z.string().optional(),
     logo: z.string().optional(),
+    slug: z.string().optional(),
   })
   return await new TeamsService().updateTeam({
     teamId,
     name,
     logo,
+    slug,
     requester: user
   })
 })

@@ -3,7 +3,7 @@ definePageMeta({
   middleware: 'project-redirect'
 })
 
-const { projectId } = useRoute().params as { projectId: string }
+const { projectId, teamSlug } = useRoute().params as { projectId: string, teamSlug: string }
 const currentProject = useProject()
 
 const {
@@ -25,17 +25,17 @@ const items = [
   {
     label: 'Environment Variables',
     icon: 'lucide:container',
-    to: `/projects/${projectId}/variables`
+    to: `/${teamSlug}/projects/${projectId}/variables`
   },
   {
     label: 'Files',
     icon: 'lucide:files',
-    to: `/projects/${projectId}/files`
+    to: `/${teamSlug}/projects/${projectId}/files`
   },
   {
     label: 'Settings',
     icon: 'heroicons:cog',
-    to: `/projects/${projectId}/settings`
+    to: `/${teamSlug}/projects/${projectId}/settings`
   },
 ]
 </script>

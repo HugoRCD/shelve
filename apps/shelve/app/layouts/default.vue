@@ -1,11 +1,17 @@
 <script setup lang="ts">
-const pages = [...getNavigation('team'), ...getNavigation('user'), ...getNavigation('admin')]
+const teamSlug = computed(() => useRoute().params.teamSlug as string)
+const pages = computed(() => {
+  const teamNavigations = getNavigation('team', teamSlug.value)
+  const userNavigations = getNavigation('user')
+  const adminNavigations = getNavigation('admin')
+  return [...teamNavigations, ...userNavigations, ...adminNavigations]
+})
 const route = useRoute()
 
 const navigation = computed(() => {
   if (route.path.includes('/projects'))
     return { title: 'Project Details', to: '/projects', name: 'project', icon: 'lucide:folder-open' }
-  return pages.find((page) => page.path === route.path) || null
+  return pages.value.find((page) => page.path === route.path) || null
 })
 </script>
 
@@ -18,7 +24,7 @@ const navigation = computed(() => {
           <template v-if="navigation">
             <Transition name="slide-to-bottom" mode="out-in">
               <div :key="navigation.icon">
-                <UIcon :name="navigation.icon" class="size-5" />
+                <UIcon :name="navigation.icon!" class="size-5" />
               </div>
             </Transition>
             <Transition name="slide-to-top" mode="out-in">

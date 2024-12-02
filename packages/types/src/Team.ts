@@ -20,6 +20,7 @@ export type Member = {
 export type Team = {
   id: number;
   name: string;
+  slug: string;
   logo: string;
   private: boolean;
   privateOf: number | null;
@@ -39,6 +40,7 @@ export type CreateTeamInput = {
 export type UpdateTeamInput = {
   teamId: number;
   name?: string;
+  slug?: string;
   logo?: string;
   requester: User;
 }

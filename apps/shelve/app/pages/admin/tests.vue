@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import type { User } from '@shelve/types'
 
+definePageMeta({
+  middleware: 'admin',
+})
+
 const newUser = ref<User>({
   email: 'hrichard206@gmail.com',
   username: 'test',

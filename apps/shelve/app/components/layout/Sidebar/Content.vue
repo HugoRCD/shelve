@@ -1,31 +1,32 @@
 <script setup lang="ts">
 import { Role } from '@shelve/types'
 
+const teamSlug = computed(() => useRoute().params.teamSlug as string)
 const { user } = useUserSession()
-const teamNavigations = getNavigation('team')
+const teamNavigations = computed(() => getNavigation('team', teamSlug.value))
 const userNavigations = getNavigation('user')
 const adminNavigations = getNavigation('admin')
 
 const route = useRoute()
 const handleProjectNavigation = () => {
-  const isCryptoRoute = route.path.includes('/projects/')
+  const isProjectRoute = route.path.includes('/projects/')
   const projectNavigation = {
     title: 'Project Details',
     icon: 'lucide:folder-open',
     path: route.path,
     name: 'Project Details',
   }
-  if (isCryptoRoute) {
-    const indexToReplace = teamNavigations.findIndex((item) => item.path.includes('/projects/'))
+  if (isProjectRoute) {
+    const indexToReplace = teamNavigations.value.findIndex((item) => item.path.includes('/projects/'))
     if (indexToReplace !== -1) {
-      teamNavigations.splice(indexToReplace, 1, projectNavigation)
+      teamNavigations.value.splice(indexToReplace, 1, projectNavigation)
     } else {
-      teamNavigations.unshift(projectNavigation)
+      teamNavigations.value.unshift(projectNavigation)
     }
   } else {
-    const indexToRemove = teamNavigations.findIndex((item) => item.path.includes('/projects/'))
+    const indexToRemove = teamNavigations.value.findIndex((item) => item.path.includes('/projects/'))
     if (indexToRemove !== -1) {
-      teamNavigations.splice(indexToRemove, 1)
+      teamNavigations.value.splice(indexToRemove, 1)
     }
   }
 }
@@ -81,23 +82,3 @@ watch(() => route.path, handleProjectNavigation, { immediate: true })
     </div>
   </div>
 </template>
-
-<style>
-/* Bezier effect */
-
-.bezier-move,
-.bezier-enter-active,
-.bezier-leave-active {
-  transition: all 0.5s cubic-bezier(0.55, 0, 0.1, 1);
-}
-
-.bezier-enter-from,
-.bezier-leave-to {
-  opacity: 0;
-  transform: scaleY(0.01) translate(30px, 0);
-}
-
-.bezier-leave-active {
-  position: absolute;
-}
-</style>

@@ -32,6 +32,7 @@ export const users = pgTable('users', {
 export const teams = pgTable('teams', {
   id: integer().primaryKey().generatedByDefaultAsIdentity(),
   name: varchar().notNull(),
+  slug: varchar().unique().notNull(),
   logo: varchar().default('https://github.com/HugoRCD/shelve/blob/main/assets/default.webp?raw=true').notNull(),
   private: boolean().default(true).notNull(),
   privateOf: integer().references(() => users.id, { onDelete: 'cascade' }),

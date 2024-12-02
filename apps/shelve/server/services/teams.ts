@@ -10,8 +10,10 @@ import { EnvironmentsService } from './environments'
 export class TeamsService {
 
   async createTeam(input: CreateTeamInput): Promise<Team> {
+    const slug = input.name.toLowerCase().replace(/\s/g, '-')
     const [team] = await useDrizzle().insert(tables.teams)
       .values({
+        slug,
         name: input.name,
         private: input.private || false,
         privateOf: input.private ? input.requester.id : null,

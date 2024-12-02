@@ -48,20 +48,33 @@ const open = ref(false)
 <template>
   <div class="flex flex-col">
     <form v-if="team" class="flex flex-col" @submit.prevent="updateCurrentTeam">
-      <div style="--stagger: 1" data-animate class="flex items-center gap-4">
-        <NuxtImg :src="team.logo" class="size-10 rounded-full" />
+      <div style="--stagger: 1" data-animate class="flex justify-between">
+        <div class="flex items-center gap-4">
+          <NuxtImg :src="team.logo" class="size-10 rounded-full" />
+          <div>
+            <h2 class="text-base font-semibold leading-7">
+              Team Settings
+            </h2>
+            <p class="text-sm leading-6 text-neutral-500">
+              Manage team settings
+            </p>
+          </div>
+        </div>
         <div>
-          <h2 class="text-base font-semibold leading-7">
-            Team Settings
-          </h2>
-          <p class="text-sm leading-6 text-neutral-500">
-            Manage team settings
-          </p>
+          <UBadge v-if="isPrivate" size="sm" color="neutral" variant="soft">
+            Private
+          </UBadge>
         </div>
       </div>
       <div style="--stagger: 2" data-animate class="mt-6 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-6">
         <div class="sm:col-span-3">
           <FormGroup v-model="team.name" label="Name" />
+        </div>
+        <div class="sm:col-span-4">
+          <FormGroup v-model="team.slug" label="Slug" />
+          <p class="text-xs mt-1 text-neutral-500">
+            This is the unique identifier for your team (used by the CLI)
+          </p>
         </div>
         <div class="sm:col-span-4">
           <FormGroup v-model="team.logo" label="Logo" />

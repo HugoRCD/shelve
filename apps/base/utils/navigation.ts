@@ -7,7 +7,7 @@ export type Navigation = {
   icon?: string;
 };
 
-export function getNavigation(where: Where): Navigation[] {
+export function getNavigation(where: Where, teamSlug?: string): Navigation[] {
   switch (where) {
     case 'home':
       return [
@@ -21,31 +21,25 @@ export function getNavigation(where: Where): Navigation[] {
       return [
         {
           name: 'Projects',
-          path: '/',
+          path: `/${teamSlug}`,
           icon: 'lucide:folder',
           title: 'Projects',
         },
         {
           name: 'Members',
-          path: '/members',
+          path: `/${teamSlug}/members`,
           icon: 'lucide:users',
           title: 'Members',
         },
         {
           name: 'Environments',
-          path: '/environments',
+          path: `/${teamSlug}/environments`,
           icon: 'lucide:cloud',
           title: 'Environments',
         },
         {
-          name: 'Tokens',
-          path: '/tokens',
-          icon: 'heroicons:key',
-          title: 'Tokens',
-        },
-        {
           name: 'Settings',
-          path: '/settings',
+          path: `/${teamSlug}/settings`,
           icon: 'heroicons:cog',
           title: 'Settings',
         },
@@ -57,6 +51,12 @@ export function getNavigation(where: Where): Navigation[] {
           path: '/user/profile',
           icon: 'heroicons:user-circle',
           title: 'Profile',
+        },
+        {
+          name: 'API Tokens',
+          path: '/tokens',
+          icon: 'heroicons:key',
+          title: 'API Tokens',
         },
         {
           name: 'Settings',

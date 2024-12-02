@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import type { Project } from '@shelve/types'
 
+const { teamSlug } = useRoute().params
+
 defineProps<{
   project: Project
 }>()
@@ -9,7 +11,7 @@ const active = useState('active-project')
 </script>
 
 <template>
-  <NuxtLink :to="`/projects/${project.id}`">
+  <NuxtLink :to="`/${teamSlug}/projects/${project.id}`">
     <UCard class="h-full" @click="active = project.id">
       <div class="flex w-full items-start gap-4">
         <UAvatar
