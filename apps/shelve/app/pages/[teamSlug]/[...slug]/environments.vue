@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import { type Environment, TeamRole } from '@shelve/types'
+import { type Environment, TeamRole, type User } from '@shelve/types'
 import { ConfirmModal } from '#components'
 import { hasAccess } from '~/utils/hasAccess'
 
-const teamEnv = useTeamEnv()
 const teamId = useTeamId()
 const teamRole = useTeamRole()
 
-const {
-  fetchTeams
-} = useTeamsService()
+const { data: environments, status, refresh } = useFetch<Environment[]>(`/api/teams/${teamId.value}/environments`, {
+  method: 'GET',
+  watch: false,
+})
 
 const newEnv = ref('')
 const loading = ref(false)
@@ -33,7 +33,7 @@ async function create() {
       toast.error('Environment name is required')
       return
     }
-    if (teamEnv.value.find(env => env.name === newEnv.value)) {
+    if (environments.value?.find(env => env.name === newEnv.value)) {
       toast.error('Environment name already exists')
       return
     }
@@ -43,7 +43,7 @@ async function create() {
         name: newEnv.value
       },
     })
-    await fetchTeams()
+    await refresh()
     newEnv.value = ''
   } catch (error) {
     console.error(error)
@@ -59,7 +59,7 @@ async function updateEnv(env: Environment) {
       name: env.name
     },
   })
-  await fetchTeams()
+  await refresh()
   updateLoading.value = false
 }
 
@@ -67,12 +67,12 @@ async function deleteEnv(environments: Environment) {
   await $fetch(`/api/teams/${teamId.value}/environments/${environments.id}`, {
     method: 'DELETE',
   })
-  await fetchTeams()
+  await refresh()
 }
 
 const modal = useModal()
 function openDeleteModal(env: Environment) {
-  if (teamEnv.value.length === 1) {
+  if (environments.value?.length === 1) {
     toast.error('You cannot delete the last environment')
     return
   }
@@ -125,7 +125,7 @@ function updateEnvironment(env: Environment) {
         </form>
       </div>
       <div style="--stagger: 2" data-animate class="mt-6">
-        <UTable :data="teamEnv" :columns>
+        <UTable :data="environments" :columns :loading="status === 'pending'">
           <template #name-cell="{ row }">
             {{ capitalize(row.original.name) }}
           </template>

@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import { TeamRole, type Variable } from '@shelve/types'
+import { type Environment, TeamRole, type Variable } from '@shelve/types'
 
 type ProjectVariableProps = {
   refresh: () => Promise<void>
   variable: Variable
+  environments: Environment[]
   projectId: string
   isSelected: boolean
 }
 
-const { refresh, variable, projectId } = defineProps<ProjectVariableProps>()
-const teamEnv = useTeamEnv()
+const { refresh, variable, projectId, environments } = defineProps<ProjectVariableProps>()
 const teamRole = useTeamRole() //TODO handle roles
 
 const {
@@ -23,12 +23,12 @@ const emit = defineEmits(['toggleSelected'])
 const localVariable = ref(variable)
 
 const environmentsValues = ref<Record<string, string>>(
-  Object.fromEntries(teamEnv.value.map((env) => [env.id, variable.values.find((v) => v.environmentId === env.id)?.value ?? ''])),
+  Object.fromEntries(environments.map((env) => [env.id, variable.values.find((v) => v.environmentId === env.id)?.value ?? ''])),
 )
 
 const variableToUpdate = computed(() => ({
   ...localVariable.value,
-  values: teamEnv.value.map((env) => ({
+  values: environments.map((env) => ({
     environmentId: env.id,
     value: environmentsValues.value[env.id] ?? '',
   }))
@@ -55,7 +55,7 @@ const showEdit = ref(false)
           </UTooltip>
         </h3>
         <div class="flex flex-col gap-1">
-          <span v-for="env in teamEnv" :key="env.id" class="flex items-center gap-1 text-xs font-normal text-neutral-500">
+          <span v-for="env in environments" :key="env.id" class="flex items-center gap-1 text-xs font-normal text-neutral-500">
             <UIcon v-if="environmentsValues[env.id]" name="lucide:check" class="size-4 text-green-400" />
             <UIcon v-else name="lucide:x" class="size-4 text-red-400" />
             {{ capitalize(env.name) }}
@@ -95,7 +95,7 @@ const showEdit = ref(false)
                   />
                 </td>
               </tr>
-              <tr v-for="env in teamEnv" :key="env.id" class="border-b dark:border-neutral-800 border-neutral-300">
+              <tr v-for="env in environments" :key="env.id" class="border-b dark:border-neutral-800 border-neutral-300">
                 <td class="py-2 px-4 text-sm font-medium">
                   <UTooltip :text="`Copy env variables for ${env.name} environment`" :content="{ side: 'top' }">
                     <span

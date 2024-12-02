@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import type { Variable } from '@shelve/types'
+import type { Environment, Variable } from '@shelve/types'
+
+const teamId = useTeamId()
 
 const { projectId } = useRoute().params as { projectId: string }
 const { data: variables, status, refresh } = useFetch<Variable[]>(`/api/variables/project/${projectId}`, {
@@ -7,13 +9,17 @@ const { data: variables, status, refresh } = useFetch<Variable[]>(`/api/variable
   watch: false,
 })
 
-const teamEnv = useTeamEnv()
+const { data: environments, status: envStatus } = useFetch<Environment[]>(`/api/teams/${teamId.value}/environments`, {
+  method: 'GET',
+  watch: false,
+})
+
 const selectedVariables = ref<Variable[]>([])
 const searchTerm = ref('')
 const selectedEnvironment = ref([])
 const order = ref('desc')
 
-const items = ref(teamEnv.value.map((env) => ({ label: capitalize(env.name), value: env.id })) || [])
+const items = ref(environments.value?.map((env) => ({ label: capitalize(env.name), value: env.id })) || [])
 
 const filteredVariables = computed(() => {
   let filtered = variables.value || []
@@ -62,7 +68,7 @@ const isVariableSelected = (variable: Variable) => {
 
 <template>
   <div class="flex flex-col gap-2">
-    <ProjectCreateVariables v-if="projectId && variables" :variables :project-id :refresh />
+    <ProjectCreateVariables v-if="projectId && variables && environments" :variables :project-id :refresh />
     <div class="flex justify-between items-center mt-2">
       <UInput
         v-model="searchTerm"
@@ -83,11 +89,12 @@ const isVariableSelected = (variable: Variable) => {
       </div>
     </div>
     <VariableSelector v-model="selectedVariables" @refresh="refresh" />
-    <div v-if="status !== 'pending'" class="flex flex-col gap-4">
+    <div v-if="status !== 'pending' && envStatus !== 'pending'" class="flex flex-col gap-4">
       <div v-for="variable in filteredVariables" :key="variable.id">
         <VariableItem
           :project-id
           :variable
+          :environments
           :refresh
           :is-selected="isVariableSelected(variable)"
           @toggle-selected="toggleVariable(variable)"
