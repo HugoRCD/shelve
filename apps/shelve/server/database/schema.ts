@@ -26,6 +26,7 @@ export const users = pgTable('users', {
   avatar: varchar().default('https://i.imgur.com/6VBx3io.png').notNull(),
   role: rolesEnum().default(Role.USER).notNull(),
   authType: authTypesEnum().notNull(),
+  onboarding: boolean().default(false).notNull(),
   ...timestamps,
 })
 
@@ -35,9 +36,8 @@ export const teams = pgTable('teams', {
   slug: varchar().unique().notNull(),
   logo: varchar().default('https://github.com/HugoRCD/shelve/blob/main/assets/default.webp?raw=true').notNull(),
   private: boolean().default(true).notNull(),
-  privateOf: integer().references(() => users.id, { onDelete: 'cascade' }),
   ...timestamps,
-}, (table) => [index('teams_private_of_idx').on(table.privateOf)])
+})
 
 export const members = pgTable('members', {
   id: integer().primaryKey().generatedByDefaultAsIdentity(),

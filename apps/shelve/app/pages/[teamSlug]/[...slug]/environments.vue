@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { type Environment, TeamRole, type User } from '@shelve/types'
+import { type Environment, TeamRole } from '@shelve/types'
 import { ConfirmModal } from '#components'
-import { hasAccess } from '~/utils/hasAccess'
 
 const teamId = useTeamId()
 const teamRole = useTeamRole()

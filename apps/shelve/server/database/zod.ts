@@ -8,6 +8,7 @@ export const userSchema = z.object({
   avatar: z.string(),
   role: z.nativeEnum(Role),
   authType: z.nativeEnum(AuthType),
+  onboarding: z.boolean(),
   createdAt: z.date(),
   updatedAt: z.date(),
 })

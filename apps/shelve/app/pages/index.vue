@@ -1,4 +1,8 @@
 <script setup lang="ts">
+definePageMeta({
+  middleware: ['auth', 'onboarding'],
+})
+
 const teamSlug = useTeamSlug()
 </script>
 

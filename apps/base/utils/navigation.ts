@@ -54,7 +54,7 @@ export function getNavigation(where: Where, teamSlug?: string): Navigation[] {
         },
         {
           name: 'API Tokens',
-          path: '/tokens',
+          path: '/user/tokens',
           icon: 'heroicons:key',
           title: 'API Tokens',
         },

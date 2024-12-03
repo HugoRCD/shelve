@@ -33,6 +33,7 @@ const groups = computed(() => [
       },
       disabled: team.id === teamId.value,
       onSelect: () => {
+        if (team.id === teamId.value) return
         selectTeam(team.id)
       }
     }))

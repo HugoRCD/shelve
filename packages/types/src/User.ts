@@ -15,6 +15,7 @@ export type User = {
   avatar: string;
   role: Role;
   authType: AuthType;
+  onboarding: boolean;
   createdAt: Date;
   updatedAt: Date;
 };

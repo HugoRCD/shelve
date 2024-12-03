@@ -3,10 +3,6 @@ import { AuthType, Role, type User } from '@shelve/types'
 import type { TableColumn } from '@nuxt/ui'
 import { ConfirmModal } from '#components'
 
-definePageMeta({
-  middleware: 'admin',
-})
-
 const { data: users, status, refresh } = useFetch<User[]>('/api/admin/users', {
   method: 'GET',
   watch: false,

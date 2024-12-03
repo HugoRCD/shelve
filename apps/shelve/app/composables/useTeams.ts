@@ -101,7 +101,7 @@ export function useTeamsService() {
     await projects.fetchProjects()
   }
 
-  async function createTeam(name: string) {
+  async function createTeam(name: string): Promise<Team | undefined> {
     createLoading.value = true
     try {
       const team = await $fetch<Team>('/api/teams', {
@@ -114,6 +114,8 @@ export function useTeamsService() {
       if (!index)
         teams.value.push(team)
       toast.success('Team created')
+      createLoading.value = false
+      return team
     } catch (error) {
       toast.error('Failed to create team')
     }

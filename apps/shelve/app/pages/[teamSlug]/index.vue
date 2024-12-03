@@ -1,6 +1,6 @@
 <script setup lang="ts">
 definePageMeta({
-  middleware: 'protected',
+  middleware: ['auth', 'onboarding'],
 })
 
 const projects = useProjects()

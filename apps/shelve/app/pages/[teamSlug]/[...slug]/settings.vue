@@ -2,10 +2,6 @@
 import { TeamRole } from '@shelve/types'
 import { ConfirmModal } from '#components'
 
-definePageMeta({
-  middleware: 'protected',
-})
-
 const { updateTeam, deleteTeam } = useTeamsService()
 
 const updateLoading = ref(false)
@@ -59,11 +55,6 @@ const open = ref(false)
               Manage team settings
             </p>
           </div>
-        </div>
-        <div>
-          <UBadge v-if="isPrivate" size="sm" color="neutral" variant="soft">
-            Private
-          </UBadge>
         </div>
       </div>
       <div style="--stagger: 2" data-animate class="mt-6 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-6">

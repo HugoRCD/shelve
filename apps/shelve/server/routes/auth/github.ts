@@ -22,7 +22,7 @@ export default defineOAuthGitHubEventHandler({
         user: userSchema.parse(_user),
         loggedInAt: new Date().toISOString(),
       })
-      return sendRedirect(event, '/')
+      return sendRedirect(event, _user.onboarding ? '/' : '/onboarding')
     } catch (error) {
       console.error('GitHub OAuth error:', error)
       return sendRedirect(event, '/login?error=github')

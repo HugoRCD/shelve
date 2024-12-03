@@ -9,6 +9,7 @@ declare module '#auth-utils' {
     email: string
     avatar: string
     authType: AuthType
+    onboarding: boolean
     role: Role
     createdAt: Date
     updatedAt: Date
