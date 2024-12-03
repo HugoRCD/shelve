@@ -19,7 +19,8 @@ export function useTeam(): Ref<Team> {
  * Current selected team environments
  */
 export function useTeamEnv(): Ref<Environment[]> {
-  return useState<Environment[]>('teamEnv', () => [])
+  const currentTeam = useTeam()
+  return computed(() => currentTeam.value?.environments)
 }
 
 /**
@@ -50,22 +51,11 @@ export function useTeamRole(): Ref<TeamRole> {
   })
 }
 
-/**
- * Check if the current selected team is a private team
- * Private teams can't be deleted (they act as a default team for a given user)
- */
-export function isPrivateTeam(): Ref<boolean> {
-  const currentTeam = useTeam()
-  return computed(() => currentTeam.value?.private)
-}
-
 export function useTeamsService() {
   const router = useRouter()
   const teams = useTeams()
   const currentTeam = useTeam()
   const teamId = useTeamId()
-  const teamEnv = useTeamEnv()
-  const { user } = useUserSession()
   const loading = ref(false)
   const createLoading = ref(false)
 
@@ -75,28 +65,18 @@ export function useTeamsService() {
 
   async function fetchTeams() {
     loading.value = true
-
     try {
-      const fetchedTeams = await $fetch<Team[]>('/api/teams', { method: 'GET' })
-
-      if (!fetchedTeams) throw new Error('Failed to fetch teams')
-
-      teams.value = fetchedTeams
-
-      const privateTeam = teams.value.find(team => team.private && team.members.some(member => member.userId === user.value!.id))
-      defaultTeamId.value = defaultTeamId.value || privateTeam!.id
-      currentTeam.value = teams.value.find(team => team.id === defaultTeamId.value) as Team
-      teamEnv.value = currentTeam.value.environments
-    } finally {
-      loading.value = false
+      teams.value = await $fetch<Team[]>('/api/teams', { method: 'GET' })
+    } catch (error) {
+      toast.error('Failed to fetch teams')
     }
+    loading.value = false
   }
 
-  async function selectTeam(id: number) {
+  async function selectTeam(team: Team) {
     const projects = useProjectsService()
-    currentTeam.value = teams.value.find(team => team.id === id) as Team
-    teamEnv.value = currentTeam.value.environments
-    defaultTeamId.value = id
+    currentTeam.value = team
+    defaultTeamId.value = team.id
     await router.push(`/${ currentTeam.value.slug }`)
     await projects.fetchProjects()
   }
@@ -166,15 +146,14 @@ export function useTeamsService() {
       toast.error('You cannot delete the last team')
       return
     }
-    if (currentTeam.value.private) {
-      toast.error('You cannot delete the private team')
-      return
-    }
     await $fetch(`/api/teams/${teamId.value}`, {
       method: 'DELETE',
     })
     teams.value = teams.value.filter((team) => team.id !== teamId.value)
-    await selectTeam(teams.value[0]!.id)
+    if (teams.value && teams.value.length)
+      await selectTeam(teams.value[0]!)
+    else
+      await router.push('/')
   }
 
   return {

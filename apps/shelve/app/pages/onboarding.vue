@@ -4,9 +4,13 @@ definePageMeta({
 })
 
 const { user } = useUserSession()
-const router = useRouter()
 const teamName = ref('')
 const loading = ref(false)
+
+const {
+  createTeam,
+  selectTeam,
+} = useTeamsService()
 
 async function createTeamAndCompleteOnboarding() {
   if (!teamName.value) {
@@ -15,7 +19,7 @@ async function createTeamAndCompleteOnboarding() {
   }
   loading.value = true
   try {
-    const team = await useTeamsService().createTeam(teamName.value)
+    const team = await createTeam(teamName.value)
     if (!team) {
       toast.error('Failed to create team')
       return
@@ -30,7 +34,7 @@ async function createTeamAndCompleteOnboarding() {
 
     user.value!.onboarding = true
 
-    await router.push(`/${team.slug}`)
+    await selectTeam(team)
   } catch (error) {
     toast.error('Failed to complete onboarding')
   }

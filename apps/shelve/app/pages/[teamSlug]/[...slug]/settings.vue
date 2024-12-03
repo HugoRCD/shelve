@@ -8,9 +8,8 @@ const updateLoading = ref(false)
 
 const team = useTeam()
 const teamRole = useTeamRole()
-const isPrivate = isPrivateTeam()
 
-const canBeDeleted = computed(() => teamRole.value === TeamRole.OWNER && !isPrivate.value)
+const canBeDeleted = computed(() => teamRole.value === TeamRole.OWNER)
 
 function updateCurrentTeam() {
   updateLoading.value = true

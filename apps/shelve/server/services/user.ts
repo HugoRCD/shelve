@@ -16,11 +16,6 @@ export async function createUser(input: CreateUserInput): Promise<User> {
     })
     .returning()
   if (!createdUser) throw createError({ statusCode: 500, message: 'Failed to create user' })
-  await new TeamsService().createTeam({
-    name: `${input.username}'s team`,
-    private: true,
-    requester: createdUser,
-  })
   return createdUser
 }
 

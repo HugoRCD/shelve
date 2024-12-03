@@ -8,11 +8,17 @@ export default defineEventHandler(async (event) => {
     }),
   })
 
-  await useDrizzle().update(tables.users)
+  const [updatedUser] = await useDrizzle().update(tables.users)
     .set({
       onboarding: true,
     })
     .where(eq(tables.users.id, user.id))
+    .returning()
+
+  await setUserSession(event, {
+    user: updatedUser,
+    loggedInAt: new Date().toISOString(),
+  })
 
   setCookie(event, 'defaultTeamId', teamId.toString())
 

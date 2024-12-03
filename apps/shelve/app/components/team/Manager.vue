@@ -9,6 +9,7 @@ const open = ref(false)
 const {
   createTeam,
   selectTeam,
+  fetchTeams,
 } = useTeamsService()
 
 const loading = ref(false)
@@ -34,7 +35,7 @@ const groups = computed(() => [
       disabled: team.id === teamId.value,
       onSelect: () => {
         if (team.id === teamId.value) return
-        selectTeam(team.id)
+        selectTeam(team)
       }
     }))
   }
