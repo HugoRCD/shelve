@@ -1,4 +1,4 @@
-import type { CreateProjectInput, Project, ProjectUpdateInput, User } from '@shelve/types'
+import type { CreateProjectInput, Project, ProjectUpdateInput } from '@shelve/types'
 
 export class ProjectsService {
 
@@ -15,7 +15,7 @@ export class ProjectsService {
   }
 
   async updateProject(input: ProjectUpdateInput): Promise<Project> {
-    const existingProject = await this.getProject(input.id, input.requester.id)
+    const existingProject = await this.getProject(input.id)
     if (!existingProject) throw new Error('Project not found')
 
     if (existingProject.name !== input.name)
@@ -32,23 +32,22 @@ export class ProjectsService {
     return updatedProject
   }
 
-  getProject = withCache('Project', async (projectId: number, userId: number): Promise<Project> => {
-    const project = await hasAccessToProject(projectId, userId)
-
+  getProject = withCache('Project', async (projectId: number): Promise<Project> => {
+    const project = await useDrizzle().query.projects.findFirst({
+      where: eq(tables.projects.id, projectId)
+    })
     if (!project) throw new Error(`Project not found with id ${projectId}`)
     return project
   })
 
-  getProjects = withCache<Project[]>('Projects', async (teamId: number, requester: User) => {
-    await validateAccess({ teamId, requester })
+  getProjects = withCache<Project[]>('Projects', async (teamId: number) => {
     return await useDrizzle().query.projects.findMany({
       where: eq(tables.projects.teamId, teamId),
       orderBy: [desc(tables.projects.updatedAt)]
     })
   })
 
-  async deleteProject(projectId: number, userId: number): Promise<void> {
-    const { teamId } = await hasAccessToProject(projectId, userId)
+  async deleteProject(projectId: number, teamId: number): Promise<void> {
     await clearCache('Projects', teamId)
     await clearCache('Project', projectId)
 

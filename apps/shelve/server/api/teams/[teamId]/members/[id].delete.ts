@@ -1,21 +1,16 @@
-import { z, zh } from 'h3-zod'
+import { TeamRole } from '@shelve/types'
 import { MembersService } from '~~/server/services/members'
 
 export default eventHandler(async (event) => {
-  const { user } = await requireUserSession(event)
-  const { teamId, memberId } = await zh.useValidatedParams(event, {
-    teamId: z.coerce.number({
-      required_error: 'Missing team ID',
-    }),
-    memberId: z.coerce.number({
-      required_error: 'Missing member ID',
-    })
-  })
+  const team = useTeam(event)
+  const member = useCurrentMember(event)
+  validateTeamRole(member, TeamRole.ADMIN)
+
   await new MembersService().removeMember({
-    teamId,
-    memberId,
-    requester: user
+    teamId: team.id,
+    memberId: member.id
   })
+
   return {
     statusCode: 200,
     message: 'Member removed',

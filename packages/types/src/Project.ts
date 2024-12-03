@@ -1,5 +1,3 @@
-import type { User } from './User'
-
 export type Project = {
   id: number;
   name: string;
@@ -22,8 +20,7 @@ export type CreateProjectInput = {
   projectManager?: string;
   homepage?: string;
   variablePrefix?: string;
-  teamId?: number | null;
-  requester?: User;
+  teamId: number;
 };
 
 export type ProjectUpdateInput = {
@@ -36,6 +33,5 @@ export type ProjectUpdateInput = {
   projectManager?: string;
   variablePrefix?: string;
   teamId: number;
-  requester: User;
 };
 

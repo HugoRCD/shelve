@@ -3,6 +3,9 @@ import { AuthType, Role, TeamRole } from '@shelve/types'
 import { relations } from 'drizzle-orm'
 import { timestamps } from './column.helpers'
 
+const DEFAULT_AVATAR = 'https://i.imgur.com/6VBx3io.png'
+const DEFAULT_LOGO = 'https://github.com/HugoRCD/shelve/blob/main/assets/default.webp?raw=true'
+
 export const teamRoleEnum = pgEnum('team_role', [
   TeamRole.OWNER,
   TeamRole.ADMIN,
@@ -23,7 +26,7 @@ export const users = pgTable('users', {
   id: integer().primaryKey().generatedByDefaultAsIdentity(),
   username: varchar().unique().notNull(),
   email: varchar().unique().notNull(),
-  avatar: varchar().default('https://i.imgur.com/6VBx3io.png').notNull(),
+  avatar: varchar().default(DEFAULT_AVATAR).notNull(),
   role: rolesEnum().default(Role.USER).notNull(),
   authType: authTypesEnum().notNull(),
   onboarding: boolean().default(false).notNull(),
@@ -35,7 +38,6 @@ export const teams = pgTable('teams', {
   name: varchar().notNull(),
   slug: varchar().unique().notNull(),
   logo: varchar().default('https://github.com/HugoRCD/shelve/blob/main/assets/default.webp?raw=true').notNull(),
-  private: boolean().default(true).notNull(),
   ...timestamps,
 })
 
@@ -60,9 +62,12 @@ export const projects = pgTable('projects', {
   projectManager: varchar().default('').notNull(),
   homepage: varchar().default('').notNull(),
   variablePrefix: varchar().default('').notNull(),
-  logo: varchar().default('https://github.com/HugoRCD/shelve/blob/main/assets/default.webp?raw=true').notNull(),
+  logo: varchar().default(DEFAULT_LOGO).notNull(),
   ...timestamps,
-})
+}, (table) => [
+  uniqueIndex('projects_team_name_idx').on(table.teamId, table.name),
+  index('projects_team_idx').on(table.teamId),
+])
 
 export const variables = pgTable('variables', {
   id: integer().primaryKey().generatedByDefaultAsIdentity(),
@@ -84,7 +89,8 @@ export const variableValues = pgTable('variable_values', {
   uniqueIndex('variable_values_variable_env_idx').on(
     table.variableId,
     table.environmentId
-  )
+  ),
+  index('variable_values_env_idx').on(table.environmentId),
 ])
 
 export const tokens = pgTable('tokens', {
@@ -93,7 +99,7 @@ export const tokens = pgTable('tokens', {
   name: varchar().notNull(),
   userId: integer().references(() => users.id, { onDelete: 'cascade' }).notNull(),
   ...timestamps,
-})
+}, (table) => [index('tokens_user_idx').on(table.userId)])
 
 export const environments = pgTable('environments', {
   id: integer().primaryKey().generatedByDefaultAsIdentity(),

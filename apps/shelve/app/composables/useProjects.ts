@@ -25,7 +25,7 @@ export function useProjectsService() {
 
   async function fetchProjects() {
     loading.value = true
-    projects.value = await $fetch<Project[]>(`/api/projects${teamId.value ? `?teamId=${teamId.value}` : ''}`, {
+    projects.value = await $fetch<Project[]>(`/api/teams/${teamId.value}/projects`, {
       method: 'GET',
     })
     loading.value = false
@@ -33,7 +33,7 @@ export function useProjectsService() {
 
   async function fetchCurrentProject(projectId: number) {
     currentLoading.value = true
-    currentProject.value = await $fetch<Project>(`/api/projects/${projectId}`, {
+    currentProject.value = await $fetch<Project>(`/api/teams/${teamId.value}/projects/${projectId}`, {
       method: 'GET',
     })
     currentLoading.value = false
@@ -41,7 +41,7 @@ export function useProjectsService() {
 
   async function createProject(createProjectInput: Omit<CreateProjectInput, 'teamId'>) {
     try {
-      const response = await $fetch<Project>(`/api/projects${teamId.value ? `?teamId=${teamId.value}` : ''}`, {
+      const response = await $fetch<Project>(`/api/teams/${teamId.value}/projects${teamId.value ? `?teamId=${teamId.value}` : ''}`, {
         method: 'POST',
         body: {
           ...createProjectInput
@@ -56,7 +56,7 @@ export function useProjectsService() {
 
   async function updateProject(projectId: number, project: Project) {
     try {
-      const response = await $fetch<Project>(`/api/projects/${projectId}`, {
+      const response = await $fetch<Project>(`/api/teams/${teamId.value}/projects/${projectId}`, {
         method: 'PUT',
         body: project,
       })
@@ -70,7 +70,7 @@ export function useProjectsService() {
 
   async function deleteProject(projectId: number) {
     try {
-      await $fetch(`/api/projects/${projectId}`, {
+      await $fetch(`/api/teams/${teamId.value}/projects/${projectId}`, {
         method: 'DELETE',
       })
       projects.value = projects.value.filter((project) => project.id !== projectId)

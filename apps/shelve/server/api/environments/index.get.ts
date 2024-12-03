@@ -5,10 +5,10 @@ import { EnvironmentsService } from '~~/server/services/environments'
 export default eventHandler(async (event) => {
   const { user } = await requireUserSession(event)
   const { teamId } = await zh.useValidatedQuery(event, {
-    teamId: z.coerce.number().optional(),
+    teamId: z.coerce.number({
+      required_error: 'Team ID is required',
+    }),
   })
 
-  const resolvedTeamId = teamId || await new TeamsService().getPrivateUserTeamId(user.id)
-
-  return await new EnvironmentsService().getEnvironments(resolvedTeamId)
+  return await new EnvironmentsService().getEnvironments(teamId)
 })

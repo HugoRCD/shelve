@@ -4,7 +4,7 @@ export default defineEventHandler(async (event) => {
   const protectedRoutes = [
     '/api/auth/logout',
     '/api/user',
-    '/api/team',
+    '/api/teams',
     '/api/projects',
     '/api/environments',
     '/api/variables',

@@ -15,8 +15,6 @@ export class TeamsService {
       .values({
         slug,
         name: input.name,
-        private: input.private || false,
-        privateOf: input.private ? input.requester.id : null,
         logo: input.logo
       })
       .returning()
@@ -48,8 +46,7 @@ export class TeamsService {
   }
 
   async updateTeam(input: UpdateTeamInput): Promise<Team> {
-    const { teamId, requester, ...data } = input
-    await validateAccess({ teamId, requester }, TeamRole.OWNER)
+    const { teamId, ...data } = input
 
     await useDrizzle().update(tables.teams)
       .set(data)
@@ -72,8 +69,7 @@ export class TeamsService {
   }
 
   async deleteTeam(input: DeleteTeamInput): Promise<void> {
-    const { teamId, requester } = input
-    await validateAccess({ teamId, requester }, TeamRole.OWNER)
+    const { teamId } = input
     const [team] = await useDrizzle().delete(tables.teams).where(eq(tables.teams.id, teamId)).returning({ id: tables.teams.id })
     if (!team) throw new Error(`Team not found after deletion with id ${teamId}`)
     await clearCache('Team', teamId)
@@ -100,8 +96,7 @@ export class TeamsService {
     return teams
   })
 
-  getTeam = withCache<Team>('Team', async (teamId, requester) => {
-    await validateAccess({ teamId, requester })
+  getTeam = withCache<Team>('Team', async (teamId) => {
     const team = await useDrizzle().query.teams.findFirst({
       where: eq(tables.teams.id, teamId),
       with: {
@@ -116,15 +111,6 @@ export class TeamsService {
     if (!team) throw new Error(`Team not found with id ${teamId}`)
     return team
   })
-
-  async getPrivateUserTeamId(userId: number): Promise<number> {
-    const team = await useDrizzle().query.teams.findFirst({
-      where: and(eq(tables.teams.private, true), eq(tables.teams.privateOf, userId)),
-      columns: { id: true }
-    })
-    if (!team) throw new Error(`Private team not found for user with id ${userId}`)
-    return team.id
-  }
 
 }
 
