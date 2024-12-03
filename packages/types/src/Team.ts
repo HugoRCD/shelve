@@ -61,8 +61,3 @@ export type RemoveMemberInput = {
   teamId: number;
   memberId: number;
 }
-
-export type ValidateAccess = {
-  teamId: number;
-  requester: User;
-}
