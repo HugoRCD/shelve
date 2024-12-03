@@ -1,14 +1,14 @@
-import { TeamRole } from '@shelve/types'
 import { MembersService } from '~~/server/services/members'
+import { idParamsSchema } from '~~/server/database/zod'
 
 export default eventHandler(async (event) => {
   const team = useTeam(event)
-  const member = useCurrentMember(event)
-  validateTeamRole(member, TeamRole.ADMIN)
+
+  const { id } = await getValidatedRouterParams(event, idParamsSchema.parse)
 
   await new MembersService().removeMember({
     teamId: team.id,
-    memberId: member.id
+    memberId: id,
   })
 
   return {

@@ -1,16 +1,16 @@
-import { zh, z } from 'h3-zod'
+import { z } from 'zod'
 import type { EnvVar } from '@shelve/types'
 import { VariablesService } from '~~/server/services/variables'
 
 export default eventHandler(async (event) => {
-  const { id, envId } = await zh.useValidatedParams(event, z.object({
+  const { id, envId } = await getValidatedRouterParams(event, z.object({
     id: z.coerce.number({
       required_error: 'Project ID is required',
     }).int().positive(),
     envId: z.coerce.number({
       required_error: 'Environment ID is required',
     }).int().positive(),
-  }))
+  }).parse)
   const variablesService = new VariablesService()
   const result = await variablesService.getVariables(id, envId)
   if (!result) throw createError({ statusCode: 404, message: `Variables not found for project ${id} and environment ${envId}` })

@@ -1,12 +1,12 @@
-import { z, zh } from 'h3-zod'
+import { z } from 'zod'
 
 export default defineEventHandler(async (event) => {
   const { user } = await requireUserSession(event)
-  const { teamId } = await zh.useValidatedBody(event, {
+  const { teamId } = await readValidatedBody(event, z.object({
     teamId: z.number({
       required_error: 'Team ID is required',
     }),
-  })
+  }).parse)
 
   const [updatedUser] = await useDrizzle().update(tables.users)
     .set({

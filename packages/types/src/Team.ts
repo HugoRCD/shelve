@@ -55,6 +55,7 @@ export type AddMemberInput = {
 export type UpdateMemberInput = {
   teamId: number;
   memberId: number;
+  role: TeamRole;
 }
 
 export type RemoveMemberInput = {

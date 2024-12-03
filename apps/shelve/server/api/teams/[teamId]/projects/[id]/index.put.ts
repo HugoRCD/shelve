@@ -1,5 +1,4 @@
 import { z } from 'zod'
-import { TeamRole } from '@shelve/types'
 import { ProjectsService } from '~~/server/services/projects'
 import { idParamsSchema } from '~~/server/database/zod'
 
@@ -15,10 +14,6 @@ const updateProjectSchema = z.object({
 
 export default eventHandler(async (event) => {
   const team = useTeam(event)
-  const member = useCurrentMember(event)
-  validateTeamRole(member, TeamRole.ADMIN)
-
-  console.log('event', event)
 
   const { id } = await getValidatedRouterParams(event, idParamsSchema.parse)
 

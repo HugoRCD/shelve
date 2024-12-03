@@ -1,6 +1,7 @@
 import { z } from 'zod'
 import { TeamRole } from '@shelve/types'
 import { MembersService } from '~~/server/services/members'
+import { idParamsSchema } from '~~/server/database/zod'
 
 const updateMemberSchema = z.object({
   role: z.nativeEnum(TeamRole),
@@ -8,14 +9,13 @@ const updateMemberSchema = z.object({
 
 export default eventHandler(async (event) => {
   const team = useTeam(event)
-  const member = useCurrentMember(event)
-  validateTeamRole(member, TeamRole.ADMIN)
 
+  const { id } = await getValidatedRouterParams(event, idParamsSchema.parse)
   const { role } = await readValidatedBody(event, updateMemberSchema.parse)
 
   return new MembersService().updateMember({
     teamId: team.id,
-    memberId: member.id,
+    memberId: id,
     role
   })
 })

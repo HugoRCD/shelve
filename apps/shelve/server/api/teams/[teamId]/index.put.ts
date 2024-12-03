@@ -1,5 +1,4 @@
 import { z } from 'zod'
-import { TeamRole } from '@shelve/types'
 import { TeamsService } from '~~/server/services/teams'
 
 const updateTeamSchema = z.object({
@@ -10,8 +9,6 @@ const updateTeamSchema = z.object({
 
 export default eventHandler(async (event) => {
   const team = useTeam(event)
-  const member = useCurrentMember(event)
-  validateTeamRole(member, TeamRole.ADMIN)
 
   const { name, logo, slug } = await readValidatedBody(event, updateTeamSchema.parse)
 

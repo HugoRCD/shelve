@@ -1,9 +1,8 @@
-import { zh } from 'h3-zod'
 import { VariablesService } from '~~/server/services/variables'
 import { idParamsSchema } from '~~/server/database/zod'
 
 export default eventHandler(async (event) => {
-  const { id } = await zh.useValidatedParams(event, idParamsSchema)
+  const { id } = await getValidatedRouterParams(event, idParamsSchema.parse)
   await new VariablesService().deleteVariable(id)
   return {
     statusCode: 200,

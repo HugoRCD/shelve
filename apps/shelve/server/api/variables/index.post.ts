@@ -1,4 +1,4 @@
-import { z, zh } from 'h3-zod'
+import { z } from 'zod'
 import { VariablesService } from '~~/server/services/variables'
 
 const schema = z.object({
@@ -20,7 +20,7 @@ const schema = z.object({
 })
 
 export default eventHandler(async (event) => {
-  const body = await zh.useValidatedBody(event, schema)
+  const body = await readValidatedBody(event, schema.parse)
 
   const input = {
     projectId: body.projectId,

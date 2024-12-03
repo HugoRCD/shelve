@@ -1,10 +1,10 @@
-import { zh, z } from 'h3-zod'
+import { z } from 'zod'
 import { VariablesService } from '~~/server/services/variables'
 
 export default defineEventHandler(async (event) => {
-  const { variables } = await zh.useValidatedBody(event, {
+  const { variables } = await readValidatedBody(event, z.object({
     variables: z.array(z.number()).min(1).max(100),
-  })
+  }).parse)
   await Promise.all(variables.map(id => new VariablesService().deleteVariable(id)))
   return {
     statusCode: 200,

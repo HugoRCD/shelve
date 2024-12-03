@@ -1,14 +1,14 @@
-import { z, zh } from 'h3-zod'
-import { TeamsService } from '~~/server/services/teams'
+import { z } from 'zod'
 import { EnvironmentsService } from '~~/server/services/environments'
 
+const getEnvironmentsSchema = z.object({
+  teamId: z.coerce.number({
+    required_error: 'Team ID is required',
+  }),
+})
+
 export default eventHandler(async (event) => {
-  const { user } = await requireUserSession(event)
-  const { teamId } = await zh.useValidatedQuery(event, {
-    teamId: z.coerce.number({
-      required_error: 'Team ID is required',
-    }),
-  })
+  const { teamId } = await getValidatedQuery(event, getEnvironmentsSchema.parse)
 
   return await new EnvironmentsService().getEnvironments(teamId)
 })
