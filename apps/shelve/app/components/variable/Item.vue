@@ -1,15 +1,14 @@
 <script setup lang="ts">
 import { type Environment, TeamRole, type Variable } from '@shelve/types'
 
-type ProjectVariableProps = {
-  refresh: () => Promise<void>
+const { refresh, variable, projectId, environments } = defineProps<{
+  refresh:() => Promise<void>
   variable: Variable
   environments: Environment[]
   projectId: string
   isSelected: boolean
-}
+}>()
 
-const { refresh, variable, projectId, environments } = defineProps<ProjectVariableProps>()
 const teamRole = useTeamRole() //TODO handle roles
 
 const {

@@ -69,7 +69,7 @@ export function useTeamsService() {
   const loading = ref(false)
   const createLoading = ref(false)
 
-  const lastUsedTeamId = useCookie<number>('lastUsedTeam', {
+  const defaultTeamId = useCookie<number>('defaultTeamId', {
     watch: true,
   })
 
@@ -84,8 +84,8 @@ export function useTeamsService() {
       teams.value = fetchedTeams
 
       const privateTeam = teams.value.find(team => team.private && team.members.some(member => member.userId === user.value!.id))
-      lastUsedTeamId.value = lastUsedTeamId.value || privateTeam!.id
-      currentTeam.value = teams.value.find(team => team.id === lastUsedTeamId.value) as Team
+      defaultTeamId.value = defaultTeamId.value || privateTeam!.id
+      currentTeam.value = teams.value.find(team => team.id === defaultTeamId.value) as Team
       teamEnv.value = currentTeam.value.environments
     } finally {
       loading.value = false
@@ -96,7 +96,7 @@ export function useTeamsService() {
     const projects = useProjectsService()
     currentTeam.value = teams.value.find(team => team.id === id) as Team
     teamEnv.value = currentTeam.value.environments
-    lastUsedTeamId.value = id
+    defaultTeamId.value = id
     await router.push(`/${ currentTeam.value.slug }`)
     await projects.fetchProjects()
   }

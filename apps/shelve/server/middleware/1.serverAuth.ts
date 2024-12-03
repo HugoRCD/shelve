@@ -13,9 +13,7 @@ export default defineEventHandler(async (event) => {
     '/api/protected',
   ]
 
-  if (!protectedRoutes.some((route) => event.path?.startsWith(route))) {
-    return
-  }
+  if (!protectedRoutes.some((route) => event.path?.startsWith(route))) return
 
   const authToken = getCookie(event, 'authToken')
 
