@@ -10,7 +10,7 @@ const createMemberSchema = z.object({
 })
 
 export default eventHandler(async (event) => {
-  const team = useTeam(event)
+  const team = useCurrentTeam(event)
   const member = useCurrentMember(event)
   validateTeamRole(member, TeamRole.ADMIN)
 

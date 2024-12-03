@@ -12,7 +12,7 @@ const createProjectSchema = z.object({
 })
 
 export default eventHandler(async (event) => {
-  const team = useTeam(event)
+  const team = useCurrentTeam(event)
 
   const body = await readValidatedBody(event, createProjectSchema.parse)
 

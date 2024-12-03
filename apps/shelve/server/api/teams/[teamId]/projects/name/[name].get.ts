@@ -9,7 +9,7 @@ const getProjectSchema = z.object({
 })
 
 export default eventHandler(async (event) => {
-  const team = useTeam(event)
+  const team = useCurrentTeam(event)
   const { name } = await getValidatedRouterParams(event, getProjectSchema.parse)
 
   const project = await useDrizzle().query.projects.findFirst({

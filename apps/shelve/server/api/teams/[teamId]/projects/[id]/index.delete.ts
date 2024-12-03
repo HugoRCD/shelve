@@ -2,7 +2,7 @@ import { ProjectsService } from '~~/server/services/projects'
 import { idParamsSchema } from '~~/server/database/zod'
 
 export default eventHandler(async (event) => {
-  const team = useTeam(event)
+  const team = useCurrentTeam(event)
 
   const { id } = await getValidatedRouterParams(event, idParamsSchema.parse)
 

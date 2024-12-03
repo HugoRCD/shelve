@@ -7,7 +7,7 @@ const createEnvironmentSchema = z.object({
 })
 
 export default defineEventHandler(async (event) => {
-  const team = useTeam(event)
+  const team = useCurrentTeam(event)
   const member = useCurrentMember(event)
   validateTeamRole(member, TeamRole.ADMIN)
 

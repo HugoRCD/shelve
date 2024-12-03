@@ -131,6 +131,7 @@ function getProjectManager(manager: string) {
           </UModal>
         </div>
         <UDropdownMenu
+          v-if="hasAccess(teamRole, TeamRole.ADMIN)"
           :items
           :content="{
             align: 'start',
@@ -144,7 +145,6 @@ function getProjectManager(manager: string) {
       <div v-if="project.projectManager || project.repository || project.homepage" class="mt-6 flex flex-wrap gap-4 sm:flex-row sm:items-center">
         <NuxtLink v-if="project.projectManager" target="_blank" :to="project.projectManager">
           <UButton
-
             variant="soft"
             size="xs"
             :icon="getProjectManager(project.projectManager)?.icon"
@@ -154,7 +154,6 @@ function getProjectManager(manager: string) {
         </NuxtLink>
         <NuxtLink v-if="project.repository" target="_blank" :to="project.repository">
           <UButton
-
             variant="soft"
             size="xs"
             icon="simple-icons:github"
@@ -164,7 +163,6 @@ function getProjectManager(manager: string) {
         </NuxtLink>
         <NuxtLink v-if="project.homepage" target="_blank" :to="project.homepage">
           <UButton
-
             variant="soft"
             size="xs"
             icon="heroicons:home"

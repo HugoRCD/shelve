@@ -22,11 +22,11 @@ export function validateTeamRole(member: Member, minRole: TeamRole = TeamRole.ME
     [TeamRole.MEMBER]: 2,
   }
   if (orderRole[member.role] > orderRole[minRole])
-    throw new Error('Unauthorized: Member does not have the required role')
+    throw createError({ statusCode: 401, message: 'Unauthorized: User does not have the required role' })
   return true
 }
 
-export function useTeam(event: H3Event): Team {
+export function useCurrentTeam(event: H3Event): Team {
   const { team } = event.context
   if (!team) throw createError({ statusCode: 500, message: 'Team not found' })
   return team

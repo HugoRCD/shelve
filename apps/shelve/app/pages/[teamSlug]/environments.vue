@@ -5,6 +5,9 @@ import { ConfirmModal } from '#components'
 const teamId = useTeamId()
 const teamRole = useTeamRole()
 
+const canDelete = computed(() => hasAccess(teamRole.value, TeamRole.OWNER))
+const canUpdate = computed(() => hasAccess(teamRole.value, TeamRole.ADMIN))
+
 const { data: environments, status, refresh } = useFetch<Environment[]>(`/api/teams/${teamId.value}/environments`, {
   method: 'GET',
   watch: false,
@@ -118,7 +121,7 @@ function updateEnvironment(env: Environment) {
             Create, update, and delete environments
           </p>
         </div>
-        <form class="flex items-center gap-2" @submit.prevent="createEnvironment">
+        <form v-if="canUpdate" class="flex items-center gap-2" @submit.prevent="createEnvironment">
           <UInput v-model="newEnv" placeholder="New environment name" required />
           <UButton label="Create" :loading size="sm" type="submit" />
         </form>
@@ -130,7 +133,7 @@ function updateEnvironment(env: Environment) {
           </template>
           <template #actions-cell="{ row }">
             <div class="flex gap-2">
-              <UPopover arrow>
+              <UPopover v-if="canUpdate" arrow>
                 <UButton variant="soft" icon="heroicons:pencil" />
                 <template #content>
                   <UCard>
@@ -145,7 +148,7 @@ function updateEnvironment(env: Environment) {
                   </UCard>
                 </template>
               </UPopover>
-              <UButton v-if="hasAccess(teamRole, TeamRole.ADMIN)" color="error" variant="soft" icon="heroicons:trash" @click="openDeleteModal(row.original)" />
+              <UButton v-if="canDelete" color="error" variant="soft" icon="heroicons:trash" @click="openDeleteModal(row.original)" />
             </div>
           </template>
         </UTable>

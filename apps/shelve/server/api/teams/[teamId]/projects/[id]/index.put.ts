@@ -13,7 +13,7 @@ const updateProjectSchema = z.object({
 })
 
 export default eventHandler(async (event) => {
-  const team = useTeam(event)
+  const team = useCurrentTeam(event)
 
   const { id } = await getValidatedRouterParams(event, idParamsSchema.parse)
 

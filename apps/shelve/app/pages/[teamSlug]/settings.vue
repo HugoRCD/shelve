@@ -9,7 +9,8 @@ const updateLoading = ref(false)
 const team = useTeam()
 const teamRole = useTeamRole()
 
-const canBeDeleted = computed(() => teamRole.value === TeamRole.OWNER)
+const canDelete = computed(() => hasAccess(teamRole.value, TeamRole.OWNER))
+const canUpdate = computed(() => hasAccess(teamRole.value, TeamRole.ADMIN))
 
 function updateCurrentTeam() {
   updateLoading.value = true
@@ -58,28 +59,28 @@ const open = ref(false)
       </div>
       <div style="--stagger: 2" data-animate class="mt-6 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-6">
         <div class="sm:col-span-3">
-          <FormGroup v-model="team.name" label="Name" />
+          <FormGroup v-model="team.name" label="Name" :disabled="!canUpdate" />
         </div>
         <div class="sm:col-span-4">
-          <FormGroup v-model="team.slug" label="Slug" />
+          <FormGroup v-model="team.slug" label="Slug" :disabled="!canUpdate" />
           <p class="text-xs mt-1 text-neutral-500">
             This is the unique identifier for your team (used by the CLI)
           </p>
         </div>
         <div class="sm:col-span-4">
-          <FormGroup v-model="team.logo" label="Logo" />
+          <FormGroup v-model="team.logo" label="Logo" :disabled="!canUpdate" />
         </div>
       </div>
       <div style="--stagger: 4" data-animate class="mt-6 flex items-center justify-between gap-2">
-        <UButton type="submit" :loading="updateLoading">
+        <UButton v-if="canUpdate" type="submit" :loading="updateLoading">
           Save
         </UButton>
-        <UButton v-if="canBeDeleted" color="error" variant="solid" @click="open = !open">
+        <UButton v-if="canDelete" color="error" variant="solid" @click="open = !open">
           Delete Team
         </UButton>
       </div>
     </form>
-    <div v-if="canBeDeleted" class="mt-6">
+    <div v-if="canDelete" class="mt-6">
       <UCollapsible v-model:open="open">
         <template #content>
           <UAlert

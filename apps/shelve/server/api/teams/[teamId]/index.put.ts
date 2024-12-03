@@ -8,7 +8,7 @@ const updateTeamSchema = z.object({
 })
 
 export default eventHandler(async (event) => {
-  const team = useTeam(event)
+  const team = useCurrentTeam(event)
 
   const { name, logo, slug } = await readValidatedBody(event, updateTeamSchema.parse)
 

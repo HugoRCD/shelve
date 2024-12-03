@@ -7,7 +7,7 @@ const updateEnvironmentSchema = z.object({
 })
 
 export default defineEventHandler(async (event) => {
-  const team = useTeam(event)
+  const team = useCurrentTeam(event)
 
   const { id } = await getValidatedRouterParams(event, idParamsSchema.parse)
   const { name } = await readValidatedBody(event, updateEnvironmentSchema.parse)
