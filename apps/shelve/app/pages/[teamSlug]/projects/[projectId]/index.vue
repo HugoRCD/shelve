@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useEnvironmentsService } from '~/composables/useEnvironments'
+
 definePageMeta({
   middleware: 'project-redirect'
 })
@@ -10,6 +12,9 @@ const {
   currentLoading,
   fetchCurrentProject
 } = useProjectsService()
+
+const { fetchEnvironments } = useEnvironmentsService()
+await fetchEnvironments()
 
 if (!currentProject.value)
   await fetchCurrentProject(+projectId)

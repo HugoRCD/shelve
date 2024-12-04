@@ -3,12 +3,10 @@ import type { Variable } from '@shelve/types'
 import { parseEnvFile } from '@shelve/utils'
 
 type CreateVariablesProps = {
-  refresh: () => Promise<void>
   variables: Variable[]
-  projectId: string
 }
 
-const { refresh, variables, projectId } = defineProps<CreateVariablesProps>()
+const { variables } = defineProps<CreateVariablesProps>()
 
 const {
   createLoading,
@@ -18,9 +16,9 @@ const {
   addVariable,
   removeVariable,
   createVariables,
-} = useVariablesService(refresh, projectId)
+} = useVariablesService()
 
-const teamEnv = useTeamEnv()
+const teamEnv = useEnvironments()
 
 const items = actionVariablesItem(variables)
 

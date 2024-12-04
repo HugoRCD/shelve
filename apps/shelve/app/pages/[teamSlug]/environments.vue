@@ -2,20 +2,12 @@
 import { type Environment, TeamRole } from '@shelve/types'
 import { ConfirmModal } from '#components'
 
-const teamId = useTeamId()
 const teamRole = useTeamRole()
 
 const canDelete = computed(() => hasAccess(teamRole.value, TeamRole.OWNER))
 const canUpdate = computed(() => hasAccess(teamRole.value, TeamRole.ADMIN))
 
-const { data: environments, status, refresh } = useFetch<Environment[]>(`/api/teams/${teamId.value}/environments`, {
-  method: 'GET',
-  watch: false,
-})
-
 const newEnv = ref('')
-const loading = ref(false)
-const updateLoading = ref(false)
 
 const columns = [
   {
@@ -28,53 +20,36 @@ const columns = [
   }
 ]
 
+const {
+  loading,
+  createLoading,
+  updateLoading,
+  environments,
+  fetchEnvironments,
+} = useEnvironmentsService()
+const envService = useEnvironmentsService()
+
+fetchEnvironments()
+
 async function create() {
-  loading.value = true
-  try {
-    if (!newEnv.value) {
-      toast.error('Environment name is required')
-      return
-    }
-    if (environments.value?.find(env => env.name === newEnv.value)) {
-      toast.error('Environment name already exists')
-      return
-    }
-    await $fetch(`/api/teams/${teamId.value}/environments`, {
-      method: 'POST',
-      body: {
-        name: newEnv.value
-      },
-    })
-    await refresh()
-    newEnv.value = ''
-  } catch (error) {
-    console.error(error)
-  }
-  loading.value = false
+  await envService.createEnvironment(newEnv.value)
+  await fetchEnvironments()
+  newEnv.value = ''
 }
 
 async function updateEnv(env: Environment) {
-  updateLoading.value = true
-  await $fetch(`/api/teams/${teamId.value}/environments/${env.id}`, {
-    method: 'PUT',
-    body: {
-      name: env.name
-    },
-  })
-  await refresh()
-  updateLoading.value = false
+  await envService.updateEnvironment(env)
+  await fetchEnvironments()
 }
 
-async function deleteEnv(environments: Environment) {
-  await $fetch(`/api/teams/${teamId.value}/environments/${environments.id}`, {
-    method: 'DELETE',
-  })
-  await refresh()
+async function deleteEnv(env: Environment) {
+  await envService.deleteEnvironment(env)
+  await fetchEnvironments()
 }
 
 const modal = useModal()
 function openDeleteModal(env: Environment) {
-  if (environments.value?.length === 1) {
+  if (environments.value.length === 1) {
     toast.error('You cannot delete the last environment')
     return
   }
@@ -123,11 +98,11 @@ function updateEnvironment(env: Environment) {
         </div>
         <form v-if="canUpdate" class="flex items-center gap-2" @submit.prevent="createEnvironment">
           <UInput v-model="newEnv" placeholder="New environment name" required />
-          <UButton label="Create" :loading size="sm" type="submit" />
+          <UButton label="Create" :loading="createLoading" size="sm" type="submit" />
         </form>
       </div>
       <div style="--stagger: 2" data-animate class="mt-6">
-        <UTable :data="environments" :columns :loading="status === 'pending'">
+        <UTable :data="environments" :columns :loading>
           <template #name-cell="{ row }">
             {{ capitalize(row.original.name) }}
           </template>
@@ -148,7 +123,13 @@ function updateEnvironment(env: Environment) {
                   </UCard>
                 </template>
               </UPopover>
-              <UButton v-if="canDelete" color="error" variant="soft" icon="heroicons:trash" @click="openDeleteModal(row.original)" />
+              <UButton
+                v-if="canDelete"
+                color="error"
+                variant="soft"
+                icon="heroicons:trash"
+                @click="openDeleteModal(row.original)"
+              />
             </div>
           </template>
         </UTable>

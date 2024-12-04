@@ -1,4 +1,4 @@
-import type { Environment, Member, Team } from '@shelve/types'
+import type { Member, Team } from '@shelve/types'
 import { Role, TeamRole } from '@shelve/types'
 
 /**
@@ -13,14 +13,6 @@ export function useTeams(): Ref<Team[]> {
  */
 export function useTeam(): Ref<Team> {
   return useState<Team>('team')
-}
-
-/**
- * Current selected team environments
- */
-export function useTeamEnv(): Ref<Environment[]> {
-  const currentTeam = useTeam()
-  return computed(() => currentTeam.value?.environments)
 }
 
 /**

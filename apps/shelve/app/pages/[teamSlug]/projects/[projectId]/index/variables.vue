@@ -1,24 +1,20 @@
 <script setup lang="ts">
-import type { Environment, Variable } from '@shelve/types'
+import type { Variable } from '@shelve/types'
 
-const teamId = useTeamId()
+const variables = useVariables()
 
-const { projectId } = useRoute().params as { projectId: string }
-const { data: variables, status, refresh } = useFetch<Variable[]>(`/api/variables/project/${projectId}`, {
-  method: 'GET',
-  watch: false,
-})
-
-const { data: environments, status: envStatus } = useFetch<Environment[]>(`/api/teams/${teamId.value}/environments`, {
-  method: 'GET',
-  watch: false,
-})
+const {
+  loading,
+  fetchVariables
+} = useVariablesService()
+fetchVariables()
 
 const selectedVariables = ref<Variable[]>([])
 const searchTerm = ref('')
 const selectedEnvironment = ref([])
 const order = ref('desc')
 
+const environments = useEnvironments()
 const items = ref(environments.value?.map((env) => ({ label: capitalize(env.name), value: env.id })) || [])
 
 const filteredVariables = computed(() => {
@@ -68,7 +64,7 @@ const isVariableSelected = (variable: Variable) => {
 
 <template>
   <div class="flex flex-col gap-2">
-    <ProjectCreateVariables v-if="projectId && variables && environments" :variables :project-id :refresh />
+    <ProjectCreateVariables v-if="variables && environments" :variables />
     <div class="flex justify-between items-center mt-2">
       <UInput
         v-model="searchTerm"
@@ -78,7 +74,6 @@ const isVariableSelected = (variable: Variable) => {
       <div class="flex gap-1">
         <UTooltip :text="order === 'asc' ? 'Oldest first' : 'Newest first'">
           <UButton
-
             icon="lucide:arrow-down"
             variant="soft"
             :ui="{ leadingIcon: order === 'asc' ? 'rotate-180 duration-300 transition-transform' : 'duration-300 transition-transform' }"
@@ -88,14 +83,12 @@ const isVariableSelected = (variable: Variable) => {
         <USelectMenu v-model="selectedEnvironment" multiple :items class="w-full" placeholder="Select environment" />
       </div>
     </div>
-    <VariableSelector v-model="selectedVariables" @refresh="refresh" />
-    <div v-if="status !== 'pending' && envStatus !== 'pending'" class="flex flex-col gap-4">
+    <VariableSelector v-model="selectedVariables" />
+    <div v-if="!loading" class="flex flex-col gap-4">
       <div v-for="variable in filteredVariables" :key="variable.id">
         <VariableItem
-          :project-id
           :variable
           :environments
-          :refresh
           :is-selected="isVariableSelected(variable)"
           @toggle-selected="toggleVariable(variable)"
         />

@@ -1,7 +1,16 @@
-import type { Variable, CreateVariablesInput } from '@shelve/types'
+import type { CreateVariablesInput, Variable } from '@shelve/types'
 
-export function useVariablesService(refresh: () => Promise<void>, projectId: string) {
-  const teamEnv = useTeamEnv()
+/**
+ * Current project variables
+ */
+export function useVariables(): Ref<Variable[]> {
+  return useState<Variable[]>('variables', () => [])
+}
+
+export function useVariablesService() {
+  const { projectId } = useRoute().params as { projectId: string }
+  const teamEnv = useEnvironments()
+  const variables = useVariables()
 
   const selectedEnvironments = ref<Record<number, boolean>>(
     Object.fromEntries(
@@ -23,6 +32,7 @@ export function useVariablesService(refresh: () => Promise<void>, projectId: str
     default: () => true,
   })
 
+  const loading = ref(false)
   const createLoading = ref(false)
   const updateLoading = ref(false)
   const deleteLoading = ref(false)
@@ -69,6 +79,16 @@ export function useVariablesService(refresh: () => Promise<void>, projectId: str
     variablesInput.value.autoUppercase = autoUppercase.value
   })
 
+  async function fetchVariables() {
+    loading.value = true
+    try {
+      variables.value = await $fetch<Variable[]>(`/api/variables/project/${projectId}`)
+    } catch (error) {
+      toast.error('Failed to fetch variables')
+    }
+    loading.value = false
+  }
+
   async function createVariables() {
     createLoading.value = true
     if (environmentIds.value.length === 0) {
@@ -99,7 +119,7 @@ export function useVariablesService(refresh: () => Promise<void>, projectId: str
       toast.error('An error occurred')
     }
     createLoading.value = false
-    await refresh()
+    await fetchVariables()
   }
 
   async function updateVariable(variable: Variable) {
@@ -110,7 +130,7 @@ export function useVariablesService(refresh: () => Promise<void>, projectId: str
         body: variable
       })
       toast.success('Variable updated successfully')
-      await refresh()
+      await fetchVariables()
     } catch (error) {
       console.error(error)
       toast.error('Failed to update variable')
@@ -118,27 +138,30 @@ export function useVariablesService(refresh: () => Promise<void>, projectId: str
     updateLoading.value = false
   }
 
-  async function deleteVariable(id: number) {
+  async function deleteVariable(id: number, showToast: boolean = true) {
     deleteLoading.value = true
     try {
       await $fetch(`/api/variables/${id}`, {
         method: 'DELETE',
       })
-      toast.success('Your variable has been deleted')
+      if (showToast) toast.success('Variable deleted successfully')
     } catch (error) {
-      toast.error('An error occurred')
+      if (showToast) toast.error('Failed to delete variable')
     }
     deleteLoading.value = false
-    await refresh()
+    await fetchVariables()
   }
 
   return {
+    variables,
+    loading,
     createLoading,
     updateLoading,
     deleteLoading,
     selectedEnvironments,
     variablesInput,
     variablesToCreate,
+    fetchVariables,
     addVariable,
     removeVariable,
     createVariables,

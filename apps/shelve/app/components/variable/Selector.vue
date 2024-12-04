@@ -4,9 +4,13 @@ import { ConfirmModal } from '#components'
 
 const selectedVariables = defineModel({ type: Array, required: true }) as Ref<Variable[]>
 
+const {
+  fetchVariables
+} = useVariablesService()
+
 const loading = ref(false)
 const modal = useModal()
-const emit = defineEmits(['refresh'])
+const teamEnv = useEnvironments()
 
 function openDeleteModal() {
   modal.open(ConfirmModal, {
@@ -26,18 +30,9 @@ function openDeleteModal() {
 async function deleteVariables() {
   loading.value = true
   const ids = selectedVariables.value.map((v: Variable) => v.id)
-  try {
-    await $fetch(`/api/variables`, {
-      method: 'DELETE',
-      body: {
-        variables: ids,
-      }
-    })
-  } catch (error) {
-    /* empty */
-  }
+  await Promise.all(ids.map(id => useVariablesService().deleteVariable(id, false)))
   selectedVariables.value = []
-  emit('refresh')
+  await fetchVariables()
   loading.value = false
 }
 </script>
@@ -51,9 +46,18 @@ async function deleteVariables() {
             {{ selectedVariables.length }} variable{{ selectedVariables.length > 1 ? 's' : '' }} selected
           </span>
           <div class="flex gap-2">
-            <UTooltip text="Copy selected variables (dev) to clipboard">
-              <UButton variant="soft" icon="lucide:clipboard-plus" @click="copyEnv(selectedVariables)" />
-            </UTooltip>
+            <UPopover mode="hover" arrow>
+              <UButton icon="lucide:clipboard-plus" variant="ghost" />
+              <template #content>
+                <UCard>
+                  <div class="flex flex-col gap-2">
+                    <UTooltip v-for="env in teamEnv" :key="env.id" :text="`Copy variables for ${env.name}`" :content="{ side: 'right' }">
+                      <UButton :disabled="loading" :label="capitalize(env.name)" variant="soft" @click="copyEnv(selectedVariables, env.id)" />
+                    </UTooltip>
+                  </div>
+                </UCard>
+              </template>
+            </UPopover>
             <UTooltip text="Delete selected variables">
               <UButton color="error" variant="ghost" icon="heroicons:trash" :loading @click="openDeleteModal" />
             </UTooltip>
@@ -66,7 +70,3 @@ async function deleteVariables() {
     </Transition>
   </div>
 </template>
-
-<style scoped>
-
-</style>

@@ -2,7 +2,7 @@ import type { Environment, Variable } from '@shelve/types'
 
 export function copyEnv(variables: Variable[], envId?: number) {
   if (variables.length === 0) return
-  const teamEnv = useTeamEnv()
+  const teamEnv = useEnvironments()
   if (envId) {
     const env = teamEnv.value.find((env) => env.id === envId)
     if (!env) {
@@ -32,7 +32,7 @@ export function downloadEnv(variables: Variable[], env: Environment) {
 }
 
 export function actionVariablesItem(variables: Variable[]) {
-  const teamEnv = useTeamEnv()
+  const teamEnv = useEnvironments()
   const copyItem = teamEnv.value.map((env) => ({
     label: `For ${capitalize(env.name)}`,
     icon: 'lucide:clipboard',

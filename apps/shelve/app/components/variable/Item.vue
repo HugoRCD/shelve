@@ -1,11 +1,9 @@
 <script setup lang="ts">
-import { type Environment, TeamRole, type Variable } from '@shelve/types'
+import { type Environment, type Variable } from '@shelve/types'
 
-const { refresh, variable, projectId, environments } = defineProps<{
-  refresh:() => Promise<void>
+const { variable, environments } = defineProps<{
   variable: Variable
   environments: Environment[]
-  projectId: string
   isSelected: boolean
 }>()
 
@@ -16,7 +14,7 @@ const {
   deleteLoading,
   updateVariable,
   deleteVariable,
-} = useVariablesService(refresh, projectId)
+} = useVariablesService()
 
 const emit = defineEmits(['toggleSelected'])
 const localVariable = ref(variable)
@@ -138,5 +136,3 @@ const showEdit = ref(false)
     </div>
   </UCard>
 </template>
-
-<style scoped></style>
