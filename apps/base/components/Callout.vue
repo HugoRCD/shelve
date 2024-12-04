@@ -14,6 +14,3 @@ const props = defineProps<CalloutProps>()
   </div>
 </template>
 
-<style scoped>
-
-</style>

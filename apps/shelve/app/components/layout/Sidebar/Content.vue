@@ -1,9 +1,7 @@
 <script setup lang="ts">
 import { Role } from '@shelve/types'
 
-const team = useTeam()
-
-const teamSlug = computed(() => useRoute().params.teamSlug || team.value.slug)
+const teamSlug = useTeamSlug()
 const { user } = useUserSession()
 const teamNavigations = computed(() => getNavigation('team', teamSlug.value))
 const userNavigations = getNavigation('user')

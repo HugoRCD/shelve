@@ -48,7 +48,3 @@ async function testNewUserMail() {
     </div>
   </div>
 </template>
-
-<style scoped>
-
-</style>

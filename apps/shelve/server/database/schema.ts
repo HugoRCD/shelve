@@ -30,6 +30,7 @@ export const users = pgTable('users', {
   role: rolesEnum().default(Role.USER).notNull(),
   authType: authTypesEnum().notNull(),
   onboarding: boolean().default(false).notNull(),
+  cliInstalled: boolean().default(false).notNull(),
   ...timestamps,
 })
 

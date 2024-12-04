@@ -68,7 +68,3 @@ defineProps({
     </Html>
   </Tailwind>
 </template>
-
-<style scoped>
-
-</style>

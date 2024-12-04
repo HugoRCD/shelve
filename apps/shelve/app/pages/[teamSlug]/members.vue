@@ -135,33 +135,7 @@ const items = (row: Member) => [
           <USeparator />
         </div>
       </TransitionGroup>
-    <!--    <UTable :data="currentTeam.members" :columns :loading="updateLoading || deleteLoading">
-      <template #avatar-cell="{ row }">
-        <UAvatar :src="row.original.user.avatar" :alt="row.original.user.username" size="sm" img-class="object-cover" />
-      </template>
-      <template #role-cell="{ row }">
-        <UBadge :label="row.original.role.toUpperCase()" variant="subtle" :color="row.original.role === TeamRole.OWNER ? 'primary' : row.original.role === TeamRole.ADMIN ? 'success' : 'neutral'" />
-      </template>
-      <template #actions-cell="{ row }">
-        <UDropdownMenu :items="items(row.original)">
-          <UButton  variant="ghost" icon="heroicons:ellipsis-horizontal-20-solid" />
-        </UDropdownMenu>
-      </template>
-    </UTable>-->
     </div>
   </div>
 </template>
 
-<style scoped>
-.fade-enter-active, .fade-leave-active {
-  transition: opacity 0.3s;
-}
-
-.fade-enter, .fade-leave-to {
-  opacity: 0;
-}
-
-.fade-enter {
-  transform: translateY(10px);
-}
-</style>

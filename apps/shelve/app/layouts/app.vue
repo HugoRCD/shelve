@@ -1,5 +1,7 @@
 <script setup lang="ts">
-const teamSlug = computed(() => useRoute().params.teamSlug as string)
+import CliInstall from '~/components/CliInstall.vue'
+
+const teamSlug = useTeamSlug()
 const pages = computed(() => {
   const teamNavigations = getNavigation('team', teamSlug.value)
   const userNavigations = getNavigation('user')
@@ -42,6 +44,7 @@ const navigation = computed(() => {
           <UserDropdown />
         </div>
       </div>
+      <CliInstall />
       <div class="flex h-full flex-col gap-4 overflow-y-auto px-3 py-6 sm:px-6">
         <slot />
       </div>

@@ -16,6 +16,7 @@ export type User = {
   role: Role;
   authType: AuthType;
   onboarding: boolean;
+  cliInstalled: boolean;
   createdAt: Date;
   updatedAt: Date;
 };

@@ -8,6 +8,7 @@ const showDelete = ref(false)
 
 const projectName = ref('')
 const teamRole = useTeamRole()
+const teamSlug = useTeamSlug()
 
 const {
   currentLoading,
@@ -34,7 +35,7 @@ async function deleteProjectFunction() {
   await deleteProject()
   deleteLoading.value = false
   showDelete.value = false
-  navigateTo(`/${useTeamSlug().value}`)
+  navigateTo(`/${teamSlug.value}`)
 }
 
 const items = [

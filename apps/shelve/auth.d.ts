@@ -10,6 +10,7 @@ declare module '#auth-utils' {
     avatar: string
     authType: AuthType
     onboarding: boolean
+    cliInstalled: boolean
     role: Role
     createdAt: Date
     updatedAt: Date

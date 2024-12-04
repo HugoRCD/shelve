@@ -54,7 +54,3 @@ async function updateCurrentUser() {
     </form>
   </div>
 </template>
-
-<style scoped>
-
-</style>

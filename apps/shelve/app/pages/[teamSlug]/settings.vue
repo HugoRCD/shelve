@@ -103,6 +103,3 @@ const open = ref(false)
   </div>
 </template>
 
-<style scoped>
-
-</style>
