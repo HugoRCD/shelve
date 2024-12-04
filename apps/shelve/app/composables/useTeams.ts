@@ -24,8 +24,8 @@ export function useTeamId(): Ref<number> {
 }
 
 export function useTeamSlug(): Ref<string> {
-  const currentTeam = useTeam()
-  return computed(() => currentTeam.value?.slug)
+  const route = useRoute()
+  return computed(() => route.params.teamSlug as string)
 }
 
 /**
@@ -48,6 +48,7 @@ export function useTeamsService() {
   const teams = useTeams()
   const currentTeam = useTeam()
   const teamId = useTeamId()
+  const baseUrl = computed(() => `/api/teams`)
   const loading = ref(false)
   const createLoading = ref(false)
 
@@ -58,11 +59,17 @@ export function useTeamsService() {
   async function fetchTeams() {
     loading.value = true
     try {
-      teams.value = await $fetch<Team[]>('/api/teams', { method: 'GET' })
+      teams.value = await $fetch<Team[]>(baseUrl.value, { method: 'GET' })
     } catch (error) {
       toast.error('Failed to fetch teams')
     }
     loading.value = false
+  }
+
+  async function fetchTeam(id: number) {
+    return await $fetch<Team>(`${baseUrl.value}/${id}`, {
+      method: 'GET',
+    })
   }
 
   async function selectTeam(team: Team) {
@@ -95,7 +102,7 @@ export function useTeamsService() {
   }
 
   async function updateTeam(input: { name: string, logo: string, slug: string }) {
-    currentTeam.value = await $fetch<Team>(`/api/teams/${ teamId.value }`, {
+    currentTeam.value = await $fetch<Team>(`${baseUrl.value}/${ teamId.value }`, {
       method: 'PUT',
       body: input
     })
@@ -103,7 +110,7 @@ export function useTeamsService() {
   }
 
   async function addMember(email: string, role: TeamRole) {
-    const _member = await $fetch<Member>(`/api/teams/${teamId.value}/members`, {
+    const _member = await $fetch<Member>(`${baseUrl.value}/${teamId.value}/members`, {
       method: 'POST',
       body: {
         email,
@@ -116,7 +123,7 @@ export function useTeamsService() {
   }
 
   async function updateMember(memberId: number, role: TeamRole) {
-    const _member = await $fetch<Member>(`/api/teams/${teamId.value}/members/${memberId}`, {
+    const _member = await $fetch<Member>(`${baseUrl.value}/${teamId.value}/members/${memberId}`, {
       method: 'PUT',
       body: {
         role,
@@ -127,7 +134,7 @@ export function useTeamsService() {
   }
 
   async function removeMember(memberId: number) {
-    await $fetch<Member>(`/api/teams/${teamId.value}/members/${memberId}`, {
+    await $fetch<Member>(`${baseUrl.value}/${teamId.value}/members/${memberId}`, {
       method: 'DELETE',
     })
     currentTeam.value.members = currentTeam.value.members.filter((member) => member.id !== memberId)
@@ -138,7 +145,7 @@ export function useTeamsService() {
       toast.error('You cannot delete the last team')
       return
     }
-    await $fetch(`/api/teams/${teamId.value}`, {
+    await $fetch(`${baseUrl.value}/${teamId.value}`, {
       method: 'DELETE',
     })
     teams.value = teams.value.filter((team) => team.id !== teamId.value)
@@ -152,6 +159,7 @@ export function useTeamsService() {
     teams,
     loading,
     createLoading,
+    fetchTeam,
     fetchTeams,
     selectTeam,
     createTeam,

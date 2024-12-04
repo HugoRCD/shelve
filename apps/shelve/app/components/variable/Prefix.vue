@@ -2,7 +2,7 @@
 const project = useProject()
 
 const prefixList = computed(() => {
-  return project.value?.variablePrefix?.replace(/\s/g, '').split(',').filter(Boolean) || []
+  return project.value.variablePrefix?.replace(/\s/g, '').split(',').filter(Boolean) || []
 })
 
 const key = defineModel({ type: String })

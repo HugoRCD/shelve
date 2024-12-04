@@ -8,7 +8,7 @@ export function useVariables(): Ref<Variable[]> {
 }
 
 export function useVariablesService() {
-  const { projectId } = useRoute().params as { projectId: string }
+  const projectId = useProjectId()
   const teamEnv = useEnvironments()
   const variables = useVariables()
 
@@ -41,7 +41,7 @@ export function useVariablesService() {
 
   const variablesInput = ref<CreateVariablesInput>({
     autoUppercase: autoUppercase.value,
-    projectId: +projectId,
+    projectId: +projectId.value,
     environmentIds: environmentIds.value,
     variables: [
       {
@@ -82,7 +82,7 @@ export function useVariablesService() {
   async function fetchVariables() {
     loading.value = true
     try {
-      variables.value = await $fetch<Variable[]>(`/api/variables/project/${projectId}`)
+      variables.value = await $fetch<Variable[]>(`/api/variables/project/${projectId.value}`)
     } catch (error) {
       toast.error('Failed to fetch variables')
     }
@@ -104,7 +104,7 @@ export function useVariablesService() {
       toast.success('Your variables have been created')
       variablesToCreate.value = 1
       variablesInput.value = {
-        projectId: +projectId,
+        projectId: +projectId.value,
         autoUppercase: autoUppercase.value,
         environmentIds: environmentIds.value,
         variables: [

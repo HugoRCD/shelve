@@ -29,8 +29,6 @@ const {
 } = useEnvironmentsService()
 const envService = useEnvironmentsService()
 
-fetchEnvironments()
-
 async function create() {
   await envService.createEnvironment(newEnv.value)
   await fetchEnvironments()

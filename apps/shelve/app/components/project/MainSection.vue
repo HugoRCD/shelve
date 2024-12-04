@@ -23,7 +23,7 @@ const {
 const updateLoading = ref(false)
 async function updateCurrentProject() {
   updateLoading.value = true
-  await updateProject(+projectId, project.value)
+  await updateProject(project.value)
   showEdit.value = false
   updateLoading.value = false
 }
@@ -39,7 +39,7 @@ async function deleteProjectFunction() {
   await deleteProject(+projectId)
   deleteLoading.value = false
   showDelete.value = false
-  navigateTo('/')
+  navigateTo(`/${useTeamSlug().value}`)
 }
 
 const items = [

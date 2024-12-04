@@ -38,11 +38,7 @@ watch(() => route.path, handleProjectNavigation, { immediate: true })
 
 <template>
   <div class="flex h-full flex-col gap-4 p-4 sm:w-[250px]">
-    <Logo />
-
-    <div>
-      <TeamManager />
-    </div>
+    <TeamManager />
 
     <!-- Team -->
     <div class="flex flex-col gap-2">

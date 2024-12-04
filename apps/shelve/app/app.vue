@@ -29,6 +29,8 @@ defineShortcuts({
     navigateTo('/settings')
   },
 })
+
+const route = useRoute()
 </script>
 
 <template>

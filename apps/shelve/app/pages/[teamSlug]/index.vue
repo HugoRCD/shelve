@@ -1,8 +1,4 @@
 <script setup lang="ts">
-definePageMeta({
-  middleware: ['auth', 'onboarding'],
-})
-
 const projects = useProjects()
 
 const { loading, fetchProjects } = useProjectsService()

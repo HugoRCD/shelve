@@ -1,8 +1,12 @@
 <script setup lang="ts">
-import { useEnvironmentsService } from '~/composables/useEnvironments'
-
 definePageMeta({
-  middleware: 'project-redirect'
+  middleware: (to, from) => {
+    const projectId = to.params.projectId || from.params.projectId || ''
+    const teamSlug = to.params.teamSlug || from.params.teamSlug || ''
+    if (to.path === `/${teamSlug}/projects/${projectId}`) {
+      return `/${teamSlug}/projects/${projectId}/variables`
+    }
+  }
 })
 
 const { projectId, teamSlug } = useRoute().params as { projectId: string, teamSlug: string }
@@ -13,18 +17,17 @@ const {
   fetchCurrentProject
 } = useProjectsService()
 
-const { fetchEnvironments } = useEnvironmentsService()
-await fetchEnvironments()
+const { fetchVariables } = useVariablesService()
 
-if (!currentProject.value)
-  await fetchCurrentProject(+projectId)
-
-async function refresh() {
-  await fetchCurrentProject(+projectId)
+async function loadProjectData() {
+  await Promise.all([
+    fetchCurrentProject(),
+    fetchVariables()
+  ])
 }
+loadProjectData()
 
-provide('loading', currentLoading)
-provide('refresh', refresh)
+//if (!currentProject.value) await fetchCurrentProject(+projectId)
 
 const items = [
   {

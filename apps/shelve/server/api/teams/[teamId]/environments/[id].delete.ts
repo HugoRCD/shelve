@@ -8,7 +8,7 @@ export default defineEventHandler(async (event) => {
   await useDrizzle().delete(tables.environments)
     .where(eq(tables.environments.id, id))
 
-  await clearCache('Team', team.id)
+  await clearCache('Environments', team.id)
 
   return {
     statusCode: 204,

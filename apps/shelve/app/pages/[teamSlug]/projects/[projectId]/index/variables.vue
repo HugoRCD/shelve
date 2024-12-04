@@ -2,12 +2,7 @@
 import type { Variable } from '@shelve/types'
 
 const variables = useVariables()
-
-const {
-  loading,
-  fetchVariables
-} = useVariablesService()
-fetchVariables()
+const { loading } = useVariablesService()
 
 const selectedVariables = ref<Variable[]>([])
 const searchTerm = ref('')

@@ -11,6 +11,7 @@ const {
   selectTeam,
   fetchTeams,
 } = useTeamsService()
+fetchTeams()
 
 const loading = ref(false)
 async function handleCreateTeam() {
@@ -47,7 +48,7 @@ const groups = computed(() => [
     <button v-if="currentTeam" class="nav-item w-full flex items-center justify-between">
       <span class="flex items-center gap-2">
         <UAvatar :src="currentTeam.logo" size="sm" alt="currentTeam.name" />
-        <span class="text-sm">
+        <span class="text-sm font-semibold">
           {{ currentTeam.name }}
         </span>
       </span>

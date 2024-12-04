@@ -23,6 +23,11 @@ const environmentsValues = ref<Record<string, string>>(
   Object.fromEntries(environments.map((env) => [env.id, variable.values.find((v) => v.environmentId === env.id)?.value ?? ''])),
 )
 
+watch(() => variable, (newValue) => {
+  localVariable.value = newValue
+  environmentsValues.value = Object.fromEntries(environments.map((env) => [env.id, newValue.values.find((v) => v.environmentId === env.id)?.value ?? '']))
+})
+
 const variableToUpdate = computed(() => ({
   ...localVariable.value,
   values: environments.map((env) => ({

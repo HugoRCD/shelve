@@ -1,29 +1,17 @@
 <script setup lang="ts">
-import type { Ref } from 'vue'
-
-const { projectId } = useRoute().params
-
 const project = useProject()
-const loading = inject('loading') as Ref<boolean>
 const route = useRoute()
 
-const { status: updateStatus, error: updateError, execute } = useFetch(`/api/projects/${projectId}`, {
-  method: 'PUT',
-  body: project,
-  watch: false,
-  immediate: false,
-})
-
-async function updateCurrentProject() {
-  await execute()
-  if (updateError.value) toast.error('An error occurred')
-  else toast.success('Your project has been updated')
-}
+const {
+  loading,
+  updateLoading,
+  updateProject
+} = useProjectsService()
 </script>
 
 <template>
-  <form class="flex flex-col gap-4" @submit.prevent="updateCurrentProject">
-    <UCard :ui="{ background: 'bg-white dark:bg-neutral-950' }">
+  <form class="flex flex-col gap-4" @submit.prevent="updateProject(project)">
+    <UCard>
       <template #header>
         <div class="flex items-center">
           <div class="flex flex-col">
@@ -86,7 +74,7 @@ async function updateCurrentProject() {
       </div>
       <template #footer>
         <div class="flex justify-end gap-4">
-          <UButton type="submit" :loading="updateStatus === 'pending'">
+          <UButton type="submit" trailing :loading="updateLoading">
             Save
           </UButton>
         </div>

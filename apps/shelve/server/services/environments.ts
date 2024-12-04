@@ -16,8 +16,7 @@ export class EnvironmentsService {
 
   getEnvironments = withCache('Environments', async (teamId: number) => {
     return await useDrizzle().query.environments.findMany({
-      where: eq(tables.environments.teamId, teamId),
-      orderBy: [asc(tables.environments.createdAt)],
+      where: eq(tables.environments.teamId, teamId)
     })
   })
 

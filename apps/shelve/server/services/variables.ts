@@ -17,8 +17,8 @@ export class VariablesService {
     return await unseal(value, this.encryptionKey) as string
   }
 
-  private async findVariableById(db: any, id: number) {
-    return await db.query.variables.findFirst({
+  private async findVariableById(tx: any, id: number) {
+    return await tx.query.variables.findFirst({
       where: eq(tables.variables.id, id),
       with: {
         values: {
@@ -47,22 +47,24 @@ export class VariablesService {
     const { projectId, variables: varsToCreate, autoUppercase = true, environmentIds } = input
     const db = useDrizzle()
 
-    await Promise.all(
-      varsToCreate.map(async (variable) => {
-        const key = autoUppercase ? variable.key.toUpperCase() : variable.key
-        const encryptedValue = await this.encryptValue(variable.value)
+    await db.transaction(async (tx) => {
+      await Promise.all(
+        varsToCreate.map(async (variable) => {
+          const key = autoUppercase ? variable.key.toUpperCase() : variable.key
+          const encryptedValue = await this.encryptValue(variable.value)
 
-        // Find or create variable
-        const variableId = await this.getOrCreateVariableId(db, projectId, key)
+          // Find or create variable
+          const variableId = await this.getOrCreateVariableId(tx, projectId, key)
 
-        // Update values for all environments
-        await Promise.all(
-          environmentIds.map(envId =>
-            this.upsertVariableValue(db, variableId, envId, encryptedValue)
+          // Update values for all environments
+          await Promise.all(
+            environmentIds.map(envId =>
+              this.upsertVariableValue(tx, variableId, envId, encryptedValue)
+            )
           )
-        )
-      })
-    )
+        })
+      )
+    })
 
     await clearCache('Variables', projectId)
   }
@@ -89,35 +91,32 @@ export class VariablesService {
     const { id, projectId, key, values, autoUppercase = true } = input
     const db = useDrizzle()
 
-    const existingVariable = await this.findVariableById(db, id)
-    if (!existingVariable) {
-      throw createError({ statusCode: 404, message: `Variable not found with id ${id}` })
-    }
+    await db.transaction(async (tx) => {
+      const existingVariable = await this.findVariableById(tx, id)
+      if (!existingVariable) throw createError({ statusCode: 404, message: `Variable not found with id ${id}` })
 
-    const updatedKey = autoUppercase ? key.toUpperCase() : key
-    if (updatedKey !== existingVariable.key) {
-      await this.updateVariableKey(db, id, updatedKey)
-    }
+      const updatedKey = autoUppercase ? key.toUpperCase() : key
+      if (updatedKey !== existingVariable.key) {
+        await this.updateVariableKey(tx, id, updatedKey)
+      }
 
-    await Promise.all(values.map(async valueInput => {
-      const encryptedValue = await this.encryptValue(valueInput.value)
-      return this.upsertVariableValue(db, id, valueInput.environmentId, encryptedValue)
-    }))
+      await Promise.all(values.map(async valueInput => {
+        const encryptedValue = await this.encryptValue(valueInput.value)
+        return this.upsertVariableValue(tx, id, valueInput.environmentId, encryptedValue)
+      }))
+    })
 
     await clearCache('Variables', projectId)
   }
 
   async deleteVariable(id: number): Promise<void> {
-    const [result] = await useDrizzle()
-      .delete(tables.variables)
+    const [deleted] = await useDrizzle().delete(tables.variables)
       .where(eq(tables.variables.id, id))
       .returning()
 
-    if (!result) {
-      throw createError({ statusCode: 404, message: `Variable not found with id ${id}` })
-    }
+    if (!deleted) throw createError({ statusCode: 404, message: `Variable not found with id ${id}` })
 
-    await clearCache('Variables', result.projectId)
+    await clearCache('Variables', deleted.projectId)
   }
 
   async decryptVariables(variables: Variable[]): Promise<Variable[]> {
@@ -125,8 +124,8 @@ export class VariablesService {
   }
 
   // Private helper methods for database operations
-  private async getOrCreateVariableId(db: any, projectId: number, key: string): Promise<number> {
-    const existingVariable = await db.query.variables.findFirst({
+  private async getOrCreateVariableId(tx: any, projectId: number, key: string): Promise<number> {
+    const existingVariable = await tx.query.variables.findFirst({
       where: and(
         eq(tables.variables.projectId, projectId),
         eq(tables.variables.key, key)
@@ -137,19 +136,17 @@ export class VariablesService {
       return existingVariable.id
     }
 
-    const [created] = await db.insert(tables.variables)
+    const [created] = await tx.insert(tables.variables)
       .values({ projectId, key })
       .returning()
 
-    if (!created) {
-      throw createError({ statusCode: 500, message: 'Failed to create variable' })
-    }
+    if (!created) throw createError({ statusCode: 500, message: 'Failed to create variable' })
 
     return created.id
   }
 
-  private async upsertVariableValue(db: any, variableId: number, environmentId: number, value: string) {
-    return await db.insert(tables.variableValues)
+  private async upsertVariableValue(tx: any, variableId: number, environmentId: number, value: string) {
+    return await tx.insert(tables.variableValues)
       .values({
         variableId,
         environmentId,
@@ -164,8 +161,8 @@ export class VariablesService {
       })
   }
 
-  private async updateVariableKey(db: any, id: number, key: string) {
-    return await db.update(tables.variables)
+  private async updateVariableKey(tx: any, id: number, key: string) {
+    return await tx.update(tables.variables)
       .set({ key })
       .where(eq(tables.variables.id, id))
   }
