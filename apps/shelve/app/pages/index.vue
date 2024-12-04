@@ -66,7 +66,7 @@ async function navigateToTeam(team: Team) {
           </div>
         </div>
       </CrossedDiv>
-      <div class="flex items-center justify-center mt-4">
+      <div class="flex items-center justify-center mt-4 gap-2">
         <Logo text-size="text-sm" />
         <SettingThemeToggle class="absolute top-4 right-4" />
       </div>
