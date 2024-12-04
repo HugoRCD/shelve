@@ -1,6 +1,6 @@
 import type { CreateVariablesInput, Environment } from '@shelve/types'
 
-export function useVariableForm(projectId: string, teamEnv: Ref<Environment[]>) {
+export function useVariableForm(projectId: string, teamEnv: Environment[]) {
   const autoUppercase = useCookie<boolean>('autoUppercase', {
     watch: true,
     default: () => true,
@@ -9,7 +9,7 @@ export function useVariableForm(projectId: string, teamEnv: Ref<Environment[]>) 
   const variablesToCreate = ref(1)
   const selectedEnvironments = ref<Record<number, boolean>>(
     Object.fromEntries(
-      teamEnv.value.map(env => [env.id, true])
+      teamEnv.map(env => [env.id, true])
     )
   )
 

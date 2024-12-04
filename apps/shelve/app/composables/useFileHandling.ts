@@ -1,4 +1,3 @@
-import type { Variable } from '@shelve/types'
 import { parseEnvFile } from '@shelve/utils'
 
 export function useFileHandling(updateVariables: (vars: Array<{ index: number, key: string, value: string }>) => void) {

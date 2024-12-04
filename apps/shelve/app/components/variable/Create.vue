@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import type { Variable } from '@shelve/types'
+import type { Variable, Environment } from '@shelve/types'
 
-const { variables } = defineProps<{
+const { variables, environments } = defineProps<{
   variables: Variable[]
+  environments: Environment[]
 }>()
 
 const { createLoading, createVariables } = useVariablesService()
 const projectId = useProjectId()
-const teamEnv = useEnvironments()
 
 const {
   variablesInput,
@@ -18,7 +18,7 @@ const {
   addVariable,
   removeVariable,
   resetForm,
-} = useVariableForm(projectId.value, teamEnv)
+} = useVariableForm(projectId.value, environments)
 
 const {
   dragOver,
@@ -86,7 +86,7 @@ const handlePasswordGenerated = (password: string, index: number) => variablesIn
           </h4>
           <div class="flex select-none gap-4">
             <UCheckbox
-              v-for="env in teamEnv"
+              v-for="env in environments"
               :key="env.id"
               v-model="selectedEnvironments[env.id]"
               :name="env.name"
