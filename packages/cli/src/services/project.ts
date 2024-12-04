@@ -1,5 +1,5 @@
 import type { Project } from '@shelve/types'
-import { API_ENDPOINTS, DEBUG } from '../constants'
+import { DEBUG } from '../constants'
 import { askBoolean, capitalize, handleCancel } from '../utils'
 import { BaseService } from './base'
 

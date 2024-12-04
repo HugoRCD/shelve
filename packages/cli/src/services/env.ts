@@ -1,7 +1,6 @@
-import type { EnvVar, CreateEnvFileInput, PushEnvFileInput, CreateVariablesInput } from '@shelve/types'
+import type { EnvVar, CreateEnvFileInput, PushEnvFileInput, CreateVariablesInput, Project } from '@shelve/types'
 import { parseEnvFile } from '@shelve/utils'
 import { loadShelveConfig, askBoolean } from '../utils'
-import { API_ENDPOINTS } from '../constants'
 import { FileService } from './file'
 import { BaseService } from './base'
 
@@ -55,20 +54,20 @@ export class EnvService extends BaseService {
     })
   }
 
-  static getEnvVariables(projectId: number, environmentId: number): Promise<EnvVar[]> {
+  static getEnvVariables(project: Project, environmentId: number): Promise<EnvVar[]> {
     return this.withLoading('Fetching variables', () => {
-      return this.request<EnvVar[]>(`${API_ENDPOINTS.variables}/project/${projectId}/${environmentId}`)
+      return this.request<EnvVar[]>(`/teams/${project.teamId}/projects/${project.id}/variables/env/${environmentId}`)
     })
   }
 
   static async pushEnvFile(input: PushEnvFileInput): Promise<void> {
-    const { variables, projectId, environment, confirmChanges, autoUppercase } = input
+    const { variables, project, environment, confirmChanges, autoUppercase } = input
     if (confirmChanges)
       await askBoolean(`Are you sure you want to push ${variables.length} variables to ${environment.name} environment?`)
 
     await this.withLoading('Pushing variables', async () => {
       const body: CreateVariablesInput = {
-        projectId,
+        projectId: project.id,
         autoUppercase,
         environmentIds: [environment.id],
         variables: variables.map((variable) => ({
@@ -76,7 +75,10 @@ export class EnvService extends BaseService {
           value: variable.value
         }))
       }
-      await this.request<EnvVar[]>(API_ENDPOINTS.variables, { method: 'POST', body })
+      await this.request<EnvVar[]>(`/teams/${project.id}/projects/${project.id}/variables`, {
+        method: 'POST',
+        body
+      })
     })
   }
 

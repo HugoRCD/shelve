@@ -112,9 +112,9 @@ const handlePasswordGenerated = (password: string, index: number) => variablesIn
             <div class="w-[100px]" />
           </div>
           <div v-for="variable in variablesToCreate" :key="variable" class="flex flex-col gap-4">
-            <div class="flex flex-col gap-2">
-              <div class="flex flex-col items-start gap-2 sm:flex-row">
-                <div class="w-full flex gap-1">
+            <div class="flex flex-col gap-1">
+              <div class="flex flex-col items-start gap-1 sm:flex-row">
+                <div class="w-full flex items-start gap-1">
                   <UInput
                     v-model="variablesInput.variables[variable - 1]!.key"
                     required
@@ -123,7 +123,7 @@ const handlePasswordGenerated = (password: string, index: number) => variablesIn
                   />
                   <VariablePrefix v-model="variablesInput.variables[variable - 1]!.key" />
                 </div>
-                <div class="w-full flex gap-1">
+                <div class="w-full flex items-start gap-1">
                   <UTextarea
                     v-model="variablesInput.variables[variable - 1]!.value"
                     required

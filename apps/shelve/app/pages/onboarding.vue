@@ -52,13 +52,13 @@ async function createTeamAndCompleteOnboarding() {
           Welcome to Shelve!
         </h1>
         <p class="text-neutral-500 italic dark:text-neutral-400">
-          Let's create your first team to get started
+          Let's create your first team together
         </p>
       </div>
     </div>
-    <form class="mt-6 flex flex-col gap-2" @submit.prevent="createTeamAndCompleteOnboarding">
-      <UInput v-model="teamName" label="Team Name" placeholder="Team Name" />
-      <UButton label="Create Team" :loading type="submit" />
+    <form class="mt-6 space-y-2 max-w-5xl" @submit.prevent="createTeamAndCompleteOnboarding">
+      <UInput v-model="teamName" class="w-full" placeholder="Nuxtlabs, Vercel, etc." required />
+      <UButton label="Create Team" block :loading type="submit" />
     </form>
   </div>
 </template>

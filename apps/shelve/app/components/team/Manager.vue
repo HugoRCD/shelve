@@ -6,12 +6,19 @@ const teams = useTeams()
 const newTeamName = ref('')
 const open = ref(false)
 
+const defaultTeamId = useCookie<number>('defaultTeamId', {
+  watch: true,
+})
+
 const {
   createTeam,
   selectTeam,
+  fetchTeam,
   fetchTeams,
 } = useTeamsService()
 fetchTeams()
+
+if (!currentTeam.value) currentTeam.value = await fetchTeam(defaultTeamId.value)
 
 const loading = ref(false)
 async function handleCreateTeam() {
@@ -45,14 +52,14 @@ const groups = computed(() => [
 
 <template>
   <UModal v-model:open="open" title="Switch team" description="Select a team to switch to">
-    <button v-if="currentTeam" class="nav-item w-full flex items-center justify-between">
+    <button v-if="currentTeam" class="w-full cursor-pointer flex items-center justify-between hover:bg-neutral-100 dark:hover:bg-neutral-800 p-2 rounded-lg">
       <span class="flex items-center gap-2">
         <UAvatar :src="currentTeam.logo" size="sm" alt="currentTeam.name" />
         <span class="text-sm font-semibold">
           {{ currentTeam.name }}
         </span>
       </span>
-      <span><UIcon name="lucide:chevrons-up-down" class="size-4" /></span>
+      <UIcon name="lucide:chevrons-up-down" class="size-4" />
     </button>
     <template #content>
       <UCommandPalette
@@ -95,52 +102,3 @@ const groups = computed(() => [
     </template>
   </UModal>
 </template>
-
-<style scoped>
-@import "tailwindcss";
-
-.nav-item {
-  @apply cursor-pointer rounded-lg px-3 py-2 flex flex-row items-center gap-2 transition-transform duration-200 ease-in-out;
-  @apply focus:outline-none;
-  border: 1px solid transparent;
-  transition: border-color 0.2s, background-color 0.2s, box-shadow 0.2s, transform 0.2s;
-
-  span {
-    transform: translateY(-1.2px);
-  }
-}
-
-.light {
-  .nav-item {
-    color: #575757;
-    border: 1px solid #ececec;
-    background-color: #ffffff;
-    box-shadow: 0 1px 0 #cccccc, 0 -3px 0 #ececec inset;
-  }
-
-  .nav-item:active {
-    box-shadow: 0 1px 0 #cccccc, 0 -0.5px 0 #ececec inset;
-
-    span {
-      transform: translateY(0.5px);
-    }
-  }
-}
-
-.dark {
-  .nav-item {
-    color: #b5b3b3;
-    border: 1px solid #414141;
-    background-color: #262626;
-    box-shadow: 0 1px 0 #2f2f2f, 0 -3px 0 #414141 inset;
-  }
-
-  .nav-item:active {
-    box-shadow: 0 1px 0 #2f2f2f, 0 -0.5px 0 #414141 inset;
-
-    span {
-      transform: translateY(0.5px);
-    }
-  }
-}
-</style>

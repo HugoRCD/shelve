@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { Role } from '@shelve/types'
-
 const { loggedIn, user, clear } = useUserSession()
 
 const items = [
@@ -29,13 +27,8 @@ const items = [
     <UDropdownMenu
       v-if="loggedIn"
       :items
-      :content="{
-        align: 'start',
-        side: 'right',
-        sideOffset: 8
-      }"
     >
-      <UAvatar :src="user.avatar" :alt="user.username" class="cursor-pointer" />
+      <UAvatar :src="user.avatar" :alt="user.username" size="sm" class="cursor-pointer" />
 
       <template #account="{ item }">
         <div class="text-left">

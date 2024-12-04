@@ -62,7 +62,19 @@ const open = ref(false)
           <FormGroup v-model="team.name" label="Name" :disabled="!canUpdate" />
         </div>
         <div class="sm:col-span-4">
-          <FormGroup v-model="team.slug" label="Slug" :disabled="!canUpdate" />
+          <UFormField class="w-full" label="Slug">
+            <UButtonGroup class="w-full">
+              <UButton
+                color="neutral"
+                variant="subtle"
+                label="shelve.cloud/"
+              />
+              <UInput v-model="team.slug" class="w-full" :disabled="!canUpdate" />
+              <UTooltip text="Copy to clipboard">
+                <UButton color="neutral" variant="subtle" icon="lucide:clipboard" @click="copyToClipboard(team.slug)" />
+              </UTooltip>
+            </UButtonGroup>
+          </UFormField>
           <p class="text-xs mt-1 text-neutral-500">
             This is the unique identifier for your team (used by the CLI)
           </p>

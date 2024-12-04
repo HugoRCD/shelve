@@ -46,8 +46,8 @@ const items = ref([
 
 const copied = ref(false)
 
-function copy() {
-  copyToClipboard(pkg)
+function copy(value: string) {
+  copyToClipboard(value)
   copied.value = true
 
   setTimeout(() => {
@@ -74,9 +74,9 @@ function copy() {
                   :color="copied ? 'success' : 'neutral'"
                   variant="link"
                   size="sm"
-                  :icon="copied ? 'i-lucide-copy-check' : 'i-lucide-copy'"
+                  :icon="copied ? 'lucide:copy-check' : 'lucide:copy'"
                   aria-label="Copy to clipboard"
-                  @click="copy"
+                  @click="copy(pkgType[item.label.toLowerCase() as keyof PackageCommands])"
                 />
               </UTooltip>
             </template>

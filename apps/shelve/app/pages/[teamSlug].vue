@@ -7,10 +7,14 @@ definePageMeta({
 const defaultTeamId = useCookie<number>('defaultTeamId', {
   watch: true,
 })
+const defaultTeamSlug = useCookie<string>('defaultTeamSlug', {
+  watch: true,
+})
 
 const team = useTeam()
 
 team.value = await useTeamsService().fetchTeam(defaultTeamId.value)
+defaultTeamSlug.value = team.value.slug
 useEnvironmentsService().fetchEnvironments()
 </script>
 

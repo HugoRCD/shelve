@@ -40,8 +40,7 @@ const navigation = computed(() => {
           <div id="action-items">
             <!-- action-items -->
           </div>
-          <LayoutSidebar mobile />
-          <UserDropdown />
+          <LayoutSidebar mobile class="sm:hidden" />
         </div>
       </div>
       <CliInstall />
