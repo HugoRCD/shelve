@@ -72,11 +72,11 @@ export function useTeamsService() {
     })
   }
 
-  async function selectTeam(team: Team) {
+  async function selectTeam(team: Team, redirect = true) {
     const projects = useProjectsService()
     currentTeam.value = team
     defaultTeamId.value = team.id
-    await router.push(`/${ currentTeam.value.slug }`)
+    if (redirect) await router.push(`/${ currentTeam.value.slug }`)
     await projects.fetchProjects()
   }
 

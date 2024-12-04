@@ -50,4 +50,3 @@ const navigation = computed(() => {
     </div>
   </div>
 </template>
-
