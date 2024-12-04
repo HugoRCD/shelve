@@ -9,112 +9,33 @@ export function useVariables(): Ref<Variable[]> {
 
 export function useVariablesService() {
   const projectId = useProjectId()
-  const teamEnv = useEnvironments()
   const variables = useVariables()
-
-  const selectedEnvironments = ref<Record<number, boolean>>(
-    Object.fromEntries(
-      teamEnv.value.map(env => [
-        env.id,
-        true
-      ])
-    )
-  )
-
-  const environmentIds = computed(() =>
-    Object.entries(selectedEnvironments.value)
-      .filter(([_, selected]) => selected)
-      .map(([id]) => parseInt(id))
-  )
-
-  const autoUppercase = useCookie<boolean>('autoUppercase', {
-    watch: true,
-    default: () => true,
-  })
+  const teamId = useTeamId()
+  const baseUrl = computed(() => `/api/teams/${teamId.value}/projects/${projectId.value}/variables`)
 
   const loading = ref(false)
   const createLoading = ref(false)
   const updateLoading = ref(false)
   const deleteLoading = ref(false)
 
-  const variablesToCreate = ref(1)
-
-  const variablesInput = ref<CreateVariablesInput>({
-    autoUppercase: autoUppercase.value,
-    projectId: +projectId.value,
-    environmentIds: environmentIds.value,
-    variables: [
-      {
-        index: 1,
-        key: '',
-        value: '',
-      },
-    ],
-  })
-
-  watch(environmentIds, () => {
-    variablesInput.value.environmentIds = environmentIds.value
-  })
-
-  function addVariable() {
-    variablesToCreate.value++
-    variablesInput.value.variables.push({
-      index: variablesToCreate.value,
-      key: '',
-      value: '',
-    })
-  }
-
-  function removeVariable(index: number) {
-    if (variablesToCreate.value === 1) {
-      variablesInput.value.variables[index]!.key = ''
-      variablesInput.value.variables[index]!.value = ''
-      return
-    }
-    variablesToCreate.value--
-    variablesInput.value.variables.splice(index, 1)
-  }
-
-  watch(autoUppercase, () => {
-    variablesInput.value.autoUppercase = autoUppercase.value
-  })
-
   async function fetchVariables() {
     loading.value = true
     try {
-      variables.value = await $fetch<Variable[]>(`/api/variables/project/${projectId.value}`)
+      variables.value = await $fetch<Variable[]>(baseUrl.value)
     } catch (error) {
       toast.error('Failed to fetch variables')
     }
     loading.value = false
   }
 
-  async function createVariables() {
+  async function createVariables(input: CreateVariablesInput, environmentIds: number[]) {
     createLoading.value = true
-    if (environmentIds.value.length === 0) {
-      toast.error('Please select at least one environment')
-      createLoading.value = false
-      return
-    }
     try {
-      await $fetch('/api/variables', {
+      await $fetch(baseUrl.value, {
         method: 'POST',
-        body: variablesInput.value
+        body: input
       })
       toast.success('Your variables have been created')
-      variablesToCreate.value = 1
-      variablesInput.value = {
-        projectId: +projectId.value,
-        autoUppercase: autoUppercase.value,
-        environmentIds: environmentIds.value,
-        variables: [
-          {
-            index: 1,
-            key: '',
-            value: '',
-          },
-        ],
-      }
     } catch (error) {
       toast.error('An error occurred')
     }
@@ -125,7 +46,7 @@ export function useVariablesService() {
   async function updateVariable(variable: Variable) {
     updateLoading.value = true
     try {
-      await $fetch(`/api/variables/${variable.id}`, {
+      await $fetch(`${baseUrl.value}/${variable.id}`, {
         method: 'PUT',
         body: variable
       })
@@ -141,7 +62,7 @@ export function useVariablesService() {
   async function deleteVariable(id: number, showToast: boolean = true) {
     deleteLoading.value = true
     try {
-      await $fetch(`/api/variables/${id}`, {
+      await $fetch(`${baseUrl.value}/${id}`, {
         method: 'DELETE',
       })
       if (showToast) toast.success('Variable deleted successfully')
@@ -158,12 +79,7 @@ export function useVariablesService() {
     createLoading,
     updateLoading,
     deleteLoading,
-    selectedEnvironments,
-    variablesInput,
-    variablesToCreate,
     fetchVariables,
-    addVariable,
-    removeVariable,
     createVariables,
     updateVariable,
     deleteVariable

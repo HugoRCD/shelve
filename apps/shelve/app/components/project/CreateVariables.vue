@@ -1,143 +1,62 @@
 <script setup lang="ts">
 import type { Variable } from '@shelve/types'
-import { parseEnvFile } from '@shelve/utils'
 
-type CreateVariablesProps = {
+const { variables } = defineProps<{
   variables: Variable[]
-}
+}>()
 
-const { variables } = defineProps<CreateVariablesProps>()
+const { createLoading, createVariables } = useVariablesService()
+const projectId = useProjectId()
+const teamEnv = useEnvironments()
 
 const {
-  createLoading,
-  selectedEnvironments,
   variablesInput,
   variablesToCreate,
+  selectedEnvironments,
+  environmentIds,
+  autoUppercase,
   addVariable,
   removeVariable,
-  createVariables,
-} = useVariablesService()
+  resetForm,
+} = useVariableForm(projectId.value, teamEnv)
 
-const teamEnv = useEnvironments()
+const {
+  dragOver,
+  fileInputRef,
+  border,
+  dragHandlers,
+  handleFileUpload,
+  triggerFileInput,
+} = useFileHandling((vars) => {
+  variablesToCreate.value = vars.length
+  variablesInput.value.variables = vars
+})
+
+async function handleCreateVariables() {
+  if (environmentIds.value.length === 0) {
+    toast.error('Please select at least one environment')
+    return
+  }
+  await createVariables(variablesInput.value, environmentIds.value)
+  resetForm()
+}
 
 const items = actionVariablesItem(variables)
 
-const fileInputRef = ref<HTMLInputElement | null>(null)
-
-const triggerFileInput = () => {
-  fileInputRef.value?.click()
-}
-
-const dragOver = ref(false)
-
-const border = computed(() => {
-  if (dragOver.value) {
-    return 'border-[0.5px] border-primary border-dashed'
-  }
-  return 'border-[0.5px] border-neutral-200 dark:border-neutral-800'
-})
-
-const handleFileUpload = (event: Event) => {
-  const target = event.target as HTMLInputElement
-  const file = target.files ? target.files[0] : null
-  if (file) {
-    getEnvFile(file)
-  }
-}
-
-function handleDragEnter(event: DragEvent) {
-  event.preventDefault()
-  dragOver.value = true
-}
-
-function handleDragOver(event: DragEvent) {
-  event.preventDefault()
-}
-
-function handleDragLeave(event: DragEvent) {
-  if (!event.currentTarget?.contains(event.relatedTarget as Node)) {
-    dragOver.value = false
-  }
-}
-
-function handleDrop(event: DragEvent) {
-  event.preventDefault()
-  dragOver.value = false
-  const files = event.dataTransfer?.files
-  if (files && files.length > 0) {
-    getEnvFile(files[0])
-  }
-}
-
-function getEnvFile(file: File) {
-  const reader = new FileReader()
-
-  reader.onload = (e) => {
-    const content = e.target?.result as string
-    try {
-      const variables = parseEnvFile(content, true)
-      variablesToCreate.value = variables.length
-      variablesInput.value.variables = variables
-    } catch (error) {
-      toast.error('Invalid .env file')
-    }
-  }
-
-  reader.onerror = (e) => {
-    console.error('Error reading file:', e)
-  }
-
-  reader.readAsText(file)
-}
-
-onMounted(() => {
-  document.addEventListener('paste', (e) => {
-    const { clipboardData } = e
-    if (!clipboardData) return
-    const content = clipboardData.getData('text')
-    if (!e.target?.closest('#varCreation')) return
-    if (!content.includes('=')) return
-    e.preventDefault()
-    try {
-      const variables = parseEnvFile(content, true)
-      variablesToCreate.value = variables.length
-      variablesInput.value.variables = variables
-    } catch (error) {
-      toast.error('Invalid .env content')
-    }
-  })
-})
-
-const autoUppercase = useCookie<boolean>('autoUppercase', {
-  watch: true,
-  default: () => true,
-})
-
-const handlePasswordGenerated = (password: string, index: number) => variablesInput.value.variables[index].value = password
+const handlePasswordGenerated = (password: string, index: number) => variablesInput.value.variables[index]!.value = password
 </script>
 
 <template>
-  <form id="varCreation" class="relative duration-500" @submit.prevent="createVariables">
+  <form id="varCreation" class="relative duration-500" @submit.prevent="handleCreateVariables">
     <UCard
       :ui="{ root: border }"
       class="duration-500"
-      @dragenter.prevent="handleDragEnter"
-      @dragover.prevent="handleDragOver"
-      @dragleave.prevent="handleDragLeave"
-      @drop.prevent="handleDrop"
+      @dragenter.prevent="dragHandlers.handleDragEnter($event)"
+      @dragover.prevent="dragHandlers.handleDragOver($event)"
+      @dragleave.prevent="dragHandlers.handleDragLeave($event)"
+      @drop.prevent="dragHandlers.handleDrop($event)"
     >
-      <div
-        :class="{ 'absolute': dragOver, 'hidden': !dragOver }"
-        class="
-        overlay
-        left-0
-        top-0
-        z-40
-        size-full
-        content-center
-        items-center
-        justify-center"
-      >
+      <div :class="{ 'absolute': dragOver, 'hidden': !dragOver }" class="overlay left-0 top-0 z-40 size-full content-center items-center justify-center">
         <div class="icon-container flex flex-col items-center gap-2">
           <UIcon name="lucide:file-up" class="text-primary size-10" />
           <p class="text-lg font-semibold">
@@ -155,14 +74,7 @@ const handlePasswordGenerated = (password: string, index: number) => variablesIn
               Manage your environment variables
             </p>
           </div>
-          <UDropdownMenu
-            :items
-            :content="{
-              align: 'start',
-              side: 'right',
-              sideOffset: 8
-            }"
-          >
+          <UDropdownMenu :items :content="{ align: 'start',side: 'right', sideOffset: 8 }">
             <UButton variant="ghost" icon="heroicons:ellipsis-horizontal-20-solid" />
           </UDropdownMenu>
         </div>

@@ -1,12 +1,12 @@
 import { ProjectsService } from '~~/server/services/projects'
-import { idParamsSchema } from '~~/server/database/zod'
+import { projectIdParamsSchema } from '~~/server/database/zod'
 
 export default eventHandler(async (event) => {
   const team = useCurrentTeam(event)
 
-  const { id } = await getValidatedRouterParams(event, idParamsSchema.parse)
+  const { projectId } = await getValidatedRouterParams(event, projectIdParamsSchema.parse)
 
-  await new ProjectsService().deleteProject(id, team.id)
+  await new ProjectsService().deleteProject(projectId, team.id)
 
   return {
     statusCode: 200,

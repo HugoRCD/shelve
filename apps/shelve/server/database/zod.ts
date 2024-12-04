@@ -18,3 +18,15 @@ export const idParamsSchema = z.object({
     required_error: 'ID is required',
   }).int().positive()
 })
+
+export const variableIdParamsSchema = z.object({
+  variableId: z.coerce.number({
+    required_error: 'Variable ID is required',
+  }).int().positive()
+})
+
+export const projectIdParamsSchema = z.object({
+  projectId: z.coerce.number({
+    required_error: 'Project ID is required',
+  }).int().positive(),
+})

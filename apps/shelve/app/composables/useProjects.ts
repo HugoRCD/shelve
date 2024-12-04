@@ -79,12 +79,12 @@ export function useProjectsService() {
     updateLoading.value = false
   }
 
-  async function deleteProject(projectId: number) {
+  async function deleteProject() {
     try {
-      await $fetch(`${baseUrl.value}/${projectId}`, {
+      await $fetch(`${baseUrl.value}/${projectId.value}`, {
         method: 'DELETE',
       })
-      projects.value = projects.value.filter((project) => project.id !== projectId)
+      projects.value = projects.value.filter((_project) => _project.id !== +projectId.value)
       toast.success('Project deleted')
     } catch (error) {
       toast.error('Failed to delete project')

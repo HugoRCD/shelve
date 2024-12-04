@@ -1,10 +1,8 @@
 import { z } from 'zod'
 import { VariablesService } from '~~/server/services/variables'
+import { projectIdParamsSchema } from '~~/server/database/zod'
 
 const schema = z.object({
-  projectId: z.number({
-    required_error: 'Project ID is required',
-  }).positive(),
   autoUppercase: z.boolean().optional(),
   environmentIds: z.array(z.number({
     required_error: 'Environment ID is required',
@@ -21,17 +19,17 @@ const schema = z.object({
 
 export default eventHandler(async (event) => {
   const body = await readValidatedBody(event, schema.parse)
+  const { projectId } = await getValidatedRouterParams(event, projectIdParamsSchema.parse)
 
-  const input = {
-    projectId: body.projectId,
+  await new VariablesService().createVariables({
+    projectId,
     autoUppercase: body.autoUppercase,
     environmentIds: body.environmentIds,
     variables: body.variables.map(variable => ({
       key: variable.key,
       value: variable.value,
     }))
-  }
-  await new VariablesService().createVariables(input)
+  })
   return {
     statusCode: 201,
     message: 'Variables created successfully',

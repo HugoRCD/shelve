@@ -88,7 +88,7 @@ export class VariablesService {
   })
 
   async updateVariable(input: UpdateVariableInput): Promise<void> {
-    const { id, projectId, key, values, autoUppercase = true } = input
+    const { id, key, values, autoUppercase = true } = input
     const db = useDrizzle()
 
     await db.transaction(async (tx) => {
@@ -104,9 +104,9 @@ export class VariablesService {
         const encryptedValue = await this.encryptValue(valueInput.value)
         return this.upsertVariableValue(tx, id, valueInput.environmentId, encryptedValue)
       }))
-    })
 
-    await clearCache('Variables', projectId)
+      await clearCache('Variables', existingVariable.projectId)
+    })
   }
 
   async deleteVariable(id: number): Promise<void> {

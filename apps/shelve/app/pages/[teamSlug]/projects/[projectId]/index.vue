@@ -9,14 +9,10 @@ definePageMeta({
   }
 })
 
-const { projectId, teamSlug } = useRoute().params as { projectId: string, teamSlug: string }
-const currentProject = useProject()
+const projectId = useProjectId()
+const teamSlug = useTeamSlug()
 
-const {
-  currentLoading,
-  fetchCurrentProject
-} = useProjectsService()
-
+const { fetchCurrentProject } = useProjectsService()
 const { fetchVariables } = useVariablesService()
 
 async function loadProjectData() {
@@ -27,30 +23,28 @@ async function loadProjectData() {
 }
 loadProjectData()
 
-//if (!currentProject.value) await fetchCurrentProject(+projectId)
-
 const items = [
   {
     label: 'Environment Variables',
     icon: 'lucide:container',
-    to: `/${teamSlug}/projects/${projectId}/variables`
+    to: `/${teamSlug.value}/projects/${projectId.value}/variables`
   },
   {
     label: 'Files',
     icon: 'lucide:files',
-    to: `/${teamSlug}/projects/${projectId}/files`
+    to: `/${teamSlug.value}/projects/${projectId.value}/files`
   },
   {
     label: 'Settings',
     icon: 'heroicons:cog',
-    to: `/${teamSlug}/projects/${projectId}/settings`
+    to: `/${teamSlug.value}/projects/${projectId.value}/settings`
   },
 ]
 </script>
 
 <template>
   <div class="flex flex-col">
-    <ProjectMainSection v-model="currentProject" :loading="currentLoading" />
+    <ProjectMainSection />
     <div class="mt-8 mb-4 border-b border-neutral-200 dark:border-neutral-800">
       <UNavigationMenu
         color="neutral"

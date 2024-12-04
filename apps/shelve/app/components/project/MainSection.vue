@@ -1,21 +1,16 @@
 <script setup lang="ts">
-import { type Project, TeamRole } from '@shelve/types'
+import { TeamRole } from '@shelve/types'
 
-type ProjectProps = {
-  loading: boolean
-}
-
-defineProps<ProjectProps>()
-
-const project = defineModel({ type: Object }) as Ref<Project>
+const project = useProject()
 
 const showEdit = ref(false)
 const showDelete = ref(false)
+
 const projectName = ref('')
-const { projectId } = useRoute().params as { projectId: string }
 const teamRole = useTeamRole()
 
 const {
+  currentLoading,
   updateProject,
   deleteProject,
 } = useProjectsService()
@@ -36,7 +31,7 @@ async function deleteProjectFunction() {
     toast.error('You do not have permission to delete this project')
     return
   }
-  await deleteProject(+projectId)
+  await deleteProject()
   deleteLoading.value = false
   showDelete.value = false
   navigateTo(`/${useTeamSlug().value}`)
@@ -97,7 +92,7 @@ function getProjectManager(manager: string) {
 
 <template>
   <div>
-    <div v-if="!loading">
+    <div v-if="!currentLoading && project">
       <div class="flex items-start justify-between gap-4">
         <div class="flex items-start gap-4">
           <UAvatar :src="project.logo" size="xl" :alt="project.name" class="logo" />

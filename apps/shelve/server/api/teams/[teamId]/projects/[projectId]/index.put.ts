@@ -1,6 +1,5 @@
 import { z } from 'zod'
 import { ProjectsService } from '~~/server/services/projects'
-import { idParamsSchema } from '~~/server/database/zod'
 
 const updateProjectSchema = z.object({
   name: z.string().min(1).max(255).trim(),
@@ -12,14 +11,21 @@ const updateProjectSchema = z.object({
   logo: z.string().trim().optional(),
 })
 
+const projectIdParamsSchema = z.object({
+  projectId: z.coerce.number({
+    required_error: 'Project ID is required',
+  }).int().positive(),
+})
+
 export default eventHandler(async (event) => {
   const team = useCurrentTeam(event)
 
-  const { id } = await getValidatedRouterParams(event, idParamsSchema.parse)
+  const { projectId } = await getValidatedRouterParams(event, projectIdParamsSchema.parse)
 
   const body = await readValidatedBody(event, updateProjectSchema.parse)
+
   return await new ProjectsService().updateProject({
-    id,
+    id: projectId,
     ...body,
     teamId: team.id
   })
