@@ -139,6 +139,7 @@ CREATE INDEX IF NOT EXISTS "members_role_idx" ON "members" USING btree ("role");
 CREATE INDEX IF NOT EXISTS "members_team_role_idx" ON "members" USING btree ("teamId","role");--> statement-breakpoint
 CREATE UNIQUE INDEX IF NOT EXISTS "projects_team_name_idx" ON "projects" USING btree ("teamId","name");--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS "projects_team_idx" ON "projects" USING btree ("teamId");--> statement-breakpoint
+CREATE UNIQUE INDEX IF NOT EXISTS "teams_slug_idx" ON "teams" USING btree ("slug");--> statement-breakpoint
 CREATE UNIQUE INDEX IF NOT EXISTS "tokens_token_idx" ON "tokens" USING btree ("token");--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS "tokens_user_idx" ON "tokens" USING btree ("userId");--> statement-breakpoint
 CREATE UNIQUE INDEX IF NOT EXISTS "variable_values_variable_env_idx" ON "variable_values" USING btree ("variableId","environmentId");--> statement-breakpoint

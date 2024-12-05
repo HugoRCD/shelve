@@ -15,7 +15,7 @@ const src = computed(() => `https://volta.net/embed/${token}?neutral=${appConfig
 </script>
 
 <template>
-  <div class="flex size-full items-center justify-center">
+  <div class="flex size-full pt-20 items-center justify-center">
     <ClientOnly>
       <iframe :src width="100%" height="100%" />
     </ClientOnly>

@@ -34,7 +34,7 @@ const sealMode = computed(() => id.value)
 </script>
 
 <template>
-  <div class="mx-auto my-8 flex h-full flex-col items-center justify-around gap-2 sm:my-0">
+  <div class="flex pt-20 flex-col items-center justify-around gap-2 sm:my-0">
     <div class="flex w-full flex-col items-center justify-center">
       <div class="w-full border-y border-neutral-500/20">
         <div class="mx-auto flex max-w-2xl justify-center px-5 sm:px-0">

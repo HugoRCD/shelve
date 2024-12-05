@@ -8,7 +8,7 @@ const items = [
   {
     label: 'How can I contact the Shelve team?',
     icon: 'lucide:mail',
-    content: 'For the moment you can send me an email at contact@hrcd.fr',
+    content: 'For the moment you can send me an email at contact@shelve.cloud',
   }
 ]
 </script>

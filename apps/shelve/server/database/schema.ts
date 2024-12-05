@@ -40,7 +40,7 @@ export const teams = pgTable('teams', {
   slug: varchar({ length: 50 }).unique().notNull(),
   logo: varchar({ length: 500 }).default('https://github.com/HugoRCD/shelve/blob/main/assets/default.webp?raw=true').notNull(),
   ...timestamps,
-})
+}, (table) => [uniqueIndex('teams_slug_idx').on(table.slug),])
 
 export const members = pgTable('members', {
   id: bigint({ mode: 'number' }).primaryKey().generatedByDefaultAsIdentity(),

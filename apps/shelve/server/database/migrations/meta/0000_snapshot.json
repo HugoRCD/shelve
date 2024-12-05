@@ -1,5 +1,5 @@
 {
-  "id": "c744ec1b-02f3-4bb3-ac6e-dfb54c80a293",
+  "id": "31485394-45de-4576-a373-5e854cb694ab",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -460,7 +460,23 @@
           "default": "now()"
         }
       },
-      "indexes": {},
+      "indexes": {
+        "teams_slug_idx": {
+          "name": "teams_slug_idx",
+          "columns": [
+            {
+              "expression": "slug",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {

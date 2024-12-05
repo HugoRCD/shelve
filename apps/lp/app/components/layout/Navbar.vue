@@ -35,7 +35,7 @@ items.push(githubItem)
 
 <template>
   <div class="z-[99] relative">
-    <Blur />
+    <Blur position="both" />
     <div class="fixed top-0 flex w-full">
       <div class="z-50 flex w-full items-center justify-between sm:justify-around p-4 sm:px-5 sm:py-2">
         <Logo />
