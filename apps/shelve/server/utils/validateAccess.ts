@@ -6,7 +6,8 @@ import { TeamsService } from '~~/server/services/teams'
 export async function validateTeamAccess(input: { user: User, teamId: number }): Promise<Team> {
   const { user, teamId } = input
   const team = await new TeamsService().getTeam(teamId)
-  if (!team) throw createError({ statusCode: 401, message: 'Unauthorized: Team not found' })
+  if (!team)
+    throw createError({ statusCode: 401, message: 'Unauthorized: User does not belong to the team' })
   if (!team.members.some((member) => member.userId === user.id))
     throw createError({ statusCode: 401, message: 'Unauthorized: User does not belong to the team' })
   return team

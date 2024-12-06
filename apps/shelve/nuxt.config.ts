@@ -9,12 +9,6 @@ export default defineNuxtConfig({
     imports: { //TODO this should be fixed in the next release
       dirs: ['server/utils'],
     },
-    storage: {
-      cache: {
-        driver: 'redis',
-        url: process.env.NUXT_PRIVATE_REDIS_URL || 'redis://shelve_redis:6379',
-      },
-    }
   },
 
   routeRules: {
