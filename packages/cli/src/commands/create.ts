@@ -19,10 +19,12 @@ export function createCommand(program: Command): void {
       if (!name)
         name = await askText('Enter the name of the project:', 'my-project', packageName)
 
-      await ProjectService.createProject(name)
+      const teamId = await askText('Enter the team ID:', '1')
+
+      await ProjectService.createProject(name, +teamId)
 
       outro(`Project ${name} created successfully`)
 
-      await createShelveConfig(name)
+      await createShelveConfig(teamId, name)
     })
 }

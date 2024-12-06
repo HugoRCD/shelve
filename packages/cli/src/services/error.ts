@@ -16,7 +16,7 @@ export class ErrorService {
       500: 'Internal server error, please try again later',
     }
 
-    const message = errorMap[ctx.response.status] || ctx.response.statusText
+    const message = errorMap[ctx.response.status] || ctx.response.statusText || ctx.response.message
     ErrorService.handle(ctx, message)
   }
 

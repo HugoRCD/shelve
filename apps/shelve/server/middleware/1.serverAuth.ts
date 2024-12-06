@@ -2,12 +2,9 @@ import type { Token, User } from '@shelve/types'
 
 export default defineEventHandler(async (event) => {
   const protectedRoutes = [
-    '/api/auth/logout',
     '/api/user',
     '/api/teams',
-    '/api/projects',
     '/api/environments',
-    '/api/variables',
     '/api/tokens',
     '/api/admin',
     '/api/protected',
@@ -32,6 +29,8 @@ async function getUserByAuthToken(authToken: string): Promise<User> {
   const userTokens = await useDrizzle().query.tokens.findMany({
     where: eq(tables.tokens.userId, userId)
   })
+  if (!userTokens.length) throw createError({ statusCode: 401, statusMessage: 'User not found (invalid token)' })
+
   let foundToken: Token | undefined
 
   for (const token of userTokens) {

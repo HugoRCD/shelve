@@ -75,7 +75,7 @@ export class EnvService extends BaseService {
           value: variable.value
         }))
       }
-      await this.request<EnvVar[]>(`/teams/${project.id}/projects/${project.id}/variables`, {
+      await this.request<EnvVar[]>(`/teams/${project.teamId}/projects/${project.id}/variables`, {
         method: 'POST',
         body
       })

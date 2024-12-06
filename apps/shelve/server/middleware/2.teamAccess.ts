@@ -9,6 +9,7 @@ export default eventHandler(async (event) => {
   const { method } = event
 
   const teamId = +requestUrl.pathname.split('/')[3]
+
   if (!teamId) throw createError({ statusCode: 400, message: 'Invalid teamId' })
 
   const { user } = await requireUserSession(event)

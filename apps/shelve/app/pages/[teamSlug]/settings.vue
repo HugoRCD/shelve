@@ -59,6 +59,19 @@ const open = ref(false)
       </div>
       <div style="--stagger: 2" data-animate class="mt-6 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-6">
         <div class="sm:col-span-3">
+          <UFormField class="w-full" label="ID">
+            <UButtonGroup class="w-full">
+              <UInput v-model="team.id" class="w-full" disabled />
+              <UTooltip text="Copy to clipboard">
+                <UButton color="neutral" variant="subtle" icon="lucide:clipboard" @click="copyToClipboard(team.id)" />
+              </UTooltip>
+            </UButtonGroup>
+          </UFormField>
+          <p class="text-xs mt-1 text-neutral-500">
+            This is the actual way to sync the CLI
+          </p>
+        </div>
+        <div class="sm:col-span-4">
           <FormGroup v-model="team.name" label="Name" :disabled="!canUpdate" />
         </div>
         <div class="sm:col-span-4">
@@ -76,10 +89,10 @@ const open = ref(false)
             </UButtonGroup>
           </UFormField>
           <p class="text-xs mt-1 text-neutral-500">
-            This is the unique identifier for your team (used by the CLI)
+            This is the unique identifier for your team (used by the CLI in the future)
           </p>
         </div>
-        <div class="sm:col-span-4">
+        <div class="sm:col-span-5">
           <FormGroup v-model="team.logo" label="Logo" :disabled="!canUpdate" />
         </div>
       </div>

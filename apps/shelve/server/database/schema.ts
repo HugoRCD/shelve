@@ -97,7 +97,7 @@ export const variableValues = pgTable('variable_values', {
 
 export const tokens = pgTable('tokens', {
   id: bigint({ mode: 'number' }).primaryKey().generatedByDefaultAsIdentity(),
-  token: varchar({ length: 50 }).unique().notNull(),
+  token: varchar({ length: 800 }).unique().notNull(),
   name: varchar({ length: 25 }).notNull(),
   userId: bigint({ mode: 'number' }).references(() => users.id, { onDelete: 'cascade' }).notNull(),
   ...timestamps,

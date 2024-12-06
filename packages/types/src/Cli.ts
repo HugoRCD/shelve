@@ -15,9 +15,9 @@ export type ShelveConfig = {
   /**
    * The team ID
    *
-   * @default process.env.SHELVE_TEAM_ID || Your private team will be used
+   * @default process.env.SHELVE_TEAM_ID
    */
-  teamId?: number
+  teamId: number
   /**
    * The token to authenticate with Shelve created using the app (https://app.shelve.cloud/tokens) or your own Shelve instance
    *

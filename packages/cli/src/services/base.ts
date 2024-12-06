@@ -94,9 +94,6 @@ export abstract class BaseService {
 
   protected static async request<T>(endpoint: string, options?: FetchOptions<'json'>): Promise<T> {
     const api = await this.getApi()
-    const { teamId } = await loadShelveConfig()
-
-    if (teamId) endpoint += `?teamId=${teamId.toString()}`
 
     return api<T>(endpoint, options)
   }
