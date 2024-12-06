@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import type { Variable, Environment } from '@shelve/types'
+import type { Environment } from '@shelve/types'
 
-const { variables, environments } = defineProps<{
-  variables: Variable[]
+const { environments } = defineProps<{
   environments: Environment[]
 }>()
 
@@ -41,7 +40,7 @@ async function handleCreateVariables() {
   resetForm()
 }
 
-const items = actionVariablesItem(variables)
+const items = actionVariablesItem()
 
 const handlePasswordGenerated = (password: string, index: number) => variablesInput.value.variables[index]!.value = password
 </script>

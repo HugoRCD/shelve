@@ -5,7 +5,7 @@ import { ConfirmModal } from '#components'
 const selectedVariables = defineModel({ type: Array, required: true }) as Ref<Variable[]>
 
 const {
-  fetchVariables
+  deleteVariables
 } = useVariablesService()
 
 const loading = ref(false)
@@ -18,7 +18,7 @@ function openDeleteModal() {
     description: `You are about to delete ${selectedVariables.value.length} variable${selectedVariables.value.length > 1 ? 's' : '' }, this action cannot be undone`,
     danger: true,
     onSuccess() {
-      toast.promise(deleteVariables(), {
+      toast.promise(deleteSelectedVariables(), {
         loading: 'Deleting variables...',
         success: 'Variables have been deleted',
         error: 'Failed to delete variables',
@@ -27,12 +27,11 @@ function openDeleteModal() {
   })
 }
 
-async function deleteVariables() {
+async function deleteSelectedVariables() {
   loading.value = true
   const ids = selectedVariables.value.map((v: Variable) => v.id)
-  await Promise.all(ids.map(id => useVariablesService().deleteVariable(id, false)))
+  await deleteVariables(ids)
   selectedVariables.value = []
-  await fetchVariables()
   loading.value = false
 }
 </script>

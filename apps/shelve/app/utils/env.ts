@@ -1,7 +1,10 @@
 import type { Environment, Variable } from '@shelve/types'
 
 export function copyEnv(variables: Variable[], envId?: number) {
-  if (variables.length === 0) return
+  if (variables.length === 0) {
+    toast.error('No variables found')
+    return
+  }
   const teamEnv = useEnvironments()
   if (envId) {
     const env = teamEnv.value.find((env) => env.id === envId)
@@ -31,17 +34,18 @@ export function downloadEnv(variables: Variable[], env: Environment) {
   URL.revokeObjectURL(url)
 }
 
-export function actionVariablesItem(variables: Variable[]) {
+export function actionVariablesItem() {
   const teamEnv = useEnvironments()
+  const variables = useVariables()
   const copyItem = teamEnv.value.map((env) => ({
     label: `For ${capitalize(env.name)}`,
     icon: 'lucide:clipboard',
-    onSelect: () => copyEnv(variables, env.id)
+    onSelect: () => copyEnv(variables.value, env.id)
   }))
   const downloadItem = teamEnv.value.map((env) => ({
     label: `For ${capitalize(env.name)}`,
     icon: 'lucide:download',
-    onSelect: () => downloadEnv(variables, env)
+    onSelect: () => downloadEnv(variables.value, env)
   }))
   return [
     [

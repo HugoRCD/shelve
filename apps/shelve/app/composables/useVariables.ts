@@ -73,6 +73,14 @@ export function useVariablesService() {
     await fetchVariables()
   }
 
+  async function deleteVariables(ids: number[]) {
+    await $fetch(baseUrl.value, {
+      method: 'DELETE',
+      body: { variables: ids }
+    })
+    await fetchVariables()
+  }
+
   return {
     variables,
     loading,
@@ -82,6 +90,7 @@ export function useVariablesService() {
     fetchVariables,
     createVariables,
     updateVariable,
-    deleteVariable
+    deleteVariable,
+    deleteVariables,
   }
 }

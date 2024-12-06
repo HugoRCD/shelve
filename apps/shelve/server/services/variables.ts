@@ -48,22 +48,57 @@ export class VariablesService {
     const db = useDrizzle()
 
     await db.transaction(async (tx) => {
-      await Promise.all(
-        varsToCreate.map(async (variable) => {
-          const key = autoUppercase ? variable.key.toUpperCase() : variable.key
-          const encryptedValue = await this.encryptValue(variable.value)
+      const preparedVariables = await Promise.all(
+        varsToCreate.map(async (variable) => ({
+          key: autoUppercase ? variable.key.toUpperCase() : variable.key,
+          encryptedValue: await this.encryptValue(variable.value)
+        }))
+      )
 
-          // Find or create variable
-          const variableId = await this.getOrCreateVariableId(tx, projectId, key)
-
-          // Update values for all environments
-          await Promise.all(
-            environmentIds.map(envId =>
-              this.upsertVariableValue(tx, variableId, envId, encryptedValue)
+      const variableRecords = await Promise.all(
+        preparedVariables.map(async ({ key }) => {
+          const existing = await tx.query.variables.findFirst({
+            where: and(
+              eq(tables.variables.projectId, projectId),
+              eq(tables.variables.key, key)
             )
-          )
+          })
+
+          if (existing) return existing
+
+          const [created] = await tx.insert(tables.variables)
+            .values({ projectId, key })
+            .returning()
+
+          return created
         })
       )
+
+      const variableValues = variableRecords.flatMap(variable => {
+        const preparedVar = preparedVariables.find(v => v.key === variable.key)
+        if (!preparedVar) return []
+
+        return environmentIds.map(environmentId => ({
+          variableId: variable.id,
+          environmentId,
+          value: preparedVar.encryptedValue
+        }))
+      })
+
+      if (variableValues.length > 0) {
+        await tx.insert(tables.variableValues)
+          .values(variableValues)
+          .onConflictDoUpdate({
+            target: [
+              tables.variableValues.variableId,
+              tables.variableValues.environmentId
+            ],
+            set: {
+              value: sql`EXCLUDED.value`,
+              updatedAt: new Date()
+            }
+          })
+      }
     })
 
     await clearCache('Variables', projectId)
@@ -121,28 +156,6 @@ export class VariablesService {
 
   async decryptVariables(variables: Variable[]): Promise<Variable[]> {
     return await Promise.all(variables.map(v => this.decryptVariable(v)))
-  }
-
-  // Private helper methods for database operations
-  private async getOrCreateVariableId(tx: any, projectId: number, key: string): Promise<number> {
-    const existingVariable = await tx.query.variables.findFirst({
-      where: and(
-        eq(tables.variables.projectId, projectId),
-        eq(tables.variables.key, key)
-      )
-    })
-
-    if (existingVariable) {
-      return existingVariable.id
-    }
-
-    const [created] = await tx.insert(tables.variables)
-      .values({ projectId, key })
-      .returning()
-
-    if (!created) throw createError({ statusCode: 500, message: 'Failed to create variable' })
-
-    return created.id
   }
 
   private async upsertVariableValue(tx: any, variableId: number, environmentId: number, value: string) {
