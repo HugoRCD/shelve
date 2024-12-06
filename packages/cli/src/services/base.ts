@@ -1,15 +1,15 @@
 import { ofetch, type $Fetch, type FetchOptions } from 'ofetch'
-import { note, spinner } from '@clack/prompts'
-import { $ } from 'bun'
-import { askBoolean, askPassword, handleCancel, loadShelveConfig } from '../utils'
+import { spinner } from '@clack/prompts'
+// import { $ } from 'bun'
+import { askPassword, loadShelveConfig } from '../utils'
 import { ErrorService } from './error'
 import { EnvService } from './env'
 
 export abstract class BaseService {
 
   protected static api: $Fetch
-  private static readonly SHELVE_SSH_KEY = 'shelve_ed25519'
-  private static readonly SHELVE_SSH_KEY_PATH = `~/.ssh/${this.SHELVE_SSH_KEY}`
+  /*private static readonly SHELVE_SSH_KEY = 'shelve_ed25519'
+  private static readonly SHELVE_SSH_KEY_PATH = `~/.ssh/${this.SHELVE_SSH_KEY}`*/
 
   protected static async withLoading<T>(
     message: string,
@@ -27,7 +27,7 @@ export abstract class BaseService {
     }
   }
 
-  static generateSshKey(): Promise<void> {
+  /*static generateSshKey(): Promise<void> {
     return this.withLoading('Generating Shelve SSH key', async () => {
       await $`ssh-keygen -t ed25519 -N "" -q -f ${this.SHELVE_SSH_KEY_PATH}`.quiet()
       await new Promise((resolve) => setTimeout(resolve, 10))
@@ -59,7 +59,7 @@ export abstract class BaseService {
           handleCancel('Please add the SSH key to your Shelve account and try again.')
       }
     }
-  }
+  }*/
 
   static async getToken(): Promise<string> {
     const { url } = await loadShelveConfig()
