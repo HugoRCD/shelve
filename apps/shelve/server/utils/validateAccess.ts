@@ -1,18 +1,14 @@
 import type { Member, Team, User } from '@shelve/types'
 import { TeamRole } from '@shelve/types'
 import { H3Event } from 'h3'
+import { TeamsService } from '~~/server/services/teams'
 
 export async function validateTeamAccess(input: { user: User, teamId: number }): Promise<Team> {
   const { user, teamId } = input
-  const team = await useDrizzle().query.teams.findFirst({
-    where: eq(tables.teams.id, teamId),
-    with: {
-      members: {
-        where: eq(tables.members.userId, user.id)
-      }
-    }
-  })
-  if (!team) throw createError({ statusCode: 401, message: 'Unauthorized: User does not belong to the team' })
+  const team = await new TeamsService().getTeam(teamId)
+  if (!team) throw createError({ statusCode: 401, message: 'Unauthorized: Team not found' })
+  if (!team.members.some((member) => member.userId === user.id))
+    throw createError({ statusCode: 401, message: 'Unauthorized: User does not belong to the team' })
   return team
 }
 

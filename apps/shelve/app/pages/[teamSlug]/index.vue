@@ -3,7 +3,7 @@ const projects = useProjects()
 
 const { loading, fetchProjects } = useProjectsService()
 
-await fetchProjects()
+fetchProjects()
 </script>
 
 <template>
