@@ -4,7 +4,7 @@ import type { CreateProjectInput, Project } from '@shelve/types'
  * All current team projects (load on the '/' route)
  */
 export function useProjects() {
-  return useState<Project[]>('projects', () => [])
+  return useState<Project[]>('projects')
 }
 
 /**

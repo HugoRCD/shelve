@@ -4,7 +4,7 @@ import type { CreateVariablesInput, Variable } from '@shelve/types'
  * Current project variables
  */
 export function useVariables(): Ref<Variable[]> {
-  return useState<Variable[]>('variables', () => [])
+  return useState<Variable[]>('variables')
 }
 
 export function useVariablesService() {

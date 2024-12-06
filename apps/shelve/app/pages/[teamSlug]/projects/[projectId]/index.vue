@@ -12,16 +12,7 @@ definePageMeta({
 const projectId = useProjectId()
 const teamSlug = useTeamSlug()
 
-const { fetchCurrentProject } = useProjectsService()
-const { fetchVariables } = useVariablesService()
-
-async function loadProjectData() {
-  await Promise.all([
-    fetchCurrentProject(),
-    fetchVariables()
-  ])
-}
-loadProjectData()
+useProjectsService().fetchCurrentProject()
 
 const items = [
   {

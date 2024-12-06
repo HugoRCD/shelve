@@ -3,7 +3,8 @@ const projects = useProjects()
 
 const { loading, fetchProjects } = useProjectsService()
 
-fetchProjects()
+if (!projects.value)
+  fetchProjects()
 </script>
 
 <template>
