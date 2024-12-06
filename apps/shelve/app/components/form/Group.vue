@@ -39,6 +39,3 @@ const model = defineModel({ type: String })
   </UFormField>
 </template>
 
-<style scoped>
-
-</style>

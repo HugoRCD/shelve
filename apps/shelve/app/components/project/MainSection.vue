@@ -1,21 +1,17 @@
 <script setup lang="ts">
-import { type Project, TeamRole } from '@shelve/types'
+import { TeamRole } from '@shelve/types'
 
-type ProjectProps = {
-  loading: boolean
-}
-
-defineProps<ProjectProps>()
-
-const project = defineModel({ type: Object }) as Ref<Project>
+const project = useProject()
 
 const showEdit = ref(false)
 const showDelete = ref(false)
+
 const projectName = ref('')
-const { projectId } = useRoute().params as { projectId: string }
 const teamRole = useTeamRole()
+const teamSlug = useTeamSlug()
 
 const {
+  currentLoading,
   updateProject,
   deleteProject,
 } = useProjectsService()
@@ -23,7 +19,7 @@ const {
 const updateLoading = ref(false)
 async function updateCurrentProject() {
   updateLoading.value = true
-  await updateProject(+projectId, project.value)
+  await updateProject(project.value)
   showEdit.value = false
   updateLoading.value = false
 }
@@ -36,10 +32,10 @@ async function deleteProjectFunction() {
     toast.error('You do not have permission to delete this project')
     return
   }
-  await deleteProject(+projectId)
+  await deleteProject()
   deleteLoading.value = false
   showDelete.value = false
-  navigateTo('/')
+  navigateTo(`/${teamSlug.value}`)
 }
 
 const items = [
@@ -97,7 +93,7 @@ function getProjectManager(manager: string) {
 
 <template>
   <div>
-    <div v-if="!loading">
+    <div v-if="!currentLoading && project">
       <div class="flex items-start justify-between gap-4">
         <div class="flex items-start gap-4">
           <UAvatar :src="project.logo" size="xl" :alt="project.name" class="logo" />
@@ -131,6 +127,7 @@ function getProjectManager(manager: string) {
           </UModal>
         </div>
         <UDropdownMenu
+          v-if="hasAccess(teamRole, TeamRole.ADMIN)"
           :items
           :content="{
             align: 'start',
@@ -144,7 +141,6 @@ function getProjectManager(manager: string) {
       <div v-if="project.projectManager || project.repository || project.homepage" class="mt-6 flex flex-wrap gap-4 sm:flex-row sm:items-center">
         <NuxtLink v-if="project.projectManager" target="_blank" :to="project.projectManager">
           <UButton
-
             variant="soft"
             size="xs"
             :icon="getProjectManager(project.projectManager)?.icon"
@@ -154,7 +150,6 @@ function getProjectManager(manager: string) {
         </NuxtLink>
         <NuxtLink v-if="project.repository" target="_blank" :to="project.repository">
           <UButton
-
             variant="soft"
             size="xs"
             icon="simple-icons:github"
@@ -164,7 +159,6 @@ function getProjectManager(manager: string) {
         </NuxtLink>
         <NuxtLink v-if="project.homepage" target="_blank" :to="project.homepage">
           <UButton
-
             variant="soft"
             size="xs"
             icon="heroicons:home"

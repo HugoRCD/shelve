@@ -9,17 +9,16 @@ export class EnvironmentsService {
       .returning()
 
     if (!environment) throw createError({ statusCode: 500, message: 'Failed to create environment' })
-    await clearCache('Team', input.teamId)
+    await clearCache('Environments', input.teamId)
 
     return environment
   }
 
-  async getEnvironments(teamId: number): Promise<Environment[]> {
+  getEnvironments = withCache('Environments', async (teamId: number) => {
     return await useDrizzle().query.environments.findMany({
-      where: eq(tables.environments.teamId, teamId),
-      orderBy: [asc(tables.environments.name)]
+      where: eq(tables.environments.teamId, teamId)
     })
-  }
+  })
 
   async updateEnvironment(input: UpdateEnvironmentInput): Promise<Environment> {
     const [environment] = await useDrizzle().update(tables.environments)
@@ -30,7 +29,7 @@ export class EnvironmentsService {
       .returning()
 
     if (!environment) throw createError({ statusCode: 404, message: 'Environment not found' })
-    await clearCache('Team', input.teamId)
+    await clearCache('Environments', input.teamId)
 
     return environment
   }

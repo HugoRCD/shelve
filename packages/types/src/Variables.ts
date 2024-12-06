@@ -34,7 +34,6 @@ export type EnvVar = {
 
 export type UpdateVariableInput = {
   id: number;
-  projectId: number;
   key: string;
   values: {
     environmentId: number;

@@ -33,6 +33,11 @@ export const cacheEntities: Record<string, CacheEntity> = {
     key: 'userId',
     ttl: CACHE_TTL,
   },
+  Environments: {
+    prefix: 'environments',
+    key: 'teamId',
+    ttl: CACHE_TTL,
+  },
   Project: {
     prefix: 'project',
     key: 'projectId',

@@ -11,29 +11,38 @@ export function useProjects() {
  * Current selected project (active project context)
  * Only available on route under '/projects/:projectId'
  */
-export function useProject() {
-  return useState<Project | null>('currentProject', () => null)
+export function useProject(): Ref<Project> {
+  return useState<Project>('currentProject')
+}
+
+export function useProjectId(): Ref<string> {
+  const route = useRoute()
+  return computed(() => route.params.projectId as string)
 }
 
 export function useProjectsService() {
   const projects = useProjects()
   const currentProject = useProject()
   const teamId = useTeamId()
+  const projectId = useProjectId()
+  const baseUrl = computed(() => `/api/teams/${teamId.value}/projects`)
 
   const loading = ref(false)
   const currentLoading = ref(false)
+  const updateLoading = ref(false)
 
   async function fetchProjects() {
     loading.value = true
-    projects.value = await $fetch<Project[]>(`/api/projects${teamId.value ? `?teamId=${teamId.value}` : ''}`, {
+    projects.value = await $fetch<Project[]>(`${baseUrl.value}`, {
       method: 'GET',
     })
     loading.value = false
   }
 
-  async function fetchCurrentProject(projectId: number) {
+  async function fetchCurrentProject() {
+    if (currentProject.value) return
     currentLoading.value = true
-    currentProject.value = await $fetch<Project>(`/api/projects/${projectId}`, {
+    currentProject.value = await $fetch<Project>(`${baseUrl.value}/${projectId.value}`, {
       method: 'GET',
     })
     currentLoading.value = false
@@ -41,7 +50,7 @@ export function useProjectsService() {
 
   async function createProject(createProjectInput: Omit<CreateProjectInput, 'teamId'>) {
     try {
-      const response = await $fetch<Project>(`/api/projects${teamId.value ? `?teamId=${teamId.value}` : ''}`, {
+      const response = await $fetch<Project>(`${baseUrl.value}`, {
         method: 'POST',
         body: {
           ...createProjectInput
@@ -54,26 +63,28 @@ export function useProjectsService() {
     }
   }
 
-  async function updateProject(projectId: number, project: Project) {
+  async function updateProject(project: Project) {
+    updateLoading.value = true
     try {
-      const response = await $fetch<Project>(`/api/projects/${projectId}`, {
+      const response = await $fetch<Project>(`${baseUrl.value}/${project.id}`, {
         method: 'PUT',
         body: project,
       })
-      const index = projects.value.findIndex((project) => project.id === projectId)
+      const index = projects.value.findIndex((_project) => _project.id === project.id)
       projects.value.splice(index, 1, response)
       toast.success('Project updated')
     } catch (error) {
       toast.error('Failed to update project')
     }
+    updateLoading.value = false
   }
 
-  async function deleteProject(projectId: number) {
+  async function deleteProject() {
     try {
-      await $fetch(`/api/projects/${projectId}`, {
+      await $fetch(`${baseUrl.value}/${projectId.value}`, {
         method: 'DELETE',
       })
-      projects.value = projects.value.filter((project) => project.id !== projectId)
+      projects.value = projects.value.filter((_project) => _project.id !== +projectId.value)
       toast.success('Project deleted')
     } catch (error) {
       toast.error('Failed to delete project')
@@ -83,6 +94,7 @@ export function useProjectsService() {
   return {
     projects,
     loading,
+    updateLoading,
     currentLoading,
     currentProject,
     fetchProjects,

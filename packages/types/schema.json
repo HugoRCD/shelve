@@ -11,7 +11,7 @@
     "teamId": {
       "type": "number",
       "description": "The team ID",
-      "default": "process.env.SHELVE_TEAM_ID || user private team"
+      "default": "process.env.SHELVE_TEAM_ID || user private team",
     },
     "token": {
       "type": "string",
@@ -35,5 +35,5 @@
       "default": ".env"
     }
   },
-  "required": ["project"]
+  "required": ["project", "teamId"]
 }

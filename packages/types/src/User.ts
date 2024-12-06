@@ -15,6 +15,8 @@ export type User = {
   avatar: string;
   role: Role;
   authType: AuthType;
+  onboarding: boolean;
+  cliInstalled: boolean;
   createdAt: Date;
   updatedAt: Date;
 };

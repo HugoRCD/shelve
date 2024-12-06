@@ -1,30 +1,54 @@
+<script setup lang="ts">
+const { position = 'top', size = 75 } = defineProps<{
+  position: 'top' | 'bottom' | 'both'
+  size?: number
+}>()
+
+const blurLevels = [1, 2, 3, 6, 12]
+
+const positions = {
+  top: {
+    class: 'top-0',
+    gradient: 'gradient-mask-b-0'
+  },
+  bottom: {
+    class: 'bottom-0',
+    gradient: 'gradient-mask-t-0'
+  }
+}
+</script>
+
 <template>
-  <div class="fixed inset-x-0 top-0 isolate h-24">
-    <div
-      style="-webkit-backdrop-filter:blur(1px);backdrop-filter:blur(1px)"
-      class="absolute inset-0 gradient-mask-b-0 blur-[1px]"
-    />
-    <div
-      style="-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px)"
-      class="absolute inset-0 gradient-mask-b-0 blur-[2px]"
-    />
-    <div
-      style="-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)"
-      class="absolute inset-0 gradient-mask-b-0 blur-[3px]"
-    />
-    <div
-      style="-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)"
-      class="absolute inset-0 gradient-mask-b-0 blur-[6px]"
-    />
-    <div
-      style="-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)"
-      class="absolute inset-0 gradient-mask-b-0 blur-[12px]"
-    />
+  <div>
+    <template v-for="pos in ['top', 'bottom']" :key="pos">
+      <div
+        v-if="position === pos || position === 'both'"
+        :class="`fixed inset-x-0 ${positions[pos].class} isolate h-24`"
+        :style="{ height: `${size}px` }"
+      >
+        <div
+          v-for="blur in blurLevels"
+          :key="blur"
+          :style="{
+            '-webkit-backdrop-filter': `blur(${blur}px)`,
+            'backdrop-filter': `blur(${blur}px)`
+          }"
+          :class="[
+            'absolute inset-0',
+            positions[pos].gradient,
+            `blur-[${blur}px]`
+          ]"
+        />
+      </div>
+    </template>
   </div>
 </template>
 
 <style scoped>
 .gradient-mask-b-0 {
   mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, transparent 100%);
+}
+.gradient-mask-t-0 {
+  mask-image: linear-gradient(to top, rgba(0, 0, 0, 1) 0%, transparent 100%);
 }
 </style>

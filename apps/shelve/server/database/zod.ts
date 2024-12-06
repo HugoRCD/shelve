@@ -8,6 +8,8 @@ export const userSchema = z.object({
   avatar: z.string(),
   role: z.nativeEnum(Role),
   authType: z.nativeEnum(AuthType),
+  onboarding: z.boolean(),
+  cliInstalled: z.boolean(),
   createdAt: z.date(),
   updatedAt: z.date(),
 })
@@ -16,4 +18,16 @@ export const idParamsSchema = z.object({
   id: z.coerce.number({
     required_error: 'ID is required',
   }).int().positive()
+})
+
+export const variableIdParamsSchema = z.object({
+  variableId: z.coerce.number({
+    required_error: 'Variable ID is required',
+  }).int().positive()
+})
+
+export const projectIdParamsSchema = z.object({
+  projectId: z.coerce.number({
+    required_error: 'Project ID is required',
+  }).int().positive(),
 })

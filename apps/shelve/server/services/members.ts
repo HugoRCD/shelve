@@ -1,18 +1,15 @@
 import type { AddMemberInput, Member, RemoveMemberInput, UpdateMemberInput, User } from '@shelve/types'
-import { TeamRole } from '@shelve/types'
 
 export class MembersService {
 
   async addMember(input: AddMemberInput): Promise<Member> {
-    const { teamId, email, role, requester } = input
-    await validateAccess({ teamId, requester }, TeamRole.ADMIN)
+    const { teamId, email, role } = input
     const foundedMember = await this.isUserAlreadyMember(teamId, email)
     if (foundedMember) {
       return await this.updateMember({
         teamId,
         memberId: foundedMember.id,
-        role,
-        requester
+        role
       })
     }
     const user = await this.getUserByEmail(email)
@@ -31,8 +28,7 @@ export class MembersService {
   }
 
   async updateMember(input: UpdateMemberInput): Promise<Member> {
-    const { teamId, memberId, role, requester } = input
-    await validateAccess({ teamId, requester }, TeamRole.ADMIN)
+    const { teamId, memberId, role } = input
 
     await useDrizzle().update(tables.members)
       .set({
@@ -46,8 +42,7 @@ export class MembersService {
   }
 
   async removeMember(input: RemoveMemberInput): Promise<void> {
-    const { teamId, memberId, requester } = input
-    await validateAccess({ teamId, requester }, TeamRole.ADMIN)
+    const { teamId, memberId } = input
 
     const member = await this.findMemberById(memberId)
     await clearCache('Teams', teamId)

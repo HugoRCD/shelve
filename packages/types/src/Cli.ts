@@ -1,5 +1,6 @@
 import type { EnvVar } from './Variables'
 import type { Environment } from './Environment'
+import { Project } from './Project'
 
 export const SHELVE_JSON_SCHEMA = 'https://raw.githubusercontent.com/HugoRCD/shelve/main/packages/types/schema.json'
 export const DEFAULT_URL = 'https://app.shelve.cloud'
@@ -14,9 +15,9 @@ export type ShelveConfig = {
   /**
    * The team ID
    *
-   * @default process.env.SHELVE_TEAM_ID || Your private team will be used
+   * @default process.env.SHELVE_TEAM_ID
    */
-  teamId?: number
+  teamId: number
   /**
    * The token to authenticate with Shelve created using the app (https://app.shelve.cloud/tokens) or your own Shelve instance
    *
@@ -75,9 +76,9 @@ export type PushEnvFileInput = {
    * */
   variables: EnvVar[]
   /**
-   * The project ID
+   * The project to push the variables to
    * */
-  projectId: number
+  project: Project
   /**
    * The environment to push the variables to
    * */

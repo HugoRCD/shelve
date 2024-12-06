@@ -1,23 +1,18 @@
-import { z, zh } from 'h3-zod'
-import { TeamRole } from '@shelve/types'
+import { z } from 'zod'
 import { EnvironmentsService } from '~~/server/services/environments'
+import { idParamsSchema } from '~~/server/database/zod'
+
+const updateEnvironmentSchema = z.object({
+  name: z.string().min(3).max(50),
+})
 
 export default defineEventHandler(async (event) => {
-  const { id, teamId } = await zh.useValidatedParams(event, {
-    id: z.coerce.number({
-      required_error: 'ID is required',
-    }).int().positive(),
-    teamId: z.coerce.number({
-      required_error: 'Team ID is required',
-    }).int().positive(),
-  })
-  const { name } = await zh.useValidatedBody(event, {
-    name: z.string().min(3).max(50),
-  })
-  const { user } = await requireUserSession(event)
-  await validateAccess({ teamId, requester: user }, TeamRole.ADMIN)
+  const team = useCurrentTeam(event)
 
-  await new EnvironmentsService().updateEnvironment({ id, teamId, name })
+  const { id } = await getValidatedRouterParams(event, idParamsSchema.parse)
+  const { name } = await readValidatedBody(event, updateEnvironmentSchema.parse)
+
+  await new EnvironmentsService().updateEnvironment({ id, teamId: team.id, name })
 
   return {
     statusCode: 204,

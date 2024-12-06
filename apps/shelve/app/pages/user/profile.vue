@@ -1,8 +1,4 @@
 <script setup lang="ts">
-definePageMeta({
-  middleware: 'protected',
-})
-
 const { user } = useUserSession()
 
 const updateLoading = ref(false)
@@ -58,7 +54,3 @@ async function updateCurrentUser() {
     </form>
   </div>
 </template>
-
-<style scoped>
-
-</style>

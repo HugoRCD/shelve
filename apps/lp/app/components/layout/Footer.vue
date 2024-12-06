@@ -46,7 +46,7 @@ const nav = [
 </script>
 
 <template>
-  <div class="my-6">
+  <div class="mt-6">
     <div class="relative">
       <div class="flex">
         <NuxtLink to="/docs" class="group -mb-px -ml-px flex w-full cursor-pointer justify-between gap-2 border border-neutral-800 border-opacity-50 p-4 text-xs text-neutral-500 transition-all duration-300 ease-in-out hover:border-opacity-100 hover:bg-neutral-800/50 hover:text-neutral-200">
@@ -67,7 +67,7 @@ const nav = [
       </div>
     </div>
     <hr class="border-neutral-800">
-    <footer class="mt-6 flex flex-col justify-around gap-8 p-5 sm:flex-row sm:gap-0">
+    <footer class="mt-6 mb-16 flex flex-col justify-around gap-8 p-5 sm:flex-row sm:gap-0">
       <div class="flex flex-col gap-2">
         <Logo size="size-8" />
         <div class="text-xs text-neutral-500">

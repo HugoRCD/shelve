@@ -1,7 +1,7 @@
 import { Command } from 'commander'
-import { intro, isCancel, outro, text } from '@clack/prompts'
+import { intro, outro } from '@clack/prompts'
 import { readPackageJSON } from 'pkg-types'
-import { createShelveConfig, handleCancel } from '../utils'
+import { askText, createShelveConfig } from '../utils'
 import { ProjectService } from '../services'
 
 export function createCommand(program: Command): void {
@@ -16,23 +16,15 @@ export function createCommand(program: Command): void {
       const { name: packageName } = await readPackageJSON()
       intro(name ? `Creating project '${name}'` : 'Creating a new project')
 
-      if (!name) {
-        name = await text({
-          message: 'Enter the name of the project:',
-          placeholder: 'my-project',
-          initialValue: packageName,
-          validate(value) {
-            if (value.length === 0) return `Value is required!`
-          },
-        })
+      if (!name)
+        name = await askText('Enter the name of the project:', 'my-project', packageName)
 
-        if (isCancel(name)) handleCancel('Operation cancelled.')
-      }
+      const teamId = await askText('Enter the team ID:', '1')
 
-      await ProjectService.createProject(name)
+      await ProjectService.createProject(name, +teamId)
 
       outro(`Project ${name} created successfully`)
 
-      await createShelveConfig(name)
+      await createShelveConfig(teamId, name)
     })
 }

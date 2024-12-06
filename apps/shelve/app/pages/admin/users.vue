@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import * as https from 'node:https'
 import { AuthType, Role, type User } from '@shelve/types'
 import type { TableColumn } from '@nuxt/ui'
 import { ConfirmModal } from '#components'
@@ -62,6 +61,14 @@ const columns: TableColumn<User>[] = [
   {
     accessorKey: 'role',
     header: 'Role',
+  },
+  {
+    accessorKey: 'authType',
+    header: 'Auth',
+  },
+  {
+    accessorKey: 'onboarding',
+    header: 'Onboarding',
   },
   {
     accessorKey: 'createdAt',
@@ -145,12 +152,20 @@ const items = (row: User) => [
       </template>
       <template #username-cell="{ row }">
         <NuxtLink v-if="row.original.authType === AuthType.GITHUB" :to="`https://github.com/${row.original.username}`" target="_blank">
-          <span>{{ row.original.username }}</span>
+          <span class="text-neutral-600 dark:text-neutral-200">
+            {{ row.original.username }}
+          </span>
         </NuxtLink>
         <span v-else>{{ row.original.username }}</span>
       </template>
       <template #role-cell="{ row }">
         <UBadge :label="row.original.role.toUpperCase()" :color="row.original.role === Role.ADMIN ? 'primary' : 'neutral'" variant="subtle" />
+      </template>
+      <template #authType-cell="{ row }">
+        <UBadge :label="row.original.authType.toUpperCase()" :color="row.original.authType === AuthType.GITHUB ? 'primary' : 'neutral'" variant="subtle" />
+      </template>
+      <template #onboarding-cell="{ row }">
+        <UBadge :label="row.original.onboarding ? 'Yes' : 'No'" :color="row.original.onboarding ? 'success' : 'neutral'" variant="subtle" />
       </template>
       <template #actions-cell="{ row }">
         <UDropdownMenu :items="items(row.original)">

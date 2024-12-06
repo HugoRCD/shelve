@@ -3,7 +3,6 @@ const { title } = useAppConfig()
 
 definePageMeta({
   layout: 'auth',
-  middleware: 'guest-only'
 })
 
 const route = useRoute()
@@ -46,12 +45,8 @@ if (route.query.error === 'github' || route.query.error === 'google') {
             width: focus ? '300px' : '250px',
           }"
         >
-          <a href="/auth/github">
-            <UButton icon="simple-icons:github" label="Sign in with GitHub" />
-          </a>
-          <a href="/auth/google">
-            <UButton icon="simple-icons:google" label="Sign in with Google" />
-          </a>
+          <AuthButton icon="simple-icons:github" label="Sign in with GitHub" provider="github" />
+          <AuthButton icon="simple-icons:google" label="Sign in with Google" provider="google" />
           <!--          <UButton icon="lucide:mail" label="Sign in with Email" variant="soft"  @click="otp = !otp" />
           <Transition name="blur" mode="out-in">
             <div v-show="otp" class="flex items-center gap-2">

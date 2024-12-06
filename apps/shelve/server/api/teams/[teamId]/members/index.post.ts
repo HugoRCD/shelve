@@ -1,24 +1,24 @@
-import { z, zh } from 'h3-zod'
+import { z } from 'zod'
 import { TeamRole } from '@shelve/types'
 import { MembersService } from '~~/server/services/members'
 
+const createMemberSchema = z.object({
+  email: z.string({
+    required_error: 'Missing new member email',
+  }).email().trim(),
+  role: z.nativeEnum(TeamRole).default(TeamRole.MEMBER)
+})
+
 export default eventHandler(async (event) => {
-  const { user } = await requireUserSession(event)
-  const { teamId } = await zh.useValidatedParams(event, {
-    teamId: z.coerce.number({
-      required_error: 'Missing team ID',
-    }),
-  })
-  const body = await zh.useValidatedBody(event, {
-    email: z.string({
-      required_error: 'Missing new member email',
-    }).email().trim(),
-    role: z.nativeEnum(TeamRole).default(TeamRole.MEMBER)
-  })
+  const team = useCurrentTeam(event)
+  const member = useCurrentMember(event)
+  validateTeamRole(member, TeamRole.ADMIN)
+
+  const { email, role } = await readValidatedBody(event, createMemberSchema.parse)
+
   return await new MembersService().addMember({
-    teamId,
-    email: body.email,
-    role: body.role,
-    requester: user
+    teamId: team.id,
+    email,
+    role
   })
 })

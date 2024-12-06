@@ -9,6 +9,8 @@ declare module '#auth-utils' {
     email: string
     avatar: string
     authType: AuthType
+    onboarding: boolean
+    cliInstalled: boolean
     role: Role
     createdAt: Date
     updatedAt: Date
@@ -21,6 +23,7 @@ declare module '#auth-utils' {
       githubToken?: string
       googleToken?: string
     }
+    defaultTeamId?: number
     loggedInAt: string
   }
 

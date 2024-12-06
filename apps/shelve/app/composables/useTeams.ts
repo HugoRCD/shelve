@@ -1,4 +1,4 @@
-import type { Environment, Member, Team } from '@shelve/types'
+import type { Member, Team } from '@shelve/types'
 import { Role, TeamRole } from '@shelve/types'
 
 /**
@@ -16,18 +16,16 @@ export function useTeam(): Ref<Team> {
 }
 
 /**
- * Current selected team environments
- */
-export function useTeamEnv(): Ref<Environment[]> {
-  return useState<Environment[]>('teamEnv', () => [])
-}
-
-/**
  * Current selected team id
  */
 export function useTeamId(): Ref<number> {
   const currentTeam = useTeam()
   return computed(() => currentTeam.value?.id)
+}
+
+export function useTeamSlug(): Ref<string> {
+  const route = useRoute()
+  return computed(() => route.params.teamSlug as string)
 }
 
 /**
@@ -45,58 +43,44 @@ export function useTeamRole(): Ref<TeamRole> {
   })
 }
 
-/**
- * Check if the current selected team is a private team
- * Private teams can't be deleted (they act as a default team for a given user)
- */
-export function isPrivateTeam(): Ref<boolean> {
-  const currentTeam = useTeam()
-  return computed(() => currentTeam.value?.private)
-}
-
 export function useTeamsService() {
+  const router = useRouter()
   const teams = useTeams()
   const currentTeam = useTeam()
   const teamId = useTeamId()
-  const teamEnv = useTeamEnv()
-  const { user } = useUserSession()
+  const baseUrl = computed(() => `/api/teams`)
   const loading = ref(false)
   const createLoading = ref(false)
 
-  const lastUsedTeamId = useCookie<number>('lastUsedTeam', {
+  const defaultTeamId = useCookie<number>('defaultTeamId', {
     watch: true,
   })
 
   async function fetchTeams() {
     loading.value = true
-
     try {
-      const fetchedTeams = await $fetch<Team[]>('/api/teams', { method: 'GET' })
-
-      if (!fetchedTeams) throw new Error('Failed to fetch teams')
-
-      teams.value = fetchedTeams
-
-      const privateTeam = teams.value.find(team => team.private && team.members.some(member => member.userId === user.value!.id))
-      lastUsedTeamId.value = lastUsedTeamId.value || privateTeam!.id
-      currentTeam.value = teams.value.find(team => team.id === lastUsedTeamId.value) as Team
-      teamEnv.value = currentTeam.value.environments
-    } finally {
-      loading.value = false
+      teams.value = await $fetch<Team[]>(baseUrl.value, { method: 'GET' })
+    } catch (error) {
+      toast.error('Failed to fetch teams')
     }
+    loading.value = false
   }
 
-  async function selectTeam(id: number) {
+  async function fetchTeam(id: number) {
+    return await $fetch<Team>(`${baseUrl.value}/${id}`, {
+      method: 'GET',
+    })
+  }
+
+  async function selectTeam(team: Team, redirect = true) {
     const projects = useProjectsService()
-    const route = useRoute()
-    currentTeam.value = teams.value.find(team => team.id === id) as Team
-    teamEnv.value = currentTeam.value.environments
-    lastUsedTeamId.value = id
-    if (route.path.includes('/project/')) navigateTo('/')
+    currentTeam.value = team
+    defaultTeamId.value = team.id
+    if (redirect) await router.push(`/${ currentTeam.value.slug }`)
     await projects.fetchProjects()
   }
 
-  async function createTeam(name: string) {
+  async function createTeam(name: string): Promise<Team | undefined> {
     createLoading.value = true
     try {
       const team = await $fetch<Team>('/api/teams', {
@@ -109,25 +93,24 @@ export function useTeamsService() {
       if (!index)
         teams.value.push(team)
       toast.success('Team created')
+      createLoading.value = false
+      return team
     } catch (error) {
       toast.error('Failed to create team')
     }
     createLoading.value = false
   }
 
-  async function updateTeam(input: { name: string, logo: string }) {
-    const { name, logo } = input
-    currentTeam.value = await $fetch<Team>(`/api/teams/${ teamId.value }`, {
+  async function updateTeam(input: { name: string, logo: string, slug: string }) {
+    currentTeam.value = await $fetch<Team>(`${baseUrl.value}/${ teamId.value }`, {
       method: 'PUT',
-      body: {
-        name,
-        logo,
-      },
+      body: input
     })
+    await router.push(`/${ currentTeam.value.slug }`)
   }
 
   async function addMember(email: string, role: TeamRole) {
-    const _member = await $fetch<Member>(`/api/teams/${teamId.value}/members`, {
+    const _member = await $fetch<Member>(`${baseUrl.value}/${teamId.value}/members`, {
       method: 'POST',
       body: {
         email,
@@ -140,7 +123,7 @@ export function useTeamsService() {
   }
 
   async function updateMember(memberId: number, role: TeamRole) {
-    const _member = await $fetch<Member>(`/api/teams/${teamId.value}/members/${memberId}`, {
+    const _member = await $fetch<Member>(`${baseUrl.value}/${teamId.value}/members/${memberId}`, {
       method: 'PUT',
       body: {
         role,
@@ -151,7 +134,7 @@ export function useTeamsService() {
   }
 
   async function removeMember(memberId: number) {
-    await $fetch<Member>(`/api/teams/${teamId.value}/members/${memberId}`, {
+    await $fetch<Member>(`${baseUrl.value}/${teamId.value}/members/${memberId}`, {
       method: 'DELETE',
     })
     currentTeam.value.members = currentTeam.value.members.filter((member) => member.id !== memberId)
@@ -162,21 +145,21 @@ export function useTeamsService() {
       toast.error('You cannot delete the last team')
       return
     }
-    if (currentTeam.value.private) {
-      toast.error('You cannot delete the private team')
-      return
-    }
-    await $fetch(`/api/teams/${teamId.value}`, {
+    await $fetch(`${baseUrl.value}/${teamId.value}`, {
       method: 'DELETE',
     })
     teams.value = teams.value.filter((team) => team.id !== teamId.value)
-    await selectTeam(teams.value[0]!.id)
+    if (teams.value && teams.value.length)
+      await selectTeam(teams.value[0]!)
+    else
+      await router.push('/')
   }
 
   return {
     teams,
     loading,
     createLoading,
+    fetchTeam,
     fetchTeams,
     selectTeam,
     createTeam,

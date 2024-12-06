@@ -48,7 +48,3 @@ async function createToken() {
     </UPopover>
   </div>
 </template>
-
-<style scoped>
-
-</style>

@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import type { User } from '@shelve/types'
+import { AuthType, type CreateUserInput } from '@shelve/types'
 
-const newUser = ref<User>({
+const newUser = ref<CreateUserInput>({
   email: 'hrichard206@gmail.com',
   username: 'test',
   avatar: 'https://i.imgur.com/6VBx3io.png',
-  role: 'user',
+  authType: AuthType.GITHUB,
 })
 const loading = ref(false)
 
@@ -48,7 +48,3 @@ async function testNewUserMail() {
     </div>
   </div>
 </template>
-
-<style scoped>
-
-</style>

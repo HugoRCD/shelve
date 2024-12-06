@@ -1,21 +1,21 @@
-import { z, zh } from 'h3-zod'
+import { z } from 'zod'
 import { TeamsService } from '~~/server/services/teams'
 
+const updateTeamSchema = z.object({
+  name: z.string().optional(),
+  logo: z.string().optional(),
+  slug: z.string().optional(),
+})
+
 export default eventHandler(async (event) => {
-  const { user } = await requireUserSession(event)
-  const { teamId } = await zh.useValidatedParams(event, {
-    teamId: z.coerce.number({
-      required_error: 'Missing team ID',
-    }),
-  })
-  const { name, logo } = await zh.useValidatedBody(event, {
-    name: z.string().optional(),
-    logo: z.string().optional(),
-  })
+  const team = useCurrentTeam(event)
+
+  const { name, logo, slug } = await readValidatedBody(event, updateTeamSchema.parse)
+
   return await new TeamsService().updateTeam({
-    teamId,
+    teamId: team.id,
     name,
     logo,
-    requester: user
+    slug
   })
 })

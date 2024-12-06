@@ -1,5 +1,5 @@
 {
-  "id": "3783817d-5b94-4be4-a7c6-1ed8095867a2",
+  "id": "ed0fd22c-8b64-43c9-b95a-ceb185b66bad",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -10,7 +10,7 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "integer",
+          "type": "bigint",
           "primaryKey": true,
           "notNull": true,
           "identity": {
@@ -20,20 +20,20 @@
             "increment": "1",
             "startWith": "1",
             "minValue": "1",
-            "maxValue": "2147483647",
+            "maxValue": "9223372036854775807",
             "cache": "1",
             "cycle": false
           }
         },
         "name": {
           "name": "name",
-          "type": "varchar",
+          "type": "varchar(25)",
           "primaryKey": false,
           "notNull": true
         },
         "teamId": {
           "name": "teamId",
-          "type": "integer",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true
         },
@@ -51,7 +51,44 @@
           "default": "now()"
         }
       },
-      "indexes": {},
+      "indexes": {
+        "environments_team_name_idx": {
+          "name": "environments_team_name_idx",
+          "columns": [
+            {
+              "expression": "teamId",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "name",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "environments_team_idx": {
+          "name": "environments_team_idx",
+          "columns": [
+            {
+              "expression": "teamId",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
       "foreignKeys": {
         "environments_teamId_teams_id_fk": {
           "name": "environments_teamId_teams_id_fk",
@@ -79,7 +116,7 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "integer",
+          "type": "bigint",
           "primaryKey": true,
           "notNull": true,
           "identity": {
@@ -89,20 +126,20 @@
             "increment": "1",
             "startWith": "1",
             "minValue": "1",
-            "maxValue": "2147483647",
+            "maxValue": "9223372036854775807",
             "cache": "1",
             "cycle": false
           }
         },
         "userId": {
           "name": "userId",
-          "type": "integer",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true
         },
         "teamId": {
           "name": "teamId",
-          "type": "integer",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true
         },
@@ -128,7 +165,65 @@
           "default": "now()"
         }
       },
-      "indexes": {},
+      "indexes": {
+        "members_user_team_idx": {
+          "name": "members_user_team_idx",
+          "columns": [
+            {
+              "expression": "userId",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "teamId",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "members_role_idx": {
+          "name": "members_role_idx",
+          "columns": [
+            {
+              "expression": "role",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "members_team_role_idx": {
+          "name": "members_team_role_idx",
+          "columns": [
+            {
+              "expression": "teamId",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "role",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
       "foreignKeys": {
         "members_userId_users_id_fk": {
           "name": "members_userId_users_id_fk",
@@ -169,7 +264,7 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "integer",
+          "type": "bigint",
           "primaryKey": true,
           "notNull": true,
           "identity": {
@@ -179,64 +274,64 @@
             "increment": "1",
             "startWith": "1",
             "minValue": "1",
-            "maxValue": "2147483647",
+            "maxValue": "9223372036854775807",
             "cache": "1",
             "cycle": false
           }
         },
         "name": {
           "name": "name",
-          "type": "varchar",
+          "type": "varchar(50)",
           "primaryKey": false,
           "notNull": true
         },
         "teamId": {
           "name": "teamId",
-          "type": "integer",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true
         },
         "description": {
           "name": "description",
-          "type": "varchar",
+          "type": "varchar(500)",
           "primaryKey": false,
           "notNull": true,
           "default": "''"
         },
         "repository": {
           "name": "repository",
-          "type": "varchar",
+          "type": "varchar(50)",
           "primaryKey": false,
           "notNull": true,
           "default": "''"
         },
         "projectManager": {
           "name": "projectManager",
-          "type": "varchar",
+          "type": "varchar(100)",
           "primaryKey": false,
           "notNull": true,
           "default": "''"
         },
         "homepage": {
           "name": "homepage",
-          "type": "varchar",
+          "type": "varchar(100)",
           "primaryKey": false,
           "notNull": true,
           "default": "''"
         },
         "variablePrefix": {
           "name": "variablePrefix",
-          "type": "varchar",
+          "type": "varchar(500)",
           "primaryKey": false,
           "notNull": true,
           "default": "''"
         },
         "logo": {
           "name": "logo",
-          "type": "varchar",
+          "type": "varchar(500)",
           "primaryKey": false,
           "notNull": true,
-          "default": "'https://github.com/HugoRCD/shelve/blob/main/assets/default.png?raw=true'"
+          "default": "'https://github.com/HugoRCD/shelve/blob/main/assets/default.webp?raw=true'"
         },
         "updatedAt": {
           "name": "updatedAt",
@@ -252,7 +347,44 @@
           "default": "now()"
         }
       },
-      "indexes": {},
+      "indexes": {
+        "projects_team_name_idx": {
+          "name": "projects_team_name_idx",
+          "columns": [
+            {
+              "expression": "teamId",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "name",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "projects_team_idx": {
+          "name": "projects_team_idx",
+          "columns": [
+            {
+              "expression": "teamId",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
       "foreignKeys": {
         "projects_teamId_teams_id_fk": {
           "name": "projects_teamId_teams_id_fk",
@@ -280,7 +412,7 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "integer",
+          "type": "bigint",
           "primaryKey": true,
           "notNull": true,
           "identity": {
@@ -290,36 +422,29 @@
             "increment": "1",
             "startWith": "1",
             "minValue": "1",
-            "maxValue": "2147483647",
+            "maxValue": "9223372036854775807",
             "cache": "1",
             "cycle": false
           }
         },
         "name": {
           "name": "name",
-          "type": "varchar",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "slug": {
+          "name": "slug",
+          "type": "varchar(50)",
           "primaryKey": false,
           "notNull": true
         },
         "logo": {
           "name": "logo",
-          "type": "varchar",
+          "type": "varchar(500)",
           "primaryKey": false,
           "notNull": true,
-          "default": "'https://github.com/HugoRCD/shelve/blob/main/assets/default.png?raw=true'"
-        },
-        "private": {
-          "name": "private",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": true,
-          "default": true
-        },
-        "privateOf": {
-          "name": "privateOf",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
+          "default": "'https://github.com/HugoRCD/shelve/blob/main/assets/default.webp?raw=true'"
         },
         "updatedAt": {
           "name": "updatedAt",
@@ -335,24 +460,34 @@
           "default": "now()"
         }
       },
-      "indexes": {},
-      "foreignKeys": {
-        "teams_privateOf_users_id_fk": {
-          "name": "teams_privateOf_users_id_fk",
-          "tableFrom": "teams",
-          "tableTo": "users",
-          "columnsFrom": [
-            "privateOf"
+      "indexes": {
+        "teams_slug_idx": {
+          "name": "teams_slug_idx",
+          "columns": [
+            {
+              "expression": "slug",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
         }
       },
+      "foreignKeys": {},
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
+      "uniqueConstraints": {
+        "teams_slug_unique": {
+          "name": "teams_slug_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "slug"
+          ]
+        }
+      },
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
@@ -363,7 +498,7 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "integer",
+          "type": "bigint",
           "primaryKey": true,
           "notNull": true,
           "identity": {
@@ -373,26 +508,26 @@
             "increment": "1",
             "startWith": "1",
             "minValue": "1",
-            "maxValue": "2147483647",
+            "maxValue": "9223372036854775807",
             "cache": "1",
             "cycle": false
           }
         },
         "token": {
           "name": "token",
-          "type": "varchar",
+          "type": "varchar(800)",
           "primaryKey": false,
           "notNull": true
         },
         "name": {
           "name": "name",
-          "type": "varchar",
+          "type": "varchar(25)",
           "primaryKey": false,
           "notNull": true
         },
         "userId": {
           "name": "userId",
-          "type": "integer",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true
         },
@@ -410,7 +545,38 @@
           "default": "now()"
         }
       },
-      "indexes": {},
+      "indexes": {
+        "tokens_token_idx": {
+          "name": "tokens_token_idx",
+          "columns": [
+            {
+              "expression": "token",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "tokens_user_idx": {
+          "name": "tokens_user_idx",
+          "columns": [
+            {
+              "expression": "userId",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
       "foreignKeys": {
         "tokens_userId_users_id_fk": {
           "name": "tokens_userId_users_id_fk",
@@ -427,7 +593,15 @@
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
+      "uniqueConstraints": {
+        "tokens_token_unique": {
+          "name": "tokens_token_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "token"
+          ]
+        }
+      },
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
@@ -438,7 +612,7 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "integer",
+          "type": "bigint",
           "primaryKey": true,
           "notNull": true,
           "identity": {
@@ -448,26 +622,26 @@
             "increment": "1",
             "startWith": "1",
             "minValue": "1",
-            "maxValue": "2147483647",
+            "maxValue": "9223372036854775807",
             "cache": "1",
             "cycle": false
           }
         },
         "username": {
           "name": "username",
-          "type": "varchar",
+          "type": "varchar(25)",
           "primaryKey": false,
           "notNull": true
         },
         "email": {
           "name": "email",
-          "type": "varchar",
+          "type": "varchar(50)",
           "primaryKey": false,
           "notNull": true
         },
         "avatar": {
           "name": "avatar",
-          "type": "varchar",
+          "type": "varchar(500)",
           "primaryKey": false,
           "notNull": true,
           "default": "'https://i.imgur.com/6VBx3io.png'"
@@ -486,6 +660,20 @@
           "typeSchema": "public",
           "primaryKey": false,
           "notNull": true
+        },
+        "onboarding": {
+          "name": "onboarding",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "cliInstalled": {
+          "name": "cliInstalled",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
         },
         "updatedAt": {
           "name": "updatedAt",
@@ -530,7 +718,7 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "integer",
+          "type": "bigint",
           "primaryKey": true,
           "notNull": true,
           "identity": {
@@ -540,26 +728,26 @@
             "increment": "1",
             "startWith": "1",
             "minValue": "1",
-            "maxValue": "2147483647",
+            "maxValue": "9223372036854775807",
             "cache": "1",
             "cycle": false
           }
         },
         "variableId": {
           "name": "variableId",
-          "type": "integer",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true
         },
         "environmentId": {
           "name": "environmentId",
-          "type": "integer",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true
         },
         "value": {
           "name": "value",
-          "type": "varchar",
+          "type": "varchar(800)",
           "primaryKey": false,
           "notNull": true
         },
@@ -595,6 +783,21 @@
             }
           ],
           "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "variable_values_env_idx": {
+          "name": "variable_values_env_idx",
+          "columns": [
+            {
+              "expression": "environmentId",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
           "concurrently": false,
           "method": "btree",
           "with": {}
@@ -640,7 +843,7 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "integer",
+          "type": "bigint",
           "primaryKey": true,
           "notNull": true,
           "identity": {
@@ -650,20 +853,20 @@
             "increment": "1",
             "startWith": "1",
             "minValue": "1",
-            "maxValue": "2147483647",
+            "maxValue": "9223372036854775807",
             "cache": "1",
             "cycle": false
           }
         },
         "projectId": {
           "name": "projectId",
-          "type": "integer",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true
         },
         "key": {
           "name": "key",
-          "type": "varchar",
+          "type": "varchar(50)",
           "primaryKey": false,
           "notNull": true
         },
@@ -681,7 +884,59 @@
           "default": "now()"
         }
       },
-      "indexes": {},
+      "indexes": {
+        "variables_project_key_idx": {
+          "name": "variables_project_key_idx",
+          "columns": [
+            {
+              "expression": "projectId",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "key",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "variables_key_idx": {
+          "name": "variables_key_idx",
+          "columns": [
+            {
+              "expression": "key",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "variables_project_idx": {
+          "name": "variables_project_idx",
+          "columns": [
+            {
+              "expression": "projectId",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
       "foreignKeys": {
         "variables_projectId_projects_id_fk": {
           "name": "variables_projectId_projects_id_fk",

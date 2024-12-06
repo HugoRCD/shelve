@@ -158,7 +158,3 @@ function handleDrop(event: DragEvent) {
     </div>
   </form>
 </template>
-
-<style scoped>
-
-</style>

@@ -1,0 +1,66 @@
+<script setup lang="ts">
+definePageMeta({
+  middleware: (to, from) => {
+    const projectId = to.params.projectId || from.params.projectId || ''
+    const teamSlug = to.params.teamSlug || from.params.teamSlug || ''
+    if (to.path === `/${teamSlug}/projects/${projectId}`) {
+      return `/${teamSlug}/projects/${projectId}/variables`
+    }
+  }
+})
+
+const projectId = useProjectId()
+const teamSlug = useTeamSlug()
+
+const { fetchCurrentProject } = useProjectsService()
+const { fetchVariables } = useVariablesService()
+
+async function loadProjectData() {
+  await Promise.all([
+    fetchCurrentProject(),
+    fetchVariables()
+  ])
+}
+loadProjectData()
+
+const items = [
+  {
+    label: 'Environment Variables',
+    icon: 'lucide:container',
+    to: `/${teamSlug.value}/projects/${projectId.value}/variables`
+  },
+  {
+    label: 'Files',
+    icon: 'lucide:files',
+    to: `/${teamSlug.value}/projects/${projectId.value}/files`
+  },
+  {
+    label: 'Settings',
+    icon: 'heroicons:cog',
+    to: `/${teamSlug.value}/projects/${projectId.value}/settings`
+  },
+]
+</script>
+
+<template>
+  <div class="flex flex-col">
+    <ProjectMainSection />
+    <div class="mt-8 mb-4 border-b border-neutral-200 dark:border-neutral-800">
+      <UNavigationMenu
+        color="neutral"
+        orientation="horizontal"
+        :items
+        class="hidden md:block"
+      />
+      <UNavigationMenu
+        highlight
+        variant="link"
+        color="neutral"
+        orientation="vertical"
+        :items
+        class="md:hidden"
+      />
+    </div>
+    <NuxtPage />
+  </div>
+</template>

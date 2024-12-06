@@ -1,14 +1,16 @@
 import { AuthType } from '@shelve/types'
-import { zh, z } from 'h3-zod'
+import { z } from 'zod'
 import { validateUsername } from '~~/server/services/user'
 
+const updateUserSchema = z.object({
+  username: z.string().min(3).max(50).trim().optional(),
+  email: z.string().email().trim().optional(),
+  avatar: z.string().trim().optional(),
+  authType: z.nativeEnum(AuthType).optional(),
+})
+
 export default eventHandler(async (event) => {
-  const body = await zh.useValidatedBody(event, {
-    username: z.string().min(3).max(50).trim().optional(),
-    email: z.string().email().trim().optional(),
-    avatar: z.string().optional(),
-    authType: z.nativeEnum(AuthType).optional(),
-  })
+  const body = await readValidatedBody(event, updateUserSchema.parse)
   const { user } = await requireUserSession(event)
 
   if (body.username) body.username = await validateUsername(body.username, body.authType)

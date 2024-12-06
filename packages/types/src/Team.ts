@@ -1,5 +1,4 @@
 import type { User } from './User'
-import type { Environment } from './Environment'
 
 export enum TeamRole {
   OWNER = 'owner',
@@ -12,7 +11,7 @@ export type Member = {
   userId: number;
   teamId: number;
   role: TeamRole;
-  user: User;
+  user?: User;
   createdAt: Date;
   updatedAt: Date;
 };
@@ -20,13 +19,11 @@ export type Member = {
 export type Team = {
   id: number;
   name: string;
+  slug: string;
   logo: string;
-  private: boolean;
-  privateOf: number | null;
   createdAt: Date;
   updatedAt: Date;
   members: Member[];
-  environments: Environment[];
 };
 
 export type CreateTeamInput = {
@@ -39,36 +36,27 @@ export type CreateTeamInput = {
 export type UpdateTeamInput = {
   teamId: number;
   name?: string;
+  slug?: string;
   logo?: string;
-  requester: User;
 }
 
 export type DeleteTeamInput = {
   teamId: number
-  requester: User
 }
 
 export type AddMemberInput = {
   teamId: number;
   email: string;
   role: TeamRole;
-  requester: User;
 }
 
 export type UpdateMemberInput = {
   teamId: number;
   memberId: number;
   role: TeamRole;
-  requester: User;
 }
 
 export type RemoveMemberInput = {
   teamId: number;
   memberId: number;
-  requester: User;
-}
-
-export type ValidateAccess = {
-  teamId: number;
-  requester: User;
 }

@@ -1,13 +1,13 @@
-import { zh, z } from 'h3-zod'
+import { z } from 'zod'
 import { Role } from '@shelve/types'
 import { idParamsSchema } from '~~/server/database/zod'
 
 export default eventHandler(async (event) => {
   const { user } = await requireUserSession(event)
-  const { id } = await zh.useValidatedParams(event, idParamsSchema)
-  const { role } = await zh.useValidatedBody(event, {
+  const { id } = await getValidatedRouterParams(event, idParamsSchema.parse)
+  const { role } = await readValidatedBody(event, z.object({
     role: z.nativeEnum(Role),
-  })
+  }).parse)
   if (user.id === id) throw createError({ statusCode: 400, statusMessage: 'you can\'t update your own role' })
   await useDrizzle().update(tables.users)
     .set({

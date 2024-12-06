@@ -76,6 +76,3 @@ async function decryptEnvFile() {
   </form>
 </template>
 
-<style scoped>
-
-</style>

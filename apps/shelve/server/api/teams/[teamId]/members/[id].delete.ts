@@ -1,21 +1,16 @@
-import { z, zh } from 'h3-zod'
 import { MembersService } from '~~/server/services/members'
+import { idParamsSchema } from '~~/server/database/zod'
 
 export default eventHandler(async (event) => {
-  const { user } = await requireUserSession(event)
-  const { teamId, memberId } = await zh.useValidatedParams(event, {
-    teamId: z.coerce.number({
-      required_error: 'Missing team ID',
-    }),
-    memberId: z.coerce.number({
-      required_error: 'Missing member ID',
-    })
-  })
+  const team = useCurrentTeam(event)
+
+  const { id } = await getValidatedRouterParams(event, idParamsSchema.parse)
+
   await new MembersService().removeMember({
-    teamId,
-    memberId,
-    requester: user
+    teamId: team.id,
+    memberId: id,
   })
+
   return {
     statusCode: 200,
     message: 'Member removed',
