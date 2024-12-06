@@ -22,7 +22,6 @@ async function navigateToTeam(team: Team) {
   loading.value = true
   await new Promise((resolve) => setTimeout(resolve, 250))
   await selectTeam(team, false)
-  loading.value = false
   await useRouter().push(`/${team.slug}`)
 }
 </script>
