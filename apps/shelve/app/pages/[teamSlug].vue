@@ -14,8 +14,8 @@ const defaultTeamSlug = useCookie<string>('defaultTeamSlug', {
 const team = useTeam()
 if (!team.value) {
   team.value = await useTeamsService().fetchTeam(defaultTeamId.value)
-  defaultTeamSlug.value = team.value.slug
 }
+defaultTeamSlug.value = team.value.slug
 
 useEnvironmentsService().fetchEnvironments()
 </script>

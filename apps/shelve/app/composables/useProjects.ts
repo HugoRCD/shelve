@@ -23,9 +23,9 @@ export function useProjectId(): Ref<string> {
 export function useProjectsService() {
   const projects = useProjects()
   const currentProject = useProject()
-  const teamId = useTeamId()
+  const team = useTeam()
   const projectId = useProjectId()
-  const baseUrl = computed(() => `/api/teams/${teamId.value}/projects`)
+  const baseUrl = computed(() => `/api/teams/${team.value.id}/projects`)
 
   const loading = ref(false)
   const currentLoading = ref(false)

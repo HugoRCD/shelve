@@ -11,8 +11,8 @@ export function useVariables(): Ref<Variable[]> {
 export function useVariablesService() {
   const projectId = useProjectId()
   const variables = useVariables()
-  const teamId = useTeamId()
-  const baseUrl = computed(() => `/api/teams/${teamId.value}/projects/${projectId.value}/variables`)
+  const team = useTeam()
+  const baseUrl = computed(() => `/api/teams/${team.value.id}/projects/${projectId.value}/variables`)
 
   const loading = ref(false)
   const createLoading = ref(false)
@@ -29,7 +29,7 @@ export function useVariablesService() {
     loading.value = false
   }
 
-  async function createVariables(input: CreateVariablesInput, environmentIds: number[]) {
+  async function createVariables(input: CreateVariablesInput) {
     createLoading.value = true
     try {
       await $fetch(baseUrl.value, {

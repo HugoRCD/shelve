@@ -1,6 +1,5 @@
 <script setup lang="ts">
 const currentTeam = useTeam()
-const teamId = useTeamId()
 const teams = useTeams()
 
 const newTeamName = ref('')
@@ -40,9 +39,9 @@ const groups = computed(() => [
         size: 'sm',
         src: team.logo,
       },
-      disabled: team.id === teamId.value,
+      disabled: team.id === currentTeam.value.id,
       onSelect: () => {
-        if (team.id === teamId.value) return
+        if (team.id === currentTeam.value.id) return
         selectTeam(team)
       }
     }))

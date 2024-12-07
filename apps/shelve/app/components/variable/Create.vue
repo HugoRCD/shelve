@@ -36,7 +36,7 @@ async function handleCreateVariables() {
     toast.error('Please select at least one environment')
     return
   }
-  await createVariables(variablesInput.value, environmentIds.value)
+  await createVariables(variablesInput.value)
   resetForm()
 }
 

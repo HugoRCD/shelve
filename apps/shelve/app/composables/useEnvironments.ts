@@ -9,7 +9,7 @@ export function useEnvironments(): Ref<Environment[]> {
 
 export function useEnvironmentsService() {
   const environments = useEnvironments()
-  const teamId = useTeamId()
+  const team = useTeam()
   const loading = ref(false)
   const createLoading = ref(false)
   const updateLoading = ref(false)
@@ -18,7 +18,7 @@ export function useEnvironmentsService() {
   async function fetchEnvironments() {
     loading.value = true
     try {
-      environments.value = await $fetch<Environment[]>(`/api/teams/${teamId.value}/environments`)
+      environments.value = await $fetch<Environment[]>(`/api/teams/${team.value.id}/environments`)
     } catch (error) {
       toast.error('Failed to fetch environments')
     }
@@ -36,7 +36,7 @@ export function useEnvironmentsService() {
     }
     createLoading.value = true
     try {
-      await $fetch(`/api/teams/${teamId.value}/environments`, {
+      await $fetch(`/api/teams/${team.value.id}/environments`, {
         method: 'POST',
         body: {
           name
@@ -55,7 +55,7 @@ export function useEnvironmentsService() {
     }
     updateLoading.value = true
     try {
-      await $fetch(`/api/teams/${teamId.value}/environments/${environment.id}`, {
+      await $fetch(`/api/teams/${team.value.id}/environments/${environment.id}`, {
         method: 'PUT',
         body: {
           name: environment.name
@@ -70,7 +70,7 @@ export function useEnvironmentsService() {
   async function deleteEnvironment(environment: Environment) {
     deleteLoading.value = true
     try {
-      await $fetch(`/api/teams/${teamId.value}/environments/${environment.id}`, {
+      await $fetch(`/api/teams/${team.value.id}/environments/${environment.id}`, {
         method: 'DELETE',
       })
     } catch (error) {
