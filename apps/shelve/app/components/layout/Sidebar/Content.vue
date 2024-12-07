@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { Role } from '@shelve/types'
 
-const teamSlug = useTeamSlug()
-const { user } = useUserSession()
 const route = useRoute()
+const teamSlug = computed(() => route.params.teamSlug as string)
+const { user } = useUserSession()
 
 const defaultTeamSlug = useCookie<string>('defaultTeamSlug', {
   watch: true,

@@ -3,6 +3,7 @@ import { type Environment, TeamRole } from '@shelve/types'
 import { ConfirmModal } from '#components'
 
 const teamRole = useTeamRole()
+const team = useTeam()
 
 const canDelete = computed(() => hasAccess(teamRole.value, TeamRole.OWNER))
 const canUpdate = computed(() => hasAccess(teamRole.value, TeamRole.ADMIN))
@@ -31,18 +32,18 @@ const envService = useEnvironmentsService()
 
 async function create() {
   await envService.createEnvironment(newEnv.value)
-  await fetchEnvironments()
+  await fetchEnvironments(team.value.id)
   newEnv.value = ''
 }
 
 async function updateEnv(env: Environment) {
   await envService.updateEnvironment(env)
-  await fetchEnvironments()
+  await fetchEnvironments(team.value.id)
 }
 
 async function deleteEnv(env: Environment) {
   await envService.deleteEnvironment(env)
-  await fetchEnvironments()
+  await fetchEnvironments(team.value.id)
 }
 
 const modal = useModal()

@@ -1,14 +1,15 @@
 <script setup lang="ts">
 import { TeamRole } from '@shelve/types'
 
-const project = useProject()
-
 const showEdit = ref(false)
 const showDelete = ref(false)
 
 const projectName = ref('')
 const teamRole = useTeamRole()
-const teamSlug = useTeamSlug()
+const route = useRoute()
+const teamSlug = route.params.teamSlug as string
+const projectId = route.params.projectId as string
+const project = useProject(+projectId)
 
 const {
   currentLoading,
@@ -35,7 +36,7 @@ async function deleteProjectFunction() {
   await deleteProject()
   deleteLoading.value = false
   showDelete.value = false
-  navigateTo(`/${teamSlug.value}`)
+  navigateTo(`/${teamSlug}`)
 }
 
 const items = [

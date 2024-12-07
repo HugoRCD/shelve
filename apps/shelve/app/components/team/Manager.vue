@@ -1,5 +1,4 @@
 <script setup lang="ts">
-const currentTeam = useTeam()
 const teams = useTeams()
 
 const newTeamName = ref('')
@@ -10,21 +9,21 @@ const defaultTeamId = useCookie<number>('defaultTeamId', {
 })
 
 const {
+  loading,
   createTeam,
   selectTeam,
-  fetchTeam,
   fetchTeams,
 } = useTeamsService()
 fetchTeams()
 
-if (!currentTeam.value) currentTeam.value = await fetchTeam(defaultTeamId.value)
+const currentTeam = computed(() => teams.value.find((team) => team.id === defaultTeamId.value))
 
-const loading = ref(false)
+const createLoading = ref(false)
 async function handleCreateTeam() {
-  loading.value = true
+  createLoading.value = true
   await createTeam(newTeamName.value)
   newTeamName.value = ''
-  loading.value = false
+  createLoading.value = false
 }
 
 const groups = computed(() => [
@@ -51,11 +50,13 @@ const groups = computed(() => [
 
 <template>
   <UModal v-model:open="open" title="Switch team" description="Select a team to switch to">
-    <button v-if="currentTeam" class="w-full cursor-pointer flex items-center justify-between hover:bg-neutral-100 dark:hover:bg-neutral-800 p-2 rounded-lg">
+    <button class="w-full cursor-pointer flex items-center justify-between hover:bg-neutral-100 dark:hover:bg-neutral-800 p-2 rounded-lg">
       <span class="flex items-center gap-2">
-        <UAvatar :src="currentTeam.logo" size="sm" alt="currentTeam.name" />
-        <span class="text-sm font-semibold">
-          {{ currentTeam.name }}
+        <USkeleton v-if="loading" class="size-7 rounded-full" />
+        <UAvatar v-else :src="currentTeam!.logo" size="sm" alt="currentTeam.name" />
+        <USkeleton v-if="loading" class="w-20 h-4" />
+        <span v-else class="text-sm font-semibold">
+          {{ currentTeam!.name }}
         </span>
       </span>
       <UIcon name="lucide:chevrons-up-down" class="size-4" />
@@ -66,7 +67,7 @@ const groups = computed(() => [
         :groups
         close
         placeholder="Search or create a team"
-        :loading
+        :loading="createLoading"
         class="h-80"
         @update:open="open = $event"
       >
@@ -92,7 +93,7 @@ const groups = computed(() => [
             <UButton
               :label="`Create '${newTeamName}' team`"
               type="submit"
-              :loading
+              :loading="createLoading"
               block
             />
           </form>

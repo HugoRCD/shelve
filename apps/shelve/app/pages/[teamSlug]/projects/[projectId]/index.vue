@@ -9,26 +9,27 @@ definePageMeta({
   }
 })
 
-const projectId = useProjectId()
-const teamSlug = useTeamSlug()
+const route = useRoute()
+const projectId = route.params.projectId as string
+const teamSlug = route.params.teamSlug as string
 
-useProjectsService().fetchCurrentProject()
+useProjectsService().fetchCurrentProject(+projectId)
 
 const items = [
   {
     label: 'Environment Variables',
     icon: 'lucide:container',
-    to: `/${teamSlug.value}/projects/${projectId.value}/variables`
+    to: `/${teamSlug}/projects/${projectId}/variables`
   },
   {
     label: 'Files',
     icon: 'lucide:files',
-    to: `/${teamSlug.value}/projects/${projectId.value}/files`
+    to: `/${teamSlug}/projects/${projectId}/files`
   },
   {
     label: 'Settings',
     icon: 'heroicons:cog',
-    to: `/${teamSlug.value}/projects/${projectId.value}/settings`
+    to: `/${teamSlug}/projects/${projectId}/settings`
   },
 ]
 </script>

@@ -1,8 +1,10 @@
 <script setup lang="ts">
-const projects = useProjects()
+const route = useRoute()
+const teamSlug = computed(() => route.params.teamSlug as string)
+const projects = useProjects(teamSlug.value)
 
 const { loading, fetchProjects } = useProjectsService()
-if (!projects.value) fetchProjects()
+fetchProjects()
 </script>
 
 <template>

@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import CliInstall from '~/components/CliInstall.vue'
 
-const teamSlug = useTeamSlug()
+const route = useRoute()
+const teamSlug = computed(() => route.params.teamSlug as string)
 const pages = computed(() => {
   const teamNavigations = getNavigation('team', teamSlug.value)
   const userNavigations = getNavigation('user')
   const adminNavigations = getNavigation('admin')
   return [...teamNavigations, ...userNavigations, ...adminNavigations]
 })
-const route = useRoute()
 
 const navigation = computed(() => {
   if (route.path.includes('/projects'))

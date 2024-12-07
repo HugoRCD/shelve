@@ -15,7 +15,6 @@ const isOpen = ref(false)
 
 const {
   loading: projectLoading,
-  fetchProjects,
   createProject,
 } = useProjectsService()
 
@@ -34,7 +33,6 @@ async function createProjectFunction() {
   }
   isOpen.value = false
   createLoading.value = false
-  await fetchProjects()
 }
 
 function importProject() {

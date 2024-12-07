@@ -15,10 +15,10 @@ export function useEnvironmentsService() {
   const updateLoading = ref(false)
   const deleteLoading = ref(false)
 
-  async function fetchEnvironments() {
+  async function fetchEnvironments(teamId: number) {
     loading.value = true
     try {
-      environments.value = await $fetch<Environment[]>(`/api/teams/${team.value.id}/environments`)
+      environments.value = await $fetch<Environment[]>(`/api/teams/${teamId}/environments`)
     } catch (error) {
       toast.error('Failed to fetch environments')
     }

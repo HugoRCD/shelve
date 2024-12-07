@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import type { Project } from '@shelve/types'
 
-const teamSlug = useTeamSlug()
+const route = useRoute()
+const teamSlug = route.params.teamSlug as string
 
 defineProps<{
   project: Project

@@ -3,27 +3,26 @@ import type { CreateVariablesInput, Variable } from '@shelve/types'
 /**
  * Current project variables
  */
-export function useVariables(): Ref<Variable[]> {
-  const projectId = useProjectId()
-  return useState<Variable[]>(`variables-${projectId.value}`)
+export function useVariables(projectId: number) {
+  return useState<Variable[]>(`variables-${projectId}`)
 }
 
 export function useVariablesService() {
-  const projectId = useProjectId()
-  const variables = useVariables()
-  const team = useTeam()
-  const baseUrl = computed(() => `/api/teams/${team.value.id}/projects/${projectId.value}/variables`)
-
+  const route = useRoute()
+  const projectId = route.params.projectId as string
+  const teamId = useCookie<number>('defaultTeamId')
   const loading = ref(false)
   const createLoading = ref(false)
   const updateLoading = ref(false)
   const deleteLoading = ref(false)
 
   async function fetchVariables() {
+    const variables = useVariables(+projectId!)
     loading.value = true
     try {
-      variables.value = await $fetch<Variable[]>(baseUrl.value)
+      variables.value = await $fetch<Variable[]>(`/api/teams/${teamId.value}/projects/${projectId}/variables`)
     } catch (error) {
+      console.error(error)
       toast.error('Failed to fetch variables')
     }
     loading.value = false
@@ -32,7 +31,7 @@ export function useVariablesService() {
   async function createVariables(input: CreateVariablesInput) {
     createLoading.value = true
     try {
-      await $fetch(baseUrl.value, {
+      await $fetch(`/api/teams/${teamId.value}/projects/${projectId}/variables`, {
         method: 'POST',
         body: input
       })
@@ -47,7 +46,7 @@ export function useVariablesService() {
   async function updateVariable(variable: Variable) {
     updateLoading.value = true
     try {
-      await $fetch(`${baseUrl.value}/${variable.id}`, {
+      await $fetch(`/api/teams/${teamId.value}/projects/${projectId}/variables/${variable.id}`, {
         method: 'PUT',
         body: variable
       })
@@ -63,7 +62,7 @@ export function useVariablesService() {
   async function deleteVariable(id: number, showToast: boolean = true) {
     deleteLoading.value = true
     try {
-      await $fetch(`${baseUrl.value}/${id}`, {
+      await $fetch(`/api/teams/${teamId.value}/projects/${projectId}/variables/${id}`, {
         method: 'DELETE',
       })
       if (showToast) toast.success('Variable deleted successfully')
@@ -75,7 +74,7 @@ export function useVariablesService() {
   }
 
   async function deleteVariables(ids: number[]) {
-    await $fetch(baseUrl.value, {
+    await $fetch(`/api/teams/${teamId.value}/projects/${projectId}/variables`, {
       method: 'DELETE',
       body: { variables: ids }
     })
@@ -83,7 +82,6 @@ export function useVariablesService() {
   }
 
   return {
-    variables,
     loading,
     createLoading,
     updateLoading,

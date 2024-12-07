@@ -1,6 +1,6 @@
 import type { CreateVariablesInput, Environment } from '@shelve/types'
 
-export function useVariableForm(projectId: string, teamEnv: Environment[]) {
+export function useVariableForm(projectId: number, teamEnv: Environment[]) {
   const autoUppercase = useCookie<boolean>('autoUppercase', {
     watch: true,
     default: () => true,
@@ -21,7 +21,7 @@ export function useVariableForm(projectId: string, teamEnv: Environment[]) {
 
   const variablesInput = ref<CreateVariablesInput>({
     autoUppercase: autoUppercase.value,
-    projectId: +projectId,
+    projectId,
     environmentIds: environmentIds.value,
     variables: [{ index: 1, key: '', value: '' }],
   })
@@ -57,7 +57,7 @@ export function useVariableForm(projectId: string, teamEnv: Environment[]) {
     variablesToCreate.value = 1
     variablesInput.value = {
       autoUppercase: autoUppercase.value,
-      projectId: +projectId,
+      projectId,
       environmentIds: environmentIds.value,
       variables: [{ index: 1, key: '', value: '' }],
     }

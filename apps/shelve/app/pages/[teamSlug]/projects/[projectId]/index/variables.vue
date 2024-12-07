@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import type { Variable } from '@shelve/types'
 
-const variables = useVariables()
+const route = useRoute()
+const projectId = route.params.projectId as string
+const variables = useVariables(+projectId)
 
 const { loading, fetchVariables } = useVariablesService()
 
@@ -13,6 +15,7 @@ const selectedEnvironment = ref([])
 const order = ref('desc')
 
 const environments = useEnvironments()
+
 const items = ref(environments.value?.map((env) => ({ label: capitalize(env.name), value: env.id })) || [])
 
 const filteredVariables = computed(() => {
@@ -62,7 +65,7 @@ const isVariableSelected = (variable: Variable) => {
 
 <template>
   <div class="flex flex-col gap-2">
-    <VariableCreate v-if="environments.length" :environments />
+    <VariableCreate v-if="environments && environments.length" :environments />
     <div class="flex justify-between items-center mt-2">
       <UInput
         v-model="searchTerm"

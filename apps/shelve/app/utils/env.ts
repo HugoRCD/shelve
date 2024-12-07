@@ -36,7 +36,9 @@ export function downloadEnv(variables: Variable[], env: Environment) {
 
 export function actionVariablesItem() {
   const teamEnv = useEnvironments()
-  const variables = useVariables()
+  const route = useRoute()
+  const projectId = route.params.projectId as string
+  const variables = useVariables(+projectId)
   const copyItem = teamEnv.value.map((env) => ({
     label: `For ${capitalize(env.name)}`,
     icon: 'lucide:clipboard',

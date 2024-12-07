@@ -6,7 +6,9 @@ const { environments } = defineProps<{
 }>()
 
 const { createLoading, createVariables } = useVariablesService()
-const projectId = useProjectId()
+
+const route = useRoute()
+const projectId = route.params.projectId as string
 
 const {
   variablesInput,
@@ -17,7 +19,7 @@ const {
   addVariable,
   removeVariable,
   resetForm,
-} = useVariableForm(projectId.value, environments)
+} = useVariableForm(+projectId, environments)
 
 const {
   dragOver,
