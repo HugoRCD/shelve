@@ -12,7 +12,8 @@ export function useTeams(): Ref<Team[]> {
  * Current selected team (current workspace context)
  */
 export function useTeam(): Ref<Team> {
-  return useState<Team>('team')
+  const teamSlug = useTeamSlug()
+  return useState<Team>(`team-${teamSlug.value}`)
 }
 
 /**
@@ -73,11 +74,9 @@ export function useTeamsService() {
   }
 
   async function selectTeam(team: Team, redirect = true) {
-    const projects = useProjectsService()
     currentTeam.value = team
     defaultTeamId.value = team.id
     if (redirect) await router.push(`/${ currentTeam.value.slug }`)
-    await projects.fetchProjects()
   }
 
   async function createTeam(name: string): Promise<Team | undefined> {
