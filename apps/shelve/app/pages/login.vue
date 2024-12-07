@@ -3,6 +3,7 @@ const { title } = useAppConfig()
 
 definePageMeta({
   layout: 'auth',
+  middleware: 'guest'
 })
 
 const route = useRoute()

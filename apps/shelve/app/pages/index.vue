@@ -20,7 +20,7 @@ const active = ref()
 async function navigateToTeam(team: Team) {
   active.value = team.id
   loading.value = true
-  await new Promise((resolve) => setTimeout(resolve, 250))
+  await new Promise((resolve) => setTimeout(resolve, 100))
   await selectTeam(team, false)
   await useRouter().push(`/${team.slug}`)
 }

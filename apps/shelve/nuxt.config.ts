@@ -11,13 +11,6 @@ export default defineNuxtConfig({
     },
   },
 
-  routeRules: {
-    '/login': { appMiddleware: ['guest'] },
-    '/admin/*': { appMiddleware: ['admin'] },
-    '/user/*': { appMiddleware: ['auth'] },
-    '/onboarding': { appMiddleware: ['auth'] },
-  },
-
   runtimeConfig: {
     private: {
       resendApiKey: '',
