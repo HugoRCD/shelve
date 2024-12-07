@@ -1,12 +1,5 @@
 import type { Environment } from '@shelve/types'
 
-/**
- * Current selected team environments
- */
-export function useEnvironments(): Ref<Environment[]> {
-  return useState<Environment[]>('environments', () => [])
-}
-
 export function useEnvironmentsService() {
   const environments = useEnvironments()
   const team = useTeam()

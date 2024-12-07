@@ -1,20 +1,5 @@
 import type { CreateProjectInput, Project } from '@shelve/types'
 
-/**
- * All current team projects (load on the '/' route)
- */
-export function useProjects(teamSlug: string) {
-  return useState<Project[]>(`${teamSlug}-projects`)
-}
-
-/**
- * Current selected project (active project context)
- * Only available on route under '/projects/:projectId'
- */
-export function useProject(projectId: number) {
-  return useState<Project>(`project-${projectId}`)
-}
-
 export function useProjectsService() {
   const route = useRoute()
   const projectId = route.params.projectId as string

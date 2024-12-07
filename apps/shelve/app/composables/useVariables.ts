@@ -1,12 +1,5 @@
 import type { CreateVariablesInput, Variable } from '@shelve/types'
 
-/**
- * Current project variables
- */
-export function useVariables(projectId: number) {
-  return useState<Variable[]>(`variables-${projectId}`)
-}
-
 export function useVariablesService() {
   const route = useRoute()
   const projectId = route.params.projectId as string

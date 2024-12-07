@@ -2,23 +2,6 @@ import type { Member, Team } from '@shelve/types'
 import { Role, TeamRole } from '@shelve/types'
 
 /**
- * All user teams (always load on app start/refresh)
- */
-export function useTeams() {
-  return useState<Team[]>('teams', () => [])
-}
-
-/**
- * Current selected team (current workspace context)
- */
-export function useTeam() {
-  const defaultTeamSlug = useCookie<string>('defaultTeamSlug', {
-    watch: true,
-  })
-  return useState<Team>(`team-${defaultTeamSlug.value}`)
-}
-
-/**
  * Current selected team user role in the team
  * If user is an admin, the role is set to OWNER
  */

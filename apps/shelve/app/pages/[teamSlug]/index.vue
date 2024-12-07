@@ -4,7 +4,7 @@ const teamSlug = computed(() => route.params.teamSlug as string)
 const projects = useProjects(teamSlug.value)
 
 const { loading, fetchProjects } = useProjectsService()
-fetchProjects()
+await fetchProjects()
 </script>
 
 <template>
