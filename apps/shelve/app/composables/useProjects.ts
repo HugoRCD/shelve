@@ -4,7 +4,13 @@ import type { CreateProjectInput, Project } from '@shelve/types'
  * All current team projects (load on the '/' route)
  */
 export function useProjects() {
-  return useState<Project[]>('projects')
+  const team = useTeam()
+  return useState<Project[]>(`${team.value?.slug}-projects`)
+}
+
+export function useProjectId(): Ref<string> {
+  const route = useRoute()
+  return computed(() => route.params.projectId as string)
 }
 
 /**
@@ -12,12 +18,8 @@ export function useProjects() {
  * Only available on route under '/projects/:projectId'
  */
 export function useProject(): Ref<Project> {
-  return useState<Project>('currentProject')
-}
-
-export function useProjectId(): Ref<string> {
-  const route = useRoute()
-  return computed(() => route.params.projectId as string)
+  const projectId = useProjectId()
+  return useState<Project>(`project-${projectId.value}`)
 }
 
 export function useProjectsService() {
