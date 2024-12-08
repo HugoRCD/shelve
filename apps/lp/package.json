@@ -16,8 +16,8 @@
   },
   "dependencies": {
     "@iconify-json/heroicons": "1.2.1",
-    "@iconify-json/lucide": "1.2.17",
-    "@iconify-json/simple-icons": "1.2.13",
+    "@iconify-json/lucide": "1.2.18",
+    "@iconify-json/simple-icons": "1.2.14",
     "@nuxt/content": "2.13.4",
     "@nuxt/image": "1.8.1",
     "@nuxt/scripts": "0.9.5",
