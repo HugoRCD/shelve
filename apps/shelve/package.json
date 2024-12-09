@@ -21,10 +21,10 @@
     "@iconify-json/heroicons": "1.2.1",
     "@iconify-json/lucide": "1.2.18",
     "@iconify-json/simple-icons": "1.2.14",
-    "@nuxt/devtools": "1.6.3",
     "@nuxt/image": "1.8.1",
     "@nuxt/ui": "3.0.0-alpha.9",
     "@shelve/utils": "*",
+    "@shelve/types": "*",
     "@vueuse/core": "11.3.0",
     "@vueuse/nuxt": "11.3.0",
     "drizzle-kit": "0.29.1",
@@ -40,7 +40,7 @@
     "zod": "3.23.8"
   },
   "devDependencies": {
-    "@shelve/types": "*",
+    "@nuxt/devtools": "1.6.3",
     "@types/pg": "8.11.10",
     "typescript": "5.7.2"
   }

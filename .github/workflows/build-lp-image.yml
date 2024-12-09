@@ -30,7 +30,7 @@ jobs:
 
   build-and-push:
     needs: check-changes
-    if: needs.check-changes.outputs.src == 'true'
+    if: needs.check-changes.outputs.src == 'true' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     permissions:
       contents: read

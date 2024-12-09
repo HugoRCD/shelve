@@ -58,10 +58,6 @@ export default defineNuxtConfig({
     provider: 'iconify'
   },
 
-  nitro: {
-    preset: process.env.NITRO_PRESET || 'bun',
-  },
-
   colorMode: {
     preference: 'dark',
     fallback: 'dark'
