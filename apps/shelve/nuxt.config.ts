@@ -11,12 +11,6 @@ export default defineNuxtConfig({
     rollupConfig: {
       // @ts-expect-error - Vite config
       plugins: [vue()]
-    },
-    storage: {
-      cache: {
-        driver: 'redis',
-        url: process.env.NUXT_PRIVATE_REDIS_URL || 'redis://shelve_redis:6379',
-      },
     }
   },
 
@@ -25,6 +19,9 @@ export default defineNuxtConfig({
       resendApiKey: '',
       encryptionKey: '',
       adminEmails: '',
+      redis: {
+        url: ''
+      },
     },
     oauth: {
       google: {
