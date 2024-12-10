@@ -1,7 +1,5 @@
-/*
 import { Resend } from 'resend'
 import { render } from '@vue-email/render'
-import verifyOtp from '~~/server/emails/verifyOtp.vue'
 import welcomeEmail from '~~/server/emails/welcomeEmail.vue'
 
 export class EmailService {
@@ -14,7 +12,7 @@ export class EmailService {
     this.resend = new Resend(config.private.resendApiKey)
   }
 
-  async sendOtp(email: string, otp: string, appUrl: string): Promise<void> {
+  /*async sendOtp(email: string, otp: string, appUrl: string): Promise<void> {
     const template = await this.generateOtpTemplate(email, otp, appUrl)
 
     try {
@@ -29,7 +27,7 @@ export class EmailService {
     } catch (error) {
       console.log('Error sending email: ', error)
     }
-  }
+  }*/
 
   async sendWelcomeEmail(email: string, username: string, appUrl: string): Promise<void> {
     const template = await this.generateWelcomeTemplate(username, appUrl)
@@ -43,12 +41,20 @@ export class EmailService {
       }).then((response) => {
         console.log('Welcome email sent: ', response)
       })
+      await this.resend.emails.send({
+        from: this.SENDER,
+        to: ['contact@shelve.cloud'],
+        subject: 'New user registered',
+        html: `New user registered: ${username} - ${email}`,
+      }).then((response) => {
+        console.log('New user email sent: ', response)
+      })
     } catch (error) {
       console.log('Error sending welcome email: ', error)
     }
   }
 
-  private async generateOtpTemplate(email: string, otp: string, appUrl: string): Promise<string> {
+  /*private async generateOtpTemplate(email: string, otp: string, appUrl: string): Promise<string> {
     try {
       return await render(verifyOtp, {
         otp,
@@ -57,7 +63,7 @@ export class EmailService {
     } catch (error) {
       return `<h1>OTP: ${otp}</h1>`
     }
-  }
+  }*/
 
   private async generateWelcomeTemplate(username: string, appUrl: string): Promise<string> {
     try {
@@ -71,4 +77,3 @@ export class EmailService {
   }
 
 }
-*/

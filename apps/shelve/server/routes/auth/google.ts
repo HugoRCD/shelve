@@ -8,11 +8,13 @@ export default defineOAuthGoogleEventHandler({
   },
   async onSuccess(event, { user, tokens }) {
     try {
+      const appUrl= getRequestHost(event)
       const _user = await handleOAuthUser({
         email: user.email,
         avatar: user.picture,
         username: `${user.given_name}_${user.family_name}`,
         authType: AuthType.GOOGLE,
+        appUrl,
       })
       await setUserSession(event, {
         secure: {

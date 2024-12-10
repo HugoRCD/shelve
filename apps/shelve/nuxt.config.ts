@@ -1,4 +1,4 @@
-// import vue from '@vitejs/plugin-vue'
+import vue from '@vitejs/plugin-vue'
 
 export default defineNuxtConfig({
   future: {
@@ -8,12 +8,10 @@ export default defineNuxtConfig({
   ssr: false,
 
   nitro: {
-    imports: { //TODO this should be fixed in the next release
-      dirs: ['server/utils'],
-    },
-    /*rollupConfig: {
+    rollupConfig: {
+      // @ts-expect-error - Vite config
       plugins: [vue()]
-    },*/
+    },
     storage: {
       cache: {
         driver: 'redis',

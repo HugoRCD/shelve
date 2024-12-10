@@ -26,4 +26,5 @@ export type CreateUserInput = {
   username: string;
   avatar?: string;
   authType: AuthType;
+  appUrl: string;
 };

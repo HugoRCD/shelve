@@ -9,11 +9,13 @@ export default defineOAuthGitHubEventHandler({
   },
   async onSuccess(event, { user, tokens }) {
     try {
+      const appUrl= getRequestHost(event)
       const _user = await handleOAuthUser({
         email: user.email,
         avatar: user.avatar_url,
         username: user.login,
         authType: AuthType.GITHUB,
+        appUrl,
       })
       await setUserSession(event, {
         secure: {
