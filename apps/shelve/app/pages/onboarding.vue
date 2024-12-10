@@ -23,6 +23,7 @@ async function createTeamAndCompleteOnboarding() {
     const team = await createTeam(teamName.value)
     if (!team) {
       toast.error('Failed to create team')
+      loading.value = false
       return
     }
 
