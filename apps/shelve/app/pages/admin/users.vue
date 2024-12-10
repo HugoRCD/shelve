@@ -71,6 +71,10 @@ const columns: TableColumn<User>[] = [
     header: 'Onboarding',
   },
   {
+    accessorKey: 'cliInstalled',
+    header: 'CLI',
+  },
+  {
     accessorKey: 'createdAt',
     header: 'Created At',
     cell: ({ row }) => {
@@ -166,6 +170,9 @@ const items = (row: User) => [
       </template>
       <template #onboarding-cell="{ row }">
         <UBadge :label="row.original.onboarding ? 'Yes' : 'No'" :color="row.original.onboarding ? 'success' : 'neutral'" variant="subtle" />
+      </template>
+      <template #cliInstalled-cell="{ row }">
+        <UBadge :label="row.original.cliInstalled ? 'Yes' : 'No'" :color="row.original.cliInstalled ? 'success' : 'neutral'" variant="subtle" />
       </template>
       <template #actions-cell="{ row }">
         <UDropdownMenu :items="items(row.original)">

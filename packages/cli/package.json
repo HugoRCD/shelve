@@ -48,7 +48,7 @@
     "ofetch": "1.4.1",
     "pkg-types": "1.2.1",
     "semver": "7.6.3",
-    "tinyglobby": "^0.2.10"
+    "tinyglobby": "0.2.10"
   },
   "devDependencies": {
     "@shelve/types": "*",

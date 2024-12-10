@@ -13,7 +13,10 @@ const route = useRoute()
 const projectId = route.params.projectId as string
 const teamSlug = route.params.teamSlug as string
 
-useProjectsService().fetchCurrentProject(+projectId)
+const project = useProject(+projectId)
+
+if (!project.value)
+  useProjectsService().fetchCurrentProject(+projectId)
 
 const items = [
   {

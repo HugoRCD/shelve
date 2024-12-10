@@ -11,7 +11,7 @@
   },
   "devDependencies": {
     "nuxt": "3.14.1592",
-    "typescript": "^5.7.2",
-    "iron-webcrypto": "^1.2.1"
+    "typescript": "5.7.2",
+    "iron-webcrypto": "1.2.1"
   }
 }

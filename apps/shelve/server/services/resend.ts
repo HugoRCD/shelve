@@ -7,20 +7,15 @@ import welcomeEmail from '~~/server/emails/welcomeEmail.vue'
 export class EmailService {
 
   private readonly resend: Resend
-  private readonly appUrl: string
   private readonly SENDER = 'HugoRCD <contact@hrcd.fr>'
 
   constructor() {
     const config = useRuntimeConfig()
     this.resend = new Resend(config.private.resendApiKey)
-    this.appUrl = config.public.appUrl
   }
 
-  /!**
-   * Send OTP verification email
-   *!/
-  async sendOtp(email: string, otp: string): Promise<void> {
-    const template = await this.generateOtpTemplate(email, otp)
+  async sendOtp(email: string, otp: string, appUrl: string): Promise<void> {
+    const template = await this.generateOtpTemplate(email, otp, appUrl)
 
     try {
       await this.resend.emails.send({
@@ -36,11 +31,8 @@ export class EmailService {
     }
   }
 
-  /!**
-   * Send welcome email
-   *!/
-  async sendWelcomeEmail(email: string, username: string): Promise<void> {
-    const template = await this.generateWelcomeTemplate(username)
+  async sendWelcomeEmail(email: string, username: string, appUrl: string): Promise<void> {
+    const template = await this.generateWelcomeTemplate(username, appUrl)
 
     try {
       await this.resend.emails.send({
@@ -56,28 +48,22 @@ export class EmailService {
     }
   }
 
-  /!**
-   * Generate OTP email template
-   *!/
-  private async generateOtpTemplate(email: string, otp: string): Promise<string> {
+  private async generateOtpTemplate(email: string, otp: string, appUrl: string): Promise<string> {
     try {
       return await render(verifyOtp, {
         otp,
-        redirectUrl: `${this.appUrl}/login?email=${email}&otp=${otp}`,
+        redirectUrl: `${appUrl}/login?email=${email}&otp=${otp}`,
       })
     } catch (error) {
       return `<h1>OTP: ${otp}</h1>`
     }
   }
 
-  /!**
-   * Generate welcome email template
-   *!/
-  private async generateWelcomeTemplate(username: string): Promise<string> {
+  private async generateWelcomeTemplate(username: string, appUrl: string): Promise<string> {
     try {
       return await render(welcomeEmail, {
         username: username,
-        redirectUrl: this.appUrl,
+        redirectUrl: appUrl,
       })
     } catch (error) {
       return `<h1>Welcome to Shelve, ${username}!</h1>`
