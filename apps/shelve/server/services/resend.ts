@@ -4,12 +4,12 @@ import welcomeEmail from '~~/server/emails/welcomeEmail.vue'
 
 export class EmailService {
 
-  private readonly resend: Resend
+  private readonly resend: Resend | null
   private readonly SENDER = 'HugoRCD <contact@hrcd.fr>'
 
   constructor() {
     const config = useRuntimeConfig()
-    this.resend = new Resend(config.private.resendApiKey)
+    this.resend = config.private.resendApiKey ? new Resend(config.private.resendApiKey) : null
   }
 
   /*async sendOtp(email: string, otp: string, appUrl: string): Promise<void> {
@@ -30,6 +30,10 @@ export class EmailService {
   }*/
 
   async sendWelcomeEmail(email: string, username: string, appUrl: string): Promise<void> {
+    if (!this.resend) {
+      console.warn('Resend API key not found, set NUXT_PRIVATE_RESEND_API_KEY in your environment variables to enable email sending')
+      return
+    }
     const template = await this.generateWelcomeTemplate(username, appUrl)
 
     try {
