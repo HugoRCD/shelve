@@ -21,7 +21,7 @@ export class ProjectService extends BaseService {
     } catch (error: any) {
       if (DEBUG) console.log(error)
 
-      if (error.response?.status === 400) {
+      if (error.statusCode === 400) {
         await askBoolean(`Project '${name}' does not exist. Would you like to create it?`)
 
         return this.createProject(name, teamId)
