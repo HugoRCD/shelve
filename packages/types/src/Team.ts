@@ -11,7 +11,7 @@ export type Member = {
   userId: number;
   teamId: number;
   role: TeamRole;
-  user?: User;
+  user: User;
   createdAt: Date;
   updatedAt: Date;
 };

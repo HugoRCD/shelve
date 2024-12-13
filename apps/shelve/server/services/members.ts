@@ -23,7 +23,7 @@ export class MembersService {
       .returning()
     if (!newMember) throw new Error('Failed to add member')
     const member = await this.findMemberById(newMember.id)
-    await clearCache('Teams', teamId)
+    await clearCache('Team', teamId)
     return member
   }
 
@@ -37,7 +37,7 @@ export class MembersService {
       .where(eq(tables.members.id, memberId))
 
     const member = await this.findMemberById(memberId)
-    await clearCache('Teams', teamId)
+    await clearCache('Team', teamId)
     return member
   }
 
@@ -45,7 +45,7 @@ export class MembersService {
     const { teamId, memberId } = input
 
     const member = await this.findMemberById(memberId)
-    await clearCache('Teams', teamId)
+    await clearCache('Team', teamId)
     await useDrizzle().delete(tables.members).where(eq(tables.members.id, member.id))
   }
 

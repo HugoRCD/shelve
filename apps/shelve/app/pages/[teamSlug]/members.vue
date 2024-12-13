@@ -29,7 +29,7 @@ const items = (row: Member) => [
     {
       label: 'Set as Owner',
       icon: 'lucide:crown',
-      disabled: hasAccess(row.role, TeamRole.OWNER),
+      disabled: row.role === TeamRole.OWNER || !hasAccess(teamRole.value, TeamRole.OWNER),
       onSelect: () => {
         if (row.role === TeamRole.OWNER) {
           toast.success('User is already an owner')
@@ -41,7 +41,7 @@ const items = (row: Member) => [
     {
       label: 'Set as Admin',
       icon: 'lucide:shield',
-      disabled: hasAccess(row.role, TeamRole.ADMIN),
+      disabled: row.role === TeamRole.ADMIN || !hasAccess(teamRole.value, TeamRole.ADMIN),
       onSelect: () => {
         if (row.role === TeamRole.ADMIN) {
           toast.success('User is already an admin')
@@ -53,7 +53,7 @@ const items = (row: Member) => [
     {
       label: 'Set as Member',
       icon: 'lucide:user',
-      disabled: hasAccess(row.role, TeamRole.MEMBER),
+      disabled: row.role === TeamRole.MEMBER || !hasAccess(teamRole.value, TeamRole.ADMIN),
       onSelect: () => {
         changeMemberRole(row.id, TeamRole.MEMBER)
       },
@@ -64,7 +64,7 @@ const items = (row: Member) => [
       label: 'Delete',
       icon: 'heroicons:trash-20-solid',
       iconClass: 'text-red-500 dark:text-red-500',
-      disabled: row.role === TeamRole.OWNER,
+      disabled: !canDelete.value,
       onSelect: () => {
         if (row.role === TeamRole.OWNER) {
           toast.error('Cannot delete team owner')
