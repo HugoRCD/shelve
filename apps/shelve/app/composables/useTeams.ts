@@ -64,8 +64,11 @@ export function useTeamsService() {
       toast.success('Team created')
       createLoading.value = false
       return team
-    } catch (error) {
-      toast.error('Failed to create team')
+    } catch (error: any) {
+      if (error.statusCode === 409)
+        toast.error(error.statusMessage)
+      else
+        toast.error('Failed to create team')
     }
     createLoading.value = false
   }

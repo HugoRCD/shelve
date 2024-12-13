@@ -14,6 +14,8 @@ export class TeamsService {
 
     const team = await db.transaction(async (tx) => {
       const slug = input.name.toLowerCase().replace(/\s/g, '-')
+      const isSlugUnique = await this.isSlugUnique(slug)
+      if (!isSlugUnique) throw createError({ statusCode: 409, statusMessage: 'Team name already in use' })
 
       const [newTeam] = await tx.insert(tables.teams)
         .values({
@@ -58,6 +60,11 @@ export class TeamsService {
   async updateTeam(input: UpdateTeamInput): Promise<Team> {
     const { teamId, ...data } = input
     const db = useDrizzle()
+    if (data.slug) {
+      data.slug = data.slug.toLowerCase().replace(/\s/g, '-')
+      const isSlugUnique = await this.isSlugUnique(data.slug)
+      if (!isSlugUnique) throw createError({ statusCode: 409, statusMessage: 'Slug already in use' })
+    }
 
     return await db.transaction(async (tx) => {
       await tx.update(tables.teams)
@@ -74,7 +81,7 @@ export class TeamsService {
           },
         }
       })
-      if (!updatedTeam) throw new Error(`Team not found with id ${teamId}`)
+      if (!updatedTeam) throw createError({ statusCode: 404, statusMessage: `Team not found with id ${teamId}` })
 
       await clearCache('Team', teamId)
 
@@ -125,6 +132,13 @@ export class TeamsService {
     if (!team) throw new Error(`Team not found with id ${teamId}`)
     return team
   })
+
+  private isSlugUnique = async (slug: string): Promise<boolean> => {
+    const team = await useDrizzle().query.teams.findFirst({
+      where: eq(tables.teams.slug, slug)
+    })
+    return !team
+  }
 
   async getTeamBySlug(slug: string): Promise<Team> {
     const team = await useDrizzle().query.teams.findFirst({

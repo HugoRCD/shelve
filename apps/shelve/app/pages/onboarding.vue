@@ -22,11 +22,9 @@ async function createTeamAndCompleteOnboarding() {
   try {
     const team = await createTeam(teamName.value)
     if (!team) {
-      toast.error('Failed to create team')
       loading.value = false
       return
     }
-
     await $fetch('/api/user/onboarding', {
       method: 'POST',
       body: {

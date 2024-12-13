@@ -38,9 +38,9 @@ const groups = computed(() => [
         size: 'sm',
         src: team.logo,
       },
-      disabled: team.id === currentTeam.value.id,
+      disabled: team.id === currentTeam.value?.id,
       onSelect: () => {
-        if (team.id === currentTeam.value.id) return
+        if (team.id === currentTeam.value?.id) return
         selectTeam(team)
       }
     }))
@@ -83,15 +83,20 @@ const groups = computed(() => [
           >
             <div class="flex flex-col gap-2 items-center mb-4">
               <UIcon name="lucide:users" class="size-8" />
-              <h3 class="text-2xl font-light font-newsreader italic text-pretty max-w-xs">
-                Looks like you don't have any team yet.
+              <h3 class="text-lg text-pretty max-w-xs">
+                <span v-if="!newTeamName">
+                  Looks like you don't have any teams yet
+                </span>
+                <span v-else>
+                  Looks like there is no team with the name '{{ newTeamName }}'
+                </span>
               </h3>
-              <p class="text-sm text-neutral-500">
+              <p v-if="!newTeamName" class="text-sm text-neutral-500">
                 Create a team to start collaborating with your team members.
               </p>
             </div>
             <UButton
-              :label="`Create '${newTeamName}' team`"
+              :label="newTeamName ? `Create '${newTeamName}' team` : 'Create a team'"
               type="submit"
               :loading="createLoading"
               block
