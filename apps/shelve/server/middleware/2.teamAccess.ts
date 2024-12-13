@@ -10,7 +10,7 @@ export default eventHandler(async (event) => {
 
   const teamId = +requestUrl.pathname.split('/')[3]
 
-  if (!teamId) throw createError({ statusCode: 400, message: 'Invalid teamId' })
+  if (!teamId) throw createError({ statusCode: 400, statusMessage: 'Invalid teamId' })
 
   const { user } = await requireUserSession(event)
 
@@ -18,7 +18,7 @@ export default eventHandler(async (event) => {
   event.context.team = team
 
   const currentMember = team.members.find((member) => member.userId === user.id)
-  if (!currentMember) throw createError({ statusCode: 401, message: 'Unauthorized: User does not belong to the team' })
+  if (!currentMember) throw createError({ statusCode: 401, statusMessage: 'Unauthorized: User does not belong to the team' })
 
   if (method === 'PUT') {
     validateTeamRole(currentMember, TeamRole.ADMIN)

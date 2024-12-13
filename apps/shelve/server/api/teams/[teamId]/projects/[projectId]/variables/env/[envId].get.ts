@@ -15,7 +15,7 @@ export default eventHandler(async (event) => {
 
   const result = await variablesService.getVariables(projectId, envId)
 
-  if (!result) throw createError({ statusCode: 404, message: `Variables not found for project ${projectId} and environment ${envId}` })
+  if (!result) throw createError({ statusCode: 404, statusMessage: `Variables not found for project ${projectId} and environment ${envId}` })
 
   const decryptedVariables = await variablesService.decryptVariables(result)
 

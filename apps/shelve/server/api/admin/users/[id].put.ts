@@ -8,7 +8,7 @@ export default eventHandler(async (event) => {
   const { role } = await readValidatedBody(event, z.object({
     role: z.nativeEnum(Role),
   }).parse)
-  if (user.id === id) throw createError({ statusCode: 400, statusMessage: 'you can\'t update your own role' })
+  if (user.id === id) throw createError({ statusCode: 403, statusMessage: 'You can\'t update your own role' })
   await useDrizzle().update(tables.users)
     .set({
       role

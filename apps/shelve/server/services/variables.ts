@@ -128,7 +128,7 @@ export class VariablesService {
 
     await db.transaction(async (tx) => {
       const existingVariable = await this.findVariableById(tx, id)
-      if (!existingVariable) throw createError({ statusCode: 404, message: `Variable not found with id ${id}` })
+      if (!existingVariable) throw createError({ statusCode: 404, statusMessage: `Variable not found with id ${id}` })
 
       const updatedKey = autoUppercase ? key.toUpperCase() : key
       if (updatedKey !== existingVariable.key) {
@@ -149,7 +149,7 @@ export class VariablesService {
       .where(eq(tables.variables.id, id))
       .returning()
 
-    if (!deleted) throw createError({ statusCode: 404, message: `Variable not found with id ${id}` })
+    if (!deleted) throw createError({ statusCode: 404, statusMessage: `Variable not found with id ${id}` })
 
     await clearCache('Variables', deleted.projectId)
   }
