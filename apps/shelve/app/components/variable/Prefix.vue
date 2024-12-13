@@ -1,6 +1,7 @@
 <script setup lang="ts">
 const route = useRoute()
 const projectId = route.params.projectId as string
+const teamSlug = route.params.teamSlug as string
 const project = useProject(+projectId)
 
 const prefixList = computed(() => {
@@ -41,7 +42,7 @@ function addPrefixToInputId(prefix: string) {
             @click="addPrefixToInputId(prefix)"
           />
         </div>
-        <NuxtLink :to="`/projects/${project.id}/settings#variable-prefix`" class="text-xs text-neutral-500 dark:text-neutral-400 flex gap-1 hover:underline">
+        <NuxtLink :to="`/${teamSlug}/projects/${project.id}/settings#variable-prefix`" class="text-xs text-neutral-500 dark:text-neutral-400 flex gap-1 hover:underline">
           Create variable prefix
           <UIcon name="lucide:external-link" class="mt-0.5" />
         </NuxtLink>

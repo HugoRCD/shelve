@@ -17,7 +17,7 @@ function updateCurrentTeam() {
   toast.promise(updateTeam(team.value), {
     loading: 'Updating team...',
     success: 'Team updated successfully',
-    error: 'Error updating team',
+    error: (data: any) => data.statusMessage || 'Error updating team',
   })
   updateLoading.value = false
 }
