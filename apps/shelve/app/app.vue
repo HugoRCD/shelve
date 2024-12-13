@@ -36,9 +36,23 @@ defineShortcuts({
     <Body class="overscroll-y-none selection:bg-primary font-geist relative overflow-x-hidden bg-white text-black selection:text-inverted dark:bg-neutral-950 dark:text-white">
       <ShelveMeta />
       <UApp :tooltip="{ delayDuration: 0 }">
-        <NuxtLayout>
-          <NuxtPage />
-        </NuxtLayout>
+        <Suspense>
+          <NuxtLayout>
+            <NuxtPage />
+          </NuxtLayout>
+          <template #fallback>
+            <div class="size-full flex items-center justify-center">
+              <div class="relative">
+                <div class="absolute -inset-3 rounded-full border border-neutral-200/60 dark:border-neutral-700/60 animate-ripple-1" />
+                <div class="absolute -inset-1 rounded-full border border-neutral-200/70 dark:border-neutral-700/70 animate-ripple-2" />
+                <div class="absolute -inset-0.5 rounded-full border border-neutral-200/80 dark:border-neutral-700/80 animate-ripple-3" />
+                <div class="relative rounded-full border-1 border-neutral-200/90 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-4 shadow-sm dark:shadow-lg">
+                  <Icon name="custom:shelve" class="size-8 animate-pulse" />
+                </div>
+              </div>
+            </div>
+          </template>
+        </Suspense>
         <Toaster
           close-button
           position="top-center"
