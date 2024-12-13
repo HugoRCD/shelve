@@ -23,7 +23,7 @@ export default eventHandler(async (event) => {
     })
     .where(eq(tables.users.id, user.id))
     .returning()
-  if (!updatedUser) throw createError({ statusCode: 404, message: 'User not found' })
+  if (!updatedUser) throw createError({ statusCode: 404, statusMessage: 'User not found' })
 
   await setUserSession(event, {
     user: updatedUser,

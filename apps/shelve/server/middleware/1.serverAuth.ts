@@ -38,7 +38,7 @@ async function getUserByAuthToken(authToken: string): Promise<User> {
     if (decryptedToken === authToken) foundToken = token
   }
 
-  if (!foundToken) throw createError({ statusCode: 401, message: 'Invalid token' })
+  if (!foundToken) throw createError({ statusCode: 401, statusMessage: 'Invalid token' })
 
   const user = await useDrizzle().query.users.findFirst({
     where: eq(tables.users.id, userId)

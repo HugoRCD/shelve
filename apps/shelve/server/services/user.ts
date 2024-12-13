@@ -15,7 +15,7 @@ export async function createUser(input: CreateUserInput): Promise<User> {
       role: adminEmails.includes(input.email) ? Role.ADMIN : undefined,
     })
     .returning()
-  if (!createdUser) throw createError({ statusCode: 500, message: 'Failed to create user' })
+  if (!createdUser) throw createError({ statusCode: 422, statusMessage: 'Failed to create user' })
   await new EmailService().sendWelcomeEmail(input.email, input.username, input.appUrl)
   return createdUser
 }
@@ -41,7 +41,7 @@ export async function validateUsername(username: string, authType?: AuthType): P
   const usernameTaken = foundUser.length > 0
   const isOAuthUser = authType === AuthType.GITHUB || authType === AuthType.GOOGLE
   if (isOAuthUser && usernameTaken) return generateUniqueUsername(username)
-  if (usernameTaken) throw createError({ statusCode: 400, message: 'Username already taken' })
+  if (usernameTaken) throw createError({ statusCode: 400, statusMessage: 'Username already taken' })
   return username
 }
 

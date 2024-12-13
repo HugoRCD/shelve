@@ -7,9 +7,9 @@ export async function validateTeamAccess(input: { user: User, teamId: number }):
   const { user, teamId } = input
   const team = await new TeamsService().getTeam(teamId)
   if (!team)
-    throw createError({ statusCode: 401, message: 'Unauthorized: User does not belong to the team' })
+    throw createError({ statusCode: 401, statusMessage: 'Unauthorized: User does not belong to the team' })
   if (!team.members.some((member) => member.userId === user.id))
-    throw createError({ statusCode: 401, message: 'Unauthorized: User does not belong to the team' })
+    throw createError({ statusCode: 401, statusMessage: 'Unauthorized: User does not belong to the team' })
   return team
 }
 
@@ -20,18 +20,18 @@ export function validateTeamRole(member: Member, minRole: TeamRole = TeamRole.ME
     [TeamRole.MEMBER]: 2,
   }
   if (orderRole[member.role] > orderRole[minRole])
-    throw createError({ statusCode: 401, message: 'Unauthorized: User does not have the required role' })
+    throw createError({ statusCode: 401, statusMessage: 'Unauthorized: User does not have the required role' })
   return true
 }
 
 export function useCurrentTeam(event: H3Event): Team {
   const { team } = event.context
-  if (!team) throw createError({ statusCode: 500, message: 'Team not found' })
+  if (!team) throw createError({ statusCode: 404, statusMessage: 'Team not found' })
   return team
 }
 
 export function useCurrentMember(event: H3Event): Member {
   const { currentMember } = event.context
-  if (!currentMember) throw createError({ statusCode: 500, message: 'Member not found' })
+  if (!currentMember) throw createError({ statusCode: 500, statusMessage: 'Member not found' })
   return currentMember
 }
