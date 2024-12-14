@@ -6,20 +6,22 @@ definePageMeta({
 })
 
 const teams = useTeams()
-const loading = ref(false)
+const navLoading = ref(false)
 const { user } = useUserSession()
 
 const {
+  loading,
   fetchTeams,
   selectTeam,
 } = useTeamsService()
 
-await fetchTeams()
+fetchTeams()
+
 const active = ref()
 
 async function navigateToTeam(team: Team) {
   active.value = team.id
-  loading.value = true
+  navLoading.value = true
   await new Promise((resolve) => setTimeout(resolve, 100))
   await selectTeam(team, false)
   await useRouter().push(`/${team.slug}`)
@@ -44,7 +46,7 @@ async function navigateToTeam(team: Team) {
               </p>
             </div>
           </div>
-          <div class="flex flex-col gap-4 mt-6">
+          <div v-if="!loading" class="flex flex-col gap-4 mt-6">
             <div
               v-for="team in teams"
               :key="team.id"
@@ -58,9 +60,20 @@ async function navigateToTeam(team: Team) {
                   <span class="text-xs text-neutral-500">{{ team.slug }}</span>
                 </div>
               </div>
-              <UButton size="sm" variant="soft" trailing :loading="loading && active === team.id">
+              <UButton size="sm" variant="soft" trailing :loading="navLoading && active === team.id">
                 Select
               </UButton>
+            </div>
+          </div>
+          <div v-else class="flex flex-col gap-4 mt-6">
+            <div v-for="i in 2" :key="i" class="flex items-center justify-between gap-4 dark:bg-neutral-950 bg-neutral-100/50 p-4 rounded-lg dark:shadow-md">
+              <div class="flex items-center gap-2">
+                <USkeleton class="size-10 rounded-full" />
+                <div class="flex flex-col gap-2">
+                  <USkeleton class="w-40 h-3" />
+                  <USkeleton class="w-16 h-3" />
+                </div>
+              </div>
             </div>
           </div>
         </div>

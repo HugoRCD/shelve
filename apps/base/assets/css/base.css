@@ -14,6 +14,7 @@
 
 :root {
   --ui-radius: var(--radius-sm);
+  --ease-smooth: cubic-bezier(0.45, 0, 0.55, 1);
 }
 
 html, body, #__nuxt, #__layout {
@@ -25,6 +26,10 @@ html, body, #__nuxt, #__layout {
   --font-newsreader: 'Newsreader', serif;
   --font-geist: 'Geist', sans-serif;
   --font-geist-mono: 'Geist Mono', sans-serif;
+
+  --animate-ripple-1: ripple 2.5s var(--ease-smooth) infinite 0.15s;
+  --animate-ripple-2: ripple 2.5s var(--ease-smooth) infinite 0.4s;
+  --animate-ripple-3: ripple 2.5s var(--ease-smooth) infinite 0.65s;
 }
 
 .main-gradient {
