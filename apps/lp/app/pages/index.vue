@@ -84,7 +84,7 @@ function useClipboard(text: string) {
       <div>
         <LandingFeatures />
       </div>
-
+      <LandingStats />
       <div>
         <LandingFaq />
       </div>
