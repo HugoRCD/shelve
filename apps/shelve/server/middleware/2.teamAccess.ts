@@ -8,7 +8,7 @@ export default eventHandler(async (event) => {
   const requestUrl = getRequestURL(event)
   const { method } = event
 
-  const teamSlug = requestUrl.pathname.split('/')[3]
+  const [,,, teamSlug] = requestUrl.pathname.split('/')
 
   if (!teamSlug) throw createError({ statusCode: 400, statusMessage: 'Invalid teamSlug' })
 
