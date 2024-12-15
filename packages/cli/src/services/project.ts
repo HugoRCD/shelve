@@ -32,8 +32,6 @@ export class ProjectService extends BaseService {
   }
 
   static createProject(name: string, slug: string): Promise<Project> {
-    console.log('name:', name)
-    console.log('slug:', slug)
     return this.withLoading(`Creating '${name}' project`, () => {
       return this.request<Project>(`/teams/${slug}/projects`, {
         method: 'POST',
