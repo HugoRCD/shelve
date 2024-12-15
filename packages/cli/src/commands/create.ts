@@ -1,7 +1,6 @@
 import { Command } from 'commander'
 import { intro, outro } from '@clack/prompts'
-import { readPackageJSON } from 'pkg-types'
-import { askText, createShelveConfig } from '../utils'
+import { askText, createShelveConfig, loadShelveConfig } from '../utils'
 import { ProjectService } from '../services'
 
 export function createCommand(program: Command): void {
@@ -11,20 +10,28 @@ export function createCommand(program: Command): void {
     .alias('init')
     .description('Create a new project')
     .option('-n, --name <name>', 'Name of the project')
+    .option('-s, --slug <slug>', 'Team slug')
     .action(async (options) => {
-      let { name } = options
-      const { name: packageName } = await readPackageJSON()
+      let { name, slug } = options
+
+      const { project, slug: teamSlug } = await loadShelveConfig()
+
       intro(name ? `Creating project '${name}'` : 'Creating a new project')
 
-      if (!name)
-        name = await askText('Enter the name of the project:', 'my-project', packageName)
+      name = name || project
+      slug = slug || teamSlug
 
-      const teamId = await askText('Enter the team ID:', '1')
+      if (!name) name = await askText('Enter the name of the project:', 'my-project', project)
 
-      await ProjectService.createProject(name, +teamId)
+      if (!slug) slug = await askText('Enter the team slug:', 'my-team-slug')
+
+      await ProjectService.createProject(name, slug)
 
       outro(`Project ${name} created successfully`)
 
-      await createShelveConfig(teamId, name)
+      await createShelveConfig({
+        projectName: name,
+        slug,
+      })
     })
 }

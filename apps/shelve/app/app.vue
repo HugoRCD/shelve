@@ -53,10 +53,7 @@ defineShortcuts({
             </div>
           </template>
         </Suspense>
-        <Toaster
-          close-button
-          position="top-center"
-        />
+        <Toaster close-button position="top-center" />
       </UApp>
     </Body>
   </Html>

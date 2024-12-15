@@ -8,10 +8,10 @@
       "description": "The project name",
       "default": "process.env.SHELVE_PROJECT || package_json_name"
     },
-    "teamId": {
-      "type": "number",
-      "description": "The team ID",
-      "default": "process.env.SHELVE_TEAM_ID || user private team",
+    "slug": {
+      "type": "string",
+      "description": "The team slug",
+      "default": "process.env.SHELVE_TEAM_SLUG"
     },
     "token": {
       "type": "string",
@@ -35,5 +35,5 @@
       "default": ".env"
     }
   },
-  "required": ["project", "teamId"]
+  "required": ["project", "slug"]
 }

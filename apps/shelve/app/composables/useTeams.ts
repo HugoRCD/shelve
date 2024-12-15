@@ -23,7 +23,6 @@ export function useTeamsService() {
   const loading = ref(false)
   const createLoading = ref(false)
 
-  const defaultTeamId = useCookie<number>('defaultTeamId')
   const defaultTeamSlug = useCookie<string>('defaultTeamSlug')
 
   async function fetchTeams() {
@@ -36,15 +35,14 @@ export function useTeamsService() {
     loading.value = false
   }
 
-  async function fetchTeam(id: number) {
-    return await $fetch<Team>(`/api/teams/${id}`, {
+  async function fetchTeam(slug: number) {
+    return await $fetch<Team>(`/api/teams/${slug}`, {
       method: 'GET',
     })
   }
 
   async function selectTeam(team: Team, redirect = true) {
     currentTeam.value = team
-    defaultTeamId.value = team.id
     defaultTeamSlug.value = team.slug
     if (redirect) await router.push(`/${ currentTeam.value.slug }`)
   }
@@ -74,7 +72,7 @@ export function useTeamsService() {
   }
 
   async function updateTeam(input: { name: string, logo: string, slug: string }) {
-    currentTeam.value = await $fetch<Team>(`/api/teams/${ currentTeam.value.id }`, {
+    currentTeam.value = await $fetch<Team>(`/api/teams/${currentTeam.value.slug}`, {
       method: 'PUT',
       body: input
     })
@@ -82,7 +80,7 @@ export function useTeamsService() {
   }
 
   async function addMember(email: string, role: TeamRole) {
-    const _member = await $fetch<Member>(`/api/teams/${currentTeam.value.id}/members`, {
+    const _member = await $fetch<Member>(`/api/teams/${currentTeam.value.slug}/members`, {
       method: 'POST',
       body: {
         email,
@@ -95,7 +93,7 @@ export function useTeamsService() {
   }
 
   async function updateMember(memberId: number, role: TeamRole) {
-    const _member = await $fetch<Member>(`/api/teams/${currentTeam.value.id}/members/${memberId}`, {
+    const _member = await $fetch<Member>(`/api/teams/${currentTeam.value.slug}/members/${memberId}`, {
       method: 'PUT',
       body: {
         role,
@@ -106,7 +104,7 @@ export function useTeamsService() {
   }
 
   async function removeMember(memberId: number) {
-    await $fetch<Member>(`/api/teams/${currentTeam.value.id}/members/${memberId}`, {
+    await $fetch<Member>(`/api/teams/${currentTeam.value.slug}/members/${memberId}`, {
       method: 'DELETE',
     })
     currentTeam.value.members = currentTeam.value.members.filter((member) => member.id !== memberId)
@@ -117,7 +115,7 @@ export function useTeamsService() {
       toast.error('You cannot delete the last team')
       return
     }
-    await $fetch(`/api/teams/${currentTeam.value.id}`, {
+    await $fetch(`/api/teams/${currentTeam.value.slug}`, {
       method: 'DELETE',
     })
     teams.value = teams.value.filter((team) => team.id !== currentTeam.value.id)

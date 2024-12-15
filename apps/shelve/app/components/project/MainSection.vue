@@ -9,7 +9,7 @@ const teamRole = useTeamRole()
 const route = useRoute()
 const teamSlug = route.params.teamSlug as string
 const projectId = route.params.projectId as string
-const project = useProject(+projectId)
+const project = useProject(projectId)
 
 const {
   currentLoading,

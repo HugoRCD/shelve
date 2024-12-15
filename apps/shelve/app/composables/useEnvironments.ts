@@ -1,17 +1,19 @@
 import type { Environment } from '@shelve/types'
 
 export function useEnvironmentsService() {
+  const route = useRoute()
   const environments = useEnvironments()
   const team = useTeam()
   const loading = ref(false)
   const createLoading = ref(false)
   const updateLoading = ref(false)
   const deleteLoading = ref(false)
+  const teamSlug = route.params.teamSlug as string
 
-  async function fetchEnvironments(teamId: number) {
+  async function fetchEnvironments() {
     loading.value = true
     try {
-      environments.value = await $fetch<Environment[]>(`/api/teams/${teamId}/environments`)
+      environments.value = await $fetch<Environment[]>(`/api/teams/${teamSlug}/environments`)
     } catch (error) {
       toast.error('Failed to fetch environments')
     }

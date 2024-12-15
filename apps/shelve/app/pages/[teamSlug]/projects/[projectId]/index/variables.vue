@@ -3,7 +3,7 @@ import type { Variable } from '@shelve/types'
 
 const route = useRoute()
 const projectId = route.params.projectId as string
-const variables = useVariables(+projectId)
+const variables = useVariables(projectId)
 
 const { loading, fetchVariables } = useVariablesService()
 
