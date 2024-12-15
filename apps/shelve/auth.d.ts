@@ -23,7 +23,7 @@ declare module '#auth-utils' {
       githubToken?: string
       googleToken?: string
     }
-    defaultTeamId?: number
+    defaultTeamSlug?: string
     loggedInAt: string
   }
 

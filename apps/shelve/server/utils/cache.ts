@@ -1,28 +1,32 @@
-type InvalidateFor = {
-  entity: keyof typeof cacheEntities
-  param: number
-}
-
-type CacheEntity = {
+type CacheEntity<T = string | number> = {
   prefix: string
   key: string
   ttl: number
-  invalidateFor?: (param: number) => Promise<InvalidateFor[]>
+  invalidateFor?: (param: T) => Promise<Array<{
+    entity: keyof typeof cacheEntities
+    param: number
+  }>>
 }
 
 export const CACHE_TTL = 60 * 60 * 8 // 8 hours
 
-export const cacheEntities: Record<string, CacheEntity> = {
+export const cacheEntities: Record<string, CacheEntity<string> | CacheEntity<number>> = {
   Team: {
     prefix: 'team',
-    key: 'teamId',
+    key: 'teamSlug',
     ttl: CACHE_TTL,
-    invalidateFor: async (teamId: number) => {
-      const members = await useDrizzle().query.members.findMany({
-        where: eq(tables.members.teamId, teamId),
-        columns: { userId: true }
+    invalidateFor: async (teamSlug: string) => {
+      const team = await useDrizzle().query.teams.findFirst({
+        where: eq(tables.teams.slug, teamSlug),
+        with: {
+          members: {
+            columns: { userId: true }
+          }
+        },
+        columns: { id: true }
       })
-      return members.map(member => ({
+      if (!team) return []
+      return team.members.map(member => ({
         entity: 'Teams' as const,
         param: member.userId
       }))
@@ -66,16 +70,19 @@ export function withCache<T>(
   })
 }
 
-export async function clearCache(entity: keyof typeof cacheEntities, id: number) {
+export async function clearCache<T extends string | number>(
+  entity: keyof typeof cacheEntities,
+  id: T
+) {
   const storage = useStorage('cache')
   const config = cacheEntities[entity]
-  if (!config) throw new Error(`Entity ${entity} not found in cacheEntities`)
+  if (!config) throw createError({ statusCode: 404, message: `Cache entity ${entity} not found` })
   const cacheString = `nitro:functions:${config.prefix}:${config.key}:${id}.json`
 
   await storage.removeItem(cacheString)
 
   if (config.invalidateFor) {
-    const invalidations = await config.invalidateFor(id)
+    const invalidations = await config.invalidateFor(id as never)
 
     await Promise.all(
       invalidations.map((inv: any) => clearCache(inv.entity, inv.param))

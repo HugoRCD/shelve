@@ -28,7 +28,7 @@ async function createTeamAndCompleteOnboarding() {
     await $fetch('/api/user/onboarding', {
       method: 'POST',
       body: {
-        teamId: team.id,
+        teamSlug: team.slug,
       }
     })
 

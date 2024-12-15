@@ -5,8 +5,7 @@ export function useProjectsService() {
   const projectId = route.params.projectId as string
   const teamSlug = route.params.teamSlug as string
   const projects = useProjects(teamSlug)
-  const currentProject = useProject(+projectId)
-  const teamId = useCookie<number>('defaultTeamId')
+  const currentProject = useProject(projectId)
 
   const loading = ref(false)
   const currentLoading = ref(false)
@@ -14,7 +13,7 @@ export function useProjectsService() {
 
   async function fetchProjects() {
     loading.value = true
-    projects.value = await $fetch<Project[]>(`/api/teams/${teamId.value}/projects`, {
+    projects.value = await $fetch<Project[]>(`/api/teams/${teamSlug}/projects`, {
       method: 'GET',
     })
     loading.value = false
@@ -23,7 +22,7 @@ export function useProjectsService() {
   async function fetchCurrentProject(projectId: number) {
     if (currentProject.value) return
     currentLoading.value = true
-    currentProject.value = await $fetch<Project>(`/api/teams/${teamId.value}/projects/${projectId}`, {
+    currentProject.value = await $fetch<Project>(`/api/teams/${teamSlug}/projects/${projectId}`, {
       method: 'GET',
     })
     currentLoading.value = false
@@ -31,7 +30,7 @@ export function useProjectsService() {
 
   async function createProject(input: Omit<CreateProjectInput, 'teamId'>) {
     try {
-      const project = await $fetch<Project>(`/api/teams/${teamId.value}/projects`, {
+      const project = await $fetch<Project>(`/api/teams/${teamSlug}/projects`, {
         method: 'POST',
         body: input
       })
@@ -46,7 +45,7 @@ export function useProjectsService() {
   async function updateProject(project: Project) {
     updateLoading.value = true
     try {
-      const response = await $fetch<Project>(`/api/teams/${teamId.value}/projects/${project.id}`, {
+      const response = await $fetch<Project>(`/api/teams/${teamSlug}/projects/${project.id}`, {
         method: 'PUT',
         body: project,
       })
@@ -61,7 +60,7 @@ export function useProjectsService() {
 
   async function deleteProject() {
     try {
-      await $fetch(`/api/teams/${teamId.value}/projects/${currentProject.value.id}`, {
+      await $fetch(`/api/teams/${teamSlug}/projects/${currentProject.value.id}`, {
         method: 'DELETE',
       })
       projects.value = projects.value.filter((_project) => _project.id !== currentProject.value.id)

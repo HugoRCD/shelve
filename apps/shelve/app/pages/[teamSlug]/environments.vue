@@ -32,18 +32,18 @@ const envService = useEnvironmentsService()
 
 async function create() {
   await envService.createEnvironment(newEnv.value)
-  await fetchEnvironments(team.value.id)
+  await fetchEnvironments()
   newEnv.value = ''
 }
 
 async function updateEnv(env: Environment) {
   await envService.updateEnvironment(env)
-  await fetchEnvironments(team.value.id)
+  await fetchEnvironments()
 }
 
 async function deleteEnv(env: Environment) {
   await envService.deleteEnvironment(env)
-  await fetchEnvironments(team.value.id)
+  await fetchEnvironments()
 }
 
 const modal = useModal()

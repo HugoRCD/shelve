@@ -26,7 +26,7 @@ export function useProjects(teamSlug: string) {
  * Current selected project (active project context)
  * Only available on route under '/projects/:projectId'
  */
-export function useProject(projectId: number) {
+export function useProject(projectId: string) {
   return useState<Project>(`project-${projectId}`)
 }
 
@@ -40,6 +40,6 @@ export function useEnvironments() {
 /**
  * Current project variables
  */
-export function useVariables(projectId: number) {
+export function useVariables(projectId: string) {
   return useState<Variable[]>(`variables-${projectId}`)
 }

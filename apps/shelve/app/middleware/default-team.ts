@@ -1,4 +1,4 @@
 export default defineNuxtRouteMiddleware(() => {
-  const defaultTeamId = useCookie<number>('defaultTeamId')
-  if (!defaultTeamId.value) return navigateTo('/')
+  const defaultTeamSlug = useCookie<string>('defaultTeamSlug')
+  if (!defaultTeamSlug.value) return navigateTo('/')
 })

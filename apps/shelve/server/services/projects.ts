@@ -8,7 +8,7 @@ export class ProjectsService {
     const [createdProject] = await useDrizzle().insert(tables.projects)
       .values(input)
       .returning()
-    if (!createdProject) throw new Error('Project not found after creation')
+    if (!createdProject) throw createError({ statusCode: 422, message: 'Failed to create project' })
     await clearCache('Projects', input.teamId)
 
     return createdProject
@@ -16,7 +16,7 @@ export class ProjectsService {
 
   async updateProject(input: ProjectUpdateInput): Promise<Project> {
     const existingProject = await this.getProject(input.id)
-    if (!existingProject) throw new Error('Project not found')
+    if (!existingProject) throw createError({ statusCode: 404, message: `Project not found with id ${input.id}` })
 
     if (existingProject.name !== input.name)
       await this.validateProjectName(input.name, existingProject.teamId, input.id)
@@ -25,7 +25,7 @@ export class ProjectsService {
       .set(input)
       .where(eq(tables.projects.id, input.id))
       .returning()
-    if (!updatedProject) throw new Error('Project not found after update')
+    if (!updatedProject) throw createError({ statusCode: 422, message: 'Failed to update project' })
     await clearCache('Projects', updatedProject.teamId)
     await clearCache('Project', updatedProject.id)
 
@@ -36,7 +36,7 @@ export class ProjectsService {
     const project = await useDrizzle().query.projects.findFirst({
       where: eq(tables.projects.id, projectId)
     })
-    if (!project) throw new Error(`Project not found with id ${projectId}`)
+    if (!project) throw createError({ statusCode: 404, message: `Project not found with id ${projectId}` })
     return project
   })
 
@@ -62,10 +62,7 @@ export class ProjectsService {
   private async validateProjectName(name: string, teamId: number, projectId?: number): Promise<void> {
     const exists = await this.isProjectAlreadyExists(name, teamId, projectId)
     if (exists) {
-      throw createError({
-        statusCode: 400,
-        message: 'Project already exists in this team'
-      })
+      throw createError({ statusCode: 400, statusMessage: 'Project already exists in this team' })
     }
   }
 
