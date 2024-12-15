@@ -30,7 +30,7 @@ import { createShelveConfig } from "@shelve/cli"
 
 export default createShelveConfig({
   project: "my-project",
-  teamId: 1221,
+  slug: "nuxtlabs",
   token: "my-token",
   url: "https://app.shelve.cloud",
   confirmChanges: false,

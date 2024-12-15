@@ -1,4 +1,10 @@
-import type { EnvVar, CreateEnvFileInput, PushEnvFileInput, CreateVariablesInput, Project } from '@shelve/types'
+import {
+  EnvVar,
+  CreateEnvFileInput,
+  PushEnvFileInput,
+  CreateVariablesInput,
+  GetEnvVariables
+} from '@shelve/types'
 import { parseEnvFile } from '@shelve/utils'
 import { loadShelveConfig, askBoolean } from '../utils'
 import { FileService } from './file'
@@ -54,14 +60,15 @@ export class EnvService extends BaseService {
     })
   }
 
-  static getEnvVariables(project: Project, environmentId: number): Promise<EnvVar[]> {
+  static getEnvVariables(input: GetEnvVariables): Promise<EnvVar[]> {
+    const { project, environmentId, slug } = input
     return this.withLoading('Fetching variables', () => {
-      return this.request<EnvVar[]>(`/teams/${project.teamId}/projects/${project.id}/variables/env/${environmentId}`)
+      return this.request<EnvVar[]>(`/teams/${slug}/projects/${project.id}/variables/env/${environmentId}`)
     })
   }
 
   static async pushEnvFile(input: PushEnvFileInput): Promise<void> {
-    const { variables, project, environment, confirmChanges, autoUppercase } = input
+    const { variables, project, slug, environment, confirmChanges, autoUppercase } = input
     if (confirmChanges)
       await askBoolean(`Are you sure you want to push ${variables.length} variables to ${environment.name} environment?`)
 
@@ -75,7 +82,7 @@ export class EnvService extends BaseService {
           value: variable.value
         }))
       }
-      await this.request<EnvVar[]>(`/teams/${project.teamId}/projects/${project.id}/variables`, {
+      await this.request<EnvVar[]>(`/teams/${slug}/projects/${project.id}/variables`, {
         method: 'POST',
         body
       })
