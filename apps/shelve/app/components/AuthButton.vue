@@ -27,6 +27,7 @@ function open() {
     :disabled="loading"
     external
     :icon
+    class="rounded-none"
     @click="open"
   >
     {{ label }}

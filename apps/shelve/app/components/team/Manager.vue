@@ -53,10 +53,10 @@ const groups = computed(() => [
     <button class="w-full cursor-pointer flex items-center justify-between hover:bg-neutral-100 dark:hover:bg-neutral-800 p-2 rounded-lg">
       <span class="flex items-center gap-2">
         <USkeleton v-if="loading" class="size-7 rounded-full" />
-        <UAvatar v-else :src="currentTeam!.logo" size="sm" alt="currentTeam.name" />
+        <UAvatar v-else-if="currentTeam" :src="currentTeam.logo" size="sm" alt="team name" />
         <USkeleton v-if="loading" class="w-20 h-4" />
-        <span v-else class="text-sm font-semibold">
-          {{ currentTeam!.name }}
+        <span v-else-if="currentTeam" class="text-sm font-semibold">
+          {{ currentTeam.name }}
         </span>
       </span>
       <UIcon name="lucide:chevrons-up-down" class="size-4" />
