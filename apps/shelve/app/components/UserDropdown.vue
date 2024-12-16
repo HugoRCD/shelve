@@ -13,10 +13,7 @@ const items = [
     {
       label: 'Sign out',
       icon: 'heroicons:arrow-left-on-rectangle',
-      onSelect: async () => {
-        await clear()
-        navigateTo('/login')
-      }
+      onSelect: async () => await useLogout()
     }
   ]
 ]

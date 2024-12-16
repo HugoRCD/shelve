@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { Team } from '@shelve/types'
+import { useLogout } from '~/composables/useLogout'
 
 definePageMeta({
   middleware: ['auth', 'onboarding'],
@@ -32,6 +33,18 @@ async function navigateToTeam(team: Team) {
   <div class="size-full overflow-hidden flex flex-col items-center justify-center max-sm:p-4">
     <div class="bg-stripes size-full -z-1 absolute top-0 left-0 opacity-30" />
     <div class="z-10 relative max-w-lg w-full">
+      <div>
+        <UButton
+          variant="link"
+          size="xs"
+          class="absolute z-99 top-4 right-4"
+          icon="nucleo:exit"
+          square
+          @click="useLogout"
+        >
+          Logout
+        </UButton>
+      </div>
       <div class="size-80 absolute rounded-full bg-neutral-100/20 -top-20 -z-1 -left-20 blur-[200px]" />
       <CrossedDiv line>
         <div class="bg-white dark:bg-neutral-900/70 p-8 dark:shadow-lg border border-neutral-200/70 dark:border-neutral-800/70 w-full backdrop-blur-md">
