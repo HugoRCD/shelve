@@ -23,12 +23,12 @@
     "@hrcd/eslint-config": "edge",
     "@shelve/cli": "*",
     "automd": "0.3.12",
-    "eslint": "9.16.0",
+    "eslint": "9.17.0",
     "turbo": "2.3.3",
     "typescript": "5.7.2"
   },
   "overrides": {
-    "@jridgewell/gen-mapping": "0.3.5"
+    "@jridgewell/gen-mapping": "0.3.8"
   },
   "engines": {
     "node": ">=22.12.0"
