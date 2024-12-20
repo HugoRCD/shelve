@@ -12,6 +12,7 @@
     "dev:app": "turbo dev --filter=@shelve/app",
     "dev:lp": "turbo dev --filter=@shelve/lp",
     "dev:cli": "turbo dev --filter=@shelve/cli",
+    "release": "turbo release && changeset",
     "dev:prepare": "turbo dev:prepare",
     "generate": "turbo generate",
     "lint": "turbo lint",
@@ -20,6 +21,7 @@
     "typecheck": "turbo typecheck"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.27.11",
     "@hrcd/eslint-config": "edge",
     "@shelve/cli": "*",
     "automd": "0.3.12",
