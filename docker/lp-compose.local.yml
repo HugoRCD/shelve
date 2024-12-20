@@ -12,7 +12,7 @@ services:
     container_name: shelve_lp
     restart: always
     environment:
-      - NUXT_PRIVATE_ENCRYPTION_KEY=${SERVICE_PASSWORD_SHELVE}
+      - NUXT_PRIVATE_ENCRYPTION_KEY=${NUXT_PRIVATE_ENCRYPTION_KEY}
       - NUXT_PRIVATE_REDIS_URL=${NUXT_PRIVATE_REDIS_URL:-redis://shelve_redis:6379}
     depends_on:
       shelve_redis:
