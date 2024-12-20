@@ -1,8 +1,10 @@
 {
   "name": "@shelve/types",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "type": "module",
-  "private": true,
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "dev": "bun run src/index.ts",
     "dev:prepare": "unbuild",
