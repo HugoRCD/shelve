@@ -1,0 +1,59 @@
+# documentation: https://shelve.cloud/docs
+# slogan: Shelve - Secure environment sharing for collaborative development
+# tags: environment variables, projects management, collaboration, cli, secure sharing
+# logo: svgs/shelve.svg
+# port: 3000
+
+services:
+  shelve_lp:
+    build:
+      context: ../
+      dockerfile: ./apps/lp/Dockerfile
+    container_name: shelve_lp
+    restart: always
+    environment:
+      - NUXT_PRIVATE_ENCRYPTION_KEY=${SERVICE_PASSWORD_SHELVE}
+      - NUXT_PRIVATE_REDIS_URL=${NUXT_PRIVATE_REDIS_URL:-redis://shelve_redis:6379}
+    depends_on:
+      shelve_redis:
+        condition: service_healthy
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:3000/api/hello" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+    networks:
+      - shelve-network
+  shelve_redis:
+    container_name: shelve_redis
+    image: redis:7.4-alpine
+    restart: always
+    volumes:
+      - redis:/data
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - shelve-network
+
+networks:
+  shelve-network:
+    driver: bridge
+
+volumes:
+  redis:
