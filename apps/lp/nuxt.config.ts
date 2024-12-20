@@ -18,7 +18,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     private: {
       encryptionKey: '',
-      redis: {
+      vault: {
         url: ''
       },
     },

@@ -5,7 +5,7 @@ export default defineNitroPlugin(() => {
 
   const driver = redisDriver({
     base: 'redis',
-    url: useRuntimeConfig().private.redis.url,
+    url: useRuntimeConfig().private.vault.url,
   })
 
   storage.mount('vault', driver)
