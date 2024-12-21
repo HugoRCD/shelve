@@ -64,6 +64,24 @@ const items = [
       }
     },
     {
+      label: 'Download project config',
+      icon: 'lucide:download',
+      onSelect: () => {
+        const config = {
+          '$schema': 'https://raw.githubusercontent.com/HugoRCD/shelve/main/packages/types/schema.json',
+          'project': project.value.name,
+          'slug': teamSlug
+        }
+        const data = JSON.stringify(config, null, 2)
+        const blob = new Blob([data], { type: 'application/json' })
+        const url = URL.createObjectURL(blob)
+        const a = document.createElement('a')
+        a.href = url
+        a.download = `shelve.config.json`
+        a.click()
+      }
+    },
+    {
       label: 'Delete project',
       icon: 'lucide:trash',
       iconClass: 'text-red-500 dark:text-red-500',
