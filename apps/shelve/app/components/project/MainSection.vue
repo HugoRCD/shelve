@@ -68,9 +68,9 @@ const items = [
       icon: 'lucide:download',
       onSelect: () => {
         const config = {
-          "$schema": "https://raw.githubusercontent.com/HugoRCD/shelve/main/packages/types/schema.json",
-          "project": project.value.name,
-          "slug": teamSlug
+          '$schema': 'https://raw.githubusercontent.com/HugoRCD/shelve/main/packages/types/schema.json',
+          'project': project.value.name,
+          'slug': teamSlug
         }
         const data = JSON.stringify(config, null, 2)
         const blob = new Blob([data], { type: 'application/json' })
