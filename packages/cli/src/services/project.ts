@@ -1,4 +1,5 @@
 import type { Project } from '@shelve/types'
+import { log } from '@clack/prompts'
 import { DEBUG } from '../constants'
 import { askBoolean, capitalize, handleCancel } from '../utils'
 import { BaseService } from './base'
@@ -19,7 +20,7 @@ export class ProjectService extends BaseService {
         return this.request<Project>(`/teams/${slug}/projects/name/${encodedName}`)
       })
     } catch (error: any) {
-      if (DEBUG) console.log(error)
+      if (DEBUG) log.error(error)
 
       if (error.statusCode === 400) {
         await askBoolean(`Project '${name}' does not exist. Would you like to create it?`)
