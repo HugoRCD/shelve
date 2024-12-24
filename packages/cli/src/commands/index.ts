@@ -7,6 +7,7 @@ import { createCommand } from './create'
 import { upgradeCommand } from './upgrade'
 import { loginCommand } from './login'
 import { logoutCommand } from './logout'
+import { meCommand } from './me'
 
 export function registerCommands(program: Command): void {
   createCommand(program)
@@ -17,4 +18,5 @@ export function registerCommands(program: Command): void {
   configCommand(program)
   loginCommand(program)
   logoutCommand(program)
+  meCommand(program)
 }

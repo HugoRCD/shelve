@@ -2,6 +2,7 @@ import { ofetch, type $Fetch, type FetchOptions } from 'ofetch'
 import { spinner } from '@clack/prompts'
 // import { $ } from 'bun'
 import { writeUser } from 'rc9'
+import type { User } from '@shelve/types'
 import { askPassword, loadShelveConfig } from '../utils'
 import { ErrorService } from './error'
 
@@ -61,14 +62,30 @@ export abstract class BaseService {
     }
   }*/
 
-  static async getToken(): Promise<string> {
+  static whoAmI(url: string, token: string): Promise<User> {
+    return this.withLoading('Fetching user data', () => {
+      return ofetch(`${url}/api/user/me`, {
+        method: 'GET',
+        headers: {
+          Cookie: `authToken=${token}`
+        }
+      })
+    })
+  }
+
+  static async getToken(returnUser: boolean = false): Promise<string | { user: User, token: string }> {
     const { url } = await loadShelveConfig()
     const sanitizedUrl = url.replace(/\/+$/, '')
-    const token = await askPassword(`Please provide a valid token (you can generate one on ${sanitizedUrl}/tokens)`)
+    const token = await askPassword(`Please provide a valid token (you can generate one on ${sanitizedUrl}/user/tokens)`)
+    const user = await this.whoAmI(url, token)
 
-    writeUser({ token }, '.shelve')
+    writeUser({ token, email: user.email, username: user.username }, '.shelve')
 
-    // await EnvService.mergeEnvFile([{ key: 'SHELVE_TOKEN', value: token }])
+    if (returnUser) return {
+      user,
+      token
+    }
+
     return token
   }
 
@@ -77,7 +94,7 @@ export abstract class BaseService {
       const config = await loadShelveConfig()
 
       if (!config.token)
-        config.token = await this.getToken()
+        config.token = <string> await this.getToken()
 
       const baseURL = `${config.url.replace(/\/+$/, '')}/api`
 

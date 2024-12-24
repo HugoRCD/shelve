@@ -1,7 +1,8 @@
 import { Command } from 'commander'
-import { writeUser } from 'rc9'
 import { intro, outro } from '@clack/prompts'
-import { askPassword, loadShelveConfig } from '../utils'
+import { User } from '@shelve/types'
+import { loadShelveConfig } from '../utils'
+import { BaseService } from '../services/base'
 
 export function loginCommand(program: Command): void {
   program
@@ -13,11 +14,8 @@ export function loginCommand(program: Command): void {
 
       intro(`Login to Shelve on ${url}`)
 
-      const sanitizedUrl = url.replace(/\/+$/, '')
-      const token = await askPassword(`Please provide a valid token (you can generate one on ${sanitizedUrl}/user/tokens)`)
+      const { user } = await BaseService.getToken(true) as { user: User }
 
-      writeUser({ token }, '.shelve')
-
-      outro('Successfully logged in')
+      outro(`Successfully logged in as ${user.username}`)
     })
 }

@@ -6,6 +6,7 @@ import type { Project, ShelveConfig } from '@shelve/types'
 import { readUser } from 'rc9'
 import { FileService, ProjectService } from '../services'
 import { DEFAULT_ENV_FILENAME } from '../constants'
+import { BaseService } from '../services/base'
 import { askSelect, askText } from './prompt'
 import { handleCancel } from '.'
 
@@ -66,6 +67,8 @@ export async function loadShelveConfig(check: boolean = false): Promise<ShelveCo
       slug: +process.env.SHELVE_TEAM_SLUG,
       token: conf.token,
       url: process.env.SHELVE_URL || 'https://app.shelve.cloud',
+      username: conf.username,
+      email: conf.email,
       confirmChanges: false,
       envFileName: DEFAULT_ENV_FILENAME,
       autoUppercase: true,
@@ -78,7 +81,7 @@ export async function loadShelveConfig(check: boolean = false): Promise<ShelveCo
   if (check) {
     if (configFile === 'shelve.config') config.project = await createShelveConfig()
 
-    if (!config.token) handleCancel('You need to provide a token')
+    if (!config.token) await BaseService.getToken()
 
     if (!config.slug) handleCancel('You need to provide your team slug')
 

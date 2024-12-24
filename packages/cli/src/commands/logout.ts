@@ -1,5 +1,5 @@
 import { Command } from 'commander'
-import { updateUser } from 'rc9'
+import { writeUser } from 'rc9'
 import { intro, outro } from '@clack/prompts'
 
 export function logoutCommand(program: Command): void {
@@ -10,7 +10,7 @@ export function logoutCommand(program: Command): void {
     .action(() => {
       intro('Logging out')
 
-      updateUser({ token: '' }, '.shelve')
+      writeUser({ }, '.shelve')
 
       outro('Successfully logged out')
     })
