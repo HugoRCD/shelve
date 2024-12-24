@@ -1,24 +1,25 @@
 import { intro, outro } from '@clack/prompts'
 import { loadConfig, setupDotenv } from 'c12'
 import { readPackageJSON } from 'pkg-types'
-import { DEFAULT_URL, SHELVE_JSON_SCHEMA } from '@shelve/types'
+import { CreateShelveConfigInput, DEFAULT_URL, SHELVE_JSON_SCHEMA } from '@shelve/types'
 import type { Project, ShelveConfig } from '@shelve/types'
+import { readUser } from 'rc9'
 import { FileService, ProjectService } from '../services'
 import { DEFAULT_ENV_FILENAME } from '../constants'
+import { BaseService } from '../services/base'
 import { askSelect, askText } from './prompt'
 import { handleCancel } from '.'
 
-export async function createShelveConfig(teamId?: string, projectName?: string): Promise<string> {
-  intro(projectName ? `Create configuration for ${projectName}` : 'No configuration file found, create a new one')
+export async function createShelveConfig(input: CreateShelveConfigInput = {}): Promise<string> {
+  intro(input.projectName ? `Create configuration for ${input.projectName}` : 'No configuration file found, create a new one')
 
-  let project = projectName
+  let project = input.projectName
   let projects: Project[] = []
 
-  if (!teamId)
-    teamId = await askText('Enter the team ID:', '1')
+  if (!input.slug) input.slug = await askText('Enter the team slug:', 'my-team-slug')
 
-  if (!projectName) {
-    projects = await ProjectService.getProjects(+teamId)
+  if (!input.projectName) {
+    projects = await ProjectService.getProjects(input.slug)
 
     project = await askSelect('Select the current project:', projects.map(project => ({
       value: project.name,
@@ -31,7 +32,7 @@ export async function createShelveConfig(teamId?: string, projectName?: string):
   const configFile = JSON.stringify({
     $schema: SHELVE_JSON_SCHEMA,
     project: project.toLowerCase(),
-    teamId: +teamId
+    slug: input.slug,
   }, null, 2)
 
   FileService.write('shelve.config.json', configFile)
@@ -46,6 +47,9 @@ export async function loadShelveConfig(check: boolean = false): Promise<ShelveCo
   await setupDotenv({})
 
   const { name } = await readPackageJSON()
+
+  const conf = readUser('.shelve')
+
   /*const workspaceDir = await findWorkspaceDir()
   const isMonoRepo = await new PkgService().isMonorepo()
   const rootLevel = workspaceDir === process.cwd()*/
@@ -59,11 +63,12 @@ export async function loadShelveConfig(check: boolean = false): Promise<ShelveCo
     defaults: {
       // @ts-expect-error to provide error message we let project be undefined
       project: process.env.SHELVE_PROJECT || name,
-      // @ts-expect-error to provide error message we let teamId be undefined
-      teamId: +process.env.SHELVE_TEAM_ID,
-      // @ts-expect-error to provide error message we let token be undefined
-      token: process.env.SHELVE_TOKEN,
+      // @ts-expect-error to provide error message we let slug be undefined
+      slug: process.env.SHELVE_TEAM_SLUG,
+      token: conf.token,
       url: process.env.SHELVE_URL || 'https://app.shelve.cloud',
+      username: conf.username,
+      email: conf.email,
       confirmChanges: false,
       envFileName: DEFAULT_ENV_FILENAME,
       autoUppercase: true,
@@ -74,12 +79,11 @@ export async function loadShelveConfig(check: boolean = false): Promise<ShelveCo
   console.log('shelveConf', shelveConf)*/
 
   if (check) {
-    if (configFile === 'shelve.config')
-      config.project = await createShelveConfig()
+    if (configFile === 'shelve.config') config.project = await createShelveConfig()
 
-    if (!config.token) handleCancel('You need to provide a token')
+    if (!config.token) await BaseService.getToken()
 
-    if (!config.teamId) handleCancel('You need to provide a team ID')
+    if (!config.slug) handleCancel('You need to provide your team slug')
 
     if (!config.project) handleCancel('Please provide a project name')
 

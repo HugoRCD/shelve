@@ -13,11 +13,11 @@ export type ShelveConfig = {
    * */
   project: string
   /**
-   * The team ID
+   * The team slug, you can find it your team's settings page
    *
-   * @default process.env.SHELVE_TEAM_ID
+   * @default process.env.SHELVE_TEAM_SLUG
    */
-  teamId: number
+  slug: string
   /**
    * The token to authenticate with Shelve created using the app (https://app.shelve.cloud/tokens) or your own Shelve instance
    *
@@ -80,6 +80,10 @@ export type PushEnvFileInput = {
    * */
   project: Project
   /**
+   * The team slug, you can find it your team's settings page
+   */
+  slug: string
+  /**
    * The environment to push the variables to
    * */
   environment: Environment
@@ -95,4 +99,14 @@ export type PushEnvFileInput = {
    * @default true
    * */
   autoUppercase: boolean
+}
+
+export type GetEnvVariables = {
+  project: Project
+  environmentId: number
+  slug: string
+}
+export type CreateShelveConfigInput = {
+  slug?: string
+  projectName?: string
 }

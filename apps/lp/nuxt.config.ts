@@ -18,6 +18,9 @@ export default defineNuxtConfig({
   runtimeConfig: {
     private: {
       encryptionKey: '',
+      vault: {
+        url: ''
+      },
     },
   },
 
@@ -25,12 +28,6 @@ export default defineNuxtConfig({
     prerender: {
       routes: ['/sitemap.xml', '/vault']
     },
-    storage: {
-      vault: {
-        driver: 'redis',
-        url: process.env.NUXT_PRIVATE_VAULT_URL,
-      },
-    }
   },
 
   site: {

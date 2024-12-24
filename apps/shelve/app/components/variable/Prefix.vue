@@ -2,7 +2,7 @@
 const route = useRoute()
 const projectId = route.params.projectId as string
 const teamSlug = route.params.teamSlug as string
-const project = useProject(+projectId)
+const project = useProject(projectId)
 
 const prefixList = computed(() => {
   return project.value.variablePrefix?.replace(/\s/g, '').split(',').filter(Boolean) || []

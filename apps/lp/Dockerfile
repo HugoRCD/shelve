@@ -22,11 +22,18 @@ RUN bun install
 RUN bun run build:lp
 
 # Stage 2: Final Stage
-FROM oven/bun:latest
+FROM oven/bun:latest AS final
 
 WORKDIR /app
 
 COPY --from=build /app/apps/lp/.output .output
+COPY --from=build /app/apps/lp/package.json ./package.json
+
+RUN rm -rf .output/server/node_modules
+
+RUN bun install --production
+
+RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
 
 EXPOSE 3000
 

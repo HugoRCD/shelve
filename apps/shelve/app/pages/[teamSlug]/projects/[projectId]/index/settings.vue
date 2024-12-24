@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const route = useRoute()
 const projectId = route.params.projectId as string
-const project = useProject(+projectId)
+const project = useProject(projectId)
 
 const {
   loading,

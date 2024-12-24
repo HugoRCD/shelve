@@ -2,9 +2,9 @@ import { z } from 'zod'
 
 export default defineEventHandler(async (event) => {
   const { user } = await requireUserSession(event)
-  const { teamId } = await readValidatedBody(event, z.object({
-    teamId: z.number({
-      required_error: 'Team ID is required',
+  const { teamSlug } = await readValidatedBody(event, z.object({
+    teamSlug: z.string({
+      required_error: 'Team Slug is required',
     }),
   }).parse)
 
@@ -20,7 +20,7 @@ export default defineEventHandler(async (event) => {
     loggedInAt: new Date().toISOString(),
   })
 
-  setCookie(event, 'defaultTeamId', teamId.toString())
+  setCookie(event, 'defaultTeamSlug', teamSlug.toString())
 
   return {
     status: 200,

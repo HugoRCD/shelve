@@ -8,13 +8,13 @@ export default eventHandler(async (event) => {
   const requestUrl = getRequestURL(event)
   const { method } = event
 
-  const teamId = +requestUrl.pathname.split('/')[3]
+  const [,,, teamSlug] = requestUrl.pathname.split('/')
 
-  if (!teamId) throw createError({ statusCode: 400, statusMessage: 'Invalid teamId' })
+  if (!teamSlug) throw createError({ statusCode: 400, statusMessage: 'Invalid teamSlug' })
 
   const { user } = await requireUserSession(event)
 
-  const team = await validateTeamAccess({ user, teamId })
+  const team = await validateTeamAccess({ user, teamSlug })
   event.context.team = team
 
   const currentMember = team.members.find((member) => member.userId === user.id)

@@ -21,7 +21,7 @@ export class MembersService {
         role,
       })
       .returning()
-    if (!newMember) throw new Error('Failed to add member')
+    if (!newMember) throw createError({ statusCode: 422, message: 'Failed to add member' })
     const member = await this.findMemberById(newMember.id)
     await clearCache('Team', teamId)
     return member
@@ -56,13 +56,13 @@ export class MembersService {
         user: true
       }
     })
-    if (!member) throw new Error(`Member not found with id ${memberId}`)
+    if (!member) throw createError({ statusCode: 404, message: `Member not found with id ${memberId}` })
     return member
   }
 
   async isUserAlreadyMember(teamId: number, email: string): Promise<Member | undefined> {
     const user = await this.getUserByEmail(email)
-    if (!user) throw new Error(`User not found with email ${email}`)
+    if (!user) throw createError({ statusCode: 404, message: `User not found with email ${email}` })
     return await useDrizzle().query.members.findFirst({
       where: and(eq(tables.members.teamId, teamId), eq(tables.members.userId, user.id)),
       with: {
@@ -75,7 +75,7 @@ export class MembersService {
     const user = await useDrizzle().query.users.findFirst({
       where: eq(tables.users.email, email)
     })
-    if (!user) throw new Error(`User not found with email ${email}`)
+    if (!user) throw createError({ statusCode: 404, message: `User not found with email ${email}` })
     return user
   }
 

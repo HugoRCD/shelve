@@ -1,5 +1,7 @@
 <script setup lang="ts">
-const { user } = useUserSession()
+import { ConfirmModal } from '#components'
+
+const { user, clear } = useUserSession()
 
 const updateLoading = ref(false)
 
@@ -18,6 +20,30 @@ async function updateCurrentUser() {
     toast.error('An error occurred')
   }
   updateLoading.value = false
+}
+
+async function deleteUser() {
+  await $fetch('/api/user', {
+    method: 'DELETE',
+  })
+  await clear()
+  await useRouter().push('/login')
+}
+
+const modal = useModal()
+function deleteAccount() {
+  modal.open(ConfirmModal, {
+    title: 'Delete my account',
+    description: `You are about to delete ${user.value!.username}. This action cannot be undone and all data associated with this account will be lost.`,
+    danger: true,
+    onSuccess() {
+      toast.promise(deleteUser(), {
+        loading: 'Deleting account...',
+        success: 'Account deleted successfully',
+        error: 'Error deleting account',
+      })
+    },
+  })
 }
 </script>
 
@@ -46,9 +72,12 @@ async function updateCurrentUser() {
           <FormGroup v-model="user.avatar" label="Avatar" />
         </div>
       </div>
-      <div style="--stagger: 4" data-animate class="mt-6 flex items-center gap-2">
+      <div style="--stagger: 4" data-animate class="mt-6 flex items-center justify-between gap-2">
         <UButton type="submit" :loading="updateLoading">
           Save
+        </UButton>
+        <UButton color="error" @click="deleteAccount">
+          Delete Account
         </UButton>
       </div>
     </form>

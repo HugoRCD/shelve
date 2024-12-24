@@ -1,13 +1,13 @@
-import type { Environment, Project } from '@shelve/types'
+import type { Environment } from '@shelve/types'
 import { isCancel } from '@clack/prompts'
 import { askSelect, capitalize, handleCancel } from '../utils'
 import { BaseService } from './base'
 
 export class EnvironmentService extends BaseService {
 
-  static async promptEnvironment(project: Project): Promise<Environment> {
+  static async promptEnvironment(slug: string): Promise<Environment> {
     const environments = await this.withLoading('Fetching environments', async () => {
-      return await this.request<Environment[]>(`/teams/${project.teamId}/environments`)
+      return await this.request<Environment[]>(`/teams/${slug}/environments`)
     })
 
     const environmentId = await askSelect('Select the environment:', environments.map(env => ({

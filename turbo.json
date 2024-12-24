@@ -39,6 +39,7 @@
     "lint": {},
     "lint:fix": {},
     "test": {},
+    "release": {},
     "typecheck": {}
   }
 }

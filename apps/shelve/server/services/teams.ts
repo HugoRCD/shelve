@@ -25,9 +25,7 @@ export class TeamsService {
         })
         .returning()
 
-      if (!newTeam) {
-        throw new Error('Failed to create team')
-      }
+      if (!newTeam) throw createError({ statusCode: 422, statusMessage: 'Failed to create team' })
 
       await tx.insert(tables.members)
         .values({
@@ -52,7 +50,7 @@ export class TeamsService {
       }
     })
 
-    if (!createdTeam) throw new Error(`Team not found after creation with id ${team.id}`)
+    if (!createdTeam) throw createError({ statusCode: 404, statusMessage: `Team not found with id ${team.id}` })
     await clearCache('Teams', input.requester.id)
     return createdTeam
   }
@@ -83,7 +81,7 @@ export class TeamsService {
       })
       if (!updatedTeam) throw createError({ statusCode: 404, statusMessage: `Team not found with id ${teamId}` })
 
-      await clearCache('Team', teamId)
+      await clearCache('Team', updatedTeam.slug)
 
       return updatedTeam
     })
@@ -94,11 +92,11 @@ export class TeamsService {
     const [team] = await useDrizzle().delete(tables.teams)
       .where(eq(tables.teams.id, teamId))
       .returning({ id: tables.teams.id, slug: tables.teams.slug })
-    if (!team) throw new Error(`Team not found after deletion with id ${teamId}`)
-    await clearCache('Team', teamId)
+    if (!team) throw createError({ statusCode: 404, statusMessage: `Team not found with id ${teamId}` })
+    await clearCache('Team', team.slug)
   }
 
-  getTeams = withCache<Team[]>('Teams', async (userId) => {
+  getTeams = withCache<Team[]>('Teams', async (userId: number) => {
     const memberOf = await useDrizzle().query.members.findMany({
       where: eq(tables.members.userId, userId),
       with: {
@@ -114,13 +112,13 @@ export class TeamsService {
       }
     })
     const teams = memberOf.map(member => member.team)
-    if (!teams) throw new Error(`Teams not found for user with id ${userId}`)
+    if (!teams) throw createError({ statusCode: 404, statusMessage: `No teams found for user with id ${userId}` })
     return teams
   })
 
-  getTeam = withCache<Team>('Team', async (teamId) => {
+  getTeam = withCache<Team>('Team', async (teamSlug: string) => {
     const team = await useDrizzle().query.teams.findFirst({
-      where: eq(tables.teams.id, teamId),
+      where: eq(tables.teams.slug, teamSlug),
       with: {
         members: {
           with: {
@@ -129,7 +127,7 @@ export class TeamsService {
         }
       }
     })
-    if (!team) throw new Error(`Team not found with id ${teamId}`)
+    if (!team) throw createError({ statusCode: 404, statusMessage: `Team not found with slug ${teamSlug}` })
     return team
   })
 
@@ -151,7 +149,7 @@ export class TeamsService {
         }
       }
     })
-    if (!team) throw new Error(`Team not found with slug ${slug}`)
+    if (!team) throw createError({ statusCode: 404, statusMessage: `Team not found with slug ${slug}` })
     return team
   }
 

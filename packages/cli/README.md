@@ -30,7 +30,7 @@ import { createShelveConfig } from "@shelve/cli"
 
 export default createShelveConfig({
   project: "my-project",
-  teamId: 1221,
+  slug: "nuxtlabs",
   token: "my-token",
   url: "https://app.shelve.cloud",
   confirmChanges: false,
@@ -59,6 +59,9 @@ Commands:
   generate|g          Generate resources for a project
   upgrade|u           Upgrade the Shelve CLI to the latest version
   config|cf           Show the current configuration
+  login|l             Login to Shelve
+  logout|lo           Logout from Shelve locally
+  me|m                Show current user information
   help [command]      display help for command
 ```
 
