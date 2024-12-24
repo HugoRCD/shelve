@@ -1,9 +1,9 @@
 import { ofetch, type $Fetch, type FetchOptions } from 'ofetch'
 import { spinner } from '@clack/prompts'
 // import { $ } from 'bun'
+import { writeUser } from 'rc9'
 import { askPassword, loadShelveConfig } from '../utils'
 import { ErrorService } from './error'
-import { EnvService } from './env'
 
 export abstract class BaseService {
 
@@ -66,7 +66,9 @@ export abstract class BaseService {
     const sanitizedUrl = url.replace(/\/+$/, '')
     const token = await askPassword(`Please provide a valid token (you can generate one on ${sanitizedUrl}/tokens)`)
 
-    await EnvService.mergeEnvFile([{ key: 'SHELVE_TOKEN', value: token }])
+    writeUser({ token }, '.shelve')
+
+    // await EnvService.mergeEnvFile([{ key: 'SHELVE_TOKEN', value: token }])
     return token
   }
 

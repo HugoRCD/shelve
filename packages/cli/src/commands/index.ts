@@ -5,6 +5,8 @@ import { pushCommand } from './push'
 import { generateCommand } from './generate'
 import { createCommand } from './create'
 import { upgradeCommand } from './upgrade'
+import { loginCommand } from './login'
+import { logoutCommand } from './logout'
 
 export function registerCommands(program: Command): void {
   createCommand(program)
@@ -13,4 +15,6 @@ export function registerCommands(program: Command): void {
   generateCommand(program)
   upgradeCommand(program)
   configCommand(program)
+  loginCommand(program)
+  logoutCommand(program)
 }
