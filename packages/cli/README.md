@@ -59,6 +59,9 @@ Commands:
   generate|g          Generate resources for a project
   upgrade|u           Upgrade the Shelve CLI to the latest version
   config|cf           Show the current configuration
+  login|l             Login to Shelve
+  logout|lo           Logout from Shelve locally
+  me|m                Show current user information
   help [command]      display help for command
 ```
 

@@ -1,6 +1,5 @@
 import { ofetch, type $Fetch, type FetchOptions } from 'ofetch'
 import { spinner } from '@clack/prompts'
-// import { $ } from 'bun'
 import { writeUser } from 'rc9'
 import type { User } from '@shelve/types'
 import { askPassword, loadShelveConfig } from '../utils'
@@ -9,8 +8,6 @@ import { ErrorService } from './error'
 export abstract class BaseService {
 
   protected static api: $Fetch
-  /*private static readonly SHELVE_SSH_KEY = 'shelve_ed25519'
-  private static readonly SHELVE_SSH_KEY_PATH = `~/.ssh/${this.SHELVE_SSH_KEY}`*/
 
   protected static async withLoading<T>(
     message: string,
@@ -27,40 +24,6 @@ export abstract class BaseService {
       throw error
     }
   }
-
-  /*static generateSshKey(): Promise<void> {
-    return this.withLoading('Generating Shelve SSH key', async () => {
-      await $`ssh-keygen -t ed25519 -N "" -q -f ${this.SHELVE_SSH_KEY_PATH}`.quiet()
-      await new Promise((resolve) => setTimeout(resolve, 10))
-    })
-  }
-
-  static async isSshKeyPresent(): Promise<boolean> {
-    try {
-      await $`cat ${this.SHELVE_SSH_KEY_PATH}.pub`.quiet()
-      return true
-    } catch {
-      return false
-    }
-  }
-
-  static getPublicKey(): Promise<string> {
-    return $`cat ${this.SHELVE_SSH_KEY_PATH}.pub`.text()
-  }
-
-  static async checkSshKey(url: string): Promise<void> {
-    const isSshKeyPresent = await this.isSshKeyPresent()
-    if (!isSshKeyPresent) {
-      const generateKey = await askBoolean('No SSH key found, do you want to generate one?')
-      if (generateKey) {
-        await this.generateSshKey()
-        note(`Please add the following SSH key to your Shelve account (you can do it on ${url}/settings/ssh-keys): ${await this.getPublicKey()}`, 'SSH key generated')
-        const confirmKey = await askBoolean('Have you added the SSH key to your Shelve account?')
-        if (!confirmKey)
-          handleCancel('Please add the SSH key to your Shelve account and try again.')
-      }
-    }
-  }*/
 
   static whoAmI(url: string, token: string): Promise<User> {
     return this.withLoading('Fetching user data', () => {
@@ -97,8 +60,6 @@ export abstract class BaseService {
         config.token = <string> await this.getToken()
 
       const baseURL = `${config.url.replace(/\/+$/, '')}/api`
-
-      // await this.checkSshKey(config.url)
 
       this.api = ofetch.create({
         baseURL,
