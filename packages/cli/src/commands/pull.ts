@@ -1,4 +1,4 @@
-import { intro, outro } from '@clack/prompts'
+import { intro, outro, log } from '@clack/prompts'
 import { Command } from 'commander'
 import { loadShelveConfig } from '../utils'
 import { EnvService, ProjectService, EnvironmentService } from '../services'
@@ -21,7 +21,7 @@ export function pullCommand(program: Command): void {
       const variables = await EnvService.getEnvVariables({ project: projectData, environmentId: environment.id, slug })
 
       if (variables.length === 0)
-        outro('No variables found')
+        log.warn('No variables found in the specified environment')
       else
         await EnvService.createEnvFile({ envFileName, variables, confirmChanges })
 

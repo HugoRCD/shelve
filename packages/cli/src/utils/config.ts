@@ -3,8 +3,10 @@ import { loadConfig, setupDotenv } from 'c12'
 import { readPackageJSON } from 'pkg-types'
 import { CreateShelveConfigInput, DEFAULT_URL, SHELVE_JSON_SCHEMA } from '@shelve/types'
 import type { Project, ShelveConfig } from '@shelve/types'
+import { readUser } from 'rc9'
 import { FileService, ProjectService } from '../services'
 import { DEFAULT_ENV_FILENAME } from '../constants'
+import { BaseService } from '../services/base'
 import { askSelect, askText } from './prompt'
 import { handleCancel } from '.'
 
@@ -45,6 +47,9 @@ export async function loadShelveConfig(check: boolean = false): Promise<ShelveCo
   await setupDotenv({})
 
   const { name } = await readPackageJSON()
+
+  const conf = readUser('.shelve')
+
   /*const workspaceDir = await findWorkspaceDir()
   const isMonoRepo = await new PkgService().isMonorepo()
   const rootLevel = workspaceDir === process.cwd()*/
@@ -59,10 +64,11 @@ export async function loadShelveConfig(check: boolean = false): Promise<ShelveCo
       // @ts-expect-error to provide error message we let project be undefined
       project: process.env.SHELVE_PROJECT || name,
       // @ts-expect-error to provide error message we let slug be undefined
-      slug: +process.env.SHELVE_TEAM_SLUG,
-      // @ts-expect-error to provide error message we let token be undefined
-      token: process.env.SHELVE_TOKEN,
+      slug: process.env.SHELVE_TEAM_SLUG,
+      token: conf.token,
       url: process.env.SHELVE_URL || 'https://app.shelve.cloud',
+      username: conf.username,
+      email: conf.email,
       confirmChanges: false,
       envFileName: DEFAULT_ENV_FILENAME,
       autoUppercase: true,
@@ -75,7 +81,7 @@ export async function loadShelveConfig(check: boolean = false): Promise<ShelveCo
   if (check) {
     if (configFile === 'shelve.config') config.project = await createShelveConfig()
 
-    if (!config.token) handleCancel('You need to provide a token')
+    if (!config.token) await BaseService.getToken()
 
     if (!config.slug) handleCancel('You need to provide your team slug')
 
