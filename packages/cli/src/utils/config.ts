@@ -64,7 +64,7 @@ export async function loadShelveConfig(check: boolean = false): Promise<ShelveCo
       // @ts-expect-error to provide error message we let project be undefined
       project: process.env.SHELVE_PROJECT || name,
       // @ts-expect-error to provide error message we let slug be undefined
-      slug: +process.env.SHELVE_TEAM_SLUG,
+      slug: process.env.SHELVE_TEAM_SLUG,
       token: conf.token,
       url: process.env.SHELVE_URL || 'https://app.shelve.cloud',
       username: conf.username,
