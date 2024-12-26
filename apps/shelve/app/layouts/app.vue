@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import CliInstall from '~/components/CliInstall.vue'
-
 const route = useRoute()
 const teamSlug = computed(() => route.params.teamSlug as string)
 const pages = computed(() => {
@@ -32,6 +30,13 @@ const navigation = computed(() => {
             <Transition name="slide-to-top" mode="out-in">
               <h1 :key="navigation.title" class="text-lg font-semibold">
                 {{ navigation.title }}
+              </h1>
+            </Transition>
+          </template>
+          <template v-else>
+            <Transition name="slide-to-top" mode="out-in">
+              <h1 :key="route.name" class="text-lg font-semibold">
+                {{ route.name }}
               </h1>
             </Transition>
           </template>

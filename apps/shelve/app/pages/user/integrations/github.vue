@@ -1,4 +1,9 @@
 <script setup lang="ts">
+definePageMeta({
+  title: 'Github Integration',
+  name: 'Integrations'
+})
+
 const appUrl = 'https://f327-2a04-cec2-21-4f1a-dd73-2dc5-ade4-3be8.ngrok-free.app' // window.location.origin
 
 const manifest = {
@@ -7,9 +12,9 @@ const manifest = {
   hook_attributes: {
     url: `${appUrl}/api/githook`
   },
-  redirect_url: `${appUrl}/user/integrations`,
-  callback_urls: [`${appUrl}/user/integrations`],
-  setup_url: `${appUrl}/user/integrations`,
+  redirect_url: `${appUrl}/callback/github`,
+  callback_urls: [`${appUrl}/callback/github`],
+  setup_url: `${ appUrl }/user/integrations/github`,
   description: 'Shelve GitHub App',
   public: false,
   default_permissions: {
@@ -17,8 +22,8 @@ const manifest = {
     pull_requests: 'write',
     contents: 'write',
     metadata: 'read',
-  },
-  default_events: ['push'],
+    secrets: 'write',
+  }
 }
 
 async function fetchRepos() {
@@ -31,18 +36,20 @@ async function fetchRepos() {
   <div class="flex flex-col gap-4 pb-4">
     <div style="--stagger: 1" data-animate class="flex flex-col gap-3">
       <div class="flex flex-col gap-1">
-        <h2 class="text-lg font-bold">
-          Integrations
+        <h2 class="text-lg font-bold flex items-center gap-2">
+          <UIcon name="simple-icons:github" class="size-5" />
+          Github
         </h2>
         <p class="text-sm text-neutral-500">
-          Connect Shelve with other services to enhance your experience.
+          Create Github App to easily interact with Github
         </p>
       </div>
-      <div>
+      <div class="flex flex-col gap-2">
         <form action="https://github.com/settings/apps/new" method="post">
           <input id="manifest" type="text" name="manifest" class="hidden" :value="JSON.stringify(manifest)">
           <UButton icon="simple-icons:github" label="Create GitHub App" type="submit" />
         </form>
+        <!--        <UButton icon="simple-icons:github" label="Fetch Repos" loading-auto @click="fetchRepos" />-->
       </div>
     </div>
   </div>
