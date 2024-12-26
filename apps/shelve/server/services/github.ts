@@ -7,10 +7,38 @@ type GitHubRepo = {
 
 export class GithubService {
 
+  private readonly GITHUB_APP_NEW_URL = 'https://github.com/settings/apps/new'
   private readonly GITHUB_API = 'https://api.github.com'
   private readonly REPOS_PER_PAGE = 100
   private readonly DEFAULT_BRANCH = 'main'
   private readonly DEFAULT_COMMIT_MESSAGE = 'push from shelve'
+
+  createGithubApp(event: H3Event): Promise<void> {
+    const appUrl = getRequestHost(event)
+
+    const manifest = {
+      name: 'shelve',
+      url: appUrl,
+      hook_attributes: {
+        url: `${appUrl}/api/github/webhook`,
+        active: true
+      },
+      redirect_url: `${appUrl}/api/github/app-callback`,
+      callback_urls: [`${appUrl}/api/github/oauth-callback`],
+      setup_url: `${appUrl}/setup`,
+      description: 'Shelve GitHub App',
+      public: false,
+      default_permissions: {
+        issues: 'write',
+        pull_requests: 'write',
+        contents: 'write',
+        metadata: 'read',
+      },
+      default_events: ['push'],
+    }
+
+    return sendRedirect(event, `${this.GITHUB_APP_NEW_URL}?manifest=${encodeURIComponent(JSON.stringify(manifest))}`)
+  }
 
   /**
    * Get user's GitHub repositories
