@@ -17,26 +17,7 @@ env:
   DOCKERFILE: apps/lp/Dockerfile
 
 jobs:
-  check-changes:
-    runs-on: ubuntu-latest
-    outputs:
-      src: ${{ steps.changes.outputs.src }}
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Check if there are changes
-        uses: dorny/paths-filter@v3
-        id: changes
-        with:
-          filters: |
-            src:
-              - 'apps/lp/**'
-              - 'bun.lockb'
-
   build-and-push:
-    needs: check-changes
-    if: needs.check-changes.outputs.src == 'true' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     permissions:
       contents: read
