@@ -1,27 +1,37 @@
 {
   "name": "@shelve/types",
-  "version": "1.5.1",
+  "version": "1.5.2",
   "type": "module",
   "publishConfig": {
     "access": "public"
   },
   "scripts": {
-    "dev": "bun run src/index.ts",
-    "dev:prepare": "unbuild",
-    "build": "unbuild",
-    "release": "bun run build",
+    "dev": "tsup --watch",
+    "build": "tsup",
+    "dev:prepare": "bun run build",
+    "clean": "rm -rf dist",
+    "typecheck": "tsc --noEmit",
     "lint": "eslint .",
-    "lint:fix": "eslint --fix ."
+    "lint:fix": "eslint . --fix",
+    "release": "bun run typecheck && bun run lint && bun run build"
   },
-  "main": "./dist/index.mjs",
+  "sideEffects": false,
   "exports": {
-    ".": "./dist/index.mjs"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
   },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": [
-    "dist"
+    "dist",
+    "README.md"
   ],
   "devDependencies": {
+    "tsup": "^8.3.5",
     "typescript": "latest"
   }
 }
