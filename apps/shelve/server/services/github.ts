@@ -1,62 +1,23 @@
 import jwt from 'jsonwebtoken'
-
-type GitHubRepo = {
-  name: string
-  owner: { login: string }
-}
-
-type GitHubAppOwner = {
-  login: string
-  id: number
-  node_id: string
-  avatar_url: string
-  gravatar_id: string
-  url: string
-  html_url: string
-  followers_url: string
-  following_url: string
-  gists_url: string
-  starred_url: string
-  subscriptions_url: string
-  organizations_url: string
-  repos_url: string
-  events_url: string
-  received_events_url: string
-  type: string
-  user_view_type: string
-  site_admin: boolean
-}
-
-type GitHubAppPermissions = {
-  issues: 'write' | 'read'
-  pull_requests: 'write' | 'read'
-  contents: 'write' | 'read'
-  metadata: 'write' | 'read'
-}
-
-type GitHubAppResponse = {
-  id: number
-  client_id: string
-  slug: string
-  node_id: string
-  owner: GitHubAppOwner
-  name: string
-  description: string
-  external_url: string
-  html_url: string
-  created_at: string
-  updated_at: string
-  webhook_secret: string
-  pem: string
-  client_secret: string
-  permissions: GitHubAppPermissions
-  events: string[]
-}
+import { GithubApp, GitHubAppResponse, GitHubRepo } from '@shelve/types'
 
 export class GithubService {
 
   private readonly GITHUB_API = 'https://api.github.com'
   private readonly tokenCache = new Map<string, { token: string, expiresAt: Date }>()
+  private readonly encryptionKey: string
+
+  constructor() {
+    this.encryptionKey = useRuntimeConfig().private.encryptionKey
+  }
+
+  private async encryptValue(value: string): Promise<string> {
+    return await seal(value, this.encryptionKey)
+  }
+
+  private async decryptValue(value: string): Promise<string> {
+    return await unseal(value, this.encryptionKey) as string
+  }
 
   async handleAppCallback(userId: number, code: string) {
     const appConfig = await $fetch<GitHubAppResponse>(`${this.GITHUB_API}/app-manifests/${code}/conversions`, {
@@ -70,10 +31,10 @@ export class GithubService {
       .values({
         slug: appConfig.slug,
         appId: appConfig.id,
-        privateKey: appConfig.pem,
-        webhookSecret: appConfig.webhook_secret,
+        privateKey: await this.encryptValue(appConfig.pem),
+        webhookSecret: await this.encryptValue(appConfig.webhook_secret),
         clientId: appConfig.client_id,
-        clientSecret: appConfig.client_secret,
+        clientSecret: await this.encryptValue(appConfig.client_secret),
         userId: userId,
       })
 
@@ -90,13 +51,14 @@ export class GithubService {
       where: eq(tables.githubApp.userId, userId)
     })
     if (!app) throw createError({ statusCode: 404, statusMessage: 'GitHub App not found' })
+    const privateKey = await this.decryptValue(app.privateKey)
 
     const now = Math.floor(Date.now() / 1000)
     const appJWT = jwt.sign({
       iat: now - 60,
       exp: now + (10 * 60),
       iss: app.appId
-    }, app.privateKey, { algorithm: 'RS256' })
+    }, privateKey, { algorithm: 'RS256' })
 
     const installations = await $fetch<{ id: number }[]>(`${this.GITHUB_API}/app/installations`, {
       headers: {
@@ -133,7 +95,7 @@ export class GithubService {
     })
   }
 
-  async getUserApps(userId: number) {
+  async getUserApps(userId: number): Promise<GithubApp[]> {
     return await useDrizzle().query.githubApp.findMany({
       where: eq(tables.githubApp.userId, userId)
     })
