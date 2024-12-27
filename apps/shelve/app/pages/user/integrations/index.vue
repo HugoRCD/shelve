@@ -2,6 +2,7 @@
 const integrations = [
   {
     name: 'Github',
+    description: 'Connect Shelve with Github to sync secrets and more...',
     icon: 'simple-icons:github'
   }
 ]
@@ -18,9 +19,22 @@ const integrations = [
           Connect Shelve with other services to enhance your experience.
         </p>
       </div>
-      <div class="grid grid-cols-4 gap-2">
+      <div class="flex flex-col gap-2">
         <NuxtLink v-for="integration in integrations" :key="integration.name" :to="`/user/integrations/${integration.name.toLowerCase()}`">
-          Github
+          <div class="border border-neutral-200 dark:border-neutral-800 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-900 transition-colors duration-200">
+            <div class="flex items-center justify-between gap-1 p-4">
+              <div class="flex items-center gap-2">
+                <UIcon :name="integration.icon" class="size-7" />
+                <div class="flex flex-col gap-1">
+                  <span class="text-sm font-semibold">{{ integration.name }}</span>
+                  <span class="text-xs text-neutral-500">{{ integration.description }}</span>
+                </div>
+              </div>
+              <div class="flex items-center gap-1">
+                <UBadge variant="soft" color="neutral" label="Connect" />
+              </div>
+            </div>
+          </div>
         </NuxtLink>
       </div>
     </div>

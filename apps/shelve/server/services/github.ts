@@ -1,5 +1,3 @@
-import type { H3Event } from 'h3'
-import { z } from 'zod'
 import jwt from 'jsonwebtoken'
 
 type GitHubRepo = {
@@ -60,12 +58,7 @@ export class GithubService {
   private readonly GITHUB_API = 'https://api.github.com'
   private readonly tokenCache = new Map<string, { token: string, expiresAt: Date }>()
 
-  async handleAppCallback(event: H3Event) {
-    const { user } = await getUserSession(event)
-    const { code } = await getValidatedQuery(event, z.object({
-      code: z.string({ required_error: 'code is required' }),
-    }).parse)
-
+  async handleAppCallback(userId: number, code: string) {
     const appConfig = await $fetch<GitHubAppResponse>(`${this.GITHUB_API}/app-manifests/${code}/conversions`, {
       method: 'POST',
       headers: {
@@ -81,10 +74,10 @@ export class GithubService {
         webhookSecret: appConfig.webhook_secret,
         clientId: appConfig.client_id,
         clientSecret: appConfig.client_secret,
-        userId: user!.id,
+        userId: userId,
       })
 
-    return sendRedirect(event, `https://github.com/apps/${appConfig.slug}/installations/new`)
+    return `https://github.com/apps/${appConfig.slug}/installations/new`
   }
 
   private async getAuthToken(userId: number): Promise<string> {
@@ -129,9 +122,8 @@ export class GithubService {
     return token
   }
 
-  async getUserRepos(event: H3Event): Promise<GitHubRepo[]> {
-    const { user } = await getUserSession(event)
-    const token = await this.getAuthToken(user!.id)
+  async getUserRepos(userId: number): Promise<GitHubRepo[]> {
+    const token = await this.getAuthToken(userId)
 
     return await $fetch<GitHubRepo[]>(`${this.GITHUB_API}/installation/repositories`, {
       headers: {
@@ -139,6 +131,26 @@ export class GithubService {
         Accept: 'application/vnd.github.v3+json'
       }
     })
+  }
+
+  async getUserApps(userId: number) {
+    return await useDrizzle().query.githubApp.findMany({
+      where: eq(tables.githubApp.userId, userId)
+    })
+  }
+
+  async deleteApp(userId: number, slug: string) {
+    await useDrizzle().delete(tables.githubApp)
+      .where(and(
+        eq(tables.githubApp.userId, userId),
+        eq(tables.githubApp.slug, slug)
+      ))
+
+    return {
+      statusCode: 200,
+      message: 'App removed from Shelve. Dont forget to delete it from GitHub',
+      link: `https://github.com/settings/apps/${slug}/advanced`
+    }
   }
 
 }
