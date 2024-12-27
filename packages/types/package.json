@@ -1,6 +1,6 @@
 {
   "name": "@shelve/types",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "type": "module",
   "publishConfig": {
     "access": "public"
@@ -15,7 +15,7 @@
   },
   "main": "./dist/index.mjs",
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./dist/index.mjs"
   },
   "types": "./dist/index.d.ts",
   "files": [
