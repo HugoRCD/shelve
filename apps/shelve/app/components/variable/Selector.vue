@@ -2,15 +2,17 @@
 import type { Variable } from '@shelve/types'
 import { ConfirmModal } from '#components'
 
-const selectedVariables = defineModel({ type: Array, required: true }) as Ref<Variable[]>
+const selectedVariables = defineModel<Variable[]>({ required: true })
 
-const {
-  deleteVariables
-} = useVariablesService()
+const { deleteVariables } = useVariablesService()
 
 const loading = ref(false)
 const modal = useModal()
+const route = useRoute()
 const teamEnv = useEnvironments()
+
+const projectId = route.params.projectId as string
+const project = useProject(projectId)
 
 function openDeleteModal() {
   modal.open(ConfirmModal, {
@@ -34,17 +36,51 @@ async function deleteSelectedVariables() {
   selectedVariables.value = []
   loading.value = false
 }
+
+const open = ref(false)
+const selectedEnvironment = ref(teamEnv.value[0]?.id)
+const githubUrl = 'https://github.com/'
+const selectedRepo = ref(project.value?.repository || 'HugoRCD/shelve')
+
+const variablesToSend = computed(() => {
+  return selectedVariables.value.map((v: Variable) => {
+    return {
+      key: v.key,
+      value: v.values.find((v: any) => v.environmentId === selectedEnvironment.value)?.value,
+    }
+  }).filter((v: any) => v.value)
+})
+
+async function sendToGithub() {
+  try {
+    await $fetch(`/api/github/secrets`, {
+      method: 'POST',
+      body: {
+        variables: variablesToSend.value,
+        repository: selectedRepo.value,
+      }
+    })
+    toast.success('Variables have been sent to Github')
+  } catch (error) {
+    console.error(error)
+  }
+  open.value = false
+  selectedVariables.value = []
+}
 </script>
 
 <template>
   <div>
     <Transition name="bezier" mode="out-in">
       <div v-if="selectedVariables.length > 0" class="absolute bottom-4 left-1/2 z-20 -translate-x-1/2">
-        <div class="flex items-center gap-4 rounded-full border border-neutral-200 bg-white px-5 py-1.5 shadow-md dark:border-neutral-700 dark:bg-neutral-800">
-          <span class="text-nowrap text-sm font-semibold text-neutral-900 dark:text-neutral-300">
+        <div class="dark flex items-center text-neutral-300 gap-4 rounded-md border px-5 py-1.5 border-neutral-800 bg-neutral-950 shadow-lg">
+          <span class="text-nowrap text-sm font-semibold">
             {{ selectedVariables.length }} variable{{ selectedVariables.length > 1 ? 's' : '' }} selected
           </span>
           <div class="flex gap-2">
+            <UTooltip text="Send selected variables to Github">
+              <UButton icon="simple-icons:github" variant="ghost" @click="open = true" />
+            </UTooltip>
             <UPopover mode="hover" arrow>
               <UButton icon="lucide:clipboard-plus" variant="ghost" />
               <template #content>
@@ -67,5 +103,44 @@ async function deleteSelectedVariables() {
         </div>
       </div>
     </Transition>
+    <UModal v-model:open="open" title="Send to Github">
+      <template #content>
+        <UCard>
+          <div class="flex flex-col gap-4">
+            <div class="flex items-center gap-2">
+              <UIcon name="simple-icons:github" class="size-6" />
+              <div class="flex flex-col">
+                <span class="font-semibold">Send selected variables to Github</span>
+                <span class="text-sm text-neutral-300">Select the environment you want to send the variables to</span>
+              </div>
+            </div>
+            <USeparator />
+            <div>
+              <div class="flex flex-col gap-2">
+                <span class="text-neutral-300">Select repository:</span>
+                <UInput v-model="selectedRepo" placeholder="HugoRCD/shelve" />
+              </div>
+            </div>
+            <div>
+              <div class="flex flex-col gap-2">
+                <span class="text-neutral-300">Select environment:</span>
+                <URadioGroup
+                  v-model="selectedEnvironment"
+                  :items="teamEnv"
+                  value-key="id"
+                  label-key="name"
+                  :default-value="teamEnv[0]?.id"
+                >
+                  <template #label="{ item }">
+                    <span>{{ capitalize(item.name) }}</span>
+                  </template>
+                </URadioGroup>
+              </div>
+            </div>
+            <UButton loading-auto label="Send" block :disabled="variablesToSend.length === 0" @click="sendToGithub()" />
+          </div>
+        </UCard>
+      </template>
+    </UModal>
   </div>
 </template>
