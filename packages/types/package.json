@@ -1,6 +1,6 @@
 {
   "name": "@shelve/types",
-  "version": "1.4.0",
+  "version": "1.5.1",
   "type": "module",
   "publishConfig": {
     "access": "public"
@@ -13,14 +13,14 @@
     "lint": "eslint .",
     "lint:fix": "eslint --fix ."
   },
-  "files": [
-    "./src/index.ts"
-  ],
+  "main": "./dist/index.mjs",
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./dist/index.mjs"
   },
-  "main": "./src/index.ts",
-  "types": "./src/index.ts",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "devDependencies": {
     "typescript": "latest"
   }
