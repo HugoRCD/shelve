@@ -59,6 +59,12 @@ export function getNavigation(where: Where, teamSlug?: string): Navigation[] {
           title: 'API Tokens',
         },
         {
+          name: 'Integrations',
+          path: '/user/integrations',
+          icon: 'lucide:blocks',
+          title: 'Integrations',
+        },
+        {
           name: 'Settings',
           path: '/user/settings',
           icon: 'heroicons:cog',

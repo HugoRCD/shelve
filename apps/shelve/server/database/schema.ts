@@ -34,6 +34,18 @@ export const users = pgTable('users', {
   ...timestamps,
 })
 
+export const githubApp = pgTable('github_app', {
+  id: bigint({ mode: 'number' }).primaryKey().generatedByDefaultAsIdentity(),
+  slug: varchar({ length: 100 }).unique().notNull(),
+  appId: bigint({ mode: 'number' }).notNull(),
+  privateKey: varchar().notNull(),
+  webhookSecret: varchar({ length: 500 }).notNull(),
+  clientId: varchar({ length: 500 }).notNull(),
+  clientSecret: varchar({ length: 500 }).notNull(),
+  userId: bigint({ mode: 'number' }).references(() => users.id, { onDelete: 'cascade' }).notNull(),
+  ...timestamps,
+})
+
 export const teams = pgTable('teams', {
   id: bigint({ mode: 'number' }).primaryKey().generatedByDefaultAsIdentity(),
   name: varchar({ length: 50 }).notNull(),
@@ -115,6 +127,13 @@ export const environments = pgTable('environments', {
   uniqueIndex('environments_team_name_idx').on(table.teamId, table.name),
   index('environments_team_idx').on(table.teamId),
 ])
+
+export const githubAppRelations = relations(githubApp, ({ one }) => ({
+  users: one(users, {
+    fields: [githubApp.userId],
+    references: [users.id],
+  })
+}))
 
 export const teamsRelations = relations(teams, ({ many }) => ({
   members: many(members),

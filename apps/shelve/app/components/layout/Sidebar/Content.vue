@@ -55,7 +55,7 @@ watch(() => route.path, handleProjectNavigation, { immediate: true })
       </div>
       <div class="flex flex-col gap-2">
         <TransitionGroup name="bezier" tag="ul" class="flex flex-col gap-2" mode="out-in">
-          <LayoutNavItem v-for="nav in teamNavigations" :key="nav.name" :active="nav.path === route.path" :nav-item="nav" />
+          <LayoutNavItem v-for="nav in teamNavigations" :key="nav.name" :active="nav.path === route.path || nav.name === route.name" :nav-item="nav" />
         </TransitionGroup>
       </div>
     </div>
@@ -65,7 +65,7 @@ watch(() => route.path, handleProjectNavigation, { immediate: true })
       <div class="text-xs font-medium text-neutral-500 dark:text-neutral-400">
         User
       </div>
-      <LayoutNavItem v-for="nav in userNavigations" :key="nav.name" :active="nav.path === route.path" :nav-item="nav" />
+      <LayoutNavItem v-for="nav in userNavigations" :key="nav.name" :active="nav.path === route.path || nav.name === route.name" :nav-item="nav" />
     </div>
 
     <!-- Admin -->

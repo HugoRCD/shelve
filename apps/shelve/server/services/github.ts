@@ -1,73 +1,118 @@
-import type { H3Event } from 'h3'
-
-type GitHubRepo = {
-  name: string
-  owner: { login: string }
-}
+import jwt from 'jsonwebtoken'
+import { GithubApp, GitHubAppResponse, GitHubRepo } from '@shelve/types'
 
 export class GithubService {
 
   private readonly GITHUB_API = 'https://api.github.com'
-  private readonly REPOS_PER_PAGE = 100
-  private readonly DEFAULT_BRANCH = 'main'
-  private readonly DEFAULT_COMMIT_MESSAGE = 'push from shelve'
+  private readonly tokenCache = new Map<string, { token: string, expiresAt: Date }>()
+  private readonly encryptionKey: string
 
-  /**
-   * Get user's GitHub repositories
-   */
-  async getUserRepos(event: H3Event): Promise<GitHubRepo[]> {
-    const { user, secure } = await getUserSession(event)
-
-    const repos = await $fetch<GitHubRepo[]>(`${this.GITHUB_API}/user/repos?per_page=${this.REPOS_PER_PAGE}`, {
-      headers: {
-        Authorization: `token ${secure?.githubToken}`,
-      },
-    })
-
-    console.log(`Found ${repos.length} repositories for user ${user!.username}`)
-    console.log(repos.map((repo: GitHubRepo) => ({
-      name: repo.name,
-      owner: repo.owner.login,
-    })))
-
-    return repos
+  constructor() {
+    this.encryptionKey = useRuntimeConfig().private.encryptionKey
   }
 
-  /**
-   * Upload file to GitHub repository
-   */
-  async uploadFile(event: H3Event, file: File, repoName: string): Promise<any> {
-    const { user, secure } = await getUserSession(event)
+  private async encryptValue(value: string): Promise<string> {
+    return await seal(value, this.encryptionKey)
+  }
 
-    const content = await this.getFileContent(file)
-    const uploadUrl = this.buildUploadUrl(user!.username, repoName, file.name)
+  private async decryptValue(value: string): Promise<string> {
+    return await unseal(value, this.encryptionKey) as string
+  }
 
-    return await $fetch(uploadUrl, {
-      method: 'PUT',
+  async handleAppCallback(userId: number, code: string) {
+    const appConfig = await $fetch<GitHubAppResponse>(`${this.GITHUB_API}/app-manifests/${code}/conversions`, {
+      method: 'POST',
       headers: {
-        Authorization: `token ${secure?.githubToken}`,
-      },
-      body: {
-        message: this.DEFAULT_COMMIT_MESSAGE,
-        content,
-        branch: this.DEFAULT_BRANCH
+        'Accept': 'application/vnd.github.v3+json',
+      }
+    })
+
+    await useDrizzle().insert(tables.githubApp)
+      .values({
+        slug: appConfig.slug,
+        appId: appConfig.id,
+        privateKey: await this.encryptValue(appConfig.pem),
+        webhookSecret: await this.encryptValue(appConfig.webhook_secret),
+        clientId: appConfig.client_id,
+        clientSecret: await this.encryptValue(appConfig.client_secret),
+        userId: userId,
+      })
+
+    return `https://github.com/apps/${appConfig.slug}/installations/new`
+  }
+
+  private async getAuthToken(userId: number): Promise<string> {
+    const cached = this.tokenCache.get(String(userId))
+    if (cached?.expiresAt && cached.expiresAt > new Date()) {
+      return cached.token
+    }
+
+    const app = await useDrizzle().query.githubApp.findFirst({
+      where: eq(tables.githubApp.userId, userId)
+    })
+    if (!app) throw createError({ statusCode: 404, statusMessage: 'GitHub App not found' })
+    const privateKey = await this.decryptValue(app.privateKey)
+
+    const now = Math.floor(Date.now() / 1000)
+    const appJWT = jwt.sign({
+      iat: now - 60,
+      exp: now + (10 * 60),
+      iss: app.appId
+    }, privateKey, { algorithm: 'RS256' })
+
+    const installations = await $fetch<{ id: number }[]>(`${this.GITHUB_API}/app/installations`, {
+      headers: {
+        Authorization: `Bearer ${appJWT}`,
+        Accept: 'application/vnd.github.v3+json'
+      }
+    })
+    if (!installations.length) throw createError({ statusCode: 404, statusMessage: 'GitHub App not installed in any repositories' })
+
+    const { token } = await $fetch<{ token: string, expires_at: string }>(`${this.GITHUB_API}/app/installations/${installations[0].id}/access_tokens`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${appJWT}`,
+        Accept: 'application/vnd.github.v3+json'
+      }
+    })
+
+    this.tokenCache.set(String(userId), {
+      token,
+      expiresAt: new Date(Date.now() + 55 * 60 * 1000)
+    })
+
+    return token
+  }
+
+  async getUserRepos(userId: number): Promise<GitHubRepo[]> {
+    const token = await this.getAuthToken(userId)
+
+    return await $fetch<GitHubRepo[]>(`${this.GITHUB_API}/installation/repositories`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: 'application/vnd.github.v3+json'
       }
     })
   }
 
-  /**
-   * Convert file to base64
-   */
-  private async getFileContent(file: File): Promise<string> {
-    const fileContent = await file.arrayBuffer()
-    return Buffer.from(fileContent).toString('base64')
+  async getUserApps(userId: number): Promise<GithubApp[]> {
+    return await useDrizzle().query.githubApp.findMany({
+      where: eq(tables.githubApp.userId, userId)
+    })
   }
 
-  /**
-   * Build GitHub API upload URL
-   */
-  private buildUploadUrl(username: string, repoName: string, fileName: string): string {
-    return `${this.GITHUB_API}/repos/${username}/${repoName}/contents/${fileName}`
+  async deleteApp(userId: number, slug: string) {
+    await useDrizzle().delete(tables.githubApp)
+      .where(and(
+        eq(tables.githubApp.userId, userId),
+        eq(tables.githubApp.slug, slug)
+      ))
+
+    return {
+      statusCode: 200,
+      message: 'App removed from Shelve. Dont forget to delete it from GitHub',
+      link: `https://github.com/settings/apps/${slug}/advanced`
+    }
   }
 
 }
