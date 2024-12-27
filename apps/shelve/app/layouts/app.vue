@@ -13,6 +13,10 @@ const navigation = computed(() => {
     return { title: 'Project Details', to: '/projects', name: 'project', icon: 'lucide:folder-open' }
   return pages.value.find((page) => page.path === route.path) || null
 })
+
+const routeTitle = computed(() => {
+  return route.meta.title as string
+})
 </script>
 
 <template>
@@ -34,9 +38,14 @@ const navigation = computed(() => {
             </Transition>
           </template>
           <template v-else>
+            <Transition name="slide-to-bottom" mode="out-in">
+              <div :key="route.meta.icon as string">
+                <UIcon :name="route.meta.icon as string" class="size-5" />
+              </div>
+            </Transition>
             <Transition name="slide-to-top" mode="out-in">
-              <h1 :key="route.name" class="text-lg font-semibold">
-                {{ route.name }}
+              <h1 :key="routeTitle.toLowerCase()" class="text-lg font-semibold">
+                {{ routeTitle }}
               </h1>
             </Transition>
           </template>
