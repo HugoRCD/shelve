@@ -82,7 +82,6 @@ function openDeleteModal(slug: string) {
           :key="app.id"
           class="group relative overflow-hidden bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-lg hover:shadow-lg transition-all duration-300"
         >
-          <!-- Card Header -->
           <div class="absolute top-0 right-0 p-2">
             <UButton
               icon="lucide:trash"
@@ -97,7 +96,7 @@ function openDeleteModal(slug: string) {
           <div class="p-2">
             <div class="flex items-center gap-2 mb-3">
               <div class="bg-neutral-50 dark:bg-neutral-800 p-2 rounded-full flex items-center justify-center border border-neutral-200 dark:border-neutral-700">
-                <UIcon name="simple-icons:github" class="size-5 text-white" />
+                <UIcon name="simple-icons:github" class="size-5" />
               </div>
               <div class="flex flex-col">
                 <h3 class="font-semibold">
@@ -140,15 +139,65 @@ function openDeleteModal(slug: string) {
       <div v-else class="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <USkeleton v-for="i in 4" :key="i" class="h-32" />
       </div>
-      <div v-if="status !== 'pending' && data" class="flex h-64 flex-col items-center justify-center gap-4">
-        <div v-if="data.length === 0" class="flex h-64 flex-col items-center justify-center gap-4">
-          <UIcon name="heroicons:folder-open" class="size-10 text-neutral-400" />
-          <h2 class="text-lg font-semibold">
-            No Github Apps found
+      <div
+        v-if="status !== 'pending' && data?.length === 0"
+        class="flex flex-col items-center justify-center p-8 bg-white dark:bg-neutral-900/30 border border-neutral-200 dark:border-neutral-800/30 rounded-lg"
+      >
+        <div class="relative mb-6">
+          <div class="flex items-center justify-center relative p-6 bg-neutral-50 dark:bg-neutral-800 rounded-full border border-neutral-200 dark:border-neutral-700">
+            <UIcon name="simple-icons:github" class="size-12 text-neutral-700 dark:text-neutral-500" />
+          </div>
+
+          <div class="absolute -top-2 -right-2 size-4 bg-blue-100 dark:bg-blue-900/30 rounded-full" />
+          <div class="absolute -bottom-1 -left-3 size-3 bg-purple-100 dark:bg-purple-900/30 rounded-full" style="animation-delay: 0.2s" />
+        </div>
+
+        <div class="text-center max-w-sm">
+          <h2 class="text-lg font-semibold mb-2">
+            No Github Apps Yet
           </h2>
-          <p class="text-sm text-neutral-500">
-            You don't have any Github Apps yet. Create one now!
+          <p class="text-sm text-neutral-500 mb-6">
+            Create a GitHub App to start managing your repositories and synchronizing secrets across your environments.
           </p>
+
+          <!-- Call-to-action -->
+          <form action="https://github.com/settings/apps/new" method="post" class="inline-block">
+            <input id="manifest-empty" type="text" name="manifest" class="hidden" :value="JSON.stringify(manifest)">
+            <UButton
+              type="submit"
+              size="sm"
+              color="gray"
+              class="group"
+            >
+              <template #leading>
+                <UIcon name="simple-icons:github" class="size-4" />
+              </template>
+              Create Your First GitHub App
+              <template #trailing>
+                <UIcon
+                  name="lucide:arrow-right"
+                  class="size-4 transition-transform group-hover:translate-x-1"
+                />
+              </template>
+            </UButton>
+          </form>
+        </div>
+
+        <div class="mt-4 grid grid-cols-2 gap-4 w-full max-w-md">
+          <div class="flex items-start gap-2 p-3 bg-neutral-50 dark:bg-neutral-800/50 rounded-lg">
+            <UIcon name="lucide:key" class="size-5 text-neutral-400 mt-0.5" />
+            <div class="flex flex-col">
+              <span class="text-xs font-medium">Secure Secrets</span>
+              <span class="text-xs text-neutral-500">Sync across environments</span>
+            </div>
+          </div>
+          <div class="flex items-start gap-2 p-3 bg-neutral-50 dark:bg-neutral-800/50 rounded-lg">
+            <UIcon name="lucide:git-branch" class="size-5 text-neutral-400 mt-0.5" />
+            <div class="flex flex-col">
+              <span class="text-xs font-medium">Repository Access</span>
+              <span class="text-xs text-neutral-500">Manage permissions</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
