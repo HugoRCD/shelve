@@ -40,7 +40,7 @@ async function deleteSelectedVariables() {
 const open = ref(false)
 const selectedEnvironment = ref(teamEnv.value[0]?.id)
 const githubUrl = 'https://github.com/'
-const selectedRepo = ref(project.value?.repository || 'HugoRCD/shelve')
+const selectedRepo = ref(project.value?.repository?.replace(githubUrl, '') || 'HugoRCD/shelve')
 
 const variablesToSend = computed(() => {
   return selectedVariables.value.map((v: Variable) => {
@@ -62,7 +62,7 @@ async function sendToGithub() {
     })
     toast.success('Variables have been sent to Github')
   } catch (error) {
-    console.error(error)
+    toast.error('Failed to send variables to Github')
   }
   open.value = false
   selectedVariables.value = []

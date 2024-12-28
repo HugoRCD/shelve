@@ -30,6 +30,13 @@ export function useProjectsService() {
 
   async function createProject(input: Omit<CreateProjectInput, 'teamId'>) {
     try {
+      if (input.repository) {
+        if (!input.repository.startsWith('https://github.com/')) {
+          toast.error('Shelve only supports GitHub repositories')
+          return
+        }
+        input.repository = input.repository.replace('https://github.com/', '')
+      }
       const project = await $fetch<Project>(`/api/teams/${teamSlug}/projects`, {
         method: 'POST',
         body: input
@@ -45,6 +52,13 @@ export function useProjectsService() {
   async function updateProject(project: Project) {
     updateLoading.value = true
     try {
+      if (project.repository) {
+        if (!project.repository.startsWith('https://github.com/')) {
+          toast.error('Shelve only supports GitHub repositories')
+          return
+        }
+        project.repository = project.repository.replace('https://github.com/', '')
+      }
       const response = await $fetch<Project>(`/api/teams/${teamSlug}/projects/${project.id}`, {
         method: 'PUT',
         body: project,

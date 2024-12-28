@@ -4,7 +4,7 @@ const projectId = route.params.projectId as string
 const project = useProject(projectId)
 
 const {
-  loading,
+  currentLoading,
   updateLoading,
   updateProject
 } = useProjectsService()
@@ -37,15 +37,15 @@ const {
           </div>
           <div class="my-2 flex flex-col gap-4">
             <div>
-              <USkeleton v-if="loading" class="h-8" />
+              <USkeleton v-if="currentLoading" class="h-8" />
               <FormGroup v-else v-model="project.repository" label="Repository" class="md:w-2/3" />
             </div>
             <div>
-              <USkeleton v-if="loading" class="h-8" />
+              <USkeleton v-if="currentLoading" class="h-8" />
               <FormGroup v-else v-model="project.projectManager" label="Project Manager" class="md:w-2/3" />
             </div>
             <div>
-              <USkeleton v-if="loading" class="h-8" />
+              <USkeleton v-if="currentLoading" class="h-8" />
               <FormGroup v-else v-model="project.homepage" label="Homepage" class="md:w-2/3" />
             </div>
           </div>
@@ -62,7 +62,7 @@ const {
           </div>
           <div class="my-2 flex flex-col gap-4">
             <div>
-              <USkeleton v-if="loading" class="h-8" />
+              <USkeleton v-if="currentLoading" class="h-8" />
               <FormGroup v-else v-model="project.variablePrefix" type="textarea" label="Prefix" class="md:w-2/3" />
               <UTooltip text="Yes this will be improved in the future 😅">
                 <p class="mt-1 text-xs text-neutral-500 dark:text-neutral-400">
