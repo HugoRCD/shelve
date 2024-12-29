@@ -167,7 +167,7 @@ function getProjectManager(manager: string) {
             :ui="{ leadingIcon: 'dark:fill-white fill-black' }"
           />
         </NuxtLink>
-        <NuxtLink v-if="project.repository" target="_blank" :to="`https://github.com/${project.repository}`">
+        <NuxtLink v-if="project.repository" target="_blank" :to="project.repository">
           <UButton
             variant="soft"
             size="xs"

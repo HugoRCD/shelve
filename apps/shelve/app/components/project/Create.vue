@@ -1,14 +1,15 @@
 <script setup lang="ts">
-import type { CreateProjectInput } from '@shelve/types'
+import type { FormSubmitEvent } from '#ui/types'
+import { type CreateProjectSchema, createProjectSchema } from '~/utils/zod/project'
 
-const projectCreateInput = ref<Omit<CreateProjectInput, 'teamId'>>({
-  name: '',
-  description: '',
-  logo: '',
-  repository: '',
-  projectManager: '',
-  homepage: '',
-  variablePrefix: '',
+const state = ref<Partial<CreateProjectSchema>>({
+  name: undefined,
+  description: undefined,
+  logo: undefined,
+  repository: undefined,
+  projectManager: undefined,
+  homepage: undefined,
+  variablePrefix: undefined,
 })
 
 const isOpen = ref(false)
@@ -18,21 +19,9 @@ const {
   createProject,
 } = useProjectsService()
 
-const createLoading = ref(false)
-async function createProjectFunction() {
-  createLoading.value = true
-  await createProject(projectCreateInput.value)
-  projectCreateInput.value = {
-    name: '',
-    description: '',
-    logo: '',
-    repository: '',
-    projectManager: '',
-    homepage: '',
-    variablePrefix: '',
-  }
+async function onSubmit(event: FormSubmitEvent<CreateProjectSchema>) {
+  await createProject(event.data)
   isOpen.value = false
-  createLoading.value = false
 }
 
 function importProject() {
@@ -47,8 +36,8 @@ function importProject() {
         const content = e.target?.result
         if (typeof content === 'string') {
           const data = JSON.parse(content)
-          projectCreateInput.value = {
-            ...projectCreateInput.value,
+          state.value = {
+            ...state.value,
             ...data,
           }
         }
@@ -71,9 +60,13 @@ function importProject() {
     />
 
     <template #body>
-      <form id="createForm" class="flex flex-col gap-4" @submit.prevent="createProjectFunction">
-        <FormGroup v-model="projectCreateInput.name" autofocus required label="Project name" />
-        <FormGroup v-model="projectCreateInput.description" label="Description" type="textarea" />
+      <UForm id="createForm" :state :schema="createProjectSchema" class="flex h-full flex-col gap-4" @submit="onSubmit">
+        <UFormField name="name" label="Project name" required>
+          <UInput v-model="state.name" class="w-full" />
+        </UFormField>
+        <UFormField name="description" label="Description">
+          <UTextarea v-model="state.description" class="w-full" autoresize />
+        </UFormField>
         <USeparator class="my-4" />
         <div class="flex flex-col gap-4">
           <div>
@@ -84,15 +77,15 @@ function importProject() {
               Add quick links to your project repository, homepage, etc...
             </p>
           </div>
-          <div>
-            <FormGroup v-model="projectCreateInput.repository" label="Repository" />
-          </div>
-          <div>
-            <FormGroup v-model="projectCreateInput.projectManager" label="Project Manager" />
-          </div>
-          <div>
-            <FormGroup v-model="projectCreateInput.homepage" label="Homepage" />
-          </div>
+          <UFormField name="repository" label="Repository">
+            <UInput v-model="state.repository" class="w-full" />
+          </UFormField>
+          <UFormField name="homepage" label="Homepage">
+            <UInput v-model="state.homepage" class="w-full" />
+          </UFormField>
+          <UFormField name="projectManager" label="Project Manager">
+            <UInput v-model="state.projectManager" class="w-full" />
+          </UFormField>
         </div>
         <USeparator class="my-4" />
         <div class="flex flex-col gap-4">
@@ -105,28 +98,30 @@ function importProject() {
             </p>
           </div>
           <div class="flex flex-col items-center justify-center gap-4">
-            <FormGroup v-model="projectCreateInput.logo" label="Project Logo" class="w-full" />
-            <UAvatar :src="projectCreateInput.logo" size="3xl" :alt="projectCreateInput.name" />
+            <UFormField name="logo" label="Project Logo" class="w-full">
+              <UInput v-model="state.logo" class="w-full" />
+            </UFormField>
+            <UAvatar :src="state.logo" size="3xl" :alt="state.name" />
           </div>
         </div>
-      </form>
-    </template>
-    <template #footer>
-      <div class="flex w-full justify-between">
-        <div>
-          <UButton variant="ghost" @click="importProject">
-            Import project from JSON
-          </UButton>
+        <div class="h-full flex justify-end">
+          <div class="flex w-full items-end justify-between">
+            <div>
+              <UButton variant="ghost" @click="importProject">
+                Import project from JSON
+              </UButton>
+            </div>
+            <div class="flex gap-4">
+              <UButton variant="ghost" @click="isOpen = false">
+                Cancel
+              </UButton>
+              <UButton type="submit" trailing loading-auto form="createForm">
+                Create
+              </UButton>
+            </div>
+          </div>
         </div>
-        <div class="flex gap-4">
-          <UButton variant="ghost" @click="isOpen = false">
-            Cancel
-          </UButton>
-          <UButton type="submit" trailing :loading="createLoading" form="createForm">
-            Create
-          </UButton>
-        </div>
-      </div>
+      </UForm>
     </template>
   </USlideover>
 </template>

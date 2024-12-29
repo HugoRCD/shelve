@@ -57,7 +57,7 @@ async function sendToGithub() {
       method: 'POST',
       body: {
         variables: variablesToSend.value,
-        repository: selectedRepo.value,
+        repository: sanitizeGithubUrl(selectedRepo.value),
       }
     })
     toast.success('Variables have been sent to Github')
@@ -117,8 +117,7 @@ async function sendToGithub() {
             <USeparator />
             <div>
               <div class="flex flex-col gap-2">
-                <span class="text-neutral-300">Select repository:</span>
-                <UInput v-model="selectedRepo" placeholder="HugoRCD/shelve" />
+                <UInput v-model="selectedRepo" :placeholder="sanitizeGithubUrl(selectedRepo)" disabled />
               </div>
             </div>
             <div>

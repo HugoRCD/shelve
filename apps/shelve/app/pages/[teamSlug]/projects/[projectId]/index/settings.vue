@@ -1,10 +1,14 @@
 <script setup lang="ts">
+import { useCurrentLoading } from '~/composables/useProjects'
+
 const route = useRoute()
 const projectId = route.params.projectId as string
 const project = useProject(projectId)
 
+
+const currentLoading = useCurrentLoading()
+
 const {
-  currentLoading,
   updateLoading,
   updateProject
 } = useProjectsService()
