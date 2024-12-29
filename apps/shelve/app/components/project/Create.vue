@@ -77,7 +77,12 @@ function importProject() {
               Add quick links to your project repository, homepage, etc...
             </p>
           </div>
-          <UFormField name="repository" label="Repository">
+          <UFormField
+            name="repository"
+            label="Repository"
+            help="Add a link to your project repository to enable GitHub integration."
+            :ui="{ help: 'text-xs' }"
+          >
             <UInput v-model="state.repository" class="w-full" />
           </UFormField>
           <UFormField name="homepage" label="Homepage">

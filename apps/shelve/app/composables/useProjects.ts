@@ -1,5 +1,5 @@
-import type { CreateProjectInput, Project } from '@shelve/types'
-import type { CreateProjectSchema } from '~/utils/zod/project'
+import type { Project } from '@shelve/types'
+import type { CreateProjectSchema, UpdateProjectSchema } from '~/utils/zod/project'
 
 export const useCurrentLoading = () => {
   return useState<boolean>('currentLoading', () => false)
@@ -52,7 +52,7 @@ export function useProjectsService() {
     }
   }
 
-  async function updateProject(project: Project) {
+  async function updateProject(project: UpdateProjectSchema) {
     updateLoading.value = true
     try {
       const _project = await $fetch<Project>(`/api/teams/${teamSlug}/projects/${project.id}`, {
