@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="assets/preview.png" width="100%" alt="Shelve - The all-in-one development workspace" />
+  <img src="assets/cover.png" width="100%" alt="Shelve - The all-in-one development workspace" />
 
 # Shelve
 ### The all-in-one development workspace
