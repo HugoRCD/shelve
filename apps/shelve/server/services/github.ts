@@ -149,6 +149,23 @@ export class GithubService {
     }
   }
 
+  async getSecrets(userId: number, repository: string) {
+    const token = await this.getAuthToken(userId)
+
+    try {
+      return await $fetch(`${this.GITHUB_API}/repos/${repository}/actions/secrets`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: 'application/vnd.github.v3+json'
+        }
+      })
+    } catch (error: any) {
+      throw createError({
+        statusCode: error.status || 500,
+        statusMessage: `Failed to fetch secrets: ${error.message}`
+      })
+    }
+  }
 
   async getUserApps(userId: number): Promise<GithubApp[]> {
     return await useDrizzle().query.githubApp.findMany({
