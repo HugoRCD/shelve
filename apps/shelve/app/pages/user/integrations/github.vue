@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import type { Environment } from '@shelve/types'
 import { getRandomGithubAppName } from '~~/server/utils/random'
 import { ConfirmModal } from '#components'
 
@@ -9,7 +8,7 @@ definePageMeta({
   name: 'Integrations'
 })
 
-const { data, status, refresh } = await useFetch('/api/github/apps', {
+const { data: apps, status, refresh } = await useFetch('/api/github/apps', {
   method: 'GET'
 })
 
@@ -78,7 +77,7 @@ function openDeleteModal(slug: string) {
       <USeparator class="mb-3" />
       <div v-if="status !== 'pending'" class="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <div
-          v-for="app in data"
+          v-for="app in apps"
           :key="app.id"
           class="group relative overflow-hidden bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-lg hover:shadow-lg transition-all duration-300"
         >
@@ -140,7 +139,7 @@ function openDeleteModal(slug: string) {
         <USkeleton v-for="i in 4" :key="i" class="h-32" />
       </div>
       <div
-        v-if="status !== 'pending' && data?.length === 0"
+        v-if="status !== 'pending' && apps?.length === 0"
         class="flex flex-col items-center justify-center p-8 bg-white dark:bg-neutral-900/30 border border-neutral-200 dark:border-neutral-800/30 rounded-lg"
       >
         <div class="relative mb-6">
@@ -160,13 +159,11 @@ function openDeleteModal(slug: string) {
             Create a GitHub App to start managing your repositories and synchronizing secrets across your environments.
           </p>
 
-          <!-- Call-to-action -->
           <form action="https://github.com/settings/apps/new" method="post" class="inline-block">
             <input id="manifest-empty" type="text" name="manifest" class="hidden" :value="JSON.stringify(manifest)">
             <UButton
               type="submit"
               size="sm"
-              color="gray"
               class="group"
             >
               <template #leading>

@@ -1,17 +1,21 @@
 <script setup lang="ts">
+import { useCurrentLoading } from '~/composables/useProjects'
+import type { FormSubmitEvent } from '#ui/types'
+import { type UpdateProjectSchema, updateProjectSchema } from '~/utils/zod/project'
+
 const route = useRoute()
 const projectId = route.params.projectId as string
 const project = useProject(projectId)
 
-const {
-  loading,
-  updateLoading,
-  updateProject
-} = useProjectsService()
+const currentLoading = useCurrentLoading()
+
+async function onSubmit(event: FormSubmitEvent<UpdateProjectSchema>) {
+  await useProjectsService().updateProject(event.data)
+}
 </script>
 
 <template>
-  <form class="flex flex-col gap-4" @submit.prevent="updateProject(project)">
+  <UForm :state="project" :schema="updateProjectSchema" class="flex flex-col gap-4" @submit="onSubmit">
     <UCard>
       <template #header>
         <div class="flex items-center">
@@ -36,17 +40,29 @@ const {
             </p>
           </div>
           <div class="my-2 flex flex-col gap-4">
-            <div>
-              <USkeleton v-if="loading" class="h-8" />
-              <FormGroup v-else v-model="project.repository" label="Repository" class="md:w-2/3" />
+            <div :class="route.hash === '#repository' ? 'ring ring-[var(--ui-primary)] rounded-lg p-4' : ''">
+              <USkeleton v-if="currentLoading" class="h-8" />
+              <UFormField
+                v-else
+                name="repository"
+                label="Repository"
+                help="Add a link to your project repository to enable GitHub integration."
+                :ui="{ help: 'text-xs' }"
+              >
+                <UInput v-model="project.repository" class="md:w-2/3" />
+              </UFormField>
             </div>
             <div>
-              <USkeleton v-if="loading" class="h-8" />
-              <FormGroup v-else v-model="project.projectManager" label="Project Manager" class="md:w-2/3" />
+              <USkeleton v-if="currentLoading" class="h-8" />
+              <UFormField v-else name="projectManager" label="Project Manager">
+                <UInput v-model="project.projectManager" class="md:w-2/3" />
+              </UFormField>
             </div>
             <div>
-              <USkeleton v-if="loading" class="h-8" />
-              <FormGroup v-else v-model="project.homepage" label="Homepage" class="md:w-2/3" />
+              <USkeleton v-if="currentLoading" class="h-8" />
+              <UFormField v-else name="homepage" label="Homepage">
+                <UInput v-model="project.homepage" class="md:w-2/3" />
+              </UFormField>
             </div>
           </div>
         </div>
@@ -62,7 +78,7 @@ const {
           </div>
           <div class="my-2 flex flex-col gap-4">
             <div>
-              <USkeleton v-if="loading" class="h-8" />
+              <USkeleton v-if="currentLoading" class="h-8" />
               <FormGroup v-else v-model="project.variablePrefix" type="textarea" label="Prefix" class="md:w-2/3" />
               <UTooltip text="Yes this will be improved in the future 😅">
                 <p class="mt-1 text-xs text-neutral-500 dark:text-neutral-400">
@@ -75,11 +91,11 @@ const {
       </div>
       <template #footer>
         <div class="flex justify-end gap-4">
-          <UButton type="submit" trailing :loading="updateLoading">
+          <UButton type="submit" trailing loading-auto>
             Save
           </UButton>
         </div>
       </template>
     </UCard>
-  </form>
+  </UForm>
 </template>

@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken'
 import { GithubApp, GitHubAppResponse, GitHubRepo } from '@shelve/types'
+import sodium from 'libsodium-wrappers'
 
 export class GithubService {
 
@@ -93,6 +94,77 @@ export class GithubService {
         Accept: 'application/vnd.github.v3+json'
       }
     })
+  }
+
+  async sendSecrets(userId: number, repository: string, variables: { key: string, value: string }[]) {
+    try {
+      const token = await this.getAuthToken(userId)
+
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      const { key_id, key } = await $fetch<{ key_id: string, key: string }>(
+        `${this.GITHUB_API}/repos/${repository}/actions/secrets/public-key`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: 'application/vnd.github.v3+json'
+          }
+        })
+
+      await sodium.ready
+      for (const { key: secretKey, value: secretValue } of variables) {
+        try {
+          const binkey = sodium.from_base64(key, sodium.base64_variants.ORIGINAL)
+          const binsec = sodium.from_string(secretValue)
+          const encBytes = sodium.crypto_box_seal(binsec, binkey)
+          const encryptedValue = sodium.to_base64(encBytes, sodium.base64_variants.ORIGINAL)
+
+          await $fetch(`${this.GITHUB_API}/repos/${repository}/actions/secrets/${secretKey}`, {
+            method: 'PUT',
+            headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: 'application/vnd.github.v3+json'
+            },
+            body: {
+              encrypted_value: encryptedValue,
+              key_id: key_id
+            }
+          })
+        } catch (error: any) {
+          throw createError({
+            statusCode: 500,
+            statusMessage: `Failed to encrypt or send secret ${secretKey}: ${error.message}`
+          })
+        }
+      }
+
+      return {
+        statusCode: 201,
+        message: 'Secrets successfully encrypted and sent to GitHub repository'
+      }
+    } catch (error: any) {
+      throw createError({
+        statusCode: error.status || 500,
+        statusMessage: `Failed to process secrets: ${error.message}`
+      })
+    }
+  }
+
+  async getSecrets(userId: number, repository: string) {
+    const token = await this.getAuthToken(userId)
+
+    try {
+      return await $fetch(`${this.GITHUB_API}/repos/${repository}/actions/secrets`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: 'application/vnd.github.v3+json'
+        }
+      })
+    } catch (error: any) {
+      throw createError({
+        statusCode: error.status || 500,
+        statusMessage: `Failed to fetch secrets: ${error.message}`
+      })
+    }
   }
 
   async getUserApps(userId: number): Promise<GithubApp[]> {

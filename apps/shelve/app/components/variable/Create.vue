@@ -9,6 +9,12 @@ const { createLoading, createVariables } = useVariablesService()
 
 const route = useRoute()
 const projectId = route.params.projectId as string
+/*const project = useProject(projectId)
+
+const { data: secrets, status, refresh, error } = await useFetch('/api/github/secrets', {
+  method: 'GET',
+  query: { repository: sanitizeGithubUrl(project.value?.repository) },
+})*/
 
 const {
   variablesInput,
