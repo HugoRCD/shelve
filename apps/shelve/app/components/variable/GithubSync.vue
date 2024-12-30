@@ -143,8 +143,8 @@ async function onSubmit(event: FormSubmitEvent<SyncVariablesSchema>) {
               </UFormField>
             </div>
 
-            <div class="bg-neutral-100 dark:bg-neutral-800/50 p-4 rounded-lg">
-              <div class="mb-4">
+            <div class="bg-neutral-100 dark:bg-neutral-800/50 p-4 rounded-lg space-y-2">
+              <div>
                 <h4 class="text-sm font-medium text-neutral-700 dark:text-neutral-300">
                   Summary
                 </h4>
@@ -161,6 +161,9 @@ async function onSubmit(event: FormSubmitEvent<SyncVariablesSchema>) {
                 block
               />
             </div>
+            <p class="text-xs text-neutral-500 dark:text-neutral-400 mt-2 bg-neutral-100 dark:bg-neutral-800/50 p-2 rounded-lg">
+              <UIcon name="lucide:info" class="text-sm align-sub" /> This might cause overwriting of existing secrets in your repository
+            </p>
           </div>
 
           <div v-else class="text-center py-8">
