@@ -68,7 +68,7 @@ Shelve aims to become the ultimate development workspace by addressing common pa
 #### Upcoming Features
 
 - 🔄 Ecosystem management for multi-repository synchronization (e.g., [UnJs](https://unjs.io))
-- 🔌 Enhanced integrations (GitHub, Vercel, Coolify) (e.g., environment variable syncing)
+- 🔌 Enhanced integrations (Vercel, Coolify) (e.g., environment variable syncing)
 - ⚡️ Automatic project setup with GitHub and Vercel (auto-repo creation, auto-deployment)
 - 🎨 Major UI improvements for a seamless experience (become one of the most beautiful dev tools)
 
@@ -78,6 +78,7 @@ Shelve aims to become the ultimate development workspace by addressing common pa
 
 - 🔐 **Environment Management**
   - Secure variable sharing
+  - Sync secrets with GitHub
   - Vault system for sharing secrets
   - Multi-environment support
   - Custom environment support
@@ -173,6 +174,6 @@ Made by [@HugoRCD](https://github.com/HugoRCD), [@CavallucciJohann](https://gith
 
 ---
 
-_🤖 auto updated with [automd](https://automd.unjs.io) (last updated: Wed Nov 27 2024)_
+_🤖 auto updated with [automd](https://automd.unjs.io) (last updated: Mon Dec 30 2024)_
 
 <!-- /automd -->
