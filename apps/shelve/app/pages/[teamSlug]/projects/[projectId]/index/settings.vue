@@ -40,7 +40,7 @@ async function onSubmit(event: FormSubmitEvent<UpdateProjectSchema>) {
             </p>
           </div>
           <div class="my-2 flex flex-col gap-4">
-            <div>
+            <div :class="route.hash === '#repository' ? 'ring ring-[var(--ui-primary)] rounded-lg p-4' : ''">
               <USkeleton v-if="currentLoading" class="h-8" />
               <UFormField
                 v-else

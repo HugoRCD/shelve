@@ -14,6 +14,7 @@ const route = useRoute()
 const teamEnv = useEnvironments()
 
 const projectId = route.params.projectId as string
+const teamSlug = route.params.teamSlug as string
 const project = useProject(projectId)
 
 function openDeleteModal() {
@@ -132,67 +133,128 @@ async function onSubmit(event: FormSubmitEvent<SyncVariablesSchema>) {
     </Transition>
     <UModal
       v-model:open="open"
-      title="Send selected variables to Github"
-      :description="`You are about to send ${variablesToSend.length} variable${variablesToSend.length > 1 ? 's' : '' } to Github, please select which environment you want to use.`"
+      title="Sync with GitHub"
+      :description="`${variablesToSend.length} variable${variablesToSend.length > 1 ? 's' : ''} ready to sync`"
+      :ui="{ body: 'sm:p-4' }"
     >
+      <template #header>
+        <div class="flex items-center gap-3">
+          <UIcon name="simple-icons:github" class="size-8" />
+          <div>
+            <h3 class="text-lg font-semibold text-neutral-900 dark:text-neutral-100">
+              Sync with GitHub
+            </h3>
+            <p class="text-sm text-neutral-600 dark:text-neutral-400">
+              Please select which environment you want to use.
+            </p>
+          </div>
+        </div>
+      </template>
+
       <template #body>
         <UForm v-if="status !== 'pending'" :state @submit="onSubmit">
-          <div v-if="apps && apps.length" class="flex flex-col gap-4">
-            <div>
-              <div class="flex flex-col gap-2">
-                <UFormField name="repository" label="The repository to send the variables to">
-                  <UInput v-model="state.repository" :placeholder="sanitizeGithubUrl(state.repository)" disabled class="w-full" />
-                </UFormField>
-              </div>
+          <div v-if="apps && apps.length" class="space-y-4">
+            <div class="bg-neutral-100 dark:bg-neutral-800/50 p-4 rounded-lg">
+              <UFormField name="repository" label="Target Repository">
+                <template #help>
+                  <div class="text-xs">
+                    You can change the repository in the
+                    <ULink :to="`/${teamSlug}/projects/${project.id}/settings#repository`" class="font-medium underline">
+                      repository settings
+                    </ULink>
+                  </div>
+                </template>
+                <div class="flex items-center gap-2">
+                  <UIcon
+                    name="lucide:git-fork"
+                    class="size-4 text-neutral-500"
+                  />
+                  <UInput
+                    v-model="state.repository"
+                    :placeholder="sanitizeGithubUrl(state.repository)"
+                    disabled
+                    class="w-full !bg-white dark:!bg-neutral-900"
+                  />
+                </div>
+              </UFormField>
             </div>
-            <div>
-              <div class="flex flex-col gap-2">
-                <UFormField
-                  name="environment"
-                  label="Select environment:"
-                  :error="variablesToSend.length === 0 && 'There are no values for the selected environment'"
+
+            <div class="bg-neutral-100 dark:bg-neutral-800/50 p-4 rounded-lg">
+              <UFormField
+                name="environment"
+                label="Target Environment"
+                :error="variablesToSend.length === 0 && 'No variables available for the selected environment'"
+              >
+                <URadioGroup
+                  v-model="state.environment"
+                  :items="teamEnv"
+                  value-key="id"
+                  label-key="name"
                 >
-                  <URadioGroup
-                    v-model="state.environment"
-                    :items="teamEnv"
-                    value-key="id"
-                    label-key="name"
-                  >
-                    <template #label="{ item }">
-                      <span>{{ capitalize(item.name) }}</span>
-                    </template>
-                  </URadioGroup>
-                </UFormField>
+                  <template #label="{ item }">
+                    <span class="font-medium">{{ capitalize(item.name) }}</span>
+                  </template>
+                </URadioGroup>
+              </UFormField>
+            </div>
+
+            <div class="bg-neutral-100 dark:bg-neutral-800/50 p-4 rounded-lg">
+              <div class="mb-4">
+                <h4 class="text-sm font-medium text-neutral-700 dark:text-neutral-300">
+                  Summary
+                </h4>
+                <p class="text-sm text-neutral-600 dark:text-neutral-400">
+                  {{ variablesToSend.length }} variable(s) will be synchronized to your GitHub repository
+                </p>
+              </div>
+              <UButton
+                type="submit"
+                loading-auto
+                icon="simple-icons:github"
+                :disabled="variablesToSend.length === 0"
+                label="Sync with GitHub"
+                block
+              />
+            </div>
+          </div>
+
+          <div v-else class="text-center py-8">
+            <div class="bg-neutral-100 dark:bg-neutral-800/50 p-6 rounded-lg">
+              <div class="flex flex-col items-center gap-4">
+                <UIcon
+                  name="simple-icons:github"
+                  class="size-8 text-neutral-600 dark:text-neutral-300"
+                />
+                <div>
+                  <h3 class="text-lg font-semibold mb-1">
+                    No GitHub Apps Found
+                  </h3>
+                  <p class="text-sm text-neutral-600 dark:text-neutral-400 mb-4">
+                    Create a GitHub app to start syncing your secrets
+                  </p>
+                  <ULink href="/user/integrations/github">
+                    <UButton
+                      label="Set up GitHub Integration"
+                      icon="lucide:arrow-right"
+                      trailing
+                      variant="soft"
+                      class="font-medium"
+                    />
+                  </ULink>
+                </div>
               </div>
             </div>
-            <UButton
-              type="submit"
-              loading-auto
-              label="Send variables to Github"
-              block
-              :disabled="variablesToSend.length === 0"
-              icon="simple-icons:github"
-            />
-          </div>
-          <div v-else class="flex flex-col gap-4">
-            <div class="flex flex-col justify-center items-center gap-1">
-              <UIcon name="simple-icons:github" class="size-10 text-neutral-500 dark:text-neutral-400" />
-              <span class="text-lg font-semibold">No Github Apps found</span>
-              <span class="text-sm text-neutral-500">You need to create a Github App to sync your secrets</span>
-            </div>
-            <ULink href="/user/integrations/github" class="text-center">
-              <UButton label="Create Github App" icon="lucide:arrow-right" trailing variant="soft" />
-            </ULink>
           </div>
         </UForm>
-        <div v-else class="flex flex-col gap-4">
+
+        <div v-else class="space-y-6">
           <div v-for="variable in 2" :key="variable">
             <div class="space-y-2">
               <USkeleton class="h-4 w-2/4" />
               <USkeleton class="h-4 w-1/4" />
             </div>
           </div>
-          <USkeleton class="h-8" />
+          <USkeleton class="h-10 w-full" />
         </div>
       </template>
     </UModal>
