@@ -28,6 +28,6 @@
   "devDependencies": {
     "@types/bun": "latest",
     "typescript": "latest",
-    "unbuild": "3.0.1"
+    "unbuild": "3.2.0"
   }
 }
