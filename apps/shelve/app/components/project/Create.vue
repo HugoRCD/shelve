@@ -83,7 +83,10 @@ function importProject() {
             help="Add a link to your project repository to enable GitHub integration."
             :ui="{ help: 'text-xs' }"
           >
-            <UInput v-model="state.repository" class="w-full" />
+            <div class="flex items-center gap-1">
+              <UInput v-model="state.repository" class="w-full" />
+              <ProjectRepoSelector v-model="state.repository" />
+            </div>
           </UFormField>
           <UFormField name="homepage" label="Homepage">
             <UInput v-model="state.homepage" class="w-full" />
