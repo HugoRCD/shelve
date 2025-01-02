@@ -18,4 +18,8 @@ export class FileService {
     fs.unlinkSync(filename)
   }
 
+  static isFile(filename: string): boolean {
+    return fs.statSync(filename).isFile()
+  }
+
 }

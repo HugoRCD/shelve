@@ -1,7 +1,7 @@
 import { intro, outro } from '@clack/prompts'
 import { setupDotenv } from 'c12'
 import { findFile, findWorkspaceDir, readPackageJSON } from 'pkg-types'
-import type { Project, ShelveConfig } from '@shelve/types'
+import type { ShelveConfig } from '@shelve/types'
 import { CreateShelveConfigInput, DEFAULT_URL, SHELVE_JSON_SCHEMA } from '@shelve/types'
 import { readUser } from 'rc9'
 import defu from 'defu'
@@ -11,67 +11,52 @@ import { BaseService } from '../services/base'
 import { askSelect, askText } from './prompt'
 import { handleCancel } from '.'
 
-export async function createShelveConfig(input: CreateShelveConfigInput = {}): Promise<{ project: string, slug: string }> {
+export async function createShelveConfig(input: CreateShelveConfigInput = {}): Promise<ShelveConfig> {
   intro(input.projectName ? `Create configuration for ${input.projectName}` : 'No configuration file found, create a new one')
 
-  let project = input.projectName
-  let projects: Project[] = []
+  const defaultConfig = await getDefaultConfig()
 
-  if (!input.slug) input.slug = await askText('Enter the team slug:', 'my-team-slug')
+  const slug = input.slug || defaultConfig.slug || await askText('Enter the team slug:', 'my-team-slug')
+  const projectName = input.projectName || defaultConfig.project || await selectProject(slug)
 
-  if (!input.projectName) {
-    projects = await ProjectService.getProjects(input.slug)
-
-    project = await askSelect('Select the current project:', projects.map(project => ({
-      value: project.name,
-      label: project.name
-    })))
-  }
-
-  if (!project) handleCancel('Error: no project selected')
+  if (!projectName) handleCancel('Error: no project selected')
 
   const config = JSON.stringify({
     $schema: SHELVE_JSON_SCHEMA,
-    project: project.toLowerCase(),
-    slug: input.slug,
+    project: projectName.toLowerCase(),
+    slug,
   }, null, 2)
 
   FileService.write('shelve.json', config)
-
   outro('Configuration file created successfully')
 
-  return {
-    project,
-    slug: input.slug
-  }
+
+  return defu({ project: projectName, slug }, defaultConfig)
 }
 
-async function checkConfig(path: string | null, isRoot: boolean = false): Promise<ShelveConfig> {
+async function selectProject(slug: string): Promise<string> {
+  const projects = await ProjectService.getProjects(slug)
+  return askSelect('Select the current project:', projects.map(({ name }) => ({
+    value: name,
+    label: name,
+  })))
+}
+
+async function checkConfig(path: string | null, isRoot = false): Promise<ShelveConfig> {
   const defaultConfig = await getDefaultConfig()
-  let config = path ? JSON.parse(FileService.read(path)) : null
-
-  if (!isRoot)
-    config = defu(config, defaultConfig)
-
-  return config
+  const config = path ? JSON.parse(FileService.read(path)) : null
+  return isRoot ? config : defu(config, defaultConfig)
 }
 
 async function getDefaultConfig(): Promise<ShelveConfig> {
   // @ts-expect-error we don't want to specify 'cwd' option
   await setupDotenv({})
-
   const { name } = await readPackageJSON()
-
   const conf = readUser('.shelve')
-
   const workspaceDir = await findWorkspaceDir()
-  const isMonoRepo = await new PkgService().isMonorepo()
-  const isRoot = workspaceDir === process.cwd()
-  const allPkg = await new PkgService().getAllPackageJsons()
-
-  const monorepo = {
-    paths: allPkg.map(pkg => pkg.dir),
-  }
+  const pkgService = new PkgService()
+  const isMonoRepo = await pkgService.isMonorepo()
+  const allPkg = await pkgService.getAllPackageJsons()
 
   return {
     // @ts-expect-error to provide error message we let project be undefined
@@ -85,46 +70,34 @@ async function getDefaultConfig(): Promise<ShelveConfig> {
     confirmChanges: false,
     envFileName: DEFAULT_ENV_FILENAME,
     autoUppercase: true,
-    monorepo: isMonoRepo ? monorepo : undefined,
+    monorepo: isMonoRepo ? { paths: allPkg.map(pkg => pkg.dir) } : undefined,
     workspaceDir,
     isMonoRepo,
-    isRoot
+    isRoot: workspaceDir === process.cwd(),
   }
 }
 
-export async function loadShelveConfig(check: boolean = false): Promise<ShelveConfig> {
-  const localConfigPath = await findFile('shelve.json').catch(() => null)
-
-  let localConfig
-
-  if (!localConfigPath)
-    localConfig = await createShelveConfig()
-
-  localConfig = await checkConfig(localConfigPath)
-
-  let finalConfig = localConfig
+export async function loadShelveConfig(check = false): Promise<ShelveConfig> {
+  const isLocalConfigExist = FileService.exists('shelve.json')
+  let localConfig = isLocalConfigExist ? await checkConfig('shelve.json') :
+    check ? await createShelveConfig() : await getDefaultConfig()
 
   if (localConfig.isMonoRepo) {
-    const rootConfigPath = await findFile('shelve.json', { startingFrom: localConfig.workspaceDir })
-      .catch(() => null)
-
+    const rootConfigPath = await findFile('shelve.json', { startingFrom: localConfig.workspaceDir }).catch(() => null)
     const rootConfig = await checkConfig(rootConfigPath, true)
-
-    finalConfig = defu(localConfig, rootConfig)
+    localConfig = defu(localConfig, rootConfig)
   }
 
-  if (check) {
-    if (!finalConfig.token) await BaseService.getToken()
+  if (check) await validateConfig(localConfig)
 
-    if (!finalConfig.slug) handleCancel('You need to provide your team slug')
+  return localConfig
+}
 
-    if (!finalConfig.project) handleCancel('Please provide a project name')
-
-    const urlRegex = /^(http|https):\/\/[^ "]+$/
-    if (finalConfig.url !== DEFAULT_URL && !urlRegex.test(finalConfig.url)) {
-      handleCancel('Please provide a valid url')
-    }
+async function validateConfig(config: ShelveConfig): Promise<void> {
+  if (!config.token) await BaseService.getToken()
+  if (!config.slug) handleCancel('You need to provide your team slug')
+  if (!config.project) handleCancel('Please provide a project name')
+  if (config.url !== DEFAULT_URL && !/^(http|https):\/\/[^ "]+$/.test(config.url)) {
+    handleCancel('Please provide a valid url')
   }
-
-  return finalConfig
 }
