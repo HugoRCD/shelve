@@ -1,16 +1,17 @@
 import { intro, outro } from '@clack/prompts'
-import { loadConfig, setupDotenv } from 'c12'
-import { readPackageJSON } from 'pkg-types'
-import { CreateShelveConfigInput, DEFAULT_URL, SHELVE_JSON_SCHEMA } from '@shelve/types'
+import { setupDotenv } from 'c12'
+import { findFile, findWorkspaceDir, readPackageJSON } from 'pkg-types'
 import type { Project, ShelveConfig } from '@shelve/types'
+import { CreateShelveConfigInput, DEFAULT_URL, SHELVE_JSON_SCHEMA } from '@shelve/types'
 import { readUser } from 'rc9'
-import { FileService, ProjectService } from '../services'
+import defu from 'defu'
+import { FileService, PkgService, ProjectService } from '../services'
 import { DEFAULT_ENV_FILENAME } from '../constants'
 import { BaseService } from '../services/base'
 import { askSelect, askText } from './prompt'
 import { handleCancel } from '.'
 
-export async function createShelveConfig(input: CreateShelveConfigInput = {}): Promise<string> {
+export async function createShelveConfig(input: CreateShelveConfigInput = {}): Promise<{ project: string, slug: string }> {
   intro(input.projectName ? `Create configuration for ${input.projectName}` : 'No configuration file found, create a new one')
 
   let project = input.projectName
@@ -29,20 +30,33 @@ export async function createShelveConfig(input: CreateShelveConfigInput = {}): P
 
   if (!project) handleCancel('Error: no project selected')
 
-  const configFile = JSON.stringify({
+  const config = JSON.stringify({
     $schema: SHELVE_JSON_SCHEMA,
     project: project.toLowerCase(),
     slug: input.slug,
   }, null, 2)
 
-  FileService.write('shelve.config.json', configFile)
+  FileService.write('shelve.json', config)
 
   outro('Configuration file created successfully')
 
-  return project
+  return {
+    project,
+    slug: input.slug
+  }
 }
 
-export async function loadShelveConfig(check: boolean = false): Promise<ShelveConfig> {
+async function checkConfig(path: string | null, isRoot: boolean = false): Promise<ShelveConfig> {
+  const defaultConfig = await getDefaultConfig()
+  let config = path ? JSON.parse(FileService.read(path)) : null
+
+  if (!isRoot)
+    config = defu(config, defaultConfig)
+
+  return config
+}
+
+async function getDefaultConfig(): Promise<ShelveConfig> {
   // @ts-expect-error we don't want to specify 'cwd' option
   await setupDotenv({})
 
@@ -50,48 +64,67 @@ export async function loadShelveConfig(check: boolean = false): Promise<ShelveCo
 
   const conf = readUser('.shelve')
 
-  /*const workspaceDir = await findWorkspaceDir()
+  const workspaceDir = await findWorkspaceDir()
   const isMonoRepo = await new PkgService().isMonorepo()
-  const rootLevel = workspaceDir === process.cwd()*/
+  const isRoot = workspaceDir === process.cwd()
+  const allPkg = await new PkgService().getAllPackageJsons()
 
-  const { config, configFile } = await loadConfig<ShelveConfig>({
-    name: 'shelve',
-    packageJson: true,
-    rcFile: false,
-    globalRc: false,
-    dotenv: true,
-    defaults: {
-      // @ts-expect-error to provide error message we let project be undefined
-      project: process.env.SHELVE_PROJECT || name,
-      // @ts-expect-error to provide error message we let slug be undefined
-      slug: process.env.SHELVE_TEAM_SLUG,
-      token: conf.token,
-      url: process.env.SHELVE_URL || 'https://app.shelve.cloud',
-      username: conf.username,
-      email: conf.email,
-      confirmChanges: false,
-      envFileName: DEFAULT_ENV_FILENAME,
-      autoUppercase: true,
-    },
-  })
+  const monorepo = {
+    paths: allPkg.map(pkg => pkg.dir),
+  }
 
-  /*const shelveConf = await findFile('shelve.json')
-  console.log('shelveConf', shelveConf)*/
+  return {
+    // @ts-expect-error to provide error message we let project be undefined
+    project: process.env.SHELVE_PROJECT || name,
+    // @ts-expect-error to provide error message we let slug be undefined
+    slug: process.env.SHELVE_TEAM_SLUG,
+    token: conf.token,
+    url: process.env.SHELVE_URL || 'https://app.shelve.cloud',
+    username: conf.username,
+    email: conf.email,
+    confirmChanges: false,
+    envFileName: DEFAULT_ENV_FILENAME,
+    autoUppercase: true,
+    monorepo: isMonoRepo ? monorepo : undefined,
+    workspaceDir,
+    isMonoRepo,
+    isRoot
+  }
+}
+
+export async function loadShelveConfig(check: boolean = false): Promise<ShelveConfig> {
+  const localConfigPath = await findFile('shelve.json').catch(() => null)
+
+  let localConfig
+
+  if (!localConfigPath)
+    localConfig = await createShelveConfig()
+
+  localConfig = await checkConfig(localConfigPath)
+
+  let finalConfig = localConfig
+
+  if (localConfig.isMonoRepo) {
+    const rootConfigPath = await findFile('shelve.json', { startingFrom: localConfig.workspaceDir })
+      .catch(() => null)
+
+    const rootConfig = await checkConfig(rootConfigPath, true)
+
+    finalConfig = defu(localConfig, rootConfig)
+  }
 
   if (check) {
-    if (configFile === 'shelve.config') config.project = await createShelveConfig()
+    if (!finalConfig.token) await BaseService.getToken()
 
-    if (!config.token) await BaseService.getToken()
+    if (!finalConfig.slug) handleCancel('You need to provide your team slug')
 
-    if (!config.slug) handleCancel('You need to provide your team slug')
-
-    if (!config.project) handleCancel('Please provide a project name')
+    if (!finalConfig.project) handleCancel('Please provide a project name')
 
     const urlRegex = /^(http|https):\/\/[^ "]+$/
-    if (config.url !== DEFAULT_URL && !urlRegex.test(config.url)) {
+    if (finalConfig.url !== DEFAULT_URL && !urlRegex.test(finalConfig.url)) {
       handleCancel('Please provide a valid url')
     }
   }
 
-  return config
+  return finalConfig
 }
