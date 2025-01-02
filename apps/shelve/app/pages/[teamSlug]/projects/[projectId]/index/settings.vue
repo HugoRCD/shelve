@@ -15,7 +15,7 @@ async function onSubmit(event: FormSubmitEvent<UpdateProjectSchema>) {
 </script>
 
 <template>
-  <UForm :state="project" :schema="updateProjectSchema" class="flex flex-col gap-4" @submit="onSubmit">
+  <UForm v-if="project" :state="project" :schema="updateProjectSchema" class="flex flex-col gap-4" @submit="onSubmit">
     <UCard>
       <template #header>
         <div class="flex items-center">
@@ -49,7 +49,10 @@ async function onSubmit(event: FormSubmitEvent<UpdateProjectSchema>) {
                 help="Add a link to your project repository to enable GitHub integration."
                 :ui="{ help: 'text-xs' }"
               >
-                <UInput v-model="project.repository" class="md:w-2/3" />
+                <div class="flex items-center gap-1">
+                  <UInput v-model="project.repository" class="md:w-2/3" />
+                  <ProjectRepoSelector v-model="project.repository" />
+                </div>
               </UFormField>
             </div>
             <div>

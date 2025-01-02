@@ -28,6 +28,7 @@ const manifest = {
   default_permissions: {
     issues: 'write',
     pull_requests: 'write',
+    administration: 'write',
     contents: 'write',
     metadata: 'read',
     secrets: 'write',
