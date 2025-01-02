@@ -85,15 +85,29 @@ export class GithubService {
     return token
   }
 
-  async getUserRepos(userId: number): Promise<GitHubRepo[]> {
+  async getUserRepos(userId: number, query?: string): Promise<GitHubRepo[]> {
     const token = await this.getAuthToken(userId)
 
-    return await $fetch<GitHubRepo[]>(`${this.GITHUB_API}/installation/repositories`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        Accept: 'application/vnd.github.v3+json'
-      }
-    })
+    try {
+      const response = await $fetch<{
+        repositories: GitHubRepo[]
+      }>(`${this.GITHUB_API}/installation/repositories?per_page=100`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: 'application/vnd.github.v3+json'
+        }
+      })
+      const repos = response.repositories
+
+      if (!query) return repos
+
+      return repos.filter((repo: GitHubRepo) => repo.name.toLowerCase().includes(query.toLowerCase()))
+    } catch (error: any) {
+      throw createError({
+        statusCode: error.status || 500,
+        statusMessage: `Failed to fetch repositories: ${error.message}`
+      })
+    }
   }
 
   async sendSecrets(userId: number, repository: string, variables: { key: string, value: string }[]) {
