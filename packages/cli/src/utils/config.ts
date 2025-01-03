@@ -17,9 +17,10 @@
  * - Each project in a monorepo can have its own specific settings while sharing common settings
  */
 
+import { join } from 'path'
 import { intro, outro } from '@clack/prompts'
 import { setupDotenv } from 'c12'
-import { findFile, findWorkspaceDir, readPackageJSON } from 'pkg-types'
+import { findWorkspaceDir, readPackageJSON } from 'pkg-types'
 import type { ShelveConfig } from '@shelve/types'
 import { CreateShelveConfigInput, DEFAULT_URL, SHELVE_JSON_SCHEMA } from '@shelve/types'
 import { readUser } from 'rc9'
@@ -29,6 +30,43 @@ import { DEFAULT_ENV_FILENAME } from '../constants'
 import { BaseService } from '../services/base'
 import { askSelect, askText } from './prompt'
 import { handleCancel } from '.'
+
+export const CONFIG_FILENAMES = [
+  'shelve.json',
+  'shelve.config.json',
+  '.shelverc.json',
+] as const
+
+export type ConfigFileName = (typeof CONFIG_FILENAMES)[number]
+export const CONFIG_FILENAMES_ARRAY: string[] = [...CONFIG_FILENAMES]
+
+/**
+ * Finds the first existing configuration file from the list of possible filenames
+ *
+ * @param directory - Directory to search in (defaults to current directory)
+ * @returns The path to the first found config file, or null if none exists
+ */
+function findConfigFile(directory: string = process.cwd()): string | null {
+  for (const filename of CONFIG_FILENAMES) {
+    const path = join(directory, filename)
+    if (FileService.exists(path)) {
+      return path
+    }
+  }
+  return null
+}
+
+/**
+ * Creates a new configuration file with the preferred filename
+ *
+ * @param config - Configuration content to write
+ * @param preferredFilename - Preferred filename (defaults to first in CONFIG_FILENAMES)
+ * @returns The path to the created config file
+ */
+function createConfigFile(config: string, preferredFilename: ConfigFileName = CONFIG_FILENAMES[0]): string {
+  FileService.write(preferredFilename, config)
+  return preferredFilename
+}
 
 /**
  * Creates a Shelve configuration file (shelve.json)
@@ -59,7 +97,8 @@ export async function createShelveConfig(input: CreateShelveConfigInput = {}): P
     slug,
   }, null, 2)
 
-  FileService.write('shelve.json', config)
+  createConfigFile(config)
+
   outro('Configuration file created successfully')
 
 
@@ -155,12 +194,16 @@ async function getDefaultConfig(): Promise<ShelveConfig> {
  * @returns Promise<ShelveConfig> - The complete, merged configuration
  */
 export async function loadShelveConfig(check = false): Promise<ShelveConfig> {
-  const isLocalConfigExist = FileService.exists('shelve.json')
-  let localConfig = isLocalConfigExist ? await checkConfig('shelve.json') :
+  const localConfigPath = findConfigFile()
+  let localConfig = localConfigPath ? await checkConfig(localConfigPath) :
     check ? await createShelveConfig() : await getDefaultConfig()
 
   if (localConfig.isMonoRepo) {
-    const rootConfigPath = await findFile('shelve.json', { startingFrom: localConfig.workspaceDir }).catch(() => null)
+    const rootConfigPath = await FileService.findFile(CONFIG_FILENAMES_ARRAY, {
+      startingFrom: localConfig.workspaceDir,
+      stopOnFirst: true,
+    }).catch(() => null)
+
     const rootConfig = await checkConfig(rootConfigPath, true)
     localConfig = defu(localConfig, rootConfig)
   }
