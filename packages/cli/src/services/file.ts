@@ -1,4 +1,5 @@
 import fs from 'fs'
+import { findFile as pkgFindFile } from 'pkg-types'
 
 export class FileService {
 
@@ -16,6 +17,24 @@ export class FileService {
 
   static delete(filename: string): void {
     fs.unlinkSync(filename)
+  }
+
+  static async findFile(
+    patterns: string | string[],
+    options: { startingFrom: string; stopOnFirst?: boolean }
+  ): Promise<string | null> {
+    const patternArray = Array.isArray(patterns) ? patterns : [patterns]
+
+    for (const pattern of patternArray) {
+      try {
+        const result = await pkgFindFile(pattern, options)
+        if (result && options.stopOnFirst) {
+          return result
+        }
+      } catch { /* empty */ }
+    }
+
+    return null
   }
 
 }

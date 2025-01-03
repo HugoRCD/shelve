@@ -1,4 +1,4 @@
-<img src="../../assets/preview.png" width="100%" alt="Shelve" />
+<img src="../../assets/cover.png" width="100%" alt="Shelve" />
 
 # Shelve CLI
 
@@ -22,24 +22,23 @@ bun a -d @shelve/cli
 
 ## Configuration
 
-Configuration is loaded by [unjs/c12](https://github.com/unjs/c12) from cwd. You can use either `shelve.config.json`, `shelve.config.{ts,js,mjs,cjs}`, but running the CLI without any configuration will create a `shelve.config.json` file.
-You have the option to create a `shelve.config.ts` file to enable type checking and autocompletion. The file should contain the following content:
-
-```ts title="shelve.config.ts"
-import { createShelveConfig } from "@shelve/cli"
-
-export default createShelveConfig({
-  project: "my-project",
-  slug: "nuxtlabs",
-  token: "my-token",
-  url: "https://app.shelve.cloud",
-  confirmChanges: false,
-  envFileName: '.env',
-  autoUppercase: true,
-})
-```
+Configuration is loaded from cwd. You can use either `shelve.json`, `shelve.config.json` or `.shelverc.json`, but running the CLI without any configuration will create a `shelve.json` file.
 
 The CLI also has a json schema for the configuration file. that can be used to validate the configuration file. (see it [here](https://raw.githubusercontent.com/HugoRCD/shelve/main/packages/types/schema.json))
+
+### Configuration example
+
+```json
+{
+  "slug": "nuxtlabs",
+  "project": "@nuxt/ui",
+  "confirmChanges": true
+}
+```
+
+### Monorepo configuration
+
+If you are using a monorepo, Shelve will automatically detect the root of the monorepo and look for the global `shelve.json` file. You can define here common configurations for all the projects in the monorepo (the team slug for example).
 
 ## Usage
 
@@ -64,6 +63,10 @@ Commands:
   me|m                Show current user information
   help [command]      display help for command
 ```
+
+### Monorepo usage
+
+If you are using a monorepo, running a command at the root level will execute the command for all the projects in the monorepo that have a `shelve.json` file.
 
 <!-- automd:fetch url="gh:hugorcd/markdown/main/src/local_development.md" -->
 
