@@ -61,7 +61,7 @@ Shelve aims to become the ultimate development workspace by addressing common pa
   </tr>
   <tr>
     <td>📅 Next Release</td>
-    <td>v2.0.0 (Q4 2024)</td>
+    <td>v2.0.0 (Q1 2025)</td>
   </tr>
 </table>
 
