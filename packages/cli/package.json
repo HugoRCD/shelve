@@ -26,9 +26,6 @@
   "files": [
     "dist"
   ],
-  "publishConfig": {
-    "access": "public"
-  },
   "scripts": {
     "build": "unbuild",
     "dev": "DEBUG=true bun src/index.ts",
@@ -65,5 +62,8 @@
     "typescript": "5.7.2",
     "unbuild": "3.2.0",
     "vitest": "2.1.8"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
