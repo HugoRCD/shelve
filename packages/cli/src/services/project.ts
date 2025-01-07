@@ -12,7 +12,7 @@ export class ProjectService extends BaseService {
     )
   }
 
-  static async getProjectByName(name: string, slug: string): Promise<Project> {
+  static async getProjectByName(name: string, slug: string, autoCreate: boolean = true): Promise<Project> {
     const encodedName = encodeURIComponent(name)
 
     try {
@@ -22,7 +22,7 @@ export class ProjectService extends BaseService {
     } catch (error: any) {
       if (DEBUG) console.log(error)
 
-      if (error.statusCode === 400) {
+      if (error.statusCode === 400 && autoCreate) {
         await askBoolean(`Project '${name}' does not exist. Would you like to create it?`)
 
         return this.createProject(name, slug)
