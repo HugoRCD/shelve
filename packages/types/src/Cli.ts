@@ -50,6 +50,12 @@ export type ShelveConfig = {
    * */
   autoUppercase: boolean
   /**
+   * Automatically create the project if it doesn't exist
+   *
+   * @default true
+   * */
+  autoCreateProject: boolean
+  /**
    * The monorepo configuration
    * */
   monorepo?: {
