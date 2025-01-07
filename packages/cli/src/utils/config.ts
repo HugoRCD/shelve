@@ -94,8 +94,7 @@ export async function createShelveConfig(input: CreateShelveConfigInput = {}): P
   const config = JSON.stringify({
     $schema: SHELVE_JSON_SCHEMA,
     project: projectName.toLowerCase(),
-    slug,
-    autoCreate: input.autoCreate ?? true,
+    slug
   }, null, 2)
 
   createConfigFile(config)
@@ -103,7 +102,7 @@ export async function createShelveConfig(input: CreateShelveConfigInput = {}): P
   outro('Configuration file created successfully')
 
 
-  return defu({ project: projectName, slug, autoCreate: input.autoCreate ?? true }, defaultConfig)
+  return defu({ project: projectName, slug }, defaultConfig)
 }
 
 /**
@@ -169,7 +168,7 @@ async function getDefaultConfig(): Promise<ShelveConfig> {
     confirmChanges: false,
     envFileName: DEFAULT_ENV_FILENAME,
     autoUppercase: true,
-    autoCreate: true,
+    autoCreateProject: true,
     monorepo: isMonoRepo ? { paths: allPkg.map(pkg => pkg.dir) } : undefined,
     workspaceDir,
     isMonoRepo,

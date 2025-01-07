@@ -6,6 +6,7 @@ import {
   GetEnvVariables
 } from '@shelve/types'
 import { parseEnvFile } from '@shelve/utils'
+import { log } from '@clack/prompts'
 import { loadShelveConfig, askBoolean } from '../utils'
 import { FileService } from './file'
 import { BaseService } from './base'
@@ -26,20 +27,8 @@ export class EnvService extends BaseService {
       const envFile = FileService.read(envFileName)
       return parseEnvFile(envFile)
     }
-
+    FileService.write(envFileName, '')
     return []
-  }
-
-  static async mergeEnvFile(variables: EnvVar[]): Promise<void> {
-    const { envFileName } = await loadShelveConfig()
-
-    await this.withLoading(`Merging ${envFileName} file`, async () => {
-      const envFile = await this.getEnvFile()
-      envFile.push(...variables)
-
-      const content = this.formatEnvContent(envFile)
-      FileService.write(envFileName, content)
-    })
   }
 
   static async createEnvFile(input: CreateEnvFileInput): Promise<void> {
@@ -67,8 +56,14 @@ export class EnvService extends BaseService {
     })
   }
 
-  static async pushEnvFile(input: PushEnvFileInput): Promise<void> {
+  static async pushEnvFile(input: PushEnvFileInput): Promise<boolean> {
     const { variables, project, slug, environment, confirmChanges, autoUppercase } = input
+
+    if (variables.length === 0) {
+      log.warn('No variables found in the .env file')
+      return false
+    }
+
     if (confirmChanges)
       await askBoolean(`Are you sure you want to push ${variables.length} variables to ${environment.name} environment?`)
 
@@ -87,6 +82,8 @@ export class EnvService extends BaseService {
         body
       })
     })
+
+    return true
   }
 
   static async generateEnvExampleFile(): Promise<void> {

@@ -10,17 +10,20 @@ export function pushCommand(program: Command): void {
     .description('Push variables for specified environment to Shelve')
     .option('-e, --environment <env>', 'Specify the environment (development, preview, production)')
     .action(async (options) => {
-      const { project, slug, confirmChanges, autoUppercase } = await loadShelveConfig(true)
+      const { project, slug, confirmChanges, autoUppercase, autoCreateProject } = await loadShelveConfig(true)
 
       intro(`Pushing variable to ${project} project`)
 
-      const projectData = await ProjectService.getProjectByName(project, slug)
+      const projectData = await ProjectService.getProjectByName(project, slug, autoCreateProject)
 
       const environment = await EnvironmentService.promptEnvironment(slug)
       const variables = await EnvService.getEnvFile()
 
-      await EnvService.pushEnvFile({ variables, project: projectData, environment, confirmChanges, autoUppercase, slug })
+      const pushed = await EnvService.pushEnvFile({ variables, project: projectData, environment, confirmChanges, autoUppercase, slug })
 
-      outro(`Successfully pushed variable to ${environment.name} environment`)
+      if (pushed)
+        outro(`Successfully pushed variable to ${environment.name} environment`)
+      else
+        outro('Variable push was cancelled')
     })
 }
