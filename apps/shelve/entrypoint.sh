@@ -1,7 +1,7 @@
 #!/bin/sh
 
 echo "Running database migrations..."
-bun run db:push
+pnpm run db:push
 
 echo "Starting the Shelve application..."
-exec pnpm run .output/server/index.mjs
+exec node .output/server/index.mjs

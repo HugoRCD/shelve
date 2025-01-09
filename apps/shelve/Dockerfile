@@ -16,7 +16,7 @@ COPY apps/shelve/entrypoint.sh ./entrypoint.sh
 COPY . .
 
 RUN corepack enable
-RUN pnpm install --frozen-lockfile --prod
+RUN pnpm install --frozen-lockfile
 
 RUN pnpm run build:app
 
@@ -32,9 +32,10 @@ COPY --from=build /app/apps/shelve/server/database/schema.ts ./server/database/s
 COPY --from=build /app/apps/shelve/server/database/column.helpers.ts ./server/database/column.helpers.ts
 COPY --from=build /app/apps/shelve/drizzle.config.ts ./drizzle.config.ts
 
+RUN corepack enable
 RUN pnpm install --prod
 
-RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
+RUN apk update && apk add --no-cache curl
 
 RUN chmod +x /app/entrypoint.sh
 
