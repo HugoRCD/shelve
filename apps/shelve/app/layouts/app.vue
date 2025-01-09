@@ -37,7 +37,7 @@ const routeTitle = computed(() => {
               </h1>
             </Transition>
           </template>
-          <template v-else>
+          <template v-else-if="route.meta.icon">
             <Transition name="slide-to-bottom" mode="out-in">
               <div :key="route.meta.icon as string">
                 <UIcon :name="route.meta.icon as string" class="size-5" />
