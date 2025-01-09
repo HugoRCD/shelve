@@ -1,0 +1,22 @@
+{
+  "name": "@shelve/docs",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "start": "node .output/server/index.mjs",
+    "postinstall": "nuxt prepare",
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix .",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@nuxt/ui-pro": "3.0.0-alpha.10",
+    "@nuxt/content": "3.0.0-alpha.8",
+    "nuxt": "3.15.1",
+    "vue": "3.5.13"
+  }
+}
