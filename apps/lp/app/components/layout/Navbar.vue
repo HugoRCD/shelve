@@ -6,6 +6,7 @@ const items = navigation.map((item) => ({
   to: item.path,
   label: item.title,
   slot: item.name.toLowerCase(),
+  target: item.path.startsWith('http') ? '_blank' : undefined
 }))
 
 type RepoType = {

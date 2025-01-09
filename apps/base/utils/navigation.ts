@@ -13,8 +13,7 @@ export function getNavigation(where: Where, teamSlug?: string): Navigation[] {
       return [
         { name: 'Home', path: '/', title: 'Home' },
         { name: 'Vault', path: '/vault', title: 'Vault' },
-        /*{ name: 'Changelog', path: '/changelog', icon: 'i-heroicons-document-text', title: 'Changelog' },*/
-        { name: 'Docs', path: '/docs', title: 'Docs' },
+        { name: 'Docs', path: 'https://docs.shelve.cloud', title: 'Docs' },
         { name: 'Roadmap', path: '/roadmap', title: 'Roadmap' },
       ]
     case 'team':

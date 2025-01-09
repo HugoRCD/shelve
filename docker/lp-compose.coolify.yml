@@ -1,7 +1,6 @@
-# documentation: https://shelve.cloud/docs
+# documentation: https://docs.shelve.cloud
 # slogan: Shelve - Secure environment sharing for collaborative development
 # tags: environment variables, projects management, collaboration, cli, secure sharing
-# logo: svgs/shelve.svg
 # port: 3000
 
 services:

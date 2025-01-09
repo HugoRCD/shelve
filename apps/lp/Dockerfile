@@ -1,40 +1,33 @@
 # Stage 1: Build Stage
-FROM oven/bun:latest AS build
+FROM node:22.12.0-alpine AS build
 
 ARG TURBO_TEAM
 ARG TURBO_TOKEN
 
 ENV TURBO_TEAM=$TURBO_TEAM
 ENV TURBO_TOKEN=$TURBO_TOKEN
-ENV NODE_ENV=production
 
 WORKDIR /app
 
-COPY package.json ./
-COPY bun.lockb ./
-
+COPY pnpm-lock.yaml package.json ./
 COPY apps/lp/package.json ./apps/lp/package.json
 
 COPY . .
 
-RUN bun install
+RUN corepack enable
+RUN pnpm install --frozen-lockfile
 
-RUN bun run build:lp
+RUN pnpm run build:lp
 
 # Stage 2: Final Stage
-FROM oven/bun:latest AS final
+FROM node:22.12.0-alpine AS final
 
 WORKDIR /app
 
 COPY --from=build /app/apps/lp/.output .output
-COPY --from=build /app/apps/lp/package.json ./package.json
 
-RUN rm -rf .output/server/node_modules
-
-RUN bun install --production
-
-RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
+RUN apk update && apk add --no-cache curl
 
 EXPOSE 3000
 
-CMD ["bun", "run", ".output/server/index.mjs"]
+CMD ["node", ".output/server/index.mjs"]
