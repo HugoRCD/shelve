@@ -15,9 +15,9 @@ export const cacheEntities: Record<string, CacheEntity<string> | CacheEntity<num
     prefix: 'team',
     key: 'teamSlug',
     ttl: CACHE_TTL,
-    invalidateFor: async (teamSlug: string) => {
+    invalidateFor: async (id: number) => {
       const team = await useDrizzle().query.teams.findFirst({
-        where: eq(tables.teams.slug, teamSlug),
+        where: eq(tables.teams.id, id),
         with: {
           members: {
             columns: { userId: true }

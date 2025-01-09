@@ -81,7 +81,7 @@ export class TeamsService {
       })
       if (!updatedTeam) throw createError({ statusCode: 404, statusMessage: `Team not found with id ${teamId}` })
 
-      await clearCache('Team', updatedTeam.slug)
+      await clearCache('Team', updatedTeam.id)
 
       return updatedTeam
     })
@@ -89,11 +89,11 @@ export class TeamsService {
 
   async deleteTeam(input: DeleteTeamInput): Promise<void> {
     const { teamId } = input
+    await clearCache('Team', teamId)
     const [team] = await useDrizzle().delete(tables.teams)
       .where(eq(tables.teams.id, teamId))
       .returning({ id: tables.teams.id, slug: tables.teams.slug })
     if (!team) throw createError({ statusCode: 404, statusMessage: `Team not found with id ${teamId}` })
-    await clearCache('Team', team.slug)
   }
 
   getTeams = withCache<Team[]>('Teams', async (userId: number) => {
