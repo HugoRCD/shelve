@@ -10,15 +10,24 @@ permissions:
 jobs:
   autofix:
     runs-on: ubuntu-latest
+    env:
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+
     steps:
       - uses: actions/checkout@v4
-      - uses: oven-sh/setup-bun@v2
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: latest
+          run_install: false
 
       - name: 📦 Install dependencies
-        run: bun install
+        run: pnpm install --frozen-lockfile
 
       - name: 💅 Lint code
-        run: bun run lint:fix
+        run: pnpm run lint:fix
 
       - uses: autofix-ci/action@ff86a557419858bb967097bfc916833f5647fa8c
         with:

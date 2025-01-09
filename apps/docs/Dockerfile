@@ -10,22 +10,22 @@ ENV TURBO_TOKEN=$TURBO_TOKEN
 WORKDIR /app
 
 COPY pnpm-lock.yaml package.json ./
-COPY apps/lp/package.json ./apps/lp/package.json
+COPY apps/docs/package.json ./apps/docs/package.json
 
 COPY . .
 
 RUN corepack enable
 RUN pnpm install --frozen-lockfile --prod
 
-RUN pnpm run build:lp
+RUN pnpm run build:docs
 
 # Stage 2: Final Stage
 FROM node:22.12.0-alpine AS final
 
 WORKDIR /app
 
-COPY --from=build /app/apps/lp/.output .output
-COPY --from=build /app/apps/lp/package.json ./package.json
+COPY --from=build /app/apps/docs/.output .output
+COPY --from=build /app/apps/docs/package.json ./package.json
 
 RUN pnpm install --prod
 
