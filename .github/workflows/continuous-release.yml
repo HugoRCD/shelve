@@ -18,7 +18,7 @@ jobs:
             src:
               - 'packages/cli/src/**'
               - 'packages/cli/package.json'
-              - 'bun.lockb'
+              - 'pnpm-lock.yaml'
 
   build:
     needs: check-changes
