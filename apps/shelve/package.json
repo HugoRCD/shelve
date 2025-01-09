@@ -19,9 +19,9 @@
   },
   "dependencies": {
     "@iconify-json/heroicons": "1.2.2",
-    "@iconify-json/lucide": "1.2.21",
-    "@iconify-json/simple-icons": "1.2.18",
-    "@nuxt/image": "1.8.1",
+    "@iconify-json/lucide": "1.2.22",
+    "@iconify-json/simple-icons": "1.2.19",
+    "@nuxt/image": "1.9.0",
     "@nuxt/ui": "3.0.0-alpha.10",
     "@shelve/types": "*",
     "@shelve/utils": "*",
@@ -48,6 +48,6 @@
     "@types/jsonwebtoken": "^9.0.7",
     "@types/libsodium-wrappers": "^0.7.14",
     "@types/pg": "8.11.10",
-    "typescript": "5.7.2"
+    "typescript": "5.7.3"
   }
 }
