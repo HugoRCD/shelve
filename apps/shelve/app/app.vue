@@ -14,21 +14,6 @@ const reduceMotion = useCookie<boolean>('reduceMotion', {
 })
 
 if (import.meta.client) setPrefersReducedMotion(reduceMotion.value)
-
-defineShortcuts({
-  'p': () => {
-    navigateTo('/')
-  },
-  'm': () => {
-    navigateTo('/members')
-  },
-  't': () => {
-    navigateTo('/tokens')
-  },
-  's': () => {
-    navigateTo('/settings')
-  },
-})
 </script>
 
 <template>

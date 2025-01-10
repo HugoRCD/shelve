@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { TeamRole } from '@shelve/types'
 import type { FormError, FormSubmitEvent } from '@nuxt/ui'
+import { updateProjectSchema } from '~/utils/zod/project'
 
 const showEdit = ref(false)
 const showDelete = ref(false)
@@ -138,12 +139,18 @@ function getProjectManager(manager: string) {
           </div>
           <UModal v-model:open="showEdit" title="Edit project" description="Update your project settings">
             <template #body>
-              <form class="flex flex-col gap-4" @submit.prevent="updateCurrentProject">
-                <FormGroup v-model="project.name" label="Name" />
-                <FormGroup v-model="project.description" label="Description" type="textarea" />
-                <div class="flex items-center gap-4">
+              <UForm :state="project" :schema="updateProjectSchema" class="flex flex-col gap-4" @submit.prevent="updateCurrentProject">
+                <UFormField label="Name" name="name">
+                  <UInput v-model="project.name" class="w-full" />
+                </UFormField>
+                <UFormField label="Description" name="description">
+                  <UTextarea v-model="project.description" class="w-full" />
+                </UFormField>
+                <div class="flex items-center gap-4 w-full">
                   <UAvatar :src="project.logo" size="xl" :alt="project.name" />
-                  <FormGroup v-model="project.logo" label="Logo" class="w-full" />
+                  <UFormField label="Logo" name="logo" class="w-full">
+                    <UInput v-model="project.logo" class="w-full" />
+                  </UFormField>
                 </div>
                 <div class="flex justify-end gap-4">
                   <UButton variant="ghost" @click="showEdit = false">
@@ -153,7 +160,7 @@ function getProjectManager(manager: string) {
                     Save
                   </UButton>
                 </div>
-              </form>
+              </UForm>
             </template>
           </UModal>
         </div>
