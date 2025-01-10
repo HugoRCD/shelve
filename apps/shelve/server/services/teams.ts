@@ -82,6 +82,7 @@ export class TeamsService {
       if (!updatedTeam) throw createError({ statusCode: 404, statusMessage: `Team not found with id ${teamId}` })
 
       await clearCache('Team', updatedTeam.id)
+      await clearCache('Team', updatedTeam.slug)
 
       return updatedTeam
     })

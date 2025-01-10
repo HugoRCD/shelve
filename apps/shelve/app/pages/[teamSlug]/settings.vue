@@ -8,13 +8,14 @@ const updateLoading = ref(false)
 
 const team = useTeam()
 const teamRole = useTeamRole()
+const newSlug = ref(team.value.slug)
 
 const canDelete = computed(() => hasAccess(teamRole.value, TeamRole.OWNER))
 const canUpdate = computed(() => hasAccess(teamRole.value, TeamRole.ADMIN))
 
 function updateCurrentTeam() {
   updateLoading.value = true
-  toast.promise(updateTeam(team.value), {
+  toast.promise(updateTeam({ ...team.value, slug: newSlug.value }), {
     loading: 'Updating team...',
     success: 'Team updated successfully',
     error: (data: any) => data.statusMessage || 'Error updating team',
@@ -69,7 +70,7 @@ const open = ref(false)
                 variant="subtle"
                 label="shelve.cloud/"
               />
-              <UInput v-model="team.slug" class="w-full" :disabled="!canUpdate" />
+              <UInput v-model="newSlug" class="w-full" :disabled="!canUpdate" />
               <UTooltip text="Copy to clipboard">
                 <UButton color="neutral" variant="subtle" icon="lucide:clipboard" @click="copyToClipboard(team.slug)" />
               </UTooltip>
