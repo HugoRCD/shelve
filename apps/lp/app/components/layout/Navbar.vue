@@ -45,7 +45,6 @@ items.push(githubItem)
             color="neutral"
             :items
             class="hidden sm:flex"
-            :ui="{ link: 'py-1 px-3' }"
           >
             <template #components-trailing>
               <UBadge variant="subtle" size="sm" />
@@ -59,7 +58,7 @@ items.push(githubItem)
             </UDropdownMenu>
           </div>
           <div>
-            <UButton label="Open App" @click="navigateTo(`https://app.shelve.cloud/login`, { external: true })" />
+            <UButton label="Open App" size="sm" @click="navigateTo(`https://app.shelve.cloud/login`, { external: true })" />
           </div>
         </div>
       </div>

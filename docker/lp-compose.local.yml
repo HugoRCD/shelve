@@ -3,6 +3,10 @@ services:
     build:
       context: ../
       dockerfile: ./apps/lp/Dockerfile
+      args:
+        - NUXT_UI_PRO_LICENSE=${NUXT_UI_PRO_LICENSE}
+        - TURBO_TEAM=${TURBO_TEAM}
+        - TURBO_TOKEN=${TURBO_TOKEN}
     container_name: lp
     restart: always
     environment:

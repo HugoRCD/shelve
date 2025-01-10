@@ -31,18 +31,17 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - uses: oven-sh/setup-bun@v2
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
         with:
-          bun-version: latest
-
-      - name: 📦 Install
-        run: bun install
+          version: latest
+          run_install: false
 
       - name: 🚀 Prepare
-        run: bun run dev:prepare
+        run: pnpm run dev:prepare
 
       - name: 🛠️ Build
-        run: bun run build
+        run: pnpm run build
 
       - name: 🚀 Continuous Release
-        run: bunx pkg-pr-new publish './packages/cli'
+        run: npx pkg-pr-new publish './packages/cli'

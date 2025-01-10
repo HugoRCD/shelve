@@ -6,10 +6,10 @@
     "access": "public"
   },
   "scripts": {
-    "dev": "bun run src/index.ts",
+    "dev": "pnpm run src/index.ts",
     "dev:prepare": "unbuild",
     "build": "unbuild",
-    "release": "bun run build",
+    "release": "pnpm run build",
     "lint": "eslint .",
     "lint:fix": "eslint --fix ."
   },
