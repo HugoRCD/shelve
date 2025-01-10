@@ -10,6 +10,9 @@ export default defineNuxtConfig({
   },
 
   modules: [
+    '@nuxt/ui-pro',
+    '@nuxt/content',
+    'nuxt-og-image',
     '@nuxt/scripts',
     '@nuxtjs/seo'
   ],
@@ -29,6 +32,23 @@ export default defineNuxtConfig({
     },
   },
 
+  experimental: {
+    viewTransition: true,
+  },
+
+  sitemap: {
+    enabled: false
+  },
+  robots: {
+    enabled: false
+  },
+  schemaOrg: {
+    enabled: false
+  },
+  linkChecker: {
+    enabled: false
+  },
+
   site: {
     url: 'https://shelve.cloud',
     name: 'Shelve',
@@ -36,6 +56,8 @@ export default defineNuxtConfig({
     defaultLocale: 'en',
     indexable: true,
   },
+
+  css: ['~/assets/css/index.css'],
 
   extends: '../base',
 })

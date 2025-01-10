@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { ContentNavigationItem } from '@nuxt/content'
 import type { NavigationMenuItem } from '@nuxt/ui'
+import ThemeToggle from '~/components/ThemeToggle.vue'
 
 const props = defineProps<{
   links: NavigationMenuItem[]
@@ -18,9 +19,9 @@ defineShortcuts({
 </script>
 
 <template>
-  <UHeader :ui="{ left: 'min-w-0' }" mode="drawer" :menu="{ shouldScaleBackground: true }">
+  <UHeader class="bg-white dark:bg-neutral-950" :ui="{ left: 'min-w-0' }" mode="drawer" :menu="{ shouldScaleBackground: true }">
     <template #left>
-      <NuxtLink to="/" class="flex items-end gap-2 font-bold text-lg text-[var(--ui-text-highlighted)] min-w-0 focus-visible:outline-[var(--ui-primary)] shrink-0" aria-label="Nuxt UI">
+      <NuxtLink to="/" class="flex items-end gap-2 font-bold text-lg text-[var(--ui-text-highlighted)] min-w-0 focus-visible:outline-[var(--ui-primary)] shrink-0" aria-label="Shelve">
         <div class="flex items-center gap-1">
           <UIcon name="custom:shelve" />
           <span>
@@ -41,12 +42,14 @@ defineShortcuts({
         <UButton
           color="neutral"
           variant="ghost"
-          to="https://github.com/nuxt/ui"
+          to="https://github.com/hugorcd/shelve"
           target="_blank"
-          icon="i-simple-icons-github"
+          icon="simple-icons:github"
           aria-label="GitHub"
         />
       </UTooltip>
+
+      <UColorModeButton />
     </template>
 
     <template #content>
@@ -66,3 +69,9 @@ defineShortcuts({
     </template>
   </UHeader>
 </template>
+
+<style>
+:root {
+  --ui-header-height: 45px;
+}
+</style>

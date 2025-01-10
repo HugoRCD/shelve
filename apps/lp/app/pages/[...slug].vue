@@ -2,6 +2,10 @@
 import type { ContentNavigationItem } from '@nuxt/content'
 import { findPageBreadcrumb, mapContentNavigation } from '#ui-pro/utils/content'
 
+definePageMeta({
+  layout: 'docs',
+})
+
 const route = useRoute()
 
 const { data: page } = await useAsyncData(route.path, () =>
@@ -32,9 +36,11 @@ defineOgImageComponent('Docs', {
           <UBreadcrumb :items="breadcrumb" />
         </template>
 
-        <!--      <template #description>
-          <MDC v-if="page.description" :value="page.description" unwrap="p" />
-        </template>-->
+        <template #description>
+          <p class="text-neutral-500">
+            {{ page.description }}
+          </p>
+        </template>
 
         <template v-if="page.links?.length" #links>
           <UButton
@@ -61,7 +67,7 @@ defineOgImageComponent('Docs', {
       </UPageBody>
 
       <template v-if="page?.body?.toc?.links?.length" #right>
-        <UContentToc :links="page.body.toc.links" class="z-[2]" />
+        <UContentToc :links="page.body.toc.links" class="z-[2] bg-white dark:bg-neutral-950" />
       </template>
     </UPage>
   </div>
