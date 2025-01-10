@@ -3,6 +3,9 @@ services:
     build:
       context: ../
       dockerfile: ./apps/shelve/Dockerfile
+      args:
+        - TURBO_TEAM=${TURBO_TEAM}
+        - TURBO_TOKEN=${TURBO_TOKEN}
     container_name: shelve_app
     restart: always
     environment:

@@ -49,19 +49,15 @@ const nav = [
   <div class="mt-6">
     <div class="relative">
       <div class="flex">
-        <NuxtLink to="/docs" class="group -mb-px -ml-px flex w-full cursor-pointer justify-between gap-2 border border-neutral-800 border-opacity-50 p-4 text-xs text-neutral-500 transition-all duration-300 ease-in-out hover:border-opacity-100 hover:bg-neutral-800/50 hover:text-neutral-200">
-          <span class="text-neutral-400">
-            Documentation
-          </span>
+        <NuxtLink to="/getting-started" class="group -mb-px -ml-px flex w-full cursor-pointer justify-between gap-2 border border-neutral-800 border-opacity-50 p-4 text-xs text-neutral-500 transition-all duration-300 ease-in-out hover:border-opacity-100 hover:bg-neutral-800/50 hover:text-neutral-200">
+          Documentation
           <UIcon name="lucide:arrow-right" class="ml-1 inline-block text-neutral-400 transition-all duration-300 ease-in-out group-hover:-rotate-45" />
         </NuxtLink>
         <NuxtLink
           to="https://app.shelve.cloud/login"
           class="group -mb-px -ml-px flex w-full cursor-pointer justify-between gap-2 border border-neutral-800 border-opacity-50 p-4 text-xs text-neutral-500 transition-all duration-300 ease-in-out hover:border-opacity-100 hover:bg-neutral-800/50 hover:text-neutral-200"
         >
-          <span class="text-neutral-400">
-            Login
-          </span>
+          Login
           <UIcon name="lucide:arrow-right" class="ml-1 inline-block text-neutral-400 transition-all duration-300 ease-in-out group-hover:-rotate-45" />
         </NuxtLink>
       </div>
