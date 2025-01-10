@@ -76,6 +76,7 @@ export function useTeamsService() {
       method: 'PUT',
       body: input
     })
+    defaultTeamSlug.value = currentTeam.value.slug
     await router.push(`/${ currentTeam.value.slug }`)
   }
 

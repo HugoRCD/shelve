@@ -12,6 +12,7 @@ export default eventHandler(async (event) => {
 
   const { name, logo, slug } = await readValidatedBody(event, updateTeamSchema.parse)
 
+  await clearCache('Team', team.slug)
   return await new TeamsService().updateTeam({
     teamId: team.id,
     name,
