@@ -6,7 +6,7 @@ export const collections = {
     source: '**/*',
     schema: z.object({
       navigation: z.object({
-        title: z.string().optional()
+        title: z.string().optional(),
       }),
       links: z.array(z.object({
         label: z.string(),

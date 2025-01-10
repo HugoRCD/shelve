@@ -21,7 +21,7 @@ defineShortcuts({
 <template>
   <UHeader class="bg-white dark:bg-neutral-950" :ui="{ left: 'min-w-0' }" mode="drawer" :menu="{ shouldScaleBackground: true }">
     <template #left>
-      <NuxtLink to="/" class="flex items-end gap-2 font-bold text-lg text-[var(--ui-text-highlighted)] min-w-0 focus-visible:outline-[var(--ui-primary)] shrink-0" aria-label="Shelve">
+      <NuxtLink to="/" class="flex items-end gap-2 font-bold text-[var(--ui-text-highlighted)] min-w-0 focus-visible:outline-[var(--ui-primary)] shrink-0" aria-label="Shelve">
         <div class="flex items-center gap-1">
           <UIcon name="custom:shelve" />
           <span>
@@ -37,6 +37,9 @@ defineShortcuts({
       <UTooltip text="Search" :kbds="['meta', 'K']">
         <UContentSearchButton />
       </UTooltip>
+
+      <UButton label="Get Started" size="xs" to="https://app.shelve.cloud" />
+
 
       <UTooltip text="Open on GitHub" :kbds="['meta', 'G']" class="hidden lg:flex">
         <UButton
@@ -61,8 +64,6 @@ defineShortcuts({
         <template #link-title="{ link }">
           <span class="inline-flex items-center gap-0.5">
             {{ link.title }}
-
-            <sup v-if="link.module === 'ui-pro' && link.path.startsWith('/components')" class="text-[8px] font-medium text-(--ui-primary)">PRO</sup>
           </span>
         </template>
       </UContentNavigation>
