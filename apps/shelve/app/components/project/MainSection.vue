@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { TeamRole } from '@shelve/types'
+import type { FormError, FormSubmitEvent } from '@nuxt/ui'
 
 const showEdit = ref(false)
 const showDelete = ref(false)
@@ -25,16 +26,27 @@ async function updateCurrentProject() {
   updateLoading.value = false
 }
 
-const deleteLoading = ref(false)
-async function deleteProjectFunction() {
-  deleteLoading.value = true
+const deleteState = ref({
+  name: undefined,
+})
+
+const validate = (state: any): FormError[] => {
+  const errors = []
+  if (state.name !== project.value.name) {
+    errors.push({
+      name: 'name',
+      message: 'The project name does not match'
+    })
+  }
+  return errors
+}
+
+async function onSubmitDelete() {
   if (teamRole.value !== TeamRole.OWNER) {
-    deleteLoading.value = false
     toast.error('You do not have permission to delete this project')
     return
   }
   await deleteProject()
-  deleteLoading.value = false
   showDelete.value = false
   navigateTo(`/${teamSlug}`)
 }
@@ -198,19 +210,27 @@ function getProjectManager(manager: string) {
         </div>
       </div>
     </div>
-    <UModal v-model:open="showDelete" title="Are you sure you want to delete this project?" description="This action cannot be undone">
+    <UModal v-model:open="showDelete" title="Delete this project?" description="This action cannot be undone">
       <template #body>
-        <form class="flex flex-col gap-6" @submit.prevent="deleteProjectFunction">
-          <FormGroup v-model="projectName" autofocus :label="`Type the project name '${project.name}' to confirm`" />
+        <UForm
+          :state="deleteState"
+          :validate
+          :validate-on="['change']"
+          class="flex flex-col gap-6"
+          @submit.prevent="onSubmitDelete"
+        >
+          <UFormField :label="`Type the project name '${project.name}' to confirm`" name="name">
+            <UInput v-model="deleteState.name" autofocus class="w-full" />
+          </UFormField>
           <div class="flex justify-end gap-4">
             <UButton variant="ghost" @click="showDelete = false">
               Cancel
             </UButton>
-            <UButton color="error" type="submit" trailing :loading="deleteLoading" :disabled="projectName !== project.name">
+            <UButton color="error" type="submit" trailing loading-auto :disabled="deleteState.name !== project.name">
               Delete
             </UButton>
           </div>
-        </form>
+        </UForm>
       </template>
     </UModal>
   </div>
