@@ -1,11 +1,8 @@
 export default defineAppConfig({
   ui: {
-    theme: {
-      radius: 0.25
-    },
     icons: {
-      light: 'heroicons:moon',
-      dark: 'heroicons:sun'
+      light: 'heroicons:moon-solid',
+      dark: 'heroicons:sun-solid'
     }
   }
 })

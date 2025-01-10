@@ -48,7 +48,7 @@ items.push(githubItem)
             :ui="{ link: 'py-1 px-3' }"
           >
             <template #components-trailing>
-              <UBadge label="44" variant="subtle" size="sm" />
+              <UBadge variant="subtle" size="sm" />
             </template>
           </UNavigationMenu>
         </div>

@@ -27,12 +27,16 @@ const links = computed(() => [
 ])
 
 provide('navigation', navigation)
+
+const defaultOgImage = computed(() => {
+  return route.path === '/' || route.path === '/roadmap'
+})
 </script>
 
 <template>
   <Html lang="en">
     <Body class="overscroll-y-none selection:bg-primary font-geist overflow-x-hidden text-black selection:text-inverted bg-white dark:bg-neutral-950 dark:text-white">
-      <ShelveMeta />
+      <ShelveMeta :default-og-image />
 
       <NuxtLoadingIndicator color="#FFF" />
 

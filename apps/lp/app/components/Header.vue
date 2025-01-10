@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { ContentNavigationItem } from '@nuxt/content'
 import type { NavigationMenuItem } from '@nuxt/ui'
-import ThemeToggle from '~/components/ThemeToggle.vue'
 
 const props = defineProps<{
   links: NavigationMenuItem[]
