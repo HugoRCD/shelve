@@ -60,7 +60,7 @@ export class TeamsService {
     const db = useDrizzle()
     if (data.slug) {
       data.slug = data.slug.toLowerCase().replace(/\s/g, '-')
-      const isSlugUnique = await this.isSlugUnique(data.slug)
+      const isSlugUnique = await this.isSlugUnique(data.slug, teamId)
       if (!isSlugUnique) throw createError({ statusCode: 409, statusMessage: 'Slug already in use' })
     }
 
@@ -116,9 +116,9 @@ export class TeamsService {
     return teams
   })
 
-  getTeam = withCache<Team>('Team', async (teamSlug: string) => {
+  getTeam = withCache<Team>('Team', async (slug: string) => {
     const team = await useDrizzle().query.teams.findFirst({
-      where: eq(tables.teams.slug, teamSlug),
+      where: eq(tables.teams.slug, slug),
       with: {
         members: {
           with: {
@@ -127,13 +127,16 @@ export class TeamsService {
         }
       }
     })
-    if (!team) throw createError({ statusCode: 404, statusMessage: `Team not found with slug ${teamSlug}` })
+    if (!team) throw createError({ statusCode: 404, statusMessage: `Team not found with slug ${slug}` })
     return team
   })
 
-  private isSlugUnique = async (slug: string): Promise<boolean> => {
+  private isSlugUnique = async (slug: string, teamId?: number): Promise<boolean> => {
+    const query = teamId
+      ? and(eq(tables.teams.slug, slug), not(eq(tables.teams.id, teamId)))
+      : eq(tables.teams.slug, slug)
     const team = await useDrizzle().query.teams.findFirst({
-      where: eq(tables.teams.slug, slug)
+      where: query
     })
     return !team
   }
