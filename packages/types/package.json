@@ -8,12 +8,12 @@
   "scripts": {
     "dev": "tsup --watch",
     "build": "tsup",
-    "dev:prepare": "bun run build",
+    "dev:prepare": "pnpm run build",
     "clean": "rm -rf dist",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "release": "bun run typecheck && bun run lint && bun run build"
+    "release": "pnpm run typecheck && pnpm run lint && pnpm run build"
   },
   "sideEffects": false,
   "exports": {

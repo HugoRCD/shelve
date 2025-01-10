@@ -32,10 +32,10 @@
     "dev:prod": "NODE_ENV=production bun src/index.ts",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
-    "release": "bun run test",
-    "release:edge": "bun run test && npm publish --tag edge",
+    "release": "pnpm run test",
+    "release:edge": "pnpm run test && npm publish --tag edge",
     "start": "node ./dist/index.mjs",
-    "test": "bun run build && bun run typecheck && bun run lint && vitest run",
+    "test": "pnpm run build && pnpm run typecheck && pnpm run lint && vitest run",
     "typecheck": "tsc --noEmit",
     "vitest": "vitest run"
   },
