@@ -37,6 +37,10 @@ const communityLinks = computed(() => [
     label: 'Star on GitHub',
     to: `https://github.com/hugorcd/shelve`,
     target: '_blank'
+  }, {
+    icon: 'i-heroicons-lifebuoy-solid',
+    label: 'Contributing',
+    to: '/contributing'
   }
 ])
 </script>

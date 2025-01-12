@@ -37,7 +37,9 @@ export default defineNuxtConfig({
 
   nitro: {
     prerender: {
-      routes: ['/sitemap.xml', '/vault']
+      routes: ['/sitemap.xml', '/vault'],
+      crawlLinks: true,
+      autoSubfolderIndex: false
     },
   },
 
@@ -56,6 +58,10 @@ export default defineNuxtConfig({
   },
   linkChecker: {
     enabled: false
+  },
+
+  image: {
+    provider: 'ipx'
   },
 
   site: {
