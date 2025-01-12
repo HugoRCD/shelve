@@ -1,8 +1,7 @@
 export default defineNuxtConfig({
   routeRules: {
     '/': { isr: true, prerender: true },
-    '/vault': { isr: true, prerender: true },
-    '/docs': { isr: true, prerender: true },
+    '/vault': { isr: true, prerender: true }
   },
 
   future: {
@@ -23,6 +22,16 @@ export default defineNuxtConfig({
       vault: {
         url: ''
       },
+    },
+  },
+
+  mdc: {
+    highlight: {
+      theme: {
+        dark: 'github-dark',
+        default: 'github-dark',
+        light: 'github-light',
+      }
     },
   },
 
@@ -51,8 +60,6 @@ export default defineNuxtConfig({
 
   site: {
     url: 'https://shelve.cloud',
-    name: 'Shelve',
-    description: 'Shelve is a project management tool for developers teams',
     defaultLocale: 'en',
     indexable: true,
   },
