@@ -82,6 +82,12 @@ const communityLinks = computed(() => [
 
       <template v-if="page?.body?.toc?.links?.length" #right>
         <UContentToc :links="page.body.toc.links" class="z-[2] bg-white dark:bg-neutral-950">
+          <template #default>
+            <div class="flex items-center gap-2">
+              <UIcon name="i-lucide-align-left" />
+              On this page
+            </div>
+          </template>
           <template #bottom>
             <USeparator type="dashed" />
             <UPageLinks

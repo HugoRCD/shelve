@@ -7,5 +7,12 @@ export default defineAppConfig({
       light: 'heroicons:moon-solid',
       dark: 'heroicons:sun-solid'
     }
+  },
+  uiPro: {
+    prose: {
+      codeIcon: {
+        'shelve.json': 'custom:shelve'
+      }
+    }
   }
 })

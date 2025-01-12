@@ -11,6 +11,7 @@ const props = withDefaults(defineProps<{
 
 useHead({
   title: props.title || appTitle,
+  titleTemplate: `%s | ${appTitle}`,
   link: link,
 })
 
