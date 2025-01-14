@@ -25,6 +25,24 @@ const breadcrumb = computed(() => mapContentNavigation(findPageBreadcrumb(naviga
 defineOgImageComponent('Docs', {
   headline: breadcrumb.value.map(item => item.label).join(' > ')
 })
+
+const communityLinks = computed(() => [
+  {
+    icon: 'i-heroicons-pencil-square-solid',
+    label: 'Edit this page',
+    to: `https://github.com/hugorcd/shelve/edit/main/apps/lp/content/${page?.value?.stem}.md`,
+    target: '_blank'
+  }, {
+    icon: 'i-heroicons-star-solid',
+    label: 'Star on GitHub',
+    to: `https://github.com/hugorcd/shelve`,
+    target: '_blank'
+  }, {
+    icon: 'i-heroicons-lifebuoy-solid',
+    label: 'Contributing',
+    to: '/contributing'
+  }
+])
 </script>
 
 <template>
@@ -67,7 +85,26 @@ defineOgImageComponent('Docs', {
       </UPageBody>
 
       <template v-if="page?.body?.toc?.links?.length" #right>
-        <UContentToc :links="page.body.toc.links" class="z-[2] bg-white dark:bg-neutral-950" />
+        <UContentToc :links="page.body.toc.links" class="z-[2] bg-white dark:bg-neutral-950">
+          <template #default>
+            <div class="flex items-center gap-2">
+              <UIcon name="i-lucide-align-left" />
+              On this page
+            </div>
+          </template>
+          <template #bottom>
+            <USeparator type="dashed" />
+            <UPageLinks
+              title="Community"
+              :links="communityLinks"
+              :ui="{
+                link: 'text-xs',
+                linkLeadingIcon: 'text-xs',
+                linkLabelExternalIcon: 'size-0'
+              }"
+            />
+          </template>
+        </UContentToc>
       </template>
     </UPage>
   </div>

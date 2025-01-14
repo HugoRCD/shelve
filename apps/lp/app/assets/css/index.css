@@ -1,2 +1,16 @@
 @import "tailwindcss";
 @import "@nuxt/ui-pro";
+
+:root {
+  ::selection {
+    color: #282a30;
+    background-color: #c8c8c8;
+  }
+}
+
+.dark {
+  ::selection {
+    color: #ffffff;
+    background-color: #474747;
+  }
+}
