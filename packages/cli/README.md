@@ -33,7 +33,7 @@ The CLI also has a json schema for the configuration file. that can be used to v
   "slug": "nuxtlabs",
   "project": "@nuxt/ui",
   "confirmChanges": true,
-  "autoCreate": true
+  "autoCreateProject": true
 }
 ```
 
