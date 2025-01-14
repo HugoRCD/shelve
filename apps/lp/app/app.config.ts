@@ -11,7 +11,8 @@ export default defineAppConfig({
   uiPro: {
     prose: {
       codeIcon: {
-        'shelve.json': 'custom:shelve'
+        'shelve.json': 'custom:shelve',
+        'docker-compose.yml': 'simple-icons:docker'
       }
     }
   }
