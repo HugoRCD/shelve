@@ -42,7 +42,7 @@
   "dependencies": {
     "@clack/prompts": "0.9.1",
     "c12": "2.0.1",
-    "commander": "12.1.0",
+    "commander": "13.0.0",
     "defu": "^6.1.4",
     "npm-registry-fetch": "18.0.2",
     "nypm": "0.4.1",
