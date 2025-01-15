@@ -7,12 +7,12 @@ export function useStats(options: UseStatsOptions = {}) {
   const error = ref<string | null>(null)
   let eventSource: EventSource | null = null
 
+  //TODO Connect LP and handle CORS
+
   const getEventSourceUrl = () => {
-    // Si une baseUrl est fournie, l'utiliser
     if (options.baseUrl) {
       return `${options.baseUrl}/api/stats`
     }
-    // Sinon, utiliser l'URL courante
     return `${location.origin}/api/stats`
   }
 
