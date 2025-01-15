@@ -49,6 +49,30 @@ export type ShelveConfig = {
    * @default true
    * */
   autoUppercase: boolean
+  /**
+   * Automatically create the project if it doesn't exist
+   *
+   * @default true
+   * */
+  autoCreateProject: boolean
+  /**
+   * The monorepo configuration
+   * */
+  monorepo?: {
+    paths: string[]
+  }
+  /**
+   * The workspace directory
+   * */
+  workspaceDir: string
+  /**
+   * Whether the project is a monorepo
+   * */
+  isMonoRepo: boolean
+  /**
+   * Whether the project is at the root level
+   * */
+  isRoot: boolean
 }
 
 export type CreateEnvFileInput = {
@@ -106,6 +130,7 @@ export type GetEnvVariables = {
   environmentId: number
   slug: string
 }
+
 export type CreateShelveConfigInput = {
   slug?: string
   projectName?: string

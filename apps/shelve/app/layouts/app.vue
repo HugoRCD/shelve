@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import CliInstall from '~/components/CliInstall.vue'
-
 const route = useRoute()
 const teamSlug = computed(() => route.params.teamSlug as string)
 const pages = computed(() => {
@@ -14,6 +12,10 @@ const navigation = computed(() => {
   if (route.path.includes('/projects'))
     return { title: 'Project Details', to: '/projects', name: 'project', icon: 'lucide:folder-open' }
   return pages.value.find((page) => page.path === route.path) || null
+})
+
+const routeTitle = computed(() => {
+  return route.meta.title as string
 })
 </script>
 
@@ -32,6 +34,18 @@ const navigation = computed(() => {
             <Transition name="slide-to-top" mode="out-in">
               <h1 :key="navigation.title" class="text-lg font-semibold">
                 {{ navigation.title }}
+              </h1>
+            </Transition>
+          </template>
+          <template v-else-if="route.meta.icon">
+            <Transition name="slide-to-bottom" mode="out-in">
+              <div :key="route.meta.icon as string">
+                <UIcon :name="route.meta.icon as string" class="size-5" />
+              </div>
+            </Transition>
+            <Transition name="slide-to-top" mode="out-in">
+              <h1 :key="routeTitle.toLowerCase()" class="text-lg font-semibold">
+                {{ routeTitle }}
               </h1>
             </Transition>
           </template>

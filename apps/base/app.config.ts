@@ -6,7 +6,6 @@ export default defineAppConfig({
     },
     button: {
       slots: {
-        // @ts-expect-error base is not defined
         base: 'cursor-pointer'
       },
       defaultVariants: {

@@ -6,6 +6,7 @@ const items = navigation.map((item) => ({
   to: item.path,
   label: item.title,
   slot: item.name.toLowerCase(),
+  target: item.path.startsWith('http') ? '_blank' : undefined
 }))
 
 type RepoType = {
@@ -44,10 +45,9 @@ items.push(githubItem)
             color="neutral"
             :items
             class="hidden sm:flex"
-            :ui="{ link: 'py-1 px-3' }"
           >
             <template #components-trailing>
-              <UBadge label="44" variant="subtle" size="sm" />
+              <UBadge variant="subtle" size="sm" />
             </template>
           </UNavigationMenu>
         </div>
@@ -58,7 +58,7 @@ items.push(githubItem)
             </UDropdownMenu>
           </div>
           <div>
-            <UButton label="Open App" @click="navigateTo(`https://app.shelve.cloud/login`, { external: true })" />
+            <UButton label="Open App" size="sm" @click="navigateTo(`https://app.shelve.cloud/login`, { external: true })" />
           </div>
         </div>
       </div>

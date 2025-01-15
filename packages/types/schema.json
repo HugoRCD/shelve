@@ -5,24 +5,20 @@
   "properties": {
     "project": {
       "type": "string",
-      "description": "The project name",
-      "default": "process.env.SHELVE_PROJECT || package_json_name"
+      "description": "The project name"
     },
     "slug": {
       "type": "string",
-      "description": "The team slug",
-      "default": "process.env.SHELVE_TEAM_SLUG"
+      "description": "The team slug"
     },
     "token": {
       "type": "string",
-      "description": "The token to authenticate with Shelve created using the app (https://shelve.cloud/app/tokens) or your own Shelve instance",
-      "default": "process.env.SHELVE_TOKEN"
+      "description": "The token to authenticate with Shelve created using the app (https://shelve.cloud/app/tokens) or your own Shelve instance"
     },
     "url": {
       "type": "string",
       "description": "The URL of the Shelve instance can be overridden with the `SHELVE_URL` environment variable",
-      "default": "https://shelve.cloud",
-      "fallback": "process.env.SHELVE_URL"
+      "default": "https://shelve.cloud"
     },
     "confirmChanges": {
       "type": "boolean",
@@ -33,7 +29,16 @@
       "type": "string",
       "description": "Name of your env file",
       "default": ".env"
+    },
+    "autoUppercase": {
+      "type": "boolean",
+      "description": "Automatically uppercase all environment variables",
+      "default": false
+    },
+    "autoCreateProject": {
+      "type": "boolean",
+      "description": "Whether to automatically create a project if it doesn't exist",
+      "default": true
     }
-  },
-  "required": ["project", "slug"]
+  }
 }

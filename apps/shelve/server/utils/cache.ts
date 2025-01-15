@@ -4,7 +4,7 @@ type CacheEntity<T = string | number> = {
   ttl: number
   invalidateFor?: (param: T) => Promise<Array<{
     entity: keyof typeof cacheEntities
-    param: number
+    param: number | string
   }>>
 }
 
@@ -13,17 +13,18 @@ export const CACHE_TTL = 60 * 60 * 8 // 8 hours
 export const cacheEntities: Record<string, CacheEntity<string> | CacheEntity<number>> = {
   Team: {
     prefix: 'team',
-    key: 'teamSlug',
+    key: 'slug',
     ttl: CACHE_TTL,
-    invalidateFor: async (teamSlug: string) => {
+    invalidateFor: async (id: number | string) => {
+      const query = typeof id === 'string' ? eq(tables.teams.slug, id) : eq(tables.teams.id, id)
       const team = await useDrizzle().query.teams.findFirst({
-        where: eq(tables.teams.slug, teamSlug),
+        where: query,
         with: {
           members: {
             columns: { userId: true }
           }
         },
-        columns: { id: true }
+        columns: { id: true, slug: true }
       })
       if (!team) return []
       return team.members.map(member => ({
@@ -78,6 +79,7 @@ export async function clearCache<T extends string | number>(
   const config = cacheEntities[entity]
   if (!config) throw createError({ statusCode: 404, message: `Cache entity ${entity} not found` })
   const cacheString = `nitro:functions:${config.prefix}:${config.key}:${id}.json`
+  console.log('Clearing cache', cacheString)
 
   await storage.removeItem(cacheString)
 

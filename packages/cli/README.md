@@ -1,4 +1,4 @@
-<img src="../../assets/preview.png" width="100%" alt="Shelve" />
+<img src="../../assets/cover.png" width="100%" alt="Shelve" />
 
 # Shelve CLI
 
@@ -22,24 +22,24 @@ bun a -d @shelve/cli
 
 ## Configuration
 
-Configuration is loaded by [unjs/c12](https://github.com/unjs/c12) from cwd. You can use either `shelve.config.json`, `shelve.config.{ts,js,mjs,cjs}`, but running the CLI without any configuration will create a `shelve.config.json` file.
-You have the option to create a `shelve.config.ts` file to enable type checking and autocompletion. The file should contain the following content:
-
-```ts title="shelve.config.ts"
-import { createShelveConfig } from "@shelve/cli"
-
-export default createShelveConfig({
-  project: "my-project",
-  slug: "nuxtlabs",
-  token: "my-token",
-  url: "https://app.shelve.cloud",
-  confirmChanges: false,
-  envFileName: '.env',
-  autoUppercase: true,
-})
-```
+Configuration is loaded from cwd. You can use either `shelve.json`, `shelve.config.json` or `.shelverc.json`, but running the CLI without any configuration will create a `shelve.json` file.
 
 The CLI also has a json schema for the configuration file. that can be used to validate the configuration file. (see it [here](https://raw.githubusercontent.com/HugoRCD/shelve/main/packages/types/schema.json))
+
+### Configuration example
+
+```json
+{
+  "slug": "nuxtlabs",
+  "project": "@nuxt/ui",
+  "confirmChanges": true,
+  "autoCreateProject": true
+}
+```
+
+### Monorepo configuration
+
+If you are using a monorepo, Shelve will automatically detect the root of the monorepo and look for the global `shelve.json` file. You can define here common configurations for all the projects in the monorepo (the team slug for example).
 
 ## Usage
 
@@ -65,6 +65,10 @@ Commands:
   help [command]      display help for command
 ```
 
+### Monorepo usage
+
+If you are using a monorepo, running a command at the root level will execute the command for all the projects in the monorepo that have a `shelve.json` file.
+
 <!-- automd:fetch url="gh:hugorcd/markdown/main/src/local_development.md" -->
 
 <details>
@@ -89,7 +93,7 @@ To start contributing, you can follow these steps:
 3. Create a branch using conventional commits and the issue number as the branch name. For example, `feat/123` or `fix/456`.
 4. Make changes following the local development steps.
 5. Commit your changes following the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) specification.
-6. If your changes affect the code, run tests using `bun run test`.
+6. If your changes affect the code, run tests using `pnpm run test`.
 7. Create a pull request following the [Pull Request Template](https://github.com/HugoRCD/markdown/blob/main/src/pull_request_template.md).
    - To be merged, the pull request must pass the tests/workflow and have at least one approval.
    - If your changes affect the documentation, make sure to update it.
@@ -114,6 +118,6 @@ Made by [@HugoRCD](https://github.com/HugoRCD) and [community](https://github.co
 
 ---
 
-_🤖 auto updated with [automd](https://automd.unjs.io) (last updated: Wed Nov 27 2024)_
+_🤖 auto updated with [automd](https://automd.unjs.io) (last updated: Mon Dec 30 2024)_
 
 <!-- /automd -->

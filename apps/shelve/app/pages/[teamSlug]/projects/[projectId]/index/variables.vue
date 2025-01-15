@@ -84,7 +84,7 @@ const isVariableSelected = (variable: Variable) => {
         <USelectMenu v-model="selectedEnvironment" multiple :items class="w-full" placeholder="Select environment" />
       </div>
     </div>
-    <VariableSelector v-model="selectedVariables" />
+    <LazyVariableSelector v-model="selectedVariables" />
     <div v-if="!loading" class="flex flex-col gap-4">
       <div v-for="variable in filteredVariables" :key="variable.id">
         <VariableItem

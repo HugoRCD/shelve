@@ -18,31 +18,31 @@ jobs:
             src:
               - 'packages/cli/src/**'
               - 'packages/cli/package.json'
-              - 'bun.lockb'
+              - 'pnpm-lock.yaml'
 
   build:
     needs: check-changes
     if: needs.check-changes.outputs.src == 'true'
     runs-on: ubuntu-latest
     env:
+      NUXT_UI_PRO_LICENSE: ${{ secrets.NUXT_UI_PRO_LICENSE }}
       TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
       TURBO_TEAM: ${{ vars.TURBO_TEAM }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - uses: oven-sh/setup-bun@v2
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
         with:
-          bun-version: latest
-
-      - name: 📦 Install
-        run: bun install
+          version: latest
+          run_install: true
 
       - name: 🚀 Prepare
-        run: bun run dev:prepare
+        run: pnpm run dev:prepare
 
       - name: 🛠️ Build
-        run: bun run build
+        run: pnpm run build
 
       - name: 🚀 Continuous Release
-        run: bunx pkg-pr-new publish './packages/cli'
+        run: npx pkg-pr-new publish './packages/cli'

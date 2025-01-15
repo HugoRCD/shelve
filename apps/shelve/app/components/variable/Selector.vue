@@ -2,14 +2,13 @@
 import type { Variable } from '@shelve/types'
 import { ConfirmModal } from '#components'
 
-const selectedVariables = defineModel({ type: Array, required: true }) as Ref<Variable[]>
+const selectedVariables = defineModel<Variable[]>({ required: true })
 
-const {
-  deleteVariables
-} = useVariablesService()
+const { deleteVariables } = useVariablesService()
 
 const loading = ref(false)
 const modal = useModal()
+const route = useRoute()
 const teamEnv = useEnvironments()
 
 function openDeleteModal() {
@@ -40,11 +39,12 @@ async function deleteSelectedVariables() {
   <div>
     <Transition name="bezier" mode="out-in">
       <div v-if="selectedVariables.length > 0" class="absolute bottom-4 left-1/2 z-20 -translate-x-1/2">
-        <div class="flex items-center gap-4 rounded-full border border-neutral-200 bg-white px-5 py-1.5 shadow-md dark:border-neutral-700 dark:bg-neutral-800">
-          <span class="text-nowrap text-sm font-semibold text-neutral-900 dark:text-neutral-300">
+        <div class="dark flex items-center text-neutral-300 gap-4 rounded-md border px-5 py-1.5 border-neutral-800 bg-neutral-950 shadow-lg">
+          <span class="text-nowrap text-sm font-semibold">
             {{ selectedVariables.length }} variable{{ selectedVariables.length > 1 ? 's' : '' }} selected
           </span>
           <div class="flex gap-2">
+            <VariableGithubSync :selected-variables />
             <UPopover mode="hover" arrow>
               <UButton icon="lucide:clipboard-plus" variant="ghost" />
               <template #content>

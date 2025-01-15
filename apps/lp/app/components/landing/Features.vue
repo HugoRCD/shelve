@@ -12,7 +12,7 @@ const features = [
   },
   {
     title: 'Powerful CLI',
-    description: 'Manage your projects secrets, files and more withour leaving your terminal.',
+    description: 'Manage your projects secrets, files and more without leaving your terminal.',
     icon: 'lucide:terminal',
   },
   {

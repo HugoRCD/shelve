@@ -1,4 +1,9 @@
-import type { CreateProjectInput, Project } from '@shelve/types'
+import type { Project } from '@shelve/types'
+import type { CreateProjectSchema, UpdateProjectSchema } from '~/utils/zod/project'
+
+export const useCurrentLoading = () => {
+  return useState<boolean>('currentLoading', () => false)
+}
 
 export function useProjectsService() {
   const route = useRoute()
@@ -8,7 +13,7 @@ export function useProjectsService() {
   const currentProject = useProject(projectId)
 
   const loading = ref(false)
-  const currentLoading = ref(false)
+  const currentLoading = useCurrentLoading()
   const updateLoading = ref(false)
 
   async function fetchProjects() {
@@ -22,13 +27,18 @@ export function useProjectsService() {
   async function fetchCurrentProject(projectId: number) {
     if (currentProject.value) return
     currentLoading.value = true
-    currentProject.value = await $fetch<Project>(`/api/teams/${teamSlug}/projects/${projectId}`, {
-      method: 'GET',
-    })
-    currentLoading.value = false
+    try {
+      currentProject.value = await $fetch<Project>(`/api/teams/${teamSlug}/projects/${projectId}`, {
+        method: 'GET',
+      })
+    } catch (error) {
+      console.error('Error fetching project data:', error)
+    } finally {
+      currentLoading.value = false
+    }
   }
 
-  async function createProject(input: Omit<CreateProjectInput, 'teamId'>) {
+  async function createProject(input: CreateProjectSchema) {
     try {
       const project = await $fetch<Project>(`/api/teams/${teamSlug}/projects`, {
         method: 'POST',
@@ -42,20 +52,24 @@ export function useProjectsService() {
     }
   }
 
-  async function updateProject(project: Project) {
+  async function updateProject(project: UpdateProjectSchema) {
     updateLoading.value = true
     try {
-      const response = await $fetch<Project>(`/api/teams/${teamSlug}/projects/${project.id}`, {
+      const _project = await $fetch<Project>(`/api/teams/${teamSlug}/projects/${project.id}`, {
         method: 'PUT',
         body: project,
       })
-      const index = projects.value.findIndex((_project) => _project.id === project.id)
-      projects.value.splice(index, 1, response)
+      if (projects.value) {
+        const index = projects.value.findIndex((_project) => _project.id === project.id)
+        projects.value[index] = _project
+      }
       toast.success('Project updated')
     } catch (error) {
+      console.error(error)
       toast.error('Failed to update project')
+    } finally {
+      updateLoading.value = false
     }
-    updateLoading.value = false
   }
 
   async function deleteProject() {

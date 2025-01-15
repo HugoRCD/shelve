@@ -8,6 +8,8 @@ const defaultTeamSlug = useCookie<string>('defaultTeamSlug', {
   watch: true,
 })
 
+const _currentTeam = useTeam()
+
 const {
   loading,
   createTeam,
@@ -16,7 +18,7 @@ const {
 } = useTeamsService()
 fetchTeams()
 
-const currentTeam = computed(() => teams.value.find((team) => team.slug === defaultTeamSlug.value))
+const currentTeam = computed(() => _currentTeam.value ?? teams.value.find((team) => team.slug === defaultTeamSlug.value))
 
 const createLoading = ref(false)
 async function handleCreateTeam() {

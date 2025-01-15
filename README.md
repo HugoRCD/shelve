@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="assets/preview.png" width="100%" alt="Shelve - The all-in-one development workspace" />
+  <img src="assets/cover.png" width="100%" alt="Shelve - The all-in-one development workspace" />
 
 # Shelve
 ### The all-in-one development workspace
@@ -61,14 +61,14 @@ Shelve aims to become the ultimate development workspace by addressing common pa
   </tr>
   <tr>
     <td>📅 Next Release</td>
-    <td>v2.0.0 (Q4 2024)</td>
+    <td>v2.0.0 (Q1 2025)</td>
   </tr>
 </table>
 
 #### Upcoming Features
 
 - 🔄 Ecosystem management for multi-repository synchronization (e.g., [UnJs](https://unjs.io))
-- 🔌 Enhanced integrations (GitHub, Vercel, Coolify) (e.g., environment variable syncing)
+- 🔌 Enhanced integrations (Vercel, Coolify) (e.g., environment variable syncing)
 - ⚡️ Automatic project setup with GitHub and Vercel (auto-repo creation, auto-deployment)
 - 🎨 Major UI improvements for a seamless experience (become one of the most beautiful dev tools)
 
@@ -78,6 +78,7 @@ Shelve aims to become the ultimate development workspace by addressing common pa
 
 - 🔐 **Environment Management**
   - Secure variable sharing
+  - Sync secrets with GitHub
   - Vault system for sharing secrets
   - Multi-environment support
   - Custom environment support
@@ -173,6 +174,6 @@ Made by [@HugoRCD](https://github.com/HugoRCD), [@CavallucciJohann](https://gith
 
 ---
 
-_🤖 auto updated with [automd](https://automd.unjs.io) (last updated: Wed Nov 27 2024)_
+_🤖 auto updated with [automd](https://automd.unjs.io) (last updated: Mon Dec 30 2024)_
 
 <!-- /automd -->

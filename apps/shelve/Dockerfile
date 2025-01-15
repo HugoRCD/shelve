@@ -1,28 +1,27 @@
 # Stage 1: Build Stage
-FROM oven/bun:latest AS build
+FROM node:22.13.0-alpine AS build
 
 ARG TURBO_TEAM
 ARG TURBO_TOKEN
 
 ENV TURBO_TEAM=$TURBO_TEAM
 ENV TURBO_TOKEN=$TURBO_TOKEN
-ENV NODE_ENV=production
 
 WORKDIR /app
 
-COPY package.json ./
-COPY bun.lockb ./
+COPY pnpm-lock.yaml package.json ./
 COPY apps/shelve/package.json ./apps/shelve/package.json
 COPY apps/shelve/entrypoint.sh ./entrypoint.sh
 
 COPY . .
 
-RUN bun install
+RUN corepack enable
+RUN pnpm install --frozen-lockfile
 
-RUN bun run build:app
+RUN pnpm run build:app
 
 # Stage 2: Final Stage
-FROM oven/bun:latest AS final
+FROM node:22.13.0-alpine AS final
 
 WORKDIR /app
 
@@ -33,17 +32,13 @@ COPY --from=build /app/apps/shelve/server/database/schema.ts ./server/database/s
 COPY --from=build /app/apps/shelve/server/database/column.helpers.ts ./server/database/column.helpers.ts
 COPY --from=build /app/apps/shelve/drizzle.config.ts ./drizzle.config.ts
 
-RUN rm -rf .output/server/node_modules
-RUN rm -rf .output/server/package.json
+RUN corepack enable
+RUN pnpm install --prod
 
-RUN bun install --production
+RUN apk update && apk add --no-cache curl
 
-RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
-
-# Make the entrypoint script executable
 RUN chmod +x /app/entrypoint.sh
 
 EXPOSE 3000
 
-# Set the entrypoint
 ENTRYPOINT ["/app/entrypoint.sh"]

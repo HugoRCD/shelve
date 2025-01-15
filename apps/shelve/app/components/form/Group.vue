@@ -11,7 +11,7 @@ type GroupProps = {
 
 const { rows = 6, type = 'text' } = defineProps<GroupProps>()
 
-const model = defineModel({ type: String })
+const model = defineModel<string>({ default: undefined })
 </script>
 
 <template>

@@ -31,7 +31,7 @@ export function useEnvironmentsService() {
     }
     createLoading.value = true
     try {
-      await $fetch(`/api/teams/${team.value.id}/environments`, {
+      await $fetch(`/api/teams/${teamSlug}/environments`, {
         method: 'POST',
         body: {
           name
@@ -50,7 +50,7 @@ export function useEnvironmentsService() {
     }
     updateLoading.value = true
     try {
-      await $fetch(`/api/teams/${team.value.id}/environments/${environment.id}`, {
+      await $fetch(`/api/teams/${teamSlug}/environments/${environment.id}`, {
         method: 'PUT',
         body: {
           name: environment.name
@@ -65,7 +65,7 @@ export function useEnvironmentsService() {
   async function deleteEnvironment(environment: Environment) {
     deleteLoading.value = true
     try {
-      await $fetch(`/api/teams/${team.value.id}/environments/${environment.id}`, {
+      await $fetch(`/api/teams/${teamSlug}/environments/${environment.id}`, {
         method: 'DELETE',
       })
     } catch (error) {
