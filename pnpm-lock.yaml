@@ -15,8 +15,8 @@ importers:
         specifier: edge
         version: 2.1.2-edge(eslint@9.18.0(jiti@2.4.2))(typescript@5.7.3)
       '@shelve/cli':
-        specifier: workspace:*
-        version: link:packages/cli
+        specifier: '*'
+        version: 3.1.1(magicast@0.3.5)
       automd:
         specifier: 0.3.12
         version: 0.3.12(magicast@0.3.5)
@@ -72,8 +72,8 @@ importers:
         specifier: 2.0.3
         version: 2.0.3(@unhead/vue@1.11.18(vue@3.5.13(typescript@5.7.3)))(h3@1.13.1)(magicast@0.3.5)(rollup@4.30.1)(typescript@5.7.3)(unhead@1.11.18)(vite@6.0.7(@types/node@22.10.6)(jiti@2.4.2)(lightningcss@1.29.1)(terser@5.37.0)(tsx@4.19.2)(yaml@2.7.0))(vue@3.5.13(typescript@5.7.3))
       '@shelve/types':
-        specifier: workspace:*
-        version: link:../../packages/types
+        specifier: '*'
+        version: 1.6.0
       nuxt:
         specifier: 3.15.2
         version: 3.15.2(@libsql/client@0.14.0)(@parcel/watcher@2.5.0)(@types/node@22.10.6)(better-sqlite3@11.8.0)(db0@0.2.1(@libsql/client@0.14.0)(better-sqlite3@11.8.0)(drizzle-orm@0.38.3(@libsql/client@0.14.0)(@types/pg@8.11.10)(better-sqlite3@11.8.0)(bun-types@1.1.43)(pg@8.13.1)(react@19.0.0)))(drizzle-orm@0.38.3(@libsql/client@0.14.0)(@types/pg@8.11.10)(better-sqlite3@11.8.0)(bun-types@1.1.43)(pg@8.13.1)(react@19.0.0))(encoding@0.1.13)(eslint@9.18.0(jiti@2.4.2))(ioredis@5.4.2)(lightningcss@1.29.1)(magicast@0.3.5)(optionator@0.9.4)(rollup@4.30.1)(terser@5.37.0)(tsx@4.19.2)(typescript@5.7.3)(vite@6.0.7(@types/node@22.10.6)(jiti@2.4.2)(lightningcss@1.29.1)(terser@5.37.0)(tsx@4.19.2)(yaml@2.7.0))(yaml@2.7.0)
@@ -115,11 +115,11 @@ importers:
         specifier: 3.0.0-alpha.11
         version: 3.0.0-alpha.11(@babel/parser@7.26.5)(change-case@5.4.4)(db0@0.2.1(@libsql/client@0.14.0)(better-sqlite3@11.8.0)(drizzle-orm@0.38.3(@libsql/client@0.14.0)(@types/pg@8.11.10)(better-sqlite3@11.8.0)(bun-types@1.1.43)(pg@8.13.1)(react@19.0.0)))(embla-carousel@8.5.2)(encoding@0.1.13)(focus-trap@7.6.4)(ioredis@5.4.2)(magicast@0.3.5)(radix-vue@1.9.12(vue@3.5.13(typescript@5.7.3)))(rollup@4.30.1)(typescript@5.7.3)(vue@3.5.13(typescript@5.7.3))
       '@shelve/types':
-        specifier: workspace:*
-        version: link:../../packages/types
+        specifier: '*'
+        version: 1.6.0
       '@shelve/utils':
-        specifier: workspace:*
-        version: link:../../packages/utils
+        specifier: '*'
+        version: 1.1.0
       '@vue-email/components':
         specifier: 0.0.21
         version: 0.0.21(typescript@5.7.3)(vue@3.5.13(typescript@5.7.3))
@@ -225,11 +225,11 @@ importers:
         version: 0.2.10
     devDependencies:
       '@shelve/types':
-        specifier: workspace:*
-        version: link:../types
+        specifier: '*'
+        version: 1.6.0
       '@shelve/utils':
-        specifier: workspace:*
-        version: link:../utils
+        specifier: '*'
+        version: 1.1.0
       '@types/bun':
         specifier: 1.1.16
         version: 1.1.16
@@ -2020,6 +2020,12 @@ packages:
   '@shelve/cli@3.1.1':
     resolution: {integrity: sha512-deJwVJGRAK9qHVmCLpUYst18SMZ2muuav8NcMIFIY75S/tQflbPbhhLn3Jqbc9/N2Zz/rjjj4GfCkG2kRdxRtA==}
     hasBin: true
+
+  '@shelve/types@1.6.0':
+    resolution: {integrity: sha512-XhdDS1HUiRFqjrPoKGb+7JDAq0aafrnE5zhNekn6iZ4F2JxM6eRANH0PFhiZ3KN+HXF1kNy5IcMRTMu9AF90SA==}
+
+  '@shelve/utils@1.1.0':
+    resolution: {integrity: sha512-IhbzZhNvQO3WEAbwBMRxkZvG8S+wPB7kDH7ESqNbNk6TMTGxxgLgcnv2ICbD5iIsBgBMvKZ1cqcQpAEda4RhgQ==}
 
   '@shikijs/core@1.22.0':
     resolution: {integrity: sha512-S8sMe4q71TJAW+qG93s5VaiihujRK6rqDFqBnxqvga/3LvqHEnxqBIOPkt//IdXVtHkQWKu4nOQNk0uBGicU7Q==}
@@ -9932,6 +9938,10 @@ snapshots:
     transitivePeerDependencies:
       - magicast
       - supports-color
+
+  '@shelve/types@1.6.0': {}
+
+  '@shelve/utils@1.1.0': {}
 
   '@shikijs/core@1.22.0':
     dependencies:
