@@ -1,9 +1,26 @@
 <script setup lang="ts">
 import NumberFlow from '@number-flow/vue'
 
+const loadingDots = ref('.')
+const loadingInterval = ref<number | null>(null)
+
+onMounted(() => {
+  loadingInterval.value = setInterval(() => {
+    loadingDots.value = loadingDots.value.length >= 3
+      ? '.'
+      : loadingDots.value + '.'
+  }, 500) as unknown as number
+})
+
+onUnmounted(() => {
+  if (loadingInterval.value) {
+    clearInterval(loadingInterval.value)
+  }
+})
+
 const baseUrl = useRuntimeConfig().public.apiUrl
 
-const { stats } = useStats({ baseUrl })
+const { stats, isLoading } = useStats({ baseUrl })
 
 const finalStats = computed(() => [
   {
@@ -43,7 +60,7 @@ const finalStats = computed(() => [
         <LandingScrambleText label="Built for speed" />
       </h3>
       <p class="flex gap-2 italic items-center text-pretty text-center text-neutral-500">
-        Stats are updated in real-time.
+        {{ !isLoading ? ' Stats are updated in real-time.' : `Loading stats${loadingDots}` }}
       </p>
     </div>
     <dl class="mt-16 grid grid-cols-1 gap-4 sm:mt-10 sm:grid-cols-3">
