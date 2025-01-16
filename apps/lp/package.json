@@ -25,6 +25,7 @@
     "@nuxtjs/seo": "2.0.3",
     "@shelve/types": "workspace:*",
     "nuxt": "3.15.2",
+    "@number-flow/vue": "^0.3.2",
     "nuxt-build-cache": "0.1.1",
     "vue": "3.5.13",
     "vue-router": "4.5.0",
