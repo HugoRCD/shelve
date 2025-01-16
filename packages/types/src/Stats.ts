@@ -8,6 +8,13 @@ export type Stats = {
   variables: Stat
   teams: Stat
   projects: Stat
+  push: Stat
+  pull: Stat
+  savedTime: {
+    seconds: number
+    minutes: number
+    hours: number
+  }
 }
 
 export type UseStatsOptions = {

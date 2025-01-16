@@ -1,6 +1,11 @@
 import type { UseStatsOptions, Stats } from '@shelve/types'
 
-export function useStats(options: UseStatsOptions = {}) {
+export function useStats(options: UseStatsOptions = {}): {
+  stats: Ref<Stats | undefined>
+  isLoading: Ref<boolean>
+  error: Ref<string | null>
+  reconnect: () => void
+} {
   const stats = ref<Stats>()
   const isLoading = ref(true)
   const error = ref<string | null>(null)

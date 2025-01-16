@@ -18,10 +18,12 @@ const schema = z.object({
 })
 
 export default eventHandler(async (event) => {
+  const team = useCurrentTeam(event)
   const body = await readValidatedBody(event, schema.parse)
   const { projectId } = await getValidatedRouterParams(event, projectIdParamsSchema.parse)
 
-  await new VariablesService().createVariables({
+  const variablesService = new VariablesService()
+  await variablesService.createVariables({
     projectId,
     autoUppercase: body.autoUppercase,
     environmentIds: body.environmentIds,
@@ -30,6 +32,8 @@ export default eventHandler(async (event) => {
       value: variable.value,
     }))
   })
+
+  variablesService.incrementStatAsync(team.id, 'push')
   return {
     statusCode: 201,
     message: 'Variables created successfully',
