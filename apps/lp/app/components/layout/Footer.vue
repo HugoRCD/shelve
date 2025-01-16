@@ -72,7 +72,19 @@ const columns = ref([
       </div>
 
       <UContainer>
-        <UFooterColumns :columns class="py-6" />
+        <UFooterColumns :columns class="py-6">
+          <template #right>
+            <UTooltip text="Coming soon...">
+              <UFormField name="email" label="Subscribe to our newsletter" size="lg">
+                <UInput type="email" class="w-full" placeholder="Enter your email" disabled>
+                  <template #trailing>
+                    <UButton type="submit" size="xs" color="neutral" label="Subscribe" disabled />
+                  </template>
+                </UInput>
+              </UFormField>
+            </UTooltip>
+          </template>
+        </UFooterColumns>
       </UContainer>
       <USeparator icon="custom:shelve" />
     </template>
