@@ -89,35 +89,37 @@ const columns = ref([
       <USeparator icon="custom:shelve" />
     </template>
 
-    <div class="text-xs text-neutral-500">
-      © {{ new Date().getFullYear() }} - Made by <NuxtLink to="https://hrcd.fr/" class="text-neutral-400 hover:text-neutral-200">
-        HugoRCD
-      </NuxtLink>
-    </div>
 
     <template #left>
-      <div style="color-scheme: none;" class="max-sm:hidden">
-        <iframe src="https://status.shelve.cloud/badge?theme=dark" height="30" />
+      <div class="text-xs text-neutral-500">
+        © {{ new Date().getFullYear() }} - Made by <NuxtLink to="https://hrcd.fr/" class="text-neutral-400 hover:text-neutral-200">
+          HugoRCD
+        </NuxtLink>
       </div>
     </template>
 
     <template #right>
-      <UButton
-        icon="i-simple-icons-x"
-        color="neutral"
-        variant="ghost"
-        to="https://x.com/shelvecloud"
-        target="_blank"
-        aria-label="X"
-      />
-      <UButton
-        icon="i-simple-icons-github"
-        color="neutral"
-        variant="ghost"
-        to="https://github.com/hugorcd/shelve"
-        target="_blank"
-        aria-label="GitHub"
-      />
+      <div class="flex items-center gap-2">
+        <UButton
+          icon="i-simple-icons-x"
+          color="neutral"
+          variant="ghost"
+          to="https://x.com/shelvecloud"
+          target="_blank"
+          aria-label="X"
+        />
+        <UButton
+          icon="i-simple-icons-github"
+          color="neutral"
+          variant="ghost"
+          to="https://github.com/hugorcd/shelve"
+          target="_blank"
+          aria-label="GitHub"
+        />
+        <div style="color-scheme: none;">
+          <iframe src="https://status.shelve.cloud/badge?theme=dark" height="30" width="200" />
+        </div>
+      </div>
     </template>
   </UFooter>
 </template>

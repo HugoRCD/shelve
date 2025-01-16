@@ -2,29 +2,36 @@
 const items = [
   {
     label: 'Is Shelve free?',
-    icon: 'lucide:wallet',
     defaultOpen: true,
-    content: 'Yes, Shelve is under heavy development and is currently free to use. We may introduce a paid plan in the future, but the free plan will always be available.',
+    content: 'Yes! Shelve is completely free and open-source. While we may introduce additional features in the future, our core functionality will always remain free and accessible to everyone.',
   },
   {
     label: 'Is Shelve secure?',
-    icon: 'lucide:lock',
-    content: 'Yes, Shelve is secure. We use industry-standard encryption (AES-256) to protect your data. We never store your secrets in plain text, and we never share your data with third parties. You can also check the source code on GitHub to verify our security practices.',
+    content: 'Security is our top priority. We use industry-standard **encryption (AES-256)** to protect your data, and all variables are encrypted at rest. Being open-source, our security practices are transparent and can be audited by anyone on GitHub.',
+  },
+  {
+    label: 'Can I self-host Shelve?',
+    content: 'Absolutely! Shelve can be [self-hosted using Docker](/docker) or with one-click using [Coolify](/coolify). Self-hosting gives you full control over your data and infrastructure.',
+  },
+  {
+    label: 'How does Shelve handle monorepos?',
+    content: 'Shelve has native support for [monorepos](/cli#monorepo-support). It automatically detects the root of your monorepo and manages configurations across all your projects, making it perfect for large-scale applications.',
+  },
+  {
+    label: 'Does Shelve integrate with other tools?',
+    content: 'Yes! Shelve currently integrates with GitHub for secrets management, with more integrations planned. You can sync your environment variables directly with [GitHub Secrets](/integrations/github).',
   },
   {
     label: 'How can I contribute to Shelve?',
-    icon: 'lucide:github',
-    content: 'You can contribute to Shelve by submitting a pull request to the GitHub repository. You can also contribute by reporting bugs, suggesting features, or sharing Shelve with your friends.',
+    content: 'We welcome contributions! You can contribute by submitting PRs, reporting bugs, suggesting features, or improving our documentation. Check our [Contributing Guide](/contributing) to get started.',
   },
   {
-    label: 'Is Shelve open source?',
-    icon: 'lucide:code',
-    content: 'Yes, Shelve is open source. You can view the source code on GitHub and contribute to the project if you wish.',
+    label: 'Is Shelve production-ready?',
+    content: `Yes, Shelve is being actively used in production environments. While we're constantly adding new features, the core functionality is stable and reliable.`,
   },
   {
-    label: 'How can I contact the Shelve team?',
-    icon: 'lucide:mail',
-    content: 'For the moment you can send me an email at contact@hrcd.fr',
+    label: 'How can I get support?',
+    content: 'For technical support, you can open an issue on [GitHub](https://git.new/shelve) or reach out via email at contact@shelve.cloud. We also maintain detailed documentation at docs.shelve.cloud.',
   }
 ]
 </script>
@@ -32,15 +39,20 @@ const items = [
 <template>
   <div id="faq">
     <div class="mb-10 flex flex-col items-center justify-center gap-2">
-      <h3 class="main-gradient text-2xl">
+      <h3 class="main-gradient text-3xl">
         <LandingScrambleText label="FAQ" />
       </h3>
       <p class="max-w-lg text-center text-sm text-neutral-500 sm:text-base">
-        Frequently asked questions about Shelve.
+        Frequently asked questions about Shelve. If you have a question that is not answered here, feel free to contact us.
       </p>
+      <UButton to="mailto:contact@shelve.cloud" label="Contact us" size="sm" class="mt-2" />
     </div>
     <div>
-      <UAccordion variant="ghost" size="sm" :items />
+      <UPageAccordion size="sm" :items>
+        <template #body="{ item }">
+          <MDC :value="item.content" unwrap="p" />
+        </template>
+      </UPageAccordion>
     </div>
   </div>
 </template>
