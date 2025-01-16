@@ -9,6 +9,10 @@ export function useStats(options: UseStatsOptions = {}): {
   const stats = ref<Stats>()
   const isLoading = ref(true)
   const error = ref<string | null>(null)
+  const retryCount = ref(0)
+  const MAX_RETRIES = 3
+  const RETRY_DELAY = 2000
+
   let eventSource: EventSource | null = null
 
   const getEventSourceUrl = () => {
@@ -18,35 +22,50 @@ export function useStats(options: UseStatsOptions = {}): {
     return `${location.origin}/api/stats`
   }
 
-  const initStats = () => {
-    if (import.meta.client) {
-      isLoading.value = true
-      error.value = null
+  const initEventSource = () => {
+    if (eventSource) {
+      eventSource.close()
+    }
 
-      const url = getEventSourceUrl()
-      eventSource = new EventSource(url)
+    const url = getEventSourceUrl()
+    eventSource = new EventSource(url)
 
-      eventSource.onmessage = (event) => {
+    eventSource.onmessage = (event) => {
+      try {
         stats.value = JSON.parse(event.data)
         isLoading.value = false
+        retryCount.value = 0
+      } catch (err) {
+        console.error('Failed to parse SSE data:', err)
       }
+    }
 
-      eventSource.onerror = (err) => {
-        error.value = 'Failed to connect to stats stream'
+    eventSource.onerror = () => {
+      eventSource?.close()
+
+      if (retryCount.value < MAX_RETRIES) {
+        retryCount.value++
+        setTimeout(() => {
+          console.log(`Retrying connection (${retryCount.value}/${MAX_RETRIES})...`)
+          initEventSource()
+        }, RETRY_DELAY * retryCount.value)
+      } else {
+        error.value = 'Failed to connect to stats stream after multiple attempts'
         isLoading.value = false
-        eventSource?.close()
       }
     }
   }
 
   const reconnect = () => {
-    if (eventSource) {
-      eventSource.close()
-    }
-    initStats()
+    retryCount.value = 0
+    initEventSource()
   }
 
-  initStats()
+  onMounted(() => {
+    if (import.meta.client) {
+      initEventSource()
+    }
+  })
 
   onUnmounted(() => {
     if (eventSource) {

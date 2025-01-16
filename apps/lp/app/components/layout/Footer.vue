@@ -1,53 +1,62 @@
 <script setup lang="ts">
-const nav = [
+const route = useRoute()
+
+const columns = ref([
   {
-    name: 'Support',
+    label: 'Support',
     icon: 'lucide:life-buoy',
-    sub: [
+    children: [
       {
-        name: 'Documentation',
-        to: '/',
+        label: 'Documentation',
+        to: '/getting-started',
       },
       {
-        name: 'FAQ',
-        to: '/',
+        label: 'FAQ',
+        to: '#faq',
+        active: route.hash === '#faq',
       },
       {
-        name: 'Roadmap',
-        to: 'https://volta.net/HugoRCD/shelve',
+        label: 'Roadmap',
+        to: '/roadmap',
       },
     ],
   },
   {
-    name: 'Community',
+    label: 'Community',
     icon: 'lucide:users',
-    sub: [
+    children: [
       {
-        name: 'GitHub',
+        label: 'GitHub',
         to: 'https://github.com/HugoRCD/shelve/issues',
+        target: '_blank'
       },
+      {
+        label: 'X / Twitter',
+        to: 'https://twitter.com/shelvecloud',
+        target: '_blank'
+      }
     ],
   },
   {
-    name: 'Legal',
+    label: 'Legal',
     icon: 'lucide:shield',
-    sub: [
+    children: [
       {
-        name: 'Privacy',
-        to: '/',
+        label: 'Privacy',
+        to: '#privacy',
       },
       {
-        name: 'Terms',
-        to: '/',
+        label: 'Terms',
+        to: '#terms',
       },
     ],
   },
-]
+])
 </script>
 
 <template>
-  <div class="mt-6">
-    <div class="relative">
+  <UFooter class="pb-12" :ui="{ top: 'py-0 lg:py-6' }">
+    <template #top>
       <div class="flex">
         <NuxtLink to="/getting-started" class="group -mb-px -ml-px flex w-full cursor-pointer justify-between gap-2 border border-neutral-800 border-opacity-50 p-4 text-xs text-neutral-500 transition-all duration-300 ease-in-out hover:border-opacity-100 hover:bg-neutral-800/50 hover:text-neutral-200">
           Documentation
@@ -61,40 +70,56 @@ const nav = [
           <UIcon name="lucide:arrow-right" class="ml-1 inline-block text-neutral-400 transition-all duration-300 ease-in-out group-hover:-rotate-45" />
         </NuxtLink>
       </div>
-    </div>
-    <hr class="border-neutral-800">
-    <footer class="mt-6 mb-16 flex flex-col justify-around gap-8 p-5 sm:flex-row sm:gap-0">
-      <div class="flex flex-col gap-2">
-        <Logo size="size-8" />
-        <div class="text-xs text-neutral-500">
-          © {{ new Date().getFullYear() }} - Made with 💚 by <NuxtLink to="https://hrcd.fr/" class="text-neutral-400 hover:text-neutral-200">
-            HugoRCD
-          </NuxtLink>
-        </div>
-        <div style="color-scheme: none;" class="mt-2">
-          <iframe src="https://status.shelve.cloud/badge?theme=dark" height="30" />
+
+      <UContainer>
+        <UFooterColumns :columns class="py-6">
+          <template #right>
+            <UTooltip text="Coming soon...">
+              <UFormField name="email" label="Subscribe to our newsletter" size="lg">
+                <UInput type="email" class="w-full" placeholder="Enter your email" disabled>
+                  <template #trailing>
+                    <UButton type="submit" size="xs" color="neutral" label="Subscribe" disabled />
+                  </template>
+                </UInput>
+              </UFormField>
+            </UTooltip>
+          </template>
+        </UFooterColumns>
+      </UContainer>
+      <USeparator icon="custom:shelve" />
+    </template>
+
+
+    <template #left>
+      <div class="text-xs text-neutral-500">
+        © {{ new Date().getFullYear() }} - Made by <NuxtLink to="https://hrcd.fr/" class="text-neutral-400 hover:text-neutral-200">
+          HugoRCD
+        </NuxtLink>
+      </div>
+    </template>
+
+    <template #right>
+      <div class="flex items-center gap-2">
+        <UButton
+          icon="i-simple-icons-x"
+          color="neutral"
+          variant="ghost"
+          to="https://x.com/shelvecloud"
+          target="_blank"
+          aria-label="X"
+        />
+        <UButton
+          icon="i-simple-icons-github"
+          color="neutral"
+          variant="ghost"
+          to="https://github.com/hugorcd/shelve"
+          target="_blank"
+          aria-label="GitHub"
+        />
+        <div style="color-scheme: none;">
+          <iframe src="https://status.shelve.cloud/badge?theme=dark" height="30" width="200" />
         </div>
       </div>
-      <div class="flex gap-10">
-        <div v-for="item in nav" :key="item.name" class="flex flex-col gap-3">
-          <div class="flex items-center gap-1.5">
-            <UIcon :name="item.icon" class="text-neutral-300" />
-            <div class="text-sm font-semibold text-neutral-200 sm:text-lg">
-              {{ item.name }}
-            </div>
-          </div>
-          <div v-if="item.sub" class="flex flex-col gap-3">
-            <NuxtLink
-              v-for="sub in item.sub"
-              :key="sub.name"
-              class="text-sm text-neutral-400 hover:text-neutral-400"
-              :to="sub.to"
-            >
-              {{ sub.name }}
-            </NuxtLink>
-          </div>
-        </div>
-      </div>
-    </footer>
-  </div>
+    </template>
+  </UFooter>
 </template>

@@ -19,6 +19,12 @@ export default defineNuxtConfig({
     'nuxt-build-cache'
   ],
 
+  nitro: {
+    experimental: {
+      websocket: true
+    }
+  },
+
   compatibilityDate: '2024-11-06',
 
   future: {
@@ -64,7 +70,7 @@ export default defineNuxtConfig({
   $development: {
     runtimeConfig: {
       public: {
-        apiUrl: 'http://localhost:3003'
+        apiUrl: 'http://localhost:3001'
       }
     }
   },

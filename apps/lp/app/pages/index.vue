@@ -24,27 +24,28 @@ function useClipboard(text: string) {
     <div class="flex h-full flex-col items-center justify-center gap-3">
       <LandingHero class="h-64" />
     </div>
-    <div class="mx-auto h-80 sm:h-96 flex max-w-5xl flex-col items-center gap-16 px-8 sm:flex-row sm:gap-8 sm:px-16">
-      <div class="flex w-fit flex-col gap-2">
-        <NuxtLink
-          class="mb-4"
-          href="https://www.producthunt.com/posts/shelve?embed=true&utm_source=badge-featured&utm_medium=badge&utm_souce=badge-shelve"
-          target="_blank"
-        >
-          <img
-            src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=534015&theme=neutral"
-            alt="Shelve - &#0034;The&#0032;simple&#0032;way&#0032;to&#0032;share&#0032;environment&#0032;variables&#0034; | Product Hunt"
-            style="width: 150px;"
+    <UPageSection orientation="horizontal" :ui="{ container: 'sm:pb-0 lg:pb-8' }">
+      <template #leading>
+        <div class="text-left">
+          <NuxtLink
+            href="https://www.producthunt.com/posts/shelve?embed=true&utm_source=badge-featured&utm_medium=badge&utm_souce=badge-shelve"
+            target="_blank"
           >
-        </NuxtLink>
-        <h3 class="main-gradient text-2xl">
-          <LandingScrambleText label="// Welcome to Shelve" />
-        </h3>
-        <span class="text-sm text-neutral-500 sm:text-base">
-          Shelve is the best place to manage your projects, alone or with your team. Store your project secrets, data, files and more in one place.
-          Use our CLI to manage your projects without leaving your terminal.
-        </span>
-      </div>
+            <img
+              src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=534015&theme=neutral"
+              alt="Shelve - &#0034;The&#0032;simple&#0032;way&#0032;to&#0032;share&#0032;environment&#0032;variables&#0034; | Product Hunt"
+              style="width: 150px;"
+            >
+          </NuxtLink>
+          <h3 class="main-gradient text-2xl mb-2 mt-4">
+            <LandingScrambleText label="// Welcome to Shelve" />
+          </h3>
+          <p class="text-neutral-400">
+            Shelve is the best place to manage your projects, alone or with your team. Store your project secrets, data, files and more in one place.
+            Use our CLI to manage your projects without leaving your terminal.
+          </p>
+        </div>
+      </template>
       <div class="relative flex items-center justify-center size-full">
         <div class="absolute bottom-16 z-20 flex items-center justify-center [mask-image:linear-gradient(to_bottom,white,transparent)]">
           <div
@@ -61,7 +62,7 @@ function useClipboard(text: string) {
           </div>
         </div>
 
-        <div class="relative py-28 w-full">
+        <div class="relative py-40 w-full">
           <div class="absolute inset-0 flex items-center justify-center [mask-image:linear-gradient(to_bottom,white,transparent)]">
             <div class="bg-white/2.5 absolute size-96 rounded-full shadow-xl" />
 
@@ -79,8 +80,8 @@ function useClipboard(text: string) {
           </div>
         </div>
       </div>
-    </div>
-    <UPageSection class="max-sm:mt-64">
+    </UPageSection>
+    <UPageSection :ui="{ container: 'lg:pt-0' }">
       <LandingFeatures />
     </UPageSection>
     <UPageSection>
