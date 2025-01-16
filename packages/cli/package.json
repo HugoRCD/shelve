@@ -53,8 +53,8 @@
     "tinyglobby": "0.2.10"
   },
   "devDependencies": {
-    "@shelve/types": "workspace:*",
-    "@shelve/utils": "workspace:*",
+    "@shelve/types": "*",
+    "@shelve/utils": "*",
     "@types/bun": "1.1.16",
     "@types/npm-registry-fetch": "8.0.7",
     "@types/semver": "7.5.8",
