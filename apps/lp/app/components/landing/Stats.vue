@@ -38,14 +38,6 @@ const finalStats = computed(() => [
         <LandingScrambleText label="Built for developers" />
       </h3>
       <p class="flex gap-2 items-center text-pretty text-center text-sm text-neutral-500 sm:text-base">
-        <span class="relative flex size-3">
-          <span
-            class="absolute bg-neutral-50 inline-flex size-full animate-ping rounded-full opacity-75"
-          />
-          <span
-            class="relative bg-neutral-500 inline-flex size-3 scale-90 rounded-full"
-          />
-        </span>
         Stats are updated in real-time
       </p>
     </div>
@@ -57,16 +49,24 @@ const finalStats = computed(() => [
           container: 'sm:p-4 gap-y-0'
         }"
       >
-        <NumberFlowGroup>
-          <dt class="flex items-center gap-2 text-3xl font-bold">
-            <NumberFlow
-              :value="stat.value"
-              :suffix="stat.suffix"
-              continuous
+        <div class="flex gap-2 items-center">
+          <span class="relative flex size-2">
+            <span
+              class="absolute bg-neutral-50 inline-flex size-full animate-ping rounded-full opacity-75"
             />
-          </dt>
-        </NumberFlowGroup>
-        <dd class="text-sm text-neutral-500">
+            <span
+              class="relative bg-neutral-500 inline-flex size-2 scale-90 rounded-full"
+            />
+          </span>
+          <NumberFlow
+            class="text-3xl font-bold font-mono"
+            :value="stat.value"
+            :suffix="stat.suffix"
+            continuous
+            will-change
+          />
+        </div>
+        <dd class="text-sm font-mono text-neutral-500">
           {{ stat.label }}
         </dd>
       </UPageCard>

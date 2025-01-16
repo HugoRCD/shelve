@@ -1,7 +1,7 @@
 export default defineAppConfig({
   ui: {
     colors: {
-      primary: 'blue',
+      primary: 'orange',
       neutral: 'neutral',
     },
     button: {
@@ -9,7 +9,6 @@ export default defineAppConfig({
         base: 'cursor-pointer'
       },
       defaultVariants: {
-        // @ts-expect-error not typed
         color: 'neutral',
       }
     },
@@ -18,13 +17,11 @@ export default defineAppConfig({
     },
     checkbox: {
       defaultVariants: {
-        // @ts-expect-error not typed
         color: 'neutral',
       }
     },
     switch: {
       defaultVariants: {
-        // @ts-expect-error not typed
         color: 'neutral',
       }
     },

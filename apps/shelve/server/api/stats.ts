@@ -1,8 +1,12 @@
-import { Stats } from '@shelve/types'
+import type { Stats } from '@shelve/types'
+
+const STATS_CACHE_KEY = 'nitro:functions:stats:latest.json'
+const CACHE_VALIDITY_DURATION = 1000 * 60 * 60 // 1 hour
 
 export default defineEventHandler(async (event) => {
   const eventStream = createEventStream(event)
   const db = useDrizzle()
+  const storage = useStorage('cache')
 
   const getStats = async (): Promise<Stats> => {
     const nbUsers = await db.query.users.findMany()
@@ -14,9 +18,9 @@ export default defineEventHandler(async (event) => {
     const nbPull = teamStats.reduce((acc, stat) => acc + stat.pullCount, 0)
 
     const totalActions = nbPush + nbPull
-    const timeSavedInSeconds = totalActions * 417 // 7 minutes - 3 seconds
+    const timeSavedInSeconds = totalActions * 417
 
-    return {
+    const stats: Stats = {
       users: {
         label: 'users',
         value: nbUsers.length
@@ -47,10 +51,34 @@ export default defineEventHandler(async (event) => {
         hours: Math.floor(timeSavedInSeconds / 3600)
       }
     }
+
+    await storage.setItem(STATS_CACHE_KEY, {
+      stats,
+      timestamp: Date.now()
+    })
+
+    return stats
+  }
+
+  const getCachedOrFreshStats = async (): Promise<Stats> => {
+    const cached = await storage.getItem(STATS_CACHE_KEY)
+
+    if (cached) {
+      const { stats, timestamp } = cached as { stats: Stats, timestamp: number }
+      const now = Date.now()
+
+      if (now - timestamp >= CACHE_VALIDITY_DURATION) {
+        getStats().catch(console.error)
+      }
+
+      return stats
+    }
+
+    return getStats()
   }
 
   try {
-    const initialStats = await getStats()
+    const initialStats = await getCachedOrFreshStats()
     eventStream.push(JSON.stringify(initialStats))
 
     const interval = setInterval(async () => {
