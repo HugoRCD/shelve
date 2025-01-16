@@ -30,7 +30,7 @@ const items = [
 </script>
 
 <template>
-  <div>
+  <div id="faq">
     <div class="mb-10 flex flex-col items-center justify-center gap-2">
       <h3 class="main-gradient text-2xl">
         <LandingScrambleText label="FAQ" />
