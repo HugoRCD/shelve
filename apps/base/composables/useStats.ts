@@ -1,6 +1,5 @@
 import type { UseStatsOptions, Stats } from '@shelve/types'
 
-
 export function useStats(options: UseStatsOptions = {}) {
   const stats = ref<Stats>()
   const isLoading = ref(true)

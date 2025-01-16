@@ -8,24 +8,24 @@ export default defineEventHandler(async (event) => {
     const nbTeams = await db.query.teams.findMany()
     const nbProjects = await db.query.projects.findMany()
 
-    return [
-      {
+    return {
+      users: {
         label: 'users',
         value: nbUsers.length
       },
-      {
+      variables: {
         label: 'variables',
         value: nbVariables.length
       },
-      {
+      teams: {
         label: 'teams',
         value: nbTeams.length
       },
-      {
+      projects: {
         label: 'projects',
         value: nbProjects.length
       }
-    ]
+    }
   }
 
   try {

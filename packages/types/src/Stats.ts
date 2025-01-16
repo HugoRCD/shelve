@@ -3,7 +3,12 @@ export type Stat = {
   value: number
 }
 
-export type Stats = Stat[]
+export type Stats = {
+  users: Stat
+  variables: Stat
+  teams: Stat
+  projects: Stat
+}
 
 export type UseStatsOptions = {
   baseUrl?: string

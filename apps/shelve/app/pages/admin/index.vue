@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { AuthType, Role, type User, type Stats } from '@shelve/types'
+import { AuthType, Role, type Stats, type User } from '@shelve/types'
 import type { TableColumn } from '@nuxt/ui'
 import { ConfirmModal } from '#components'
 
@@ -8,7 +8,13 @@ const { data: users, status, refresh } = useFetch<User[]>('/api/admin/users', {
   watch: false,
 })
 
-const { stats } = useStats()
+const { stats, isLoading } = useStats()
+
+const statsArray = computed(() => {
+  if (isLoading.value) return []
+  if (Array.isArray(stats.value)) return stats.value
+  return Object.values(stats.value as Stats)
+})
 
 const search = ref('')
 const updateLoading = ref(false)
@@ -150,7 +156,7 @@ const items = (row: User) => [
 <template>
   <div class="mt-1 flex flex-col gap-4">
     <div class="flex gap-2">
-      <UCard v-for="stat in stats" :key="stat.label" class="w-full">
+      <UCard v-for="stat in statsArray" :key="stat.label" class="w-full">
         <div class="flex flex-col gap-1 items-center">
           <span class="text-lg font-semibold text-neutral-800 dark:text-neutral-200">{{ stat.value }}</span>
           <span class="text-sm text-neutral-600 dark:text-neutral-400">{{ capitalize(stat.label) }}</span>
