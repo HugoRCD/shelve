@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import NumberFlow, { NumberFlowGroup } from '@number-flow/vue'
+import NumberFlow from '@number-flow/vue'
 
 const baseUrl = useRuntimeConfig().public.apiUrl
 
@@ -16,8 +16,8 @@ const finalStats = computed(() => [
     format: { notation: 'compact' }
   },
   {
-    value: stats.value?.teams.value ?? undefined,
-    label: 'Teams',
+    value: stats.value?.projects.value ?? undefined,
+    label: 'Projets',
     suffix: ''
   },
   {
@@ -39,11 +39,11 @@ const finalStats = computed(() => [
 <template>
   <div>
     <div class="mb-10 flex flex-col gap-2">
-      <h3 class="main-gradient text-2xl leading-8">
-        <LandingScrambleText label="Built for developers" />
+      <h3 class="main-gradient italic text-3xl leading-8">
+        <LandingScrambleText label="Built for speed" />
       </h3>
-      <p class="flex gap-2 items-center text-pretty text-center text-sm text-neutral-500 sm:text-base">
-        Stats are updated in real-time
+      <p class="flex gap-2 italic items-center text-pretty text-center text-neutral-500">
+        Stats are updated in real-time.
       </p>
     </div>
     <dl class="mt-16 grid grid-cols-1 gap-4 sm:mt-10 sm:grid-cols-3">
@@ -66,7 +66,7 @@ const finalStats = computed(() => [
           <NumberFlow
             class="text-3xl font-bold font-mono"
             :value="stat.value ?? 'Infinity'"
-            :suffix="stat.suffix"
+            :suffix="stat.value ? stat.suffix : ''"
             continuous
             will-change
           />

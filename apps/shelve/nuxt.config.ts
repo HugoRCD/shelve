@@ -16,23 +16,13 @@ export default defineNuxtConfig({
 
   $development: {
     routeRules: {
-      '/api/**': {
-        cors: true,
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-        }
-      },
+      '/api/**': { cors: true },
     },
   },
 
   $production: {
     routeRules: {
-      '/api/**': {
-        cors: true,
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-        }
-      },
+      '/api/**': { cors: true }
     },
   },
 
