@@ -64,7 +64,7 @@ export abstract class BaseService {
       this.api = ofetch.create({
         baseURL,
         headers: {
-          Cookie: `authToken=she_8_FDXJja38L4ExoQxZkjiPo8kUg`
+          Cookie: `authToken=${config.token}`
         },
         onResponseError: ErrorService.handleApiError
       })
