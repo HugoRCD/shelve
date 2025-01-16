@@ -14,6 +14,11 @@ export default defineAppConfig({
         'shelve.json': 'custom:shelve',
         'docker-compose.yml': 'simple-icons:docker'
       }
+    },
+    pageSection: {
+      slots: {
+        container: 'py-10 sm:py-10 lg:py-16',
+      }
     }
   }
 })

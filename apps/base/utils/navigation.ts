@@ -73,10 +73,10 @@ export function getNavigation(where: Where, teamSlug?: string): Navigation[] {
     case 'admin':
       return [
         {
-          name: 'Users',
-          path: '/admin/users',
-          icon: 'heroicons:users',
-          title: 'Users',
+          name: 'Dashboard',
+          path: '/admin',
+          icon: 'heroicons:home',
+          title: 'Dashboard',
         },
         {
           name: 'Tests',

@@ -2,6 +2,7 @@
 import { AuthType, Role, type User } from '@shelve/types'
 import type { TableColumn } from '@nuxt/ui'
 import { ConfirmModal } from '#components'
+import AdminStats from '~/components/AdminStats.vue'
 
 const { data: users, status, refresh } = useFetch<User[]>('/api/admin/users', {
   method: 'GET',
@@ -147,9 +148,12 @@ const items = (row: User) => [
 
 <template>
   <div class="mt-1 flex flex-col gap-4">
-    <div class="flex flex-col justify-end gap-4 sm:flex-row sm:items-center">
-      <UInput v-model="search" label="Search" placeholder="Search a user" icon="heroicons:magnifying-glass-20-solid" />
-    </div>
+    <AdminStats />
+    <Teleport defer to="#action-items">
+      <div class="hidden items-center justify-end gap-2 sm:flex">
+        <UInput v-model="search" label="Search" placeholder="Search a user" icon="heroicons:magnifying-glass-20-solid" />
+      </div>
+    </Teleport>
     <UTable :data="filteredUsers" :columns :loading="status === 'pending' || updateLoading || deleteLoading">
       <template #avatar-cell="{ row }">
         <UAvatar :src="row.original.avatar" :alt="row.original.username" size="sm" img-class="object-cover" />

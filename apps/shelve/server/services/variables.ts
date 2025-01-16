@@ -17,6 +17,30 @@ export class VariablesService {
     return await unseal(value, this.encryptionKey) as string
   }
 
+  incrementStatAsync(teamId: number, action: 'push' | 'pull') {
+    Promise.resolve().then(async () => {
+      try {
+        const db = useDrizzle()
+        await db.insert(tables.teamStats)
+          .values({
+            teamId,
+            [`${action}Count`]: 1
+          })
+          .onConflictDoUpdate({
+            target: [tables.teamStats.teamId],
+            set: {
+              [`${action}Count`]: sql`${tables.teamStats[`${action}Count`]} + 1`,
+              updatedAt: new Date()
+            }
+          })
+          .catch((error) => {
+            console.error('Failed to increment stat', error)
+          })
+      } catch { /* empty */ }
+    })
+  }
+
+
   private async findVariableById(tx: any, id: number) {
     return await tx.query.variables.findFirst({
       where: eq(tables.variables.id, id),

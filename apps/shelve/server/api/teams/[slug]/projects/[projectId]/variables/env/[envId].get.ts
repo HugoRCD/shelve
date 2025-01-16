@@ -4,6 +4,7 @@ import { VariablesService } from '~~/server/services/variables'
 import { projectIdParamsSchema } from '~~/server/database/zod'
 
 export default eventHandler(async (event) => {
+  const team = useCurrentTeam(event)
   const { projectId } = await getValidatedRouterParams(event, projectIdParamsSchema.parse)
   const { envId } = await getValidatedRouterParams(event, z.object({
     envId: z.coerce.number({
@@ -13,6 +14,7 @@ export default eventHandler(async (event) => {
 
   const variablesService = new VariablesService()
 
+  variablesService.incrementStatAsync(team.id, 'pull')
   const result = await variablesService.getVariables(projectId, envId)
 
   if (!result) throw createError({ statusCode: 404, statusMessage: `Variables not found for project ${projectId} and environment ${envId}` })

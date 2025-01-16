@@ -1,4 +1,4 @@
-import { boolean, pgEnum, pgTable, varchar, index, uniqueIndex, bigint } from 'drizzle-orm/pg-core'
+import { boolean, pgEnum, pgTable, varchar, index, uniqueIndex, bigint, integer } from 'drizzle-orm/pg-core'
 import { AuthType, Role, TeamRole } from '@shelve/types'
 import { relations } from 'drizzle-orm'
 import { timestamps } from './column.helpers'
@@ -127,6 +127,14 @@ export const environments = pgTable('environments', {
   uniqueIndex('environments_team_name_idx').on(table.teamId, table.name),
   index('environments_team_idx').on(table.teamId),
 ])
+
+export const teamStats = pgTable('team_stats', {
+  id: bigint({ mode: 'number' }).primaryKey().generatedByDefaultAsIdentity(),
+  teamId: bigint({ mode: 'number' }).unique().references(() => teams.id).notNull(),
+  pushCount: integer('push_count').notNull().default(0),
+  pullCount: integer('pull_count').notNull().default(0),
+  ...timestamps,
+}, (table) => [uniqueIndex('team_stats_id_idx').on(table.id)])
 
 export const githubAppRelations = relations(githubApp, ({ one }) => ({
   users: one(users, {
