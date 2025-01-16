@@ -11,8 +11,6 @@ export function useStats(options: UseStatsOptions = {}): {
   const error = ref<string | null>(null)
   let eventSource: EventSource | null = null
 
-  //TODO Connect LP and handle CORS
-
   const getEventSourceUrl = () => {
     if (options.baseUrl) {
       return `${options.baseUrl}/api/stats`

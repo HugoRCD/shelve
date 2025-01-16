@@ -61,5 +61,21 @@ export default defineNuxtConfig({
     fallback: 'dark'
   },
 
+  $development: {
+    runtimeConfig: {
+      public: {
+        apiUrl: 'http://localhost:3001'
+      }
+    }
+  },
+
+  $production: {
+    runtimeConfig: {
+      public: {
+        apiUrl: 'https://app.shelve.cloud'
+      }
+    }
+  },
+
   css: ['./assets/css/base.css'],
 })

@@ -1,76 +1,76 @@
 <script setup lang="ts">
 import NumberFlow, { NumberFlowGroup } from '@number-flow/vue'
 
-const nbUsers = ref(52)
-const nbSecrets = ref(1000)
+const baseUrl = useRuntimeConfig().public.apiUrl
 
-const stats = ref([
+const { stats } = useStats({ baseUrl })
+
+const finalStats = computed(() => [
   {
-    number: 0,
-    finalNumber: nbUsers.value,
+    value: stats.value?.users.value ?? 0,
     label: 'Active Users',
-    prefix: '+',
   },
   {
-    number: 0,
-    finalNumber: nbSecrets.value,
+    value: stats.value?.variables.value ?? 0,
     label: 'Secrets Stored',
     format: { notation: 'compact' }
   },
   {
-    number: 0,
-    finalNumber: 99.9,
-    label: 'Uptime',
-    suffix: '%'
+    value: stats.value?.teams.value ?? 0,
+    label: 'Teams',
+    suffix: ''
+  },
+  {
+    value: stats.value?.pull.value ?? 0,
+    label: 'Pull',
+  },
+  {
+    value: stats.value?.push.value ?? 0,
+    label: 'Push',
   }
 ])
-
-onMounted(() => {
-  setTimeout(() => {
-    stats.value = stats.value.map(stat => ({
-      ...stat,
-      number: stat.finalNumber
-    }))
-  }, 100)
-})
 </script>
 
 <template>
-  <div class="py-16">
-    <div class="mx-auto max-w-7xl px-6 lg:px-8">
-      <div class="mx-auto max-w-2xl lg:max-w-none">
-        <div class="mb-10 flex flex-col items-center justify-center gap-2">
-          <h3 class="main-gradient text-2xl leading-8">
-            <LandingScrambleText :label="`Trusted by ${nbUsers > 100 ? 'hundreds of' : 'dozens of'} users`" />
-          </h3>
-          <p class="max-w-lg text-pretty text-center text-sm text-neutral-500 sm:text-base">
-            Stats are updated in real-time. Last updated: {{ new Date().toLocaleString() }}
-          </p>
-        </div>
-        <dl class="mt-16 grid grid-cols-1 gap-8 sm:mt-20 sm:grid-cols-3">
-          <div
-            v-for="(stat, index) in stats"
-            :key="index"
-            class="flex flex-col items-center gap-2"
-          >
-            <NumberFlowGroup>
-              <dt class="flex items-center gap-2 text-3xl font-bold">
-                <NumberFlow
-                  :value="stat.number"
-                  :prefix="stat.prefix"
-                  :suffix="stat.suffix"
-                  continuous
-                  class="font-semibold tabular-nums"
-                />
-              </dt>
-            </NumberFlowGroup>
-            <dd class="text-sm text-neutral-500">
-              {{ stat.label }}
-            </dd>
-          </div>
-        </dl>
-      </div>
+  <div>
+    <div class="mb-10 flex flex-col gap-2">
+      <h3 class="main-gradient text-2xl leading-8">
+        <LandingScrambleText label="Built for developers" />
+      </h3>
+      <p class="flex gap-2 items-center text-pretty text-center text-sm text-neutral-500 sm:text-base">
+        <span class="relative flex size-3">
+          <span
+            class="absolute bg-neutral-50 inline-flex size-full animate-ping rounded-full opacity-75"
+          />
+          <span
+            class="relative bg-neutral-500 inline-flex size-3 scale-90 rounded-full"
+          />
+        </span>
+        Stats are updated in real-time
+      </p>
     </div>
+    <dl class="mt-16 grid grid-cols-1 gap-4 sm:mt-10 sm:grid-cols-3">
+      <UPageCard
+        v-for="(stat, index) in finalStats"
+        :key="index"
+        :ui="{
+          container: 'sm:p-4 gap-y-0'
+        }"
+      >
+        <NumberFlowGroup>
+          <dt class="flex items-center gap-2 text-3xl font-bold">
+            <NumberFlow
+              :value="stat.value"
+              :suffix="stat.suffix"
+              continuous
+            />
+          </dt>
+        </NumberFlowGroup>
+        <dd class="text-sm text-neutral-500">
+          {{ stat.label }}
+        </dd>
+      </UPageCard>
+    </dl>
   </div>
 </template>
 

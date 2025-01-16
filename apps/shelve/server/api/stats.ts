@@ -56,7 +56,7 @@ export default defineEventHandler(async (event) => {
     const interval = setInterval(async () => {
       const stats = await getStats()
       eventStream.push(JSON.stringify(stats))
-    }, 4000)
+    }, 2000)
 
     eventStream.onClosed(async () => {
       clearInterval(interval)

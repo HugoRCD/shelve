@@ -37,7 +37,7 @@ const features = [
 </script>
 
 <template>
-  <div class="mx-auto max-w-5xl">
+  <div>
     <div class="mb-10 flex flex-col items-center justify-center gap-2">
       <h3 class="main-gradient text-2xl">
         <LandingScrambleText label="Features" />

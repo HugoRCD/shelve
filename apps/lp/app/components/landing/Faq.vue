@@ -39,7 +39,7 @@ const items = [
         Frequently asked questions about Shelve.
       </p>
     </div>
-    <div class="mx-auto max-w-3xl">
+    <div>
       <UAccordion variant="ghost" size="sm" :items />
     </div>
   </div>

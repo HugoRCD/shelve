@@ -15,6 +15,7 @@
 :root {
   --ui-radius: var(--radius-sm);
   --ease-smooth: cubic-bezier(0.45, 0, 0.55, 1);
+  --ui-container: var(--container-5xl);
 }
 
 html, body, #__nuxt, #__layout {
