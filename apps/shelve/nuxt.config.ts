@@ -30,10 +30,7 @@ export default defineNuxtConfig({
       '/api/**': {
         cors: true,
         headers: {
-          'Access-Control-Allow-Origin': 'https://*.shelve.cloud',
-          'Access-Control-Allow-Methods': 'GET,HEAD,PUT,PATCH,POST,DELETE',
-          'Access-Control-Allow-Credentials': 'true',
-          'Vary': 'Origin'
+          'Access-Control-Allow-Origin': '*',
         }
       },
     },
