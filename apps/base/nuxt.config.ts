@@ -64,7 +64,7 @@ export default defineNuxtConfig({
   $development: {
     runtimeConfig: {
       public: {
-        apiUrl: 'http://localhost:3001'
+        apiUrl: 'http://localhost:3003'
       }
     }
   },

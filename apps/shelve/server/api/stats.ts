@@ -8,34 +8,38 @@ export default defineEventHandler(async (event) => {
   const db = useDrizzle()
   const storage = useStorage('cache')
 
-  const getStats = async (): Promise<Stats> => {
-    const nbUsers = await db.query.users.findMany()
-    const nbVariables = await db.query.variables.findMany()
-    const nbTeams = await db.query.teams.findMany()
-    const nbProjects = await db.query.projects.findMany()
-    const teamStats = await db.query.teamStats.findMany()
-    const nbPush = teamStats.reduce((acc, stat) => acc + stat.pushCount, 0)
-    const nbPull = teamStats.reduce((acc, stat) => acc + stat.pullCount, 0)
-
+  const calculateStats = (data: {
+    users: any[],
+    variables: any[],
+    teams: any[],
+    projects: any[],
+    teamStats: any[]
+  }): Stats => {
+    const nbPush = data.teamStats.reduce((acc, stat) => acc + stat.pushCount, 0)
+    const nbPull = data.teamStats.reduce((acc, stat) => acc + stat.pullCount, 0)
     const totalActions = nbPush + nbPull
-    const timeSavedInSeconds = totalActions * 417
 
-    const stats: Stats = {
+    const MANUAL_PROCESS_TIME = 300
+    const SHELVE_PROCESS_TIME = 4
+    const TIME_SAVED_PER_ACTION = MANUAL_PROCESS_TIME - SHELVE_PROCESS_TIME
+    const timeSavedInSeconds = totalActions * TIME_SAVED_PER_ACTION
+
+    return {
       users: {
         label: 'users',
-        value: nbUsers.length
+        value: data.users.length
       },
       variables: {
         label: 'variables',
-        value: nbVariables.length
+        value: data.variables.length
       },
       teams: {
         label: 'teams',
-        value: nbTeams.length
+        value: data.teams.length
       },
       projects: {
         label: 'projects',
-        value: nbProjects.length
+        value: data.projects.length
       },
       push: {
         label: 'push',
@@ -51,6 +55,18 @@ export default defineEventHandler(async (event) => {
         hours: Math.floor(timeSavedInSeconds / 3600)
       }
     }
+  }
+
+  const getStats = async (): Promise<Stats> => {
+    const [users, variables, teams, projects, teamStats] = await Promise.all([
+      db.query.users.findMany(),
+      db.query.variables.findMany(),
+      db.query.teams.findMany(),
+      db.query.projects.findMany(),
+      db.query.teamStats.findMany()
+    ])
+
+    const stats = calculateStats({ users, variables, teams, projects, teamStats })
 
     await storage.setItem(STATS_CACHE_KEY, {
       stats,

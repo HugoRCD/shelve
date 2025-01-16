@@ -7,26 +7,31 @@ const { stats } = useStats({ baseUrl })
 
 const finalStats = computed(() => [
   {
-    value: stats.value?.users.value ?? 0,
-    label: 'Active Users',
+    value: stats.value?.users.value ?? undefined,
+    label: 'Users',
   },
   {
-    value: stats.value?.variables.value ?? 0,
+    value: stats.value?.variables.value ?? undefined,
     label: 'Secrets Stored',
     format: { notation: 'compact' }
   },
   {
-    value: stats.value?.teams.value ?? 0,
+    value: stats.value?.teams.value ?? undefined,
     label: 'Teams',
     suffix: ''
   },
   {
-    value: stats.value?.pull.value ?? 0,
+    value: stats.value?.pull.value ?? undefined,
     label: 'Pull',
   },
   {
-    value: stats.value?.push.value ?? 0,
+    value: stats.value?.push.value ?? undefined,
     label: 'Push',
+  },
+  {
+    value: stats.value?.savedTime.hours ?? undefined,
+    label: 'Saved Time',
+    suffix: 'h'
   }
 ])
 </script>
@@ -60,7 +65,7 @@ const finalStats = computed(() => [
           </span>
           <NumberFlow
             class="text-3xl font-bold font-mono"
-            :value="stat.value"
+            :value="stat.value ?? 'Infinity'"
             :suffix="stat.suffix"
             continuous
             will-change
@@ -71,6 +76,9 @@ const finalStats = computed(() => [
         </dd>
       </UPageCard>
     </dl>
+    <span class="text-xs text-neutral-500 text-center mt-4 block">
+      Saved time is calculated by comparing manual env file sharing (5min) vs Shelve operations (5s).
+    </span>
   </div>
 </template>
 
