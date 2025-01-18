@@ -1,83 +1,118 @@
-import type { UseStatsOptions, Stats } from '@shelve/types'
+import type { Stats, UseStatsOptions } from '@shelve/types'
 
-export function useStats(options: UseStatsOptions = {}): {
-  stats: Ref<Stats | undefined>
-  isLoading: Ref<boolean>
-  error: Ref<string | null>
-  reconnect: () => void
-} {
-  const stats = ref<Stats>()
+export function useStats(options: UseStatsOptions = {}) {
+  const stats = useState<Stats>('stats')
   const isLoading = ref(true)
   const error = ref<string | null>(null)
-  const retryCount = ref(0)
-  const MAX_RETRIES = 3
-  const RETRY_DELAY = 2000
+  const wsRef = ref<WebSocket | null>(null)
+  const isConnected = ref(false)
+  const isMounted = ref(true)
 
-  let eventSource: EventSource | null = null
-
-  const getEventSourceUrl = () => {
-    if (options.baseUrl) {
-      return `${options.baseUrl}/api/stats`
+  async function initialFetch() {
+    const baseUrl = options.baseUrl || location.host
+    try {
+      stats.value = await $fetch(`${ baseUrl }/api/stats`)
+    } catch (error: any) {
+      console.error('Failed to fetch Stats:', error)
+      error.value = 'Failed to fetch Stats'
+    } finally {
+      isLoading.value = false
     }
-    return `${location.origin}/api/stats`
   }
 
-  const initEventSource = () => {
-    if (eventSource) {
-      eventSource.close()
+  const cleanup = () => {
+    if (wsRef.value) {
+      wsRef.value.close()
+      wsRef.value = null
     }
+    isConnected.value = false
+    isLoading.value = false
+  }
 
-    const url = getEventSourceUrl()
-    eventSource = new EventSource(url)
+  const getWebSocketUrl = () => {
+    const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:'
+    let baseUrl = options.baseUrl || location.host
+    baseUrl = baseUrl.replace(/^(http|https):\/\//, '')
+    return `${protocol}//${baseUrl}/api/stats/ws`
+  }
 
-    eventSource.onmessage = (event) => {
-      try {
-        stats.value = JSON.parse(event.data)
+  const initWebSocket = () => {
+    if (!isMounted.value) return
+
+    cleanup()
+
+    try {
+      const ws = new WebSocket(getWebSocketUrl())
+      wsRef.value = ws
+
+      ws.onopen = () => {
+        if (!isMounted.value) {
+          ws.close()
+          return
+        }
+        console.log('Stats WebSocket connected')
+        isConnected.value = true
         isLoading.value = false
-        retryCount.value = 0
-      } catch (err) {
-        console.error('Failed to parse SSE data:', err)
+        error.value = null
       }
-    }
 
-    eventSource.onerror = () => {
-      eventSource?.close()
-
-      if (retryCount.value < MAX_RETRIES) {
-        retryCount.value++
-        setTimeout(() => {
-          console.log(`Retrying connection (${retryCount.value}/${MAX_RETRIES})...`)
-          initEventSource()
-        }, RETRY_DELAY * retryCount.value)
-      } else {
-        error.value = 'Failed to connect to stats stream after multiple attempts'
-        isLoading.value = false
+      ws.onmessage = (event) => {
+        if (!isMounted.value) return
+        try {
+          stats.value = JSON.parse(event.data)
+        } catch (err) {
+          console.error('Failed to parse Stats WebSocket data:', err)
+        }
       }
+
+      ws.onclose = (event) => {
+        console.log('Stats WebSocket closed:', event.code, event.reason)
+        isConnected.value = false
+        wsRef.value = null
+
+        if (isMounted.value && event.code !== 1000) {
+          error.value = 'Connection lost'
+        }
+      }
+
+      ws.onerror = (event) => {
+        if (!isMounted.value) return
+        console.error('Stats WebSocket error:', event)
+        error.value = 'Connection error'
+      }
+    } catch (err) {
+      if (!isMounted.value) return
+      console.error('Failed to initialize Stats WebSocket:', err)
+      error.value = 'Failed to initialize connection'
+      isLoading.value = false
     }
   }
 
   const reconnect = () => {
-    retryCount.value = 0
-    initEventSource()
+    if (!isMounted.value) return
+    error.value = null
+    isLoading.value = true
+    initWebSocket()
   }
 
   onMounted(() => {
     if (import.meta.client) {
-      initEventSource()
+      isMounted.value = true
+      initWebSocket()
     }
   })
 
-  onUnmounted(() => {
-    if (eventSource) {
-      eventSource.close()
-      eventSource = null
-    }
+  onBeforeUnmount(() => {
+    isMounted.value = false
+    cleanup()
   })
 
   return {
     stats,
     isLoading,
     error,
-    reconnect
+    isConnected,
+    reconnect,
+    initialFetch
   }
 }

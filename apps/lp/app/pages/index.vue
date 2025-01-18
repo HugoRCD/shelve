@@ -20,7 +20,10 @@ function useClipboard(text: string) {
 </script>
 
 <template>
-  <div class="flex flex-col gap-4">
+  <div class="relative flex flex-col gap-4">
+    <div id="visitors">
+      <!-- active visitors -->
+    </div>
     <div class="flex h-full flex-col items-center justify-center gap-3">
       <LandingHero class="h-64" />
     </div>

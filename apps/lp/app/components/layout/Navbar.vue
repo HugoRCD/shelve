@@ -37,32 +37,29 @@ items.push(githubItem)
 <template>
   <div class="z-[99] relative">
     <Blur position="both" />
-    <div class="fixed top-0 flex w-full">
-      <div class="z-50 flex w-full items-center justify-between sm:justify-around p-4 sm:px-5 sm:py-2">
+    <UHeader class="fixed w-full p-4 px-5 py-2 bg-transparent backdrop-blur-none border-none" mode="drawer">
+      <template #left>
         <Logo />
-        <div class="flex items-center">
-          <UNavigationMenu
-            color="neutral"
-            :items
-            class="hidden sm:flex"
-          >
-            <template #components-trailing>
-              <UBadge variant="subtle" size="sm" />
-            </template>
-          </UNavigationMenu>
-        </div>
+      </template>
+
+      <UNavigationMenu color="neutral" :items>
+        <template #components-trailing>
+          <UBadge variant="subtle" size="sm" />
+        </template>
+      </UNavigationMenu>
+
+      <template #right>
         <div class="flex items-center gap-2">
-          <div class="flex sm:hidden">
-            <UDropdownMenu :items>
-              <UButton variant="ghost" icon="lucide:menu" />
-            </UDropdownMenu>
-          </div>
           <div>
             <UButton label="Open App" size="sm" @click="navigateTo(`https://app.shelve.cloud/login`, { external: true })" />
           </div>
         </div>
-      </div>
-    </div>
+      </template>
+
+      <template #content>
+        <UNavigationMenu :items orientation="vertical" class="-mx-2.5" />
+      </template>
+    </UHeader>
   </div>
 </template>
 

@@ -10,6 +10,7 @@ export type Stats = {
   projects: Stat
   push: Stat
   pull: Stat
+  activeVisitors: Stat
   savedTime: {
     seconds: number
     minutes: number
