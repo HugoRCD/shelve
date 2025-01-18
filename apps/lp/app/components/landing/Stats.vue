@@ -20,7 +20,8 @@ onUnmounted(() => {
 
 const baseUrl = useRuntimeConfig().public.apiUrl
 
-const { stats, isLoading } = useStats({ baseUrl })
+const { stats, isLoading, initialFetch } = useStats({ baseUrl })
+initialFetch()
 
 const finalStats = computed(() => [
   {
@@ -34,7 +35,7 @@ const finalStats = computed(() => [
   },
   {
     value: stats.value?.projects.value ?? undefined,
-    label: 'Projets',
+    label: 'Projects',
     suffix: ''
   },
   {
@@ -55,6 +56,30 @@ const finalStats = computed(() => [
 
 <template>
   <div>
+    <ClientOnly>
+      <Teleport defer to="#visitors">
+        <div class="fixed bottom-5 right-5 z-[999]  text-neutral-500 text-xs flex gap-2 items-center">
+          <span class="relative flex size-2">
+            <span
+              class="absolute bg-green-50 inline-flex size-full animate-ping rounded-full opacity-75"
+            />
+            <span
+              class="relative bg-green-500 inline-flex size-2 scale-90 rounded-full"
+            />
+          </span>
+          <span>
+            Active visitors:
+          </span>
+          <NumberFlow
+            class="text-sm font-bold font-mono"
+            :value="stats?.activeVisitors.value ?? 0"
+            continuous
+            will-change
+          />
+        </div>
+      </Teleport>
+    </ClientOnly>
+
     <div class="mb-10 flex flex-col gap-2">
       <h3 class="main-gradient italic text-3xl leading-8">
         <LandingScrambleText label="Built for speed" />

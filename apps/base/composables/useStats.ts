@@ -1,12 +1,24 @@
-import type { UseStatsOptions, Stats } from '@shelve/types'
+import type { Stats, UseStatsOptions } from '@shelve/types'
 
 export function useStats(options: UseStatsOptions = {}) {
-  const stats = ref<Stats>()
+  const stats = useState<Stats>('stats')
   const isLoading = ref(true)
   const error = ref<string | null>(null)
   const wsRef = ref<WebSocket | null>(null)
   const isConnected = ref(false)
   const isMounted = ref(true)
+
+  async function initialFetch() {
+    const baseUrl = options.baseUrl || location.host
+    try {
+      stats.value = await $fetch(`${ baseUrl }/api/stats`)
+    } catch (error: any) {
+      console.error('Failed to fetch Stats:', error)
+      error.value = 'Failed to fetch Stats'
+    } finally {
+      isLoading.value = false
+    }
+  }
 
   const cleanup = () => {
     if (wsRef.value) {
@@ -100,6 +112,7 @@ export function useStats(options: UseStatsOptions = {}) {
     isLoading,
     error,
     isConnected,
-    reconnect
+    reconnect,
+    initialFetch
   }
 }

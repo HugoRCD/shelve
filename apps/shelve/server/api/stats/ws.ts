@@ -1,5 +1,3 @@
-import { getStats } from '~~/server/utils/stats'
-
 class StatsWebSocketManager {
 
   private static instance: StatsWebSocketManager
@@ -54,12 +52,17 @@ const wsManager = StatsWebSocketManager.getInstance()
 export default defineWebSocketHandler({
   async open(peer) {
     try {
+      const storage = useStorage('cache')
       wsManager.addPeer(peer.id)
 
       const activeVisitors = wsManager.getActiveVisitors()
 
       const initialStats = await getStats(activeVisitors)
       peer.send(JSON.stringify(initialStats))
+      storage.setItem(STATS_CACHE_KEY, {
+        data: initialStats,
+        timestamp: Date.now()
+      })
 
       const interval = setInterval(async () => {
         const activeVisitors = wsManager.getActiveVisitors()
@@ -69,6 +72,10 @@ export default defineWebSocketHandler({
           }
           const stats = await getStats(activeVisitors)
           peer.send(JSON.stringify(stats))
+          storage.setItem(STATS_CACHE_KEY, {
+            data: stats,
+            timestamp: Date.now()
+          })
         } catch (error) {
           console.error('Stats interval error:', error)
           wsManager.removePeer(peer.id)
