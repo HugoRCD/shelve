@@ -15,7 +15,7 @@ useHead({
   link: link,
 })
 
-const seoMetadata = {
+const seoMetadata = ref({
   title: props.title || appTitle,
   description: props.description || appDescription,
   author: 'Hugo Richard',
@@ -27,14 +27,14 @@ const seoMetadata = {
   ogSiteName: props.title || appTitle,
   ogTitle: props.title || appTitle,
   ogDescription: props.description || appDescription,
-}
+})
 
 if (props.defaultOgImage) {
-  seoMetadata.twitterImage = ogImage
-  seoMetadata.ogImage = ogImage
+  seoMetadata.value.twitterImage = ogImage
+  seoMetadata.value.ogImage = ogImage
 }
 
-useSeoMeta(seoMetadata)
+useSeoMeta(seoMetadata.value)
 </script>
 
 <template>
