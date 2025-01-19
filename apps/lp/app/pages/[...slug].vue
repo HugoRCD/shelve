@@ -11,6 +11,9 @@ const route = useRoute()
 const { data: page } = await useAsyncData(route.path, () =>
   queryCollection('content').path(route.path).first()
 )
+if (!page.value) {
+  throw createError({ statusCode: 404, statusMessage: 'Page not found', fatal: true })
+}
 
 const { data: surround } = await useAsyncData(`${route.path}-surround`, () => {
   return queryCollectionItemSurroundings('content', route.path, {
@@ -26,13 +29,15 @@ defineOgImageComponent('Docs', {
   headline: breadcrumb.value.map(item => item.label).join(' > ')
 })
 
+const editThisPage = computed(() => ({
+  icon: 'i-heroicons-pencil-square-solid',
+  label: 'Edit this page',
+  to: `https://github.com/hugorcd/shelve/edit/main/apps/lp/content/${page?.value?.stem}.md`,
+  target: '_blank'
+}))
+
 const communityLinks = computed(() => [
   {
-    icon: 'i-heroicons-pencil-square-solid',
-    label: 'Edit this page',
-    to: `https://github.com/hugorcd/shelve/edit/main/apps/lp/content/${page?.value?.stem}.md`,
-    target: '_blank'
-  }, {
     icon: 'i-heroicons-star-solid',
     label: 'Star on GitHub',
     to: `https://github.com/hugorcd/shelve`,
@@ -79,7 +84,11 @@ const communityLinks = computed(() => [
       <UPageBody>
         <ContentRenderer v-if="page.body" :value="page" />
 
-        <USeparator />
+        <USeparator class="mb-4" />
+        <ULink :to="editThisPage.to" class="text-sm flex items-center gap-1">
+          <UIcon name="i-heroicons-pencil-square-solid" />
+          Edit this page
+        </ULink>
 
         <UContentSurround :surround="(surround as any)" />
       </UPageBody>
