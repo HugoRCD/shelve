@@ -25,6 +25,12 @@ export default defineNuxtConfig({
     },
   },
 
+  content: {
+    preview: {
+      api: 'https://api.nuxt.studio'
+    }
+  },
+
   mdc: {
     highlight: {
       theme: {
@@ -37,7 +43,6 @@ export default defineNuxtConfig({
 
   nitro: {
     prerender: {
-      routes: ['/sitemap.xml', '/vault'],
       crawlLinks: true,
       autoSubfolderIndex: false
     },
