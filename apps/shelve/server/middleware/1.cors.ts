@@ -2,7 +2,7 @@ export default defineEventHandler((event) => {
   const origin = getRequestHeader(event, 'origin')
 
   if (origin) {
-    const prodDomainPattern = /^https:\/\/(docs\.|www\.)?shelve\.cloud$/
+    const prodDomainPattern = /^https:\/\/(docs\.|www\.|app\.)?shelve\.cloud$/
 
     const devDomainPattern = /^http:\/\/(shelve\.)?localhost:\d+$/
 
