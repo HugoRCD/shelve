@@ -27,6 +27,8 @@ const breadcrumb = computed(() => mapContentNavigation(findPageBreadcrumb(naviga
 
 defineOgImageComponent('Docs', {
   headline: breadcrumb.value.map(item => item.label).join(' > ')
+}, {
+  fonts: ['Geist:400', 'Geist:600'],
 })
 
 const editThisPage = computed(() => ({
