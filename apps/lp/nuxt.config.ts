@@ -10,10 +10,10 @@ export default defineNuxtConfig({
 
   modules: [
     '@nuxt/ui-pro',
+    '@nuxtjs/seo',
     '@nuxt/content',
     'nuxt-og-image',
-    '@nuxt/scripts',
-    '@nuxtjs/seo'
+    '@nuxt/scripts'
   ],
 
   runtimeConfig: {
@@ -42,27 +42,15 @@ export default defineNuxtConfig({
   },
 
   nitro: {
-    /*prerender: {
+    prerender: {
       crawlLinks: true,
-      autoSubfolderIndex: false
-    },*/
+      failOnError: false,
+      routes: ['/sitemap.xml']
+    },
   },
 
   experimental: {
     viewTransition: true,
-  },
-
-  sitemap: {
-    enabled: false
-  },
-  robots: {
-    enabled: false
-  },
-  schemaOrg: {
-    enabled: false
-  },
-  linkChecker: {
-    enabled: false
   },
 
   image: {
