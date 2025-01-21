@@ -15,6 +15,7 @@ export default eventHandler(async (event) => {
 
   return new MembersService().updateMember({
     teamId: team.id,
+    slug: team.slug,
     memberId: id,
     role
   })

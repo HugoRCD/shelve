@@ -8,6 +8,7 @@ export default eventHandler(async (event) => {
 
   await new MembersService().removeMember({
     teamId: team.id,
+    slug: team.slug,
     memberId: id,
   })
 

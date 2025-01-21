@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Variable } from '@shelve/types'
+import { TeamRole, type Variable } from '@shelve/types'
 
 const route = useRoute()
 const projectId = route.params.projectId as string

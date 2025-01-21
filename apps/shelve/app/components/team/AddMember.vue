@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { type Member, Role, TeamRole } from '@shelve/types'
+import { cleanString } from '~~/server/utils/string'
 
 type TeamMemberProps = { members: Member[] }
 
@@ -38,7 +39,7 @@ const loadingMembers = ref(false)
 
 function addMemberFunction(email: string, role: TeamRole) {
   loadingMembers.value = true
-  toast.promise(addMember(email, role), {
+  toast.promise(addMember(cleanString(email), role), {
     loading: 'Adding member...',
     success: 'Member added successfully',
     error: 'Error adding member',

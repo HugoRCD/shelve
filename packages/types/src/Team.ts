@@ -46,17 +46,20 @@ export type DeleteTeamInput = {
 
 export type AddMemberInput = {
   teamId: number;
+  slug: string;
   email: string;
   role: TeamRole;
 }
 
 export type UpdateMemberInput = {
   teamId: number;
+  slug: string;
   memberId: number;
   role: TeamRole;
 }
 
 export type RemoveMemberInput = {
   teamId: number;
+  slug: string;
   memberId: number;
 }
