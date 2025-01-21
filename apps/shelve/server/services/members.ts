@@ -3,11 +3,12 @@ import type { AddMemberInput, Member, RemoveMemberInput, UpdateMemberInput, User
 export class MembersService {
 
   async addMember(input: AddMemberInput): Promise<Member> {
-    const { teamId, email, role } = input
+    const { teamId, email, role, slug } = input
     const foundedMember = await this.isUserAlreadyMember(teamId, email)
     if (foundedMember) {
       return await this.updateMember({
         teamId,
+        slug,
         memberId: foundedMember.id,
         role
       })
@@ -23,12 +24,12 @@ export class MembersService {
       .returning()
     if (!newMember) throw createError({ statusCode: 422, message: 'Failed to add member' })
     const member = await this.findMemberById(newMember.id)
-    await clearCache('Team', teamId)
+    await clearCache('Team', slug)
     return member
   }
 
   async updateMember(input: UpdateMemberInput): Promise<Member> {
-    const { teamId, memberId, role } = input
+    const { slug, memberId, role } = input
 
     await useDrizzle().update(tables.members)
       .set({
@@ -37,15 +38,15 @@ export class MembersService {
       .where(eq(tables.members.id, memberId))
 
     const member = await this.findMemberById(memberId)
-    await clearCache('Team', teamId)
+    await clearCache('Team', slug)
     return member
   }
 
   async removeMember(input: RemoveMemberInput): Promise<void> {
-    const { teamId, memberId } = input
+    const { memberId, slug } = input
 
     const member = await this.findMemberById(memberId)
-    await clearCache('Team', teamId)
+    await clearCache('Team', slug)
     await useDrizzle().delete(tables.members).where(eq(tables.members.id, member.id))
   }
 

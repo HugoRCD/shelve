@@ -94,10 +94,12 @@ const items = [
         a.click()
       }
     },
+  ],
+  [
     {
       label: 'Delete project',
       icon: 'lucide:trash',
-      iconClass: 'text-red-500 dark:text-red-500',
+      color: 'error',
       disabled: teamRole.value !== TeamRole.OWNER,
       onSelect: () => showDelete.value = !showDelete.value
     }

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { TeamRole } from '@shelve/types'
 import { useCurrentLoading } from '~/composables/useProjects'
 import type { FormSubmitEvent } from '#ui/types'
 import { type UpdateProjectSchema, updateProjectSchema } from '~/utils/zod/project'
@@ -8,6 +9,9 @@ const projectId = route.params.projectId as string
 const project = useProject(projectId)
 
 const currentLoading = useCurrentLoading()
+
+const teamRole = useTeamRole()
+const canUpdate = computed(() => hasAccess(teamRole.value, TeamRole.ADMIN))
 
 async function onSubmit(event: FormSubmitEvent<UpdateProjectSchema>) {
   await useProjectsService().updateProject(event.data)
@@ -50,7 +54,7 @@ async function onSubmit(event: FormSubmitEvent<UpdateProjectSchema>) {
                 :ui="{ help: 'text-xs' }"
               >
                 <div class="flex items-center gap-1">
-                  <UInput v-model="project.repository" class="md:w-2/3" />
+                  <UInput v-model="project.repository" class="md:w-2/3" :disabled="!canUpdate" />
                   <ProjectRepoSelector v-model="project.repository" />
                 </div>
               </UFormField>
@@ -58,13 +62,13 @@ async function onSubmit(event: FormSubmitEvent<UpdateProjectSchema>) {
             <div>
               <USkeleton v-if="currentLoading" class="h-8" />
               <UFormField v-else name="projectManager" label="Project Manager">
-                <UInput v-model="project.projectManager" class="md:w-2/3" />
+                <UInput v-model="project.projectManager" class="md:w-2/3" :disabled="!canUpdate" />
               </UFormField>
             </div>
             <div>
               <USkeleton v-if="currentLoading" class="h-8" />
               <UFormField v-else name="homepage" label="Homepage">
-                <UInput v-model="project.homepage" class="md:w-2/3" />
+                <UInput v-model="project.homepage" class="md:w-2/3" :disabled="!canUpdate" />
               </UFormField>
             </div>
           </div>
@@ -82,7 +86,9 @@ async function onSubmit(event: FormSubmitEvent<UpdateProjectSchema>) {
           <div class="my-2 flex flex-col gap-4">
             <div>
               <USkeleton v-if="currentLoading" class="h-8" />
-              <FormGroup v-else v-model="project.variablePrefix" type="textarea" label="Prefix" class="md:w-2/3" />
+              <UFormField v-else v-model="project.variablePrefix" label="Prefix" class="md:w-2/3">
+                <UTextarea v-model="project.variablePrefix" class="w-full" :disabled="!canUpdate" :rows="4" />
+              </UFormField>
               <UTooltip text="Yes this will be improved in the future 😅">
                 <p class="mt-1 text-xs text-neutral-500 dark:text-neutral-400">
                   Write your prefix separated by a comma, for example: <code>NUXT_PUBLIC_, REACT_APP_</code>
@@ -92,7 +98,7 @@ async function onSubmit(event: FormSubmitEvent<UpdateProjectSchema>) {
           </div>
         </div>
       </div>
-      <template #footer>
+      <template v-if="canUpdate" #footer>
         <div class="flex justify-end gap-4">
           <UButton type="submit" trailing loading-auto>
             Save

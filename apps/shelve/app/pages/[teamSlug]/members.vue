@@ -63,7 +63,7 @@ const items = (row: Member) => [
     {
       label: 'Delete',
       icon: 'heroicons:trash-20-solid',
-      iconClass: 'text-red-500 dark:text-red-500',
+      color: 'error',
       disabled: !canDelete.value,
       onSelect: () => {
         if (row.role === TeamRole.OWNER) {

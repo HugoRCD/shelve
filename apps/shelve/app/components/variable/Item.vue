@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { type Environment, type Variable } from '@shelve/types'
+import { type Environment, TeamRole, type Variable } from '@shelve/types'
 
 const { variable, environments } = defineProps<{
   variable: Variable
@@ -7,7 +7,9 @@ const { variable, environments } = defineProps<{
   isSelected: boolean
 }>()
 
-const teamRole = useTeamRole() //TODO handle roles
+const teamRole = useTeamRole()
+const canDelete = computed(() => hasAccess(teamRole.value, TeamRole.OWNER))
+const canUpdate = computed(() => hasAccess(teamRole.value, TeamRole.ADMIN))
 
 const {
   updateLoading,
@@ -121,6 +123,7 @@ const showEdit = ref(false)
         </div>
         <div class="flex justify-between gap-4">
           <UButton
+            v-if="canDelete"
             color="error"
             variant="ghost"
             :loading="deleteLoading"
@@ -128,11 +131,11 @@ const showEdit = ref(false)
           >
             Delete
           </UButton>
-          <div class="flex gap-2">
+          <div class="flex justify-end w-full gap-2">
             <UButton variant="soft" @click="showEdit = false">
-              Cancel
+              Close
             </UButton>
-            <UButton type="submit" trailing :loading="updateLoading" trailing-icon="lucide:save">
+            <UButton v-if="canUpdate" type="submit" trailing :loading="updateLoading" trailing-icon="lucide:save">
               Save
             </UButton>
           </div>

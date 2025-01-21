@@ -18,6 +18,7 @@ export default eventHandler(async (event) => {
 
   return await new MembersService().addMember({
     teamId: team.id,
+    slug: team.slug, // use for caching
     email,
     role
   })
