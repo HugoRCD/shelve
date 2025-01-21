@@ -30,3 +30,11 @@ This also the unique identifier that you can use to access the team's workspace 
   "project": "@nuxt/ui"
 }
 ```
+
+## Create a team
+
+Use the team selector and type the team name in the search field to create a new team.
+
+<video width="100%" autoplay loop muted>
+  <source src="/docs/create-team.mp4" type="video/mp4" autoplay>
+</video>
