@@ -122,7 +122,7 @@ const items = (row: User) => [
     {
       label: 'Delete',
       icon: 'heroicons:trash-20-solid',
-      iconClass: 'text-red-500 dark:text-red-500',
+      color: 'error',
       onSelect: () => {
         if (row.role === Role.ADMIN) {
           toast.error('Cannot delete admin')

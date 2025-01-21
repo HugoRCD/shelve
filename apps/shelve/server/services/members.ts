@@ -8,6 +8,7 @@ export class MembersService {
     if (foundedMember) {
       return await this.updateMember({
         teamId,
+        slug,
         memberId: foundedMember.id,
         role
       })
