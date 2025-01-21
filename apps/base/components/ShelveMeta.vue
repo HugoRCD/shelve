@@ -4,6 +4,7 @@ const { title: appTitle, link, description: appDescription, ogImage } = useAppCo
 const props = withDefaults(defineProps<{
   defaultOgImage?: boolean,
   title?: string,
+  titleTemplate?: string,
   description?: string,
 }>(), {
   defaultOgImage: true
@@ -11,7 +12,7 @@ const props = withDefaults(defineProps<{
 
 useHead({
   title: props.title || appTitle,
-  titleTemplate: `%s | ${appTitle}`,
+  titleTemplate: props.titleTemplate || `%s | ${appTitle}`,
   link: link,
 })
 

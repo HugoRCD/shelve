@@ -19,7 +19,7 @@ if (import.meta.client) setPrefersReducedMotion(reduceMotion.value)
 <template>
   <Html lang="en">
     <Body class="overscroll-y-none selection:bg-primary font-geist relative overflow-x-hidden bg-white text-black selection:text-inverted dark:bg-neutral-950 dark:text-white">
-      <ShelveMeta />
+      <ShelveMeta title="Application" title-template="%s | Shelve" />
       <UApp :tooltip="{ delayDuration: 0 }">
         <Suspense>
           <NuxtLayout>
