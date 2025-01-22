@@ -40,7 +40,7 @@ const items = [
   <div id="faq">
     <div class="mb-10 flex flex-col items-center justify-center gap-2">
       <h3 class="main-gradient text-3xl">
-        <LandingScrambleText label="FAQ" />
+        <ScrambleText label="FAQ" />
       </h3>
       <p class="max-w-lg text-center text-sm text-neutral-500 sm:text-base">
         Frequently asked questions about Shelve. If you have a question that is not answered here, feel free to contact us.

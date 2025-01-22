@@ -82,7 +82,7 @@ const finalStats = computed(() => [
 
     <div class="mb-10 flex flex-col gap-2">
       <h3 class="main-gradient italic text-3xl leading-8">
-        <LandingScrambleText label="Built for speed" />
+        <ScrambleText label="Built for speed" />
       </h3>
       <p class="flex gap-2 italic items-center text-pretty text-center text-neutral-500">
         {{ !isLoading ? ' Stats are updated in real-time.' : `Loading stats${loadingDots}` }}

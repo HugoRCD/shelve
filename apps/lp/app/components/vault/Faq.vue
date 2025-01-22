@@ -17,7 +17,7 @@ const items = [
   <div class="mt-8 flex w-full max-w-2xl flex-col gap-4 px-5">
     <div class="flex flex-col items-center justify-center">
       <h3 class="main-gradient text-2xl">
-        <LandingScrambleText label="FAQ" />
+        <ScrambleText label="FAQ" />
       </h3>
       <p class="max-w-lg text-center text-sm text-neutral-500 sm:text-base">
         Frequently asked questions about Vault.

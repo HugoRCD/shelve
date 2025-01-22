@@ -8,10 +8,10 @@ defineProps<{
   <div class="relative -mb-px -ml-px">
     <div v-if="line" class="h-0.5 w-[200rem] bg-neutral-100 dark:bg-neutral-800 absolute -left-[100rem] opacity-40" />
     <div v-if="line" class="h-[200rem] w-0.5 bg-neutral-100 dark:bg-neutral-800 absolute -top-[100rem] opacity-40 -left-0.5" />
-    <span class="bottom absolute -bottom-px -left-px size-px" />
-    <span class="bottom absolute -bottom-px -right-px size-px" />
-    <span class="bottom absolute -left-px -top-px size-px" />
-    <span class="bottom absolute -right-px -top-px size-px" />
+    <span class="cross absolute -bottom-px -left-px size-px" />
+    <span class="cross absolute -bottom-px -right-px size-px" />
+    <span class="cross absolute -left-px -top-px size-px" />
+    <span class="cross absolute -right-px -top-px size-px" />
     <div class="relative z-10 flex h-full flex-col justify-center">
       <slot />
     </div>
@@ -21,7 +21,7 @@ defineProps<{
 </template>
 
 <style scoped>
-.bottom:before {
+.cross:before {
   --tw-bg-opacity: 1;
   content: "";
   width: 1px;
@@ -30,7 +30,7 @@ defineProps<{
   top: -4px;
 }
 
-.bottom:after {
+.cross:after {
   --tw-bg-opacity: 1;
   content: "";
   width: 9px;
@@ -40,13 +40,13 @@ defineProps<{
 }
 
 .dark {
-  .bottom:before, .bottom:after {
+  .cross:before, .cross:after {
     background-color: rgb(255 255 255 / var(--tw-bg-opacity));
   }
 }
 
 .light {
-  .bottom:before, .bottom:after {
+  .cross:before, .cross:after {
     background-color: rgb(0 0 0 / var(--tw-bg-opacity));
   }
 }

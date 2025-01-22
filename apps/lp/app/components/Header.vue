@@ -30,15 +30,12 @@ defineShortcuts({
       </NuxtLink>
     </template>
 
-    <UNavigationMenu :items variant="link" />
+    <UContentSearchButton label="Search or ⌘K..." icon="lucide:search" variant="subtle" size="sm" class="w-[300px]" />
 
     <template #right>
-      <UTooltip text="Search" :kbds="['meta', 'K']">
-        <UContentSearchButton />
-      </UTooltip>
-
       <UButton label="Get Started" size="xs" to="https://app.shelve.cloud" />
 
+      <UContentSearchButton class="lg:hidden" />
 
       <UTooltip text="Open on GitHub" :kbds="['meta', 'G']" class="hidden lg:flex">
         <UButton
@@ -72,6 +69,5 @@ defineShortcuts({
 
 <style>
 :root {
-  --ui-header-height: 45px;
 }
 </style>

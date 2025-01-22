@@ -41,7 +41,7 @@ const sealMode = computed(() => id.value)
           <EncryptDiv encrypted-text class="w-full">
             <div>
               <h1 class="main-gradient cursor-pointer text-3xl" @click="$router.push('/vault')">
-                <LandingScrambleText label="Vault" />
+                <ScrambleText label="Vault" />
               </h1>
               <p class="text-neutral-500">
                 Vault is a small utility to share secrets.
