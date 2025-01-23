@@ -72,10 +72,16 @@ const items = [
     label: 'Company',
     children: [
       {
+        label: 'About',
+        to: '/about',
+        icon: 'heroicons:question-mark-circle-solid',
+        description: 'Meet the team behind Shelve'
+      },
+      {
         label: 'Brand',
         to: '/brand',
         icon: 'heroicons:photo-solid',
-        description: 'Discover our brand assets'
+        description: 'Assets and guidelines'
       },
       {
         to: 'mailto:contact@shelve.cloud',
@@ -117,7 +123,32 @@ const navigationUi = computed(() => ({
         <Logo />
       </template>
 
-      <UNavigationMenu variant="link" color="neutral" :items :ui="navigationUi" />
+      <UNavigationMenu variant="link" color="neutral" :items :ui="navigationUi">
+        <template #features-content="{ item }">
+          <div class="flex flex-row p-2 gap-2">
+            <div class="row-span-3 flex-1">
+              <Callout class="h-full p-6 opacity-70">
+                <span class="text-xs">
+                  > explore shelve features
+                  Discover a better way to manage env variables. Built by developers, for developers.
+                </span>
+              </Callout>
+            </div>
+            <ul class="flex flex-col gap-1">
+              <li v-for="child in item.children" :key="child.label">
+                <ULink class="text-sm w-full text-left rounded-md p-3 transition-colors hover:bg-[var(--ui-bg-elevated)]/50">
+                  <p class="font-medium text-[var(--ui-text-highlighted)]">
+                    {{ child.label }}
+                  </p>
+                  <p class="text-[var(--ui-text-muted)] line-clamp-2">
+                    {{ child.description }}
+                  </p>
+                </ULink>
+              </li>
+            </ul>
+          </div>
+        </template>
+      </UNavigationMenu>
 
       <template #right>
         <div class="flex items-center gap-2">

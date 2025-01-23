@@ -34,7 +34,7 @@ const items = [
 
 <template>
   <div id="faq">
-    <div class="mb-10 flex flex-col items-center justify-center gap-2">
+    <div class="mb-10 flex italic flex-col items-center justify-center gap-2">
       <h3 class="main-gradient text-3xl">
         <ScrambleText label="FAQ" />
       </h3>

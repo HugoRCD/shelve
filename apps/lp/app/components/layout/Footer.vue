@@ -17,17 +17,11 @@ await fetchRepo()
 
 const columns = ref([
   {
-    label: 'Support',
-    icon: 'lucide:life-buoy',
+    label: 'Product',
     children: [
       {
         label: 'Documentation',
         to: '/getting-started',
-      },
-      {
-        label: 'FAQ',
-        to: '#faq',
-        active: route.hash === '#faq',
       },
       {
         label: 'Roadmap',
@@ -50,6 +44,19 @@ const columns = ref([
         target: '_blank'
       }
     ],
+  },
+  {
+    label: 'Company',
+    children: [
+      {
+        label: 'About',
+        to: '/about',
+      },
+      {
+        label: 'Brand',
+        to: '/brand',
+      },
+    ]
   },
   {
     label: 'Legal',

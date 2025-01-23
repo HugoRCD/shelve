@@ -3,8 +3,8 @@
 </script>
 
 <template>
-  <div>
-    <ScrambleText label="Coming soon..." />
+  <div class="size-full flex justify-center items-center">
+    <ScrambleText class="main-gradient" label="Coming soon..." />
   </div>
 </template>
 
