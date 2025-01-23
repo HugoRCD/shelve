@@ -12,8 +12,8 @@ const items = [
     to: '/vault',
   },
   {
-    to: '/blog',
     label: 'Blog',
+    to: '/blog',
   },
   {
     label: 'Features',
@@ -32,10 +32,10 @@ const items = [
         to: '/integrations/github'
       },
       {
-        to: '/roadmap',
         label: 'Roadmap',
         icon: 'heroicons:map-solid',
         description: 'See what\'s coming next',
+        to: '/roadmap',
       }
     ]
   },
@@ -50,22 +50,22 @@ const items = [
         description: 'Learn how to use Shelve'
       },
       {
-        to: '/getting-started/installation',
-        label: 'Installation',
+        label: 'Quickstart',
         icon: 'heroicons:inbox-arrow-down-solid',
-        description: 'Install Shelve on your machine'
+        description: 'Install Shelve on your machine',
+        to: '/getting-started/quickstart'
       },
       {
-        to: '/cli',
         label: 'CLI',
         icon: 'heroicons:command-line-solid',
-        description: 'Learn how to use the Shelve CLI'
+        description: 'Learn how to use the Shelve CLI',
+        to: '/cli'
       },
       {
-        to: '/self-hosting/docker',
         label: 'Self-Hosting',
         icon: 'heroicons:server-stack-solid',
-        description: 'Host Shelve on your own infrastructure'
+        description: 'Host Shelve on your own infrastructure',
+        to: '/self-hosting/docker'
       }
     ]
   },
@@ -74,21 +74,21 @@ const items = [
     children: [
       {
         label: 'About',
-        to: '/about',
         icon: 'heroicons:question-mark-circle-solid',
-        description: 'Meet the team behind Shelve'
+        description: 'Meet the team behind Shelve',
+        to: '/about'
       },
       {
         label: 'Brand',
-        to: '/brand',
         icon: 'heroicons:photo-solid',
-        description: 'Assets and guidelines'
+        description: 'Assets and guidelines',
+        to: '/brand'
       },
       {
-        to: 'mailto:contact@shelve.cloud',
         label: 'Contact',
         icon: 'heroicons:envelope-solid',
-        description: 'Get in touch with us'
+        description: 'Get in touch with us',
+        to: 'mailto:contact@shelve.cloud'
       },
     ]
   }
@@ -154,10 +154,10 @@ const navigationUi = computed(() => ({
       <template #right>
         <div class="flex items-center gap-2">
           <div>
-            <UButton size="sm" @click="navigateTo(`https://app.shelve.cloud/login`, { external: true })">
+            <CustomButton to="https://app.shelve.cloud/login">
               Open App
               <UKbd value="S" />
-            </UButton>
+            </CustomButton>
           </div>
         </div>
       </template>
