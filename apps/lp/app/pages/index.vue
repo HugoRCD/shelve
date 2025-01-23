@@ -21,7 +21,7 @@ function useClipboard(text: string) {
 
 <template>
   <div class="relative flex flex-col gap-4">
-    <div id="visitors">
+    <div id="visitors" class="absolute">
       <!-- active visitors -->
     </div>
     <div class="flex h-full flex-col items-center justify-center gap-3">

@@ -1,6 +1,13 @@
 <script lang="ts" setup>
 const navigation = getNavigation('home')
 
+const props = defineProps<{
+  /*
+   * The scroll % of the navbar
+   */
+  scroll: number
+}>()
+
 const items = navigation.map((item) => ({
   ...item,
   to: item.path,
@@ -28,21 +35,36 @@ const githubItem = {
   icon: 'i-simple-icons-github',
   badge: githubStars.value,
   to: 'https://github.com/HugoRCD/shelve',
-  target: '_blank'
+  target: '_blank',
+  class: '@min-[620px]:flex'
 }
 
 items.push(githubItem)
+
+const headerUi = computed(() => ({
+  root: [
+    '@container fixed mt-2 px-0 rounded-xl py-2 transition-all duration-500 left-1/2 -translate-x-1/2',
+    props.scroll > 0.02 ? 'bg-neutral-950/50 backdrop-blur-lg' : 'bg-transparent backdrop-blur-none',
+    props.scroll > 0.02 ? 'border' : 'border-transparent',
+    props.scroll > 0.005 ? '[--header-width:90%] sm:[--header-width:60%]' : '[--header-width:100%]',
+    'w-[var(--header-width)]'
+  ] as never as string,
+  container: 'h-fit',
+  center: '@min-[620px]:flex',
+  toggle: '@min-[620px]:hidden',
+  body: 'py-0'
+}))
 </script>
 
 <template>
-  <div class="z-[99] relative">
+  <div class="z-[99] flex justify-center">
     <Blur position="both" />
-    <UHeader class="fixed w-full p-4 px-5 py-2 bg-transparent backdrop-blur-none border-none" mode="drawer">
+    <UHeader mode="drawer" :ui="headerUi">
       <template #left>
         <Logo />
       </template>
 
-      <UNavigationMenu color="neutral" :items>
+      <UNavigationMenu variant="link" color="neutral" :items :ui="{ item: 'py-0' }">
         <template #components-trailing>
           <UBadge variant="subtle" size="sm" />
         </template>
@@ -62,4 +84,3 @@ items.push(githubItem)
     </UHeader>
   </div>
 </template>
-

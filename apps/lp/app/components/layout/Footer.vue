@@ -55,22 +55,8 @@ const columns = ref([
 </script>
 
 <template>
-  <UFooter class="pb-12" :ui="{ top: 'py-0 lg:py-6' }">
+  <UFooter :ui="{ top: 'py-0 lg:py-0' }">
     <template #top>
-      <div class="flex">
-        <NuxtLink to="/getting-started" class="group -mb-px -ml-px flex w-full cursor-pointer justify-between gap-2 border border-neutral-800 border-opacity-50 p-4 text-xs text-neutral-500 transition-all duration-300 ease-in-out hover:border-opacity-100 hover:bg-neutral-800/50 hover:text-neutral-200">
-          Documentation
-          <UIcon name="lucide:arrow-right" class="ml-1 inline-block text-neutral-400 transition-all duration-300 ease-in-out group-hover:-rotate-45" />
-        </NuxtLink>
-        <NuxtLink
-          to="https://app.shelve.cloud/login"
-          class="group -mb-px -ml-px flex w-full cursor-pointer justify-between gap-2 border border-neutral-800 border-opacity-50 p-4 text-xs text-neutral-500 transition-all duration-300 ease-in-out hover:border-opacity-100 hover:bg-neutral-800/50 hover:text-neutral-200"
-        >
-          Login
-          <UIcon name="lucide:arrow-right" class="ml-1 inline-block text-neutral-400 transition-all duration-300 ease-in-out group-hover:-rotate-45" />
-        </NuxtLink>
-      </div>
-
       <UContainer>
         <UFooterColumns :columns class="py-6">
           <template #right>
@@ -86,12 +72,12 @@ const columns = ref([
           </template>
         </UFooterColumns>
       </UContainer>
-      <USeparator icon="custom:shelve" />
+      <USeparator icon="custom:shelve" type="dashed" />
     </template>
 
 
     <template #left>
-      <div class="text-xs text-neutral-500">
+      <div class="text-xs font-mono italic tracking-tight text-neutral-500">
         © {{ new Date().getFullYear() }} - Made by <NuxtLink to="https://hrcd.fr/" class="text-neutral-400 hover:text-neutral-200">
           HugoRCD
         </NuxtLink>
