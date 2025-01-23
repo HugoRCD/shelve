@@ -24,7 +24,7 @@ defineShortcuts({
     <UContentSearchButton label="Search or ⌘K..." icon="lucide:search" variant="subtle" size="sm" class="w-[300px]" />
 
     <template #right>
-      <UButton label="Get Started" size="xs" to="https://app.shelve.cloud" />
+      <CustomButton label="Get Started" size="xs" to="https://app.shelve.cloud" />
 
       <UContentSearchButton class="lg:hidden" />
 

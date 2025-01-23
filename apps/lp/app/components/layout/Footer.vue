@@ -76,8 +76,9 @@ const columns = ref([
 </script>
 
 <template>
-  <UFooter :ui="{ top: 'py-0 lg:py-0' }">
+  <UFooter :ui="{ root: 'bg-neutral-950', top: 'py-0 lg:py-0' }">
     <template #top>
+      <USeparator />
       <UContainer>
         <UFooterColumns :columns class="py-6">
           <template #right>

@@ -17,15 +17,6 @@ const { data: files } = useLazyAsyncData('search', () => queryCollectionSearchSe
 })
 const searchTerm = ref('')
 
-const links = computed(() => [
-  /*{
-    label: 'Docs',
-    icon: 'i-lucide-square-play',
-    to: '/getting-started',
-    active: route.path.startsWith('/getting-started')
-  }*/
-])
-
 provide('navigation', navigation)
 
 const defaultOgImage = computed(() => {

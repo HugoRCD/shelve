@@ -18,3 +18,12 @@
     background-color: #474747;
   }
 }
+
+.noise:after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  filter: url(#noiseFilter);
+  opacity: 0.1;
+  pointer-events: none;
+}

@@ -34,6 +34,8 @@ html, body, #__nuxt, #__layout {
 
   --font-sans: 'Geist', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
+  --font-serif: 'Newsreader', serif;
+  --font-menlo: 'Menlo', monospace;
 
   --animate-ripple-1: ripple 2.5s var(--ease-smooth) infinite 0.15s;
   --animate-ripple-2: ripple 2.5s var(--ease-smooth) infinite 0.4s;

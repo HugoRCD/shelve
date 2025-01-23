@@ -137,7 +137,10 @@ const navigationUi = computed(() => ({
             </div>
             <ul class="flex flex-col gap-1">
               <li v-for="child in item.children" :key="child.label">
-                <ULink class="text-sm w-full text-left rounded-md p-3 transition-colors hover:bg-[var(--ui-bg-elevated)]/50">
+                <ULink
+                  class="text-sm cursor-pointer w-full text-left rounded-md p-3 transition-colors hover:bg-[var(--ui-bg-elevated)]/50"
+                  @click="navigateTo(child.to)"
+                >
                   <p class="font-medium text-[var(--ui-text-highlighted)]">
                     {{ child.label }}
                   </p>

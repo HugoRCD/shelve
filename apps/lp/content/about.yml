@@ -1,0 +1,9 @@
+about:
+  - title: The Beginning
+    image: /vercel-ascii.png
+    content: |
+      Vercel was the first hosting provider I used to deploy my projects. It was a great experience and I was able to quickly get my projects up and running.
+  - title: The Idea
+    image: /hugo-ascii.png
+    content: |
+      The idea of Shelve was born in 2018 when I was working on a project called [UnJS](https://unjs.com) and I wanted to create a way to share code snippets and projects with the community.

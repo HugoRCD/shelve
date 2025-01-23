@@ -22,5 +22,16 @@ export const collections = {
         }))
       })
     })
-  )
+  ),
+  about: defineCollection({
+    type: 'data',
+    source: 'about.yml',
+    schema: z.object({
+      about: z.array(z.object({
+        title: z.string(),
+        image: z.string(),
+        content: z.string()
+      }))
+    })
+  })
 }

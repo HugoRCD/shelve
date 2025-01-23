@@ -58,7 +58,7 @@ const finalStats = computed(() => [
   <div>
     <ClientOnly>
       <Teleport defer to="#visitors">
-        <div class="fixed z-[999]  text-neutral-500 text-xs flex gap-2 items-center justify-center bottom-2 left-0 w-full">
+        <div class="fixed z-[999] text-neutral-500 text-xs flex gap-2 items-center justify-center bottom-2 left-0 w-full">
           <span class="relative flex size-2">
             <span
               class="absolute bg-green-50 inline-flex size-full animate-ping rounded-full opacity-75"
@@ -93,10 +93,11 @@ const finalStats = computed(() => [
         v-for="(stat, index) in finalStats"
         :key="index"
         :ui="{
-          container: 'sm:p-4 gap-y-0'
+          container: 'sm:p-4 gap-y-0 overflow-hidden'
         }"
+        class="overflow-hidden"
       >
-        <div class="flex gap-2 items-center">
+        <div class="noise flex gap-2 items-center">
           <span class="relative flex size-2">
             <span
               class="absolute bg-neutral-50 inline-flex size-full animate-ping rounded-full opacity-75"
