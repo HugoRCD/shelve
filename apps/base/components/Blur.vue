@@ -1,10 +1,13 @@
 <script setup lang="ts">
+import { ref, onMounted, onUnmounted } from 'vue'
+
 const { position = 'top', size = 75 } = defineProps<{
   position: 'top' | 'bottom' | 'both'
   size?: number
 }>()
 
 const blurLevels = [1, 2, 3, 6, 12]
+const bottomOpacity = ref(1)
 
 const positions = {
   top: {
@@ -16,10 +19,34 @@ const positions = {
     gradient: 'gradient-mask-t-0'
   }
 }
+
+const updateBottomOpacity = () => {
+  const windowHeight = window.innerHeight
+  const documentHeight = document.documentElement.scrollHeight
+  const scrollTop = window.scrollY
+
+  const distanceToBottom = documentHeight - (scrollTop + windowHeight)
+
+  const transitionZone = 200
+
+  if (distanceToBottom <= transitionZone) {
+    bottomOpacity.value = distanceToBottom / transitionZone
+  } else {
+    bottomOpacity.value = 1
+  }
+}
+
+onMounted(() => {
+  window.addEventListener('scroll', updateBottomOpacity)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('scroll', updateBottomOpacity)
+})
 </script>
 
 <template>
-  <div>
+  <div class="pointer-events-none">
     <template v-for="pos in ['top', 'bottom']" :key="pos">
       <div
         v-if="position === pos || position === 'both'"
@@ -31,7 +58,8 @@ const positions = {
           :key="blur"
           :style="{
             '-webkit-backdrop-filter': `blur(${blur}px)`,
-            'backdrop-filter': `blur(${blur}px)`
+            'backdrop-filter': `blur(${blur}px)`,
+            opacity: pos === 'bottom' ? bottomOpacity : 1
           }"
           :class="[
             'absolute inset-0',

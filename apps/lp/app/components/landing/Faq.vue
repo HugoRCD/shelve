@@ -14,10 +14,6 @@ const items = [
     content: 'Absolutely! Shelve can be [self-hosted using Docker](/docker) or with one-click using [Coolify](/coolify). Self-hosting gives you full control over your data and infrastructure.',
   },
   {
-    label: 'How does Shelve handle monorepos?',
-    content: 'Shelve has native support for [monorepos](/cli#monorepo-support). It automatically detects the root of your monorepo and manages configurations across all your projects, making it perfect for large-scale applications.',
-  },
-  {
     label: 'Does Shelve integrate with other tools?',
     content: 'Yes! Shelve currently integrates with GitHub for secrets management, with more integrations planned. You can sync your environment variables directly with [GitHub Secrets](/integrations/github).',
   },
@@ -31,16 +27,16 @@ const items = [
   },
   {
     label: 'How can I get support?',
-    content: 'For technical support, you can open an issue on [GitHub](https://git.new/shelve) or reach out via email at contact@shelve.cloud. We also maintain detailed documentation at docs.shelve.cloud.',
+    content: 'For technical support, you can open an issue on [GitHub](https://git.new/shelve) or reach out via email at contact@shelve.cloud.',
   }
 ]
 </script>
 
 <template>
   <div id="faq">
-    <div class="mb-10 flex flex-col items-center justify-center gap-2">
+    <div class="mb-10 flex italic flex-col items-center justify-center gap-2">
       <h3 class="main-gradient text-3xl">
-        <LandingScrambleText label="FAQ" />
+        <ScrambleText label="FAQ" />
       </h3>
       <p class="max-w-lg text-center text-sm text-neutral-500 sm:text-base">
         Frequently asked questions about Shelve. If you have a question that is not answered here, feel free to contact us.

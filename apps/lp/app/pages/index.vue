@@ -21,7 +21,7 @@ function useClipboard(text: string) {
 
 <template>
   <div class="relative flex flex-col gap-4">
-    <div id="visitors">
+    <div id="visitors" class="absolute">
       <!-- active visitors -->
     </div>
     <div class="flex h-full flex-col items-center justify-center gap-3">
@@ -40,8 +40,8 @@ function useClipboard(text: string) {
               style="width: 150px;"
             >
           </NuxtLink>
-          <h3 class="main-gradient text-2xl mb-2 mt-4">
-            <LandingScrambleText label="// Welcome to Shelve" />
+          <h3 class="main-gradient italic text-2xl mb-2 mt-4">
+            <ScrambleText label="> Welcome to Shelve" />
           </h3>
           <p class="text-neutral-400">
             Shelve is the best place to manage your projects, alone or with your team. Store your project secrets, data, files and more in one place.

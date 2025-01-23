@@ -1,4 +1,4 @@
-type Where = 'home' | 'team' | 'user' | 'admin';
+type Where = 'team' | 'user' | 'admin';
 
 export type Navigation = {
   name: string;
@@ -9,13 +9,6 @@ export type Navigation = {
 
 export function getNavigation(where: Where, teamSlug?: string): Navigation[] {
   switch (where) {
-    case 'home':
-      return [
-        { name: 'Home', path: '/', title: 'Home' },
-        { name: 'Vault', path: '/vault', title: 'Vault' },
-        { name: 'Docs', path: '/getting-started', title: 'Docs' },
-        { name: 'Roadmap', path: '/roadmap', title: 'Roadmap' },
-      ]
     case 'team':
       return [
         {

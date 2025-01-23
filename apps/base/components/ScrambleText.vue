@@ -7,7 +7,7 @@ const props = defineProps({
 })
 
 const displayText = ref(props.label)
-const charset = 'abcdefghijklmnopqrstuvwxyz'
+const charset = 'abcdefghijklmnopqrstuvwxyz1234567890'
 
 function randomChars(length: number) {
   return Array.from(
@@ -33,7 +33,7 @@ startScrambling()
 </script>
 
 <template>
-  <span @mouseover="startScrambling">
+  <span class="font-mono" @mouseover="startScrambling">
     {{ displayText }}
   </span>
 </template>

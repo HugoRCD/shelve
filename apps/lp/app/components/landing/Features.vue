@@ -41,9 +41,9 @@ const features = [
 
 <template>
   <div>
-    <div class="mb-10 flex flex-col items-center justify-center gap-2">
-      <h3 class="main-gradient text-3xl">
-        <LandingScrambleText label="Features" />
+    <div class="mb-10 flex flex-col italic items-center justify-center gap-2">
+      <h3 class="main-gradient  text-3xl">
+        <ScrambleText label="Features" />
       </h3>
       <p class="max-w-lg text-pretty text-center text-sm text-neutral-500 sm:text-base">
         Shelve is packed with features that make managing your environment variables a breeze. Here are some of the highlights.

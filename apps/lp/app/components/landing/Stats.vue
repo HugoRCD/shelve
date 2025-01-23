@@ -58,7 +58,7 @@ const finalStats = computed(() => [
   <div>
     <ClientOnly>
       <Teleport defer to="#visitors">
-        <div class="fixed bottom-5 right-5 z-[999]  text-neutral-500 text-xs flex gap-2 items-center">
+        <div class="fixed z-[999]  text-neutral-500 text-xs flex gap-2 items-center justify-center bottom-2 left-0 w-full">
           <span class="relative flex size-2">
             <span
               class="absolute bg-green-50 inline-flex size-full animate-ping rounded-full opacity-75"
@@ -82,7 +82,7 @@ const finalStats = computed(() => [
 
     <div class="mb-10 flex flex-col gap-2">
       <h3 class="main-gradient italic text-3xl leading-8">
-        <LandingScrambleText label="Built for speed" />
+        <ScrambleText label="Built for speed" />
       </h3>
       <p class="flex gap-2 italic items-center text-pretty text-center text-neutral-500">
         {{ !isLoading ? ' Stats are updated in real-time.' : `Loading stats${loadingDots}` }}
