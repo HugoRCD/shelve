@@ -41,6 +41,7 @@ const items = [
   },
   {
     label: 'Docs',
+    to: '/getting-started',
     children: [
       {
         to: '/getting-started',
@@ -120,7 +121,7 @@ const navigationUi = computed(() => ({
     <Blur position="both" />
     <UHeader mode="drawer" :ui="headerUi">
       <template #left>
-        <Logo />
+        <Logo lp />
       </template>
 
       <UNavigationMenu variant="link" color="neutral" :items :ui="navigationUi">

@@ -1,8 +1,9 @@
 <script setup lang="ts">
-const { size = 'size-6', text = true, textSize = 'text-base' } = defineProps<{
+const { size = 'size-6', text = true, textSize = 'text-base', lp = false } = defineProps<{
   size?: string
   text?: boolean
   textSize?: string
+  lp?: boolean
 }>()
 
 const logo = ref<SVGSVGElement>()
@@ -18,31 +19,36 @@ function downloadLogo(svg: string, filename: string) {
   toast.success('Logo downloaded successfully')
 }
 
-const items = ref([
-  [
-    {
-      label: 'Copy logo as SVG',
-      icon: 'custom:shelve',
-      onSelect: () => {
-        copyToClipboard(logo.value!.outerHTML, 'Logo copied to clipboard')
-      }
-    },
-    {
-      label: 'Download logo',
-      icon: 'custom:shelve',
-      onSelect: () => {
-        downloadLogo(logo.value!.outerHTML, 'shelve.svg')
-      }
+const baseItems = [
+  {
+    label: 'Copy logo as SVG',
+    icon: 'custom:shelve',
+    onSelect: () => {
+      copyToClipboard(logo.value!.outerHTML, 'Logo copied to clipboard')
     }
-  ],
-  [
-    {
-      label: 'Brand Assets',
-      icon: 'i-heroicons-photo',
-      to: '/brand'
-    },
-  ]
-])
+  },
+  {
+    label: 'Download logo',
+    icon: 'custom:shelve',
+    onSelect: () => {
+      downloadLogo(logo.value!.outerHTML, 'shelve.svg')
+    }
+  }
+]
+
+const brandAssetsItem = {
+  label: 'Brand Assets',
+  icon: 'i-heroicons-photo',
+  to: '/brand'
+}
+
+const items = computed(() => {
+  const menuItems = [baseItems]
+  if (lp) {
+    menuItems.push([brandAssetsItem])
+  }
+  return menuItems
+})
 </script>
 
 <template>

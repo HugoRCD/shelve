@@ -2,13 +2,11 @@
 import type { ContentNavigationItem } from '@nuxt/content'
 import type { NavigationMenuItem } from '@nuxt/ui'
 
-const props = defineProps<{
+defineProps<{
   links: NavigationMenuItem[]
 }>()
 
 const navigation = inject<Ref<ContentNavigationItem[]>>('navigation')
-
-const items = computed(() => props.links.map(({ icon, ...link }) => link))
 
 defineShortcuts({
   meta_g: () => {
@@ -20,14 +18,7 @@ defineShortcuts({
 <template>
   <UHeader class="bg-white dark:bg-neutral-950" :ui="{ left: 'min-w-0' }" mode="drawer" :menu="{ shouldScaleBackground: true }">
     <template #left>
-      <NuxtLink to="/" class="flex items-end gap-2 font-bold text-[var(--ui-text-highlighted)] min-w-0 focus-visible:outline-[var(--ui-primary)] shrink-0" aria-label="Shelve">
-        <div class="flex items-center gap-1">
-          <UIcon name="custom:shelve" />
-          <span>
-            Shelve
-          </span>
-        </div>
-      </NuxtLink>
+      <Logo lp />
     </template>
 
     <UContentSearchButton label="Search or ⌘K..." icon="lucide:search" variant="subtle" size="sm" class="w-[300px]" />
