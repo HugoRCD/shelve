@@ -1,6 +1,20 @@
 <script setup lang="ts">
 const route = useRoute()
 
+type RepoType = {
+  stars: number
+}
+
+const githubStars = ref('0')
+async function fetchRepo() {
+  try {
+    const res = await $fetch('https://ungh.cc/repos/hugorcd/shelve') as { repo: RepoType }
+    githubStars.value = res.repo.stars.toString()
+  } catch (e) { /* empty */ }
+}
+
+await fetchRepo()
+
 const columns = ref([
   {
     label: 'Support',
@@ -101,7 +115,9 @@ const columns = ref([
           to="https://github.com/hugorcd/shelve"
           target="_blank"
           aria-label="GitHub"
-        />
+        >
+          <UBadge variant="subtle" size="sm" :label="`⭐ ${githubStars}`" />
+        </UButton>
         <div style="color-scheme: none;">
           <iframe src="https://status.shelve.cloud/badge?theme=dark" height="30" width="200" />
         </div>

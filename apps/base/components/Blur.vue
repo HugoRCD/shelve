@@ -46,7 +46,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div>
+  <div class="pointer-events-none">
     <template v-for="pos in ['top', 'bottom']" :key="pos">
       <div
         v-if="position === pos || position === 'both'"

@@ -58,7 +58,7 @@ const finalStats = computed(() => [
   <div>
     <ClientOnly>
       <Teleport defer to="#visitors">
-        <div class="fixed bottom-5 right-5 z-[999]  text-neutral-500 text-xs flex gap-2 items-center">
+        <div class="fixed z-[999]  text-neutral-500 text-xs flex gap-2 items-center justify-center bottom-2 left-0 w-full">
           <span class="relative flex size-2">
             <span
               class="absolute bg-green-50 inline-flex size-full animate-ping rounded-full opacity-75"

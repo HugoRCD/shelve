@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-const navigation = getNavigation('home')
-
 const props = defineProps<{
   /*
    * The scroll % of the navbar
@@ -8,38 +6,73 @@ const props = defineProps<{
   scroll: number
 }>()
 
-const items = navigation.map((item) => ({
-  ...item,
-  to: item.path,
-  label: item.title,
-  slot: item.name.toLowerCase(),
-  target: item.path.startsWith('http') ? '_blank' : undefined
-}))
-
-type RepoType = {
-  stars: number
-}
-
-const githubStars = ref('0')
-async function fetchRepo() {
-  try {
-    const res = await $fetch('https://ungh.cc/repos/hugorcd/shelve') as { repo: RepoType }
-    githubStars.value = res.repo.stars.toString()
-  } catch (e) { /* empty */ }
-}
-
-await fetchRepo()
-
-const githubItem = {
-  label: 'GitHub',
-  icon: 'i-simple-icons-github',
-  badge: githubStars.value,
-  to: 'https://github.com/HugoRCD/shelve',
-  target: '_blank',
-  class: '@min-[620px]:flex'
-}
-
-items.push(githubItem)
+const items = [
+  {
+    label: 'Features',
+    children: [
+      {
+        to: '/roadmap',
+        label: 'Roadmap',
+        icon: 'heroicons:map-solid',
+        description: 'See what\'s coming next',
+      }
+    ]
+  },
+  {
+    label: 'Vault',
+    to: '/vault',
+  },
+  {
+    label: 'Docs',
+    children: [
+      {
+        to: '/getting-started',
+        label: 'Getting Started',
+        icon: 'heroicons:book-open-solid',
+        description: 'Learn how to use Shelve'
+      },
+      {
+        to: '/getting-started/installation',
+        label: 'Installation',
+        icon: 'heroicons:inbox-arrow-down-solid',
+        description: 'Install Shelve on your machine'
+      },
+      {
+        to: '/cli',
+        label: 'CLI',
+        icon: 'heroicons:command-line-solid',
+        description: 'Learn how to use the Shelve CLI'
+      },
+      {
+        to: '/self-hosting/docker',
+        label: 'Self-Hosting',
+        icon: 'heroicons:server-stack-solid',
+        description: 'Host Shelve on your own infrastructure'
+      }
+    ]
+  },
+  {
+    to: '/blog',
+    label: 'Blog',
+  },
+  {
+    label: 'Company',
+    children: [
+      {
+        label: 'Brand',
+        to: '/brand',
+        icon: 'heroicons:photo-solid',
+        description: 'Discover our brand assets'
+      },
+      {
+        to: 'mailto:contact@shelve.cloud',
+        label: 'Contact',
+        icon: 'heroicons:envelope-solid',
+        description: 'Get in touch with us'
+      },
+    ]
+  }
+]
 
 const headerUi = computed(() => ({
   root: [
@@ -54,6 +87,13 @@ const headerUi = computed(() => ({
   toggle: '@min-[620px]:hidden',
   body: 'py-0'
 }))
+
+const navigationUi = computed(() => ({
+  item: 'py-0',
+  linkTrailingIcon: 'hidden',
+  viewport: 'bg-neutral-950 font-mono',
+  viewportWrapper: 'w-[600px] transition-all duration-500 left-1/2 -translate-x-1/2',
+}))
 </script>
 
 <template>
@@ -64,11 +104,7 @@ const headerUi = computed(() => ({
         <Logo />
       </template>
 
-      <UNavigationMenu variant="link" color="neutral" :items :ui="{ item: 'py-0' }">
-        <template #components-trailing>
-          <UBadge variant="subtle" size="sm" />
-        </template>
-      </UNavigationMenu>
+      <UNavigationMenu variant="link" color="neutral" :items :ui="navigationUi" />
 
       <template #right>
         <div class="flex items-center gap-2">
