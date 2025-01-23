@@ -55,7 +55,7 @@
   "devDependencies": {
     "@shelve/types": "*",
     "@shelve/utils": "*",
-    "@types/bun": "1.1.18",
+    "@types/bun": "1.2.0",
     "@types/npm-registry-fetch": "8.0.7",
     "@types/semver": "7.5.8",
     "eslint": "9.18.0",
