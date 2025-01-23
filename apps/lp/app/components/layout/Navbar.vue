@@ -8,8 +8,29 @@ const props = defineProps<{
 
 const items = [
   {
+    label: 'Vault',
+    to: '/vault',
+  },
+  {
+    to: '/blog',
+    label: 'Blog',
+  },
+  {
     label: 'Features',
+    slot: 'features',
     children: [
+      {
+        label: 'Push / Pull',
+        description: 'Sync your secrets with Shelve',
+        icon: 'heroicons:arrows-up-down-solid',
+        to: '/cli/push-pull'
+      },
+      {
+        label: 'Github secrets',
+        description: 'Send your secrets on Github',
+        icon: 'simple-icons:github',
+        to: '/integrations/github'
+      },
       {
         to: '/roadmap',
         label: 'Roadmap',
@@ -17,10 +38,6 @@ const items = [
         description: 'See what\'s coming next',
       }
     ]
-  },
-  {
-    label: 'Vault',
-    to: '/vault',
   },
   {
     label: 'Docs',
@@ -50,10 +67,6 @@ const items = [
         description: 'Host Shelve on your own infrastructure'
       }
     ]
-  },
-  {
-    to: '/blog',
-    label: 'Blog',
   },
   {
     label: 'Company',
@@ -109,7 +122,10 @@ const navigationUi = computed(() => ({
       <template #right>
         <div class="flex items-center gap-2">
           <div>
-            <UButton label="Open App" size="sm" @click="navigateTo(`https://app.shelve.cloud/login`, { external: true })" />
+            <UButton size="sm" @click="navigateTo(`https://app.shelve.cloud/login`, { external: true })">
+              Open App
+              <UKbd value="S" />
+            </UButton>
           </div>
         </div>
       </template>
