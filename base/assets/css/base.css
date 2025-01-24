@@ -66,3 +66,12 @@ html, body, #__nuxt, #__layout {
     round,
     space;
 }
+
+.noise:after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  filter: url(#noiseFilter);
+  opacity: 0.1;
+  pointer-events: none;
+}
