@@ -9,6 +9,8 @@ const defaultTeamSlug = useCookie<string>('defaultTeamSlug', {
   watch: true,
 })
 
+const { version } = useRuntimeConfig().public
+
 const teamNavigations = computed(() => getNavigation('team', teamSlug.value || defaultTeamSlug.value))
 const userNavigations = getNavigation('user')
 const adminNavigations = getNavigation('admin')
@@ -78,13 +80,16 @@ watch(() => route.path, handleProjectNavigation, { immediate: true })
     </div>
 
     <div class="flex-1" />
-    <div class="flex flex-row justify-between">
-      <UTooltip text="Change theme" :content="{ side: 'top' }">
-        <SettingThemeToggle size="size-5" />
-      </UTooltip>
-      <UTooltip text="Need help?" :content="{ side: 'top' }">
-        <UButton variant="ghost" icon="lucide:life-buoy" to="https://github.com/HugoRCD/shelve/issues" />
-      </UTooltip>
+    <div class="flex flex-row justify-between items-center">
+      <span class="text-xs font-mono">v{{ version }}</span>
+      <div class="flex flex-row">
+        <UTooltip text="Change theme" :content="{ side: 'top' }">
+          <SettingThemeToggle size="size-5" />
+        </UTooltip>
+        <UTooltip text="Need help?" :content="{ side: 'top' }">
+          <UButton variant="ghost" icon="lucide:life-buoy" to="https://github.com/HugoRCD/shelve/issues" />
+        </UTooltip>
+      </div>
     </div>
   </div>
 </template>

@@ -67,7 +67,7 @@ const items = computed(() => {
           d="M15.4475 487.374L138.507 344.657C152.393 328.646 173.742 319.177 196.479 319.177H328.217C336.375 319.177 342.797 325.031 342.797 332.261V376.678C342.797 389.073 360.501 394.41 369.005 384.597L533.721 193.676C547.607 177.665 568.956 168.197 591.693 168.197H716.141L462.559 461.895C448.673 477.905 427.324 487.374 404.587 487.374H15.4475Z"
         />
       </svg>
-      <NuxtLink v-if="text" to="/" aria-label="Shelve" class="font-semibold" :class="textSize">
+      <NuxtLink v-if="text" to="/" aria-label="Shelve" class="max-sm:hidden font-semibold" :class="textSize">
         Shelve
       </NuxtLink>
     </div>

@@ -8,6 +8,8 @@ defineProps<{
 
 const navigation = inject<Ref<ContentNavigationItem[]>>('navigation')
 
+const { version } = useRuntimeConfig().public
+
 defineShortcuts({
   meta_g: () => {
     window.open('https://github.com/hugorcd/shelve', '_blank')
@@ -18,7 +20,7 @@ defineShortcuts({
 <template>
   <UHeader class="bg-white dark:bg-neutral-950" :ui="{ left: 'min-w-0' }" mode="drawer" :menu="{ shouldScaleBackground: true }">
     <template #left>
-      <Logo lp />
+      <Logo lp /> <span class="text-xs font-mono text-neutral-500">| v{{ version }}</span>
     </template>
 
     <UContentSearchButton label="Search or ⌘K..." icon="lucide:search" variant="subtle" size="sm" class="w-[300px]" />

@@ -1,3 +1,5 @@
+import pkg from '../package.json'
+
 export default defineNuxtConfig({
   app: {
     head: {
@@ -70,7 +72,8 @@ export default defineNuxtConfig({
   $development: {
     runtimeConfig: {
       public: {
-        apiUrl: 'http://localhost:3001'
+        apiUrl: 'http://localhost:3001',
+        version: pkg.version
       }
     }
   },
@@ -78,7 +81,8 @@ export default defineNuxtConfig({
   $production: {
     runtimeConfig: {
       public: {
-        apiUrl: 'https://app.shelve.cloud'
+        apiUrl: 'https://app.shelve.cloud',
+        version: pkg.version
       }
     }
   },
