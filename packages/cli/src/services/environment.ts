@@ -1,7 +1,7 @@
 import { isCancel } from '@clack/prompts'
+import type { Environment } from '@types'
 import { askSelect, capitalize, handleCancel } from '../utils'
 import { BaseService } from './base'
-import type { Environment } from '~~/types'
 
 export class EnvironmentService extends BaseService {
 

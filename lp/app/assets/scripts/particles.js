@@ -3,6 +3,7 @@
  * Please do not use it in your project.
  */
 
+// eslint-disable-next-line
 let NextParticle = null
 
 if (import.meta.client) {

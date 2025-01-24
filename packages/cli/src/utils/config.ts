@@ -23,13 +23,13 @@ import { setupDotenv } from 'c12'
 import { findWorkspaceDir, readPackageJSON } from 'pkg-types'
 import { readUser } from 'rc9'
 import defu from 'defu'
+import type { CreateShelveConfigInput, ShelveConfig } from '@types'
+import { DEFAULT_URL, SHELVE_JSON_SCHEMA } from '@types'
 import { FileService, PkgService, ProjectService } from '../services'
 import { DEFAULT_ENV_FILENAME } from '../constants'
 import { BaseService } from '../services/base'
 import { askSelect, askText } from './prompt'
 import { handleCancel } from '.'
-import { CreateShelveConfigInput, DEFAULT_URL, SHELVE_JSON_SCHEMA } from '~~/types'
-import type { ShelveConfig } from '~~/types'
 
 export const CONFIG_FILENAMES = [
   'shelve.json',

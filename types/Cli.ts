@@ -1,6 +1,6 @@
 import type { EnvVar } from './Variables'
 import type { Environment } from './Environment'
-import { Project } from './Project'
+import type { Project } from './Project'
 
 export const SHELVE_JSON_SCHEMA = 'https://raw.githubusercontent.com/HugoRCD/shelve/main/packages/types/schema.json'
 export const DEFAULT_URL = 'https://app.shelve.cloud'

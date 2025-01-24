@@ -1,8 +1,8 @@
 import { Command } from 'commander'
 import { intro, outro } from '@clack/prompts'
+import type { User } from '@types'
 import { loadShelveConfig } from '../utils'
 import { BaseService } from '../services/base'
-import { User } from '~~/types'
 
 export function loginCommand(program: Command): void {
   program

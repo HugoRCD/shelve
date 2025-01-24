@@ -1,9 +1,9 @@
-import { PackageJson, readPackageJSON } from 'pkg-types'
+import { type PackageJson, readPackageJSON } from 'pkg-types'
 import { log } from '@clack/prompts'
+import type { Project } from '@types'
 import { DEBUG } from '../constants'
 import { askBoolean, capitalize, handleCancel } from '../utils'
 import { BaseService } from './base'
-import type { Project } from '~~/types'
 
 export class ProjectService extends BaseService {
 
