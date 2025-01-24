@@ -1,5 +1,4 @@
 {
-  "extends": "../../tsconfig.json",
   "compilerOptions": {
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
@@ -17,7 +16,12 @@
     "noUnusedLocals": true,
     "resolveJsonModule": true,
     "declaration": true,
-    "types": ["node"]
+    "types": ["node"],
+    "baseUrl": ".",
+    "paths": {
+      "@types": ["../types"],
+      "@utils": ["../utils"]
+    }
   },
-  "include": ["src", "test/**/*", "types/**/*"]
+  "include": ["src", "test/**/*", "../types", "../utils"]
 }

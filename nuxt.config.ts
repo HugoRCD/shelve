@@ -9,6 +9,7 @@ export default defineNuxtConfig({
 
   nitro: {
     rollupConfig: {
+      // @ts-expect-error - this is not typed
       plugins: [vue()]
     }
   },

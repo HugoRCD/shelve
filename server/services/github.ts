@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken'
 import sodium from 'libsodium-wrappers'
-import { GithubApp, GitHubAppResponse, GitHubRepo } from '~~/packages/types'
+import type { GithubApp, GitHubAppResponse, GitHubRepo } from '~~/packages/types'
 
 export class GithubService {
 

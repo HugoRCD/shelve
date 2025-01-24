@@ -1,11 +1,3 @@
 {
   "extends": "./.nuxt/tsconfig.json",
-  "include": ["packages/types", "packages/utils"],
-  "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "@types": ["./packages/types"],
-      "@utils": ["./packages/utils"]
-    }
-  }
 }
