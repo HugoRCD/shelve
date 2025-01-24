@@ -2,7 +2,7 @@ services:
   shelve_app:
     build:
       context: ../
-      dockerfile: ./apps/shelve/Dockerfile
+      dockerfile: ./Dockerfile
       args:
         - TURBO_TEAM=${TURBO_TEAM}
         - TURBO_TOKEN=${TURBO_TOKEN}

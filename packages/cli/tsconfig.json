@@ -17,6 +17,11 @@
     "resolveJsonModule": true,
     "declaration": true,
     "types": ["node"],
+    "baseUrl": ".",
+    "paths": {
+      "@types": ["../types"],
+      "@utils": ["../utils"]
+    }
   },
-  "include": ["src", "test/**/*"]
+  "include": ["src", "test/**/*", "../types", "../utils"]
 }

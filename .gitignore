@@ -139,4 +139,10 @@ dist
 .config/shelve*
 
 */dist/
+.dist/
+
 */.output/
+.output/
+
+# Turborepo
+.turbo

@@ -1,7 +1,7 @@
 import { ofetch, type $Fetch, type FetchOptions } from 'ofetch'
 import { spinner } from '@clack/prompts'
 import { writeUser } from 'rc9'
-import type { User } from '@shelve/types'
+import type { User } from '@types'
 import { askPassword, loadShelveConfig } from '../utils'
 import { ErrorService } from './error'
 

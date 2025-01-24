@@ -1,12 +1,12 @@
-import {
+import { parseEnvFile } from '@utils'
+import { log } from '@clack/prompts'
+import type {
   EnvVar,
   CreateEnvFileInput,
   PushEnvFileInput,
   CreateVariablesInput,
   GetEnvVariables
-} from '@shelve/types'
-import { parseEnvFile } from '@shelve/utils'
-import { log } from '@clack/prompts'
+} from '@types'
 import { loadShelveConfig, askBoolean } from '../utils'
 import { FileService } from './file'
 import { BaseService } from './base'

@@ -1,6 +1,6 @@
 import { Command } from 'commander'
 import { intro, outro } from '@clack/prompts'
-import { User } from '@shelve/types'
+import type { User } from '@types'
 import { loadShelveConfig } from '../utils'
 import { BaseService } from '../services/base'
 

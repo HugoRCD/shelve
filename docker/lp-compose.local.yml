@@ -2,7 +2,7 @@ services:
   shelve_lp:
     build:
       context: ../
-      dockerfile: ./apps/lp/Dockerfile
+      dockerfile: ./lp/Dockerfile
       args:
         - NUXT_UI_PRO_LICENSE=${NUXT_UI_PRO_LICENSE}
         - TURBO_TEAM=${TURBO_TEAM}
