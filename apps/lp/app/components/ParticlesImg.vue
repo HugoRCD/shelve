@@ -3,25 +3,17 @@
 import { NextParticle } from '~/assets/scripts/particles.js'
 
 type ParticleProps = {
-  // Image source
   src: string
-  // Image alt text
   alt?: string
-  // Particle color
   color?: string
-  // Width of the particle effect
   width?: number
-  // Maximum width of the particle effect
-  maxWidth?: number
-  // Gravity effect on particles
+  height?: number
+  mobileWidth?: number
+  mobileHeight?: number
   gravity?: number
-  // Mouse force effect on particles
   mouseForce?: number
-  // Noise level for particle movement
   noise?: number
-  // Gap between particles
   particleGap?: number
-  // Additional class names for the image
   imageClass?: string
 }
 
@@ -32,27 +24,63 @@ const props = withDefaults(defineProps<ParticleProps>(), {
   noise: 4,
   particleGap: 2,
   alt: '',
+  width: 400,
+  height: 150,
+  mobileWidth: 200,
+  mobileHeight: 100,
 })
 
 const img = ref()
+const particleInstance = ref()
+
+const isMobile = ref(false)
+
+const checkMobile = () => {
+  isMobile.value = window.innerWidth <= 768
+}
+
+const updateParticleSize = () => {
+  if (!particleInstance.value) return
+
+  const width = isMobile.value ? props.mobileWidth : props.width
+  const height = isMobile.value ? props.mobileHeight : props.height
+
+  particleInstance.value.width = width
+  particleInstance.value.height = height
+  particleInstance.value.start()
+}
 
 onMounted(() => {
+  checkMobile()
+
   // @ts-expect-error - This is not typed
-  new NextParticle({
+  particleInstance.value = new NextParticle({
     color: props.color,
     image: img.value,
-    width: props.width,
-    maxWidth: props.maxWidth,
+    width: isMobile.value ? props.mobileWidth : props.width,
+    height: isMobile.value ? props.mobileHeight : props.height,
     gravity: props.gravity,
     mouseForce: props.mouseForce,
     noise: props.noise,
     particleGap: props.particleGap
   })
+
+  window.addEventListener('resize', () => {
+    const wasMobile = isMobile.value
+    checkMobile()
+    if (wasMobile !== isMobile.value) {
+      updateParticleSize()
+    }
+  })
+})
+
+onUnmounted(() => {
+  window.removeEventListener('resize', checkMobile)
 })
 </script>
 
 <template>
-  <div>
+  <div class="particle-container">
     <img
       ref="img"
       class="hidden"
@@ -61,3 +89,10 @@ onMounted(() => {
     >
   </div>
 </template>
+
+<style scoped>
+.particle-container {
+  width: fit-content;
+  margin: 0 auto;
+}
+</style>
