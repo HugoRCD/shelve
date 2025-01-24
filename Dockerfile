@@ -9,28 +9,31 @@ ENV TURBO_TOKEN=$TURBO_TOKEN
 
 WORKDIR /app
 
-COPY pnpm-lock.yaml package.json ./
-COPY apps/shelve/package.json ./apps/shelve/package.json
-COPY apps/shelve/entrypoint.sh ./entrypoint.sh
+COPY pnpm-lock.yaml ./
+COPY package.json ./package.json
+COPY entrypoint.sh ./entrypoint.sh
 
 COPY . .
 
 RUN corepack enable
 RUN pnpm install --frozen-lockfile
 
-RUN pnpm run build:app
+RUN pnpm run build
 
 # Stage 2: Final Stage
 FROM node:22.13.1-alpine AS final
 
 WORKDIR /app
 
-COPY --from=build /app/apps/shelve/.output .output
-COPY --from=build /app/apps/shelve/package.json ./package.json
+COPY --from=build /app/.output .output
+COPY --from=build /app/package.json ./package.json
 COPY --from=build /app/entrypoint.sh ./entrypoint.sh
-COPY --from=build /app/apps/shelve/server/database/schema.ts ./server/database/schema.ts
-COPY --from=build /app/apps/shelve/server/database/column.helpers.ts ./server/database/column.helpers.ts
-COPY --from=build /app/apps/shelve/drizzle.config.ts ./drizzle.config.ts
+COPY --from=build /app/server/database/schema.ts ./server/database/schema.ts
+COPY --from=build /app/server/database/column.helpers.ts ./server/database/column.helpers.ts
+COPY --from=build /app/drizzle.config.ts ./drizzle.config.ts
+
+COPY --from=build /app/packages/types ./packages/types
+COPY --from=build /app/tsconfig.json ./tsconfig.json
 
 RUN corepack enable
 RUN pnpm install --prod
