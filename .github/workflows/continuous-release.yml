@@ -42,7 +42,7 @@ jobs:
         run: pnpm run dev:prepare
 
       - name: 🛠️ Build
-        run: pnpm run build
+        run: pnpm run build:cli
 
       - name: 🚀 Continuous Release
         run: npx pkg-pr-new publish './packages/cli'
