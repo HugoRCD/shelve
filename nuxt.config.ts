@@ -52,5 +52,6 @@ export default defineNuxtConfig({
     'nuxt-auth-utils',
   ],
 
-  extends: '../base',
+  extends: './base',
+  compatibilityDate: '2025-01-24',
 })
