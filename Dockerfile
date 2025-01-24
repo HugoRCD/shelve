@@ -16,6 +16,7 @@ COPY entrypoint.sh ./entrypoint.sh
 COPY . .
 
 RUN corepack enable
+
 RUN pnpm install --frozen-lockfile
 
 RUN pnpm run build:app
@@ -31,11 +32,10 @@ COPY --from=build /app/entrypoint.sh ./entrypoint.sh
 COPY --from=build /app/server/database/schema.ts ./server/database/schema.ts
 COPY --from=build /app/server/database/column.helpers.ts ./server/database/column.helpers.ts
 COPY --from=build /app/drizzle.config.ts ./drizzle.config.ts
-
 COPY --from=build /app/packages/types ./packages/types
-COPY --from=build /app/tsconfig.json ./tsconfig.json
 
 RUN corepack enable
+
 RUN pnpm install --prod
 
 RUN apk update && apk add --no-cache curl

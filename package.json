@@ -26,6 +26,7 @@
     "dev:cli": "turbo dev --filter=@shelve/cli",
     "release": "turbo release && changeset",
     "dev:prepare": "turbo dev:prepare",
+    "turbo:dev": "turbo dev",
     "turbo:build": "turbo build",
     "turbo:lint": "turbo lint",
     "turbo:lint:fix": "turbo lint:fix",
