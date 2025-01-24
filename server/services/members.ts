@@ -1,4 +1,4 @@
-import type { AddMemberInput, Member, RemoveMemberInput, UpdateMemberInput, User } from '@shelve/types'
+import type { AddMemberInput, Member, RemoveMemberInput, UpdateMemberInput, User } from '~~/types'
 
 export class MembersService {
 

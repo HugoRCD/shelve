@@ -1,4 +1,4 @@
-import type { Token, User } from '@shelve/types'
+import type { Token, User } from '~~/types'
 
 export default defineEventHandler(async (event) => {
   const protectedRoutes = [

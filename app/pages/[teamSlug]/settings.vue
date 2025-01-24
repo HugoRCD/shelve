@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { TeamRole } from '@shelve/types'
+import { TeamRole } from '~~/types'
 import { ConfirmModal } from '#components'
 
 const { updateTeam, deleteTeam } = useTeamsService()

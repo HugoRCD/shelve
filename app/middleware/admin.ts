@@ -1,4 +1,4 @@
-import { Role } from '@shelve/types'
+import { Role } from '~~/types'
 
 export default defineNuxtRouteMiddleware(() => {
   const { user } = useUserSession()

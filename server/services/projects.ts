@@ -1,4 +1,4 @@
-import type { CreateProjectInput, Project, ProjectUpdateInput } from '@shelve/types'
+import type { CreateProjectInput, Project, ProjectUpdateInput } from '~~/types'
 
 export class ProjectsService {
 

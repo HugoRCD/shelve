@@ -1,4 +1,4 @@
-import type { UpdateVariableInput, CreateVariablesInput, Variable } from '@shelve/types'
+import type { UpdateVariableInput, CreateVariablesInput, Variable } from '~~/types'
 
 export class VariablesService {
 

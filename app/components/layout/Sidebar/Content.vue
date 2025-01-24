@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Role } from '@shelve/types'
+import { Role } from '~~/types'
 
 const route = useRoute()
 const teamSlug = computed(() => route.params.teamSlug as string)

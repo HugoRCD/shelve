@@ -1,4 +1,4 @@
-import type { CreateVariablesInput, Environment } from '@shelve/types'
+import type { CreateVariablesInput, Environment } from '~~/types'
 
 export function useVariableForm(projectId: number, teamEnv: Environment[]) {
   const autoUppercase = useCookie<boolean>('autoUppercase', {

@@ -1,9 +1,9 @@
-import type { Project } from '@shelve/types'
 import { PackageJson, readPackageJSON } from 'pkg-types'
 import { log } from '@clack/prompts'
 import { DEBUG } from '../constants'
 import { askBoolean, capitalize, handleCancel } from '../utils'
 import { BaseService } from './base'
+import type { Project } from '~~/types'
 
 export class ProjectService extends BaseService {
 

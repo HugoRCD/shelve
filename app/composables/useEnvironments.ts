@@ -1,4 +1,4 @@
-import type { Environment } from '@shelve/types'
+import type { Environment } from '~~/types'
 
 export function useEnvironmentsService() {
   const route = useRoute()

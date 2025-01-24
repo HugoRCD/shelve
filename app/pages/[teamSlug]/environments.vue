@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { type Environment, TeamRole } from '@shelve/types'
+import { type Environment, TeamRole } from '~~/types'
 import { ConfirmModal } from '#components'
 
 const teamRole = useTeamRole()

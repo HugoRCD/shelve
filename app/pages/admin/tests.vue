@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { AuthType, type CreateUserInput } from '@shelve/types'
+import { AuthType, type CreateUserInput } from '~~/types'
 
 const newUser = ref<CreateUserInput>({
   email: 'hrichard206@gmail.com',

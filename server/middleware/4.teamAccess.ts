@@ -1,4 +1,4 @@
-import { TeamRole } from '@shelve/types'
+import { TeamRole } from '~~/types'
 
 export default eventHandler(async (event) => {
   const protectedRoutes = ['/api/teams/']

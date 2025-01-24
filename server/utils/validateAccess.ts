@@ -1,6 +1,6 @@
-import type { Member, Team, User } from '@shelve/types'
-import { TeamRole } from '@shelve/types'
 import { H3Event } from 'h3'
+import type { Member, Team, User } from '~~/types'
+import { TeamRole } from '~~/types'
 import { TeamsService } from '~~/server/services/teams'
 
 export async function validateTeamAccess(input: { user: User, teamSlug: string }): Promise<Team> {

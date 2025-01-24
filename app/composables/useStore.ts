@@ -1,4 +1,4 @@
-import type { Environment, Project, Team, Variable } from '@shelve/types'
+import type { Environment, Project, Team, Variable } from '~~/types'
 
 /**
  * All user teams (always load on app start/refresh)

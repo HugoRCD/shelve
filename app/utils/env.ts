@@ -1,4 +1,4 @@
-import type { Environment, Variable } from '@shelve/types'
+import type { Environment, Variable } from '~~/types'
 
 export function copyEnv(variables: Variable[], envId?: number) {
   if (variables.length === 0) {

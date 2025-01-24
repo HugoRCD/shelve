@@ -1,4 +1,4 @@
-import { TeamRole } from '@shelve/types'
+import { TeamRole } from '~~/types'
 
 const roleHierarchy = {
   [TeamRole.MEMBER]: 0,

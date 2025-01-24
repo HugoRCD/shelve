@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Environment } from '@shelve/types'
+import type { Environment } from '~~/types'
 
 const { environments } = defineProps<{
   environments: Environment[]

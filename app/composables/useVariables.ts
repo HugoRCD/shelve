@@ -1,4 +1,4 @@
-import type { CreateVariablesInput, Variable } from '@shelve/types'
+import type { CreateVariablesInput, Variable } from '~~/types'
 
 export function useVariablesService() {
   const route = useRoute()

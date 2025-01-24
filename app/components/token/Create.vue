@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Token } from '@shelve/types'
+import type { Token } from '~~/types'
 
 const tokenName = ref('')
 const loading = ref(false)

@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { Role } from '@shelve/types'
+import { Role } from '~~/types'
 import { idParamsSchema } from '~~/server/database/zod'
 
 export default eventHandler(async (event) => {

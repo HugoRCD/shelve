@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { AuthType, Role } from '@shelve/types'
+import { AuthType, Role } from '~~/types'
 
 export const userSchema = z.object({
   id: z.number(),

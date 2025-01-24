@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { TeamRole } from '@shelve/types'
+import { TeamRole } from '~~/types'
 import { useCurrentLoading } from '~/composables/useProjects'
 import type { FormSubmitEvent } from '#ui/types'
 import { type UpdateProjectSchema, updateProjectSchema } from '~/utils/zod/project'

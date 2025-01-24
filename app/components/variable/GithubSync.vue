@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import * as z from 'zod'
-import type { Variable } from '@shelve/types'
+import type { Variable } from '~~/types'
 import type { FormSubmitEvent } from '#ui/types'
 
 type GithubSyncProps = {

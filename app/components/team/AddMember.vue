@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { type Member, Role, TeamRole } from '@shelve/types'
+import { type Member, Role, TeamRole } from '~~/types'
 import { cleanString } from '~~/server/utils/string'
 
 type TeamMemberProps = { members: Member[] }

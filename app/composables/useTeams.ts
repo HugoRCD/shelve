@@ -1,5 +1,5 @@
-import type { Member, Team } from '@shelve/types'
-import { Role, TeamRole } from '@shelve/types'
+import type { Member, Team } from '~~/types'
+import { Role, TeamRole } from '~~/types'
 
 /**
  * Current selected team user role in the team

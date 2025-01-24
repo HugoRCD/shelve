@@ -23,9 +23,6 @@ importers:
       '@nuxt/ui':
         specifier: 3.0.0-alpha.11
         version: 3.0.0-alpha.11(@babel/parser@7.26.5)(change-case@5.4.4)(db0@0.2.1(@libsql/client@0.14.0)(better-sqlite3@11.8.1)(drizzle-orm@0.38.4(@libsql/client@0.14.0)(@types/pg@8.11.10)(better-sqlite3@11.8.1)(bun-types@1.2.0)(pg@8.13.1)(react@19.0.0)))(embla-carousel@8.5.2)(encoding@0.1.13)(focus-trap@7.6.4)(ioredis@5.4.2)(magicast@0.3.5)(radix-vue@1.9.12(vue@3.5.13(typescript@5.7.3)))(rollup@4.31.0)(typescript@5.7.3)(vite@6.0.11(@types/node@22.10.7)(jiti@2.4.2)(lightningcss@1.29.1)(terser@5.37.0)(tsx@4.19.2)(yaml@2.7.0))(vue@3.5.13(typescript@5.7.3))
-      '@shelve/types':
-        specifier: '*'
-        version: 1.7.3
       '@shelve/utils':
         specifier: '*'
         version: 1.1.0
@@ -151,7 +148,7 @@ importers:
         specifier: 0.2.10
         version: 0.2.10
     devDependencies:
-      '@shelve/types':
+      '~~/types':
         specifier: '*'
         version: 1.7.3
       '@shelve/utils':

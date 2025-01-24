@@ -1,4 +1,4 @@
-import type { Token } from '@shelve/types'
+import type { Token } from '~~/types'
 
 const { encryptionKey } = useRuntimeConfig().private
 

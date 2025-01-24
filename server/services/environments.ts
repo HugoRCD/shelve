@@ -1,5 +1,5 @@
-import type { Environment, CreateEnvironmentInput, UpdateEnvironmentInput } from '@shelve/types'
-import { EnvType } from '@shelve/types'
+import type { Environment, CreateEnvironmentInput, UpdateEnvironmentInput } from '~~/types'
+import { EnvType } from '~~/types'
 
 export class EnvironmentsService {
 

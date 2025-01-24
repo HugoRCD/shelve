@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { TeamRole } from '@shelve/types'
+import { TeamRole } from '~~/types'
 import { MembersService } from '~~/server/services/members'
 import { idParamsSchema } from '~~/server/database/zod'
 

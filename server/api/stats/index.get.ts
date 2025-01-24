@@ -1,4 +1,4 @@
-import type { Stats } from '@shelve/types'
+import type { Stats } from '~~/types'
 
 type CachedStats = {
   data: Stats

@@ -1,11 +1,6 @@
-import type {
-  Team,
-  CreateTeamInput,
-  DeleteTeamInput,
-  UpdateTeamInput,
-} from '@shelve/types'
-import { TeamRole } from '@shelve/types'
 import { EnvironmentsService } from './environments'
+import type { CreateTeamInput, DeleteTeamInput, Team, UpdateTeamInput } from '~~/types'
+import { TeamRole } from '~~/types'
 
 export class TeamsService {
 

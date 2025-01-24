@@ -1,4 +1,4 @@
-import type { Stats, UseStatsOptions } from '@shelve/types'
+import type { Stats, UseStatsOptions } from '~~/types'
 
 export function useStats(options: UseStatsOptions = {}) {
   const stats = useState<Stats>('stats')

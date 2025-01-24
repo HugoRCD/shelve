@@ -1,5 +1,5 @@
-import type { CreateUserInput, User } from '@shelve/types'
-import { AuthType, Role } from '@shelve/types'
+import type { CreateUserInput, User } from '~~/types'
+import { AuthType, Role } from '~~/types'
 import { EmailService } from '~~/server/services/resend'
 
 export async function createUser(input: CreateUserInput): Promise<User> {

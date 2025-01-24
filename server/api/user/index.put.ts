@@ -1,5 +1,5 @@
-import { AuthType } from '@shelve/types'
 import { z } from 'zod'
+import { AuthType } from '~~/types'
 import { validateUsername } from '~~/server/services/user'
 
 const updateUserSchema = z.object({
