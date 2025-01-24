@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Variable } from '~~/types'
+import type { Variable } from '~~/packages/types'
 import { ConfirmModal } from '#components'
 
 const selectedVariables = defineModel<Variable[]>({ required: true })

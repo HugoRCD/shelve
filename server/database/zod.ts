@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { AuthType, Role } from '~~/types'
+import { AuthType, Role } from '~~/packages/types'
 
 export const userSchema = z.object({
   id: z.number(),

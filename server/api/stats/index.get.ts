@@ -1,4 +1,4 @@
-import type { Stats } from '~~/types'
+import type { Stats } from '~~/packages/types'
 
 type CachedStats = {
   data: Stats

@@ -1,4 +1,4 @@
-import type { CreateProjectInput, Project, ProjectUpdateInput } from '~~/types'
+import type { CreateProjectInput, Project, ProjectUpdateInput } from '~~/packages/types'
 
 export class ProjectsService {
 

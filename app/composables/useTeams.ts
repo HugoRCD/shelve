@@ -1,5 +1,5 @@
-import type { Member, Team } from '~~/types'
-import { Role, TeamRole } from '~~/types'
+import type { Member, Team } from '~~/packages/types'
+import { Role, TeamRole } from '~~/packages/types'
 
 /**
  * Current selected team user role in the team

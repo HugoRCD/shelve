@@ -1,4 +1,4 @@
-import type { CreateVariablesInput, Variable } from '~~/types'
+import type { CreateVariablesInput, Variable } from '~~/packages/types'
 
 export function useVariablesService() {
   const route = useRoute()

@@ -1,5 +1,5 @@
-import type { Environment, CreateEnvironmentInput, UpdateEnvironmentInput } from '~~/types'
-import { EnvType } from '~~/types'
+import type { Environment, CreateEnvironmentInput, UpdateEnvironmentInput } from '~~/packages/types'
+import { EnvType } from '~~/packages/types'
 
 export class EnvironmentsService {
 

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { Member } from '~~/types'
-import { TeamRole } from '~~/types'
+import type { Member } from '~~/packages/types'
+import { TeamRole } from '~~/packages/types'
 import { ConfirmModal } from '#components'
 
 const { updateMember, removeMember } = useTeamsService()

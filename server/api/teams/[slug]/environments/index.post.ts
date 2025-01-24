@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { TeamRole } from '~~/types'
+import { TeamRole } from '~~/packages/types'
 import { EnvironmentsService } from '~~/server/services/environments'
 
 const createEnvironmentSchema = z.object({

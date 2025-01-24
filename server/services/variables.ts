@@ -1,4 +1,4 @@
-import type { UpdateVariableInput, CreateVariablesInput, Variable } from '~~/types'
+import type { UpdateVariableInput, CreateVariablesInput, Variable } from '~~/packages/types'
 
 export class VariablesService {
 

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { TableColumn } from '@nuxt/ui'
-import { type Token } from '~~/types'
+import { type Token } from '~~/packages/types'
 import { ConfirmModal } from '#components'
 
 const columns: TableColumn<Token>[] = [

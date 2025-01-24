@@ -1,6 +1,6 @@
 import { H3Event } from 'h3'
-import type { Member, Team, User } from '~~/types'
-import { TeamRole } from '~~/types'
+import type { Member, Team, User } from '~~/packages/types'
+import { TeamRole } from '~~/packages/types'
 import { TeamsService } from '~~/server/services/teams'
 
 export async function validateTeamAccess(input: { user: User, teamSlug: string }): Promise<Team> {

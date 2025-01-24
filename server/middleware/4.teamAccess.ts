@@ -1,4 +1,4 @@
-import { TeamRole } from '~~/types'
+import { TeamRole } from '~~/packages/types'
 
 export default eventHandler(async (event) => {
   const protectedRoutes = ['/api/teams/']

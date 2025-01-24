@@ -1,4 +1,4 @@
-import type { Project } from '~~/types'
+import type { Project } from '~~/packages/types'
 import type { CreateProjectSchema, UpdateProjectSchema } from '~/utils/zod/project'
 
 export const useCurrentLoading = () => {

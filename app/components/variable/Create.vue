@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Environment } from '~~/types'
+import type { Environment } from '~~/packages/types'
 
 const { environments } = defineProps<{
   environments: Environment[]

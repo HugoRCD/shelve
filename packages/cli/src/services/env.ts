@@ -1,4 +1,4 @@
-import { parseEnvFile } from '@shelve/utils'
+import { parseEnvFile } from '@utils'
 import { log } from '@clack/prompts'
 import type {
   EnvVar,

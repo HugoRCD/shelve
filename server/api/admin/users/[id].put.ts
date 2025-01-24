@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { Role } from '~~/types'
+import { Role } from '~~/packages/types'
 import { idParamsSchema } from '~~/server/database/zod'
 
 export default eventHandler(async (event) => {

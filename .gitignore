@@ -140,6 +140,7 @@ dist
 
 */dist/
 */.output/
+.output/
 
 # Turborepo
 .turbo

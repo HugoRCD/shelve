@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { TableColumn } from '@nuxt/ui'
-import { AuthType, Role, type User } from '~~/types'
+import { AuthType, Role, type User } from '~~/packages/types'
 import { ConfirmModal } from '#components'
 import AdminStats from '~/components/AdminStats.vue'
 

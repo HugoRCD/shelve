@@ -1,4 +1,4 @@
-import { Role } from '~~/types'
+import { Role } from '~~/packages/types'
 
 export default defineEventHandler(async (event) => {
   const protectedRoutes = ['/api/admin']

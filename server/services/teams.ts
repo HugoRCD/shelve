@@ -1,6 +1,6 @@
 import { EnvironmentsService } from './environments'
-import type { CreateTeamInput, DeleteTeamInput, Team, UpdateTeamInput } from '~~/types'
-import { TeamRole } from '~~/types'
+import type { CreateTeamInput, DeleteTeamInput, Team, UpdateTeamInput } from '~~/packages/types'
+import { TeamRole } from '~~/packages/types'
 
 export class TeamsService {
 

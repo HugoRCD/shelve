@@ -1,4 +1,4 @@
-import type { Environment } from '~~/types'
+import type { Environment } from '~~/packages/types'
 
 export function useEnvironmentsService() {
   const route = useRoute()

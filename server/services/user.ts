@@ -1,5 +1,5 @@
-import type { CreateUserInput, User } from '~~/types'
-import { AuthType, Role } from '~~/types'
+import type { CreateUserInput, User } from '~~/packages/types'
+import { AuthType, Role } from '~~/packages/types'
 import { EmailService } from '~~/server/services/resend'
 
 export async function createUser(input: CreateUserInput): Promise<User> {

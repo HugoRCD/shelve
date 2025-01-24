@@ -1,5 +1,5 @@
 // auth.d.ts
-import { AuthType, Role } from '~~/types'
+import { AuthType, Role } from '~~/packages/types'
 
 declare module '#auth-utils' {
   // eslint-disable-next-line

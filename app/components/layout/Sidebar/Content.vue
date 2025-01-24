@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Role } from '~~/types'
+import { Role } from '~~/packages/types'
 
 const route = useRoute()
 const teamSlug = computed(() => route.params.teamSlug as string)

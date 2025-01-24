@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { FormError, FormSubmitEvent } from '@nuxt/ui'
-import { TeamRole } from '~~/types'
+import { TeamRole } from '~~/packages/types'
 import { updateProjectSchema } from '~/utils/zod/project'
 
 const showEdit = ref(false)

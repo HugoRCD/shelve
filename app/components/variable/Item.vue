@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { type Environment, TeamRole, type Variable } from '~~/types'
+import { type Environment, TeamRole, type Variable } from '~~/packages/types'
 
 const { variable, environments } = defineProps<{
   variable: Variable

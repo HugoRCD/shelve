@@ -1,4 +1,4 @@
-import { Role } from '~~/types'
+import { Role } from '~~/packages/types'
 
 export default defineNuxtRouteMiddleware(() => {
   const { user } = useUserSession()

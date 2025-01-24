@@ -1,4 +1,4 @@
-import type { AddMemberInput, Member, RemoveMemberInput, UpdateMemberInput, User } from '~~/types'
+import type { AddMemberInput, Member, RemoveMemberInput, UpdateMemberInput, User } from '~~/packages/types'
 
 export class MembersService {
 

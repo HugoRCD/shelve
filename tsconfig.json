@@ -3,7 +3,8 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@types": ["./types"]
+      "@types": ["./packages/types"],
+      "@utils": ["./packages/utils"]
     }
   }
 }

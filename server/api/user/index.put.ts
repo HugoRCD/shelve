@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { AuthType } from '~~/types'
+import { AuthType } from '~~/packages/types'
 import { validateUsername } from '~~/server/services/user'
 
 const updateUserSchema = z.object({

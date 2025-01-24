@@ -1,7 +1,7 @@
 import { boolean, pgEnum, pgTable, varchar, index, uniqueIndex, bigint, integer } from 'drizzle-orm/pg-core'
 import { relations } from 'drizzle-orm'
 import { timestamps } from './column.helpers'
-import { AuthType, Role, TeamRole } from '~~/types'
+import { AuthType, Role, TeamRole } from '~~/packages/types'
 
 const DEFAULT_AVATAR = 'https://i.imgur.com/6VBx3io.png'
 const DEFAULT_LOGO = 'https://github.com/HugoRCD/shelve/blob/main/assets/default.webp?raw=true'

@@ -1,6 +1,6 @@
 import type { Storage, StorageValue } from 'unstorage'
 import type { H3Event } from 'h3'
-import type { DecryptResponse, EncryptRequest, StoredData, TTLFormat } from '~~/types'
+import type { DecryptResponse, EncryptRequest, StoredData, TTLFormat } from '~~/packages/types'
 
 export class VaultService {
 

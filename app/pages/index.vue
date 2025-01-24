@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Team } from '~~/types'
+import type { Team } from '~~/packages/types'
 import { useLogout } from '~/composables/useLogout'
 
 definePageMeta({

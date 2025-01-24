@@ -1,4 +1,4 @@
-import type { Environment, Variable } from '~~/types'
+import type { Environment, Variable } from '~~/packages/types'
 
 export function copyEnv(variables: Variable[], envId?: number) {
   if (variables.length === 0) {

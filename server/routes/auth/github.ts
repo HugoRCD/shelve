@@ -1,4 +1,4 @@
-import { AuthType } from '~~/types'
+import { AuthType } from '~~/packages/types'
 import { handleOAuthUser } from '~~/server/services/user'
 import { userSchema } from '~~/server/database/zod'
 

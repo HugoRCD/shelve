@@ -1,4 +1,4 @@
-import { TeamRole } from '~~/types'
+import { TeamRole } from '~~/packages/types'
 
 const roleHierarchy = {
   [TeamRole.MEMBER]: 0,

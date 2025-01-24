@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Project } from '~~/types'
+import type { Project } from '~~/packages/types'
 
 const route = useRoute()
 const teamSlug = route.params.teamSlug as string

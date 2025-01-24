@@ -1,4 +1,4 @@
-import type { Token, User } from '~~/types'
+import type { Token, User } from '~~/packages/types'
 
 export default defineEventHandler(async (event) => {
   const protectedRoutes = [

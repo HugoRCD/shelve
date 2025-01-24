@@ -1,4 +1,4 @@
-import type { Token } from '~~/types'
+import type { Token } from '~~/packages/types'
 
 const { encryptionKey } = useRuntimeConfig().private
 

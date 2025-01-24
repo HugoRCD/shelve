@@ -1,4 +1,4 @@
-import type { CreateVariablesInput, Environment } from '~~/types'
+import type { CreateVariablesInput, Environment } from '~~/packages/types'
 
 export function useVariableForm(projectId: number, teamEnv: Environment[]) {
   const autoUppercase = useCookie<boolean>('autoUppercase', {

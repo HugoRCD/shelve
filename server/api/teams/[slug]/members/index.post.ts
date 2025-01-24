@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { TeamRole } from '~~/types'
+import { TeamRole } from '~~/packages/types'
 import { MembersService } from '~~/server/services/members'
 
 const createMemberSchema = z.object({

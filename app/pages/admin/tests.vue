@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { AuthType, type CreateUserInput } from '~~/types'
+import { AuthType, type CreateUserInput } from '~~/packages/types'
 
 const newUser = ref<CreateUserInput>({
   email: 'hrichard206@gmail.com',

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Token } from '~~/types'
+import type { Token } from '~~/packages/types'
 
 const tokenName = ref('')
 const loading = ref(false)
