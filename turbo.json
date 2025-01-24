@@ -1,8 +1,5 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "globalDependencies": [
-    "**/.env"
-  ],
   "tasks": {
     "build": {
       "dependsOn": [
@@ -36,10 +33,15 @@
         ".nuxt/**"
       ]
     },
-    "lint": {},
+    "lint": {
+      "cache": true
+    },
     "lint:fix": {},
     "test": {},
     "release": {},
-    "typecheck": {}
-  }
+    "typecheck": {
+      "cache": true
+    }
+  },
+  "extends": ["//"]
 }

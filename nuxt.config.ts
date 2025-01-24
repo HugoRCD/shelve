@@ -9,7 +9,6 @@ export default defineNuxtConfig({
 
   nitro: {
     rollupConfig: {
-      // @ts-expect-error - Vite config
       plugins: [vue()]
     }
   },

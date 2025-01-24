@@ -1,5 +1,6 @@
 {
   "name": "@shelve/app",
+  "version": "2.0.0.beta-15",
   "description": "Shelve is a project management tool for developers teams",
   "private": true,
   "type": "module",
@@ -11,6 +12,12 @@
     "preview": "nuxt preview",
     "start": "node .output/server/index.mjs",
     "postinstall": "nuxt prepare",
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix .",
+    "typecheck": "tsc --noEmit",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:push": "drizzle-kit push",
     "build:app": "turbo build --filter=@shelve/app",
     "build:lp": "turbo build --filter=@shelve/lp",
     "build:cli": "turbo build --filter=@shelve/cli",
@@ -19,13 +26,10 @@
     "dev:cli": "turbo dev --filter=@shelve/cli",
     "release": "turbo release && changeset",
     "dev:prepare": "turbo dev:prepare",
-    "lint": "turbo lint",
-    "lint:fix": "turbo lint:fix",
-    "test": "turbo test",
-    "typecheck": "turbo typecheck",
-    "db:generate": "drizzle-kit generate",
-    "db:migrate": "drizzle-kit migrate",
-    "db:push": "drizzle-kit push"
+    "turbo:build": "turbo build",
+    "turbo:lint": "turbo lint",
+    "turbo:lint:fix": "turbo lint:fix",
+    "turbo:typecheck": "turbo typecheck"
   },
   "dependencies": {
     "@iconify-json/heroicons": "1.2.2",
@@ -68,5 +72,11 @@
   "engines": {
     "node": ">=22.12.0"
   },
-  "packageManager": "pnpm@9.15.4"
+  "packageManager": "pnpm@9.15.4",
+  "workspaces": [
+    "packages/*",
+    "base",
+    "lp",
+    "."
+  ]
 }

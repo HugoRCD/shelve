@@ -29,4 +29,4 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: 🛠️ Build
-        run: pnpm run build
+        run: pnpm run turbo:build

@@ -18,7 +18,7 @@ COPY . .
 RUN corepack enable
 RUN pnpm install --frozen-lockfile
 
-RUN pnpm run build
+RUN pnpm run build:app
 
 # Stage 2: Final Stage
 FROM node:22.13.1-alpine AS final
