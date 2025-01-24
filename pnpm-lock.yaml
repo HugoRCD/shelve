@@ -112,7 +112,7 @@ importers:
         specifier: 5.7.3
         version: 5.7.3
 
-  base:
+  layers/base:
     devDependencies:
       iron-webcrypto:
         specifier: 1.2.1
@@ -124,7 +124,7 @@ importers:
         specifier: 5.7.3
         version: 5.7.3
 
-  lp:
+  layers/lp:
     dependencies:
       '@iconify-json/heroicons':
         specifier: 1.2.2
@@ -1239,6 +1239,10 @@ packages:
 
   '@eslint/js@9.18.0':
     resolution: {integrity: sha512-fK6L7rxcq6/z+AaQMtiFTkvbHkBLNlwyRxHpKawP0x3u9+NC6MQTnFW+AdpwC6gfHTW0051cokQgtTN2FqlxQA==}
+    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+
+  '@eslint/js@9.19.0':
+    resolution: {integrity: sha512-rbq9/g38qjfqFLOVPvwjIvFFdNziEC5S65jmjPw5r6A//QH+W91akh9irMwjDN8zKUTak6W9EsAv4m/7Wnw0UQ==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
   '@eslint/object-schema@2.1.5':
@@ -8329,6 +8333,8 @@ snapshots:
 
   '@eslint/js@9.18.0': {}
 
+  '@eslint/js@9.19.0': {}
+
   '@eslint/object-schema@2.1.5': {}
 
   '@eslint/plugin-kit@0.2.5':
@@ -8361,7 +8367,7 @@ snapshots:
 
   '@hrcd/eslint-config@2.1.2-edge(eslint@9.18.0(jiti@2.4.2))(typescript@5.7.3)':
     dependencies:
-      '@eslint/js': 9.18.0
+      '@eslint/js': 9.19.0
       '@nuxt/eslint-plugin': 0.5.7(eslint@9.18.0(jiti@2.4.2))(typescript@5.7.3)
       '@rushstack/eslint-patch': 1.10.5
       '@typescript-eslint/eslint-plugin': 8.21.0(@typescript-eslint/parser@8.21.0(eslint@9.18.0(jiti@2.4.2))(typescript@5.7.3))(eslint@9.18.0(jiti@2.4.2))(typescript@5.7.3)

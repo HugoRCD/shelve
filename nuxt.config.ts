@@ -1,36 +1,58 @@
-import vue from '@vitejs/plugin-vue'
+import pkg from './package.json'
 
 export default defineNuxtConfig({
   future: {
     compatibilityVersion: 4,
   },
 
-  ssr: false,
+  experimental: {
+    viewTransition: true,
+  },
+
+  imports: {
+    presets: [
+      {
+        from: 'vue-sonner',
+        imports: ['toast']
+      }
+    ]
+  },
 
   nitro: {
-    rollupConfig: {
-      // @ts-expect-error - this is not typed
-      plugins: [vue()]
+    experimental: {
+      websocket: true
     }
   },
 
-  $development: {
-    routeRules: {
-      '/api/**': { cors: true },
+  icon: {
+    customCollections: [
+      {
+        prefix: 'custom',
+        dir: './app/assets/icons'
+      },
+      {
+        prefix: 'nucleo',
+        dir: './app/assets/icons/nucleo'
+      },
+    ],
+    clientBundle: {
+      scan: true,
+      includeCustomCollections: true
     },
-  },
-
-  $production: {
-    routeRules: {
-      '/api/**': { cors: true }
-    },
+    provider: 'iconify'
   },
 
   runtimeConfig: {
+    public: {
+      version: pkg.version
+    },
     private: {
       resendApiKey: '',
       encryptionKey: '',
       adminEmails: '',
+      vault: {
+        url: ''
+      },
       redis: {
         url: ''
       },
@@ -47,11 +69,15 @@ export default defineNuxtConfig({
     }
   },
 
-  modules: [
-    '@vueuse/nuxt',
-    'nuxt-auth-utils',
+  extends: [
+    './layers/base',
+    `./layers/${process.env.LAYER}`
   ],
 
-  extends: './base',
+  css: [
+    '~/assets/css/base.css',
+    `./layers/${process.env.LAYER}/assets/css/index.css`
+  ],
+
   compatibilityDate: '2025-01-24',
 })

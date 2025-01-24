@@ -4,10 +4,6 @@ export default defineNuxtConfig({
     '/vault': { isr: true, prerender: true }
   },
 
-  future: {
-    compatibilityVersion: 4,
-  },
-
   modules: [
     '@nuxt/ui-pro',
     '@nuxtjs/seo',
@@ -15,15 +11,6 @@ export default defineNuxtConfig({
     'nuxt-og-image',
     '@nuxt/scripts'
   ],
-
-  runtimeConfig: {
-    private: {
-      encryptionKey: '',
-      vault: {
-        url: ''
-      },
-    },
-  },
 
   content: {
     preview: {
@@ -49,10 +36,6 @@ export default defineNuxtConfig({
     },
   },
 
-  experimental: {
-    viewTransition: true,
-  },
-
   image: {
     provider: 'ipx'
   },
@@ -62,8 +45,4 @@ export default defineNuxtConfig({
     defaultLocale: 'en',
     indexable: true,
   },
-
-  css: ['~/assets/css/index.css'],
-
-  extends: '../base',
 })

@@ -76,8 +76,7 @@
   "packageManager": "pnpm@9.15.4",
   "workspaces": [
     "packages/*",
-    "base",
-    "lp",
+    "layers/*",
     "."
   ]
 }
