@@ -12,7 +12,8 @@ export default defineNuxtConfig({
     '@nuxtjs/seo',
     '@nuxt/content',
     'nuxt-og-image',
-    '@nuxt/scripts'
+    '@nuxt/scripts',
+    '@nuxthub/core',
   ],
 
   content: {
