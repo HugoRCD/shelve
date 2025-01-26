@@ -24,7 +24,7 @@
     "@nuxt/scripts": "0.9.5",
     "@nuxt/ui-pro": "https://pkg.pr.new/@nuxt/ui-pro@65b35c5",
     "@nuxtjs/seo": "2.1.0",
-    "nuxt": "3.15.2",
+    "nuxt": "3.15.3",
     "nuxt-build-cache": "0.1.1",
     "vue": "3.5.13",
     "vue-router": "4.5.0",
