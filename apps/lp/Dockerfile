@@ -12,7 +12,7 @@ ENV NUXT_UI_PRO_LICENSE=$NUXT_UI_PRO_LICENSE
 WORKDIR /app
 
 COPY pnpm-lock.yaml package.json ./
-COPY lp/package.json ./lp/package.json
+COPY .apps/lp/package.json ./lp/package.json
 
 COPY . .
 
@@ -26,7 +26,7 @@ FROM node:22.13.1-alpine AS final
 
 WORKDIR /app
 
-COPY --from=build /app/lp/.output .output
+COPY --from=build /app/apps/lp/.output .output
 
 RUN apk update && apk add --no-cache curl
 

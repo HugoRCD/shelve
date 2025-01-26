@@ -20,12 +20,13 @@
     "db:push": "drizzle-kit push",
     "build:app": "turbo build --filter=@shelve/app",
     "build:lp": "turbo build --filter=@shelve/lp",
+    "build:vault": "turbo build --filter=@shelve/vault",
     "build:cli": "turbo build --filter=@shelve/cli",
     "dev:app": "turbo dev --filter=@shelve/app",
     "dev:lp": "turbo dev --filter=@shelve/lp",
+    "dev:vault": "turbo dev --filter=@shelve/vault",
     "dev:cli": "turbo dev --filter=@shelve/cli",
     "release": "turbo release && changeset",
-    "dev:prepare": "turbo dev:prepare",
     "turbo:dev": "turbo dev --filter=@shelve/{app,lp}",
     "turbo:build": "turbo build",
     "turbo:lint": "turbo lint",
@@ -37,6 +38,7 @@
     "@iconify-json/lucide": "1.2.24",
     "@iconify-json/simple-icons": "1.2.21",
     "@nuxt/image": "1.9.0",
+    "@nuxt/scripts": "0.9.5",
     "@nuxt/ui": "3.0.0-alpha.11",
     "@shelve/utils": "*",
     "@vue-email/components": "0.0.21",
@@ -76,8 +78,7 @@
   "packageManager": "pnpm@9.15.4",
   "workspaces": [
     "packages/*",
-    "base",
-    "lp",
+    "apps/*",
     "."
   ]
 }
