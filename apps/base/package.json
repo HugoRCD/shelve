@@ -9,6 +9,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint --fix ."
   },
+  "packageManager": "pnpm@9.15.4",
   "devDependencies": {
     "nuxt": "3.15.2",
     "typescript": "5.7.3",
