@@ -1,6 +1,6 @@
 import type { Storage, StorageValue } from 'unstorage'
 import type { H3Event } from 'h3'
-import type { DecryptResponse, EncryptRequest, StoredData, TTLFormat } from '../../../packages/types'
+import type { DecryptResponse, EncryptRequest, StoredData, TTLFormat } from '../../../../packages/types'
 
 export class VaultService {
 
@@ -17,8 +17,9 @@ export class VaultService {
 
   constructor(event: H3Event) {
     const config = useRuntimeConfig()
+    const url = getRequestURL(event)
     this.encryptionKey = config.private.encryptionKey
-    this.siteUrl = event.context.siteConfigNitroOrigin
+    this.siteUrl = url.origin
     this.storage = useStorage('vault')
   }
 
@@ -130,7 +131,7 @@ export class VaultService {
   }
 
   private generateShareUrl(id: string): string {
-    return `${this.siteUrl}vault?id=${id}`
+    return `${this.siteUrl}/vault?id=${id}`
   }
 
 }

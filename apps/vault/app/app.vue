@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { Toaster } from 'vue-sonner'
+
 useHead({
   title: 'Vault by Shelve - Secure Secret Sharing Platform',
   titleTemplate: 'Vault by Shelve - Secure Secret Sharing Platform',
@@ -93,12 +95,13 @@ const items = [
               </NuxtLink>
             </span>
             <span class="text-xs font-mono italic tracking-tight text-neutral-500">
-              <NuxtLink to="https://dub.sh/shelve" class="text-neutral-400 hover:text-neutral-200">
+              <NuxtLink to="https://dub.sh/shelve" target="_blank" class="text-neutral-400 hover:text-neutral-200">
                 Powered by Shelve <UIcon name="custom:shelve" />
               </NuxtLink>
             </span>
           </div>
         </footer>
+        <Toaster close-button position="top-center" />
       </UApp>
     </Body>
   </Html>
