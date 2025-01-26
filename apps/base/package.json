@@ -10,7 +10,7 @@
     "lint:fix": "eslint --fix ."
   },
   "devDependencies": {
-    "nuxt": "3.15.3",
+    "nuxt": "3.15.2",
     "typescript": "5.7.3",
     "iron-webcrypto": "1.2.1"
   }
