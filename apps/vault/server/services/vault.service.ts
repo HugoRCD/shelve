@@ -1,13 +1,11 @@
-import type { Storage, StorageValue } from 'unstorage'
 import type { H3Event } from 'h3'
 import type { DecryptResponse, EncryptRequest, StoredData, TTLFormat } from '../../../../packages/types'
 
 export class VaultService {
 
-  private readonly storage: Storage<StorageValue>
   private readonly encryptionKey: string
   private readonly siteUrl: string
-  private readonly PREFIX = 'vault:'
+  private readonly PREFIX = 'cache:'
 
   private readonly TTL_MAP = {
     '1d': 24 * 60 * 60, // 1 day in seconds
@@ -20,7 +18,6 @@ export class VaultService {
     const url = getRequestURL(event)
     this.encryptionKey = config.private.encryptionKey
     this.siteUrl = url.origin
-    this.storage = useStorage('vault')
   }
 
   private generateKey(id: string): string {
@@ -67,7 +64,7 @@ export class VaultService {
 
   async decrypt(id: string): Promise<DecryptResponse> {
     const key = this.generateKey(id)
-    const storedData = await this.storage.getItem<StoredData>(key)
+    const storedData = await hubKV().get<StoredData>(key)
 
     if (!storedData) {
       throw createError({
@@ -80,7 +77,7 @@ export class VaultService {
     const timeLeft = this.calculateTimeLeft(createdAt, ttl)
 
     if (timeLeft <= 0) {
-      await this.storage.removeItem(key)
+      await hubKV().del(key)
       throw createError({
         statusCode: 400,
         statusMessage: 'Link has expired'
@@ -88,7 +85,7 @@ export class VaultService {
     }
 
     if (reads <= 0) {
-      await this.storage.removeItem(key)
+      await hubKV().del(key)
       throw createError({
         statusCode: 400,
         statusMessage: 'Maximum number of reads reached'
@@ -98,13 +95,17 @@ export class VaultService {
     const decryptedValue = await unseal(encryptedValue, this.encryptionKey) as string
 
     const updatedReads = reads - 1
-    await this.storage.setItem(key, {
+    /*await this.storage.setItem(key, {
+      ...storedData,
+      reads: updatedReads
+    })*/
+    await hubKV().set(key, {
       ...storedData,
       reads: updatedReads
     })
 
     if (updatedReads === 0) {
-      await this.storage.removeItem(key)
+      await hubKV().del(key)
     }
 
     return {
@@ -126,7 +127,7 @@ export class VaultService {
       ttl: data.ttl
     }
 
-    await this.storage.setItem(key, storedData)
+    await hubKV().set(key, storedData)
     return this.generateShareUrl(randomId)
   }
 

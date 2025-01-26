@@ -4,18 +4,19 @@ export default defineNuxtConfig({
   compatibilityDate: '2024-11-01',
 
   routeRules: {
-    '/': { isr: true, prerender: true }
+    '/': { prerender: true }
   },
 
-  modules: ['@nuxt/scripts'],
+  modules: ['@nuxt/scripts', '@nuxthub/core'],
 
   runtimeConfig: {
     private: {
       encryptionKey: '',
-      vault: {
-        url: ''
-      },
     },
+  },
+
+  hub: {
+    kv: true,
   },
 
   devtools: { enabled: true },
