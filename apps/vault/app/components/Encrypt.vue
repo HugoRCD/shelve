@@ -65,7 +65,7 @@ function handleDragOver(event: DragEvent) {
 }
 
 function handleDragLeave(event: DragEvent) {
-  if (!event.currentTarget.contains(event.relatedTarget as Node)) {
+  if (!event.currentTarget?.contains(event.relatedTarget as Node)) {
     dragOver.value = false
   }
 }
@@ -91,7 +91,7 @@ function handleDrop(event: DragEvent) {
         :rows="5"
         class="w-full"
         placeholder="DATABASE_URL=your_value ..."
-        :ui="{ base: border }"
+        :ui="{ base: [border] }"
         @dragenter.prevent="handleDragEnter"
         @dragover.prevent="handleDragOver"
         @dragleave.prevent="handleDragLeave"

@@ -9,7 +9,8 @@ const props = defineProps<{
 const items = [
   {
     label: 'Vault',
-    to: '/vault',
+    to: 'https://vault.shelve.cloud',
+    target: '_blank',
   },
   {
     label: 'Blog',

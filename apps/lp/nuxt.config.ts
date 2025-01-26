@@ -1,7 +1,6 @@
 export default defineNuxtConfig({
   routeRules: {
-    '/': { isr: true, prerender: true },
-    '/vault': { isr: true, prerender: true }
+    '/': { isr: true, prerender: true }
   },
 
   future: {
@@ -15,15 +14,6 @@ export default defineNuxtConfig({
     'nuxt-og-image',
     '@nuxt/scripts'
   ],
-
-  runtimeConfig: {
-    private: {
-      encryptionKey: '',
-      vault: {
-        url: ''
-      },
-    },
-  },
 
   content: {
     preview: {
