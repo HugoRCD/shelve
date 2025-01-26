@@ -1,10 +1,6 @@
 <script setup lang="ts">
 import { Toaster } from 'vue-sonner'
 
-definePageMeta({
-  colorMode: 'dark',
-})
-
 useHead({
   title: 'Vault by Shelve - Secure Secret Sharing Platform',
   titleTemplate: 'Vault by Shelve - Secure Secret Sharing Platform',
