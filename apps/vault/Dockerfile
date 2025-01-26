@@ -10,7 +10,7 @@ ENV TURBO_TOKEN=$TURBO_TOKEN
 WORKDIR /app
 
 COPY pnpm-lock.yaml package.json ./
-COPY vault/package.json ./vault/package.json
+COPY ./apps/vault/package.json ./vault/package.json
 
 COPY . .
 
@@ -24,7 +24,7 @@ FROM node:22.13.1-alpine AS final
 
 WORKDIR /app
 
-COPY --from=build /app/vault/.output .output
+COPY --from=build /app/apps/vault/.output .output
 
 RUN apk update && apk add --no-cache curl
 

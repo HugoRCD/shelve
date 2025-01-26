@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import { Toaster } from 'vue-sonner'
 
+definePageMeta({
+  colorMode: 'dark',
+})
+
 useHead({
   title: 'Vault by Shelve - Secure Secret Sharing Platform',
   titleTemplate: 'Vault by Shelve - Secure Secret Sharing Platform',
@@ -52,6 +56,11 @@ const items = [
 <template>
   <Html lang="en">
     <Body class="flex h-full flex-col">
+      <ShelveMeta
+        :default-og-image="false"
+        title="Vault by Shelve - Secure Secret Sharing Platform"
+        title-template="Vault by Shelve - Secure Secret Sharing Platform"
+      />
       <UApp>
         <div class="flex flex-col items-center justify-center py-4 sm:py-20">
           <div class="w-full border-y border-neutral-500/20">

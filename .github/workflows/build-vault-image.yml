@@ -1,4 +1,4 @@
-name: Build and Push Landing Page Docker Image
+name: Build and Push Vault Docker Image
 
 on:
   push:
@@ -13,8 +13,8 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}-lp
-  DOCKERFILE: ./apps/lp/Dockerfile
+  IMAGE_NAME: ${{ github.repository }}-vault
+  DOCKERFILE: ./apps/vault/Dockerfile
 
 jobs:
   build-and-push:
@@ -58,6 +58,5 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
           build-args: |
-            NUXT_UI_PRO_LICENSE=${{ secrets.NUXT_UI_PRO_LICENSE }}
             TURBO_TEAM=${{ vars.TURBO_TEAM }}
             TURBO_TOKEN=${{ secrets.TURBO_TOKEN }}
