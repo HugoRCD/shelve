@@ -2,7 +2,29 @@ name: Deploy to NuxtHub
 on: push
 
 jobs:
+  check-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      src: ${{ steps.changes.outputs.src }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check if there are changes
+        uses: dorny/paths-filter@v3
+        id: changes
+        with:
+          filters: |
+            src:
+              - 'apps/vault/**'
+              - 'packages/types/**'
+              - 'packages/utils/**'
+              - 'package.json'
+              - 'pnpm-lock.yaml'
+
   deploy:
+    needs: check-changes
+    if: needs.check-changes.outputs.src == 'true'
     name: "Deploy to NuxtHub"
     runs-on: ubuntu-latest
     environment:
