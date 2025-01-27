@@ -11,7 +11,7 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     private: {
-      encryptionKey: '',
+      encryptionKey: process.env.NUXT_PRIVATE_ENCRYPTION_KEY,
     },
   },
 
