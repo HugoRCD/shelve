@@ -29,10 +29,6 @@ class StatsWebSocketManager {
     this.intervals.set(peerId, interval)
   }
 
-  getActiveVisitors(): number {
-    return this.connectedPeers.size
-  }
-
   private clearInterval(peerId: string) {
     const interval = this.intervals.get(peerId)
     if (interval) {
@@ -55,9 +51,7 @@ export default defineWebSocketHandler({
       const storage = useStorage('cache')
       wsManager.addPeer(peer.id)
 
-      const activeVisitors = wsManager.getActiveVisitors()
-
-      const initialStats = await getStats(activeVisitors)
+      const initialStats = await getStats()
       peer.send(JSON.stringify(initialStats))
       storage.setItem(STATS_CACHE_KEY, {
         data: initialStats,
@@ -65,12 +59,11 @@ export default defineWebSocketHandler({
       })
 
       const interval = setInterval(async () => {
-        const activeVisitors = wsManager.getActiveVisitors()
         try {
           if (peer.websocket?.readyState !== 1) {
             throw new Error('WebSocket not ready')
           }
-          const stats = await getStats(activeVisitors)
+          const stats = await getStats()
           peer.send(JSON.stringify(stats))
           storage.setItem(STATS_CACHE_KEY, {
             data: stats,

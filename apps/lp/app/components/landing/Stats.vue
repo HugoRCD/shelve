@@ -23,6 +23,8 @@ const baseUrl = useRuntimeConfig().public.apiUrl
 const { stats, isLoading, initialFetch } = useStats({ baseUrl })
 initialFetch()
 
+const { visitors } = useVisitors()
+
 const finalStats = computed(() => [
   {
     value: stats.value?.users.value ?? undefined,
@@ -72,7 +74,7 @@ const finalStats = computed(() => [
           </span>
           <NumberFlow
             class="text-sm font-bold font-mono"
-            :value="stats?.activeVisitors.value ?? 0"
+            :value="visitors ?? 0"
             continuous
             will-change
           />

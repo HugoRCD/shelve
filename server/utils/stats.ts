@@ -9,7 +9,6 @@ const calculateStats = (data: {
   teams: any[]
   projects: any[]
   teamStats: any[]
-  activeVisitors?: number
 }): Stats => {
   const nbPush = data.teamStats.reduce((acc, stat) => acc + stat.pushCount, 0)
   const nbPull = data.teamStats.reduce((acc, stat) => acc + stat.pullCount, 0)
@@ -27,7 +26,6 @@ const calculateStats = (data: {
     projects: { label: 'projects', value: data.projects.length },
     push: { label: 'push', value: nbPush },
     pull: { label: 'pull', value: nbPull },
-    activeVisitors: { label: 'active visitors', value: data.activeVisitors || 0 },
     savedTime: {
       seconds: timeSavedInSeconds,
       minutes: Math.floor(timeSavedInSeconds / 60),
@@ -36,7 +34,7 @@ const calculateStats = (data: {
   }
 }
 
-export const getStats = async (activeVisitors?: number): Promise<Stats> => {
+export const getStats = async (): Promise<Stats> => {
   const db = useDrizzle()
 
   const [users, variables, teams, projects, teamStats] = await Promise.all([
@@ -47,5 +45,5 @@ export const getStats = async (activeVisitors?: number): Promise<Stats> => {
     db.query.teamStats.findMany()
   ])
 
-  return calculateStats({ users, variables, teams, projects, teamStats, activeVisitors })
+  return calculateStats({ users, variables, teams, projects, teamStats })
 }
