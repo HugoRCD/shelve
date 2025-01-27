@@ -1,17 +1,46 @@
+/**
+ * Composable for tracking real-time website visitors count via WebSocket
+ *
+ * Features:
+ * - Real-time visitors count updates
+ * - Automatic WebSocket connection management
+ * - Connection status tracking
+ * - Error handling
+ * - Automatic cleanup on component unmount
+ *
+ * @returns {Object} An object containing:
+ *  - visitors: Ref<number> - Current number of visitors
+ *  - isLoading: Ref<boolean> - Loading state indicator
+ *  - error: Ref<string | null> - Error message if any
+ *  - isConnected: Ref<boolean> - WebSocket connection status
+ *  - reconnect: () => void - Function to manually reconnect
+ */
 export function useVisitors() {
-  const visitors = useState<number>('visitors')
+  // State management
+  const visitors = useState<number>('visitors', () => 0) // Added default value
   const isLoading = ref(true)
   const error = ref<string | null>(null)
   const wsRef = ref<WebSocket | null>(null)
   const isConnected = ref(false)
   const isMounted = ref(true)
 
-  const getWebSocketUrl = () => {
-    const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:'
-    const baseUrl = location.host.replace(/^(http|https):\/\//, '')
+  // Constants
+  const RECONNECTION_DELAY = 5000 // 5 seconds delay for reconnection
+  const WS_NORMAL_CLOSURE = 1000
+
+  /**
+   * Constructs the WebSocket URL based on the current protocol and host
+   * @returns {string} WebSocket URL
+   */
+  const getWebSocketUrl = (): string => {
+    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
+    const baseUrl = window.location.host.replace(/^(http|https):\/\//, '')
     return `${protocol}//${baseUrl}/api/_visitors_/ws`
   }
 
+  /**
+   * Cleans up WebSocket connection and resets state
+   */
   const cleanup = () => {
     if (wsRef.value) {
       wsRef.value.close()
@@ -21,6 +50,45 @@ export function useVisitors() {
     isLoading.value = false
   }
 
+  /**
+   * Handles WebSocket messages
+   * @param {MessageEvent} event - WebSocket message event
+   */
+  const handleMessage = (event: MessageEvent) => {
+    if (!isMounted.value) return
+
+    try {
+      const visitorCount = parseInt(event.data, 10)
+      if (!isNaN(visitorCount) && visitorCount >= 0) {
+        visitors.value = visitorCount
+      } else {
+        throw new Error('Invalid visitor count received')
+      }
+    } catch (err) {
+      console.error('Failed to parse visitors WebSocket data:', err)
+      error.value = 'Invalid data received'
+    }
+  }
+
+  /**
+   * Handles WebSocket connection closure
+   * @param {CloseEvent} event - WebSocket close event
+   */
+  const handleClose = (event: CloseEvent) => {
+    console.log('Visitors WebSocket closed:', event.code, event.reason)
+    isConnected.value = false
+    wsRef.value = null
+
+    if (isMounted.value && event.code !== WS_NORMAL_CLOSURE) {
+      error.value = 'Connection lost'
+      // Attempt to reconnect after delay
+      setTimeout(() => reconnect(), RECONNECTION_DELAY)
+    }
+  }
+
+  /**
+   * Initializes WebSocket connection
+   */
   const initWebSocket = () => {
     if (!isMounted.value) return
 
@@ -41,26 +109,9 @@ export function useVisitors() {
         error.value = null
       }
 
-      ws.onmessage = (event) => {
-        if (!isMounted.value) return
-        try {
-          visitors.value = +event.data
-        } catch (err) {
-          console.error('Failed to parse visitors WebSocket data:', err)
-        }
-      }
-
-      ws.onclose = (event) => {
-        console.log('Visitors WebSocket closed:', event.code, event.reason)
-        isConnected.value = false
-        wsRef.value = null
-
-        if (isMounted.value && event.code !== 1000) {
-          error.value = 'Connection lost'
-        }
-      }
-
-      ws.onerror = (event) => {
+      ws.onmessage = handleMessage
+      ws.onclose = handleClose
+      ws.onerror = (event: Event) => {
         if (!isMounted.value) return
         console.error('Visitors WebSocket error:', event)
         error.value = 'Connection error'
@@ -73,6 +124,9 @@ export function useVisitors() {
     }
   }
 
+  /**
+   * Manually triggers WebSocket reconnection
+   */
   const reconnect = () => {
     if (!isMounted.value) return
     error.value = null
@@ -80,6 +134,7 @@ export function useVisitors() {
     initWebSocket()
   }
 
+  // Lifecycle hooks
   onMounted(() => {
     if (import.meta.client) {
       isMounted.value = true
