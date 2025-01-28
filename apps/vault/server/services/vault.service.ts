@@ -14,7 +14,7 @@ export class VaultService {
   }
 
   constructor(event: H3Event) {
-    const config = useRuntimeConfig()
+    const config = useRuntimeConfig(event)
     const url = getRequestURL(event)
     this.encryptionKey = config.private.encryptionKey
     this.siteUrl = url.origin
