@@ -18,7 +18,8 @@ export default defineNuxtConfig({
   modules: [
     '@nuxt/image',
     '@nuxt/ui',
-    'nuxt-build-cache'
+    'nuxt-build-cache',
+    'nuxt-visitors',
   ],
 
   nitro: {
