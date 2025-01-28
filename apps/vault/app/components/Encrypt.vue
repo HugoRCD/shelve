@@ -18,7 +18,7 @@ async function saveEnvFile() {
     shareUrl.value = await $fetch('/api/vault', {
       method: 'POST',
       body: {
-        value: value.value,
+        value: state.value.value,
         reads: reads.value,
         ttl: selectedTtl.value,
       },
@@ -33,7 +33,7 @@ async function saveEnvFile() {
 function parseEnvFile(file: File) {
   const reader = new FileReader()
 
-  reader.onload = (e) => value.value = e.target?.result as string
+  reader.onload = (e) => state.value.value = e.target?.result as string
 
   reader.onerror = (e) => console.error('Error reading file:', e)
 
@@ -138,7 +138,7 @@ function handleDrop(event: DragEvent) {
         block
         label="Encrypt"
         type="submit"
-        :loading
+        loading-auto
       />
     </div>
     <div v-if="shareUrl" class="mt-4 flex w-full rounded-lg border border-green-600/20 bg-green-600/10 p-4 shadow-md">

@@ -8,9 +8,7 @@ const localId = ref(id)
 const timeLeft = ref('')
 const readsLeft = ref(0)
 
-const loading = ref(false)
 async function decryptEnvFile() {
-  loading.value = true
   try {
     const { decryptedValue, reads, ttl } = await $fetch(`/api/vault?id=${localId.value}`, {
       method: 'POST',
@@ -26,7 +24,6 @@ async function decryptEnvFile() {
       toast.error('Failed to decrypt your secret(s)')
     }
   }
-  loading.value = false
 }
 </script>
 
@@ -48,8 +45,7 @@ async function decryptEnvFile() {
           block
           label="Decrypt"
           type="submit"
-
-          :loading
+          loading-auto
         />
       </div>
     </template>

@@ -63,10 +63,10 @@ const items = [
             <div class="mx-auto flex max-w-4xl font-mono italic justify-center px-5 sm:px-0">
               <EncryptDiv encrypted-text class="w-full border-x border-neutral-500/20">
                 <div>
-                  <h1 class="main-gradient font-medium cursor-pointer text-3xl">
+                  <h1 class="main-gradient font-medium text-3xl">
                     <ScrambleText label="Vault" />
                   </h1>
-                  <p class="text-neutral-500 max-w-lg text-sm">
+                  <p class="text-neutral-500 max-w-lg text-xs sm:text-sm">
                     Share secrets securely without an account. Set expiration time, control number of reads, and ensure encrypted transmission.
                   </p>
                 </div>
