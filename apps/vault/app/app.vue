@@ -60,14 +60,14 @@ const items = [
       <UApp>
         <div class="flex flex-col items-center justify-center py-4 sm:py-20">
           <div class="w-full border-y border-neutral-500/20">
-            <div class="mx-auto flex max-w-4xl justify-center px-5 sm:px-0">
+            <div class="mx-auto flex max-w-4xl font-mono italic justify-center px-5 sm:px-0">
               <EncryptDiv encrypted-text class="w-full border-x border-neutral-500/20">
                 <div>
-                  <h1 class="main-gradient cursor-pointer text-3xl">
+                  <h1 class="main-gradient font-medium cursor-pointer text-3xl">
                     <ScrambleText label="Vault" />
                   </h1>
-                  <p class="text-neutral-500">
-                    Vault is a small utility to share secrets.
+                  <p class="text-neutral-500 max-w-lg text-sm">
+                    Share secrets securely without an account. Set expiration time, control number of reads, and ensure encrypted transmission.
                   </p>
                 </div>
               </EncryptDiv>
@@ -77,7 +77,7 @@ const items = [
             <Encrypt v-if="!sealMode" />
             <Decrypt v-else />
             <div class="mt-32 flex flex-col gap-4 px-5">
-              <div class="flex flex-col items-center justify-center">
+              <div class="flex flex-col font-mono items-center justify-center">
                 <h3 class="main-gradient text-2xl">
                   <ScrambleText label="FAQ" />
                 </h3>
