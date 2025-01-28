@@ -19,6 +19,12 @@ export default defineNuxtConfig({
     kv: true,
   },
 
+  $development: {
+    hub: {
+      remote: true
+    }
+  },
+
   devtools: { enabled: true },
 
   future: {
