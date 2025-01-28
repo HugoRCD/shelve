@@ -1,5 +1,7 @@
 <script setup lang="ts">
-const value = ref('')
+const state = ref({
+  value: '',
+})
 const reads = ref(1)
 const ttl = ref([
   '1d',
@@ -16,7 +18,7 @@ async function saveEnvFile() {
     shareUrl.value = await $fetch('/api/vault', {
       method: 'POST',
       body: {
-        value: value.value,
+        value: state.value.value,
         reads: reads.value,
         ttl: selectedTtl.value,
       },
@@ -31,7 +33,7 @@ async function saveEnvFile() {
 function parseEnvFile(file: File) {
   const reader = new FileReader()
 
-  reader.onload = (e) => value.value = e.target?.result as string
+  reader.onload = (e) => state.value.value = e.target?.result as string
 
   reader.onerror = (e) => console.error('Error reading file:', e)
 
@@ -81,10 +83,10 @@ function handleDrop(event: DragEvent) {
 </script>
 
 <template>
-  <form class="mx-auto mt-8 flex w-full max-w-2xl flex-col justify-center gap-2 px-5 sm:px-0" @submit.prevent="saveEnvFile">
-    <div class="relative w-full">
+  <UForm :state class="mx-auto mt-8 flex w-full flex-col justify-center gap-2 px-5 sm:px-0" @submit.prevent="saveEnvFile">
+    <UFormField class="relative w-full" name="value">
       <UTextarea
-        v-model="value"
+        v-model="state.value"
         autoresize
         autofocus
         required
@@ -98,7 +100,7 @@ function handleDrop(event: DragEvent) {
         @drop.prevent="handleDrop"
       />
       <input type="file" accept="text" style="display: none;" @change="handleFileUpload">
-    </div>
+    </UFormField>
     <div class="mt-2 flex w-full items-end justify-between gap-2">
       <UTooltip
         :content="{
@@ -107,11 +109,10 @@ function handleDrop(event: DragEvent) {
         text="Reads are used to limit the number of times a secret can be read."
       >
         <UFormField label="Reads">
-          <UInput
+          <UInputNumber
             v-model="reads"
             label="Reads"
-            type="number"
-            min="1"
+            :min="1"
           />
         </UFormField>
       </UTooltip>
@@ -137,8 +138,7 @@ function handleDrop(event: DragEvent) {
         block
         label="Encrypt"
         type="submit"
-
-        :loading
+        loading-auto
       />
     </div>
     <div v-if="shareUrl" class="mt-4 flex w-full rounded-lg border border-green-600/20 bg-green-600/10 p-4 shadow-md">
@@ -156,5 +156,5 @@ function handleDrop(event: DragEvent) {
         />
       </div>
     </div>
-  </form>
+  </UForm>
 </template>

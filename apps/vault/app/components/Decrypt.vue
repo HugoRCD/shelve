@@ -8,9 +8,7 @@ const localId = ref(id)
 const timeLeft = ref('')
 const readsLeft = ref(0)
 
-const loading = ref(false)
 async function decryptEnvFile() {
-  loading.value = true
   try {
     const { decryptedValue, reads, ttl } = await $fetch(`/api/vault?id=${localId.value}`, {
       method: 'POST',
@@ -26,12 +24,11 @@ async function decryptEnvFile() {
       toast.error('Failed to decrypt your secret(s)')
     }
   }
-  loading.value = false
 }
 </script>
 
 <template>
-  <form class="mx-auto mt-8 flex w-full max-w-2xl flex-col justify-center gap-2 px-5 sm:px-0" @submit.prevent="decryptEnvFile">
+  <form class="mx-auto mt-8 flex w-full flex-col justify-center gap-2 px-5 sm:px-0" @submit.prevent="decryptEnvFile">
     <template v-if="!value">
       <div class="relative flex w-full flex-col gap-2">
         <UFormField label="Share ID">
@@ -48,8 +45,7 @@ async function decryptEnvFile() {
           block
           label="Decrypt"
           type="submit"
-
-          :loading
+          loading-auto
         />
       </div>
     </template>

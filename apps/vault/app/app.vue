@@ -60,52 +60,54 @@ const items = [
       <UApp>
         <div class="flex flex-col items-center justify-center py-4 sm:py-20">
           <div class="w-full border-y border-neutral-500/20">
-            <div class="mx-auto flex max-w-2xl justify-center px-5 sm:px-0">
+            <div class="mx-auto flex max-w-4xl font-mono italic justify-center px-5 sm:px-0">
               <EncryptDiv encrypted-text class="w-full border-x border-neutral-500/20">
                 <div>
-                  <h1 class="main-gradient cursor-pointer text-3xl">
+                  <h1 class="main-gradient font-medium text-3xl">
                     <ScrambleText label="Vault" />
                   </h1>
-                  <p class="text-neutral-500">
-                    Vault is a small utility to share secrets.
+                  <p class="text-neutral-500 max-w-lg text-xs sm:text-sm">
+                    Share secrets securely without an account. Set expiration time, control number of reads, and ensure encrypted transmission.
                   </p>
                 </div>
               </EncryptDiv>
             </div>
           </div>
-          <Encrypt v-if="!sealMode" />
-          <Decrypt v-else />
-        </div>
-        <div class="mt-8 max-w-2xl flex w-full mx-auto flex-col gap-4 px-5">
-          <div class="flex flex-col items-center justify-center">
-            <h3 class="main-gradient text-2xl">
-              <ScrambleText label="FAQ" />
-            </h3>
-            <p class="max-w-lg text-center text-sm text-neutral-500 sm:text-base">
-              Frequently asked questions about Vault.
-            </p>
+          <div class="max-w-4xl w-full mx-auto">
+            <Encrypt v-if="!sealMode" />
+            <Decrypt v-else />
+            <div class="mt-32 flex flex-col gap-4 px-5">
+              <div class="flex flex-col font-mono items-center justify-center">
+                <h3 class="main-gradient text-2xl">
+                  <ScrambleText label="FAQ" />
+                </h3>
+                <p class="max-w-lg text-center text-sm text-neutral-500 sm:text-base">
+                  Frequently asked questions about Vault.
+                </p>
+              </div>
+              <UAccordion
+                variant="ghost"
+                size="sm"
+                :items
+              />
+            </div>
+            <footer class="mt-20 flex flex-col gap-4 px-5">
+              <USeparator />
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-mono italic tracking-tight text-neutral-500">
+                  © {{ new Date().getFullYear() }} - Made by <NuxtLink to="https://hrcd.fr/" class="text-neutral-400 hover:text-neutral-200">
+                    HugoRCD
+                  </NuxtLink>
+                </span>
+                <span class="text-xs font-mono italic tracking-tight text-neutral-500">
+                  <NuxtLink to="https://dub.sh/shelve" target="_blank" class="text-neutral-400 hover:text-neutral-200">
+                    Powered by Shelve <UIcon name="custom:shelve" />
+                  </NuxtLink>
+                </span>
+              </div>
+            </footer>
           </div>
-          <UAccordion
-            variant="ghost"
-            size="sm"
-            :items
-          />
         </div>
-        <footer class="mt-15 flex w-full mx-auto max-w-2xl flex-col gap-4 px-5">
-          <USeparator />
-          <div class="flex max-w-2xl items-center justify-between">
-            <span class="text-xs font-mono italic tracking-tight text-neutral-500">
-              © {{ new Date().getFullYear() }} - Made by <NuxtLink to="https://hrcd.fr/" class="text-neutral-400 hover:text-neutral-200">
-                HugoRCD
-              </NuxtLink>
-            </span>
-            <span class="text-xs font-mono italic tracking-tight text-neutral-500">
-              <NuxtLink to="https://dub.sh/shelve" target="_blank" class="text-neutral-400 hover:text-neutral-200">
-                Powered by Shelve <UIcon name="custom:shelve" />
-              </NuxtLink>
-            </span>
-          </div>
-        </footer>
         <Toaster close-button position="top-center" />
       </UApp>
     </Body>

@@ -11,12 +11,18 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     private: {
-      encryptionKey: process.env.NUXT_PRIVATE_ENCRYPTION_KEY,
+      encryptionKey: '',
     },
   },
 
   hub: {
     kv: true,
+  },
+
+  $development: {
+    hub: {
+      remote: true
+    }
   },
 
   devtools: { enabled: true },
