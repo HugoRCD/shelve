@@ -8,5 +8,5 @@ export default defineEventHandler(async (event) => {
       required_error: 'Repository is required',
     }).min(1).trim(),
   }).parse)
-  return await new GithubService().getSecrets(user.id, repository)
+  return await new GithubService(event).getSecrets(user.id, repository)
 })

@@ -7,5 +7,5 @@ export default defineEventHandler(async (event: H3Event) => {
   const { slug } = await getValidatedRouterParams(event, z.object({
     slug: z.string({ required_error: 'slug is required' }),
   }).parse)
-  return await new GithubService().deleteApp(user.id, slug)
+  return await new GithubService(event).deleteApp(user.id, slug)
 })

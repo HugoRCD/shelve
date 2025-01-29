@@ -1,8 +1,8 @@
 import type { Token } from '~~/packages/types'
 
-const { encryptionKey } = useRuntimeConfig().private
-
 export default defineEventHandler(async (event) => {
+  const { encryptionKey } = useRuntimeConfig(event).private
+
   const { user } = await requireUserSession(event)
 
   const tokens = await useDrizzle().query.tokens.findMany({

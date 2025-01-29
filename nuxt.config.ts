@@ -14,16 +14,14 @@ export default defineNuxtConfig({
     }
   },
 
-  $development: {
-    routeRules: {
-      '/api/**': { cors: true },
-    },
+  hub: {
+    kv: true,
   },
 
-  $production: {
-    routeRules: {
-      '/api/**': { cors: true }
-    },
+  $development: {
+    hub: {
+      remote: true
+    }
   },
 
   runtimeConfig: {
@@ -50,6 +48,7 @@ export default defineNuxtConfig({
   modules: [
     '@vueuse/nuxt',
     'nuxt-auth-utils',
+    '@nuxthub/core',
   ],
 
   extends: './apps/base',

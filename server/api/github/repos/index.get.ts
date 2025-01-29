@@ -6,5 +6,5 @@ export default defineEventHandler(async (event) => {
   const { q } = await getValidatedQuery(event, z.object({
     q: z.string().optional(),
   }).parse)
-  return await new GithubService().getUserRepos(user.id, q)
+  return await new GithubService(event).getUserRepos(user.id, q)
 })

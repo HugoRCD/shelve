@@ -40,6 +40,7 @@
     "@nuxt/image": "1.9.0",
     "@nuxt/scripts": "0.9.5",
     "@nuxt/ui": "3.0.0-alpha.11",
+    "@nuxthub/core": "0.8.15",
     "@shelve/utils": "*",
     "@vue-email/components": "0.0.21",
     "@vue-email/render": "0.0.9",
@@ -70,7 +71,8 @@
     "automd": "0.3.12",
     "eslint": "9.19.0",
     "turbo": "2.3.4",
-    "typescript": "5.7.3"
+    "typescript": "5.7.3",
+    "wrangler": "^3.105.1"
   },
   "engines": {
     "node": ">=22.13.1"

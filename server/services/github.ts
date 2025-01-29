@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken'
 import sodium from 'libsodium-wrappers'
+import type { H3Event } from 'h3'
 import type { GithubApp, GitHubAppResponse, GitHubRepo } from '~~/packages/types'
 
 export class GithubService {
@@ -8,8 +9,8 @@ export class GithubService {
   private readonly tokenCache = new Map<string, { token: string, expiresAt: Date }>()
   private readonly encryptionKey: string
 
-  constructor() {
-    this.encryptionKey = useRuntimeConfig().private.encryptionKey
+  constructor(event: H3Event) {
+    this.encryptionKey = useRuntimeConfig(event).private.encryptionKey
   }
 
   private async encryptValue(value: string): Promise<string> {

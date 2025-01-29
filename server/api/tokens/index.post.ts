@@ -7,7 +7,7 @@ export default defineEventHandler(async (event) => {
     }).min(3).max(50).trim(),
   }).parse)
   const { user } = await requireUserSession(event)
-  const { encryptionKey } = useRuntimeConfig().private
+  const { encryptionKey } = useRuntimeConfig(event).private
 
   const createdToken = generateUserToken(user.id)
   const encryptedToken = await seal(createdToken, encryptionKey)
