@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "25a49d04-8a27-4f6c-824b-5e1da69f8594",
+  "id": "bd83d290-5a0a-43ab-b7c5-8b400b0ca972",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "environments": {
@@ -195,7 +195,7 @@
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
-          "default": "'MEMBER'"
+          "default": "'member'"
         },
         "updated_at": {
           "name": "updated_at",
@@ -601,7 +601,7 @@
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
-          "default": "'USER'"
+          "default": "'user'"
         },
         "auth_type": {
           "name": "auth_type",

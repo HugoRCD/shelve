@@ -1,8 +1,9 @@
+import { H3Event } from 'h3'
 import type { CreateUserInput, User } from '~~/packages/types'
 import { AuthType, Role } from '~~/packages/types'
 import { EmailService } from '~~/server/services/resend'
 
-export async function createUser(input: CreateUserInput): Promise<User> {
+export async function createUser(input: CreateUserInput, event: H3Event): Promise<User> {
   const adminEmails = useRuntimeConfig().private.adminEmails?.split(',') || []
   input.username = await validateUsername(input.username, input.authType)
   const [createdUser] = await useDrizzle()
@@ -16,17 +17,17 @@ export async function createUser(input: CreateUserInput): Promise<User> {
     })
     .returning()
   if (!createdUser) throw createError({ statusCode: 422, statusMessage: 'Failed to create user' })
-  await new EmailService().sendWelcomeEmail(input.email, input.username, input.appUrl)
+  await new EmailService(event).sendWelcomeEmail(input.email, input.username, input.appUrl)
   return createdUser
 }
 
-export async function handleOAuthUser(input: CreateUserInput): Promise<User> {
+export async function handleOAuthUser(input: CreateUserInput, event: H3Event): Promise<User> {
   const [foundUser] = await useDrizzle()
     .select()
     .from(tables.users)
     .where(eq(tables.users.username, input.username))
 
-  if (!foundUser) return await createUser(input)
+  if (!foundUser) return await createUser(input, event)
   return foundUser
 }
 

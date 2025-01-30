@@ -5,16 +5,16 @@ import { timestamps } from './column.helpers'
 const DEFAULT_AVATAR = 'https://i.imgur.com/6VBx3io.png'
 const DEFAULT_LOGO = 'https://github.com/HugoRCD/shelve/blob/main/assets/default.webp?raw=true'
 
-const ROLE_VALUES = ['USER', 'ADMIN'] as const
-const AUTH_TYPE_VALUES = ['GITHUB', 'GOOGLE'] as const
-const TEAM_ROLE_VALUES = ['OWNER', 'ADMIN', 'MEMBER'] as const
+const ROLE_VALUES = ['user', 'admin'] as const
+const AUTH_TYPE_VALUES = ['github', 'google'] as const
+const TEAM_ROLE_VALUES = ['owner', 'admin', 'member'] as const
 
 export const users = sqliteTable('users', {
   id: integer('id').primaryKey({ autoIncrement: true }),
   username: text('username').unique().notNull(),
   email: text('email').unique().notNull(),
   avatar: text('avatar').notNull().default(DEFAULT_AVATAR),
-  role: text('role', { enum: ROLE_VALUES }).notNull().default('USER'),
+  role: text('role', { enum: ROLE_VALUES }).notNull().default('user'),
   authType: text('auth_type', { enum: AUTH_TYPE_VALUES }).notNull(),
   onboarding: integer('onboarding', { mode: 'boolean' }).notNull().default(false),
   cliInstalled: integer('cli_installed', { mode: 'boolean' }).notNull().default(false),
@@ -45,7 +45,7 @@ export const members = sqliteTable('members', {
   id: integer('id').primaryKey({ autoIncrement: true }),
   userId: integer('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
   teamId: integer('team_id').notNull().references(() => teams.id, { onDelete: 'cascade' }),
-  role: text('role', { enum: TEAM_ROLE_VALUES }).notNull().default('MEMBER'),
+  role: text('role', { enum: TEAM_ROLE_VALUES }).notNull().default('member'),
   ...timestamps,
 })
 

@@ -1,5 +1,6 @@
 import { Resend } from 'resend'
 import { render } from '@vue-email/render'
+import type { H3Event } from 'h3'
 import welcomeEmail from '~~/server/emails/welcomeEmail.vue'
 
 export class EmailService {
@@ -7,8 +8,8 @@ export class EmailService {
   private readonly resend: Resend | null
   private readonly SENDER = 'HugoRCD <contact@hrcd.fr>'
 
-  constructor() {
-    const config = useRuntimeConfig()
+  constructor(event: H3Event) {
+    const config = useRuntimeConfig(event)
     this.resend = config.private.resendApiKey ? new Resend(config.private.resendApiKey) : null
   }
 

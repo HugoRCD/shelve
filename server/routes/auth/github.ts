@@ -16,7 +16,7 @@ export default defineOAuthGitHubEventHandler({
         username: user.login,
         authType: AuthType.GITHUB,
         appUrl,
-      })
+      }, event)
       await setUserSession(event, {
         secure: {
           githubToken: tokens.access_token,

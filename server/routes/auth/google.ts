@@ -15,7 +15,7 @@ export default defineOAuthGoogleEventHandler({
         username: `${user.given_name}_${user.family_name}`,
         authType: AuthType.GOOGLE,
         appUrl,
-      })
+      }, event)
       await setUserSession(event, {
         secure: {
           googleToken: tokens.access_token,

@@ -64,7 +64,7 @@ export class MembersService {
   async isUserAlreadyMember(teamId: number, email: string): Promise<Member | undefined> {
     const user = await this.getUserByEmail(email)
     if (!user) throw createError({ statusCode: 404, message: `User not found with email ${email}` })
-    return await useDrizzle().query.members.findFirst({
+    return useDrizzle().query.members.findFirst({
       where: and(eq(tables.members.teamId, teamId), eq(tables.members.userId, user.id)),
       with: {
         user: true

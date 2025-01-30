@@ -13,7 +13,10 @@ export default eventHandler(async (event) => {
   const { name } = await getValidatedRouterParams(event, getProjectSchema.parse)
 
   const project = await useDrizzle().query.projects.findFirst({
-    where: and(ilike(tables.projects.name, name), eq(tables.projects.teamId, team.id)),
+    where: and(
+      sql`lower(${tables.projects.name}) like lower(${name})`,
+      eq(tables.projects.teamId, team.id)
+    ),
   })
 
   if (!project) throw createError({ statusCode: 400, statusMessage: 'Project not found' })

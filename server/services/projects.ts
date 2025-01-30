@@ -40,8 +40,8 @@ export class ProjectsService {
     return project
   })
 
-  getProjects = withCache<Project[]>('Projects', async (teamId: number) => {
-    return await useDrizzle().query.projects.findMany({
+  getProjects = withCache<Project[]>('Projects', (teamId: number) => {
+    return useDrizzle().query.projects.findMany({
       where: eq(tables.projects.teamId, teamId),
       orderBy: [desc(tables.projects.updatedAt)]
     })
@@ -69,7 +69,7 @@ export class ProjectsService {
   private async isProjectAlreadyExists(name: string, teamId: number, projectId?: number): Promise<boolean> {
     const conditions = [
       eq(tables.projects.teamId, teamId),
-      ilike(tables.projects.name, name)
+      sql`lower(${tables.projects.name}) like lower(${name})`
     ]
 
     if (projectId) conditions.push(not(eq(tables.projects.id, projectId)))
