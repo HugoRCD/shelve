@@ -32,6 +32,10 @@ export default defineNuxtConfig({
     },
   },
 
+  hub: {
+    analytics: true
+  },
+
   nitro: {
     prerender: {
       crawlLinks: true,

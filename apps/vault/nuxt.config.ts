@@ -16,6 +16,7 @@ export default defineNuxtConfig({
   },
 
   hub: {
+    analytics: true,
     kv: true,
   },
 
