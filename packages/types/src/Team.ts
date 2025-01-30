@@ -10,7 +10,7 @@ export type Member = {
   id: number;
   userId: number;
   teamId: number;
-  role: TeamRole;
+  role: 'owner' | 'admin' | 'member';
   user: User;
   createdAt: string;
   updatedAt: string;

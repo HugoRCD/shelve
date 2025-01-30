@@ -13,8 +13,8 @@ export type User = {
   username: string;
   email: string;
   avatar: string;
-  role: Role;
-  authType: AuthType;
+  role: 'admin' | 'user';
+  authType: 'github' | 'google';
   onboarding: boolean;
   cliInstalled: boolean;
   createdAt: string;
