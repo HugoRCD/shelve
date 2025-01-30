@@ -1,6 +1,8 @@
 import vue from '@vitejs/plugin-vue'
 
 export default defineNuxtConfig({
+  extends: './apps/base',
+
   future: {
     compatibilityVersion: 4,
   },
@@ -15,23 +17,21 @@ export default defineNuxtConfig({
   },
 
   hub: {
-    kv: true,
+    database: true,
+    cache: true
   },
 
-  $development: {
+  /*$development: {
     hub: {
       remote: true
     }
-  },
+  },*/
 
   runtimeConfig: {
     private: {
       resendApiKey: '',
       encryptionKey: '',
       adminEmails: '',
-      redis: {
-        url: ''
-      },
     },
     oauth: {
       google: {
@@ -51,6 +51,5 @@ export default defineNuxtConfig({
     '@nuxthub/core',
   ],
 
-  extends: './apps/base',
   compatibilityDate: '2025-01-24',
 })

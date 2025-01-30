@@ -12,8 +12,8 @@ declare module '#auth-utils' {
     onboarding: boolean
     cliInstalled: boolean
     role: Role
-    createdAt: Date
-    updatedAt: Date
+    createdAt: string
+    updatedAt: string
   }
 
   // eslint-disable-next-line

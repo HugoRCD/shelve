@@ -60,6 +60,6 @@ export type GithubApp = {
   clientId: string
   clientSecret: string
   userId: number
-  createdAt: Date
-  updatedAt: Date
+  createdAt: string
+  updatedAt: string
 }

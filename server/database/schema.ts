@@ -1,141 +1,104 @@
-import { boolean, pgEnum, pgTable, varchar, index, uniqueIndex, bigint, integer } from 'drizzle-orm/pg-core'
+import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core'
 import { relations } from 'drizzle-orm'
 import { timestamps } from './column.helpers'
-// eslint-disable-next-line
-import { AuthType, Role, TeamRole } from '../../packages/types'
 
 const DEFAULT_AVATAR = 'https://i.imgur.com/6VBx3io.png'
 const DEFAULT_LOGO = 'https://github.com/HugoRCD/shelve/blob/main/assets/default.webp?raw=true'
 
-export const teamRoleEnum = pgEnum('team_role', [
-  TeamRole.OWNER,
-  TeamRole.ADMIN,
-  TeamRole.MEMBER,
-])
+const ROLE_VALUES = ['USER', 'ADMIN'] as const
+const AUTH_TYPE_VALUES = ['GITHUB', 'GOOGLE'] as const
+const TEAM_ROLE_VALUES = ['OWNER', 'ADMIN', 'MEMBER'] as const
 
-export const rolesEnum = pgEnum('roles', [
-  Role.USER,
-  Role.ADMIN,
-])
-
-export const authTypesEnum = pgEnum('auth_types', [
-  AuthType.GITHUB,
-  AuthType.GOOGLE,
-])
-
-export const users = pgTable('users', {
-  id: bigint({ mode: 'number' }).primaryKey().generatedByDefaultAsIdentity(),
-  username: varchar({ length: 25 }).unique().notNull(),
-  email: varchar({ length: 50 }).unique().notNull(),
-  avatar: varchar({ length: 500 }).default(DEFAULT_AVATAR).notNull(),
-  role: rolesEnum().default(Role.USER).notNull(),
-  authType: authTypesEnum().notNull(),
-  onboarding: boolean().default(false).notNull(),
-  cliInstalled: boolean().default(false).notNull(),
+export const users = sqliteTable('users', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  username: text('username').unique().notNull(),
+  email: text('email').unique().notNull(),
+  avatar: text('avatar').notNull().default(DEFAULT_AVATAR),
+  role: text('role', { enum: ROLE_VALUES }).notNull().default('USER'),
+  authType: text('auth_type', { enum: AUTH_TYPE_VALUES }).notNull(),
+  onboarding: integer('onboarding', { mode: 'boolean' }).notNull().default(false),
+  cliInstalled: integer('cli_installed', { mode: 'boolean' }).notNull().default(false),
   ...timestamps,
 })
 
-export const githubApp = pgTable('github_app', {
-  id: bigint({ mode: 'number' }).primaryKey().generatedByDefaultAsIdentity(),
-  slug: varchar({ length: 100 }).unique().notNull(),
-  appId: bigint({ mode: 'number' }).notNull(),
-  privateKey: varchar().notNull(),
-  webhookSecret: varchar({ length: 500 }).notNull(),
-  clientId: varchar({ length: 500 }).notNull(),
-  clientSecret: varchar({ length: 500 }).notNull(),
-  userId: bigint({ mode: 'number' }).references(() => users.id, { onDelete: 'cascade' }).notNull(),
+export const githubApp = sqliteTable('github_app', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  slug: text('slug').unique().notNull(),
+  appId: integer('app_id').notNull(),
+  privateKey: text('private_key').notNull(),
+  webhookSecret: text('webhook_secret').notNull(),
+  clientId: text('client_id').notNull(),
+  clientSecret: text('client_secret').notNull(),
+  userId: integer('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
   ...timestamps,
 })
 
-export const teams = pgTable('teams', {
-  id: bigint({ mode: 'number' }).primaryKey().generatedByDefaultAsIdentity(),
-  name: varchar({ length: 50 }).notNull(),
-  slug: varchar({ length: 50 }).unique().notNull(),
-  logo: varchar({ length: 500 }).default('https://github.com/HugoRCD/shelve/blob/main/assets/default.webp?raw=true').notNull(),
+export const teams = sqliteTable('teams', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  name: text('name').notNull(),
+  slug: text('slug').unique().notNull(),
+  logo: text('logo').notNull().default(DEFAULT_LOGO),
   ...timestamps,
-}, (table) => [uniqueIndex('teams_slug_idx').on(table.slug)])
+})
 
-export const members = pgTable('members', {
-  id: bigint({ mode: 'number' }).primaryKey().generatedByDefaultAsIdentity(),
-  userId: bigint({ mode: 'number' }).references(() => users.id, { onDelete: 'cascade' }).notNull(),
-  teamId: bigint({ mode: 'number' }).references(() => teams.id, { onDelete: 'cascade' }).notNull(),
-  role: teamRoleEnum().default(TeamRole.MEMBER).notNull(),
+export const members = sqliteTable('members', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  userId: integer('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  teamId: integer('team_id').notNull().references(() => teams.id, { onDelete: 'cascade' }),
+  role: text('role', { enum: TEAM_ROLE_VALUES }).notNull().default('MEMBER'),
   ...timestamps,
-}, (table) => [
-  uniqueIndex('members_user_team_idx').on(table.userId, table.teamId),
-  index('members_role_idx').on(table.role),
-  index('members_team_role_idx').on(table.teamId, table.role)
-])
+})
 
-export const projects = pgTable('projects', {
-  id: bigint({ mode: 'number' }).primaryKey().generatedByDefaultAsIdentity(),
-  name: varchar({ length: 50 }).notNull(),
-  teamId: bigint({ mode: 'number' }).references(() => teams.id, { onDelete: 'cascade' }).notNull(),
-  description: varchar({ length: 500 }).default('').notNull(),
-  repository: varchar({ length: 50 }).default('').notNull(),
-  projectManager: varchar({ length: 100 }).default('').notNull(),
-  homepage: varchar({ length: 100 }).default('').notNull(),
-  variablePrefix: varchar({ length: 500 }).default('').notNull(),
-  logo: varchar({ length: 500 }).default(DEFAULT_LOGO).notNull(),
+export const projects = sqliteTable('projects', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  name: text('name').notNull(),
+  teamId: integer('team_id').notNull().references(() => teams.id, { onDelete: 'cascade' }),
+  description: text('description').notNull().default(''),
+  repository: text('repository').notNull().default(''),
+  projectManager: text('project_manager').notNull().default(''),
+  homepage: text('homepage').notNull().default(''),
+  variablePrefix: text('variable_prefix').notNull().default(''),
+  logo: text('logo').notNull().default(DEFAULT_LOGO),
   ...timestamps,
-}, (table) => [
-  uniqueIndex('projects_team_name_idx').on(table.teamId, table.name),
-  index('projects_team_idx').on(table.teamId),
-])
+})
 
-export const variables = pgTable('variables', {
-  id: bigint({ mode: 'number' }).primaryKey().generatedByDefaultAsIdentity(),
-  projectId: bigint({ mode: 'number' }).references(() => projects.id, { onDelete: 'cascade' }).notNull(),
-  key: varchar({ length: 50 }).notNull(),
+export const variables = sqliteTable('variables', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  projectId: integer('project_id').notNull().references(() => projects.id, { onDelete: 'cascade' }),
+  key: text('key').notNull(),
   ...timestamps,
-}, (table) => [
-  uniqueIndex('variables_project_key_idx').on(table.projectId, table.key),
-  index('variables_key_idx').on(table.key),
-  index('variables_project_idx').on(table.projectId),
-])
+})
 
-export const variableValues = pgTable('variable_values', {
-  id: bigint({ mode: 'number' }).primaryKey().generatedByDefaultAsIdentity(),
-  variableId: bigint({ mode: 'number' }).references(() => variables.id, { onDelete: 'cascade' }).notNull(),
-  environmentId: bigint({ mode: 'number' }).references(() => environments.id, { onDelete: 'cascade' }).notNull(),
-  value: varchar({ length: 800 }).notNull(),
+export const variableValues = sqliteTable('variable_values', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  variableId: integer('variable_id').notNull().references(() => variables.id, { onDelete: 'cascade' }),
+  environmentId: integer('environment_id').notNull().references(() => environments.id, { onDelete: 'cascade' }),
+  value: text('value').notNull(),
   ...timestamps,
-}, (table) => [
-  uniqueIndex('variable_values_variable_env_idx').on(
-    table.variableId,
-    table.environmentId
-  ),
-  index('variable_values_env_idx').on(table.environmentId),
-])
+})
 
-export const tokens = pgTable('tokens', {
-  id: bigint({ mode: 'number' }).primaryKey().generatedByDefaultAsIdentity(),
-  token: varchar({ length: 800 }).unique().notNull(),
-  name: varchar({ length: 25 }).notNull(),
-  userId: bigint({ mode: 'number' }).references(() => users.id, { onDelete: 'cascade' }).notNull(),
+export const tokens = sqliteTable('tokens', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  token: text('token').unique().notNull(),
+  name: text('name').notNull(),
+  userId: integer('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
   ...timestamps,
-}, (table) => [
-  uniqueIndex('tokens_token_idx').on(table.token),
-  index('tokens_user_idx').on(table.userId)
-])
+})
 
-export const environments = pgTable('environments', {
-  id: bigint({ mode: 'number' }).primaryKey().generatedByDefaultAsIdentity(),
-  name: varchar({ length: 25 }).notNull(),
-  teamId: bigint({ mode: 'number' }).references(() => teams.id, { onDelete: 'cascade' }).notNull(),
+export const environments = sqliteTable('environments', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  name: text('name').notNull(),
+  teamId: integer('team_id').notNull().references(() => teams.id, { onDelete: 'cascade' }),
   ...timestamps,
-}, (table) => [
-  uniqueIndex('environments_team_name_idx').on(table.teamId, table.name),
-  index('environments_team_idx').on(table.teamId),
-])
+})
 
-export const teamStats = pgTable('team_stats', {
-  id: bigint({ mode: 'number' }).primaryKey().generatedByDefaultAsIdentity(),
-  teamId: bigint({ mode: 'number' }).unique().references(() => teams.id).notNull(),
+export const teamStats = sqliteTable('team_stats', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  teamId: integer('team_id').notNull().unique().references(() => teams.id),
   pushCount: integer('push_count').notNull().default(0),
   pullCount: integer('pull_count').notNull().default(0),
   ...timestamps,
-}, (table) => [uniqueIndex('team_stats_id_idx').on(table.id)])
+})
 
 export const githubAppRelations = relations(githubApp, ({ one }) => ({
   users: one(users, {

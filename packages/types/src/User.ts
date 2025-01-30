@@ -17,8 +17,8 @@ export type User = {
   authType: AuthType;
   onboarding: boolean;
   cliInstalled: boolean;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
 };
 
 export type CreateUserInput = {
