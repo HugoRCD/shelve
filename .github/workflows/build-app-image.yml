@@ -14,7 +14,7 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
-  DOCKERFILE: ./Dockerfile
+  DOCKERFILE: ./apps/shelve/Dockerfile
 
 jobs:
   build-and-push:

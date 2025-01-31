@@ -8,8 +8,8 @@ export type Environment = {
   id: number
   name: string
   teamId: number
-  createdAt: Date
-  updatedAt: Date
+  createdAt: string
+  updatedAt: string
 }
 
 export type CreateEnvironmentInput = {
