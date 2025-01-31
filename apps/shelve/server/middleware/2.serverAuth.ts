@@ -48,7 +48,7 @@ async function getUserByAuthToken(authToken: string, event: H3Event): Promise<Us
 
   await useDrizzle().update(tables.tokens)
     .set({
-      updatedAt: new Date()
+      updatedAt: new Date().toISOString()
     })
     .where(eq(tables.tokens.id, foundToken.id))
   return user
