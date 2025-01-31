@@ -4,7 +4,7 @@ import { AuthType, Role } from '@types'
 import { EmailService } from '~~/server/services/resend'
 
 export async function createUser(input: CreateUserInput, event: H3Event): Promise<User> {
-  const adminEmails = useRuntimeConfig().private.adminEmails?.split(',') || []
+  const adminEmails = useRuntimeConfig(event).private.adminEmails?.split(',') || []
   input.username = await validateUsername(input.username, input.authType)
   const [createdUser] = await useDrizzle()
     .insert(tables.users)

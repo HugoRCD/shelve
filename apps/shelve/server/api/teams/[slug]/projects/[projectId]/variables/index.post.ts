@@ -22,7 +22,7 @@ export default eventHandler(async (event) => {
   const body = await readValidatedBody(event, schema.parse)
   const { projectId } = await getValidatedRouterParams(event, projectIdParamsSchema.parse)
 
-  const variablesService = new VariablesService()
+  const variablesService = new VariablesService(event)
   await variablesService.createVariables({
     projectId,
     autoUppercase: body.autoUppercase,

@@ -12,7 +12,7 @@ export default eventHandler(async (event) => {
     }).int().positive(),
   }).parse)
 
-  const variablesService = new VariablesService()
+  const variablesService = new VariablesService(event)
 
   variablesService.incrementStatAsync(team.id, 'pull')
   const result = await variablesService.getVariables(projectId, envId)

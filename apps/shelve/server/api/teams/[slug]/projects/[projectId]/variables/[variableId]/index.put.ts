@@ -18,7 +18,7 @@ const schema = z.object({
 export default eventHandler(async (event) => {
   const { variableId } = await getValidatedRouterParams(event, variableIdParamsSchema.parse)
   const body = await readValidatedBody(event, schema.parse)
-  await new VariablesService().updateVariable({
+  await new VariablesService(event).updateVariable({
     id: variableId,
     key: body.key,
     values: body.values,

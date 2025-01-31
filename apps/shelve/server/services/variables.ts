@@ -1,11 +1,12 @@
 import type { UpdateVariableInput, CreateVariablesInput, Variable } from '@types'
+import { H3Event } from 'h3'
 
 export class VariablesService {
 
   private readonly encryptionKey: string
 
-  constructor() {
-    this.encryptionKey = useRuntimeConfig().private.encryptionKey
+  constructor(event: H3Event) {
+    this.encryptionKey = useRuntimeConfig(event).private.encryptionKey
   }
 
   // Private utility methods
