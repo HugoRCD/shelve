@@ -10,93 +10,93 @@ const AUTH_TYPE_VALUES = ['github', 'google'] as const
 const TEAM_ROLE_VALUES = ['owner', 'admin', 'member'] as const
 
 export const users = sqliteTable('users', {
-  id: integer('id').primaryKey({ autoIncrement: true }),
-  username: text('username').unique().notNull(),
-  email: text('email').unique().notNull(),
-  avatar: text('avatar').notNull().default(DEFAULT_AVATAR),
-  role: text('role', { enum: ROLE_VALUES }).notNull().default('user'),
-  authType: text('auth_type', { enum: AUTH_TYPE_VALUES }).notNull(),
-  onboarding: integer('onboarding', { mode: 'boolean' }).notNull().default(false),
-  cliInstalled: integer('cli_installed', { mode: 'boolean' }).notNull().default(false),
+  id: integer().primaryKey({ autoIncrement: true }),
+  username: text().unique().notNull(),
+  email: text().unique().notNull(),
+  avatar: text().notNull().default(DEFAULT_AVATAR),
+  role: text({ enum: ROLE_VALUES }).notNull().default('user'),
+  authType: text({ enum: AUTH_TYPE_VALUES }).notNull(),
+  onboarding: integer({ mode: 'boolean' }).notNull().default(false),
+  cliInstalled: integer({ mode: 'boolean' }).notNull().default(false),
   ...timestamps,
 })
 
 export const githubApp = sqliteTable('github_app', {
-  id: integer('id').primaryKey({ autoIncrement: true }),
-  slug: text('slug').unique().notNull(),
-  appId: integer('app_id').notNull(),
-  privateKey: text('private_key').notNull(),
-  webhookSecret: text('webhook_secret').notNull(),
-  clientId: text('client_id').notNull(),
-  clientSecret: text('client_secret').notNull(),
-  userId: integer('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  id: integer().primaryKey({ autoIncrement: true }),
+  slug: text().unique().notNull(),
+  appId: integer().notNull(),
+  privateKey: text().notNull(),
+  webhookSecret: text().notNull(),
+  clientId: text().notNull(),
+  clientSecret: text().notNull(),
+  userId: integer().notNull().references(() => users.id, { onDelete: 'cascade' }),
   ...timestamps,
 })
 
 export const teams = sqliteTable('teams', {
-  id: integer('id').primaryKey({ autoIncrement: true }),
-  name: text('name').notNull(),
-  slug: text('slug').unique().notNull(),
-  logo: text('logo').notNull().default(DEFAULT_LOGO),
+  id: integer().primaryKey({ autoIncrement: true }),
+  name: text().notNull(),
+  slug: text().unique().notNull(),
+  logo: text().notNull().default(DEFAULT_LOGO),
   ...timestamps,
 })
 
 export const members = sqliteTable('members', {
-  id: integer('id').primaryKey({ autoIncrement: true }),
-  userId: integer('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
-  teamId: integer('team_id').notNull().references(() => teams.id, { onDelete: 'cascade' }),
-  role: text('role', { enum: TEAM_ROLE_VALUES }).notNull().default('member'),
+  id: integer().primaryKey({ autoIncrement: true }),
+  userId: integer().notNull().references(() => users.id, { onDelete: 'cascade' }),
+  teamId: integer().notNull().references(() => teams.id, { onDelete: 'cascade' }),
+  role: text({ enum: TEAM_ROLE_VALUES }).notNull().default('member'),
   ...timestamps,
 })
 
 export const projects = sqliteTable('projects', {
-  id: integer('id').primaryKey({ autoIncrement: true }),
-  name: text('name').notNull(),
-  teamId: integer('team_id').notNull().references(() => teams.id, { onDelete: 'cascade' }),
-  description: text('description').notNull().default(''),
-  repository: text('repository').notNull().default(''),
-  projectManager: text('project_manager').notNull().default(''),
-  homepage: text('homepage').notNull().default(''),
-  variablePrefix: text('variable_prefix').notNull().default(''),
-  logo: text('logo').notNull().default(DEFAULT_LOGO),
+  id: integer().primaryKey({ autoIncrement: true }),
+  name: text().notNull(),
+  teamId: integer().notNull().references(() => teams.id, { onDelete: 'cascade' }),
+  description: text().notNull().default(''),
+  repository: text().notNull().default(''),
+  projectManager: text().notNull().default(''),
+  homepage: text().notNull().default(''),
+  variablePrefix: text().notNull().default(''),
+  logo: text().notNull().default(DEFAULT_LOGO),
   ...timestamps,
 })
 
 export const variables = sqliteTable('variables', {
-  id: integer('id').primaryKey({ autoIncrement: true }),
-  projectId: integer('project_id').notNull().references(() => projects.id, { onDelete: 'cascade' }),
-  key: text('key').notNull(),
+  id: integer().primaryKey({ autoIncrement: true }),
+  projectId: integer().notNull().references(() => projects.id, { onDelete: 'cascade' }),
+  key: text().notNull(),
   ...timestamps,
 })
 
 export const variableValues = sqliteTable('variable_values', {
-  id: integer('id').primaryKey({ autoIncrement: true }),
-  variableId: integer('variable_id').notNull().references(() => variables.id, { onDelete: 'cascade' }),
-  environmentId: integer('environment_id').notNull().references(() => environments.id, { onDelete: 'cascade' }),
-  value: text('value').notNull(),
+  id: integer().primaryKey({ autoIncrement: true }),
+  variableId: integer().notNull().references(() => variables.id, { onDelete: 'cascade' }),
+  environmentId: integer().notNull().references(() => environments.id, { onDelete: 'cascade' }),
+  value: text().notNull(),
   ...timestamps,
 })
 
 export const tokens = sqliteTable('tokens', {
-  id: integer('id').primaryKey({ autoIncrement: true }),
-  token: text('token').unique().notNull(),
-  name: text('name').notNull(),
-  userId: integer('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  id: integer().primaryKey({ autoIncrement: true }),
+  token: text().unique().notNull(),
+  name: text().notNull(),
+  userId: integer().notNull().references(() => users.id, { onDelete: 'cascade' }),
   ...timestamps,
 })
 
 export const environments = sqliteTable('environments', {
-  id: integer('id').primaryKey({ autoIncrement: true }),
-  name: text('name').notNull(),
-  teamId: integer('team_id').notNull().references(() => teams.id, { onDelete: 'cascade' }),
+  id: integer().primaryKey({ autoIncrement: true }),
+  name: text().notNull(),
+  teamId: integer().notNull().references(() => teams.id, { onDelete: 'cascade' }),
   ...timestamps,
 })
 
 export const teamStats = sqliteTable('team_stats', {
-  id: integer('id').primaryKey({ autoIncrement: true }),
-  teamId: integer('team_id').notNull().unique().references(() => teams.id),
-  pushCount: integer('push_count').notNull().default(0),
-  pullCount: integer('pull_count').notNull().default(0),
+  id: integer().primaryKey({ autoIncrement: true }),
+  teamId: integer().notNull().unique().references(() => teams.id),
+  pushCount: integer().notNull().default(0),
+  pullCount: integer().notNull().default(0),
   ...timestamps,
 })
 

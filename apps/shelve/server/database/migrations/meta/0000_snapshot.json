@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "db44322d-6619-4d7d-8b47-7a61ce87a97e",
+  "id": "369215ea-c56c-4015-a327-a369c381dc97",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "environments": {
@@ -21,22 +21,22 @@
           "notNull": true,
           "autoincrement": false
         },
-        "team_id": {
-          "name": "team_id",
+        "teamId": {
+          "name": "teamId",
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "updated_at": {
-          "name": "updated_at",
+        "updatedAt": {
+          "name": "updatedAt",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "created_at": {
-          "name": "created_at",
+        "createdAt": {
+          "name": "createdAt",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
@@ -45,12 +45,12 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "environments_team_id_teams_id_fk": {
-          "name": "environments_team_id_teams_id_fk",
+        "environments_teamId_teams_id_fk": {
+          "name": "environments_teamId_teams_id_fk",
           "tableFrom": "environments",
           "tableTo": "teams",
           "columnsFrom": [
-            "team_id"
+            "teamId"
           ],
           "columnsTo": [
             "id"
@@ -80,57 +80,57 @@
           "notNull": true,
           "autoincrement": false
         },
-        "app_id": {
-          "name": "app_id",
+        "appId": {
+          "name": "appId",
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "private_key": {
-          "name": "private_key",
+        "privateKey": {
+          "name": "privateKey",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "webhook_secret": {
-          "name": "webhook_secret",
+        "webhookSecret": {
+          "name": "webhookSecret",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "client_id": {
-          "name": "client_id",
+        "clientId": {
+          "name": "clientId",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "client_secret": {
-          "name": "client_secret",
+        "clientSecret": {
+          "name": "clientSecret",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "user_id": {
-          "name": "user_id",
+        "userId": {
+          "name": "userId",
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "updated_at": {
-          "name": "updated_at",
+        "updatedAt": {
+          "name": "updatedAt",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "created_at": {
-          "name": "created_at",
+        "createdAt": {
+          "name": "createdAt",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
@@ -147,12 +147,12 @@
         }
       },
       "foreignKeys": {
-        "github_app_user_id_users_id_fk": {
-          "name": "github_app_user_id_users_id_fk",
+        "github_app_userId_users_id_fk": {
+          "name": "github_app_userId_users_id_fk",
           "tableFrom": "github_app",
           "tableTo": "users",
           "columnsFrom": [
-            "user_id"
+            "userId"
           ],
           "columnsTo": [
             "id"
@@ -175,15 +175,15 @@
           "notNull": true,
           "autoincrement": true
         },
-        "user_id": {
-          "name": "user_id",
+        "userId": {
+          "name": "userId",
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "team_id": {
-          "name": "team_id",
+        "teamId": {
+          "name": "teamId",
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
@@ -197,15 +197,15 @@
           "autoincrement": false,
           "default": "'member'"
         },
-        "updated_at": {
-          "name": "updated_at",
+        "updatedAt": {
+          "name": "updatedAt",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "created_at": {
-          "name": "created_at",
+        "createdAt": {
+          "name": "createdAt",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
@@ -214,12 +214,12 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "members_user_id_users_id_fk": {
-          "name": "members_user_id_users_id_fk",
+        "members_userId_users_id_fk": {
+          "name": "members_userId_users_id_fk",
           "tableFrom": "members",
           "tableTo": "users",
           "columnsFrom": [
-            "user_id"
+            "userId"
           ],
           "columnsTo": [
             "id"
@@ -227,12 +227,12 @@
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
-        "members_team_id_teams_id_fk": {
-          "name": "members_team_id_teams_id_fk",
+        "members_teamId_teams_id_fk": {
+          "name": "members_teamId_teams_id_fk",
           "tableFrom": "members",
           "tableTo": "teams",
           "columnsFrom": [
-            "team_id"
+            "teamId"
           ],
           "columnsTo": [
             "id"
@@ -262,8 +262,8 @@
           "notNull": true,
           "autoincrement": false
         },
-        "team_id": {
-          "name": "team_id",
+        "teamId": {
+          "name": "teamId",
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
@@ -285,8 +285,8 @@
           "autoincrement": false,
           "default": "''"
         },
-        "project_manager": {
-          "name": "project_manager",
+        "projectManager": {
+          "name": "projectManager",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
@@ -301,8 +301,8 @@
           "autoincrement": false,
           "default": "''"
         },
-        "variable_prefix": {
-          "name": "variable_prefix",
+        "variablePrefix": {
+          "name": "variablePrefix",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
@@ -317,15 +317,15 @@
           "autoincrement": false,
           "default": "'https://github.com/HugoRCD/shelve/blob/main/assets/default.webp?raw=true'"
         },
-        "updated_at": {
-          "name": "updated_at",
+        "updatedAt": {
+          "name": "updatedAt",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "created_at": {
-          "name": "created_at",
+        "createdAt": {
+          "name": "createdAt",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
@@ -334,12 +334,12 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "projects_team_id_teams_id_fk": {
-          "name": "projects_team_id_teams_id_fk",
+        "projects_teamId_teams_id_fk": {
+          "name": "projects_teamId_teams_id_fk",
           "tableFrom": "projects",
           "tableTo": "teams",
           "columnsFrom": [
-            "team_id"
+            "teamId"
           ],
           "columnsTo": [
             "id"
@@ -362,38 +362,38 @@
           "notNull": true,
           "autoincrement": true
         },
-        "team_id": {
-          "name": "team_id",
+        "teamId": {
+          "name": "teamId",
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "push_count": {
-          "name": "push_count",
+        "pushCount": {
+          "name": "pushCount",
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
           "default": 0
         },
-        "pull_count": {
-          "name": "pull_count",
+        "pullCount": {
+          "name": "pullCount",
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
           "default": 0
         },
-        "updated_at": {
-          "name": "updated_at",
+        "updatedAt": {
+          "name": "updatedAt",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "created_at": {
-          "name": "created_at",
+        "createdAt": {
+          "name": "createdAt",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
@@ -401,21 +401,21 @@
         }
       },
       "indexes": {
-        "team_stats_team_id_unique": {
-          "name": "team_stats_team_id_unique",
+        "team_stats_teamId_unique": {
+          "name": "team_stats_teamId_unique",
           "columns": [
-            "team_id"
+            "teamId"
           ],
           "isUnique": true
         }
       },
       "foreignKeys": {
-        "team_stats_team_id_teams_id_fk": {
-          "name": "team_stats_team_id_teams_id_fk",
+        "team_stats_teamId_teams_id_fk": {
+          "name": "team_stats_teamId_teams_id_fk",
           "tableFrom": "team_stats",
           "tableTo": "teams",
           "columnsFrom": [
-            "team_id"
+            "teamId"
           ],
           "columnsTo": [
             "id"
@@ -460,15 +460,15 @@
           "autoincrement": false,
           "default": "'https://github.com/HugoRCD/shelve/blob/main/assets/default.webp?raw=true'"
         },
-        "updated_at": {
-          "name": "updated_at",
+        "updatedAt": {
+          "name": "updatedAt",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "created_at": {
-          "name": "created_at",
+        "createdAt": {
+          "name": "createdAt",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
@@ -513,22 +513,22 @@
           "notNull": true,
           "autoincrement": false
         },
-        "user_id": {
-          "name": "user_id",
+        "userId": {
+          "name": "userId",
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "updated_at": {
-          "name": "updated_at",
+        "updatedAt": {
+          "name": "updatedAt",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "created_at": {
-          "name": "created_at",
+        "createdAt": {
+          "name": "createdAt",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
@@ -545,12 +545,12 @@
         }
       },
       "foreignKeys": {
-        "tokens_user_id_users_id_fk": {
-          "name": "tokens_user_id_users_id_fk",
+        "tokens_userId_users_id_fk": {
+          "name": "tokens_userId_users_id_fk",
           "tableFrom": "tokens",
           "tableTo": "users",
           "columnsFrom": [
-            "user_id"
+            "userId"
           ],
           "columnsTo": [
             "id"
@@ -603,8 +603,8 @@
           "autoincrement": false,
           "default": "'user'"
         },
-        "auth_type": {
-          "name": "auth_type",
+        "authType": {
+          "name": "authType",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
@@ -618,23 +618,23 @@
           "autoincrement": false,
           "default": false
         },
-        "cli_installed": {
-          "name": "cli_installed",
+        "cliInstalled": {
+          "name": "cliInstalled",
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
           "default": false
         },
-        "updated_at": {
-          "name": "updated_at",
+        "updatedAt": {
+          "name": "updatedAt",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "created_at": {
-          "name": "created_at",
+        "createdAt": {
+          "name": "createdAt",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
@@ -672,15 +672,15 @@
           "notNull": true,
           "autoincrement": true
         },
-        "variable_id": {
-          "name": "variable_id",
+        "variableId": {
+          "name": "variableId",
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "environment_id": {
-          "name": "environment_id",
+        "environmentId": {
+          "name": "environmentId",
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
@@ -693,15 +693,15 @@
           "notNull": true,
           "autoincrement": false
         },
-        "updated_at": {
-          "name": "updated_at",
+        "updatedAt": {
+          "name": "updatedAt",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "created_at": {
-          "name": "created_at",
+        "createdAt": {
+          "name": "createdAt",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
@@ -710,12 +710,12 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "variable_values_variable_id_variables_id_fk": {
-          "name": "variable_values_variable_id_variables_id_fk",
+        "variable_values_variableId_variables_id_fk": {
+          "name": "variable_values_variableId_variables_id_fk",
           "tableFrom": "variable_values",
           "tableTo": "variables",
           "columnsFrom": [
-            "variable_id"
+            "variableId"
           ],
           "columnsTo": [
             "id"
@@ -723,12 +723,12 @@
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
-        "variable_values_environment_id_environments_id_fk": {
-          "name": "variable_values_environment_id_environments_id_fk",
+        "variable_values_environmentId_environments_id_fk": {
+          "name": "variable_values_environmentId_environments_id_fk",
           "tableFrom": "variable_values",
           "tableTo": "environments",
           "columnsFrom": [
-            "environment_id"
+            "environmentId"
           ],
           "columnsTo": [
             "id"
@@ -751,8 +751,8 @@
           "notNull": true,
           "autoincrement": true
         },
-        "project_id": {
-          "name": "project_id",
+        "projectId": {
+          "name": "projectId",
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
@@ -765,15 +765,15 @@
           "notNull": true,
           "autoincrement": false
         },
-        "updated_at": {
-          "name": "updated_at",
+        "updatedAt": {
+          "name": "updatedAt",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "created_at": {
-          "name": "created_at",
+        "createdAt": {
+          "name": "createdAt",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
@@ -782,12 +782,12 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "variables_project_id_projects_id_fk": {
-          "name": "variables_project_id_projects_id_fk",
+        "variables_projectId_projects_id_fk": {
+          "name": "variables_projectId_projects_id_fk",
           "tableFrom": "variables",
           "tableTo": "projects",
           "columnsFrom": [
-            "project_id"
+            "projectId"
           ],
           "columnsTo": [
             "id"
