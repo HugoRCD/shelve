@@ -20,11 +20,11 @@
   },
   "dependencies": {
     "@iconify-json/heroicons": "1.2.2",
-    "@iconify-json/lucide": "1.2.24",
-    "@iconify-json/simple-icons": "1.2.21",
+    "@iconify-json/lucide": "1.2.25",
+    "@iconify-json/simple-icons": "1.2.22",
     "@nuxt/image": "1.9.0",
     "@nuxt/scripts": "0.9.5",
-    "@nuxt/ui": "3.0.0-alpha.11",
+    "@nuxt/ui": "3.0.0-alpha.12",
     "@nuxthub/core": "0.8.15",
     "@shelve/utils": "*",
     "@vue-email/components": "0.0.21",
@@ -32,12 +32,12 @@
     "@vueuse/core": "12.5.0",
     "@vueuse/nuxt": "12.5.0",
     "blakejs": "^1.2.1",
-    "drizzle-kit": "0.30.2",
-    "drizzle-orm": "0.38.4",
+    "drizzle-kit": "0.30.4",
+    "drizzle-orm": "0.39.1",
     "jsonwebtoken": "^9.0.2",
     "libsodium-wrappers": "^0.7.15",
-    "nuxt": "3.15.2",
-    "nuxt-auth-utils": "0.5.9",
+    "nuxt": "3.15.4",
+    "nuxt-auth-utils": "0.5.10",
     "nuxt-build-cache": "0.1.1",
     "resend": "4.1.1",
     "tweetnacl": "^1.0.3",
@@ -52,6 +52,6 @@
     "@types/libsodium-wrappers": "^0.7.14",
     "automd": "0.3.12",
     "typescript": "5.7.3",
-    "wrangler": "^3.105.1"
+    "wrangler": "^3.107.2"
   }
 }
