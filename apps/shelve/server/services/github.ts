@@ -206,9 +206,7 @@ export class GithubService {
             binarySecretValue,
             binaryPublicKey
           )
-          const encryptedValue = Buffer.from(encryptedBytes).toString(
-            'base64'
-          )
+          const encryptedValue = Buffer.from(encryptedBytes).toString('base64')
 
           await $fetch(`${this.GITHUB_API}/repos/${repository}/actions/secrets/${secretKey}`, {
             method: 'PUT',
@@ -231,8 +229,7 @@ export class GithubService {
 
       return {
         statusCode: 201,
-        message:
-          'Secrets successfully encrypted and sent to GitHub repository'
+        message: 'Secrets successfully encrypted and sent to GitHub repository'
       }
     } catch (error: any) {
       throw createError({
@@ -278,8 +275,7 @@ export class GithubService {
 
     return {
       statusCode: 200,
-      message:
-        'App removed from Shelve. Dont forget to delete it from GitHub',
+      message: 'App removed from Shelve. Dont forget to delete it from GitHub',
       link: `https://github.com/settings/apps/${slug}/advanced`
     }
   }
