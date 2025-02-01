@@ -33,6 +33,10 @@ export default defineNuxtConfig({
   },*/
 
   runtimeConfig: {
+    session: {
+      name: 'shelve_session',
+      maxAge: 60 * 60 * 24 * 30, // 30 days
+    },
     private: {
       resendApiKey: '',
       encryptionKey: '',
