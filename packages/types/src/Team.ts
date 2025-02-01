@@ -10,10 +10,10 @@ export type Member = {
   id: number;
   userId: number;
   teamId: number;
-  role: TeamRole;
+  role: 'owner' | 'admin' | 'member';
   user: User;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
 };
 
 export type Team = {
@@ -21,8 +21,8 @@ export type Team = {
   name: string;
   slug: string;
   logo: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
   members: Member[];
 };
 

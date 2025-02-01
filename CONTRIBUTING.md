@@ -92,7 +92,7 @@ To set up the development environment for Shelve, follow these steps:
 
 ### Additional Resources
 
-- [Shelve Documentation](https://shelve.cloud/docs)
+- [Shelve Documentation](https://shelve.cloud/getting-started)
 - [GitHub Repository](https://github.com/HugoRCD/shelve)
 
 Thank you for contributing to Shelve! We appreciate your support and look forward to your contributions.

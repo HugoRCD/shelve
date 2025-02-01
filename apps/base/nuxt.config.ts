@@ -1,4 +1,7 @@
+import { createResolver } from 'nuxt/kit'
 import pkg from '../../package.json'
+
+const { resolve } = createResolver(import.meta.url)
 
 export default defineNuxtConfig({
   app: {
@@ -8,11 +11,21 @@ export default defineNuxtConfig({
     },
   },
 
+  compatibilityDate: '2025-01-24',
+
+  future: {
+    compatibilityVersion: 4,
+  },
+
   devtools: {
     enabled: true,
     timeline: {
       enabled: true,
     },
+  },
+
+  alias: {
+    '@types': resolve('../../packages/types'),
   },
 
   modules: [
@@ -26,12 +39,6 @@ export default defineNuxtConfig({
     experimental: {
       websocket: true
     }
-  },
-
-  compatibilityDate: '2024-11-06',
-
-  future: {
-    compatibilityVersion: 4,
   },
 
   experimental: {
