@@ -34,16 +34,6 @@ export default defineNuxtConfig({
       resendApiKey: '',
       encryptionKey: '',
       adminEmails: '',
-    },
-    oauth: {
-      google: {
-        clientId: '',
-        clientSecret: '',
-      },
-      github: {
-        clientId: '',
-        clientSecret: '',
-      },
     }
   },
 

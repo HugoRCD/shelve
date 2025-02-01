@@ -1,5 +1,5 @@
 // auth.d.ts
-import { AuthType, Role } from '@types'
+import { Role } from '@types'
 
 declare module '#auth-utils' {
   // eslint-disable-next-line
@@ -8,10 +8,10 @@ declare module '#auth-utils' {
     username: string
     email: string
     avatar: string
-    authType: AuthType
+    authType: 'github' | 'google'
     onboarding: boolean
     cliInstalled: boolean
-    role: Role
+    role: 'admin' | 'user'
     createdAt: string
     updatedAt: string
   }

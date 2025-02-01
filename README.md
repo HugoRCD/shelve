@@ -8,7 +8,7 @@
 [![npm downloads](https://img.shields.io/npm/dm/@shelve/cli?color=black)](https://npm.chart.dev/@shelve/cli)
 [![license](https://img.shields.io/github/license/HugoRCD/shelve?color=black)](https://github.com/HugoRCD/shelve/blob/main/LICENSE)
 
-[Website](https://shelve.cloud) • [Documentation](https://shelve.cloud/docs)
+[Website](https://shelve.cloud) • [Documentation](https://shelve.cloud/getting-started)
 </div>
 
 ---
@@ -119,9 +119,9 @@ Shelve aims to become the ultimate development workspace by addressing common pa
 ## 🛠️ Tech Stack
 
 - **Frontend**: Nuxt, Tailwind CSS
-- **Backend**: Nitro, Bun
-- **Infrastructure**: Turborepo, Docker
-- **Database**: DrizzleORM, PostgreSQL
+- **Backend**: Nitro
+- **Infrastructure**: Turborepo, NuxtHub, Docker
+- **Database**: DrizzleORM, SQLite
 - **Mailer**: Resend
 - **Validation**: Zod
 - **CI/CD**: GitHub Actions
@@ -134,7 +134,7 @@ For more detailed about contributing, please refer to the [Contributing Guide](C
 
 ### Full Documentation
 
-For comprehensive documentation, visit the [Shelve Documentation](https://shelve.cloud/docs).
+For comprehensive documentation, visit the [Shelve Documentation](https://shelve.cloud/getting-started).
 
 ### Self-Hosting
 

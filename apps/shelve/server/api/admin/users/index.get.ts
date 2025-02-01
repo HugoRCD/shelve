@@ -1,3 +1,3 @@
-export default eventHandler(async () => {
-  return await useDrizzle().query.users.findMany()
+export default eventHandler(() => {
+  return useDrizzle().query.users.findMany()
 })
