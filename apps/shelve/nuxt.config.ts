@@ -12,6 +12,9 @@ export default defineNuxtConfig({
   ssr: false,
 
   nitro: {
+    experimental: {
+      openAPI: true
+    },
     rollupConfig: {
       // @ts-expect-error - this is not typed
       plugins: [vue()]
@@ -34,6 +37,16 @@ export default defineNuxtConfig({
       resendApiKey: '',
       encryptionKey: '',
       adminEmails: '',
+    },
+    oauth: {
+      google: {
+        clientId: '',
+        clientSecret: '',
+      },
+      github: {
+        clientId: '',
+        clientSecret: '',
+      },
     }
   },
 

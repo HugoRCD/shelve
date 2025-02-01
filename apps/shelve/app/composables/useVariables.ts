@@ -67,11 +67,16 @@ export function useVariablesService() {
   }
 
   async function deleteVariables(ids: number[]) {
-    await $fetch(`/api/teams/${teamSlug}/projects/${projectId}/variables`, {
-      method: 'DELETE',
-      body: { variables: ids }
-    })
-    await fetchVariables()
+    try {
+      await $fetch(`/api/teams/${teamSlug}/projects/${projectId}/variables`, {
+        method: 'DELETE',
+        body: { variables: ids }
+      })
+      await fetchVariables()
+    } catch (error) {
+      console.log(error)
+      toast.error('Failed to delete variables')
+    }
   }
 
   return {
