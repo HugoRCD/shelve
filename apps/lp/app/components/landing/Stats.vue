@@ -60,11 +60,11 @@ const finalStats = computed(() => [
   <div>
     <ClientOnly>
       <Teleport defer to="#visitors">
-        <div class="fixed z-[999] items-center justify-center max-sm:top-2 sm:bottom-2 left-2 w-full">
+        <div class="fixed z-[999] items-center justify-center bottom-2 left-2 w-full">
           <NuxtLink
             to="https://github.com/HugoRCD/nuxt-visitors"
             target="_blank"
-            class="text-neutral-500 text-xs w-fit flex items-center gap-2 cursor-pointer hover:text-neutral-200 transition-colors duration-300"
+            class="text-neutral-500 text-xs w-fit flex justify-center items-center gap-2 cursor-pointer hover:text-neutral-200 transition-colors duration-300"
           >
             <span class="relative flex size-2">
               <span
