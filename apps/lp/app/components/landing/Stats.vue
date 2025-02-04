@@ -60,7 +60,7 @@ const finalStats = computed(() => [
   <div>
     <ClientOnly>
       <Teleport defer to="#visitors">
-        <div class="fixed z-[999] items-center justify-center bottom-2 left-2 w-full">
+        <div class="fixed z-[999] flex items-center justify-center bottom-2 w-full">
           <NuxtLink
             to="https://github.com/HugoRCD/nuxt-visitors"
             target="_blank"
