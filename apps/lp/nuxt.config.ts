@@ -18,8 +18,13 @@ export default defineNuxtConfig({
 
   content: {
     preview: {
-      api: 'https://api.nuxt.studio'
-    }
+      api: 'https://api.nuxt.studio',
+      dev: true,
+    },
+    database: {
+      type: 'd1',
+      binding: 'DB',
+    },
   },
 
   mdc: {
