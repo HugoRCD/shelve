@@ -15,7 +15,7 @@ if (!page.value) {
   throw createError({ statusCode: 404, statusMessage: `Page not found: ${route.path}`, fatal: true })
 }
 
-const { data: surround } = await useAsyncData(`${route.path}-surround`, () => {
+const { data: surround } = await useAsyncData(route.path, () => {
   return queryCollectionItemSurroundings('content', route.path, {
     fields: ['description']
   })
