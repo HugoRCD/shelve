@@ -35,7 +35,7 @@ const data = await queryCollection('about').first()
               <ProseImg
                 :src="section.image"
                 :alt="section.title"
-                class="grayscale col-span-12 w-full"
+                class="grayscale col-span-12 w-full mix-blend-lighten"
               />
             </div>
             <div class="col-span-7">
@@ -49,13 +49,13 @@ const data = await queryCollection('about').first()
                 <MDC class="text-sm leading-relaxed text-neutral-400" :value="section.content" unwrap="p" />
               </div>
             </div>
+            <div class="hidden group-last:flex col-span-12 justify-end bg-neutral-950 mb-16">
+              <Signature />
+            </div>
           </div>
           <USeparator class="group-last:hidden" />
         </div>
       </div>
-      <UContainer class="flex items-center justify-center sm:justify-end py-16 bg-neutral-950">
-        <Signature />
-      </UContainer>
     </div>
   </div>
 </template>
