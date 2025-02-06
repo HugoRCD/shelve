@@ -23,6 +23,37 @@ export const collections = {
       })
     })
   ),
+  blog: defineCollection(
+    asSeoCollection({
+      type: 'page',
+      source: 'blog/**/*.md',
+      schema: z.object({
+        title: z.string().nonempty(),
+        description: z.string().nonempty(),
+        date: z.string(),
+        image: z.string(),
+        tags: z.array(z.string()),
+        authors: z.array(z.object({
+          name: z.string(),
+          description: z.string(),
+          to: z.string(),
+          target: z.string(),
+          avatar: z.object({
+            src: z.string(),
+            alt: z.string()
+          }).optional()
+        })),
+      })
+    })
+  ),
+  blogPage: defineCollection({
+    type: 'data',
+    source: 'blog.yml',
+    schema: z.object({
+      title: z.string().nonempty(),
+      description: z.string().nonempty()
+    })
+  }),
   about: defineCollection({
     type: 'data',
     source: 'about.yml',

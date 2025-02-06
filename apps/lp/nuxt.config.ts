@@ -20,15 +20,7 @@ export default defineNuxtConfig({
     preview: {
       api: 'https://api.nuxt.studio',
       dev: true,
-    },
-    database: {
-      type: 'd1',
-      binding: 'DB',
-    },
-  },
-
-  hub: {
-    database: true,
+    }
   },
 
   mdc: {
