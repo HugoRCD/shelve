@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const route = useRoute()
 
-const blog = await queryCollection('blogPage').first()
+const { data: page } = await useAsyncData('blogPage', () => queryCollection('blogPage').first())
 
 const { data: posts } = await useAsyncData(route.path, () =>
   queryCollection('blog').order('date', 'DESC').all()
@@ -13,20 +13,18 @@ if (!posts.value) {
 
 <template>
   <div v-if="posts" class="py-20">
-    <UPageSection v-if="blog" v-bind="blog" />
+    <UPageSection v-bind="page" :ui="{ title: 'text-left font-mono text-gradient', description: 'text-left' }" />
+    <USeparator class="mb-12" />
     <UContainer>
-      <div
-        v-for="(post, index) in posts"
-        :key="index"
-        class="grid grid-cols-1 gap-4 sm:grid-cols-3"
-      >
+      <UBlogPosts orientation="vertical">
         <UBlogPost
+          v-for="(post, index) in posts"
+          :key="index"
           v-bind="post"
-          :orientation="index === 0 ? 'horizontal' : 'vertical'"
-          :class="[index === 0 && 'col-span-full']"
+          orientation="horizontal"
           :to="post.path"
         />
-      </div>
+      </UBlogPosts>
     </UContainer>
   </div>
 </template>

@@ -3,7 +3,8 @@ import type { ContentNavigationItem } from '@nuxt/content'
 import { findPageBreadcrumb, mapContentNavigation } from '#ui-pro/utils/content'
 
 definePageMeta({
-  layout: 'default'
+  layout: 'default',
+  colorMode: 'dark',
 })
 
 const route = useRoute()
@@ -36,21 +37,20 @@ const editThisPage = computed(() => ({
 <template>
   <UMain class="mt-20 px-2">
     <ShelveMeta :default-og-image="false" :title="page?.title" :description="page?.description" />
-    <UContainer class="min-h-screen bg-neutral-50 dark:bg-neutral-900 px-4 sm:px-8 pt-2 border-x border-t border-neutral-200 dark:border-neutral-800 rounded-t-sm shadow-sm">
+    <UContainer class="relative min-h-screen bg-neutral-50 dark:bg-neutral-900 px-4 sm:px-6 pt-6 border-x border-t border-neutral-200 dark:border-neutral-800 rounded-t-sm shadow-sm">
       <UPage v-if="page">
-        <UPageHeader :title="page.title">
-          <template #headline>
-            <UButton label="Blog" icon="lucide:chevron-left" variant="ghost" size="xs" to="/blog" />
-            <UColorModeButton />
-          </template>
-
-          <template #description>
-            <p class="text-neutral-500">
-              {{ page.description }}
-            </p>
-          </template>
-
-          <template v-if="page.authors?.length" #links>
+        <NuxtLink to="/blog" class="font-mono text-sm flex items-center gap-1 text-neutral-500 hover:text-neutral-50 transition-colors duration-200">
+          <UIcon name="lucide:chevron-left" />
+          Blog
+        </NuxtLink>
+        <div class="flex flex-col gap-2 mt-8">
+          <h1 class="text-4xl font-bold font-mono">
+            {{ page.title }}
+          </h1>
+          <p class="text-neutral-500">
+            {{ page.description }}
+          </p>
+          <div class="flex items-center gap-2 mt-2">
             <UUser
               v-for="(author, index) in page.authors"
               :key="index"
@@ -58,20 +58,22 @@ const editThisPage = computed(() => ({
               variant="outline"
               v-bind="author"
             />
-          </template>
-        </UPageHeader>
-
-        <UPageBody>
+          </div>
+        </div>
+        <USeparator class="mt-4 mb-6" />
+        <UPageBody class="leading-relaxed">
           <ContentRenderer v-if="page.body" :value="page" />
 
           <USeparator class="mb-4" />
-          <ULink :to="editThisPage.to" class="text-sm flex items-center gap-1">
-            <UIcon name="i-heroicons-pencil-square-solid" />
-            Edit this page
-          </ULink>
+          <div class="flex justify-end">
+            <ULink :to="editThisPage.to" class="text-xs flex items-center gap-1">
+              <UIcon name="i-heroicons-pencil-square-solid" />
+              Edit this page
+            </ULink>
+          </div>
         </UPageBody>
 
-        <template v-if="page?.body?.toc?.links?.length" #right>
+        <!--        <template v-if="page?.body?.toc?.links?.length" #right>
           <UContentToc highlight :links="page.body.toc.links" class="z-[2] bg-white dark:bg-neutral-950">
             <template #default>
               <div class="flex items-center gap-2">
@@ -80,7 +82,7 @@ const editThisPage = computed(() => ({
               </div>
             </template>
           </UContentToc>
-        </template>
+        </template>-->
       </UPage>
     </UContainer>
   </UMain>
