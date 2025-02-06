@@ -44,7 +44,7 @@ const editThisPage = computed(() => ({
           Blog
         </NuxtLink>
         <div class="flex flex-col gap-2 mt-8">
-          <h1 class="text-4xl font-bold font-mono">
+          <h1 class="text-4xl font-bold">
             {{ page.title }}
           </h1>
           <p class="text-neutral-500">
