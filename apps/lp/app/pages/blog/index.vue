@@ -1,10 +1,10 @@
 <script setup lang="ts">
 const route = useRoute()
 
-const blog = await queryCollection('blog').first()
+const blog = await queryCollection('blogPage').first()
 
 const { data: posts } = await useAsyncData(route.path, () =>
-  queryCollection('blogs').order('date', 'DESC').all()
+  queryCollection('blog').order('date', 'DESC').all()
 )
 if (!posts.value) {
   throw createError({ statusCode: 404, statusMessage: `Page not found: ${route.path}`, fatal: true })
@@ -12,21 +12,21 @@ if (!posts.value) {
 </script>
 
 <template>
-  <div v-if="posts" class="min-h-screen mt-20">
-    <UPageSection v-if="blog" :title="blog.title" :description="blog.description" />
+  <div v-if="posts" class="py-20">
+    <UPageSection v-if="blog" v-bind="blog" />
     <UContainer>
-      <UBlogPosts>
+      <div
+        v-for="(post, index) in posts"
+        :key="index"
+        class="grid grid-cols-1 gap-4 sm:grid-cols-3"
+      >
         <UBlogPost
-          v-for="(post, index) in posts"
-          :key="index"
           v-bind="post"
+          :orientation="index === 0 ? 'horizontal' : 'vertical'"
+          :class="[index === 0 && 'col-span-full']"
           :to="post.path"
         />
-      </UBlogPosts>
+      </div>
     </UContainer>
   </div>
 </template>
-
-<style scoped>
-
-</style>

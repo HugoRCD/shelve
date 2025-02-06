@@ -59,8 +59,3 @@ defineShortcuts({
     </template>
   </UHeader>
 </template>
-
-<style>
-:root {
-}
-</style>

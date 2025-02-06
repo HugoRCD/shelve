@@ -23,10 +23,10 @@ export const collections = {
       })
     })
   ),
-  blogs: defineCollection(
+  blog: defineCollection(
     asSeoCollection({
       type: 'page',
-      source: 'blogs/**/*.md',
+      source: 'blog/**/*.md',
       schema: z.object({
         title: z.string(),
         description: z.string(),
@@ -45,7 +45,7 @@ export const collections = {
       })
     })
   ),
-  blog: defineCollection({
+  blogPage: defineCollection({
     type: 'data',
     source: 'blog.yml',
     schema: z.object({

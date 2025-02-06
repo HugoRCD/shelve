@@ -2,10 +2,14 @@
 import type { ContentNavigationItem } from '@nuxt/content'
 import { findPageBreadcrumb, mapContentNavigation } from '#ui-pro/utils/content'
 
+definePageMeta({
+  layout: 'default'
+})
+
 const route = useRoute()
 
 const { data: page } = await useAsyncData(route.path, () =>
-  queryCollection('content').path(route.path).first()
+  queryCollection('blog').path(route.path).first()
 )
 if (!page.value) {
   throw createError({ statusCode: 404, statusMessage: `Page not found: ${route.path}`, fatal: true })
@@ -30,56 +34,54 @@ const editThisPage = computed(() => ({
 </script>
 
 <template>
-  <div>
+  <UMain class="mt-20 px-2">
     <ShelveMeta :default-og-image="false" :title="page?.title" :description="page?.description" />
-    <UPage v-if="page">
-      <UPageHeader :title="page.title">
-        <template #headline>
-          <UBreadcrumb :items="breadcrumb" />
-        </template>
-
-        <template #description>
-          <p class="text-neutral-500">
-            {{ page.description }}
-          </p>
-        </template>
-
-        <template v-if="page.links?.length" #links>
-          <UButton
-            v-for="link in page.links"
-            :key="link.label"
-            color="neutral"
-            variant="outline"
-            :target="link.to.startsWith('http') ? '_blank' : undefined"
-            v-bind="link"
-          >
-            <template v-if="link.avatar" #leading>
-              <UAvatar v-bind="link.avatar" size="2xs" />
-            </template>
-          </UButton>
-        </template>
-      </UPageHeader>
-
-      <UPageBody>
-        <ContentRenderer v-if="page.body" :value="page" />
-
-        <USeparator class="mb-4" />
-        <ULink :to="editThisPage.to" class="text-sm flex items-center gap-1">
-          <UIcon name="i-heroicons-pencil-square-solid" />
-          Edit this page
-        </ULink>
-      </UPageBody>
-
-      <template v-if="page?.body?.toc?.links?.length" #right>
-        <UContentToc highlight :links="page.body.toc.links" class="z-[2] bg-white dark:bg-neutral-950">
-          <template #default>
-            <div class="flex items-center gap-2">
-              <UIcon name="i-lucide-align-left" />
-              On this page
-            </div>
+    <UContainer class="min-h-screen bg-neutral-50 dark:bg-neutral-900 px-4 sm:px-8 pt-2 border-x border-t border-neutral-200 dark:border-neutral-800 rounded-t-sm shadow-sm">
+      <UPage v-if="page">
+        <UPageHeader :title="page.title">
+          <template #headline>
+            <UButton label="Blog" icon="lucide:chevron-left" variant="ghost" size="xs" to="/blog" />
+            <UColorModeButton />
           </template>
-        </UContentToc>
-      </template>
-    </UPage>
-  </div>
+
+          <template #description>
+            <p class="text-neutral-500">
+              {{ page.description }}
+            </p>
+          </template>
+
+          <template v-if="page.authors?.length" #links>
+            <UUser
+              v-for="(author, index) in page.authors"
+              :key="index"
+              color="neutral"
+              variant="outline"
+              v-bind="author"
+            />
+          </template>
+        </UPageHeader>
+
+        <UPageBody>
+          <ContentRenderer v-if="page.body" :value="page" />
+
+          <USeparator class="mb-4" />
+          <ULink :to="editThisPage.to" class="text-sm flex items-center gap-1">
+            <UIcon name="i-heroicons-pencil-square-solid" />
+            Edit this page
+          </ULink>
+        </UPageBody>
+
+        <template v-if="page?.body?.toc?.links?.length" #right>
+          <UContentToc highlight :links="page.body.toc.links" class="z-[2] bg-white dark:bg-neutral-950">
+            <template #default>
+              <div class="flex items-center gap-2">
+                <UIcon name="i-lucide-align-left" />
+                On this page
+              </div>
+            </template>
+          </UContentToc>
+        </template>
+      </UPage>
+    </UContainer>
+  </UMain>
 </template>
