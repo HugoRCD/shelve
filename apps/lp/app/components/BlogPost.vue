@@ -6,6 +6,8 @@ const { post } = defineProps<{
   to: string
 }>()
 
+const router = useRouter()
+
 const formatDate = (dateString: string) => {
   return new Date(dateString).toLocaleDateString('en-US', {
     year: 'numeric',
@@ -16,10 +18,23 @@ const formatDate = (dateString: string) => {
 </script>
 
 <template>
-  <ULink as="article" :to>
-    <CrossedDiv class="group p-4 border border-neutral-200 dark:border-neutral-800 rounded-lg">
+  <article @click="router.push(to)">
+    <CrossedDiv class="group p-4 cursor-pointer border border-neutral-200 dark:border-neutral-800 rounded-lg">
       <div class="flex md:flex-row flex-col gap-4 sm:gap-6">
-        <NuxtImg :src="post.image" :alt="post.title" class="aspect-video rounded-lg object-cover max-h-62 group-hover:scale-105 transition-all duration-200" />
+        <NuxtImg
+          v-slot="{ src, isLoaded, imgAttrs }"
+          :src="post.image"
+          :alt="post.title"
+          class="sm:max-w-1/2 aspect-video rounded-lg object-cover group-hover:scale-105 transition-all duration-200"
+        >
+          <img
+            v-if="isLoaded"
+            v-bind="imgAttrs"
+            :src
+            :alt="post.title"
+          >
+          <USkeleton v-else class="h-full w-full" />
+        </NuxtImg>
         <div class="flex flex-col justify-around gap-1">
           <div class="flex flex-col gap-1">
             <span class="text-xs font-medium text-neutral-500">
@@ -44,5 +59,5 @@ const formatDate = (dateString: string) => {
         </div>
       </div>
     </CrossedDiv>
-  </ULink>
+  </article>
 </template>

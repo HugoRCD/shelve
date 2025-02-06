@@ -3,7 +3,7 @@ const route = useRoute()
 
 const { data: page } = await useAsyncData('blogPage', () => queryCollection('blogPage').first())
 
-const { data: posts } = await useAsyncData(route.path, () =>
+const { data: posts, status } = await useAsyncData(route.path, () =>
   queryCollection('blog').order('date', 'DESC').all()
 )
 
@@ -51,13 +51,16 @@ if (!posts.value) {
         />
       </div>
 
-      <div class="flex flex-col">
+      <div v-if="status !== 'pending'" class="flex flex-col">
         <BlogPost
           v-for="(post, index) in filteredPosts"
           :key="index"
           :post
           :to="post.path"
         />
+      </div>
+      <div v-else class="flex h-64 flex-col items-center justify-center gap-2">
+        <USkeleton v-for="i in 4" :key="i" class="h-32" />
       </div>
     </UContainer>
   </div>
