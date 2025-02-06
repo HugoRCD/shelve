@@ -28,10 +28,11 @@ export const collections = {
       type: 'page',
       source: 'blog/**/*.md',
       schema: z.object({
-        title: z.string(),
-        description: z.string(),
+        title: z.string().nonempty(),
+        description: z.string().nonempty(),
         date: z.string(),
         image: z.string(),
+        tags: z.array(z.string()),
         authors: z.array(z.object({
           name: z.string(),
           description: z.string(),
@@ -49,8 +50,8 @@ export const collections = {
     type: 'data',
     source: 'blog.yml',
     schema: z.object({
-      title: z.string(),
-      description: z.string()
+      title: z.string().nonempty(),
+      description: z.string().nonempty()
     })
   }),
   about: defineCollection({
