@@ -9,15 +9,17 @@ useScriptPlausibleAnalytics({
 })
 
 const route = useRoute()
-
-const { data: navigation } = await useAsyncData('navigation', () => queryCollectionNavigation('content'))
-
-const { data: files } = useLazyAsyncData('search', () => queryCollectionSearchSections('content'), {
-  server: false
-})
 const searchTerm = ref('')
 
-provide('navigation', navigation)
+const { data: docsNavigation } = await useAsyncData('docs-navigation', () => queryCollectionNavigation('docs'))
+const { data: blogNavigation } = await useAsyncData('blog-navigation', () => queryCollectionNavigation('blog'))
+
+const { data: files } = useLazyAsyncData('search', () => queryCollectionSearchSections('docs'), {
+  server: false
+})
+
+provide('docs-navigation', docsNavigation)
+provide('blog-navigation', blogNavigation)
 
 const defaultOgImage = computed(() => {
   return route.path === '/' || route.path === '/roadmap'
@@ -42,7 +44,7 @@ const defaultOgImage = computed(() => {
             v-model:search-term="searchTerm"
             :files
             shortcut="meta_k"
-            :navigation
+            :navigation="docsNavigation"
             :fuse="{ resultLimit: 42 }"
           />
         </ClientOnly>

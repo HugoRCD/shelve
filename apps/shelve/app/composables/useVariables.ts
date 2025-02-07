@@ -75,7 +75,6 @@ export function useVariablesService() {
       await fetchVariables()
     } catch (error) {
       console.log(error)
-      toast.error('Failed to delete variables')
     }
   }
 

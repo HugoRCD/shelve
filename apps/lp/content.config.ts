@@ -2,10 +2,13 @@ import { defineCollection, z } from '@nuxt/content'
 import { asSeoCollection } from '@nuxtjs/seo/content'
 
 export const collections = {
-  content: defineCollection(
+  docs: defineCollection(
     asSeoCollection({
       type: 'page',
-      source: '**/*',
+      source: {
+        include: 'docs/**/*',
+        prefix: ''
+      },
       schema: z.object({
         navigation: z.object({
           title: z.string().optional(),

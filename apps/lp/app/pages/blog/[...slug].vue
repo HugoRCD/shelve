@@ -16,7 +16,7 @@ if (!page.value) {
   throw createError({ statusCode: 404, statusMessage: `Page not found: ${route.path}`, fatal: true })
 }
 
-const navigation = inject<Ref<ContentNavigationItem[]>>('navigation')
+const navigation = inject<Ref<ContentNavigationItem[]>>('blog-navigation')
 
 const breadcrumb = computed(() => mapContentNavigation(findPageBreadcrumb(navigation?.value, page.value)).map(({ icon, ...link }) => link))
 

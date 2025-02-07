@@ -11,6 +11,14 @@ const modal = useModal()
 const route = useRoute()
 const teamEnv = useEnvironments()
 
+async function deleteSelectedVariables() {
+  loading.value = true
+  const ids = selectedVariables.value.map((v: Variable) => v.id)
+  await deleteVariables(ids)
+  selectedVariables.value = []
+  loading.value = false
+}
+
 function openDeleteModal() {
   modal.open(ConfirmModal, {
     title: 'Are you sure?',
@@ -24,14 +32,6 @@ function openDeleteModal() {
       })
     },
   })
-}
-
-async function deleteSelectedVariables() {
-  loading.value = true
-  const ids = selectedVariables.value.map((v: Variable) => v.id)
-  await deleteVariables(ids)
-  selectedVariables.value = []
-  loading.value = false
 }
 </script>
 
