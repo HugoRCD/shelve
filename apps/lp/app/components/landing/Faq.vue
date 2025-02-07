@@ -11,7 +11,7 @@ const items = [
   },
   {
     label: 'Can I self-host Shelve?',
-    content: 'Absolutely! Shelve can be [self-hosted using Docker](/docker) or with one-click using [Coolify](/coolify). Self-hosting gives you full control over your data and infrastructure.',
+    content: 'Absolutely! Shelve can be [self-hosted using Docker](/self-hosting/docker) or with one-click using [Coolify](/self-hosting/coolify). Self-hosting gives you full control over your data and infrastructure.',
   },
   {
     label: 'Does Shelve integrate with other tools?',
