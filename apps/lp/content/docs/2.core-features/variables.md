@@ -25,8 +25,6 @@ One of the most valuable features is the environment indicator system. These ind
 
 ## Variables Selector
 
-<video width="100%" autoplay loop muted>
-  <source src="/docs/variable-selector.mp4" type="video/mp4" autoplay>
-</video>
+:video{autoPlay="true" loop="true" muted="true" width="100%"}
 
 You can easily select multiple variables by clicking on each item. Once selected, you can perform bulk actions like copying, deleting, or sending them to Github Secrets if you've connected your project to a repository and install a [Github App](/integrations/github) to synchronize your secrets with Github Secrets.

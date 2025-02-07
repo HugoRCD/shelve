@@ -21,8 +21,7 @@ Team act as a container for projects and variables. Each team has its own worksp
 
 ### Slug
 
-A team slug is a unique identifier for a team. It is used in URLs to access the team's workspace. The team slug is automatically generated when you create a team and can be customized later but must be unique across all teams.
-This also the unique identifier that you can use to access the team's workspace via the CLI
+A team slug is a unique identifier for a team. It is used in URLs to access the team's workspace. The team slug is automatically generated when you create a team and can be customized later but must be unique across all teams. This also the unique identifier that you can use to access the team's workspace via the CLI
 
 ```json [shelve.json]
 {
@@ -35,6 +34,4 @@ This also the unique identifier that you can use to access the team's workspace 
 
 Use the team selector and type the team name in the search field to create a new team.
 
-<video width="100%" autoplay loop muted>
-  <source src="/docs/create-team.mp4" type="video/mp4" autoplay>
-</video>
+:video{autoPlay="true" loop="true" muted="true" width="100%"}
