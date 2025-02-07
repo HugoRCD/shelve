@@ -10,6 +10,12 @@ useHead({
 
 const copy = ref(false)
 
+const { data } = await useAsyncData('index', () => {
+  return queryCollection('index').first()
+})
+if (!data.value)
+  throw createError({ statusCode: 404, message: 'Page not found', fatal: true })
+
 function useClipboard(text: string) {
   copyToClipboard(text, 'Copied to clipboard')
   copy.value = true
@@ -20,12 +26,17 @@ function useClipboard(text: string) {
 </script>
 
 <template>
-  <div class="relative flex flex-col gap-4">
+  <div v-if="data" class="relative flex flex-col gap-4">
     <div id="visitors" class="absolute">
       <!-- active visitors -->
     </div>
     <div class="flex h-full flex-col items-center justify-center gap-3">
-      <LandingHero class="h-64" />
+      <LandingHero
+        class="h-64"
+        :title="data.title"
+        :description="data.description"
+        :cta="data.cta"
+      />
     </div>
     <UPageSection orientation="horizontal" :ui="{ container: 'sm:pb-0 lg:pb-8' }">
       <template #leading>
@@ -85,13 +96,13 @@ function useClipboard(text: string) {
       </div>
     </UPageSection>
     <UPageSection :ui="{ container: 'lg:pt-0' }">
-      <LandingFeatures />
+      <LandingFeatures :features="data.features" />
     </UPageSection>
     <UPageSection>
       <LandingStats />
     </UPageSection>
     <UPageSection>
-      <LandingFaq />
+      <LandingFaq :faq="data.faq" />
     </UPageSection>
   </div>
 </template>
