@@ -30,13 +30,11 @@ defineShortcuts({
         {{ description }}
       </p>
       <MDC
-        :value="cta"
         class="mt-4 hidden text-center text-neutral-400 sm:block"
-        tag="p"
+        :value="cta"
       />
-      <div class="mt-4 flex flex-col items-center justify-center gap-2 sm:flex-row sm:gap-4">
+      <div class="mt-4 sm:hidden flex-col items-center justify-center gap-2 flex sm:gap-4">
         <UButton
-          class="sm:hidden"
           :to="`https://app.shelve.cloud/login`"
           label="Start your journey"
           icon="lucide:arrow-right"
