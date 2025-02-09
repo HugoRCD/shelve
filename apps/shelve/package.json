@@ -47,7 +47,7 @@
     "zod": "3.24.1"
   },
   "devDependencies": {
-    "@nuxt/devtools": "1.7.0",
+    "@nuxt/devtools": "2.0.0",
     "@types/jsonwebtoken": "^9.0.8",
     "@types/libsodium-wrappers": "^0.7.14",
     "automd": "0.3.12",
