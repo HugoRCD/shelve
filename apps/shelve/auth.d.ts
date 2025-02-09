@@ -2,7 +2,7 @@
 import { Role } from '@types'
 
 declare module '#auth-utils' {
-  // eslint-disable-next-line
+   
   interface User {
     id: number
     username: string
@@ -16,7 +16,7 @@ declare module '#auth-utils' {
     updatedAt: string
   }
 
-  // eslint-disable-next-line
+   
   interface UserSession {
     user: User
     secure?: {
@@ -27,7 +27,7 @@ declare module '#auth-utils' {
     loggedInAt: string
   }
 
-  // eslint-disable-next-line
+   
   interface SecureSessionData {
     githubToken?: string
     googleToken?: string
