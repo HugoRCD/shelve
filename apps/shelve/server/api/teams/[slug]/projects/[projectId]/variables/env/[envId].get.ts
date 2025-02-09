@@ -1,6 +1,5 @@
 import { z } from 'zod'
 import type { EnvVar } from '@types'
-import { VariablesService } from '~~/server/services/variables'
 import { projectIdParamsSchema } from '~~/server/database/zod'
 
 export default eventHandler(async (event) => {

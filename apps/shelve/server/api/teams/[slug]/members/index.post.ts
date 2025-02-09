@@ -1,6 +1,5 @@
 import { z } from 'zod'
 import { TeamRole } from '@types'
-import { MembersService } from '~~/server/services/members'
 
 const createMemberSchema = z.object({
   email: z.string({

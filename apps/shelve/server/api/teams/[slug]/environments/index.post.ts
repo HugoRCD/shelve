@@ -1,6 +1,5 @@
 import { z } from 'zod'
 import { TeamRole } from '@types'
-import { EnvironmentsService } from '~~/server/services/environments'
 
 const createEnvironmentSchema = z.object({
   name: z.string().min(3).max(50),

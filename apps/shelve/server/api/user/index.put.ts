@@ -1,6 +1,5 @@
 import { z } from 'zod'
 import { AuthType } from '@types'
-import { validateUsername } from '~~/server/services/user'
 
 const updateUserSchema = z.object({
   username: z.string().min(3).max(50).trim().optional(),

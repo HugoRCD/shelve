@@ -1,4 +1,3 @@
-import { VariablesService } from '~~/server/services/variables'
 import { variableIdParamsSchema } from '~~/server/database/zod'
 
 export default eventHandler(async (event) => {

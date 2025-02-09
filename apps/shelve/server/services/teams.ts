@@ -1,6 +1,41 @@
 import type { CreateTeamInput, DeleteTeamInput, Team, UpdateTeamInput } from '@types'
 import { TeamRole } from '@types'
-import { EnvironmentsService } from './environments'
+
+export const BLACKLIST_TEAM_SLUGS: string[] = [
+  'user',
+  'settings',
+  'admin',
+  'integrations',
+  'about',
+  'join',
+  'beta',
+  'changelog',
+  'releases',
+  'pricing',
+  'terms',
+  'privacy',
+  'docs',
+  'blog',
+  'features',
+  'module',
+  'auth',
+  'console',
+  'dashboard',
+  'account',
+  'profile',
+  'settings',
+  'billing',
+  'user',
+  'download',
+  'login',
+  'logout',
+  'signup',
+  'signin',
+  'register',
+  'local',
+  'embed',
+  'roadmap'
+]
 
 export class TeamsService {
 
@@ -11,6 +46,9 @@ export class TeamsService {
     const isSlugUnique = await this.isSlugUnique(slug)
     if (!isSlugUnique) {
       throw createError({ statusCode: 409, statusMessage: 'Team name already in use' })
+    }
+    if (BLACKLIST_TEAM_SLUGS.includes(slug)) {
+      throw createError({ statusCode: 409, statusMessage: 'Team slug is blacklisted' })
     }
 
     const [newTeam] = await db.insert(tables.teams)

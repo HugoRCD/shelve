@@ -1,5 +1,4 @@
 import { z } from 'zod'
-import { VariablesService } from '~~/server/services/variables'
 
 export default eventHandler(async (event) => {
   const { variables } = await readValidatedBody(event, z.object({
