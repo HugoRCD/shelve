@@ -3,7 +3,9 @@ definePageMeta({
   colorMode: 'dark',
 })
 
-const data = await queryCollection('about').first()
+const { data } = await useAsyncData('about', () => {
+  return queryCollection('about').first()
+})
 </script>
 
 <template>
@@ -28,7 +30,7 @@ const data = await queryCollection('about').first()
       <div class="h-screen pointer-events-none" />
 
       <USeparator />
-      <div class="relative w-full pt-10 sm:pt-20 bg-neutral-950 z-10">
+      <div v-if="data" class="relative w-full pt-10 sm:pt-20 bg-neutral-950 z-10">
         <div v-for="(section, index) in data.about" :key="index" class="group max-w-5xl mx-auto px-4 pointer-events-auto">
           <div class="flex flex-col sm:grid sm:grid-cols-12 gap-16 py-16 group-last:pb-0">
             <div class="col-span-5 relative">
