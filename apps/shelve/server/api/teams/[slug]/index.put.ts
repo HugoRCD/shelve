@@ -1,5 +1,4 @@
 import { z } from 'zod'
-import { TeamsService } from '~~/server/services/teams'
 
 const updateTeamSchema = z.object({
   name: z.string().optional(),

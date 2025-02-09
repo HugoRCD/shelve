@@ -22,7 +22,7 @@
   },
   "devDependencies": {
     "@changesets/cli": "^2.27.12",
-    "@hrcd/eslint-config": "edge",
+    "@hrcd/eslint-config": "^2.2.1",
     "@shelve/cli": "*",
     "automd": "0.3.12",
     "eslint": "9.19.0",

@@ -1,7 +1,6 @@
 import { H3Event } from 'h3'
 import type { CreateUserInput, User } from '@types'
 import { AuthType, Role } from '@types'
-import { EmailService } from '~~/server/services/resend'
 
 export async function createUser(input: CreateUserInput, event: H3Event): Promise<User> {
   const adminEmails = useRuntimeConfig(event).private.adminEmails?.split(',') || []

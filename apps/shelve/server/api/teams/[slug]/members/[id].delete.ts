@@ -1,4 +1,3 @@
-import { MembersService } from '~~/server/services/members'
 import { idParamsSchema } from '~~/server/database/zod'
 
 export default eventHandler(async (event) => {

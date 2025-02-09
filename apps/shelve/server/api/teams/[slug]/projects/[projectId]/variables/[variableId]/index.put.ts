@@ -1,5 +1,4 @@
 import { z } from 'zod'
-import { VariablesService } from '~~/server/services/variables'
 import { variableIdParamsSchema } from '~~/server/database/zod'
 
 const schema = z.object({

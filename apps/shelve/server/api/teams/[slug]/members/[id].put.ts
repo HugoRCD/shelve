@@ -1,6 +1,5 @@
 import { z } from 'zod'
 import { TeamRole } from '@types'
-import { MembersService } from '~~/server/services/members'
 import { idParamsSchema } from '~~/server/database/zod'
 
 const updateMemberSchema = z.object({

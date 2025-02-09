@@ -1,5 +1,4 @@
 import { z } from 'zod'
-import { EnvironmentsService } from '~~/server/services/environments'
 import { idParamsSchema } from '~~/server/database/zod'
 
 const updateEnvironmentSchema = z.object({

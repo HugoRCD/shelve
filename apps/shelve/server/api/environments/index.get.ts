@@ -1,5 +1,4 @@
 import { z } from 'zod'
-import { EnvironmentsService } from '~~/server/services/environments'
 
 const getEnvironmentsSchema = z.object({
   teamId: z.coerce.number({

@@ -1,9 +1,7 @@
-import { EmailService } from '~~/server/services/resend'
-
 export default defineEventHandler(async (event) => {
   const { email, username } = await readBody(event)
   const appUrl= getRequestHost(event)
-  const emailService = new EmailService()
+  const emailService = new EmailService(event)
   await emailService.sendWelcomeEmail(email, username, appUrl)
   return {
     statusCode: 200,

@@ -12,8 +12,8 @@ importers:
         specifier: ^2.27.12
         version: 2.27.12
       '@hrcd/eslint-config':
-        specifier: edge
-        version: 2.1.2-edge(eslint@9.19.0(jiti@2.4.2))(typescript@5.7.3)
+        specifier: ^2.2.1
+        version: 2.2.1(eslint@9.19.0(jiti@2.4.2))(typescript@5.7.3)
       '@shelve/cli':
         specifier: '*'
         version: 3.1.1(magicast@0.3.5)
@@ -1356,10 +1356,10 @@ packages:
   '@floating-ui/vue@1.1.6':
     resolution: {integrity: sha512-XFlUzGHGv12zbgHNk5FN2mUB7ROul3oG2ENdTpWdE+qMFxyNxWSRmsoyhiEnpmabNm6WnUvR1OvJfUfN4ojC1A==}
 
-  '@hrcd/eslint-config@2.1.2-edge':
-    resolution: {integrity: sha512-/CHpXQKoqpDiuKCCIlfs6uBQMA52dFLgNql5KsfrV1ZnZBktHbeNdf6PXJLTyYT/0vzCX36fh3ZEF6VUuNV1Ww==}
+  '@hrcd/eslint-config@2.2.1':
+    resolution: {integrity: sha512-z4BVwqFjTNeI7RUYTGOrAMZ+g0ioyHOQh+qYqurPqNCpeC7l3Vt1XKap7ipaLcsvDxCmlh+E+dvHR1Nbu7aNXQ==}
     peerDependencies:
-      eslint: ^9.12.0
+      eslint: ^9.18.0
 
   '@humanfs/core@0.19.1':
     resolution: {integrity: sha512-5DyQ4+1JEUzejeK1JGICcideyfUbGixgS9jNgex5nqkW+cY7WZhxBigmieN5Qnw9ZosSNVC9KQKyb+GUaGyKUA==}
@@ -1620,8 +1620,8 @@ packages:
     peerDependencies:
       vite: '*'
 
-  '@nuxt/eslint-plugin@0.5.7':
-    resolution: {integrity: sha512-vYQYs/L87g2pBIoTmkk2mgYBqePTQDnhk87nGqsosKbfQ80xj9kkN3dsVb6BDQFk0zik4THWpXmnfjkvsjm/eg==}
+  '@nuxt/eslint-plugin@0.7.6':
+    resolution: {integrity: sha512-x06lBR7sbsSP+H3zepVhgP7mSX6LTyluj2mj4HwMCQUXQo/7pW5mmOGnN3QU9PRxKNG2qz5Zhxb/w3NSjkyV3g==}
     peerDependencies:
       eslint: ^8.57.0 || ^9.0.0
 
@@ -2407,9 +2407,6 @@ packages:
   '@types/estree@1.0.6':
     resolution: {integrity: sha512-AYnb1nQyY49te+VRAVgmzfcgjYS91mY5P0TKUDCLEM+gNnA+3T6rWITXRLYCpahpqSQbN5cE+gHpnPyXjHWxcw==}
 
-  '@types/glob@7.2.0':
-    resolution: {integrity: sha512-ZUxbzKl0IfJILTS6t7ip5fQQM/J3TJYubDm3nMbgubNNYS62eXeUpoLUC8/7fJNiFYHTrGPQn7hspDUzIHX3UA==}
-
   '@types/google.maps@3.58.1':
     resolution: {integrity: sha512-X9QTSvGJ0nCfMzYOnaVs/k6/4L+7F5uCS+4iUmkLEls6J9S/Phv+m/i3mDeyc49ZBgwab3EFO1HEoBY7k98EGQ==}
 
@@ -2430,9 +2427,6 @@ packages:
 
   '@types/mdast@4.0.4':
     resolution: {integrity: sha512-kGaNbPh1k7AFzgpud/gMdvIm5xuECykRR+JnWKQno9TAXVa6WIVCGTPvYGekIDL4uwCZQSYbUxNBSb1aUo79oA==}
-
-  '@types/minimatch@5.1.2':
-    resolution: {integrity: sha512-K0VQKziLUWkVKiRVrx4a40iPaxTUefQmjtkQofBkYRcoaaL/8rhwDWww9qWbrgicNOgnpIsMxyNIUM4+n6dUIA==}
 
   '@types/ms@2.1.0':
     resolution: {integrity: sha512-GsCCIZDE/p3i96vtEqx+7dBUGXrc7zeSK3wwPHIaRThS+9OhWIXRqzs4d6k1SVU8g91DrNRWxWUGhp5KXQb2VA==}
@@ -3811,6 +3805,10 @@ packages:
     resolution: {integrity: sha512-reYkTUJAZb9gUuZ2RvVCNhVHdg62RHnJ7WJl8ftMi4diZ6NWlciOzQN88pUhSELEwflJht4oQDv0F0BMlwaYtA==}
     engines: {node: '>=8'}
 
+  detect-indent@7.0.1:
+    resolution: {integrity: sha512-Mc7QhQ8s+cLrnUfU/Ji94vG/r8M26m8f++vyres4ZoojaRDpZ1eSIh/EpzLNwlWuvzSZ3UbDFspjFvTDXe6e/g==}
+    engines: {node: '>=12.20'}
+
   detect-libc@1.0.3:
     resolution: {integrity: sha512-pGjwhsmsp4kL2RTz08wcOlGN83otlqHeD/Z5T8GXZB+/YcpQ/dgo+lbU8ZsGxV0HIvqqxo9l7mqYwyYMD9bKDg==}
     engines: {node: '>=0.10'}
@@ -3827,6 +3825,10 @@ packages:
   detect-newline@3.1.0:
     resolution: {integrity: sha512-TLz+x/vEXm/Y7P7wn1EJFNLxYpUD4TgMosxY6fAVJUnJMbupHBOncxyWUG9OpTaH9EBD7uFI5LfEgmMOc54DsA==}
     engines: {node: '>=8'}
+
+  detect-newline@4.0.1:
+    resolution: {integrity: sha512-qE3Veg1YXzGHQhlA6jzebZN2qVf6NX+A7m7qlhCGG30dJixrAQhYOsJjsnBjJkCSmuOPpCk30145fr8FV0bzog==}
+    engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
 
   devalue@5.1.1:
     resolution: {integrity: sha512-maua5KUiapvEwiEAe+XnlZ3Rh0GD+qI1J/nb9vrJc3muPXvcF/8gXYTWF76+5DAqHyDUtOIImEuo0YKE9mshVw==}
@@ -4168,8 +4170,8 @@ packages:
     peerDependencies:
       eslint: ^7.0.0 || ^8.0.0 || ^9.0.0
 
-  eslint-plugin-package-json@0.15.6:
-    resolution: {integrity: sha512-neg32Ew8yP9cFMQGGFI01wLsgAs/0qFbHdgpDoRFDe6UfqzFA06RQToKh4M63miiL35wmA824i/DPNU80RGyPA==}
+  eslint-plugin-package-json@0.19.0:
+    resolution: {integrity: sha512-L1RCeuEcZHrOC2KJqRctgHrndLufICo4VSHNZEnGEF7PkZXWZrxUBc17I5Cdolarlk+5kIW9IJ+zettXUuELHg==}
     engines: {node: '>=18'}
     peerDependencies:
       eslint: '>=8.0.0'
@@ -4475,6 +4477,10 @@ packages:
   get-source@2.0.12:
     resolution: {integrity: sha512-X5+4+iD+HoSeEED+uwrQ07BOQr0kEDFMVqqpBuI+RaZBpBpHCuXxo70bjar6f0b0u/DQJsJ7ssurpP0V60Az+w==}
 
+  get-stdin@9.0.0:
+    resolution: {integrity: sha512-dVKBjfWisLAicarI2Sf+JuBE/DghV4UzNAVe9yhEJuzeREd3JhOTE9cUaJTeSa77fsbQUK3pcOpJfM59+VKZaA==}
+    engines: {node: '>=12'}
+
   get-stream@6.0.1:
     resolution: {integrity: sha512-ts6Wi+2j3jQjqi70w5AlN8DFnkSwC+MqmxEzdEALB2qXZYV3X/b1CTfgPLGJNMeAWxdPfU8FO1ms3NUfaHCPYg==}
     engines: {node: '>=10'}
@@ -4498,8 +4504,8 @@ packages:
     resolution: {integrity: sha512-qc8h1KIQbJpp+241id3GuAtkdyJ+IK+LIVtkiFTRKRrmddDzs3SI9CvP1QYmWBFvm1I/PWRwj//of8bgAc0ltA==}
     engines: {node: '>=4'}
 
-  git-hooks-list@1.0.3:
-    resolution: {integrity: sha512-Y7wLWcrLUXwk2noSka166byGCvhMtDRpgHdzCno1UQv/n/Hegp++a2xBWJL1lJarnKD3SWaljD+0z1ztqxuKyQ==}
+  git-hooks-list@3.2.0:
+    resolution: {integrity: sha512-ZHG9a1gEhUMX1TvGrLdyWb9kDopCBbTnI8z4JgRMYxsijWipgjSEYoPWqBuIB0DnRnvqlQSEeVmzpeuPm7NdFQ==}
 
   git-up@8.0.0:
     resolution: {integrity: sha512-uBI8Zdt1OZlrYfGcSVroLJKgyNNXlgusYFzHk614lTasz35yg2PVpL1RMy0LOO2dcvF9msYW3pRfUSmafZNrjg==}
@@ -4551,10 +4557,6 @@ packages:
   globals@15.14.0:
     resolution: {integrity: sha512-OkToC372DtlQeje9/zHIo5CT8lRP/FUgEOKBEhU4e0abL7J7CD24fD9ohiLN5hagG/kWCYj4K5oaxxtj2Z0Dig==}
     engines: {node: '>=18'}
-
-  globby@10.0.0:
-    resolution: {integrity: sha512-3LifW9M4joGZasyYPz2A1U74zbC/45fvpXUvO/9KbSa+VV0aGZarWkfdgKyR9sExNP0t0x0ss/UMJpNpcaTspw==}
-    engines: {node: '>=8'}
 
   globby@11.1.0:
     resolution: {integrity: sha512-jhIXaOzy1sb8IyocaruWSn1TjmnBVs8Ayhcy83rmxNJ8q2uWKCAj3CnJY+KpGSXCueAPc0i05kVvVKtP1t9S3g==}
@@ -4862,10 +4864,6 @@ packages:
   is-path-inside@4.0.0:
     resolution: {integrity: sha512-lJJV/5dYS+RcL8uQdBDW9c9uWFLLBNRyFhnAKXw5tVqLlKZ4RMGZKv+YQ/IA3OhD+RpbJa1LLFM1FQPGyIXvOA==}
     engines: {node: '>=12'}
-
-  is-plain-obj@2.1.0:
-    resolution: {integrity: sha512-YWnfyRwxL/+SsrWYfOpUtz5b3YD+nyfkHvjbcanzk8zgyO4ASD67uVMRt8k5bM4lLMDnXfriRhOpemw+NfT1eA==}
-    engines: {node: '>=8'}
 
   is-plain-obj@4.1.0:
     resolution: {integrity: sha512-+Pgi+vMuUNkJyExiMBt5IlFoMyKnr5zhJ4Uspz58WOhBF5QoIZkFyNHIbBAtHwzVAgk5RtndVNsDRN61/mmDqg==}
@@ -6740,8 +6738,8 @@ packages:
   sort-object-keys@1.1.3:
     resolution: {integrity: sha512-855pvK+VkU7PaKYPc+Jjnmt4EzejQHyhhF33q31qG8x7maDzkeFhAAThdCYay11CISO+qAMwjOBP+fPZe0IPyg==}
 
-  sort-package-json@1.57.0:
-    resolution: {integrity: sha512-FYsjYn2dHTRb41wqnv+uEqCUvBpK3jZcTp9rbz2qDTmel7Pmdtf+i2rLaaPMRZeSVM60V3Se31GyWFpmKs4Q5Q==}
+  sort-package-json@2.14.0:
+    resolution: {integrity: sha512-xBRdmMjFB/KW3l51mP31dhlaiFmqkHLfWTfZAno8prb/wbDxwBPWFpxB16GZbiPbYr3wL41H8Kx22QIDWRe8WQ==}
     hasBin: true
 
   source-map-js@1.2.1:
@@ -8709,10 +8707,10 @@ snapshots:
       - '@vue/composition-api'
       - vue
 
-  '@hrcd/eslint-config@2.1.2-edge(eslint@9.19.0(jiti@2.4.2))(typescript@5.7.3)':
+  '@hrcd/eslint-config@2.2.1(eslint@9.19.0(jiti@2.4.2))(typescript@5.7.3)':
     dependencies:
       '@eslint/js': 9.19.0
-      '@nuxt/eslint-plugin': 0.5.7(eslint@9.19.0(jiti@2.4.2))(typescript@5.7.3)
+      '@nuxt/eslint-plugin': 0.7.6(eslint@9.19.0(jiti@2.4.2))(typescript@5.7.3)
       '@rushstack/eslint-patch': 1.10.5
       '@typescript-eslint/eslint-plugin': 8.22.0(@typescript-eslint/parser@8.22.0(eslint@9.19.0(jiti@2.4.2))(typescript@5.7.3))(eslint@9.19.0(jiti@2.4.2))(typescript@5.7.3)
       '@typescript-eslint/parser': 8.22.0(eslint@9.19.0(jiti@2.4.2))(typescript@5.7.3)
@@ -8722,7 +8720,7 @@ snapshots:
       eslint-flat-config-utils: 0.4.0
       eslint-plugin-import-x: 4.6.1(eslint@9.19.0(jiti@2.4.2))(typescript@5.7.3)
       eslint-plugin-jsdoc: 50.6.3(eslint@9.19.0(jiti@2.4.2))
-      eslint-plugin-package-json: 0.15.6(eslint@9.19.0(jiti@2.4.2))(jsonc-eslint-parser@2.4.0)
+      eslint-plugin-package-json: 0.19.0(eslint@9.19.0(jiti@2.4.2))(jsonc-eslint-parser@2.4.0)
       eslint-plugin-vue: 9.32.0(eslint@9.19.0(jiti@2.4.2))
       jsonc-eslint-parser: 2.4.0
       tslib: 2.8.1
@@ -9259,7 +9257,7 @@ snapshots:
       - utf-8-validate
       - vue
 
-  '@nuxt/eslint-plugin@0.5.7(eslint@9.19.0(jiti@2.4.2))(typescript@5.7.3)':
+  '@nuxt/eslint-plugin@0.7.6(eslint@9.19.0(jiti@2.4.2))(typescript@5.7.3)':
     dependencies:
       '@typescript-eslint/types': 8.22.0
       '@typescript-eslint/utils': 8.22.0(eslint@9.19.0(jiti@2.4.2))(typescript@5.7.3)
@@ -10704,11 +10702,6 @@ snapshots:
 
   '@types/estree@1.0.6': {}
 
-  '@types/glob@7.2.0':
-    dependencies:
-      '@types/minimatch': 5.1.2
-      '@types/node': 22.12.0
-
   '@types/google.maps@3.58.1': {}
 
   '@types/hast@3.0.4':
@@ -10731,8 +10724,6 @@ snapshots:
   '@types/mdast@4.0.4':
     dependencies:
       '@types/unist': 3.0.3
-
-  '@types/minimatch@5.1.2': {}
 
   '@types/ms@2.1.0': {}
 
@@ -12444,6 +12435,8 @@ snapshots:
 
   detect-indent@6.1.0: {}
 
+  detect-indent@7.0.1: {}
+
   detect-libc@1.0.3: {}
 
   detect-libc@2.0.2:
@@ -12452,6 +12445,8 @@ snapshots:
   detect-libc@2.0.3: {}
 
   detect-newline@3.1.0: {}
+
+  detect-newline@4.0.1: {}
 
   devalue@5.1.1: {}
 
@@ -12841,7 +12836,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-plugin-package-json@0.15.6(eslint@9.19.0(jiti@2.4.2))(jsonc-eslint-parser@2.4.0):
+  eslint-plugin-package-json@0.19.0(eslint@9.19.0(jiti@2.4.2))(jsonc-eslint-parser@2.4.0):
     dependencies:
       '@altano/repository-tools': 0.1.1
       detect-indent: 6.1.0
@@ -12851,7 +12846,7 @@ snapshots:
       package-json-validator: 0.7.3
       semver: 7.7.1
       sort-object-keys: 1.1.3
-      sort-package-json: 1.57.0
+      sort-package-json: 2.14.0
       validate-npm-package-name: 6.0.0
 
   eslint-plugin-vue@9.32.0(eslint@9.19.0(jiti@2.4.2)):
@@ -13207,6 +13202,8 @@ snapshots:
       data-uri-to-buffer: 2.0.2
       source-map: 0.6.1
 
+  get-stdin@9.0.0: {}
+
   get-stream@6.0.1: {}
 
   get-stream@8.0.1: {}
@@ -13233,7 +13230,7 @@ snapshots:
 
   git-config-path@2.0.0: {}
 
-  git-hooks-list@1.0.3: {}
+  git-hooks-list@3.2.0: {}
 
   git-up@8.0.0:
     dependencies:
@@ -13289,17 +13286,6 @@ snapshots:
   globals@14.0.0: {}
 
   globals@15.14.0: {}
-
-  globby@10.0.0:
-    dependencies:
-      '@types/glob': 7.2.0
-      array-union: 2.1.0
-      dir-glob: 3.0.1
-      fast-glob: 3.3.3
-      glob: 7.2.3
-      ignore: 5.3.2
-      merge2: 1.4.1
-      slash: 3.0.0
 
   globby@11.1.0:
     dependencies:
@@ -13742,8 +13728,6 @@ snapshots:
   is-number@7.0.0: {}
 
   is-path-inside@4.0.0: {}
-
-  is-plain-obj@2.1.0: {}
 
   is-plain-obj@4.1.0: {}
 
@@ -16312,14 +16296,16 @@ snapshots:
 
   sort-object-keys@1.1.3: {}
 
-  sort-package-json@1.57.0:
+  sort-package-json@2.14.0:
     dependencies:
-      detect-indent: 6.1.0
-      detect-newline: 3.1.0
-      git-hooks-list: 1.0.3
-      globby: 10.0.0
-      is-plain-obj: 2.1.0
+      detect-indent: 7.0.1
+      detect-newline: 4.0.1
+      get-stdin: 9.0.0
+      git-hooks-list: 3.2.0
+      is-plain-obj: 4.1.0
+      semver: 7.7.1
       sort-object-keys: 1.1.3
+      tinyglobby: 0.2.10
 
   source-map-js@1.2.1: {}
 

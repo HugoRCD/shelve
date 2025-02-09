@@ -18,6 +18,9 @@ export default defineNuxtConfig({
     rollupConfig: {
       // @ts-expect-error - this is not typed
       plugins: [vue()]
+    },
+    imports: {
+      dirs: ['./server/services']
     }
   },
 

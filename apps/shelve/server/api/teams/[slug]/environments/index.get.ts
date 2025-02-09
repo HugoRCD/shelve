@@ -1,5 +1,3 @@
-import { EnvironmentsService } from '~~/server/services/environments'
-
 export default eventHandler(async (event) => {
   const team = useCurrentTeam(event)
 
