@@ -1,6 +1,6 @@
 import type { Stats } from '@types'
 
-export const STATS_CACHE_KEY = 'stats:latest.json'
+export const STATS_CACHE_KEY = 'nitro:functions:stats:latest.json'
 export const STATS_CACHE_REVALIDATE_AFTER = 1000 * 60 * 5 // 5 minutes
 
 const calculateStats = (data: {
