@@ -25,14 +25,14 @@
     "@hrcd/eslint-config": "^2.2.1",
     "@shelve/cli": "*",
     "automd": "0.3.12",
-    "eslint": "9.20.0",
-    "turbo": "2.4.0",
+    "eslint": "9.20.1",
+    "turbo": "2.4.1",
     "typescript": "5.7.3"
   },
   "engines": {
-    "node": ">=22.13.1"
+    "node": ">=22.14.0"
   },
-  "packageManager": "pnpm@10.2.1",
+  "packageManager": "pnpm@10.3.0",
   "workspaces": [
     "packages/*",
     "apps/*"
