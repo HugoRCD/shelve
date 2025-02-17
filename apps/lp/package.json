@@ -35,5 +35,10 @@
     "@shelve/cli": "^3.1.1",
     "typescript": "5.7.3",
     "wrangler": "^3.109.1"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "better-sqlite3"
+    ]
   }
 }

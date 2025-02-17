@@ -32,6 +32,11 @@
   "engines": {
     "node": ">=22.14.0"
   },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "better-sqlite3"
+    ]
+  },
   "packageManager": "pnpm@10.4.0",
   "workspaces": [
     "packages/*",
