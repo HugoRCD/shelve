@@ -26,7 +26,7 @@ export default eventHandler(async (event) => {
 
   await setUserSession(event, {
     user: updatedUser,
-    loggedInAt: new Date().toISOString(),
+    loggedInAt: new Date(),
   })
   return updatedUser
 })
