@@ -19,7 +19,7 @@ export default defineEventHandler(async (event) => {
     const user = await getUserByAuthToken(authToken, event)
     await setUserSession(event, {
       user,
-      loggedInAt: new Date().toISOString(),
+      loggedInAt: new Date(),
     })
   }
 })
@@ -48,7 +48,7 @@ async function getUserByAuthToken(authToken: string, event: H3Event): Promise<Us
 
   await useDrizzle().update(tables.tokens)
     .set({
-      updatedAt: new Date().toISOString()
+      updatedAt: new Date()
     })
     .where(eq(tables.tokens.id, foundToken.id))
   return user

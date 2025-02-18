@@ -20,7 +20,7 @@ export default defineOAuthGoogleEventHandler({
           googleToken: tokens.access_token,
         },
         user: userSchema.parse(_user),
-        loggedInAt: new Date().toISOString(),
+        loggedInAt: new Date(),
       })
       return sendRedirect(event, _user.onboarding ? '/' : '/onboarding')
     } catch (error) {
