@@ -12,8 +12,8 @@ export type Member = {
   teamId: number;
   role: 'owner' | 'admin' | 'member';
   user: User;
-  createdAt: string;
-  updatedAt: string;
+  createdAt: Date;
+  updatedAt: Date;
 };
 
 export type Team = {
@@ -21,8 +21,8 @@ export type Team = {
   name: string;
   slug: string;
   logo: string;
-  createdAt: string;
-  updatedAt: string;
+  createdAt: Date;
+  updatedAt: Date;
   members: Member[];
 };
 

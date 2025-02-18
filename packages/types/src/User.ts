@@ -17,8 +17,8 @@ export type User = {
   authType: 'github' | 'google';
   onboarding: boolean;
   cliInstalled: boolean;
-  createdAt: string;
-  updatedAt: string;
+  createdAt: Date;
+  updatedAt: Date;
 };
 
 export type CreateUserInput = {

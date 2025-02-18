@@ -1,4 +1,4 @@
-import { parseEnvFile } from '@shelve/utils'
+import { parseEnvFile } from '@utils'
 
 export function useFileHandling(updateVariables: (vars: Array<{ index: number, key: string, value: string }>) => void) {
   const dragOver = ref(false)

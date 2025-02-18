@@ -61,17 +61,6 @@ const show = ref(true)
         </div>
       </div>
       <CliInstall />
-      <UAlert
-        v-if="show"
-        icon="lucide:alert-triangle"
-        title="Migration to NuxtHub"
-        variant="soft"
-        color="warning"
-        description="The app has been moved to NuxtHub, and the database has been migrated to. So you may see some bugs and missing features, during the migration process, please report them on GitHub."
-        class="rounded-none"
-        close
-        @update:open="show = false"
-      />
       <div class="flex h-full flex-col gap-4 overflow-y-auto px-3 py-6 sm:px-6">
         <slot />
       </div>

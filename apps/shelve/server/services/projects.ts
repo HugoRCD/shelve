@@ -69,7 +69,7 @@ export class ProjectsService {
   private async isProjectAlreadyExists(name: string, teamId: number, projectId?: number): Promise<boolean> {
     const conditions = [
       eq(tables.projects.teamId, teamId),
-      sql`lower(${tables.projects.name}) like lower(${name})`
+      ilike(tables.projects.name, name)
     ]
 
     if (projectId) conditions.push(not(eq(tables.projects.id, projectId)))

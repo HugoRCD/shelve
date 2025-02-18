@@ -14,7 +14,6 @@
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "typecheck": "tsc --noEmit",
-    "deploy": "nuxthub deploy",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push"
@@ -26,8 +25,6 @@
     "@nuxt/image": "1.9.0",
     "@nuxt/scripts": "0.10.3",
     "@nuxt/ui": "3.0.0-alpha.12",
-    "@nuxthub/core": "0.8.17",
-    "@shelve/utils": "*",
     "@vue-email/components": "0.0.21",
     "@vue-email/render": "0.0.9",
     "@vueuse/core": "12.7.0",
@@ -40,6 +37,7 @@
     "nuxt": "3.15.4",
     "nuxt-auth-utils": "0.5.15",
     "nuxt-build-cache": "0.1.1",
+    "pg": "^8.13.3",
     "resend": "4.1.2",
     "tweetnacl": "^1.0.3",
     "vue": "3.5.13",
@@ -52,8 +50,7 @@
     "@types/jsonwebtoken": "^9.0.8",
     "@types/libsodium-wrappers": "^0.7.14",
     "automd": "0.3.12",
-    "typescript": "5.7.3",
-    "wrangler": "^3.109.1"
+    "typescript": "5.7.3"
   },
   "pnpm": {
     "onlyBuiltDependencies": [

@@ -26,6 +26,7 @@ export default defineNuxtConfig({
 
   alias: {
     '@types': resolve('../../packages/types'),
+    '@utils': resolve('../../packages/utils'),
   },
 
   modules: [

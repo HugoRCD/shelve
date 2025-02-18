@@ -8,8 +8,8 @@ export type Project = {
   variablePrefix: string;
   logo: string;
   teamId: number;
-  createdAt: string;
-  updatedAt: string;
+  createdAt: Date;
+  updatedAt: Date;
 };
 
 export type CreateProjectInput = {
