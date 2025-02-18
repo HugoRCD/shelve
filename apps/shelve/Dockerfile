@@ -34,6 +34,8 @@ COPY --from=build /app/apps/shelve/server/database/column.helpers.ts ./server/da
 COPY --from=build /app/apps/shelve/drizzle.config.ts ./drizzle.config.ts
 COPY --from=build /app/packages/types ./packages/types
 
+RUN sed -i 's|@types|../../packages/types|g' /app/server/database/schema.ts
+
 RUN corepack enable
 
 RUN pnpm install --prod
