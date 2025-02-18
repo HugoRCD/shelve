@@ -1,4 +1,5 @@
 import { AuthType } from '@types'
+import { userSchema } from '~~/server/database/zod'
 
 export default defineOAuthGitHubEventHandler({
   config: {

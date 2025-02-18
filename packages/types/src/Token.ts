@@ -4,8 +4,8 @@ export type Token = {
   id: number;
   name: string;
   token: string;
-  createdAt: string;
-  updatedAt: string;
+  createdAt: Date;
+  updatedAt: Date;
   userId: number;
   user?: User;
 };

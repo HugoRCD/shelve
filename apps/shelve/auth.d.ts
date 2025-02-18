@@ -2,7 +2,7 @@
 import { Role } from '@types'
 
 declare module '#auth-utils' {
-   
+
   interface User {
     id: number
     username: string
@@ -12,11 +12,10 @@ declare module '#auth-utils' {
     onboarding: boolean
     cliInstalled: boolean
     role: 'admin' | 'user'
-    createdAt: string
-    updatedAt: string
+    createdAt: Date
+    updatedAt: Date
   }
 
-   
   interface UserSession {
     user: User
     secure?: {
@@ -27,7 +26,6 @@ declare module '#auth-utils' {
     loggedInAt: string
   }
 
-   
   interface SecureSessionData {
     githubToken?: string
     googleToken?: string

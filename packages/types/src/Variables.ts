@@ -11,8 +11,8 @@ export type Variable = {
   key: string;
   projectId: number;
   values: VariableValue[];
-  createdAt: string;
-  updatedAt: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 

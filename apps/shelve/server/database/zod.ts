@@ -10,8 +10,8 @@ export const userSchema = z.object({
   authType: z.nativeEnum(AuthType),
   onboarding: z.boolean(),
   cliInstalled: z.boolean(),
-  createdAt: z.string(),
-  updatedAt: z.string(),
+  createdAt: z.date(),
+  updatedAt: z.date(),
 })
 
 export const idParamsSchema = z.object({
