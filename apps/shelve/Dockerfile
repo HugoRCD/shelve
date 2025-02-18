@@ -32,6 +32,7 @@ COPY --from=build /app/entrypoint.sh ./entrypoint.sh
 COPY --from=build /app/apps/shelve/server/database/schema.ts ./server/database/schema.ts
 COPY --from=build /app/apps/shelve/server/database/column.helpers.ts ./server/database/column.helpers.ts
 COPY --from=build /app/apps/shelve/drizzle.config.ts ./drizzle.config.ts
+COPY --from=build /app/packages/types ./packages/types
 
 RUN corepack enable
 
