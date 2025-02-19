@@ -9,6 +9,19 @@ const props = defineProps<{
   }
 }>()
 
+const svgContent = ref('')
+
+onMounted(async () => {
+  if (props.assets?.svg) {
+    try {
+      const response = await fetch(props.assets.svg)
+      svgContent.value = await response.text()
+    } catch (error) {
+      console.error('Failed to load SVG content')
+    }
+  }
+})
+
 const downloadFile = async (url: string, filename: string) => {
   try {
     const response = await fetch(url)
@@ -37,7 +50,8 @@ const items = computed(() => {
       label: props.copyLabel ?? 'Copy',
       icon: 'lucide:copy',
       onSelect: () => {
-        navigator.clipboard.writeText(props.content)
+        const contentToCopy = svgContent.value || props.content
+        navigator.clipboard.writeText(contentToCopy)
         toast.success('Copied to clipboard')
       }
     }
