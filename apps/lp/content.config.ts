@@ -100,4 +100,32 @@ export const collections = {
       })
     })
   }),
+  brand: defineCollection({
+    type: 'data',
+    source: 'brand.yml',
+    schema: z.object({
+      title: z.string().nonempty(),
+      description: z.string().nonempty(),
+      logo: z.object({
+        description: z.string().nonempty(),
+        icons: z.array(z.object({
+          name: z.string(),
+          color: z.string(),
+          icon: z.string()
+        })),
+        logos: z.array(z.object({
+          name: z.string(),
+          color: z.string(),
+          icon: z.string()
+        })),
+      }),
+      colorPalette: z.object({
+        description: z.string(),
+        colors: z.array(z.object({
+          name: z.string(),
+          value: z.string()
+        }))
+      })
+    })
+  })
 }

@@ -1,0 +1,27 @@
+title: Brand
+description: Welcome to Shelve brand guidelines. Here you will find all the assets and guidelines to help you create a consistent and cohesive around the Shelve brand.
+logo:
+  description: Our logo is the symbol of Shelve, a simple and elegant solution for your data management needs.
+  icons:
+    - name: Black
+      color: '#000000'
+      icon: custom:shelve
+    - name: White
+      color: '#FFFFFF'
+      icon: custom:shelve
+  logos:
+    - name: Black
+      color: '#000000'
+      icon: custom:shelve
+    - name: White
+      color: '#FFFFFF'
+      icon: custom:shelve
+colorPalette:
+  description: Our color palette is principally based on the black and white color scheme to match the values of Shelve, simple and elegant.
+  colors:
+    - name: Black
+      value: '#000000'
+    - name: White
+      value: '#FFFFFF'
+    - name: Gray
+      value: '#0A0A0A'
