@@ -40,35 +40,6 @@ const { data: page } = await useAsyncData('brand', () => {
         </UPageGrid>
       </UPageSection>
 
-      <!-- Typography Section -->
-      <UPageSection :ui="{ container: 'sm:gap-6' }">
-        <BrandHeader
-          title="Typography"
-          :description="page.typography.description"
-        />
-        <div class="grid gap-4">
-          <div class="font-geist">
-            <h3 class="text-xl mb-2">
-              Geist
-            </h3>
-            <p class="text-lg font-medium">
-              Medium - Headings
-            </p>
-            <p class="text-base">
-              Regular - Body Text
-            </p>
-          </div>
-          <div class="font-jetbrains">
-            <h3 class="text-xl mb-2">
-              JetBrains Mono
-            </h3>
-            <p class="font-mono">
-              Code and technical content
-            </p>
-          </div>
-        </div>
-      </UPageSection>
-
       <!-- Brand Assets Section -->
       <UPageSection :ui="{ container: 'sm:gap-6' }">
         <BrandHeader
@@ -76,55 +47,36 @@ const { data: page } = await useAsyncData('brand', () => {
           :description="page.logo.descriptions.main"
         />
         <UPageGrid class="lg:grid-cols-2">
-          <!-- Icons -->
           <div class="space-y-4">
             <h3 class="font-bold mb-2">
               Icons
             </h3>
             <div class="grid grid-cols-2 gap-4">
-              <div
+              <BrandAssetCard
                 v-for="icon in page.logo.icons"
                 :key="icon.name"
-                class="flex flex-col gap-2"
-              >
-                <div
-                  :style="{
-                    color: icon.color,
-                    backgroundColor: icon.color === '#000000' ? '#FFFFFF' : '#0A0A0A',
-                  }"
-                  class="flex items-center justify-center rounded-md border border-solid border-(--ui-border)/50 p-4 aspect-square"
-                >
-                  <UIcon :name="icon.icon" class="size-24" />
-                </div>
-              </div>
+                v-bind="icon"
+              />
             </div>
           </div>
-
-          <!-- Logos -->
           <div class="space-y-4">
             <h3 class="font-bold mb-2">
               Logos
             </h3>
             <div class="grid gap-4">
-              <div
+              <BrandAssetCard
                 v-for="logo in page.logo.icons"
                 :key="logo.name"
-                class="flex flex-col gap-2"
-              >
-                <div
-                  :style="{
-                    color: logo.color,
-                    backgroundColor: logo.color === '#000000' ? '#FFFFFF' : '#0A0A0A'
-                  }"
-                  class="flex items-center gap-3 text-3xl rounded-md border border-solid border-(--ui-border)/50 px-6 py-8"
-                >
-                  <UIcon :name="logo.icon" class="" />
-                  <span class="font-bold">Shelve</span>
-                </div>
-              </div>
+                v-bind="logo"
+                show-text
+              />
             </div>
           </div>
         </UPageGrid>
+        <BrandUsageGuidelines
+          :do="page.logo.usage.do"
+          :dont="page.logo.usage.dont"
+        />
       </UPageSection>
 
       <!-- Color Palette Section -->
@@ -139,44 +91,39 @@ const { data: page } = await useAsyncData('brand', () => {
               Primary Colors
             </h3>
             <UPageGrid class="lg:grid-cols-2">
-              <div
+              <BrandColorCard
                 v-for="color in page.colorPalette.primary"
                 :key="color.name"
-                class="flex flex-col gap-2"
-              >
-                <div
-                  :style="{ backgroundColor: color.value }"
-                  class="rounded-md aspect-video border border-solid border-(--ui-border)/50"
-                />
-                <div class="flex flex-col">
-                  <span class="font-bold">{{ color.name }}</span>
-                  <span class="text-sm text-(--ui-text-muted)">{{ color.value }}</span>
-                  <span class="text-sm text-(--ui-text-muted)">{{ color.usage }}</span>
-                </div>
-              </div>
+                v-bind="color"
+              />
+              <BrandColorCard
+                v-for="color in page.colorPalette.secondary"
+                :key="color.name"
+                v-bind="color"
+              />
             </UPageGrid>
+          </div>
+        </div>
+      </UPageSection>
+
+      <!-- Typography Section -->
+      <UPageSection :ui="{ container: 'sm:gap-6' }">
+        <BrandHeader
+          title="Typography"
+          :description="page.typography.description"
+        />
+        <div class="grid gap-6">
+          <div>
+            <h3 class="font-bold mb-4">
+              Geist - Primary Font
+            </h3>
+            <BrandTypographyShowcase font="geist" />
           </div>
           <div>
             <h3 class="font-bold mb-4">
-              Secondary Colors
+              JetBrains Mono - Code Font
             </h3>
-            <UPageGrid class="lg:grid-cols-2">
-              <div
-                v-for="color in page.colorPalette.secondary"
-                :key="color.name"
-                class="flex flex-col gap-2"
-              >
-                <div
-                  :style="{ backgroundColor: color.value }"
-                  class="rounded-md aspect-video border border-solid border-(--ui-border)/50"
-                />
-                <div class="flex flex-col">
-                  <span class="font-bold">{{ color.name }}</span>
-                  <span class="text-sm text-(--ui-text-muted)">{{ color.value }}</span>
-                  <span class="text-sm text-(--ui-text-muted)">{{ color.usage }}</span>
-                </div>
-              </div>
-            </UPageGrid>
+            <BrandTypographyShowcase font="jetbrains" />
           </div>
         </div>
       </UPageSection>
@@ -187,15 +134,38 @@ const { data: page } = await useAsyncData('brand', () => {
           title="Markdown Badges"
           :description="page.badge.description"
         />
-        <div class="grid gap-4">
-          <div
+        <div class="grid lg:grid-cols-2 gap-4">
+          <BrandMarkdownBadge
             v-for="badge in page.badge.badges"
             :key="badge.name"
-            class="space-y-2"
-          >
-            <MDC :value="badge.markdown" />
-          </div>
+            v-bind="badge"
+          />
         </div>
+        <BrandUsageGuidelines
+          :do="page.badge.placement"
+          :dont="[]"
+        />
+      </UPageSection>
+
+      <!-- Voice & Tone Section -->
+      <UPageSection :ui="{ container: 'sm:gap-6' }">
+        <BrandHeader
+          title="Voice & Tone"
+          :description="page.voice.description"
+        />
+        <BrandVoice
+          :tone="page.voice.tone"
+          :keywords="page.voice.keywords"
+        />
+      </UPageSection>
+
+      <!-- Social Media Section -->
+      <UPageSection :ui="{ container: 'sm:gap-6' }">
+        <BrandHeader
+          title="Social Media Presence"
+          :description="page.social.description"
+        />
+        <BrandSocial :platforms="page.social.platforms" />
       </UPageSection>
     </UMain>
   </UPage>

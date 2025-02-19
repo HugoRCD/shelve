@@ -180,6 +180,7 @@ export default defineContentConfig({
           description: z.string(),
           platforms: z.array(z.object({
             name: z.string(),
+            logo: z.string(),
             handle: z.string(),
             link: z.string(),
             usage: z.string()

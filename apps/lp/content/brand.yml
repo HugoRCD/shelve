@@ -118,12 +118,19 @@ badge:
 social:
   description: Guidelines for social media presence
   platforms:
-    - name: X
+    - name: X / Twitter
+      logo: x
       handle: '@ShelveCloud'
       link: https://x.com/ShelveCloud
       usage: Primary platform for updates and engagement
+    - name: HugoRCD
+      logo: github
+      handle: Shelve
+      link: https://github.com/hugorcd/shelve
+      usage: Official repository
     - name: GitHub
-      handle: shelve-cloud
+      logo: github
+      handle: Shelve-Cloud Organization
       link: https://github.com/shelve-cloud
       usage: Technical documentation and community
   assets:
