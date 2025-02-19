@@ -1,27 +1,132 @@
-title: Brand
-description: Welcome to Shelve brand guidelines. Here you will find all the assets and guidelines to help you create a consistent and cohesive around the Shelve brand.
+title: Brand Guidelines
+description: Welcome to Shelve's brand guidelines. These guidelines ensure a consistent and professional representation of Shelve across all platforms, emphasizing our commitment to simplicity, elegance, and developer experience.
+values:
+  description: At Shelve, our values guide every decision and detail of our product
+  core:
+    - name: Trust & Security
+      description: We build trust through robust security and reliable performance, making Shelve a dependable part of your development workflow
+    - name: Excellence
+      description: Every detail is meticulously crafted, from user interface to code quality, ensuring the highest standards
+    - name: Simplicity
+      description: We believe in reducing complexity without compromising power, making advanced features accessible and intuitive
+    - name: Developer Experience
+      description: Everything we build is designed to enhance and streamline the developer workflow
+    - name: Thoughtful Design
+      description: Every feature and interaction is carefully considered, creating a cohesive and polished experience
 logo:
-  description: Our logo is the symbol of Shelve, a simple and elegant solution for your data management needs.
+  descriptions:
+    main: Our logo represents the essence of Shelve - a clean, modern solution for development workspace management. The design emphasizes simplicity while conveying professionalism and reliability.
+    icon: The Shelve icon serves as our most recognizable brand element, designed to be distinctive even at small sizes. It represents a simplified "S" that embodies our commitment to elegant solutions.
+    logo: The Shelve wordmark combines with our icon to create a complete brand identity. The typography is chosen for its clarity and modern feel, matching our technical nature.
+  usage:
+    do:
+      - Maintain clear space around the logo
+      - Use approved color variations
+      - Keep proportions consistent
+    dont:
+      - Modify the logo design
+      - Use unapproved colors
+      - Distort or rotate the logo
   icons:
     - name: Black
       color: '#000000'
       icon: custom:shelve
+      usage: Primary choice for light backgrounds
     - name: White
       color: '#FFFFFF'
       icon: custom:shelve
-  logos:
-    - name: Black
-      color: '#000000'
-      icon: custom:shelve
-    - name: White
-      color: '#FFFFFF'
-      icon: custom:shelve
+      usage: Primary choice for dark backgrounds
 colorPalette:
-  description: Our color palette is principally based on the black and white color scheme to match the values of Shelve, simple and elegant.
-  colors:
-    - name: Black
-      value: '#000000'
-    - name: White
-      value: '#FFFFFF'
-    - name: Gray
+  description: Our color palette emphasizes clarity and sophistication, using carefully selected shades that maintain excellent contrast while being easy on the eyes
+  primary:
+    - name: Rich Black
       value: '#0A0A0A'
+      usage: Primary brand color, used for main elements
+    - name: Pure White
+      value: '#FFFFFF'
+      usage: Clean backgrounds and contrast
+  secondary:
+    - name: Soft Black
+      value: '#141414'
+      usage: Secondary elements and depth
+    - name: Interface Gray
+      value: '#1A1A1A'
+      usage: Interactive elements and hover states
+typography:
+  description: Our typography choices reflect our commitment to clarity and modern design
+  primary: Geist
+  secondary: JetBrains Mono
+  usage:
+    headings: Geist Medium
+    body: Geist Regular
+    code: JetBrains Mono Regular
+  characteristics:
+    - Clean and modern letterforms
+    - Excellent readability at all sizes
+    - Professional yet approachable
+    - Perfect for both UI and documentation
+imagery:
+  description: Visual guidelines for creating and using images in Shelve materials
+  style:
+    - Clean and minimal compositions
+    - Technical yet approachable
+    - High contrast
+    - Consistent with brand colors
+  screenshots:
+    - Use dark mode by default
+    - Maintain consistent padding
+    - Show real use cases
+voice:
+  description: Guidelines for written communication
+  tone:
+    - Professional but approachable
+    - Technical but clear
+    - Confident but humble
+    - Helpful and solution-focused
+  keywords:
+    - Developer experience
+    - Workspace management
+    - Collaboration
+    - Efficiency
+    - Simplicity
+badge:
+  description: Official Markdown badges for promoting Shelve in repositories, documentation, and other technical contexts. These badges are designed for easy integration into README files and technical documentation.
+  badges:
+    - name: Light
+      value: https://shelve.cloud/button-light.svg
+      usage: For dark-themed markdown files and documentation
+      markdown: |
+        <a href="https://shelve.cloud">
+          <img src="https://shelve.cloud/button-light.svg" alt="Shelve" width="200">
+        </a>
+    - name: Dark
+      value: https://shelve.cloud/button-dark.svg
+      usage: For light-themed markdown files and documentation
+      markdown:  |
+        <a href="https://shelve.cloud">
+          <img src="https://shelve.cloud/button-dark.svg" alt="Shelve" width="200">
+        </a>
+  usage:
+    - Primarily designed for GitHub READMEs and technical documentation
+    - Easy to copy-paste implementation
+    - Maintains consistent branding across open-source projects
+    - Can also be used in other technical contexts where markdown is supported
+  placement:
+    - Center align when possible
+    - Maintain minimum spacing
+    - Use appropriate version for background
+social:
+  description: Guidelines for social media presence
+  platforms:
+    - name: X
+      handle: '@ShelveCloud'
+      link: https://x.com/ShelveCloud
+      usage: Primary platform for updates and engagement
+    - name: GitHub
+      handle: shelve-cloud
+      link: https://github.com/shelve-cloud
+      usage: Technical documentation and community
+  assets:
+    - Profile pictures
+    - Banner images
+    - Social cards
