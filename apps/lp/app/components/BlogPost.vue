@@ -25,7 +25,7 @@ const formatDate = (dateString: string) => {
           v-slot="{ src, isLoaded, imgAttrs }"
           :src="post.image"
           :alt="post.title"
-          class="sm:max-w-1/2 aspect-video rounded-lg object-cover group-hover:scale-105 transition-all duration-200"
+          class="md:max-w-1/2 aspect-video rounded-lg object-cover group-hover:scale-105 transition-all duration-200"
         >
           <img
             v-if="isLoaded"
