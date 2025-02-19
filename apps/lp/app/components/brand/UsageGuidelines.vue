@@ -6,7 +6,7 @@ const { do: doGuidelines, dont: dontGuidelines } = defineProps<{
 </script>
 
 <template>
-  <UPageCard variant="outline" class="bg-transparent" :ui="{ container: 'grid lg:grid-cols-2 gap-6' }">
+  <div class="space-y-4 p-6 rounded-md border border-(--ui-border)/50 grid lg:grid-cols-2 gap-6">
     <div class="space-y-4 text-sm">
       <h4 class="font-medium text-(--ui-success)">
         Do's
@@ -37,5 +37,5 @@ const { do: doGuidelines, dont: dontGuidelines } = defineProps<{
         </li>
       </ul>
     </div>
-  </UPageCard>
+  </div>
 </template>

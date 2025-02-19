@@ -56,15 +56,6 @@ typography:
   description: Our typography choices reflect our commitment to clarity and modern design
   primary: Geist
   secondary: JetBrains Mono
-  usage:
-    headings: Geist Medium
-    body: Geist Regular
-    code: JetBrains Mono Regular
-  characteristics:
-    - Clean and modern letterforms
-    - Excellent readability at all sizes
-    - Professional yet approachable
-    - Perfect for both UI and documentation
 imagery:
   description: Visual guidelines for creating and using images in Shelve materials
   style:
@@ -97,14 +88,14 @@ badge:
       usage: For dark-themed markdown files and documentation
       markdown: |
         <a href="https://shelve.cloud">
-          <img src="https://shelve.cloud/button-light.svg" alt="Shelve" width="200">
+          <img src="https://shelve.cloud/button-light.svg" alt="Shelve" width="150">
         </a>
     - name: Dark
       value: https://shelve.cloud/button-dark.svg
       usage: For light-themed markdown files and documentation
       markdown:  |
         <a href="https://shelve.cloud">
-          <img src="https://shelve.cloud/button-dark.svg" alt="Shelve" width="200">
+          <img src="https://shelve.cloud/button-dark.svg" alt="Shelve" width="150">
         </a>
   usage:
     - Primarily designed for GitHub READMEs and technical documentation
@@ -118,22 +109,19 @@ badge:
 social:
   description: Guidelines for social media presence
   platforms:
-    - name: X / Twitter
+    - handle: '@HugoRCD'
       logo: x
-      handle: '@ShelveCloud'
+      link: https://x.com/HugoRCD__
+      usage: Creator of Shelve, follow to stay up to date
+    - handle: '@ShelveCloud'
+      logo: x
       link: https://x.com/ShelveCloud
-      usage: Primary platform for updates and engagement
-    - name: HugoRCD
+      usage: Official X / Twitter account, for updates and engagement
+    - handle: Shelve
       logo: github
-      handle: Shelve
       link: https://github.com/hugorcd/shelve
       usage: Official repository
-    - name: GitHub
+    - handle: Shelve-Cloud Organization
       logo: github
-      handle: Shelve-Cloud Organization
       link: https://github.com/shelve-cloud
       usage: Technical documentation and community
-  assets:
-    - Profile pictures
-    - Banner images
-    - Social cards

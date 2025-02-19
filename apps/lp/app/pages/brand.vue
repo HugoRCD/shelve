@@ -40,11 +40,19 @@ const { data: page } = await useAsyncData('brand', () => {
         </UPageGrid>
       </UPageSection>
 
-      <!-- Brand Assets Section -->
+      <!-- Logo Section -->
       <UPageSection :ui="{ container: 'sm:gap-6' }">
         <BrandHeader
-          title="Brand Assets"
+          title="Shelve Logo"
           :description="page.logo.descriptions.main"
+        />
+        <BrandHeader
+          title="Icon"
+          :description="page.logo.descriptions.icon"
+        />
+        <BrandHeader
+          title="Logo"
+          :description="page.logo.descriptions.logo"
         />
         <UPageGrid class="lg:grid-cols-2">
           <div class="space-y-4">
@@ -52,7 +60,7 @@ const { data: page } = await useAsyncData('brand', () => {
               Icons
             </h3>
             <div class="grid grid-cols-2 gap-4">
-              <BrandAssetCard
+              <BrandLogoCard
                 v-for="icon in page.logo.icons"
                 :key="icon.name"
                 v-bind="icon"
@@ -64,7 +72,7 @@ const { data: page } = await useAsyncData('brand', () => {
               Logos
             </h3>
             <div class="grid gap-4">
-              <BrandAssetCard
+              <BrandLogoCard
                 v-for="logo in page.logo.icons"
                 :key="logo.name"
                 v-bind="logo"
@@ -140,6 +148,14 @@ const { data: page } = await useAsyncData('brand', () => {
             :key="badge.name"
             v-bind="badge"
           />
+        </div>
+        <div class="space-y-4 p-6 text-sm rounded-md border border-(--ui-border)/50">
+          <div class="text-(--ui-text-muted) font-medium">
+            Usage
+          </div>
+          <div v-for="usage in page.badge.usage" :key="usage">
+            {{ usage }}
+          </div>
         </div>
         <BrandUsageGuidelines
           :do="page.badge.placement"

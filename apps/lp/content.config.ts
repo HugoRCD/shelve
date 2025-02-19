@@ -128,7 +128,9 @@ export default defineContentConfig({
             name: z.string(),
             color: z.string(),
             icon: z.string(),
-            usage: z.string()
+            usage: z.string(),
+            svg: z.string(),
+            png: z.string()
           }))
         }),
         colorPalette: z.object({
@@ -147,13 +149,7 @@ export default defineContentConfig({
         typography: z.object({
           description: z.string(),
           primary: z.string(),
-          secondary: z.string(),
-          usage: z.object({
-            headings: z.string(),
-            body: z.string(),
-            code: z.string()
-          }),
-          characteristics: z.array(z.string())
+          secondary: z.string()
         }),
         imagery: z.object({
           description: z.string(),
@@ -179,13 +175,11 @@ export default defineContentConfig({
         social: z.object({
           description: z.string(),
           platforms: z.array(z.object({
-            name: z.string(),
             logo: z.string(),
             handle: z.string(),
             link: z.string(),
             usage: z.string()
-          })),
-          assets: z.array(z.string())
+          }))
         })
       })
     })

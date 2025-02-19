@@ -5,9 +5,9 @@ defineProps<{
 </script>
 
 <template>
-  <div class="p-6 rounded-md border border-solid border-(--ui-border)/50 bg-(--ui-gray-100) dark:bg-(--ui-gray-900)">
+  <div class="p-6 rounded-md border border-solid border-(--ui-border)/50 bg-neutral-950 hover:bg-neutral-900/50 transition-colors">
     <template v-if="font === 'geist'">
-      <div class="space-y-6">
+      <NuxtLink class="space-y-6 cursor-pointer" to="https://vercel.com/font">
         <div>
           <span class="text-sm text-(--ui-text-muted)">Display</span>
           <h1 class="font-geist text-4xl font-medium">
@@ -26,10 +26,10 @@ defineProps<{
             The quick brown fox jumps over the lazy dog. This pangram contains every letter of the English alphabet at least once.
           </p>
         </div>
-      </div>
+      </NuxtLink>
     </template>
     <template v-else>
-      <div class="space-y-6">
+      <NuxtLink class="space-y-6 cursor-pointer" to="https://fonts.google.com/specimen/JetBrains+Mono">
         <div>
           <span class="text-sm text-(--ui-text-muted)">Code</span>
           <div class="font-jetbrains bg-(--ui-gray-900) p-4 rounded-md">
@@ -45,7 +45,7 @@ defineProps<{
             <pre class="text-white">$ npx create-nuxt-app my-project</pre>
           </div>
         </div>
-      </div>
+      </NuxtLink>
     </template>
   </div>
 </template>

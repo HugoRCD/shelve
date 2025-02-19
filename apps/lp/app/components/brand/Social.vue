@@ -14,8 +14,9 @@ defineProps<{
     <UPageCard
       v-for="platform in platforms"
       :key="platform.name"
-      class="flex items-center justify-between"
+      class="flex items-center justify-between overflow-hidden"
       :to="platform.link"
+      :ui="{ container: 'noise' }"
     >
       <div class="space-y-1">
         <div class="flex items-center gap-2">
