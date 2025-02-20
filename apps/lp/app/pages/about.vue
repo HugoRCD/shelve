@@ -1,5 +1,7 @@
 <script setup lang="ts">
 definePageMeta({
+  title: 'About',
+  description: 'Discover the story behind the project, its origins, and the journey to where we are today.',
   colorMode: 'dark',
 })
 

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 defineProps<{
   platforms: Array<{
-    name: string
+    logo: string
     handle: string
     link: string
     usage: string

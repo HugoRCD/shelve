@@ -1,4 +1,10 @@
 <script setup lang="ts">
+definePageMeta({
+  title: 'Blog',
+  description: 'Explore our blog to learn more about our latest features, updates, and insights.',
+  colorMode: 'dark',
+})
+
 const route = useRoute()
 
 const { data: page } = await useAsyncData('blogPage', () => queryCollection('blogPage').first())

@@ -1,4 +1,10 @@
 <script setup lang="ts">
+definePageMeta({
+  title: 'Brand Guidelines',
+  description: 'Welcome to Shelve\'s brand guidelines. These guidelines ensure a consistent and professional representation of Shelve across all platforms, emphasizing our commitment to simplicity, elegance, and developer experience.',
+  colorMode: 'dark',
+})
+
 const { data: page } = await useAsyncData('brand', () => {
   return queryCollection('brand').first()
 })
