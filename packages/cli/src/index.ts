@@ -1,14 +1,30 @@
 #!/usr/bin/env node
 
-import { program } from 'commander'
-import { version, description } from '../package.json'
-import { registerCommands } from './commands'
+import { defineCommand, runMain } from 'citty'
+import consola from 'consola'
+import { colors } from 'consola/utils'
+import { readPackageJSON } from 'pkg-types'
 
-program
-  .name('shelve')
-  .version(version)
-  .description(description)
+const pkg = await readPackageJSON()
 
-registerCommands(program)
+const main = defineCommand({
+  meta: {
+    name: 'nuxthub',
+    description: 'NuxtHub CLI',
+    version: pkg.version,
+  },
+  setup({ args, cmd }) {
+    if (args._.length) {
+      consola.log(colors.gray(`${cmd.meta.description}`))
+    }
+  },
+  subCommands: {
+  },
+})
 
-program.parse(process.argv)
+runMain(main).then((_) => {
+  process.exit(0)
+}).catch((err) => {
+  consola.error(err)
+  process.exit(1)
+})
