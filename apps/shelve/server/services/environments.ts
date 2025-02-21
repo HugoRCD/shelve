@@ -20,6 +20,16 @@ export class EnvironmentsService {
     })
   })
 
+  async getEnvironment(name: string, teamId: number): Promise<Environment> {
+    const environment = await useDrizzle().query.environments.findFirst({
+      where: and(eq(tables.environments.teamId, teamId), eq(tables.environments.name, name))
+    })
+
+    if (!environment) throw createError({ statusCode: 404, statusMessage: 'Environment not found' })
+
+    return environment
+  }
+
   async updateEnvironment(input: UpdateEnvironmentInput): Promise<Environment> {
     const [environment] = await useDrizzle().update(tables.environments)
       .set({

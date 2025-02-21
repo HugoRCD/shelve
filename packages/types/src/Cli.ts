@@ -32,6 +32,10 @@ export type ShelveConfig = {
    * */
   url: string
   /**
+   * The default env use by the command like `run`, `push` or `pull`
+   */
+  defaultEnv?: string
+  /**
    * Whether to confirm changes before pushing them to Shelve or updating the .env file (locally)
    *
    * @default false

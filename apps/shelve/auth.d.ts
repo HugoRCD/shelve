@@ -23,7 +23,7 @@ declare module '#auth-utils' {
       googleToken?: string
     }
     defaultTeamSlug?: string
-    loggedInAt: string
+    loggedInAt: Date
   }
 
   interface SecureSessionData {

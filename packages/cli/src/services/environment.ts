@@ -23,5 +23,11 @@ export class EnvironmentService extends BaseService {
     return environment
   }
 
+  static async getEnvironment(name: string, slug: string): Promise<Environment> {
+    return await this.withLoading('Fetching environment', async () => {
+      return await this.request<Environment>(`/teams/${ slug }/environments/${ name }`)
+    })
+  }
+
 }
 
