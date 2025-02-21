@@ -24,7 +24,8 @@
     "shelve-cli": "dist/index.mjs"
   },
   "files": [
-    "dist"
+    "dist",
+    "schema.json"
   ],
   "scripts": {
     "build": "unbuild",
