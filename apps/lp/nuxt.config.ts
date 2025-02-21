@@ -25,7 +25,7 @@ export default defineNuxtConfig({
   },
 
   llms: {
-    domain: 'http://localhost:3000',
+    domain: 'https://shelve.cloud',
     title: 'Shelve',
     description: 'The all-in-one development workspace',
     sections: [
