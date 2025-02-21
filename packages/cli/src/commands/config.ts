@@ -1,12 +1,12 @@
-import { Command } from 'commander'
+import { defineCommand } from 'citty'
 import { loadShelveConfig } from '../utils'
 
-export function configCommand(program: Command): void {
-  program
-    .command('config')
-    .alias('cf')
-    .description('Show the current configuration')
-    .action(async () => {
-      console.log(await loadShelveConfig(true))
-    })
-}
+export default defineCommand({
+  meta: {
+    name: 'config',
+    description: 'Show the current configuration',
+  },
+  async run() {
+    console.log(await loadShelveConfig(true))
+  }
+})

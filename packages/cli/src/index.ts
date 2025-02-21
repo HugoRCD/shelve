@@ -1,14 +1,42 @@
 #!/usr/bin/env node
 
-import { program } from 'commander'
-import { version, description } from '../package.json'
-import { registerCommands } from './commands'
+import { defineCommand, runMain } from 'citty'
+import { readPackageJSON } from 'pkg-types'
+import consola from 'consola'
+import push from './commands/push'
+import pull from './commands/pull'
+import config from './commands/config'
+import generate from './commands/generate'
+import create from './commands/create'
+import login from './commands/login'
+import me from './commands/me'
+import logout from './commands/logout'
+import upgrade from './commands/upgrade'
 
-program
-  .name('shelve')
-  .version(version)
-  .description(description)
+const pkg = await readPackageJSON()
 
-registerCommands(program)
+const main = defineCommand({
+  meta: {
+    name: 'shelve',
+    description: 'Shelve CLI',
+    version: pkg.version,
+  },
+  subCommands: {
+    push,
+    pull,
+    login,
+    logout,
+    me,
+    create,
+    config,
+    generate,
+    upgrade
+  },
+})
 
-program.parse(process.argv)
+runMain(main).then((_) => {
+  process.exit(0)
+}).catch((err) => {
+  consola.error(err)
+  process.exit(1)
+})

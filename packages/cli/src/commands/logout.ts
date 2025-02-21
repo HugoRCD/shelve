@@ -1,17 +1,17 @@
-import { Command } from 'commander'
 import { writeUser } from 'rc9'
 import { intro, outro } from '@clack/prompts'
+import { defineCommand } from 'citty'
 
-export function logoutCommand(program: Command): void {
-  program
-    .command('logout')
-    .alias('lo')
-    .description('Logout from Shelve locally')
-    .action(() => {
-      intro('Logging out')
+export default defineCommand({
+  meta: {
+    name: 'logout',
+    description: 'Logout from Shelve locally'
+  },
+  run() {
+    intro('Logging out')
 
-      writeUser({ }, '.shelve')
+    writeUser({ }, '.shelve')
 
-      outro('Successfully logged out')
-    })
-}
+    outro('Successfully logged out')
+  }
+})
