@@ -2,23 +2,35 @@
 
 import { defineCommand, runMain } from 'citty'
 import consola from 'consola'
-import { colors } from 'consola/utils'
 import { readPackageJSON } from 'pkg-types'
+import push from './commands/push'
+import pull from './commands/pull'
+import config from './commands/config'
+import generate from './commands/generate'
+import create from './commands/create'
+import login from './commands/login'
+import me from './commands/me'
+import logout from './commands/logout'
+import upgrade from './commands/upgrade'
 
 const pkg = await readPackageJSON()
 
 const main = defineCommand({
   meta: {
-    name: 'nuxthub',
-    description: 'NuxtHub CLI',
+    name: 'shelve',
+    description: 'Shelve CLI',
     version: pkg.version,
   },
-  setup({ args, cmd }) {
-    if (args._.length) {
-      consola.log(colors.gray(`${cmd.meta.description}`))
-    }
-  },
   subCommands: {
+    push,
+    pull,
+    login,
+    logout,
+    me,
+    create,
+    config,
+    generate,
+    upgrade
   },
 })
 
