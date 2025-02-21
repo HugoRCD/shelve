@@ -31,9 +31,7 @@ export default defineCommand({
 
     const env = args.env || defaultEnv
 
-    const environment: Environment = env
-      ? await EnvironmentService.getEnvironment(env, slug)
-      : await EnvironmentService.promptEnvironment(slug)
+    const environment = await EnvironmentService.getEnvironment(slug, env)
 
     const variables: EnvVar[] = await EnvService.getEnvVariables({
       project: projectData,
