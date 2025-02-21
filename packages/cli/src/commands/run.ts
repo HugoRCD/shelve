@@ -20,6 +20,7 @@ export default defineCommand({
     env: {
       type: 'string',
       description: 'environment to use',
+      default: 'development',
       required: false
     }
   },
@@ -54,7 +55,7 @@ export default defineCommand({
 
       const abortController = new AbortController()
       process.on('SIGINT', () => {
-        consola.info('SIGINT received, aborting process')
+        consola.info('Exiting...')
         abortController.abort()
         proc.kill()
         process.exit(0)
