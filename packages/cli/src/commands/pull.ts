@@ -9,7 +9,7 @@ export default defineCommand({
     description: 'Pull variables for specified environment to Shelve'
   },
   args: {
-    environment: {
+    env: {
       type: 'string',
       description: 'Specify the environment to which you want to pull the variables',
       required: false,
@@ -21,14 +21,17 @@ export default defineCommand({
       slug,
       envFileName,
       confirmChanges,
-      autoCreateProject
+      autoCreateProject,
+      defaultEnv
     } = await loadShelveConfig(true)
 
     intro(`Pulling variable from ${project} project`)
 
     const projectData = await ProjectService.getProjectByName(project, slug, autoCreateProject)
 
-    const environment = await EnvironmentService.promptEnvironment(slug)
+    const env = args.env || defaultEnv
+
+    const environment = await EnvironmentService.getEnvironment(slug, env)
 
     const variables = await EnvService.getEnvVariables({ project: projectData, environmentId: environment.id, slug })
 
