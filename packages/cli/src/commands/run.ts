@@ -3,7 +3,7 @@ import { defineCommand } from 'citty'
 import { intro } from '@clack/prompts'
 import type { Environment, EnvVar } from '@types'
 import consola from 'consola'
-import { loadShelveConfig } from '../utils'
+import { handleCancel, loadShelveConfig } from '../utils'
 import { EnvironmentService, EnvService, ProjectService } from '../services'
 
 export default defineCommand({
@@ -15,7 +15,7 @@ export default defineCommand({
     command: {
       type: 'string',
       description: 'your application start command',
-      required: true
+      required: false
     },
     env: {
       type: 'string',
@@ -23,7 +23,7 @@ export default defineCommand({
       required: false
     }
   },
-  async run({ args }) {
+  async run({ args, rawArgs }) {
     const { project, slug, autoCreateProject, defaultEnv } = await loadShelveConfig(true)
     intro(`Pulling variables from ${project} project`)
 
@@ -46,8 +46,11 @@ export default defineCommand({
       ...formatEnvVars(variables)
     }
 
+    const command = args.command || rawArgs[0]
+    if (!command) handleCancel('You must provide a command to run')
+
     try {
-      const proc = x('nr', [args.command], {
+      const proc = x('nr', [command], {
         nodeOptions: {
           env: processEnv,
           stdio: 'inherit'
