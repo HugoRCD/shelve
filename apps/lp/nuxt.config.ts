@@ -27,10 +27,10 @@ export default defineNuxtConfig({
   llms: {
     domain: 'https://shelve.cloud',
     title: 'Shelve',
-    description: 'The all-in-one development workspace',
+    description: 'Shelve is an all-in-one development workspace that revolutionizes how developers manage environments and collaborate on projects',
     full: {
-      title: 'Shelve Landing-Page and documentation',
-      description: 'This is the full documentation for Shelve. It includes all the Markdown files written with the MDC syntax.'
+      title: 'The full Shelve Landing-Page documentation, blog content for llms',
+      description: 'The complete Shelve documentation and blog posts written in Markdown (MDC syntax).'
     },
     sections: [
       {
@@ -44,7 +44,7 @@ export default defineNuxtConfig({
         description: 'Latest posts and insights',
         contentCollection: 'blog',
         contentFilters: [{ field: 'extension', operator: '=', value: 'md' }]
-      },
+      }
     ],
   },
 
