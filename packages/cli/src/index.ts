@@ -12,6 +12,7 @@ import login from './commands/login'
 import me from './commands/me'
 import logout from './commands/logout'
 import upgrade from './commands/upgrade'
+import run from './commands/run'
 
 const pkg = await readPackageJSON()
 
@@ -22,6 +23,7 @@ const main = defineCommand({
     version: pkg.version,
   },
   subCommands: {
+    run,
     push,
     pull,
     login,
