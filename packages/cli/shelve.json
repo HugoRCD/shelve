@@ -1,5 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/HugoRCD/shelve/main/packages/types/schema.json",
+  "url": "http://localhost:3000",
   "project": "@shelve/cli",
   "slug": "shelve"
 }

@@ -161,7 +161,7 @@ async function getDefaultConfig(): Promise<ShelveConfig> {
     project: process.env.SHELVE_PROJECT || name,
     // @ts-expect-error to provide error message we let slug be undefined
     slug: process.env.SHELVE_TEAM_SLUG,
-    token: conf.token,
+    token: process.env.SHELVE_TOKEN || conf.token,
     url: process.env.SHELVE_URL || 'https://app.shelve.cloud',
     username: conf.username,
     email: conf.email,
