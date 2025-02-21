@@ -44,25 +44,23 @@ If you are using a monorepo, Shelve will automatically detect the root of the mo
 ## Usage
 
 ```bash
-Usage: shelve [options] [command]
+Shelve CLI (shelve v4.0.0)
 
-The command-line interface for Shelve
+USAGE shelve push|pull|login|logout|me|create|config|generate|upgrade
 
-Options:
-  -V, --version       output the version number
-  -h, --help          display help for command
+COMMANDS
 
-Commands:
-  create|c [options]  Create a new project
-  pull|pl [options]   Pull variables for specified environment to .env file
-  push|ps [options]   Push variables for specified environment to Shelve
-  generate|g          Generate resources for a project
-  upgrade|u           Upgrade the Shelve CLI to the latest version
-  config|cf           Show the current configuration
-  login|l             Login to Shelve
-  logout|lo           Logout from Shelve locally
-  me|m                Show current user information
-  help [command]      display help for command
+      push    Push variables for specified environment to Shelve
+      pull    Pull variables for specified environment to Shelve
+     login    Login to Shelve                                   
+    logout    Logout from Shelve locally                        
+        me    Show the currently logged-in user                 
+    create    Create a new project and its config               
+    config    Show the current configuration                    
+  generate    Generate resources for a project                  
+   upgrade    Upgrade the Shelve CLI to the latest version      
+
+Use shelve <command> --help for more information about a command.
 ```
 
 ### Monorepo usage
