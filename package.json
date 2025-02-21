@@ -21,7 +21,7 @@
     "dev:cli": "turbo dev --filter=@shelve/cli"
   },
   "devDependencies": {
-    "@changesets/cli": "^2.28.0",
+    "@changesets/cli": "^2.28.1",
     "@hrcd/eslint-config": "^2.2.1",
     "@shelve/cli": "*",
     "automd": "0.3.12",
