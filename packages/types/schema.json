@@ -11,10 +11,6 @@
       "type": "string",
       "description": "The team slug"
     },
-    "token": {
-      "type": "string",
-      "description": "The token to authenticate with Shelve created using the app (https://shelve.cloud/app/tokens) or your own Shelve instance"
-    },
     "url": {
       "type": "string",
       "description": "The URL of the Shelve instance can be overridden with the `SHELVE_URL` environment variable",
