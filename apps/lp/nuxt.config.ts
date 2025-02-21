@@ -14,6 +14,7 @@ export default defineNuxtConfig({
     'nuxt-og-image',
     '@nuxt/scripts',
     '@nuxthub/core',
+    'nuxt-llms',
   ],
 
   content: {
@@ -21,6 +22,30 @@ export default defineNuxtConfig({
       api: 'https://api.nuxt.studio',
       dev: true,
     }
+  },
+
+  llms: {
+    domain: 'https://shelve.cloud',
+    title: 'Shelve',
+    description: 'The all-in-one development workspace',
+    full: {
+      title: 'Shelve Landing-Page and documentation',
+      description: 'This is the full documentation for Shelve. It includes all the Markdown files written with the MDC syntax.'
+    },
+    sections: [
+      {
+        title: 'Documentation',
+        description: 'Technical documentation and guides',
+        contentCollection: 'docs',
+        contentFilters: [{ field: 'extension', operator: '=', value: 'md' }]
+      },
+      {
+        title: 'Blog',
+        description: 'Latest posts and insights',
+        contentCollection: 'blog',
+        contentFilters: [{ field: 'extension', operator: '=', value: 'md' }]
+      },
+    ],
   },
 
   mdc: {
