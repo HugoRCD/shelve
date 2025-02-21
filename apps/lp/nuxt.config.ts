@@ -14,6 +14,7 @@ export default defineNuxtConfig({
     'nuxt-og-image',
     '@nuxt/scripts',
     '@nuxthub/core',
+    'nuxt-llms',
   ],
 
   content: {
@@ -21,6 +22,26 @@ export default defineNuxtConfig({
       api: 'https://api.nuxt.studio',
       dev: true,
     }
+  },
+
+  llms: {
+    domain: 'http://localhost:3000',
+    title: 'Shelve',
+    description: 'The all-in-one development workspace',
+    sections: [
+      {
+        title: 'Documentation',
+        description: 'Technical documentation and guides',
+        contentCollection: 'docs',
+        contentFilters: [{ field: 'extension', operator: '=', value: 'md' }]
+      },
+      {
+        title: 'Blog',
+        description: 'Latest posts and insights',
+        contentCollection: 'blog',
+        contentFilters: [{ field: 'extension', operator: '=', value: 'md' }]
+      },
+    ],
   },
 
   mdc: {
