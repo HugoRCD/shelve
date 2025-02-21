@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
 import { defineCommand, runMain } from 'citty'
-import consola from 'consola'
 import { readPackageJSON } from 'pkg-types'
+import consola from 'consola'
 import push from './commands/push'
 import pull from './commands/pull'
 import config from './commands/config'

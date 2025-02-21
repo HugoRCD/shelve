@@ -16,7 +16,13 @@ export default defineCommand({
     },
   },
   async run({ args }) {
-    const { project, slug, confirmChanges, autoUppercase, autoCreateProject } = await loadShelveConfig(true)
+    const {
+      project,
+      slug,
+      confirmChanges,
+      autoUppercase,
+      autoCreateProject
+    } = await loadShelveConfig(true)
 
     intro(`Pushing variable to ${project} project`)
 
