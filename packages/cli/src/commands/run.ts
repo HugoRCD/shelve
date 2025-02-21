@@ -20,18 +20,19 @@ export default defineCommand({
     env: {
       type: 'string',
       description: 'environment to use',
-      default: 'development',
       required: false
     }
   },
   async run({ args }) {
-    const { project, slug, autoCreateProject } = await loadShelveConfig(true)
+    const { project, slug, autoCreateProject, defaultEnv } = await loadShelveConfig(true)
     intro(`Pulling variables from ${project} project`)
 
     const projectData = await ProjectService.getProjectByName(project, slug, autoCreateProject)
 
-    const environment: Environment = args.env
-      ? await EnvironmentService.getEnvironment(args.env, slug)
+    const env = args.env || defaultEnv
+
+    const environment: Environment = env
+      ? await EnvironmentService.getEnvironment(env, slug)
       : await EnvironmentService.promptEnvironment(slug)
 
     const variables: EnvVar[] = await EnvService.getEnvVariables({

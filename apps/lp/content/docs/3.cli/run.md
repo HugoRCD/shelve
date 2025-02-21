@@ -24,6 +24,15 @@ shelve run <command> [options]
   ::
 
   ::field{name="env" type="string"}
-  The environment to use (e.g. `development`, `staging`, `production`). Defaults to `development`.
+  The environment to use (e.g. `development`, `staging`, `production`).
   ::
 ::
+
+You can configure a default environment in your `shelve.json` file to bypass the env prompt:
+
+```json [shelve.json]
+{
+  "defaultEnv": "development",
+  "slug": "shelve"
+}
+```

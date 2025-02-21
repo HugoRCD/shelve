@@ -163,6 +163,7 @@ async function getDefaultConfig(): Promise<ShelveConfig> {
     slug: process.env.SHELVE_TEAM_SLUG,
     token: process.env.SHELVE_TOKEN || conf.token,
     url: process.env.SHELVE_URL || 'https://app.shelve.cloud',
+    defaultEnv: process.env.SHELVE_DEFAULT_ENV,
     username: conf.username,
     email: conf.email,
     confirmChanges: false,
