@@ -13,11 +13,10 @@ COPY pnpm-lock.yaml package.json ./
 COPY apps/shelve/package.json ./apps/shelve/package.json
 COPY apps/shelve/entrypoint.sh ./entrypoint.sh
 
-COPY . .
-
 RUN corepack enable
-
 RUN pnpm install --frozen-lockfile
+
+COPY . .
 
 RUN pnpm run build:app
 
