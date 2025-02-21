@@ -24,6 +24,17 @@ provide('blog-navigation', blogNavigation)
 const defaultOgImage = computed(() => {
   return route.path === '/' || route.path === '/roadmap' || route.path === '/brand' || route.path === '/about' || route.path === '/blog'
 })
+
+const { data, refresh } = useFetch('/llms.txt', {
+  immediate: false
+})
+
+defineShortcuts({
+  meta_shift_m: async () => {
+    await refresh()
+    copyToClipboard(data.value!, 'llms.txt copied!')
+  }
+})
 </script>
 
 <template>

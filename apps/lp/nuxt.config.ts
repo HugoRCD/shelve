@@ -28,6 +28,10 @@ export default defineNuxtConfig({
     domain: 'https://shelve.cloud',
     title: 'Shelve',
     description: 'The all-in-one development workspace',
+    full: {
+      title: 'Shelve Landing-Page and documentation',
+      description: 'This is the full documentation for Shelve. It includes all the Markdown files written with the MDC syntax.'
+    },
     sections: [
       {
         title: 'Documentation',

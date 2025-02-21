@@ -19,7 +19,7 @@
     "@iconify-json/lucide": "1.2.26",
     "@iconify-json/simple-icons": "1.2.25",
     "@number-flow/vue": "^0.4.3",
-    "@nuxt/content": "3.2.0",
+    "@nuxt/content": "https://pkg.pr.new/@nuxt/content@f1a9b8e",
     "@nuxt/image": "1.9.0",
     "@nuxt/scripts": "0.10.4",
     "@nuxt/ui-pro": "https://pkg.pr.new/@nuxt/ui-pro@65b35c5",
