@@ -1,6 +1,5 @@
 {
   "$schema": "https://raw.githubusercontent.com/HugoRCD/shelve/main/packages/types/schema.json",
-  "slug": "hrcd",
   "project": "shelve",
   "defaultEnv": "development"
 }

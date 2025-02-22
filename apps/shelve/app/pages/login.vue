@@ -25,7 +25,7 @@ if (route.query.error === 'github' || route.query.error === 'google') {
 
 <template>
   <div class="flex overflow-hidden size-full flex-col items-center justify-center">
-    <div class="bg-white rounded-full w-50 h-96 blur-[250px] absolute -top-40 select-none" />
+    <div class="dark:bg-(--ui-bg-inverted) rounded-full w-50 h-96 blur-[250px] absolute -top-40 select-none" />
     <div class="mx-auto w-full flex flex-col items-center justify-center gap-2 text-center">
       <UIcon name="custom:shelve" class="size-10" />
       <div class="flex flex-col items-center gap-1">
@@ -48,13 +48,6 @@ if (route.query.error === 'github' || route.query.error === 'google') {
         >
           <AuthButton icon="simple-icons:github" label="Sign in with GitHub" provider="github" />
           <AuthButton icon="simple-icons:google" label="Sign in with Google" provider="google" />
-          <!--          <UButton icon="lucide:mail" label="Sign in with Email" variant="soft"  @click="otp = !otp" />
-          <Transition name="blur" mode="out-in">
-            <div v-show="otp" class="flex items-center gap-2">
-              <UInput v-model="email" label="Email" placeholder="Email" type="email" />
-              <UButton icon="lucide:mail" label="Send OTP"  />
-            </div>
-          </Transition>-->
         </div>
       </CrossedDiv>
     </div>

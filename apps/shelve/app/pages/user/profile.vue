@@ -53,23 +53,29 @@ function deleteAccount() {
       <div style="--stagger: 1" data-animate class="flex items-center gap-4">
         <NuxtImg :src="user.avatar" class="size-10 rounded-full" />
         <div>
-          <h2 class="text-base font-semibold leading-7">
+          <h2 class="font-semibold">
             Personal Information
           </h2>
-          <p class="text-sm leading-6 text-(--ui-text-muted)">
+          <p class="text-sm text-(--ui-text-muted)">
             Update your personal information
           </p>
         </div>
       </div>
       <div style="--stagger: 2" data-animate class="mt-6 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-6">
         <div class="sm:col-span-3">
-          <FormGroup v-model="user.username" label="Username" />
+          <UFormField label="Username">
+            <UInput v-model="user.username" class="w-full" />
+          </UFormField>
         </div>
         <div class="sm:col-span-3">
-          <FormGroup v-model="user.email" label="Email" disabled />
+          <UFormField label="Email">
+            <UInput v-model="user.email" disabled class="w-full" />
+          </UFormField>
         </div>
         <div class="sm:col-span-4">
-          <FormGroup v-model="user.avatar" label="Avatar" />
+          <UFormField label="Avatar">
+            <UInput v-model="user.avatar" class="w-full" />
+          </UFormField>
         </div>
       </div>
       <div style="--stagger: 4" data-animate class="mt-6 flex items-center justify-between gap-2">
