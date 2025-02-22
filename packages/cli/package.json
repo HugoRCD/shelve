@@ -42,7 +42,7 @@
   },
   "dependencies": {
     "@clack/prompts": "0.10.0",
-    "c12": "2.0.2",
+    "c12": "2.0.4",
     "citty": "^0.1.6",
     "defu": "^6.1.4",
     "ni": "^0.0.2",
@@ -58,7 +58,7 @@
     "@types/bun": "1.2.2",
     "@types/npm-registry-fetch": "8.0.7",
     "@types/semver": "7.5.8",
-    "eslint": "9.20.1",
+    "eslint": "9.21.0",
     "typescript": "5.7.3",
     "unbuild": "3.3.1",
     "vitest": "3.0.6"

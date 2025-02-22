@@ -21,7 +21,7 @@
     "@number-flow/vue": "^0.4.3",
     "@nuxt/content": "https://pkg.pr.new/@nuxt/content@f1a9b8e",
     "@nuxt/image": "1.9.0",
-    "@nuxt/scripts": "0.10.4",
+    "@nuxt/scripts": "0.10.5",
     "@nuxt/ui-pro": "https://pkg.pr.new/@nuxt/ui-pro@3cd9645",
     "@nuxthub/core": "0.8.17",
     "@nuxtjs/seo": "2.2.0",
