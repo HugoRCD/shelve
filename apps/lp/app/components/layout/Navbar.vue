@@ -97,13 +97,13 @@ const items = [
 
 const headerUi = computed(() => ({
   root: [
-    '@container fixed mt-2 px-0 rounded-xl py-2 transition-all duration-500 left-1/2 -translate-x-1/2',
+    '@container h-fit fixed mt-2 px-0 rounded-xl py-2 transition-all duration-500 left-1/2 -translate-x-1/2',
     props.scroll > 0.02 ? 'bg-neutral-950/50 backdrop-blur-lg' : 'bg-transparent backdrop-blur-none',
     props.scroll > 0.02 ? 'border' : 'border-transparent',
     props.scroll > 0.005 ? '[--header-width:90%] sm:[--header-width:60%]' : '[--header-width:100%]',
     'w-[var(--header-width)]'
   ] as never as string,
-  container: 'h-fit',
+  container: '',
   center: '@min-[620px]:flex',
   toggle: '@min-[620px]:hidden',
   body: 'py-0'
@@ -166,7 +166,7 @@ const navigationUi = computed(() => ({
         </div>
       </template>
 
-      <template #content>
+      <template #body>
         <UNavigationMenu :items orientation="vertical" class="-mx-2.5" />
       </template>
     </UHeader>

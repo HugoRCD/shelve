@@ -45,7 +45,7 @@ defineShortcuts({
       <UColorModeButton />
     </template>
 
-    <template #content>
+    <template #body>
       <UNavigationMenu orientation="vertical" :items="links" class="-mx-2.5" />
 
       <USeparator type="dashed" class="mt-4 mb-6" />

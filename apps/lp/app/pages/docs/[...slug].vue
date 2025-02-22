@@ -22,7 +22,7 @@ const { data: surround } = await useAsyncData(`${route.path}-surround`, () => {
 })
 
 const navigation = inject<Ref<ContentNavigationItem[]>>('navigation')
-const docsNavigation = computed(() => navigation?.value.find(item => item.path === '/docs')?.children || [])
+const docsNavigation = computed(() => navigation.value.find(item => item.path === '/docs')?.children || [])
 
 const breadcrumb = computed(() => mapContentNavigation(findPageBreadcrumb(docsNavigation?.value, page.value)).map(({ icon, ...link }) => link))
 
