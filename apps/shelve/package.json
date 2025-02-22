@@ -23,7 +23,7 @@
     "@iconify-json/lucide": "1.2.26",
     "@iconify-json/simple-icons": "1.2.25",
     "@nuxt/image": "1.9.0",
-    "@nuxt/scripts": "0.10.4",
+    "@nuxt/scripts": "0.10.5",
     "@nuxt/ui": "3.0.0-alpha.13",
     "@vue-email/components": "0.0.21",
     "@vue-email/render": "0.0.9",
