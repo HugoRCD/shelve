@@ -8,7 +8,7 @@
 [![npm downloads](https://img.shields.io/npm/dm/@shelve/cli?color=black)](https://npm.chart.dev/@shelve/cli)
 [![license](https://img.shields.io/github/license/HugoRCD/shelve?color=black)](https://github.com/HugoRCD/shelve/blob/main/LICENSE)
 
-[Website](https://shelve.cloud) • [Documentation](https://shelve.cloud/getting-started)
+[Website](https://shelve.cloud) • [Documentation](https://shelve.cloud/docs/getting-started)
 </div>
 
 ---
@@ -128,17 +128,17 @@ Shelve aims to become the ultimate development workspace by addressing common pa
 
 ## 🤝 Contributing
 
-For more detailed about contributing, please refer to the [Contributing Guide](CONTRIBUTING.md).
+For more detailed about contributing, please refer to the [Contributing Guide](https://shelve.cloud/docs/contributing).
 
 ## 📚 Documentation
 
 ### Full Documentation
 
-For comprehensive documentation, visit the [Shelve Documentation](https://shelve.cloud/getting-started).
+For comprehensive documentation, visit the [Shelve Documentation](https://shelve.cloud/docs/getting-started).
 
 ### Self-Hosting
 
-To self-host the Shelve application, refer to the [Self-Hosting Section](./docker/README.md).
+To self-host the Shelve application, refer to the [Self-Hosting documentation](https://shelve.cloud/docs/self-hosting/docker).
 
 ## 💬 Community & Support
 
@@ -146,7 +146,7 @@ To self-host the Shelve application, refer to the [Self-Hosting Section](./docke
 - [GitHub Issues](https://github.com/HugoRCD/shelve/issues)
 
 ### Where to Ask Questions
-For questions and support, join our [Discord Community](https://discord.gg/shelve) or open an issue on GitHub.
+For questions and support, open an issue on GitHub.
 
 ### How to Report Bugs
 To report bugs, open an issue on the [GitHub Issues](https://github.com/HugoRCD/shelve/issues) page.
@@ -159,10 +159,10 @@ To suggest new features, open an issue on the [GitHub Issues](https://github.com
 ### Acknowledgements
 We would like to thank all contributors and the open-source community for their support.
 
-<!-- automd:contributors license=Apache author=HugoRCD,CavallucciJohann -->
+<!-- automd:contributors license=Apache author=HugoRCD -->
 
 Published under the [APACHE](https://github.com/HugoRCD/shelve/blob/main/LICENSE) license.
-Made by [@HugoRCD](https://github.com/HugoRCD), [@CavallucciJohann](https://github.com/CavallucciJohann) and [community](https://github.com/HugoRCD/shelve/graphs/contributors) 💛
+Made by [@HugoRCD](https://github.com/HugoRCD) and [community](https://github.com/HugoRCD/shelve/graphs/contributors) 💛
 <br><br>
 <a href="https://github.com/HugoRCD/shelve/graphs/contributors">
 <img src="https://contrib.rocks/image?repo=HugoRCD/shelve" />
@@ -174,6 +174,6 @@ Made by [@HugoRCD](https://github.com/HugoRCD), [@CavallucciJohann](https://gith
 
 ---
 
-_🤖 auto updated with [automd](https://automd.unjs.io) (last updated: Mon Dec 30 2024)_
+_🤖 auto updated with [automd](https://automd.unjs.io) (last updated: Sat Feb 22 2025)_
 
 <!-- /automd -->

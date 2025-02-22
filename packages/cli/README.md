@@ -22,7 +22,7 @@ bun a -d @shelve/cli
 
 ## Configuration
 
-Configuration is loaded from cwd. You can use either `shelve.json`, `shelve.config.json` or `.shelverc.json`, but running the CLI without any configuration will create a `shelve.json` file.
+Configuration is loaded from cwd. You can use either `shelve.json`, `shelve.config.json`, but running the CLI without any configuration will create a `shelve.json` file.
 
 The CLI also has a json schema for the configuration file. that can be used to validate the configuration file. (see it [here](https://raw.githubusercontent.com/HugoRCD/shelve/main/packages/types/schema.json))
 
@@ -116,6 +116,6 @@ Made by [@HugoRCD](https://github.com/HugoRCD) and [community](https://github.co
 
 ---
 
-_🤖 auto updated with [automd](https://automd.unjs.io) (last updated: Mon Dec 30 2024)_
+_🤖 auto updated with [automd](https://automd.unjs.io) (last updated: Sat Feb 22 2025)_
 
 <!-- /automd -->
