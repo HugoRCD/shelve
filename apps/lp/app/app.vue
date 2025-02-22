@@ -9,20 +9,56 @@ useScriptPlausibleAnalytics({
 })
 
 const route = useRoute()
-const searchTerm = ref('')
 
-const { data: docsNavigation } = await useAsyncData('docs-navigation', () => queryCollectionNavigation('docs'))
-const { data: blogNavigation } = await useAsyncData('blog-navigation', () => queryCollectionNavigation('blog'))
-
-const { data: files } = useLazyAsyncData('search', () => queryCollectionSearchSections('docs'), {
-  server: false
+const { data: navigation } = await useAsyncData('navigation', () => {
+  return Promise.all([
+    queryCollectionNavigation('docs'),
+    queryCollectionNavigation('blog')
+  ])
+}, {
+  transform: data => data.flat()
 })
 
-provide('docs-navigation', docsNavigation)
-provide('blog-navigation', blogNavigation)
+const { data: files } = useLazyAsyncData('search', () => {
+  return Promise.all([
+    queryCollectionSearchSections('docs'),
+    queryCollectionSearchSections('blog')
+  ])
+}, {
+  server: false,
+  transform: data => data.flat()
+})
+
+const links = computed(() => [
+  ...navigation.value.map(item => ({
+    label: item.title,
+    icon: item.icon,
+    to: item.path === '/docs' ? '/docs/getting-started' : item.path
+  })),
+  {
+    label: 'Application',
+    to: 'https://app.shelve.cloud',
+    target: '_blank',
+    icon: 'custom:shelve'
+  },
+  {
+    label: '@shelvecloud',
+    to: 'https://x.com/shelvecloud',
+    target: '_blank',
+    icon: 'i-simple-icons-x'
+  },
+  {
+    label: '@hugorcd',
+    to: 'https://x.com/hugorcd',
+    target: '_blank',
+    icon: 'i-simple-icons-x'
+  }
+])
+
+provide('navigation', navigation)
 
 const defaultOgImage = computed(() => {
-  return route.path === '/' || route.path === '/roadmap' || route.path === '/brand' || route.path === '/about' || route.path === '/blog'
+  return !route.path.startsWith('/docs/')
 })
 
 const { data, refresh } = useFetch('/llms.txt', {
@@ -52,10 +88,10 @@ defineShortcuts({
         <Toaster close-button position="top-center" />
         <ClientOnly>
           <LazyUContentSearch
-            v-model:search-term="searchTerm"
             :files
+            :links
+            :navigation
             shortcut="meta_k"
-            :navigation="docsNavigation"
             :fuse="{ resultLimit: 42 }"
           />
         </ClientOnly>

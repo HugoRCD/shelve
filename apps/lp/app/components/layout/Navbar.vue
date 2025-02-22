@@ -24,13 +24,13 @@ const items = [
         label: 'Push / Pull',
         description: 'Sync your secrets with Shelve',
         icon: 'heroicons:arrows-up-down-solid',
-        to: '/cli/push-pull'
+        to: '/docs/cli/push-pull'
       },
       {
         label: 'Github secrets',
         description: 'Send your secrets on Github',
         icon: 'simple-icons:github',
-        to: '/integrations/github'
+        to: '/docs/integrations/github'
       },
       {
         label: 'Roadmap',
@@ -42,31 +42,31 @@ const items = [
   },
   {
     label: 'Docs',
-    to: '/getting-started',
+    to: '/docs/getting-started',
     children: [
       {
-        to: '/getting-started',
         label: 'Getting Started',
         icon: 'heroicons:book-open-solid',
-        description: 'Learn how to use Shelve'
+        description: 'Learn how to use Shelve',
+        to: '/docs/getting-started'
       },
       {
         label: 'Quickstart',
         icon: 'heroicons:inbox-arrow-down-solid',
         description: 'Install Shelve on your machine',
-        to: '/getting-started/quickstart'
+        to: '/docs/getting-started/quickstart'
       },
       {
         label: 'CLI',
         icon: 'heroicons:command-line-solid',
         description: 'Learn how to use the Shelve CLI',
-        to: '/cli'
+        to: '/docs/cli'
       },
       {
         label: 'Self-Hosting',
         icon: 'heroicons:server-stack-solid',
         description: 'Host Shelve on your own infrastructure',
-        to: '/self-hosting/docker'
+        to: '/docs/self-hosting/docker'
       }
     ]
   },
@@ -97,13 +97,13 @@ const items = [
 
 const headerUi = computed(() => ({
   root: [
-    '@container fixed mt-2 px-0 rounded-xl py-2 transition-all duration-500 left-1/2 -translate-x-1/2',
+    '@container h-fit fixed mt-2 px-0 rounded-xl py-2 transition-all duration-500 left-1/2 -translate-x-1/2',
     props.scroll > 0.02 ? 'bg-neutral-950/50 backdrop-blur-lg' : 'bg-transparent backdrop-blur-none',
     props.scroll > 0.02 ? 'border' : 'border-transparent',
     props.scroll > 0.005 ? '[--header-width:90%] sm:[--header-width:60%]' : '[--header-width:100%]',
     'w-[var(--header-width)]'
   ] as never as string,
-  container: 'h-fit',
+  container: '',
   center: '@min-[620px]:flex',
   toggle: '@min-[620px]:hidden',
   body: 'py-0'
@@ -166,7 +166,7 @@ const navigationUi = computed(() => ({
         </div>
       </template>
 
-      <template #content>
+      <template #body>
         <UNavigationMenu :items orientation="vertical" class="-mx-2.5" />
       </template>
     </UHeader>

@@ -34,4 +34,5 @@ A team slug is a unique identifier for a team. It is used in URLs to access the 
 
 Use the team selector and type the team name in the search field to create a new team.
 
-:video{autoPlay="true" loop="true" muted="true" width="100%"}
+<video src="/docs/create-team.mp4" autoplay loop muted></video>
+

@@ -21,9 +21,10 @@ const { data: surround } = await useAsyncData(`${route.path}-surround`, () => {
   })
 })
 
-const navigation = inject<Ref<ContentNavigationItem[]>>('docs-navigation')
+const navigation = inject<Ref<ContentNavigationItem[]>>('navigation')
+const docsNavigation = computed(() => navigation.value.find(item => item.path === '/docs')?.children || [])
 
-const breadcrumb = computed(() => mapContentNavigation(findPageBreadcrumb(navigation?.value, page.value)).map(({ icon, ...link }) => link))
+const breadcrumb = computed(() => mapContentNavigation(findPageBreadcrumb(docsNavigation?.value, page.value)).map(({ icon, ...link }) => link))
 
 defineOgImageComponent('Docs', {
   headline: breadcrumb.value.map(item => item.label).join(' > ')
@@ -47,7 +48,7 @@ const communityLinks = computed(() => [
   }, {
     icon: 'i-heroicons-lifebuoy-solid',
     label: 'Contributing',
-    to: '/contributing'
+    to: '/docs/contributing'
   }
 ])
 </script>

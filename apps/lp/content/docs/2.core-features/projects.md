@@ -9,7 +9,7 @@ Projects are the core of Shelve, a project is a collection of environment variab
 
 ### Variables
 
-Variables are key-value pairs that store environment configurations and secrets. You can create variables for different environments like development, staging, production, or even custom environments. Check the [Variables](/core-features/variables) page for more information.
+Variables are key-value pairs that store environment configurations and secrets. You can create variables for different environments like development, staging, production, or even custom environments. Check the [Variables](/docs/core-features/variables) page for more information.
 
 ### Quick Links
 

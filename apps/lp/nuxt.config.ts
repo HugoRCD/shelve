@@ -1,6 +1,9 @@
 export default defineNuxtConfig({
   routeRules: {
-    '/': { isr: true, prerender: true }
+    '/': { prerender: true },
+    '/docs/core-features': { redirect: { statusCode: 301, to: '/docs/core-features/environments' } },
+    '/docs/integrations': { redirect: { statusCode: 301, to: '/docs/integrations/github' } },
+    '/docs/self-hosting': { redirect: { statusCode: 301, to: '/docs/self-hosting/docker' } },
   },
 
   future: {
@@ -61,9 +64,9 @@ export default defineNuxtConfig({
   nitro: {
     prerender: {
       crawlLinks: true,
-      failOnError: false,
-      routes: ['/sitemap.xml']
-    },
+      routes: ['/', '/sitemap.xml'],
+      autoSubfolderIndex: false
+    }
   },
 
   experimental: {
