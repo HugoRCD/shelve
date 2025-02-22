@@ -2,7 +2,7 @@
 import type { ContentNavigationItem } from '@nuxt/content'
 
 const navigation = inject<Ref<ContentNavigationItem[]>>('navigation')
-const docsNavigation = computed(() => navigation.value.find(item => item.path === '/docs')?.children || [])
+const docsNavigation = computed(() => navigation?.value.find(item => item.path === '/docs')?.children || [])
 
 const links = computed(() => [
   /*{

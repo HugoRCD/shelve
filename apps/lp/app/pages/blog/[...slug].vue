@@ -15,9 +15,10 @@ if (!page.value) {
   throw createError({ statusCode: 404, statusMessage: `Page not found: ${route.path}`, fatal: true })
 }
 
-const navigation = inject<Ref<ContentNavigationItem[]>>('blog-navigation')
+const navigation = inject<Ref<ContentNavigationItem[]>>('navigation')
+const blogNavigation = computed(() => navigation?.value.find(item => item.path === '/blog')?.children || [])
 
-const breadcrumb = computed(() => mapContentNavigation(findPageBreadcrumb(navigation?.value, page.value)).map(({ icon, ...link }) => link))
+const breadcrumb = computed(() => mapContentNavigation(findPageBreadcrumb(blogNavigation?.value, page.value)).map(({ icon, ...link }) => link))
 
 defineOgImageComponent('Docs', {
   headline: breadcrumb.value.map(item => item.label).join(' > ')
