@@ -95,12 +95,12 @@ const items = [
               <USeparator />
               <div class="flex items-center justify-between">
                 <span class="text-xs font-mono italic tracking-tight text-(--ui-text-muted)">
-                  © {{ new Date().getFullYear() }} - Made by <NuxtLink to="https://hrcd.fr/" class="text-neutral-400 hover:text-neutral-200">
+                  © {{ new Date().getFullYear() }} - Made by <NuxtLink to="https://hrcd.fr/" class="text-(--ui-text-muted) hover:text-neutral-200">
                     HugoRCD
                   </NuxtLink>
                 </span>
                 <span class="text-xs font-mono italic tracking-tight text-(--ui-text-muted)">
-                  <NuxtLink to="https://dub.sh/shelve" target="_blank" class="text-neutral-400 hover:text-neutral-200">
+                  <NuxtLink to="https://dub.sh/shelve" target="_blank" class="text-(--ui-text-muted) hover:text-neutral-200">
                     Powered by Shelve <UIcon name="custom:shelve" />
                   </NuxtLink>
                 </span>

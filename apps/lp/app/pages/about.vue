@@ -50,7 +50,7 @@ const { data } = await useAsyncData('about', () => {
                 <h2 class="text-4xl sm:text-5xl text-center sm:text-left font-serif italic">
                   {{ section.title }}
                 </h2>
-                <MDC class="text-sm leading-relaxed text-neutral-400" :value="section.content" unwrap="p" />
+                <MDC class="text-sm leading-relaxed text-(--ui-text-muted)" :value="section.content" unwrap="p" />
               </div>
             </div>
             <div class="hidden group-last:flex col-span-12 justify-end bg-neutral-950 mb-16">

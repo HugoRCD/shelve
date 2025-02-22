@@ -89,7 +89,7 @@ async function onSubmit(event: FormSubmitEvent<SyncVariablesSchema>) {
             <h3 class="text-lg font-semibold text-neutral-900 dark:text-neutral-100">
               Sync with GitHub
             </h3>
-            <p class="text-sm text-neutral-600 dark:text-neutral-400">
+            <p class="text-sm text-(--ui-text-muted)">
               Please select which environment you want to use.
             </p>
           </div>
@@ -148,7 +148,7 @@ async function onSubmit(event: FormSubmitEvent<SyncVariablesSchema>) {
                 <h4 class="text-sm font-medium text-neutral-700 dark:text-neutral-300">
                   Summary
                 </h4>
-                <p class="text-sm text-neutral-600 dark:text-neutral-400">
+                <p class="text-sm text-(--ui-text-muted)">
                   {{ variablesToSend.length }} variable(s) will be synchronized to your GitHub repository
                 </p>
               </div>
@@ -177,7 +177,7 @@ async function onSubmit(event: FormSubmitEvent<SyncVariablesSchema>) {
                   <h3 class="text-lg font-semibold mb-1">
                     No GitHub Apps Found
                   </h3>
-                  <p class="text-sm text-neutral-600 dark:text-neutral-400 mb-4">
+                  <p class="text-sm text-(--ui-text-muted) mb-4">
                     Create a GitHub app to start syncing your secrets
                   </p>
                   <ULink href="/user/integrations/github">

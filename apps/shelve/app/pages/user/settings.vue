@@ -80,7 +80,7 @@ watch(reduceMotion, () => {
           <h3 class="text-lg font-semibold text-neutral-100">
             Sideral Night
           </h3>
-          <p class="text-sm text-neutral-400">
+          <p class="text-sm text-(--ui-text-muted)">
             Sideral Night theme is the theme for all people who like keeping it dark.
           </p>
           <div class="mt-2 flex flex-col gap-1">

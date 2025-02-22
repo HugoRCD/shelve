@@ -47,7 +47,7 @@ function useClipboard(text: string) {
           <h3 class="main-gradient italic text-2xl mb-2 mt-4">
             <ScrambleText label="> Welcome to Shelve" />
           </h3>
-          <p class="text-neutral-400">
+          <p class="text-(--ui-text-muted)">
             Shelve is the best place to manage your projects, alone or with your team. Store your project secrets, data, files and more in one place.
             Use our CLI to manage your projects without leaving your terminal.
           </p>

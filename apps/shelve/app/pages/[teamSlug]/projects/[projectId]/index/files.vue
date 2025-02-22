@@ -6,7 +6,7 @@
     <h2 class="text-center text-xl font-semibold text-neutral-300">
       This feature will be added soon !
     </h2>
-    <p class="text-center text-neutral-400">
+    <p class="text-center text-(--ui-text-muted)">
       We are working on it, please come back later.
     </p>
   </div>
