@@ -11,18 +11,29 @@ useScriptPlausibleAnalytics({
 const route = useRoute()
 const searchTerm = ref('')
 
-const { data: docsNavigation } = await useAsyncData('docs-navigation', () => queryCollectionNavigation('docs'))
-const { data: blogNavigation } = await useAsyncData('blog-navigation', () => queryCollectionNavigation('blog'))
-
-const { data: files } = useLazyAsyncData('search', () => queryCollectionSearchSections('docs'), {
-  server: false
+const { data: navigation } = await useAsyncData('navigation', () => {
+  return Promise.all([
+    queryCollectionNavigation('docs'),
+    queryCollectionNavigation('blog')
+  ])
+}, {
+  transform: data => data.flat()
 })
 
-provide('docs-navigation', docsNavigation)
-provide('blog-navigation', blogNavigation)
+const { data: files } = useLazyAsyncData('search', () => {
+  return Promise.all([
+    queryCollectionSearchSections('docs'),
+    queryCollectionSearchSections('blog')
+  ])
+}, {
+  server: false,
+  transform: data => data.flat()
+})
+
+provide('navigation', navigation)
 
 const defaultOgImage = computed(() => {
-  return route.path === '/' || route.path === '/roadmap' || route.path === '/brand' || route.path === '/about' || route.path === '/blog'
+  return !route.path.startsWith('/docs/')
 })
 
 const { data, refresh } = useFetch('/llms.txt', {
@@ -55,7 +66,7 @@ defineShortcuts({
             v-model:search-term="searchTerm"
             :files
             shortcut="meta_k"
-            :navigation="docsNavigation"
+            :navigation
             :fuse="{ resultLimit: 42 }"
           />
         </ClientOnly>

@@ -6,10 +6,7 @@ export default defineContentConfig({
     docs: defineCollection(
       asSeoCollection({
         type: 'page',
-        source: {
-          include: 'docs/**/*',
-          prefix: ''
-        },
+        source: 'docs/**/*',
         schema: z.object({
           navigation: z.object({
             title: z.string().optional(),

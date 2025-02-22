@@ -21,7 +21,7 @@ const columns = ref([
     children: [
       {
         label: 'Documentation',
-        to: '/getting-started',
+        to: '/docs/getting-started',
       },
       {
         label: 'Roadmap',
@@ -123,9 +123,7 @@ const columns = ref([
           to="https://github.com/hugorcd/shelve"
           target="_blank"
           aria-label="GitHub"
-        >
-          <UBadge variant="subtle" size="sm" :label="`⭐ ${githubStars}`" />
-        </UButton>
+        />
         <div style="color-scheme: none;">
           <iframe src="https://status.shelve.cloud/badge?theme=dark" height="30" width="200" />
         </div>

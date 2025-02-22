@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import type { ContentNavigationItem } from '@nuxt/content'
 
-const navigation = inject<Ref<ContentNavigationItem[]>>('docs-navigation')
+const navigation = inject<Ref<ContentNavigationItem[]>>('navigation')
+const docsNavigation = computed(() => navigation.value.find(item => item.path === '/docs')?.children || [])
 
 const links = computed(() => [
   /*{
@@ -21,13 +22,7 @@ const links = computed(() => [
         <UPage>
           <template #left>
             <UPageAside>
-              <UContentNavigation :navigation highlight :ui="{ linkTrailingBadge: 'font-semibold uppercase' }">
-                <template #link-title="{ link }">
-                  <span class="inline-flex items-center gap-0.5">
-                    {{ link.title }}
-                  </span>
-                </template>
-              </UContentNavigation>
+              <UContentNavigation :navigation="docsNavigation" highlight />
             </UPageAside>
           </template>
           <slot />

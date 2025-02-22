@@ -3,7 +3,6 @@ import type { ContentNavigationItem } from '@nuxt/content'
 import { findPageBreadcrumb, mapContentNavigation } from '#ui-pro/utils/content'
 
 definePageMeta({
-  layout: 'default',
   colorMode: 'dark',
 })
 

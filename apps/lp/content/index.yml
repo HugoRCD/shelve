@@ -40,11 +40,11 @@ faq:
     - label: Is Shelve secure?
       content: Security is our top priority. We use industry-standard **encryption (AES-256)** to protect your data, and all variables are encrypted at rest. Being open-source, our security practices are transparent and can be audited by anyone on GitHub.
     - label: Can I self-host Shelve?
-      content: Absolutely! Shelve can be [self-hosted using Docker](/self-hosting/docker) or with one-click using [Coolify](/self-hosting/coolify). Self-hosting gives you full control over your data and infrastructure.
+      content: Absolutely! Shelve can be [self-hosted using Docker](/docs/self-hosting/docker) or with one-click using [Coolify](/docs/self-hosting/coolify). Self-hosting gives you full control over your data and infrastructure.
     - label: Does Shelve integrate with other tools?
-      content: Yes! Shelve currently integrates with GitHub for secrets management, with more integrations planned. You can sync your environment variables directly with [GitHub Secrets](/integrations/github).
+      content: Yes! Shelve currently integrates with GitHub for secrets management, with more integrations planned. You can sync your environment variables directly with [GitHub Secrets](/docs/integrations/github).
     - label: How can I contribute to Shelve?
-      content: We welcome contributions! You can contribute by submitting PRs, reporting bugs, suggesting features, or improving our documentation. Check our [Contributing Guide](/contributing) to get started.
+      content: We welcome contributions! You can contribute by submitting PRs, reporting bugs, suggesting features, or improving our documentation. Check our [Contributing Guide](/docs/contributing) to get started.
     - label: Is Shelve production-ready?
       content: Yes, Shelve is being actively used in production environments. While we're constantly adding new features, the core functionality is stable and reliable.
     - label: How can I get support?
