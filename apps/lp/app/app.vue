@@ -9,7 +9,6 @@ useScriptPlausibleAnalytics({
 })
 
 const route = useRoute()
-const searchTerm = ref('')
 
 const { data: navigation } = await useAsyncData('navigation', () => {
   return Promise.all([
@@ -29,6 +28,32 @@ const { data: files } = useLazyAsyncData('search', () => {
   server: false,
   transform: data => data.flat()
 })
+
+const links = computed(() => [
+  ...navigation.value.map(item => ({
+    label: item.title,
+    icon: item.icon,
+    to: item.path === '/docs' ? '/docs/getting-started' : item.path
+  })),
+  {
+    label: 'Application',
+    to: 'https://app.shelve.cloud',
+    target: '_blank',
+    icon: 'custom:shelve'
+  },
+  {
+    label: '@shelvecloud',
+    to: 'https://x.com/shelvecloud',
+    target: '_blank',
+    icon: 'i-simple-icons-x'
+  },
+  {
+    label: '@hugorcd',
+    to: 'https://x.com/hugorcd',
+    target: '_blank',
+    icon: 'i-simple-icons-x'
+  }
+])
 
 provide('navigation', navigation)
 
@@ -63,10 +88,10 @@ defineShortcuts({
         <Toaster close-button position="top-center" />
         <ClientOnly>
           <LazyUContentSearch
-            v-model:search-term="searchTerm"
             :files
-            shortcut="meta_k"
+            :links
             :navigation
+            shortcut="meta_k"
             :fuse="{ resultLimit: 42 }"
           />
         </ClientOnly>

@@ -27,4 +27,4 @@ One of the most valuable features is the environment indicator system. These ind
 
 :video{autoPlay="true" loop="true" muted="true" width="100%"}
 
-You can easily select multiple variables by clicking on each item. Once selected, you can perform bulk actions like copying, deleting, or sending them to Github Secrets if you've connected your project to a repository and install a [Github App](/integrations/github) to synchronize your secrets with Github Secrets.
+You can easily select multiple variables by clicking on each item. Once selected, you can perform bulk actions like copying, deleting, or sending them to Github Secrets if you've connected your project to a repository and install a [Github App](/docs/integrations/github) to synchronize your secrets with Github Secrets.
