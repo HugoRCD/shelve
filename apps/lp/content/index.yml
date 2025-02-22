@@ -5,6 +5,9 @@ features:
   title: Features
   description: Shelve is packed with features that make managing your environment variables a breeze. Here are some of the highlights.
   items:
+    - title: Secrets Injection
+      description: Say goodbye to .env files and start your application without .env with runtime secrets injection. No more env files, more security.
+      icon: lucide:cpu
     - title: Seamless Environment Management
       description: One login, all projects. Push and pull environment variables instantly across your entire team without the hassle.
       icon: lucide:lock
@@ -21,7 +24,7 @@ features:
       description: Sync your environment variables directly with GitHub Secrets. One click to secure your GitHub Actions workflows.
       icon: simple-icons:github
     - title: Self-Hosting Ready
-      description: Deploy Shelve on your own infrastructure with Docker or through NuxtHub. Keep full control of your data.
+      description: Deploy Shelve on your own infrastructure with Docker. Keep full control of your data.
       icon: lucide:cloud
     - title: Advanced Integrations
       description: 'More integrations coming soon: Vercel, Coolify, and more.'
