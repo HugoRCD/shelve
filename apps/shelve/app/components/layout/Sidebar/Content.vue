@@ -52,7 +52,7 @@ watch(() => route.path, handleProjectNavigation, { immediate: true })
 
     <!-- Team -->
     <div class="flex flex-col gap-2">
-      <div class="text-xs font-medium text-neutral-500 dark:text-neutral-400">
+      <div class="text-xs font-medium text-(--ui-text-muted)">
         Team
       </div>
       <div class="flex flex-col gap-2">
@@ -64,7 +64,7 @@ watch(() => route.path, handleProjectNavigation, { immediate: true })
 
     <div v-if="user" class="flex flex-col gap-2">
       <USeparator class="my-3" />
-      <div class="text-xs font-medium text-neutral-500 dark:text-neutral-400">
+      <div class="text-xs font-medium text-(--ui-text-muted)">
         User
       </div>
       <LayoutNavItem v-for="nav in userNavigations" :key="nav.name" :active="nav.path === route.path || nav.name === route.name" :nav-item="nav" />
@@ -73,7 +73,7 @@ watch(() => route.path, handleProjectNavigation, { immediate: true })
     <!-- Admin -->
     <div v-if="user && user.role === Role.ADMIN" class="flex flex-col gap-2">
       <USeparator class="my-3" />
-      <div class="text-xs font-medium text-neutral-500 dark:text-neutral-400">
+      <div class="text-xs font-medium text-(--ui-text-muted)">
         Admin
       </div>
       <LayoutNavItem v-for="nav in adminNavigations" :key="nav.name" :active="nav.path === route.path" :nav-item="nav" />

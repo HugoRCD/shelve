@@ -22,7 +22,7 @@ if (!projects.value)
         <h2 class="text-lg font-semibold">
           No projects found
         </h2>
-        <p class="text-sm text-neutral-500">
+        <p class="text-sm text-(--ui-text-muted)">
           You don't have any projects yet. Create one now!
         </p>
         <ProjectCreate />

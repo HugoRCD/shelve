@@ -39,7 +39,7 @@ const editThisPage = computed(() => ({
     <ShelveMeta :default-og-image="false" :title="page?.title" :description="page?.description" />
     <UContainer class="relative min-h-screen bg-neutral-50 dark:bg-neutral-900 px-4 sm:px-6 pt-6 border-x border-t border-neutral-200 dark:border-neutral-800 rounded-t-sm shadow-sm">
       <UPage v-if="page">
-        <NuxtLink to="/blog" class="font-mono text-sm flex items-center gap-1 text-neutral-500 hover:text-neutral-50 transition-colors duration-200">
+        <NuxtLink to="/blog" class="font-mono text-sm flex items-center gap-1 text-(--ui-text-muted) hover:text-neutral-50 transition-colors duration-200">
           <UIcon name="lucide:chevron-left" />
           Blog
         </NuxtLink>
@@ -47,7 +47,7 @@ const editThisPage = computed(() => ({
           <h1 class="text-4xl font-bold">
             {{ page.title }}
           </h1>
-          <p class="text-neutral-500">
+          <p class="text-(--ui-text-muted)">
             {{ page.description }}
           </p>
           <div class="flex items-center gap-2 mt-2">

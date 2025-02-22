@@ -64,7 +64,7 @@ const finalStats = computed(() => [
           <NuxtLink
             to="https://github.com/HugoRCD/nuxt-visitors"
             target="_blank"
-            class="text-neutral-500 text-xs w-fit flex justify-center items-center gap-2 cursor-pointer hover:text-neutral-200 transition-colors duration-300"
+            class="text-(--ui-text-muted) text-xs w-fit flex justify-center items-center gap-2 cursor-pointer hover:text-neutral-200 transition-colors duration-300"
           >
             <span class="relative flex size-2">
               <span
@@ -92,7 +92,7 @@ const finalStats = computed(() => [
       <h3 class="main-gradient italic text-3xl leading-8">
         <ScrambleText label="Built for speed" />
       </h3>
-      <p class="flex gap-2 italic items-center text-pretty text-center text-neutral-500">
+      <p class="flex gap-2 italic items-center text-pretty text-center text-(--ui-text-muted)">
         {{ !isLoading ? ' Stats are updated in real-time.' : `Loading stats${loadingDots}` }}
       </p>
     </div>
@@ -122,12 +122,12 @@ const finalStats = computed(() => [
             will-change
           />
         </div>
-        <dd class="text-sm font-mono text-neutral-500">
+        <dd class="text-sm font-mono text-(--ui-text-muted)">
           {{ stat.label }}
         </dd>
       </UPageCard>
     </dl>
-    <span class="text-xs text-neutral-500 text-center mt-4 block">
+    <span class="text-xs text-(--ui-text-muted) text-center mt-4 block">
       Saved time is calculated by comparing manual env file sharing (5min) vs Shelve operations (5s).
     </span>
   </div>

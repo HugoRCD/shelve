@@ -27,7 +27,7 @@ const goBack = () => {
         <h1 class="font-newsreader text-4xl font-light italic">
           Looks like you're lost
         </h1>
-        <p class="font-geist text-sm text-neutral-500">
+        <p class="font-geist text-sm text-(--ui-text-muted)">
           The page you're looking for doesn't exist
         </p>
       </div>
@@ -35,7 +35,7 @@ const goBack = () => {
         <h1 class="font-newsreader text-4xl font-light italic">
           An error occurred
         </h1>
-        <p class="font-geist text-sm text-neutral-500">
+        <p class="font-geist text-sm text-(--ui-text-muted)">
           Refresh the page or try again later
         </p>
       </div>

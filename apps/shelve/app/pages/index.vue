@@ -54,7 +54,7 @@ async function navigateToTeam(team: Team) {
               <h1 class="text-lg font-semibold">
                 Welcome back, {{ user?.username }}
               </h1>
-              <p class="text-neutral-500 italic">
+              <p class="text-(--ui-text-muted) italic">
                 Select a team to get started
               </p>
             </div>
@@ -70,7 +70,7 @@ async function navigateToTeam(team: Team) {
                 <UAvatar :src="team.logo" class="size-10 logo" :class="{ active: active === team.id }" />
                 <div class="flex flex-col">
                   <span class="text-sm font-semibold team-name" :class="{ active: active === team.id }">{{ team.name }}</span>
-                  <span class="text-xs text-neutral-500">{{ team.slug }}</span>
+                  <span class="text-xs text-(--ui-text-muted)">{{ team.slug }}</span>
                 </div>
               </div>
               <UButton size="sm" variant="soft" trailing :loading="navLoading && active === team.id">
@@ -97,7 +97,7 @@ async function navigateToTeam(team: Team) {
       </div>
     </div>
     <footer class="absolute bottom-0 mx-auto flex max-w-7xl flex-col items-center justify-around gap-4 px-4 py-6 sm:flex-row">
-      <div class="flex items-center text-neutral-500 gap-4">
+      <div class="flex items-center text-(--ui-text-muted) gap-4">
         <span class="text-sm flex items-center">
           Want to go back to homepage ?
           <UButton

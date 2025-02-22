@@ -12,7 +12,7 @@ defineProps<{
       <h3 class="main-gradient text-3xl">
         <ScrambleText :label="faq.title" />
       </h3>
-      <p class="max-w-lg text-center text-sm text-neutral-500 sm:text-base">
+      <p class="max-w-lg text-center text-sm text-(--ui-text-muted) sm:text-base">
         {{ faq.description }}
       </p>
       <UButton :to="faq.cta.to" :label="faq.cta.label" size="sm" class="mt-2" />

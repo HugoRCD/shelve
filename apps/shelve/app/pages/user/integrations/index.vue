@@ -15,7 +15,7 @@ const integrations = [
         <h2 class="text-lg font-bold">
           Integrations
         </h2>
-        <p class="text-sm text-neutral-500">
+        <p class="text-sm text-(--ui-text-muted)">
           Connect Shelve with other services to enhance your experience.
         </p>
       </div>
@@ -27,7 +27,7 @@ const integrations = [
                 <UIcon :name="integration.icon" class="size-7" />
                 <div class="flex flex-col gap-1">
                   <span class="text-sm font-semibold">{{ integration.name }}</span>
-                  <span class="text-xs text-neutral-500">{{ integration.description }}</span>
+                  <span class="text-xs text-(--ui-text-muted)">{{ integration.description }}</span>
                 </div>
               </div>
               <div class="flex items-center gap-1">

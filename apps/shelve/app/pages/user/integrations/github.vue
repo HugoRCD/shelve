@@ -164,7 +164,7 @@ function openDeleteModal(slug: string) {
           <h2 class="text-lg font-semibold mb-2">
             No Github Apps Yet
           </h2>
-          <p class="text-sm text-neutral-500 mb-6">
+          <p class="text-sm text-(--ui-text-muted) mb-6">
             Create a GitHub App to start managing your repositories and synchronizing secrets across your environments.
           </p>
 

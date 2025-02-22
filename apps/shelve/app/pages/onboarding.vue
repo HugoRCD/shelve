@@ -51,7 +51,7 @@ async function createTeamAndCompleteOnboarding() {
         <h1 class="text-center text-3xl leading-9">
           Welcome to Shelve!
         </h1>
-        <p class="text-neutral-500 italic dark:text-neutral-400">
+        <p class="text-(--ui-text-muted) italic">
           Let's create your first team together
         </p>
       </div>

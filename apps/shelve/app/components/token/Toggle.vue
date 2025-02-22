@@ -13,7 +13,7 @@ const copy = () => {
 
 <template>
   <div class="flex select-none items-center gap-2">
-    <UTooltip text="Copy token" class="cursor-pointer text-sm font-semibold leading-6 text-neutral-500 dark:text-neutral-400">
+    <UTooltip text="Copy token" class="cursor-pointer text-sm font-semibold leading-6 text-(--ui-text-muted)">
       <span v-if="visible" @click="copy">
         {{ token.slice(0, 4) }}...{{ token.slice(-4) }}
       </span>
@@ -23,7 +23,7 @@ const copy = () => {
     </UTooltip>
     <UIcon
       :name="visible ? 'lucide:eye-off' : 'lucide:eye'"
-      class="cursor-pointer text-neutral-500 dark:text-neutral-400"
+      class="cursor-pointer text-(--ui-text-muted)"
       @click="visible = !visible"
     />
   </div>

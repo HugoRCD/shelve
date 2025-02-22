@@ -99,7 +99,7 @@ const columns = ref([
 
 
     <template #left>
-      <div class="text-xs font-mono italic tracking-tight text-neutral-500">
+      <div class="text-xs font-mono italic tracking-tight text-(--ui-text-muted)">
         © {{ new Date().getFullYear() }} - Made by <NuxtLink to="https://hrcd.fr/" class="text-neutral-400 hover:text-neutral-200">
           HugoRCD
         </NuxtLink>

@@ -56,7 +56,7 @@ function deleteAccount() {
           <h2 class="text-base font-semibold leading-7">
             Personal Information
           </h2>
-          <p class="text-sm leading-6 text-neutral-500">
+          <p class="text-sm leading-6 text-(--ui-text-muted)">
             Update your personal information
           </p>
         </div>

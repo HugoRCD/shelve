@@ -112,7 +112,7 @@ async function onSubmit(event: FormSubmitEvent<SyncVariablesSchema>) {
                 <div class="flex items-center gap-2">
                   <UIcon
                     name="lucide:git-fork"
-                    class="size-4 text-neutral-500"
+                    class="size-4 text-(--ui-text-muted)"
                   />
                   <UInput
                     v-model="state.repository"
@@ -161,7 +161,7 @@ async function onSubmit(event: FormSubmitEvent<SyncVariablesSchema>) {
                 block
               />
             </div>
-            <p class="text-xs text-neutral-500 dark:text-neutral-400 mt-2 bg-neutral-100 dark:bg-neutral-800/50 p-2 rounded-lg">
+            <p class="text-xs text-(--ui-text-muted) mt-2 bg-neutral-100 dark:bg-neutral-800/50 p-2 rounded-lg">
               <UIcon name="lucide:info" class="text-sm align-sub" /> This might cause overwriting of existing secrets in your repository
             </p>
           </div>

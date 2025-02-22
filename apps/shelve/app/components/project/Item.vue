@@ -27,7 +27,7 @@ const active = useState('active-project')
           <h3 class="flex flex-col text-lg font-semibold" :class="{ active: active === project.id }">
             {{ project.name }}
           </h3>
-          <div class="text-xs font-normal text-neutral-500" :class="{ active: active === project.id }">
+          <div class="text-xs font-normal text-(--ui-text-muted)" :class="{ active: active === project.id }">
             {{ project.description }}
           </div>
         </div>

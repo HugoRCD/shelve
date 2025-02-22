@@ -101,7 +101,7 @@ fetchTokens()
         <h2 class="text-base font-semibold leading-7">
           Tokens
         </h2>
-        <p class="text-sm leading-6 text-neutral-500">
+        <p class="text-sm leading-6 text-(--ui-text-muted)">
           Manage your tokens for the CLI
         </p>
       </div>
@@ -133,7 +133,7 @@ fetchTokens()
             </UTooltip>
             <UTooltip v-else text="Token is active">
               <div>
-                <UIcon name="heroicons-outline:clock" class="size-4 text-neutral-500" />
+                <UIcon name="heroicons-outline:clock" class="size-4 text-(--ui-text-muted)" />
               </div>
             </UTooltip>
           </span>

@@ -52,7 +52,7 @@ const open = ref(false)
             <h2 class="text-base font-semibold leading-7">
               Team Settings
             </h2>
-            <p class="text-sm leading-6 text-neutral-500">
+            <p class="text-sm leading-6 text-(--ui-text-muted)">
               Manage team settings
             </p>
           </div>
@@ -76,7 +76,7 @@ const open = ref(false)
               </UTooltip>
             </UButtonGroup>
           </UFormField>
-          <p class="text-xs mt-1 text-neutral-500">
+          <p class="text-xs mt-1 text-(--ui-text-muted)">
             This is the unique identifier for your team (used by the CLI)
           </p>
         </div>

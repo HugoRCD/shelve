@@ -63,7 +63,7 @@ const communityLinks = computed(() => [
         </template>
 
         <template #description>
-          <p class="text-neutral-500">
+          <p class="text-(--ui-text-muted)">
             {{ page.description }}
           </p>
         </template>

@@ -27,7 +27,7 @@ async function onSubmit(event: FormSubmitEvent<UpdateProjectSchema>) {
             <h2 class="text-lg font-semibold">
               Project Settings
             </h2>
-            <p class="text-pretty text-sm text-neutral-500 dark:text-neutral-400">
+            <p class="text-pretty text-sm text-(--ui-text-muted)">
               Configure your project settings, quick links, environment variables prefix, etc...
             </p>
           </div>
@@ -39,7 +39,7 @@ async function onSubmit(event: FormSubmitEvent<UpdateProjectSchema>) {
             <h3 class="font-semibold">
               Quick Links
             </h3>
-            <p class="text-pretty text-xs text-neutral-500 dark:text-neutral-400">
+            <p class="text-pretty text-xs text-(--ui-text-muted)">
               Add quick links to your project repository, homepage, etc...
             </p>
           </div>
@@ -79,7 +79,7 @@ async function onSubmit(event: FormSubmitEvent<UpdateProjectSchema>) {
             <h3 class="font-semibold">
               Environment Variables Prefix
             </h3>
-            <p class="text-pretty text-xs text-neutral-500 dark:text-neutral-400">
+            <p class="text-pretty text-xs text-(--ui-text-muted)">
               Add a prefix to your environment variables
             </p>
           </div>
@@ -90,7 +90,7 @@ async function onSubmit(event: FormSubmitEvent<UpdateProjectSchema>) {
                 <UTextarea v-model="project.variablePrefix" class="w-full" :disabled="!canUpdate" :rows="4" />
               </UFormField>
               <UTooltip text="Yes this will be improved in the future 😅">
-                <p class="mt-1 text-xs text-neutral-500 dark:text-neutral-400">
+                <p class="mt-1 text-xs text-(--ui-text-muted)">
                   Write your prefix separated by a comma, for example: <code>NUXT_PUBLIC_, REACT_APP_</code>
                 </p>
               </UTooltip>

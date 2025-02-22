@@ -28,7 +28,7 @@ watch(reduceMotion, () => {
         <h2 class="text-lg font-bold">
           Auto uppercase
         </h2>
-        <p class="text-sm text-neutral-500">
+        <p class="text-sm text-(--ui-text-muted)">
           Automatically uppercase the keys of the variables
         </p>
       </div>
@@ -40,7 +40,7 @@ watch(reduceMotion, () => {
         <h2 class="text-lg font-bold">
           Reduce Motion
         </h2>
-        <p class="text-sm text-neutral-500">
+        <p class="text-sm text-(--ui-text-muted)">
           Remove all transitions and animations from the site.
         </p>
       </div>
@@ -59,7 +59,7 @@ watch(reduceMotion, () => {
           <h3 class="text-lg font-semibold text-neutral-700">
             Shining Star
           </h3>
-          <p class="text-sm text-neutral-500">
+          <p class="text-sm text-(--ui-text-muted)">
             Shining Star theme is the theme for all people who like keeping it bright.
           </p>
           <div class="mt-2 flex flex-col gap-1">

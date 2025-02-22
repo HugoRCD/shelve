@@ -32,7 +32,7 @@ if (route.query.error === 'github' || route.query.error === 'google') {
         <h1 class="text-center text-3xl leading-9">
           Sign in to {{ title }}
         </h1>
-        <p class="text-neutral-500 italic dark:text-neutral-400">
+        <p class="text-(--ui-text-muted) italic">
           Welcome to the future of environment management.
         </p>
       </div>

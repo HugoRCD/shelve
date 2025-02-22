@@ -77,7 +77,7 @@ const handlePasswordGenerated = (password: string, index: number) => variablesIn
             <h2 class="text-lg font-semibold">
               Environment Variables
             </h2>
-            <p class="text-sm font-normal text-neutral-500">
+            <p class="text-sm font-normal text-(--ui-text-muted)">
               Manage your environment variables
             </p>
           </div>
@@ -109,13 +109,13 @@ const handlePasswordGenerated = (password: string, index: number) => variablesIn
           </h3>
         </div>
         <USeparator class="my-1" />
-        <p class="text-xs font-normal text-neutral-500">
+        <p class="text-xs font-normal text-(--ui-text-muted)">
           🤫 You can also paste all your environment variables (.env) as key value pairs to prefilled the form
         </p>
         <div class="mb-4 flex flex-col gap-2">
           <div class="hidden items-center sm:flex">
-            <span class="w-full text-sm font-normal text-neutral-500">Key</span>
-            <span class="w-full text-sm font-normal text-neutral-500">Value</span>
+            <span class="w-full text-sm font-normal text-(--ui-text-muted)">Key</span>
+            <span class="w-full text-sm font-normal text-(--ui-text-muted)">Value</span>
             <div class="w-[100px]" />
           </div>
           <div v-for="variable in variablesToCreate" :key="variable" class="flex flex-col gap-4">
