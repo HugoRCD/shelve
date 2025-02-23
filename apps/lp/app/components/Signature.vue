@@ -25,8 +25,8 @@
 
 <style scoped>
 .signature {
-  stroke: #797979;
-  filter: drop-shadow(0 0 10px rgba(121, 121, 121, 0.5));
+  stroke: var(--ui-bg-accented);
+  filter: drop-shadow(0 0 10px var(--ui-bg-accented));
   stroke-dasharray: 2036;
   stroke-dashoffset: 2036;
   animation: sign 5s ease-in forwards;

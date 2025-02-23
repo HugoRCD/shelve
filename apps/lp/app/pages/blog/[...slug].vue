@@ -2,10 +2,6 @@
 import type { ContentNavigationItem } from '@nuxt/content'
 import { findPageBreadcrumb, mapContentNavigation } from '#ui-pro/utils/content'
 
-definePageMeta({
-  colorMode: 'dark',
-})
-
 const route = useRoute()
 
 const { data: page } = await useAsyncData(route.path, () =>

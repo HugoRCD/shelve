@@ -92,7 +92,7 @@ const columns = ref([
           </template>
         </UFooterColumns>
       </UContainer>
-      <USeparator icon="custom:shelve" type="dashed" />
+      <USeparator icon="custom:shelve" />
     </template>
 
 
