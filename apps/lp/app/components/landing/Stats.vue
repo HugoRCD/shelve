@@ -61,10 +61,10 @@ const finalStats = computed(() => [
     <ClientOnly>
       <Teleport defer to="#visitors">
         <div class="fixed z-[999] flex items-center justify-center bottom-2 w-full">
-          <NuxtLink
+          <ULink
             to="https://github.com/HugoRCD/nuxt-visitors"
             target="_blank"
-            class="text-(--ui-text-muted) text-xs w-fit flex justify-center items-center gap-2 cursor-pointer hover:text-neutral-200 transition-colors duration-300"
+            class="text-xs w-fit flex justify-center items-center gap-2"
           >
             <span class="relative flex size-2">
               <span
@@ -83,7 +83,7 @@ const finalStats = computed(() => [
               continuous
               will-change
             />
-          </NuxtLink>
+          </ULink>
         </div>
       </Teleport>
     </ClientOnly>

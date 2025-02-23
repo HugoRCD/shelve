@@ -16,6 +16,38 @@ function setPrefersReducedMotion() {
   }
 }
 
+const themes = [
+  {
+    id: 'light',
+    name: 'Shining Star',
+    description: 'Shining Star theme is the theme for all people who like keeping it bright.',
+    class: 'light'
+  },
+  {
+    id: 'dark',
+    name: 'Sideral Night',
+    description: 'Sideral Night theme is the theme for all people who like keeping it dark.',
+    class: 'dark'
+  }
+]
+
+const settingsOptions = ref([
+  {
+    id: 'autoUppercase',
+    title: 'Auto uppercase',
+    description: 'Automatically uppercase the keys of the variables',
+    modelValue: autoUppercase,
+    stagger: 1
+  },
+  {
+    id: 'reduceMotion',
+    title: 'Reduce Motion',
+    description: 'Remove all transitions and animations from the site.',
+    modelValue: reduceMotion,
+    stagger: 2
+  }
+])
+
 watch(reduceMotion, () => {
   setPrefersReducedMotion()
 })
@@ -23,74 +55,49 @@ watch(reduceMotion, () => {
 
 <template>
   <div class="flex flex-col gap-4 pb-4">
-    <div style="--stagger: 1" data-animate class="flex flex-col gap-3">
-      <div class="flex flex-col gap-1">
-        <h2 class="text-lg font-bold">
-          Auto uppercase
-        </h2>
-        <p class="text-sm text-(--ui-text-muted)">
-          Automatically uppercase the keys of the variables
-        </p>
+    <template v-for="option in settingsOptions" :key="option.id">
+      <div :style="`--stagger: ${option.stagger}`" data-animate class="flex flex-col gap-3">
+        <div class="flex flex-col gap-1">
+          <h2 class="text-lg font-bold">
+            {{ option.title }}
+          </h2>
+          <p class="text-sm text-(--ui-text-muted)">
+            {{ option.description }}
+          </p>
+        </div>
+        <USwitch v-model="option.modelValue" />
       </div>
-      <USwitch v-model="autoUppercase" />
-    </div>
-    <USeparator class="my-4" />
-    <div style="--stagger: 2" data-animate class="flex flex-col gap-3">
-      <div class="flex flex-col gap-1">
-        <h2 class="text-lg font-bold">
-          Reduce Motion
-        </h2>
-        <p class="text-sm text-(--ui-text-muted)">
-          Remove all transitions and animations from the site.
-        </p>
-      </div>
-      <USwitch v-model="reduceMotion" />
-    </div>
-    <USeparator class="my-4" />
+      <USeparator class="my-4" />
+    </template>
+
     <div style="--stagger: 3" data-animate class="flex flex-col gap-3">
       <h2 class="text-lg font-bold">
         Theme settings
       </h2>
       <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div
-          class="flex cursor-pointer flex-col gap-2 rounded-lg border border-neutral-300 bg-[#F8F8F8] p-4 shadow-md hover:border-neutral-400 hover:bg-neutral-200"
-          @click="$colorMode.preference = 'light'"
+          v-for="theme in themes"
+          :key="theme.id"
+          :class="[
+            theme.class,
+            'flex cursor-pointer flex-col gap-2 rounded-lg border border-(--ui-border) bg-(--ui-bg) p-4 shadow-md hover:bg-(--ui-bg-muted)'
+          ]"
+          @click="$colorMode.preference = theme.id"
         >
-          <h3 class="text-lg font-semibold text-neutral-700">
-            Shining Star
+          <h3 class="text-lg font-semibold text-(--ui-text-highlighted)">
+            {{ theme.name }}
           </h3>
           <p class="text-sm text-(--ui-text-muted)">
-            Shining Star theme is the theme for all people who like keeping it bright.
+            {{ theme.description }}
           </p>
           <div class="mt-2 flex flex-col gap-1">
             <div class="flex gap-2">
-              <div class="h-3 w-1/2 rounded-full bg-neutral-400" />
-              <div class="h-3 w-1/4 rounded-full bg-neutral-400" />
+              <div class="h-3 w-1/2 rounded-full bg-(--ui-bg-elevated)" />
+              <div class="h-3 w-1/4 rounded-full bg-(--ui-bg-elevated)" />
             </div>
             <div class="flex gap-2">
-              <div class="h-3 w-1/4 rounded-full bg-neutral-400" />
-              <div class="h-3 w-1/2 rounded-full bg-neutral-400" />
-            </div>
-          </div>
-        </div>
-        <div
-          class="flex cursor-pointer flex-col gap-2 rounded-lg border border-neutral-700 bg-[#131113] p-4 shadow-md hover:border-neutral-600 hover:bg-neutral-900"
-          @click="$colorMode.preference = 'dark'"
-        >
-          <h3 class="text-lg font-semibold text-neutral-100">
-            Sideral Night
-          </h3>
-          <p class="text-sm text-(--ui-text-muted)">
-            Sideral Night theme is the theme for all people who like keeping it dark.
-          </p>
-          <div class="mt-2 flex flex-col gap-1">
-            <div class="flex gap-2">
-              <div class="h-3 w-1/2 rounded-full bg-neutral-700" />
-              <div class="h-3 w-1/4 rounded-full bg-neutral-700" />
-            </div>
-            <div class="flex gap-2">
-              <div class="h-3 w-1/4 rounded-full bg-neutral-700" />
-              <div class="h-3 w-1/2 rounded-full bg-neutral-700" />
+              <div class="h-3 w-1/4 rounded-full bg-(--ui-bg-elevated)" />
+              <div class="h-3 w-1/2 rounded-full bg-(--ui-bg-elevated)" />
             </div>
           </div>
         </div>
@@ -98,10 +105,3 @@ watch(reduceMotion, () => {
     </div>
   </div>
 </template>
-
-<style scoped>
-.light {
-  background-color: #fff;
-  color: #000;
-}
-</style>

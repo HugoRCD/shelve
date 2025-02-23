@@ -56,6 +56,7 @@ const handlePasswordGenerated = (password: string, index: number) => variablesIn
 <template>
   <form id="varCreation" class="relative duration-500" @submit.prevent="handleCreateVariables">
     <UCard
+      variant="subtle"
       :ui="{ root: border }"
       class="duration-500"
       @dragenter.prevent="dragHandlers.handleDragEnter($event)"

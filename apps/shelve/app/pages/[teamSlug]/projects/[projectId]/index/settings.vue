@@ -20,7 +20,7 @@ async function onSubmit(event: FormSubmitEvent<UpdateProjectSchema>) {
 
 <template>
   <UForm v-if="project" :state="project" :schema="updateProjectSchema" class="flex flex-col gap-4" @submit="onSubmit">
-    <UCard>
+    <UCard variant="subtle">
       <template #header>
         <div class="flex items-center">
           <div class="flex flex-col">

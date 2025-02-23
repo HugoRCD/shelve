@@ -56,12 +56,12 @@ function useClipboard(text: string) {
       <div class="relative flex items-center justify-center size-full">
         <div class="absolute bottom-16 z-20 flex items-center justify-center [mask-image:linear-gradient(to_bottom,white,transparent)]">
           <div
-            class="flex items-center justify-center gap-4 rounded-md bg-white/5 px-4 py-2 backdrop-blur-lg"
-            @click="useClipboard('bun a -d @shelve/cli')"
+            class="flex items-center justify-center gap-4 rounded-md bg-(--ui-bg-inverted)/5 px-4 py-2 backdrop-blur-lg"
+            @click="useClipboard('npx nypm add -D @shelve/cli')"
           >
-            <div class="flex cursor-pointer items-center justify-center gap-2 text-sm text-neutral-300">
+            <div class="flex cursor-pointer items-center justify-center gap-2 text-sm text-(--ui-text-muted)">
               <span>
-                bun a -d @shelve/cli
+                npx nypm add -D @shelve/cli
               </span>
               <UIcon v-if="!copy" name="lucide:copy" />
               <UIcon v-else name="lucide:check" class="text-primary-400 text-lg" />
@@ -71,18 +71,18 @@ function useClipboard(text: string) {
 
         <div class="relative py-40 w-full">
           <div class="absolute inset-0 flex items-center justify-center [mask-image:linear-gradient(to_bottom,white,transparent)]">
-            <div class="bg-white/2.5 absolute size-96 rounded-full shadow-xl" />
+            <div class="bg-(--ui-bg-inverted)/2.5 absolute size-96 rounded-full shadow-xl" />
 
-            <div class="bg-white/2.5 absolute size-[19rem] rounded-full border border-white/5 shadow-xl" />
+            <div class="bg-(--ui-bg-inverted)/2.5 absolute size-[19rem] rounded-full border border-white/5 shadow-xl" />
 
-            <div class="bg-white/2.5 absolute size-56 rounded-full border border-white/10 shadow-xl" />
+            <div class="bg-(--ui-bg-inverted)/2.5 absolute size-56 rounded-full border border-white/10 shadow-xl" />
 
-            <div class="bg-white/2.5 absolute size-36 rounded-full border border-dashed border-white/15 shadow-xl" />
+            <div class="bg-(--ui-bg-inverted)/2.5 absolute size-36 rounded-full border border-dashed border-white/15 shadow-xl" />
           </div>
 
           <div class="relative flex items-center justify-center">
-            <div class="flex size-16 items-center justify-center rounded-full border border-white/25 bg-white/5 p-3 shadow-xl">
-              <UIcon name="lucide:lock" class="size-8 text-neutral-300" />
+            <div class="flex size-16 items-center justify-center rounded-full border border-(--ui-border) bg-(--ui-bg-inverted)/5 p-3 shadow-xl">
+              <UIcon name="lucide:lock" class="size-8 text-(--ui-text-muted)" />
             </div>
           </div>
         </div>

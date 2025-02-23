@@ -42,7 +42,7 @@ const showEdit = ref(false)
 </script>
 
 <template>
-  <UCard :ui="{ root: isSelected && !showEdit ? 'bg-neutral-100 dark:bg-neutral-800' : '' }">
+  <UCard variant="subtle" :ui="{ root: isSelected && !showEdit ? 'bg-neutral-100 dark:bg-neutral-800' : '' }">
     <div class="flex w-full items-start justify-between">
       <div
         class="flex w-full flex-col gap-1"

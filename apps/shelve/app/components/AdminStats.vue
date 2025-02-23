@@ -11,7 +11,7 @@ const filteredStats = computed(() => {
 
 <template>
   <div v-if="stats && !isLoading" class="grid sm:grid-cols-5 grid-cols-3 gap-4">
-    <UCard v-for="(item, key) in filteredStats" :key>
+    <UCard v-for="(item, key) in filteredStats" :key variant="subtle">
       <div class="flex flex-col gap-1 items-center">
         <span class="text-lg font-semibold text-neutral-800 dark:text-neutral-200">{{ item.value }}</span>
         <span class="text-sm text-(--ui-text-muted)">{{ capitalize(item.label) }}</span>

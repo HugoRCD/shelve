@@ -18,7 +18,7 @@ if (import.meta.client) setPrefersReducedMotion(reduceMotion.value)
 
 <template>
   <Html lang="en">
-    <Body class="overscroll-y-none selection:bg-primary relative overflow-x-hidden selection:text-inverted dark:bg-neutral-950">
+    <Body class="overscroll-y-none selection:bg-primary relative overflow-x-hidden selection:text-inverted">
       <ShelveMeta title="Application" title-template="%s | Shelve" />
       <UApp :tooltip="{ delayDuration: 0 }">
         <Suspense>
@@ -31,7 +31,7 @@ if (import.meta.client) setPrefersReducedMotion(reduceMotion.value)
                 <div class="absolute -z-1 -inset-5 rounded-full border border-(--ui-border) animate-ripple-1 opacity-0" />
                 <div class="absolute -z-1 -inset-3 rounded-full border border-(--ui-border) animate-ripple-2 opacity-0" />
                 <div class="absolute -z-1 -inset-1 rounded-full border border-(--ui-border) animate-ripple-3 opacity-0" />
-                <div class="rounded-full flex items-center justify-center z-10 border-1 border-(--ui-border) bg-(--ui-bg) p-4 shadow-sm dark:shadow-lg">
+                <div class="rounded-full flex items-center justify-center z-10 border-1 border-(--ui-border) bg-(--ui-bg-muted) p-4 shadow-sm dark:shadow-lg">
                   <Icon name="custom:shelve" class="size-8 animate-pulse" />
                 </div>
               </div>

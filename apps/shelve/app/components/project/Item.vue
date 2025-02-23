@@ -13,7 +13,7 @@ const active = useState('active-project')
 
 <template>
   <NuxtLink :to="`/${teamSlug}/projects/${project.id}/variables`">
-    <UCard class="h-full" @click="active = project.id">
+    <UCard variant="subtle" class="h-full" @click="active = project.id">
       <div class="flex w-full items-start gap-4">
         <UAvatar
           :src="project.logo"

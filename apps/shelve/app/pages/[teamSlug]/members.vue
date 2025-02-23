@@ -63,7 +63,7 @@ const items = (row: Member) => [
     {
       label: 'Delete',
       icon: 'heroicons:trash-20-solid',
-      color: 'error',
+      color: 'error' as const,
       disabled: !canDelete.value,
       onSelect: () => {
         if (row.role === TeamRole.OWNER) {
@@ -117,15 +117,15 @@ const items = (row: Member) => [
                   <span class="text-sm font-semibold">{{ member.user.username }}</span>
                   <UBadge size="sm" :label="member.role.toUpperCase()" variant="subtle" :color="member.role === TeamRole.OWNER ? 'primary' : member.role === TeamRole.ADMIN ? 'success' : 'neutral'" />
                 </div>
-                <span class="text-xs text-(--ui-text-muted) hover:text-neutral-700 dark:hover:text-neutral-300 cursor-pointer" @click="copyToClipboard(member.user.email)">
+                <span class="text-xs text-(--ui-text-muted) hover:text-(--ui-text-highlighted) cursor-pointer" @click="copyToClipboard(member.user.email)">
                   {{ member.user.email }}
                 </span>
               </div>
             </div>
             <div class="flex gap-2">
-              <div class="flex flex-col gap-1">
-                <span class="text-xs text-(--ui-text-muted) hidden sm:flex">CreatedAt: {{ new Date(member.createdAt).toLocaleString() }}</span>
-                <span class="text-xs text-(--ui-text-muted) hidden sm:flex">UpdatedAt: {{ new Date(member.updatedAt).toLocaleString() }}</span>
+              <div class="flex-col gap-1 text-xs text-(--ui-text-muted) hidden sm:flex">
+                <span>CreatedAt: {{ new Date(member.createdAt).toLocaleString() }}</span>
+                <span>UpdatedAt: {{ new Date(member.updatedAt).toLocaleString() }}</span>
               </div>
               <UDropdownMenu v-if="canUpdate" :items="items(member)">
                 <UButton variant="ghost" icon="heroicons:ellipsis-horizontal-20-solid" />

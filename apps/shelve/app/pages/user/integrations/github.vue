@@ -88,7 +88,7 @@ function openDeleteModal(slug: string) {
         <div
           v-for="app in apps"
           :key="app.id"
-          class="group relative overflow-hidden bg-(--ui-bg) border border-(--ui-border) rounded-lg hover:shadow-lg transition-all duration-300"
+          class="group relative overflow-hidden bg-(--ui-bg-muted) border border-(--ui-border) rounded-lg hover:shadow-lg transition-all duration-300"
         >
           <div class="absolute top-0 right-0 p-2">
             <UButton

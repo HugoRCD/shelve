@@ -47,7 +47,7 @@ const clearLocalStorage = () => {
 <template>
   <div class="flex h-full flex-col items-center justify-center">
     <div class="relative z-20 text-center">
-      <span class="pointer-events-none absolute z-10 -translate-x-1/2 -translate-y-1/2 text-[200px] font-bold text-neutral-200/[2%]">
+      <span class="pointer-events-none absolute z-10 -translate-x-1/2 -translate-y-1/2 text-[200px] font-bold text-(--ui-text-muted)/5">
         {{ error.statusCode }}
       </span>
       <div v-if="error.statusCode === 404">

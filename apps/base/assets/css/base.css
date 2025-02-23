@@ -37,6 +37,16 @@ html, body, #__nuxt, #__layout {
   --animate-ripple-3: ripple 2.5s var(--ease-smooth) infinite 0.65s;
 }
 
+.light {
+  --ui-bg: var(--color-white);
+  --ui-bg-muted: var(--color-neutral-50);
+}
+
+.dark {
+  --ui-bg: var(--color-neutral-950);
+  --ui-bg-muted: var(--color-neutral-900);
+}
+
 .main-gradient {
   @apply bg-gradient-to-r from-neutral-50 to-neutral-600 to-50% bg-clip-text text-transparent;
 }

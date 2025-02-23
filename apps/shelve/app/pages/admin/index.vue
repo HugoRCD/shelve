@@ -173,11 +173,11 @@ const items = (row: User) => [
         <UAvatar :src="row.original.avatar" :alt="row.original.username" size="sm" img-class="object-cover" />
       </template>
       <template #username-cell="{ row }">
-        <NuxtLink v-if="row.original.authType === AuthType.GITHUB" :to="`https://github.com/${row.original.username}`" target="_blank">
-          <span class="text-neutral-600 dark:text-neutral-200">
+        <ULink v-if="row.original.authType === AuthType.GITHUB" :to="`https://github.com/${row.original.username}`" target="_blank">
+          <span class="text-(--ui-text-highlighted)">
             {{ row.original.username }}
           </span>
-        </NuxtLink>
+        </ULink>
         <span v-else>{{ row.original.username }}</span>
       </template>
       <template #role-cell="{ row }">
