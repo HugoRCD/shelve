@@ -40,7 +40,7 @@ const items = [
 <template>
   <div class="flex flex-col">
     <ProjectMainSection />
-    <div class="mt-8 mb-4 border-b border-neutral-200 dark:border-neutral-800">
+    <div class="mt-8 mb-4 border-b border-(--ui-border)">
       <UNavigationMenu
         color="neutral"
         orientation="horizontal"

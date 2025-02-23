@@ -47,7 +47,7 @@ async function navigateToTeam(team: Team) {
       </div>
       <div class="size-80 absolute rounded-full bg-neutral-100/20 -top-20 -z-1 -left-20 blur-[200px]" />
       <CrossedDiv line>
-        <div class="bg-white dark:bg-neutral-900/70 p-8 dark:shadow-lg border border-neutral-200/70 dark:border-neutral-800/70 w-full backdrop-blur-md">
+        <div class="bg-white dark:bg-neutral-900/70 p-8 dark:shadow-lg border border-(--ui-border) w-full backdrop-blur-md">
           <div class="flex flex-col items-center gap-2">
             <UAvatar :src="user?.avatar" class="size-18 avatar" />
             <div class="flex flex-col items-center">

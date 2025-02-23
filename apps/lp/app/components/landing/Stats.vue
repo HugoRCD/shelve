@@ -68,10 +68,10 @@ const finalStats = computed(() => [
           >
             <span class="relative flex size-2">
               <span
-                class="absolute bg-green-50 inline-flex size-full animate-ping rounded-full opacity-75"
+                class="absolute bg-(--ui-success) inline-flex size-full animate-ping rounded-full opacity-75"
               />
               <span
-                class="relative bg-green-500 inline-flex size-2 scale-90 rounded-full"
+                class="relative bg-(--ui-success) inline-flex size-2 scale-90 rounded-full"
               />
             </span>
             <span class="sm:flex hidden">
@@ -108,10 +108,10 @@ const finalStats = computed(() => [
         <div class="noise flex gap-2 items-center">
           <span class="relative flex size-2">
             <span
-              class="absolute bg-neutral-50 inline-flex size-full animate-ping rounded-full opacity-75"
+              class="absolute bg-(--ui-bg-inverted) inline-flex size-full animate-ping rounded-full opacity-75"
             />
             <span
-              class="relative bg-neutral-500 inline-flex size-2 scale-90 rounded-full"
+              class="relative bg-(--ui-bg-inverted) inline-flex size-2 scale-90 rounded-full"
             />
           </span>
           <NumberFlow

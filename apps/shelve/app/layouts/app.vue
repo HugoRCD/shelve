@@ -25,8 +25,8 @@ const show = ref(true)
 <template>
   <div class="max-layout-width relative flex h-screen">
     <LayoutSidebar />
-    <div class="main-container flex flex-1 flex-col overflow-hidden border-l border-l-neutral-200 dark:border-l-neutral-800">
-      <div class="flex justify-between gap-1 border-b border-neutral-200 px-5 py-2 dark:border-b-neutral-800">
+    <div class="main-container flex flex-1 flex-col overflow-hidden border-l border-l-(--ui-border)">
+      <div class="flex justify-between gap-1 border-b border-(--ui-border) px-5 py-2">
         <div class="flex items-center gap-2">
           <template v-if="navigation">
             <Transition name="slide-to-bottom" mode="out-in">

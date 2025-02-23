@@ -1,8 +1,4 @@
 <script setup lang="ts">
-definePageMeta({
-  colorMode: 'dark',
-})
-
 useHead({
   title: 'Shelve',
   titleTemplate: 'Shelve',
@@ -64,7 +60,7 @@ function useClipboard(text: string) {
                 npx nypm add -D @shelve/cli
               </span>
               <UIcon v-if="!copy" name="lucide:copy" />
-              <UIcon v-else name="lucide:check" class="text-primary-400 text-lg" />
+              <UIcon v-else name="lucide:check" class="text-(--ui-primary) text-lg" />
             </div>
           </div>
         </div>

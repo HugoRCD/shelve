@@ -43,6 +43,6 @@ defineShortcuts({
       </div>
     </div>
 
-    <div class="size-60 rounded-full bg-gradient-to-br from-neutral-500 to-neutral-600 absolute bottom-0 left-0 right-0 mx-auto -mb-40 blur-[200px] -z-1" />
+    <div class="size-60 rounded-full dark:bg-gradient-to-br from-(--ui-bg-inverted) to-(--ui-bg-inverted)/50 absolute bottom-0 left-0 right-0 mx-auto -mb-40 blur-[200px] -z-1" />
   </div>
 </template>

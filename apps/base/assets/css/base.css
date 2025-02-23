@@ -48,7 +48,7 @@ html, body, #__nuxt, #__layout {
 }
 
 .main-gradient {
-  @apply bg-gradient-to-r from-neutral-50 to-neutral-600 to-50% bg-clip-text text-transparent;
+  @apply bg-gradient-to-r from-(--ui-text-muted) to-(--ui-text-highlighted) to-50% bg-clip-text text-transparent;
 }
 
 .bg-stripes {

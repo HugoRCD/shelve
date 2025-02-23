@@ -12,7 +12,7 @@ const { headline = '' } = defineProps<{
 
 <template>
   <div class="size-full flex justify-center items-center bg-neutral-950 text-white p-10" style="background-image: url(/og-bg.png)">
-    <div class="relative size-full flex flex-row  border-neutral-700 p-8 items-center justify-around">
+    <div class="relative size-full flex flex-row border-neutral-700 p-8 items-center justify-around">
       <div>
         <p v-if="headline" class="uppercase text-[24px] mb-4 font-semibold">
           {{ headline }}

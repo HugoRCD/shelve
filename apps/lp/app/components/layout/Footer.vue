@@ -74,7 +74,7 @@ const columns = ref([
 </script>
 
 <template>
-  <UFooter :ui="{ root: 'bg-neutral-950 z-10', top: 'py-0 lg:py-0' }">
+  <UFooter :ui="{ root: 'bg-(--ui-bg) z-10', top: 'py-0 lg:py-0' }">
     <template #top>
       <USeparator />
       <UContainer>
@@ -123,6 +123,7 @@ const columns = ref([
           target="_blank"
           aria-label="GitHub"
         />
+        <UColorModeButton />
         <div style="color-scheme: none;">
           <iframe src="https://status.shelve.cloud/badge?theme=dark" height="30" width="200" />
         </div>

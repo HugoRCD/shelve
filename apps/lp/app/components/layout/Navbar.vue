@@ -98,7 +98,7 @@ const items = [
 const headerUi = computed(() => ({
   root: [
     '@container h-fit fixed mt-2 px-0 rounded-xl py-2 transition-all duration-500 left-1/2 -translate-x-1/2',
-    props.scroll > 0.02 ? 'bg-neutral-950/50 backdrop-blur-lg' : 'bg-transparent backdrop-blur-none',
+    props.scroll > 0.02 ? 'bg-(--ui-bg)/50 backdrop-blur-lg' : 'bg-transparent backdrop-blur-none',
     props.scroll > 0.02 ? 'border' : 'border-transparent',
     props.scroll > 0.005 ? '[--header-width:90%] sm:[--header-width:60%]' : '[--header-width:100%]',
     'w-[var(--header-width)]'
@@ -112,7 +112,7 @@ const headerUi = computed(() => ({
 const navigationUi = computed(() => ({
   item: 'py-0',
   linkTrailingIcon: 'hidden',
-  viewport: 'bg-neutral-950 font-mono',
+  viewport: 'bg-(--ui-bg) font-mono',
   viewportWrapper: 'w-[600px] transition-all duration-500 left-1/2 -translate-x-1/2',
 }))
 </script>

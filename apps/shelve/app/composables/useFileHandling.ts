@@ -6,8 +6,8 @@ export function useFileHandling(updateVariables: (vars: Array<{ index: number, k
 
   const border = computed(() => {
     return dragOver.value
-      ? 'border-[0.5px] border-primary border-dashed'
-      : 'border-[0.5px] border-neutral-200 dark:border-neutral-800'
+      ? 'border-[0.5px] border-(--ui-primary) border-dashed'
+      : 'border-[0.5px] border-(--ui-border)'
   })
 
   function processEnvContent(content: string) {

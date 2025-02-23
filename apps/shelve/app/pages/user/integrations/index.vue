@@ -21,7 +21,7 @@ const integrations = [
       </div>
       <div class="flex flex-col gap-2">
         <NuxtLink v-for="integration in integrations" :key="integration.name" :to="`/user/integrations/${integration.name.toLowerCase()}`">
-          <div class="border border-neutral-200 dark:border-neutral-800 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-900 transition-colors duration-200">
+          <div class="border border-(--ui-border) rounded-lg hover:bg-(--ui-bg-muted) transition-colors duration-200">
             <div class="flex items-center justify-between gap-1 p-4">
               <div class="flex items-center gap-2">
                 <UIcon :name="integration.icon" class="size-7" />
