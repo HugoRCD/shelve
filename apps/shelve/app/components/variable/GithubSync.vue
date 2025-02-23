@@ -86,7 +86,7 @@ async function onSubmit(event: FormSubmitEvent<SyncVariablesSchema>) {
         <div class="flex items-center gap-3">
           <UIcon name="simple-icons:github" class="size-8" />
           <div>
-            <h3 class="text-lg font-semibold text-neutral-900 dark:text-neutral-100">
+            <h3 class="text-lg font-semibold text-(--ui-text-highlighted)">
               Sync with GitHub
             </h3>
             <p class="text-sm text-(--ui-text-muted)">
@@ -99,7 +99,7 @@ async function onSubmit(event: FormSubmitEvent<SyncVariablesSchema>) {
       <template #body>
         <UForm v-if="status !== 'pending'" :state @submit="onSubmit">
           <div v-if="apps && apps.length" class="space-y-4">
-            <div class="bg-neutral-100 dark:bg-neutral-800/50 p-4 rounded-lg">
+            <div class="bg-(--ui-bg-muted) p-4 rounded-lg">
               <UFormField name="repository" label="Target Repository">
                 <template #help>
                   <div class="text-xs">
@@ -124,7 +124,7 @@ async function onSubmit(event: FormSubmitEvent<SyncVariablesSchema>) {
               </UFormField>
             </div>
 
-            <div class="bg-neutral-100 dark:bg-neutral-800/50 p-4 rounded-lg">
+            <div class="bg-(--ui-bg-muted) p-4 rounded-lg">
               <UFormField
                 name="environment"
                 label="Target Environment"
@@ -143,9 +143,9 @@ async function onSubmit(event: FormSubmitEvent<SyncVariablesSchema>) {
               </UFormField>
             </div>
 
-            <div class="bg-neutral-100 dark:bg-neutral-800/50 p-4 rounded-lg space-y-2">
+            <div class="bg-(--ui-bg-muted) p-4 rounded-lg space-y-2">
               <div>
-                <h4 class="text-sm font-medium text-neutral-700 dark:text-neutral-300">
+                <h4 class="text-sm font-medium text-(--ui-text-highlighted)">
                   Summary
                 </h4>
                 <p class="text-sm text-(--ui-text-muted)">
@@ -161,17 +161,17 @@ async function onSubmit(event: FormSubmitEvent<SyncVariablesSchema>) {
                 block
               />
             </div>
-            <p class="text-xs text-(--ui-text-muted) mt-2 bg-neutral-100 dark:bg-neutral-800/50 p-2 rounded-lg">
+            <p class="text-xs text-(--ui-text-muted) mt-2 bg-(--ui-bg-muted) p-2 rounded-lg">
               <UIcon name="lucide:info" class="text-sm align-sub" /> This might cause overwriting of existing secrets in your repository
             </p>
           </div>
 
           <div v-else class="text-center py-8">
-            <div class="bg-neutral-100 dark:bg-neutral-800/50 p-6 rounded-lg">
+            <div class="bg-(--ui-bg-muted) p-6 rounded-lg">
               <div class="flex flex-col items-center gap-4">
                 <UIcon
                   name="simple-icons:github"
-                  class="size-8 text-neutral-600 dark:text-neutral-300"
+                  class="size-8 text-(--ui-text-muted)"
                 />
                 <div>
                   <h3 class="text-lg font-semibold mb-1">
@@ -209,6 +209,3 @@ async function onSubmit(event: FormSubmitEvent<SyncVariablesSchema>) {
   </div>
 </template>
 
-<style scoped>
-
-</style>

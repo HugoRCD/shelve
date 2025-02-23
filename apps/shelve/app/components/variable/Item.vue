@@ -42,7 +42,7 @@ const showEdit = ref(false)
 </script>
 
 <template>
-  <UCard variant="subtle" :ui="{ root: isSelected && !showEdit ? 'bg-neutral-100 dark:bg-neutral-800' : '' }">
+  <UCard variant="subtle" :ui="{ root: isSelected && !showEdit ? 'bg-(--ui-bg-accented)/60' : '' }">
     <div class="flex w-full items-start justify-between">
       <div
         class="flex w-full flex-col gap-1"
@@ -60,8 +60,8 @@ const showEdit = ref(false)
         </h3>
         <div class="flex flex-col gap-1">
           <span v-for="env in environments" :key="env.id" class="flex items-center gap-1 text-xs font-normal text-(--ui-text-muted)">
-            <UIcon v-if="environmentsValues[env.id]" name="lucide:check" class="size-4 text-green-400" />
-            <UIcon v-else name="lucide:x" class="size-4 text-red-400" />
+            <UIcon v-if="environmentsValues[env.id]" name="lucide:check" class="size-4 text-(--ui-success)" />
+            <UIcon v-else name="lucide:x" class="size-4 text-(--ui-error)" />
             {{ capitalize(env.name) }}
           </span>
         </div>
@@ -73,11 +73,11 @@ const showEdit = ref(false)
       </div>
     </div>
     <div v-if="showEdit" class="flex flex-col gap-2 mt-4">
-      <form class="flex flex-col gap-6 bg-neutral-50 dark:bg-neutral-950 p-2 rounded-md" @submit.prevent="updateVariable(variableToUpdate)">
+      <form class="flex flex-col gap-6 bg-(--ui-bg) p-2 rounded-md" @submit.prevent="updateVariable(variableToUpdate)">
         <div class="overflow-x-auto">
           <table class="w-full">
             <thead>
-              <tr class="border-b dark:border-neutral-800 border-neutral-300">
+              <tr class="border-b border-(--ui-border)">
                 <th class="py-2 w-24 px-4 text-left text-sm font-medium text-(--ui-text-muted)">
                   Environment
                 </th>
@@ -87,8 +87,8 @@ const showEdit = ref(false)
               </tr>
             </thead>
             <tbody>
-              <tr class="border-b dark:border-neutral-800 border-neutral-300">
-                <td class="py-2 px-4 text-sm font-medium">
+              <tr class="border-b border-(--ui-border)">
+                <td class="py-2 px-4 text-sm font-medium text-(--ui-text-muted)">
                   Key
                 </td>
                 <td class="py-2 px-4" colspan="2">
@@ -99,11 +99,11 @@ const showEdit = ref(false)
                   />
                 </td>
               </tr>
-              <tr v-for="env in environments" :key="env.id" class="border-b dark:border-neutral-800 border-neutral-300">
+              <tr v-for="env in environments" :key="env.id" class="border-b border-(--ui-border)">
                 <td class="py-2 px-4 text-sm font-medium">
                   <UTooltip :text="`Copy env variables for ${env.name} environment`" :content="{ side: 'top' }">
                     <span
-                      class="cursor-pointer transition-colors ease-in-out duration-300 text-(--ui-text-muted) hover:text-neutral-300"
+                      class="cursor-pointer transition-colors ease-in-out duration-300 text-(--ui-text-muted) hover:text-(--ui-text-highlighted)"
                       @click="copyToClipboard(`${localVariable.key}=${environmentsValues[env.id]}`, 'Variable copied to clipboard')"
                     >
                       {{ capitalize(env.name) }}

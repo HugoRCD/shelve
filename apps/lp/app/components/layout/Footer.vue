@@ -1,6 +1,4 @@
 <script setup lang="ts">
-const route = useRoute()
-
 type RepoType = {
   stars: number
 }

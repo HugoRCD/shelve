@@ -19,22 +19,14 @@ const formatDate = (dateString: string) => {
 
 <template>
   <article @click="router.push(to)">
-    <CrossedDiv class="group p-4 cursor-pointer border border-neutral-200 dark:border-neutral-800 rounded-lg">
+    <CrossedDiv class="group p-4 cursor-pointer border border-(--ui-border) rounded-lg">
       <div class="flex md:flex-row flex-col gap-4 sm:gap-6">
         <NuxtImg
-          v-slot="{ src, isLoaded, imgAttrs }"
           :src="post.image"
           :alt="post.title"
+          format="webp"
           class="md:max-w-1/2 aspect-video rounded-lg object-cover group-hover:scale-105 transition-all duration-200"
-        >
-          <img
-            v-if="isLoaded"
-            v-bind="imgAttrs"
-            :src
-            :alt="post.title"
-          >
-          <USkeleton v-else class="h-full w-full" />
-        </NuxtImg>
+        />
         <div class="flex flex-col justify-around gap-1">
           <div class="flex flex-col gap-1">
             <span class="text-xs font-medium text-(--ui-text-muted)">

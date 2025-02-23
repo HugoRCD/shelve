@@ -1,5 +1,6 @@
 {
   "$schema": "https://turbo.build/schema.json",
+  "ui": "tui",
   "tasks": {
     "build": {
       "dependsOn": [
@@ -42,6 +43,5 @@
     "typecheck": {
       "cache": true
     }
-  },
-  "extends": ["//"]
+  }
 }

@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { Toaster } from 'vue-sonner'
 
+const colorMode = useColorMode()
+
 useScriptPlausibleAnalytics({
   domain: 'shelve.cloud',
   scriptInput: {

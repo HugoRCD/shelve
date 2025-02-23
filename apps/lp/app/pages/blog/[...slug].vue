@@ -37,12 +37,12 @@ const editThisPage = computed(() => ({
 <template>
   <UMain class="mt-20 px-2">
     <ShelveMeta :default-og-image="false" :title="page?.title" :description="page?.description" />
-    <UContainer class="relative min-h-screen bg-neutral-50 dark:bg-neutral-900 px-4 sm:px-6 pt-6 border-x border-t border-neutral-200 dark:border-neutral-800 rounded-t-sm shadow-sm">
+    <UContainer class="relative min-h-screen bg-(--ui-bg-muted) px-4 sm:px-6 pt-6 border-x border-t border-(--ui-border) rounded-t-sm shadow-sm">
       <UPage v-if="page">
-        <NuxtLink to="/blog" class="font-mono text-sm flex items-center gap-1 text-(--ui-text-muted) hover:text-neutral-50 transition-colors duration-200">
+        <ULink to="/blog" class="font-mono text-sm flex items-center gap-1">
           <UIcon name="lucide:chevron-left" />
           Blog
-        </NuxtLink>
+        </ULink>
         <div class="flex flex-col gap-2 mt-8">
           <h1 class="text-4xl font-bold">
             {{ page.title }}

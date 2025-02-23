@@ -39,7 +39,7 @@ function openDeleteModal() {
   <div>
     <Transition name="bezier" mode="out-in">
       <div v-if="selectedVariables.length > 0" class="absolute bottom-4 left-1/2 z-20 -translate-x-1/2">
-        <div class="dark flex items-center text-neutral-300 gap-4 rounded-md border px-5 py-1.5 border-neutral-800 bg-neutral-950 shadow-lg">
+        <div class="dark flex items-center text-(--ui-text-highlighted) gap-4 rounded-md border px-5 py-1.5 border-(--ui-border) bg-(--ui-bg) shadow-lg">
           <span class="text-nowrap text-sm font-semibold">
             {{ selectedVariables.length }} variable{{ selectedVariables.length > 1 ? 's' : '' }} selected
           </span>
