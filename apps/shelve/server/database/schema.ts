@@ -1,6 +1,7 @@
 import { boolean, pgEnum, pgTable, varchar, index, uniqueIndex, bigint, integer } from 'drizzle-orm/pg-core'
 import { relations } from 'drizzle-orm'
-import { AuthType, Role, TeamRole } from '@types'
+import { AuthType, Role, TeamRole } from '@types' // in prod
+// import { AuthType, Role, TeamRole } from '../../../../packages/types' // in dev
 import { timestamps } from './column.helpers'
 
 const DEFAULT_AVATAR = 'https://i.imgur.com/6VBx3io.png'
@@ -130,7 +131,7 @@ export const environments = pgTable('environments', {
 
 export const teamStats = pgTable('team_stats', {
   id: bigint({ mode: 'number' }).primaryKey().generatedByDefaultAsIdentity(),
-  teamId: bigint({ mode: 'number' }).unique().references(() => teams.id).notNull(),
+  teamId: bigint({ mode: 'number' }).unique().references(() => teams.id, { onDelete: 'set null' }),
   pushCount: integer('push_count').notNull().default(0),
   pullCount: integer('pull_count').notNull().default(0),
   ...timestamps,
