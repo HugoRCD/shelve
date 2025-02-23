@@ -10,19 +10,19 @@ defineProps<{
       <NuxtLink class="space-y-6 cursor-pointer" to="https://vercel.com/font">
         <div>
           <span class="text-sm text-(--ui-text-muted)">Display</span>
-          <h1 class="font-geist text-4xl font-medium">
+          <h1 class="text-4xl font-medium">
             The quick brown fox
           </h1>
         </div>
         <div>
           <span class="text-sm text-(--ui-text-muted)">Heading</span>
-          <h2 class="font-geist text-2xl font-medium">
+          <h2 class="text-2xl font-medium">
             The quick brown fox
           </h2>
         </div>
         <div>
           <span class="text-sm text-(--ui-text-muted)">Body</span>
-          <p class="font-geist">
+          <p>
             The quick brown fox jumps over the lazy dog. This pangram contains every letter of the English alphabet at least once.
           </p>
         </div>
@@ -32,7 +32,7 @@ defineProps<{
       <NuxtLink class="space-y-6 cursor-pointer" to="https://fonts.google.com/specimen/JetBrains+Mono">
         <div>
           <span class="text-sm text-(--ui-text-muted)">Code</span>
-          <div class="font-jetbrains bg-(--ui-gray-900) p-4 rounded-md">
+          <div class="font-mono bg-(--ui-gray-900) p-4 rounded-md">
             <pre class="text-white">const shelve = {
   name: 'Shelve',
   type: 'Awesome'
@@ -41,7 +41,7 @@ defineProps<{
         </div>
         <div>
           <span class="text-sm text-(--ui-text-muted)">Terminal</span>
-          <div class="font-jetbrains bg-(--ui-gray-900) p-4 rounded-md">
+          <div class="font-mono bg-(--ui-gray-900) p-4 rounded-md">
             <pre class="text-white">$ npx create-nuxt-app my-project</pre>
           </div>
         </div>

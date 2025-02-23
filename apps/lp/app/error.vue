@@ -24,18 +24,18 @@ const goBack = () => {
         {{ error.statusCode }}
       </span>
       <div v-if="error.statusCode === 404">
-        <h1 class="font-newsreader text-4xl font-light italic">
+        <h1 class="font-serif text-4xl font-light italic">
           Looks like you're lost
         </h1>
-        <p class="font-geist text-sm text-(--ui-text-muted)">
+        <p class="text-sm text-(--ui-text-muted)">
           The page you're looking for doesn't exist
         </p>
       </div>
       <div v-else>
-        <h1 class="font-newsreader text-4xl font-light italic">
+        <h1 class="font-serif text-4xl font-light italic">
           An error occurred
         </h1>
-        <p class="font-geist text-sm text-(--ui-text-muted)">
+        <p class="text-sm text-(--ui-text-muted)">
           Refresh the page or try again later
         </p>
       </div>

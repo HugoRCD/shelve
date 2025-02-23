@@ -18,7 +18,7 @@ if (import.meta.client) setPrefersReducedMotion(reduceMotion.value)
 
 <template>
   <Html lang="en">
-    <Body class="overscroll-y-none selection:bg-primary font-geist relative overflow-x-hidden bg-white text-black selection:text-inverted dark:bg-neutral-950 dark:text-white">
+    <Body class="overscroll-y-none selection:bg-primary relative overflow-x-hidden selection:text-inverted dark:bg-neutral-950">
       <ShelveMeta title="Application" title-template="%s | Shelve" />
       <UApp :tooltip="{ delayDuration: 0 }">
         <Suspense>
@@ -28,10 +28,10 @@ if (import.meta.client) setPrefersReducedMotion(reduceMotion.value)
           <template #fallback>
             <div class="size-full flex flex-col gap-4 items-center justify-center">
               <div class="relative">
-                <div class="absolute -z-1 -inset-5 rounded-full border border-neutral-200/60 dark:border-neutral-700/60 animate-ripple-1 opacity-0" />
-                <div class="absolute -z-1 -inset-3 rounded-full border border-neutral-200/70 dark:border-neutral-700/70 animate-ripple-2 opacity-0" />
-                <div class="absolute -z-1 -inset-1 rounded-full border border-neutral-200/80 dark:border-neutral-700/80 animate-ripple-3 opacity-0" />
-                <div class="rounded-full flex items-center justify-center z-10 border-1 border-neutral-200/90 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-4 shadow-sm dark:shadow-lg">
+                <div class="absolute -z-1 -inset-5 rounded-full border border-(--ui-border) animate-ripple-1 opacity-0" />
+                <div class="absolute -z-1 -inset-3 rounded-full border border-(--ui-border) animate-ripple-2 opacity-0" />
+                <div class="absolute -z-1 -inset-1 rounded-full border border-(--ui-border) animate-ripple-3 opacity-0" />
+                <div class="rounded-full flex items-center justify-center z-10 border-1 border-(--ui-border) bg-(--ui-bg) p-4 shadow-sm dark:shadow-lg">
                   <Icon name="custom:shelve" class="size-8 animate-pulse" />
                 </div>
               </div>

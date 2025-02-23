@@ -75,7 +75,7 @@ defineShortcuts({
 
 <template>
   <Html lang="en">
-    <Body class="overscroll-y-none selection:bg-primary font-geist overflow-x-hidden text-black selection:text-inverted bg-white dark:bg-neutral-950 dark:text-white">
+    <Body class="overscroll-y-none selection:bg-primary overflow-x-hidden text-black selection:text-inverted bg-white dark:bg-neutral-950 dark:text-white">
       <ShelveMeta :default-og-image :title="route.meta.title" :description="route.meta.description" />
 
       <NuxtLoadingIndicator color="#FFF" />
