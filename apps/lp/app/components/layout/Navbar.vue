@@ -112,7 +112,7 @@ const headerUi = computed(() => ({
 const navigationUi = computed(() => ({
   item: 'py-0',
   linkTrailingIcon: 'hidden',
-  viewport: 'bg-(--ui-bg) font-mono',
+  viewport: 'bg-(--ui-bg) font-mono outline outline-offset-4 outline-(--ui-border)',
   viewportWrapper: 'w-[600px] transition-all duration-500 left-1/2 -translate-x-1/2',
 }))
 </script>

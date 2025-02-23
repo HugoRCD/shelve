@@ -19,7 +19,7 @@ defineShortcuts({
 </script>
 
 <template>
-  <UHeader class="bg-white dark:bg-neutral-950" :ui="{ left: 'min-w-0' }" mode="drawer" :menu="{ shouldScaleBackground: true }">
+  <UHeader :ui="{ left: 'min-w-0' }" mode="drawer" :menu="{ shouldScaleBackground: true }">
     <template #left>
       <Logo lp /> <span class="text-xs font-mono text-(--ui-text-muted)">| v{{ version }}</span>
     </template>

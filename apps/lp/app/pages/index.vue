@@ -77,7 +77,7 @@ function useClipboard(text: string) {
           </div>
 
           <div class="relative flex items-center justify-center">
-            <div class="flex size-16 items-center justify-center rounded-full border border-(--ui-border) bg-(--ui-bg-inverted)/5 p-3 shadow-xl">
+            <div class="flex size-16 items-center justify-center rounded-full border border-white/10 bg-(--ui-bg-inverted)/2.5 p-3 shadow-md">
               <UIcon name="lucide:lock" class="size-8 text-(--ui-text-muted)" />
             </div>
           </div>

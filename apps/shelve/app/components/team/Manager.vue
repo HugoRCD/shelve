@@ -52,7 +52,7 @@ const groups = computed(() => [
 
 <template>
   <UModal v-model:open="open" title="Switch team" description="Select a team to switch to">
-    <button class="w-full cursor-pointer flex items-center justify-between hover:bg-neutral-100 dark:hover:bg-neutral-800 p-2 rounded-lg">
+    <button class="w-full cursor-pointer flex items-center justify-between hover:bg-(--ui-bg-elevated) p-2 rounded-lg">
       <span class="flex items-center gap-2">
         <USkeleton v-if="loading" class="size-7 rounded-full" />
         <UAvatar v-else-if="currentTeam" :src="currentTeam.logo" size="sm" alt="team name" />

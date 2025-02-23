@@ -2,8 +2,9 @@
 definePageMeta({
   title: 'About',
   description: 'Discover the story behind the project, its origins, and the journey to where we are today.',
-  colorMode: 'dark',
 })
+
+const colorMode = useColorMode()
 
 const { data } = await useAsyncData('about', () => {
   return queryCollection('about').first()
@@ -17,7 +18,7 @@ const { data } = await useAsyncData('about', () => {
         <div class="text-center w-full h-full flex flex-col italic font-mono items-center justify-center">
           <CrossedDiv line>
             <div class="p-8 pointer-events-auto flex flex-col items-center justify-center">
-              <ParticlesImg src="/shelve.svg" alt="Shelve Logo" :max-width="200" />
+              <ParticlesImg :key="colorMode.value" src="/shelve.svg" alt="Shelve Logo" :max-width="200" :color="colorMode.value === 'dark' ? '#FFF' : '#000'" />
               <ScrambleText class="mt-8 mb-2 main-gradient text-4xl sm:text-5xl" label="About Shelve" />
               <p class="max-w-lg text-center text-xs text-(--ui-text-muted) sm:text-base">
                 Discover the story behind the project, its origins, and the journey to where we are today.
@@ -32,14 +33,14 @@ const { data } = await useAsyncData('about', () => {
       <div class="h-screen pointer-events-none" />
 
       <USeparator />
-      <div v-if="data" class="relative w-full pt-10 sm:pt-20 bg-neutral-950 z-10">
+      <div v-if="data" class="relative w-full pt-10 sm:pt-20 bg-(--ui-bg) z-10">
         <div v-for="(section, index) in data.about" :key="index" class="group max-w-5xl mx-auto px-4 pointer-events-auto">
           <div class="flex flex-col sm:grid sm:grid-cols-12 gap-16 py-16 group-last:pb-0">
             <div class="col-span-5 relative">
               <ProseImg
                 :src="section.image"
                 :alt="section.title"
-                class="grayscale col-span-12 w-full mix-blend-lighten"
+                class="grayscale col-span-12 w-full mix-blend-lighten invert dark:invert-0"
               />
             </div>
             <div class="col-span-7">
@@ -53,7 +54,7 @@ const { data } = await useAsyncData('about', () => {
                 <MDC class="text-sm leading-relaxed text-(--ui-text-muted)" :value="section.content" unwrap="p" />
               </div>
             </div>
-            <div class="hidden group-last:flex col-span-12 justify-end bg-neutral-950 mb-16">
+            <div class="hidden group-last:flex col-span-12 justify-end bg-(--ui-bg) mb-16">
               <Signature />
             </div>
           </div>

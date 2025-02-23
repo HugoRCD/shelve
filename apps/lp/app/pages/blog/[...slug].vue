@@ -2,10 +2,6 @@
 import type { ContentNavigationItem } from '@nuxt/content'
 import { findPageBreadcrumb, mapContentNavigation } from '#ui-pro/utils/content'
 
-definePageMeta({
-  colorMode: 'dark',
-})
-
 const route = useRoute()
 
 const { data: page } = await useAsyncData(route.path, () =>
@@ -72,17 +68,6 @@ const editThisPage = computed(() => ({
             </ULink>
           </div>
         </UPageBody>
-
-        <!--        <template v-if="page?.body?.toc?.links?.length" #right>
-          <UContentToc highlight :links="page.body.toc.links" class="z-[2] bg-white dark:bg-neutral-950">
-            <template #default>
-              <div class="flex items-center gap-2">
-                <UIcon name="i-lucide-align-left" />
-                On this page
-              </div>
-            </template>
-          </UContentToc>
-        </template>-->
       </UPage>
     </UContainer>
   </UMain>
