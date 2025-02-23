@@ -89,7 +89,7 @@ async function onSubmit(event: FormSubmitEvent<SyncVariablesSchema>) {
             <h3 class="text-lg font-semibold text-neutral-900 dark:text-neutral-100">
               Sync with GitHub
             </h3>
-            <p class="text-sm text-neutral-600 dark:text-neutral-400">
+            <p class="text-sm text-(--ui-text-muted)">
               Please select which environment you want to use.
             </p>
           </div>
@@ -112,7 +112,7 @@ async function onSubmit(event: FormSubmitEvent<SyncVariablesSchema>) {
                 <div class="flex items-center gap-2">
                   <UIcon
                     name="lucide:git-fork"
-                    class="size-4 text-neutral-500"
+                    class="size-4 text-(--ui-text-muted)"
                   />
                   <UInput
                     v-model="state.repository"
@@ -148,7 +148,7 @@ async function onSubmit(event: FormSubmitEvent<SyncVariablesSchema>) {
                 <h4 class="text-sm font-medium text-neutral-700 dark:text-neutral-300">
                   Summary
                 </h4>
-                <p class="text-sm text-neutral-600 dark:text-neutral-400">
+                <p class="text-sm text-(--ui-text-muted)">
                   {{ variablesToSend.length }} variable(s) will be synchronized to your GitHub repository
                 </p>
               </div>
@@ -161,7 +161,7 @@ async function onSubmit(event: FormSubmitEvent<SyncVariablesSchema>) {
                 block
               />
             </div>
-            <p class="text-xs text-neutral-500 dark:text-neutral-400 mt-2 bg-neutral-100 dark:bg-neutral-800/50 p-2 rounded-lg">
+            <p class="text-xs text-(--ui-text-muted) mt-2 bg-neutral-100 dark:bg-neutral-800/50 p-2 rounded-lg">
               <UIcon name="lucide:info" class="text-sm align-sub" /> This might cause overwriting of existing secrets in your repository
             </p>
           </div>
@@ -177,7 +177,7 @@ async function onSubmit(event: FormSubmitEvent<SyncVariablesSchema>) {
                   <h3 class="text-lg font-semibold mb-1">
                     No GitHub Apps Found
                   </h3>
-                  <p class="text-sm text-neutral-600 dark:text-neutral-400 mb-4">
+                  <p class="text-sm text-(--ui-text-muted) mb-4">
                     Create a GitHub app to start syncing your secrets
                   </p>
                   <ULink href="/user/integrations/github">

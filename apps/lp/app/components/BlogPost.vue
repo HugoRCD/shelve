@@ -37,13 +37,13 @@ const formatDate = (dateString: string) => {
         </NuxtImg>
         <div class="flex flex-col justify-around gap-1">
           <div class="flex flex-col gap-1">
-            <span class="text-xs font-medium text-neutral-500">
+            <span class="text-xs font-medium text-(--ui-text-muted)">
               {{ formatDate(post.date) }}
             </span>
             <h2 class="text-xl font-bold text-(--ui-primary)">
               {{ post.title }}
             </h2>
-            <p class="text-neutral-500">
+            <p class="text-(--ui-text-muted)">
               {{ post.description }}
             </p>
           </div>

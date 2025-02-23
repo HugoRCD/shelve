@@ -91,7 +91,7 @@ function updateEnvironment(env: Environment) {
           <h2 class="text-base font-semibold leading-7">
             Environment Settings
           </h2>
-          <p class="text-sm leading-6 text-neutral-500">
+          <p class="text-sm leading-6 text-(--ui-text-muted)">
             Create, update, and delete environments
           </p>
         </div>

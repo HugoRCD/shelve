@@ -33,7 +33,7 @@ async function testNewUserMail() {
       <h2 class="text-lg font-semibold">
         Test new user email
       </h2>
-      <p class="text-sm text-neutral-500 dark:text-neutral-400">
+      <p class="text-sm text-(--ui-text-muted)">
         Send a test email to a new user
       </p>
       <div>

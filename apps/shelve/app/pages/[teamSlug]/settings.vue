@@ -49,21 +49,21 @@ const open = ref(false)
         <div class="flex items-center gap-4">
           <NuxtImg :src="team.logo" class="size-10 rounded-full" />
           <div>
-            <h2 class="text-base font-semibold leading-7">
+            <h2 class="text-base font-semibold">
               Team Settings
             </h2>
-            <p class="text-sm leading-6 text-neutral-500">
+            <p class="text-sm text-(--ui-text-muted)">
               Manage team settings
             </p>
           </div>
         </div>
       </div>
       <div style="--stagger: 2" data-animate class="mt-6 flex flex-col gap-4">
-        <div class="max-w-xs">
-          <FormGroup v-model="team.name" label="Name" :disabled="!canUpdate" />
-        </div>
-        <div class="max-w-sm">
-          <UFormField class="max-w-xs" label="Slug">
+        <div class="max-w-sm space-y-4">
+          <UFormField label="Name">
+            <UInput v-model="team.name" :disabled="!canUpdate" class="w-full" />
+          </UFormField>
+          <UFormField label="Slug" help="This is the unique identifier for your team (used by the CLI)" :ui="{ help: 'text-xs' }">
             <UButtonGroup class="w-full">
               <UButton
                 color="neutral"
@@ -76,13 +76,10 @@ const open = ref(false)
               </UTooltip>
             </UButtonGroup>
           </UFormField>
-          <p class="text-xs mt-1 text-neutral-500">
-            This is the unique identifier for your team (used by the CLI)
-          </p>
         </div>
-        <div class="w-full">
-          <FormGroup v-model="team.logo" label="Logo" :disabled="!canUpdate" />
-        </div>
+        <UFormField label="Logo">
+          <UInput v-model="team.logo" :disabled="!canUpdate" class="w-full" />
+        </UFormField>
       </div>
       <div style="--stagger: 4" data-animate class="mt-6 flex items-center justify-between gap-2">
         <UButton v-if="canUpdate" type="submit" :loading="updateLoading">

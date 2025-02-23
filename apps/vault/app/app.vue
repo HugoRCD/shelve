@@ -66,7 +66,7 @@ const items = [
                   <h1 class="main-gradient font-medium text-3xl">
                     <ScrambleText label="Vault" />
                   </h1>
-                  <p class="text-neutral-500 max-w-lg text-xs sm:text-sm">
+                  <p class="text-(--ui-text-muted) max-w-lg text-xs sm:text-sm">
                     Share secrets securely without an account. Set expiration time, control number of reads, and ensure encrypted transmission.
                   </p>
                 </div>
@@ -81,7 +81,7 @@ const items = [
                 <h3 class="main-gradient text-2xl">
                   <ScrambleText label="FAQ" />
                 </h3>
-                <p class="max-w-lg text-center text-sm text-neutral-500 sm:text-base">
+                <p class="max-w-lg text-center text-sm text-(--ui-text-muted) sm:text-base">
                   Frequently asked questions about Vault.
                 </p>
               </div>
@@ -94,13 +94,13 @@ const items = [
             <footer class="mt-20 flex flex-col gap-4 px-5">
               <USeparator />
               <div class="flex items-center justify-between">
-                <span class="text-xs font-mono italic tracking-tight text-neutral-500">
-                  © {{ new Date().getFullYear() }} - Made by <NuxtLink to="https://hrcd.fr/" class="text-neutral-400 hover:text-neutral-200">
+                <span class="text-xs font-mono italic tracking-tight text-(--ui-text-muted)">
+                  © {{ new Date().getFullYear() }} - Made by <NuxtLink to="https://hrcd.fr/" class="text-(--ui-text-muted) hover:text-neutral-200">
                     HugoRCD
                   </NuxtLink>
                 </span>
-                <span class="text-xs font-mono italic tracking-tight text-neutral-500">
-                  <NuxtLink to="https://dub.sh/shelve" target="_blank" class="text-neutral-400 hover:text-neutral-200">
+                <span class="text-xs font-mono italic tracking-tight text-(--ui-text-muted)">
+                  <NuxtLink to="https://dub.sh/shelve" target="_blank" class="text-(--ui-text-muted) hover:text-neutral-200">
                     Powered by Shelve <UIcon name="custom:shelve" />
                   </NuxtLink>
                 </span>

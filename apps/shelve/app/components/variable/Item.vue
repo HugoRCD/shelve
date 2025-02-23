@@ -42,7 +42,7 @@ const showEdit = ref(false)
 </script>
 
 <template>
-  <UCard :ui="{ root: isSelected && !showEdit ? 'bg-neutral-100 dark:bg-neutral-800' : '' }">
+  <UCard variant="subtle" :ui="{ root: isSelected && !showEdit ? 'bg-neutral-100 dark:bg-neutral-800' : '' }">
     <div class="flex w-full items-start justify-between">
       <div
         class="flex w-full flex-col gap-1"
@@ -59,7 +59,7 @@ const showEdit = ref(false)
           </UTooltip>
         </h3>
         <div class="flex flex-col gap-1">
-          <span v-for="env in environments" :key="env.id" class="flex items-center gap-1 text-xs font-normal text-neutral-500">
+          <span v-for="env in environments" :key="env.id" class="flex items-center gap-1 text-xs font-normal text-(--ui-text-muted)">
             <UIcon v-if="environmentsValues[env.id]" name="lucide:check" class="size-4 text-green-400" />
             <UIcon v-else name="lucide:x" class="size-4 text-red-400" />
             {{ capitalize(env.name) }}
@@ -67,7 +67,7 @@ const showEdit = ref(false)
         </div>
       </div>
       <div class="flex items-center gap-2">
-        <p class="hidden text-right text-xs font-normal text-neutral-500 md:block">
+        <p class="hidden text-right text-xs font-normal text-(--ui-text-muted) md:block">
           Last updated: {{ new Date(variable.updatedAt).toLocaleDateString() }}
         </p>
       </div>
@@ -78,10 +78,10 @@ const showEdit = ref(false)
           <table class="w-full">
             <thead>
               <tr class="border-b dark:border-neutral-800 border-neutral-300">
-                <th class="py-2 w-24 px-4 text-left text-sm font-medium text-neutral-500">
+                <th class="py-2 w-24 px-4 text-left text-sm font-medium text-(--ui-text-muted)">
                   Environment
                 </th>
-                <th class="py-2 px-4 text-left text-sm font-medium text-neutral-500">
+                <th class="py-2 px-4 text-left text-sm font-medium text-(--ui-text-muted)">
                   Value
                 </th>
               </tr>
@@ -103,7 +103,7 @@ const showEdit = ref(false)
                 <td class="py-2 px-4 text-sm font-medium">
                   <UTooltip :text="`Copy env variables for ${env.name} environment`" :content="{ side: 'top' }">
                     <span
-                      class="cursor-pointer transition-colors ease-in-out duration-300 text-neutral-500 hover:text-neutral-300"
+                      class="cursor-pointer transition-colors ease-in-out duration-300 text-(--ui-text-muted) hover:text-neutral-300"
                       @click="copyToClipboard(`${localVariable.key}=${environmentsValues[env.id]}`, 'Variable copied to clipboard')"
                     >
                       {{ capitalize(env.name) }}

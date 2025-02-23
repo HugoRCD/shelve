@@ -19,7 +19,7 @@ const { data } = await useAsyncData('about', () => {
             <div class="p-8 pointer-events-auto flex flex-col items-center justify-center">
               <ParticlesImg src="/shelve.svg" alt="Shelve Logo" :max-width="200" />
               <ScrambleText class="mt-8 mb-2 main-gradient text-4xl sm:text-5xl" label="About Shelve" />
-              <p class="max-w-lg text-center text-xs text-neutral-500 sm:text-base">
+              <p class="max-w-lg text-center text-xs text-(--ui-text-muted) sm:text-base">
                 Discover the story behind the project, its origins, and the journey to where we are today.
               </p>
             </div>
@@ -44,13 +44,13 @@ const { data } = await useAsyncData('about', () => {
             </div>
             <div class="col-span-7">
               <div class="space-y-3 mb-16">
-                <div class="text-neutral-500 text-center sm:text-left font-mono italic">
+                <div class="text-(--ui-text-muted) text-center sm:text-left font-mono italic">
                   Part {{ index + 1 < 10 ? '0' + (index + 1) : index + 1 }}
                 </div>
                 <h2 class="text-4xl sm:text-5xl text-center sm:text-left font-serif italic">
                   {{ section.title }}
                 </h2>
-                <MDC class="text-sm leading-relaxed text-neutral-400" :value="section.content" unwrap="p" />
+                <MDC class="text-sm leading-relaxed text-(--ui-text-muted)" :value="section.content" unwrap="p" />
               </div>
             </div>
             <div class="hidden group-last:flex col-span-12 justify-end bg-neutral-950 mb-16">

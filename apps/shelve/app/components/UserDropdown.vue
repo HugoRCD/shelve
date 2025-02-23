@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { loggedIn, user, clear } = useUserSession()
+const { loggedIn, user } = useUserSession()
 
 const items = [
   [
@@ -32,7 +32,7 @@ const items = [
           <p>
             Signed in as
           </p>
-          <p class="truncate font-medium text-neutral-900 dark:text-white">
+          <p class="truncate font-medium">
             {{ item.label }}
           </p>
         </div>

@@ -74,7 +74,7 @@ const groups = computed(() => [
         @update:open="open = $event"
       >
         <template #teams-trailing="{ item }">
-          <span v-if="!item.disabled" class="text-xs text-neutral-500">
+          <span v-if="!item.disabled" class="text-xs text-(--ui-text-muted)">
             Select team
           </span>
         </template>
@@ -93,7 +93,7 @@ const groups = computed(() => [
                   Looks like there is no team with the name '{{ newTeamName }}'
                 </span>
               </h3>
-              <p v-if="!newTeamName" class="text-sm text-neutral-500">
+              <p v-if="!newTeamName" class="text-sm text-(--ui-text-muted)">
                 Create a team to start collaborating with your team members.
               </p>
             </div>

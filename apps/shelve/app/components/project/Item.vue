@@ -13,7 +13,7 @@ const active = useState('active-project')
 
 <template>
   <NuxtLink :to="`/${teamSlug}/projects/${project.id}/variables`">
-    <UCard class="h-full" @click="active = project.id">
+    <UCard variant="subtle" class="h-full" @click="active = project.id">
       <div class="flex w-full items-start gap-4">
         <UAvatar
           :src="project.logo"
@@ -24,10 +24,10 @@ const active = useState('active-project')
           :class="{ active: active === project.id }"
         />
         <div class="flex flex-col gap-1">
-          <h3 class="flex flex-col text-lg font-semibold" :class="{ active: active === project.id }">
+          <h3 class="flex flex-col text-lg text-(--ui-text-highlighted) font-semibold" :class="{ active: active === project.id }">
             {{ project.name }}
           </h3>
-          <div class="text-xs font-normal text-neutral-500" :class="{ active: active === project.id }">
+          <div class="text-xs font-normal text-(--ui-text-muted)" :class="{ active: active === project.id }">
             {{ project.description }}
           </div>
         </div>

@@ -11,6 +11,9 @@ export default defineAppConfig({
       codeIcon: {
         'shelve.json': 'custom:shelve',
         'docker-compose.yml': 'simple-icons:docker'
+      },
+      a: {
+        base: 'border-b border-(--ui-secondary)'
       }
     },
     pageSection: {

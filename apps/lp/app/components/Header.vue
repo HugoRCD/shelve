@@ -21,7 +21,7 @@ defineShortcuts({
 <template>
   <UHeader class="bg-white dark:bg-neutral-950" :ui="{ left: 'min-w-0' }" mode="drawer" :menu="{ shouldScaleBackground: true }">
     <template #left>
-      <Logo lp /> <span class="text-xs font-mono text-neutral-500">| v{{ version }}</span>
+      <Logo lp /> <span class="text-xs font-mono text-(--ui-text-muted)">| v{{ version }}</span>
     </template>
 
     <UContentSearchButton label="Search or ⌘K..." icon="lucide:search" variant="subtle" size="sm" class="w-[300px]" />

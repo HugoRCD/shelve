@@ -99,10 +99,11 @@ const columns = ref([
 
 
     <template #left>
-      <div class="text-xs font-mono italic tracking-tight text-neutral-500">
-        © {{ new Date().getFullYear() }} - Made by <NuxtLink to="https://hrcd.fr/" class="text-neutral-400 hover:text-neutral-200">
+      <div class="text-xs font-mono italic tracking-tight">
+        <span class="text-(--ui-text-muted)"> © {{ new Date().getFullYear() }} - Made by </span>
+        <ULink to="https://hrcd.fr/">
           HugoRCD
-        </NuxtLink>
+        </ULink>
       </div>
     </template>
 

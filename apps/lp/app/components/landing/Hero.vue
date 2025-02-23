@@ -26,11 +26,11 @@ defineShortcuts({
         class="mx-auto max-w-md text-pretty text-center text-3xl sm:text-4xl"
         tag="div"
       />
-      <p class="mx-auto mt-2 max-w-lg text-center text-neutral-400 sm:block">
+      <p class="mx-auto mt-2 max-w-lg text-center text-(--ui-text-muted) sm:block">
         {{ description }}
       </p>
       <MDC
-        class="mt-4 hidden text-center text-neutral-400 sm:block"
+        class="mt-4 hidden text-center text-(--ui-text-muted) sm:block"
         :value="cta"
       />
       <div class="mt-4 sm:hidden flex-col items-center justify-center gap-2 flex sm:gap-4">

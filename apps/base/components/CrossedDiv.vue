@@ -6,8 +6,8 @@ defineProps<{
 
 <template>
   <div class="relative -mb-px -ml-px">
-    <div v-if="line" class="h-0.5 w-[200rem] bg-neutral-100 dark:bg-neutral-800 absolute -left-[100rem] opacity-40" />
-    <div v-if="line" class="h-[200rem] w-0.5 bg-neutral-100 dark:bg-neutral-800 absolute -top-[100rem] opacity-40 -left-0.5" />
+    <div v-if="line" class="h-0.5 w-[200rem] bg-(--ui-bg-elevated)/50 absolute -left-[100rem]" />
+    <div v-if="line" class="h-[200rem] w-0.5 bg-(--ui-bg-elevated)/50 absolute -top-[100rem] -left-0.5" />
     <span class="cross absolute -bottom-px -left-px size-px" />
     <span class="cross absolute -bottom-px -right-px size-px" />
     <span class="cross absolute -left-px -top-px size-px" />
@@ -15,40 +15,18 @@ defineProps<{
     <div class="relative z-10 flex h-full flex-col justify-center">
       <slot />
     </div>
-    <div v-if="line" class="h-0.5 w-[200rem] -z-1 bg-neutral-100 dark:bg-neutral-800 absolute -right-[100rem] opacity-40" />
-    <div v-if="line" class="h-[200rem] w-0.5 -z-1 bg-neutral-100 dark:bg-neutral-800 absolute -bottom-[100rem] opacity-40 -right-0.5" />
+    <div v-if="line" class="h-0.5 w-[200rem] -z-1 bg-(--ui-bg-elevated)/50 absolute -right-[100rem]" />
+    <div v-if="line" class="h-[200rem] w-0.5 -z-1 bg-(--ui-bg-elevated)/50 absolute -bottom-[100rem] -right-0.5" />
   </div>
 </template>
 
 <style scoped>
-.cross:before {
-  --tw-bg-opacity: 1;
-  content: "";
-  width: 1px;
-  height: 9px;
-  position: absolute;
-  top: -4px;
-}
+@import "tailwindcss";
 
-.cross:after {
-  --tw-bg-opacity: 1;
-  content: "";
-  width: 9px;
-  height: 1px;
-  position: absolute;
-  left: -4px;
-}
-
-.dark {
-  .cross:before, .cross:after {
-    background-color: rgb(255 255 255 / var(--tw-bg-opacity));
-  }
-}
-
-.light {
-  .cross:before, .cross:after {
-    background-color: rgb(0 0 0 / var(--tw-bg-opacity));
-  }
+.cross {
+  @apply before:absolute after:absolute;
+  @apply before:top-[-4px] before:bg-(--ui-bg-inverted) before:content-[''] before:w-[1px] before:h-[9px];
+  @apply after:left-[-4px] after:bg-(--ui-bg-inverted) after:content-[''] after:w-[9px] after:h-[1px];
 }
 
 .encryption {

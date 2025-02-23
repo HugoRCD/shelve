@@ -28,18 +28,23 @@ html, body, #__nuxt, #__layout {
 }
 
 @theme {
-  --font-newsreader: 'Newsreader', serif;
-  --font-geist: 'Geist', sans-serif;
-  --font-geist-mono: 'Geist Mono', sans-serif;
-
   --font-sans: 'Geist', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
   --font-serif: 'Newsreader', serif;
-  --font-menlo: 'Menlo', monospace;
 
   --animate-ripple-1: ripple 2.5s var(--ease-smooth) infinite 0.15s;
   --animate-ripple-2: ripple 2.5s var(--ease-smooth) infinite 0.4s;
   --animate-ripple-3: ripple 2.5s var(--ease-smooth) infinite 0.65s;
+}
+
+.light {
+  --ui-bg: var(--color-white);
+  --ui-bg-muted: var(--color-neutral-50);
+}
+
+.dark {
+  --ui-bg: var(--color-neutral-950);
+  --ui-bg-muted: var(--color-neutral-900);
 }
 
 .main-gradient {

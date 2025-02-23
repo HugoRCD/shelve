@@ -57,7 +57,7 @@ const groups = computed(() => [
         <template #empty>
           <div v-if="!loading" class="flex flex-col items-center justify-center gap-2">
             <UIcon name="simple-icons:github" class="size-8" />
-            <p class="text-pretty text-neutral-500 dark:text-neutral-400">
+            <p class="text-pretty text-(--ui-text-muted)">
               No repositories found.
             </p>
           </div>
