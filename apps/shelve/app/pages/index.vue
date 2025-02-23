@@ -45,9 +45,9 @@ async function navigateToTeam(team: Team) {
           Logout
         </UButton>
       </div>
-      <div class="size-80 absolute rounded-full bg-neutral-100/20 -top-20 -z-1 -left-20 blur-[200px]" />
+      <div class="size-80 absolute rounded-full dark:bg-(--ui-bg-inverted)/20 -top-20 -z-1 -left-20 blur-[200px]" />
       <CrossedDiv line>
-        <div class="bg-white dark:bg-neutral-900/70 p-8 dark:shadow-lg border border-(--ui-border) w-full backdrop-blur-md">
+        <div class="bg-(--ui-bg-muted) p-8 dark:shadow-lg border border-(--ui-border) w-full backdrop-blur-md">
           <div class="flex flex-col items-center gap-2">
             <UAvatar :src="user?.avatar" class="size-18 avatar" />
             <div class="flex flex-col items-center">
@@ -63,7 +63,7 @@ async function navigateToTeam(team: Team) {
             <div
               v-for="team in teams"
               :key="team.id"
-              class="flex items-center justify-between gap-4 cursor-pointer dark:bg-neutral-950 bg-neutral-100/50 p-4 rounded-lg dark:shadow-md ring-2 ring-transparent hover:ring-orange-500 transition-colors duration-300 ease-in-out"
+              class="flex items-center justify-between gap-4 cursor-pointer bg-(--ui-bg) p-4 rounded-lg dark:shadow-md ring-2 ring-transparent hover:ring-(--ui-primary) transition-colors duration-300 ease-in-out"
               @click="navigateToTeam(team)"
             >
               <div class="flex items-center gap-2">
@@ -79,7 +79,7 @@ async function navigateToTeam(team: Team) {
             </div>
           </div>
           <div v-else class="flex flex-col gap-4 mt-6">
-            <div v-for="i in 2" :key="i" class="flex items-center justify-between gap-4 dark:bg-neutral-950 bg-neutral-100/50 p-4 rounded-lg dark:shadow-md">
+            <div v-for="i in 2" :key="i" class="flex items-center justify-between gap-4 bg-(--ui-bg) p-4 rounded-lg dark:shadow-md">
               <div class="flex items-center gap-2">
                 <USkeleton class="size-10 rounded-full" />
                 <div class="flex flex-col gap-2">

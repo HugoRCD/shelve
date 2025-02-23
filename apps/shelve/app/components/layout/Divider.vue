@@ -9,7 +9,7 @@ defineProps({
 <template>
   <div class="linebreak">
     <div class="absolute flex w-full -translate-y-1/2 items-center justify-center text-(--ui-text-muted)">
-      <span class="bg-white/50 px-2 dark:bg-neutral-800">
+      <span class="bg-(--ui-bg-elevated) px-2">
         {{ text }}
       </span>
     </div>

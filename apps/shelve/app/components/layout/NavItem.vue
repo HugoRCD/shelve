@@ -10,7 +10,7 @@ const { navItem, active = false } = defineProps<NavItemProps>()
 </script>
 
 <template>
-  <div class="nav-item select-none" :class="{ active }" @click="$router.push(navItem.path)">
+  <div class="nav-item select-none" :class="{ active }" :data-active="active" @click="$router.push(navItem.path)">
     <UIcon :name="navItem.icon" class="font-medium" />
     <span class="text-sm">
       {{ capitalize(navItem.name) }}
@@ -23,16 +23,7 @@ const { navItem, active = false } = defineProps<NavItemProps>()
 
 .nav-item {
   @apply cursor-pointer rounded-lg px-3 py-1.5 flex flex-row items-center gap-2 transition-transform duration-200 ease-in-out;
-}
-
-.nav-item:hover {
-  @apply bg-neutral-100 text-white dark:bg-neutral-800;
-  @apply border-neutral-200 dark:border-neutral-700;
-}
-
-.nav-item.active {
-  @apply bg-neutral-100 text-white dark:bg-neutral-800;
-  @apply border-neutral-200 dark:border-neutral-700;
-  @apply shadow-sm;
+  @apply border border-transparent hover:border-(--ui-border) data-[active=true]:border-(--ui-border);
+  @apply bg-transparent hover:bg-(--ui-bg-muted) data-[active=true]:bg-(--ui-bg-accented)/50;
 }
 </style>

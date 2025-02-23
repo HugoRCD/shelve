@@ -118,7 +118,7 @@ async function onSubmit(event: FormSubmitEvent<SyncVariablesSchema>) {
                     v-model="state.repository"
                     :placeholder="sanitizeGithubUrl(state.repository)"
                     disabled
-                    class="w-full !bg-white dark:!bg-neutral-900"
+                    class="w-full bg-(--ui-bg-elevated)"
                   />
                 </div>
               </UFormField>
