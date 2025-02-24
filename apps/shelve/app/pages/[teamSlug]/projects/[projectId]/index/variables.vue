@@ -85,6 +85,7 @@ const isVariableSelected = (variable: Variable) => {
       <UInput
         v-model="searchTerm"
         placeholder="Search variables..."
+        icon="lucide:search"
         class="w-1/3"
       />
       <div class="flex gap-1">
@@ -99,7 +100,7 @@ const isVariableSelected = (variable: Variable) => {
         <USelectMenu v-model="selectedEnvironment" multiple :items class="w-full" placeholder="Select environment" />
       </div>
     </div>
-    <LazyVariableSelector v-model="selectedVariables" />
+    <LazyVariableSelector v-model="selectedVariables" :variables="filteredVariables" />
     <div v-if="!loading" class="flex flex-col gap-4">
       <div v-for="variable in filteredVariables" :key="variable.id">
         <VariableItem
