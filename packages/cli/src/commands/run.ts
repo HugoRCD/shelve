@@ -1,7 +1,9 @@
+import { resolve } from 'path'
+import { fileURLToPath } from 'url'
 import { x } from 'tinyexec'
 import { defineCommand } from 'citty'
 import { intro } from '@clack/prompts'
-import type { Environment, EnvVar } from '@types'
+import type { EnvVar } from '@types'
 import consola from 'consola'
 import { handleCancel, loadShelveConfig } from '../utils'
 import { EnvironmentService, EnvService, ProjectService } from '../services'
@@ -47,8 +49,10 @@ export default defineCommand({
     const command = args.command || rawArgs[0]
     if (!command) handleCancel('You must provide a command to run')
 
+    const nr = getNrBinPath()
+
     try {
-      const proc = x('nr', [command], {
+      const proc = x(nr, [command], {
         nodeOptions: {
           env: processEnv,
           stdio: 'inherit'
@@ -75,4 +79,12 @@ function formatEnvVars(variables: EnvVar[]): NodeJS.ProcessEnv {
     ...acc,
     [key]: value
   }), {})
+}
+
+function getNrBinPath(): string {
+  try {
+    return resolve(fileURLToPath(import.meta.url), '../../node_modules/.bin/nr')
+  } catch (error) {
+    return 'nr'
+  }
 }
