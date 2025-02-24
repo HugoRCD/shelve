@@ -1,11 +1,7 @@
+import type { Navigation } from '@types'
+
 type Where = 'team' | 'user' | 'admin';
 
-export type Navigation = {
-  name: string;
-  title: string;
-  path: string;
-  icon?: string;
-};
 
 export function getNavigation(where: Where, teamSlug?: string): Navigation[] {
   switch (where) {
@@ -13,25 +9,25 @@ export function getNavigation(where: Where, teamSlug?: string): Navigation[] {
       return [
         {
           name: 'Projects',
-          path: `/${teamSlug}`,
+          to: `/${teamSlug}`,
           icon: 'lucide:folder',
           title: 'Projects',
         },
         {
           name: 'Members',
-          path: `/${teamSlug}/members`,
+          to: `/${teamSlug}/members`,
           icon: 'lucide:users',
           title: 'Members',
         },
         {
           name: 'Environments',
-          path: `/${teamSlug}/environments`,
+          to: `/${teamSlug}/environments`,
           icon: 'lucide:cloud',
           title: 'Environments',
         },
         {
           name: 'Settings',
-          path: `/${teamSlug}/settings`,
+          to: `/${teamSlug}/settings`,
           icon: 'heroicons:cog',
           title: 'Settings',
         },
@@ -40,25 +36,25 @@ export function getNavigation(where: Where, teamSlug?: string): Navigation[] {
       return [
         {
           name: 'Profile',
-          path: '/user/profile',
+          to: '/user/profile',
           icon: 'heroicons:user-circle',
           title: 'Profile',
         },
         {
           name: 'API Tokens',
-          path: '/user/tokens',
+          to: '/user/tokens',
           icon: 'heroicons:key',
           title: 'API Tokens',
         },
         {
           name: 'Integrations',
-          path: '/user/integrations',
+          to: '/user/integrations',
           icon: 'lucide:blocks',
           title: 'Integrations',
         },
         {
           name: 'Settings',
-          path: '/user/settings',
+          to: '/user/settings',
           icon: 'heroicons:cog',
           title: 'Settings',
         },
@@ -67,13 +63,13 @@ export function getNavigation(where: Where, teamSlug?: string): Navigation[] {
       return [
         {
           name: 'Dashboard',
-          path: '/admin',
+          to: '/admin',
           icon: 'heroicons:home',
           title: 'Dashboard',
         },
         {
           name: 'Tests',
-          path: '/admin/tests',
+          to: '/admin/tests',
           icon: 'lucide:flask-conical',
           title: 'Tests',
         },

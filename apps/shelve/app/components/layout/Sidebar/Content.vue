@@ -20,18 +20,18 @@ const handleProjectNavigation = () => {
   const projectNavigation = {
     title: 'Project Details',
     icon: 'lucide:folder-open',
-    path: route.path,
+    to: route.path,
     name: 'Project Details',
   }
   if (isProjectRoute) {
-    const indexToReplace = teamNavigations.value.findIndex((item) => item.path.includes('/projects/'))
+    const indexToReplace = teamNavigations.value.findIndex((item) => item.to.includes('/projects/'))
     if (indexToReplace !== -1) {
       teamNavigations.value.splice(indexToReplace, 1, projectNavigation)
     } else {
       teamNavigations.value.unshift(projectNavigation)
     }
   } else {
-    const indexToRemove = teamNavigations.value.findIndex((item) => item.path.includes('/projects/'))
+    const indexToRemove = teamNavigations.value.findIndex((item) => item.to.includes('/projects/'))
     if (indexToRemove !== -1) {
       teamNavigations.value.splice(indexToRemove, 1)
     }
@@ -57,7 +57,7 @@ watch(() => route.path, handleProjectNavigation, { immediate: true })
       </div>
       <div class="flex flex-col gap-2">
         <TransitionGroup name="bezier" tag="ul" class="flex flex-col gap-2" mode="out-in">
-          <LayoutNavItem v-for="nav in teamNavigations" :key="nav.name" :active="nav.path === route.path || nav.name === route.name" :nav-item="nav" />
+          <LayoutNavItem v-for="nav in teamNavigations" :key="nav.name" :active="nav.to === route.path || nav.name === route.name" :nav-item="nav" />
         </TransitionGroup>
       </div>
     </div>
@@ -67,7 +67,7 @@ watch(() => route.path, handleProjectNavigation, { immediate: true })
       <div class="text-xs font-medium text-(--ui-text-muted)">
         User
       </div>
-      <LayoutNavItem v-for="nav in userNavigations" :key="nav.name" :active="nav.path === route.path || nav.name === route.name" :nav-item="nav" />
+      <LayoutNavItem v-for="nav in userNavigations" :key="nav.name" :active="nav.to === route.path || nav.name === route.name" :nav-item="nav" />
     </div>
 
     <!-- Admin -->
@@ -76,7 +76,7 @@ watch(() => route.path, handleProjectNavigation, { immediate: true })
       <div class="text-xs font-medium text-(--ui-text-muted)">
         Admin
       </div>
-      <LayoutNavItem v-for="nav in adminNavigations" :key="nav.name" :active="nav.path === route.path" :nav-item="nav" />
+      <LayoutNavItem v-for="nav in adminNavigations" :key="nav.name" :active="nav.to === route.path" :nav-item="nav" />
     </div>
 
     <div class="flex-1" />

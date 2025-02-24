@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { Navigation } from '@types'
 import { capitalize } from 'vue'
 
 type NavItemProps = {
@@ -10,7 +11,7 @@ const { navItem, active = false } = defineProps<NavItemProps>()
 </script>
 
 <template>
-  <div class="nav-item select-none" :class="{ active }" :data-active="active" @click="$router.push(navItem.path)">
+  <div class="nav-item select-none" :class="{ active }" :data-active="active" @click="$router.push(navItem.to)">
     <UIcon :name="navItem.icon" class="font-medium" />
     <span class="text-sm">
       {{ capitalize(navItem.name) }}
