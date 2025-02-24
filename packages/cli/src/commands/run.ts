@@ -1,5 +1,4 @@
 import { resolve } from 'path'
-import { fileURLToPath } from 'url'
 import { x } from 'tinyexec'
 import { defineCommand } from 'citty'
 import { intro } from '@clack/prompts'
