@@ -49,31 +49,28 @@ watch(() => route.path, handleProjectNavigation, { immediate: true })
 
 <template>
   <div class="navbar-wrapper">
-    <div class="navbar">
-      <TransitionGroup
-        tag="div"
-        class="flex items-center gap-2"
-        name="fade-scale"
-        mode="out-in"
-      >
-        <LayoutNavbarItem
-          v-for="nav in teamNavigationsRef"
-          :key="nav.to"
-          :nav
-        />
-        <LayoutNavbarItem
-          v-for="nav in userNavigations"
-          :key="nav.to"
-          :nav
-        />
-        <template v-if="user && user.role === Role.ADMIN">
+    <div class="highlight-wrapper highlight-gradient rounded-full">
+      <div class="navbar">
+        <TransitionGroup tag="div" class="flex items-center gap-2" name="fade-scale" mode="out-in">
           <LayoutNavbarItem
-            v-for="nav in adminNavigations"
+            v-for="nav in teamNavigationsRef"
             :key="nav.to"
             :nav
           />
-        </template>
-      </TransitionGroup>
+          <LayoutNavbarItem
+            v-for="nav in userNavigations"
+            :key="nav.to"
+            :nav
+          />
+          <template v-if="user && user.role === Role.ADMIN">
+            <LayoutNavbarItem
+              v-for="nav in adminNavigations"
+              :key="nav.to"
+              :nav
+            />
+          </template>
+        </TransitionGroup>
+      </div>
     </div>
   </div>
 </template>
