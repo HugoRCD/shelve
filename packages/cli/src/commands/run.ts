@@ -1,10 +1,12 @@
+import { resolve } from 'path'
 import { x } from 'tinyexec'
 import { defineCommand } from 'citty'
 import { intro } from '@clack/prompts'
-import type { Environment, EnvVar } from '@types'
+import type { EnvVar } from '@types'
 import consola from 'consola'
 import { handleCancel, loadShelveConfig } from '../utils'
 import { EnvironmentService, EnvService, ProjectService } from '../services'
+import { DEBUG } from '../constants'
 
 export default defineCommand({
   meta: {
@@ -48,12 +50,17 @@ export default defineCommand({
     if (!command) handleCancel('You must provide a command to run')
 
     try {
-      const proc = x('nr', [command], {
-        nodeOptions: {
-          env: processEnv,
-          stdio: 'inherit'
+      const isNpx = getNrBinPath() === 'npx'
+      const proc = x(
+        getNrBinPath(),
+        isNpx ? ['nr', command] : [command],
+        {
+          nodeOptions: {
+            env: processEnv,
+            stdio: 'inherit'
+          }
         }
-      })
+      )
 
       const abortController = new AbortController()
       process.on('SIGINT', () => {
@@ -65,6 +72,7 @@ export default defineCommand({
 
       await proc
     } catch (error) {
+      if (DEBUG) consola.error(error)
       process.exit(1)
     }
   }
@@ -75,4 +83,12 @@ function formatEnvVars(variables: EnvVar[]): NodeJS.ProcessEnv {
     ...acc,
     [key]: value
   }), {})
+}
+
+function getNrBinPath(): string {
+  try {
+    return resolve(process.cwd(), 'node_modules/.bin/nr')
+  } catch (error) {
+    return 'npx'
+  }
 }
