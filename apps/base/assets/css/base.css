@@ -86,7 +86,7 @@ html, body, #__nuxt, #__layout {
 }
 
 .highlight-gradient {
-  @apply bg-gradient-to-br from-(--ui-bg-inverted) from-[3%] via-(--ui-bg-elevated) via-30% to-(--ui-bg);
+  @apply bg-gradient-to-br from-(--ui-bg-inverted)/60 from-[3%] via-(--ui-bg-elevated) via-40% to-(--ui-bg);
 }
 
 .navbar {
