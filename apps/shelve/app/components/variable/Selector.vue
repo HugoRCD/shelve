@@ -2,14 +2,21 @@
 import type { Variable } from '@types'
 import { ConfirmModal } from '#components'
 
+const props = defineProps<{
+  variables: Variable[]
+}>()
+
 const selectedVariables = defineModel<Variable[]>({ required: true })
 
 const { deleteVariables } = useVariablesService()
 
 const loading = ref(false)
 const modal = useModal()
-const route = useRoute()
 const teamEnv = useEnvironments()
+
+function selectAllVisible() {
+  selectedVariables.value = [...props.variables]
+}
 
 async function deleteSelectedVariables() {
   loading.value = true
@@ -57,11 +64,15 @@ function openDeleteModal() {
                 </UCard>
               </template>
             </UPopover>
-            <UTooltip text="Delete selected variables">
-              <UButton color="error" variant="ghost" icon="heroicons:trash" :loading @click="openDeleteModal" />
+            <UTooltip text="Select all visible variables">
+              <UButton variant="ghost" icon="lucide:text-select" @click="selectAllVisible" />
             </UTooltip>
             <UTooltip text="Clear selection">
               <UButton variant="ghost" icon="lucide:x" @click="selectedVariables = []" />
+            </UTooltip>
+            <USeparator orientation="vertical" class="h-auto" />
+            <UTooltip text="Delete selected variables">
+              <UButton color="error" variant="ghost" icon="heroicons:trash" :loading @click="openDeleteModal" />
             </UTooltip>
           </div>
         </div>
