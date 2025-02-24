@@ -39,15 +39,19 @@ const variableToUpdate = computed(() => ({
 }))
 
 const showEdit = ref(false)
+
+const handleClick = (event: MouseEvent) => {
+  emit('toggleSelected', event)
+}
 </script>
 
 <template>
   <UCard variant="subtle" :ui="{ root: isSelected && !showEdit ? 'bg-(--ui-bg-accented)/60' : '' }">
-    <div class="flex w-full items-start justify-between">
+    <div class="flex w-full select-none items-start justify-between">
       <div
         class="flex w-full flex-col gap-1"
         :class="{ 'cursor-pointer': !showEdit }"
-        @click="showEdit ? null : emit('toggleSelected')"
+        @click="showEdit ? null : handleClick($event)"
       >
         <h3 class="flex items-center gap-1 text-sm font-semibold sm:text-base">
           <span class="lg:hidden">

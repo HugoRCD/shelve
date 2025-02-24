@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { TeamRole, type Variable } from '@types'
+import type { Variable } from '@types'
 
 const route = useRoute()
 const projectId = route.params.projectId as string
@@ -10,6 +10,7 @@ const { loading, fetchVariables } = useVariablesService()
 if (!variables.value) fetchVariables()
 
 const selectedVariables = ref<Variable[]>([])
+const lastSelectedIndex = ref<number | null>(null)
 const searchTerm = ref('')
 const selectedEnvironment = ref([])
 const order = ref('desc')
@@ -50,11 +51,25 @@ const filteredVariables = computed(() => {
   return filtered
 })
 
-const toggleVariable = (variable: Variable) => {
-  if (!isVariableSelected(variable)) {
-    selectedVariables.value.push(variable)
+const toggleVariable = (variable: Variable, event?: MouseEvent) => {
+  const filteredIndex = filteredVariables.value.findIndex(v => v.id === variable.id)
+
+  if (event?.shiftKey && lastSelectedIndex.value !== null) {
+    const startIndex = Math.min(lastSelectedIndex.value, filteredIndex)
+    const endIndex = Math.max(lastSelectedIndex.value, filteredIndex)
+    const newSelection = filteredVariables.value.slice(startIndex, endIndex + 1)
+    selectedVariables.value = Array.from(
+      new Map(
+        [...selectedVariables.value, ...newSelection].map(item => [item.id, item])
+      ).values()
+    )
   } else {
-    selectedVariables.value = selectedVariables.value.filter((v) => v.id !== variable.id)
+    if (!isVariableSelected(variable)) {
+      selectedVariables.value.push(variable)
+    } else {
+      selectedVariables.value = selectedVariables.value.filter((v) => v.id !== variable.id)
+    }
+    lastSelectedIndex.value = filteredIndex
   }
 }
 
@@ -91,7 +106,7 @@ const isVariableSelected = (variable: Variable) => {
           :variable
           :environments
           :is-selected="isVariableSelected(variable)"
-          @toggle-selected="toggleVariable(variable)"
+          @toggle-selected="(e) => toggleVariable(variable, e)"
         />
       </div>
     </div>
