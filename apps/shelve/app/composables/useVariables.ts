@@ -1,5 +1,17 @@
 import type { CreateVariablesInput, Variable } from '@types'
 
+function removeDuplicateKeyValues(variables: Array<{ key: string, value: string, index?: number }>) {
+  const seen = new Set()
+  return variables.filter(variable => {
+    const keyValue = `${variable.key}-${variable.value}`
+    if (seen.has(keyValue)) {
+      return false
+    }
+    seen.add(keyValue)
+    return true
+  })
+}
+
 export function useVariablesService() {
   const route = useRoute()
   const projectId = route.params.projectId as string
@@ -24,9 +36,15 @@ export function useVariablesService() {
   async function createVariables(input: CreateVariablesInput) {
     createLoading.value = true
     try {
+      const uniqueVariables = removeDuplicateKeyValues(input.variables)
+      const uniqueInput = {
+        ...input,
+        variables: uniqueVariables
+      }
+
       await $fetch(`/api/teams/${teamSlug}/projects/${projectId}/variables`, {
         method: 'POST',
-        body: input
+        body: uniqueInput
       })
       toast.success('Your variables have been created')
     } catch (error) {
