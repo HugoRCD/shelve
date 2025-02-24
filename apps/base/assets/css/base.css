@@ -80,3 +80,17 @@ html, body, #__nuxt, #__layout {
   opacity: 0.1;
   pointer-events: none;
 }
+
+.highlight-wrapper {
+  @apply h-fit w-fit p-[1px] transition-all duration-200;
+}
+
+.highlight-gradient {
+  @apply bg-gradient-to-br from-(--ui-bg-inverted) from-[3%] via-(--ui-bg-elevated) via-30% to-(--ui-bg);
+}
+
+.navbar {
+  .highlight-wrapper {
+    @apply active:translate-y-[1px] hover:opacity-90 data-[active=true]:bg-gradient-to-br from-(--ui-bg-inverted) from-[3%] via-(--ui-bg-elevated) via-30% to-(--ui-bg);
+  }
+}

@@ -1,6 +1,9 @@
 <script setup lang="ts">
+import { Role } from '@types'
+
 const route = useRoute()
 const teamSlug = computed(() => route.params.teamSlug as string)
+const { user } = useUserSession()
 
 const defaultTeamSlug = useCookie<string>('defaultTeamSlug', {
   watch: true,
@@ -38,10 +41,27 @@ watch(() => route.path, handleProjectNavigation, { immediate: true })
 
 <template>
   <div class="navbar-wrapper">
-    <div class="navbar">
-      <LayoutNavbarItem v-for="(nav, index) in teamNavigations" :key="index" :nav />
-      <LayoutNavbarItem v-for="(nav, index) in userNavigations" :key="index" :nav />
-      <LayoutNavbarItem v-for="(nav, index) in adminNavigations" :key="index" :nav />
+    <div class="highlight-wrapper highlight-gradient rounded-full">
+      <div class="navbar z-10">
+        <LayoutNavbarItem
+          v-for="(nav, index) in teamNavigations"
+          :key="index"
+          :nav
+        />
+        <LayoutNavbarItem
+          v-for="(nav, index) in userNavigations"
+          :key="index"
+          :nav
+        />
+        <template v-if="user && user.role === Role.ADMIN">
+          <LayoutNavbarItem
+            v-for="(nav, index) in adminNavigations"
+            :key="index"
+            class="hidden sm:flex"
+            :nav
+          />
+        </template>
+      </div>
     </div>
   </div>
 </template>
@@ -50,11 +70,11 @@ watch(() => route.path, handleProjectNavigation, { immediate: true })
 @import "tailwindcss";
 
 .navbar-wrapper {
-  @apply absolute z-[99] bottom-5 transform left-1/2 -translate-x-1/2;
+  @apply absolute z-[99] bottom-2 sm:bottom-8 transform left-1/2 -translate-x-1/2 transition-all duration-200;
 }
 
 .navbar {
-  @apply bg-(--ui-bg) flex items-center gap-2 rounded-full border border-(--ui-border) p-2;
+  @apply bg-(--ui-bg-elevated) backdrop-blur-lg shadow-2xl flex items-center gap-1 sm:gap-2 rounded-full border border-(--ui-border) p-2;
 }
 </style>
 

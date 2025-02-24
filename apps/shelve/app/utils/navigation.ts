@@ -10,7 +10,7 @@ export function getNavigation(where: Where, teamSlug?: string): Navigation[] {
         {
           name: 'Projects',
           to: `/${teamSlug}`,
-          icon: 'lucide:folder',
+          icon: 'lucide:folders',
           title: 'Projects',
         },
         {

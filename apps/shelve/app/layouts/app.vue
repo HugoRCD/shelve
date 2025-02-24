@@ -11,7 +11,7 @@ const pages = computed(() => {
 const navigation = computed(() => {
   if (route.path.includes('/projects'))
     return { title: 'Project Details', to: '/projects', name: 'project', icon: 'lucide:folder-open' }
-  return pages.value.find((page) => page.path === route.path) || null
+  return pages.value.find((page) => page.to === route.path) || null
 })
 
 const routeTitle = computed(() => {
