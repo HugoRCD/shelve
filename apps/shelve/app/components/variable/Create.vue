@@ -120,14 +120,14 @@ const handlePasswordGenerated = (password: string, index: number) => variablesIn
             />
           </div>
         </div>
-        <USeparator class="my-1" />
+        <Separator class="my-1" />
         <div class="flex items-center gap-2">
           <USwitch v-model="autoUppercase" size="xs" />
           <h3 class="cursor-pointer text-sm font-semibold" @click="autoUppercase = !autoUppercase">
             Auto uppercase
           </h3>
         </div>
-        <USeparator class="my-1" />
+        <Separator class="my-1" />
         <p class="text-xs font-normal text-(--ui-text-muted)">
           🤫 You can also paste all your environment variables (.env) as key value pairs to prefilled the form
         </p>

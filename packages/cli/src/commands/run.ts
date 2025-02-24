@@ -7,6 +7,7 @@ import type { EnvVar } from '@types'
 import consola from 'consola'
 import { handleCancel, loadShelveConfig } from '../utils'
 import { EnvironmentService, EnvService, ProjectService } from '../services'
+import { DEBUG } from '../constants'
 
 export default defineCommand({
   meta: {
@@ -49,15 +50,18 @@ export default defineCommand({
     const command = args.command || rawArgs[0]
     if (!command) handleCancel('You must provide a command to run')
 
-    const nr = getNrBinPath()
-
     try {
-      const proc = x(nr, [command], {
-        nodeOptions: {
-          env: processEnv,
-          stdio: 'inherit'
+      const isNpx = getNrBinPath() === 'npx'
+      const proc = x(
+        getNrBinPath(),
+        isNpx ? ['nr', command] : [command],
+        {
+          nodeOptions: {
+            env: processEnv,
+            stdio: 'inherit'
+          }
         }
-      })
+      )
 
       const abortController = new AbortController()
       process.on('SIGINT', () => {
@@ -69,6 +73,7 @@ export default defineCommand({
 
       await proc
     } catch (error) {
+      if (DEBUG) consola.error(error)
       process.exit(1)
     }
   }
@@ -83,8 +88,8 @@ function formatEnvVars(variables: EnvVar[]): NodeJS.ProcessEnv {
 
 function getNrBinPath(): string {
   try {
-    return resolve(fileURLToPath(import.meta.url), '../../node_modules/.bin/nr')
+    return resolve(process.cwd(), 'node_modules/.bin/nr')
   } catch (error) {
-    return 'nr'
+    return 'npx'
   }
 }
