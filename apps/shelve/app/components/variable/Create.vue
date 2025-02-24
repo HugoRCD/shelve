@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Environment } from '@types'
+import type { CreateVariablesInput, Environment } from '@types'
 
 const { environments } = defineProps<{
   environments: Environment[]
@@ -33,11 +33,35 @@ const {
   variablesInput.value.variables = vars
 })
 
+function validateVariables(variables: CreateVariablesInput['variables']) {
+  const groupedValues: { [key: string]: Set<string> } = {}
+  variables.forEach(variable => {
+    const { key, value } = variable
+    if (!groupedValues[key]) {
+      groupedValues[key] = new Set([value])
+    } else {
+      groupedValues[key].add(value)
+    }
+  })
+
+  for (const key in groupedValues) {
+    if (groupedValues[key]!.size > 1) {
+      toast.error(`The key "${key}" has multiple values`, {
+        closeButton: true,
+        duration: Infinity,
+      })
+      return false
+    }
+  }
+  return true
+}
+
 async function handleCreateVariables() {
   if (environmentIds.value.length === 0) {
     toast.error('Please select at least one environment')
     return
   }
+  if (!validateVariables(variablesInput.value.variables)) return
   await createVariables(variablesInput.value)
   resetForm()
 }
