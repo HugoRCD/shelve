@@ -9,15 +9,18 @@ const defaultTeamSlug = useCookie<string>('defaultTeamSlug', {
   watch: true,
 })
 
-const teamNavigations = computed(() => getNavigation('team', teamSlug.value || defaultTeamSlug.value))
-const userNavigations = getNavigation('user')
-const adminNavigations = getNavigation('admin')
+const allNavigations = computed(() => {
+  const team = getNavigation('team', teamSlug.value || defaultTeamSlug.value)
+  const userNav = getNavigation('user')
+  const admin = user.value?.role === Role.ADMIN ? getNavigation('admin') : []
 
-const baseTeamNavigations = computed(() => getNavigation('team', teamSlug.value || defaultTeamSlug.value))
-const teamNavigationsRef = ref(baseTeamNavigations.value)
+  return [...team, ...userNav, ...admin]
+})
 
-watch(baseTeamNavigations, (newValue) => {
-  teamNavigationsRef.value = [...newValue]
+const navigationItems = ref(allNavigations.value)
+
+watch(allNavigations, (newValue) => {
+  navigationItems.value = [...newValue]
 })
 
 const handleProjectNavigation = () => {
@@ -30,17 +33,14 @@ const handleProjectNavigation = () => {
   }
 
   if (isProjectRoute) {
-    const indexToReplace = teamNavigationsRef.value.findIndex((item) => item.to.includes('/projects/'))
+    const indexToReplace = navigationItems.value.findIndex((item) => item.to.includes('/projects/'))
     if (indexToReplace !== -1) {
-      teamNavigationsRef.value.splice(indexToReplace, 1, projectNavigation)
+      navigationItems.value.splice(indexToReplace, 1, projectNavigation)
     } else {
-      teamNavigationsRef.value = [projectNavigation, ...teamNavigationsRef.value]
+      navigationItems.value = [projectNavigation, ...navigationItems.value]
     }
   } else {
-    const indexToRemove = teamNavigationsRef.value.findIndex((item) => item.to.includes('/projects/'))
-    if (indexToRemove !== -1) {
-      teamNavigationsRef.value = teamNavigationsRef.value.filter((_, index) => index !== indexToRemove)
-    }
+    navigationItems.value = navigationItems.value.filter(item => !item.to.includes('/projects/'))
   }
 }
 
@@ -51,24 +51,18 @@ watch(() => route.path, handleProjectNavigation, { immediate: true })
   <div class="navbar-wrapper">
     <div class="highlight-wrapper highlight-gradient rounded-full">
       <div class="navbar">
-        <TransitionGroup tag="div" class="flex items-center gap-2" name="fade-scale" mode="out-in">
-          <LayoutNavbarItem
-            v-for="nav in teamNavigationsRef"
-            :key="nav.to"
-            :nav
-          />
-          <LayoutNavbarItem
-            v-for="nav in userNavigations"
-            :key="nav.to"
-            :nav
-          />
-          <template v-if="user && user.role === Role.ADMIN">
-            <LayoutNavbarItem
-              v-for="nav in adminNavigations"
-              :key="nav.to"
-              :nav
-            />
-          </template>
+        <TransitionGroup tag="div" class="flex items-center gap-2" name="bezier" mode="out-in">
+          <div v-for="nav in navigationItems" :key="nav.to">
+            <ULink v-bind="nav" exact>
+              <UTooltip :text="nav.name" :content="{ side: 'top' }">
+                <div class="highlight-wrapper rounded-full" :data-active="nav.to === route.path">
+                  <div class="nav-item" :data-active="nav.to === route.path">
+                    <UIcon :name="nav.icon" class="icon" />
+                  </div>
+                </div>
+              </UTooltip>
+            </ULink>
+          </div>
         </TransitionGroup>
       </div>
     </div>
@@ -78,33 +72,26 @@ watch(() => route.path, handleProjectNavigation, { immediate: true })
 <style scoped>
 @import "tailwindcss";
 
-
-.fade-scale-enter-active,
-.fade-scale-leave-active {
-  transition: transform 0.25s ease, opacity 0.25s ease;
-}
-
-.fade-scale-enter-from,
-.fade-scale-leave-to {
-  opacity: 0;
-  transform: scale(0.9);
-}
-
-.fade-scale-enter-to,
-.fade-scale-leave-from {
-  opacity: 1;
-  transform: scale(1);
-}
-
-.fade-scale-move {
-  transition: transform 0.25s ease;
-}
-
 .navbar-wrapper {
   @apply absolute z-[99] bottom-2 sm:bottom-8 left-1/2 -translate-x-1/2 transition-all duration-200;
 }
 
 .navbar {
   @apply bg-(--ui-bg-elevated) backdrop-blur-lg shadow-2xl flex items-center gap-1 sm:gap-2 rounded-full border border-(--ui-border) p-2;
+}
+
+.nav-item {
+  /* Structural */
+  @apply rounded-full p-2 flex items-center justify-center;
+
+  /* Active */
+  @apply data-[active=true]:bg-(--ui-bg-accented) data-[active=true]:shadow-md bg-transparent;
+
+  /* Hover */
+  @apply hover:bg-(--ui-bg-accented) hover:shadow-md;
+
+  .icon {
+    @apply sm:text-lg text-(--ui-text-highlighted);
+  }
 }
 </style>
