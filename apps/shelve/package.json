@@ -21,7 +21,7 @@
   "dependencies": {
     "@iconify-json/heroicons": "1.2.2",
     "@iconify-json/lucide": "1.2.26",
-    "@iconify-json/simple-icons": "1.2.25",
+    "@iconify-json/simple-icons": "1.2.26",
     "@nuxt/image": "1.9.0",
     "@nuxt/scripts": "0.10.5",
     "@nuxt/ui": "3.0.0-alpha.13",
@@ -47,7 +47,7 @@
   },
   "devDependencies": {
     "@nuxt/devtools": "2.1.0",
-    "@types/jsonwebtoken": "^9.0.8",
+    "@types/jsonwebtoken": "^9.0.9",
     "@types/libsodium-wrappers": "^0.7.14",
     "automd": "0.3.12",
     "typescript": "5.7.3"
