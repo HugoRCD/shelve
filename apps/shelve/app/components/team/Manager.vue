@@ -14,6 +14,8 @@ const colorMode = useColorMode()
 
 const newTeamName = ref('')
 const open = ref(false)
+const scrollContainerRef = ref(null)
+const selectedItemRef = ref(null)
 
 const defaultTeamSlug = useCookie<string>('defaultTeamSlug', {
   watch: true,
@@ -202,6 +204,28 @@ const getItemGlobalIndex = (groupIndex: number, itemIndex: number) => {
   return globalIndex + itemIndex
 }
 
+const scrollToSelectedItem = () => {
+  nextTick(() => {
+    const selectedElement = document.querySelector('.command-item.selected')
+    if (selectedElement && scrollContainerRef.value) {
+      const container = scrollContainerRef.value
+      // @ts-expect-error - This works
+      const containerRect = container.getBoundingClientRect()
+      const elementRect = selectedElement.getBoundingClientRect()
+
+      if (elementRect.bottom > containerRect.bottom) {
+        const scrollOffset = elementRect.bottom - containerRect.bottom + 8
+        // @ts-expect-error - This works
+        container.scrollTop += scrollOffset
+      } else if (elementRect.top < containerRect.top) {
+        const scrollOffset = elementRect.top - containerRect.top - 8
+        // @ts-expect-error - This works
+        container.scrollTop! += scrollOffset
+      }
+    }
+  })
+}
+
 watch(selectedIndex, (newIndex) => {
   if (allFilteredItems.value.length === 0) return
 
@@ -213,6 +237,8 @@ watch(selectedIndex, (newIndex) => {
   if (newIndex >= allFilteredItems.value.length) {
     selectedIndex.value = 0
   }
+
+  scrollToSelectedItem()
 })
 
 defineShortcuts({
@@ -241,6 +267,12 @@ function selectHeadlessTeam(team: Team) {
 
 watch(search, () => {
   selectedIndex.value = 0
+  nextTick(() => {
+    if (scrollContainerRef.value) {
+      // @ts-expect-error - This works
+      scrollContainerRef.value.scrollTop! = 0
+    }
+  })
 })
 
 function createTeamFromSearch() {
@@ -250,6 +282,17 @@ function createTeamFromSearch() {
   isSearchActive.value = false
   search.value = ''
 }
+
+watch(isSearchActive, (newValue) => {
+  if (newValue) {
+    nextTick(() => {
+      if (scrollContainerRef.value) {
+        // @ts-expect-error - This works
+        scrollContainerRef.value.scrollTop! = 0
+      }
+    })
+  }
+})
 </script>
 
 <template>
@@ -324,7 +367,10 @@ function createTeamFromSearch() {
     >
       <template #content>
         <div class="py-2 flex flex-col">
-          <div class="inset-shadow-[2px_2px_10px_rgba(0,0,0,0.4)] bg-(--ui-bg)/80 m-2 rounded-lg max-h-[400px] overflow-y-auto">
+          <div
+            ref="scrollContainerRef"
+            class="inset-shadow-[2px_2px_10px_rgba(0,0,0,0.4)] bg-(--ui-bg)/80 m-2 rounded-lg max-h-[400px] overflow-y-auto scroll-smooth"
+          >
             <div v-if="allFilteredItems.length === 0" class="px-4 py-6 text-center">
               <UIcon name="lucide:search-x" class="mx-auto mb-2 size-8 text-(--ui-text-muted)" />
               <p class="text-sm text-(--ui-text-muted)">
@@ -351,6 +397,7 @@ function createTeamFromSearch() {
                   <div
                     v-for="(item, itemIndex) in group.items"
                     :key="item.id"
+                    :ref="selectedIndex === getItemGlobalIndex(groupIndex, itemIndex) ? 'selectedItemRef' : undefined"
                     class="command-item"
                     :class="{
                       'active': item.active,
