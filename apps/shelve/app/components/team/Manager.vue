@@ -172,37 +172,55 @@ watch(search, () => {
       :overlay="false"
       :modal="false"
       :dismissible="false"
+      :ui="{
+        content: 'bg-(--ui-bg-muted)',
+      }"
     >
       <template #content>
         <div class="py-2 flex flex-col">
-          <div v-if="filteredTeams.length === 0" class="px-4 py-6 text-center">
-            <UIcon name="lucide:search-x" class="mx-auto mb-2 size-8 text-(--ui-text-muted)" />
-            <p class="text-sm text-(--ui-text-muted)">
-              No teams found
-            </p>
-          </div>
+          <div class="bg-(--ui-bg)/80 m-2 rounded-lg max-h-[400px] overflow-y-auto">
+            <div class="p-3 pb-1">
+              <span class="text-sm font-semibold text-(--ui-text-muted)">
+                Teams
+              </span>
+              <Separator />
+            </div>
+            <div v-if="filteredTeams.length === 0" class="px-4 py-6 text-center">
+              <UIcon name="lucide:search-x" class="mx-auto mb-2 size-8 text-(--ui-text-muted)" />
+              <p class="text-sm text-(--ui-text-muted)">
+                No teams found
+              </p>
+              <div class="mt-4 flex justify-center">
+                <CustomButton
+                  :label="`Create ${search} team`"
+                  @click="open = true"
+                />
+              </div>
+            </div>
 
-          <div v-else class="space-y-1">
-            <div v-for="(team, index) in filteredTeams" :key="team.id" class="team-item-wrapper">
-              <div
-                class="team-item"
-                :class="{
-                  'active': team.id === currentTeam?.id,
-                  'selected': index === selectedIndex
-                }"
-                @click="selectHeadlessTeam(team)"
-              >
-                <UAvatar :src="team.logo" size="sm" alt="team name" />
-                <span class="text-sm font-medium text-(--ui-text-highlighted) flex-1">
-                  {{ team.name }}
-                </span>
-                <UIcon v-if="team.id === currentTeam?.id" name="lucide:check" class="size-4 text-(--ui-text-highlighted)" />
+            <div v-else class="space-y-1">
+              <div v-for="(team, index) in filteredTeams" :key="team.id">
+                <div
+                  class="team-item"
+                  :class="{
+                    'active': team.id === currentTeam?.id,
+                    'selected': index === selectedIndex
+                  }"
+                  @click="selectHeadlessTeam(team)"
+                >
+                  <UAvatar :src="team.logo" size="sm" alt="team name" />
+                  <span class="text-sm font-medium text-(--ui-text-highlighted) flex-1">
+                    {{ team.name }}
+                  </span>
+                  <UIcon v-if="team.id === currentTeam?.id" name="lucide:check" class="size-4 text-(--ui-text-highlighted)" />
+                </div>
               </div>
             </div>
           </div>
 
-          <div class="px-4 pt-3 pb-1">
-            <div class="keyboard-shortcuts">
+          <div>
+            <Separator />
+            <div class="flex flex-wrap justify-center gap-x-4 gap-y-2 pt-3 text-xs text-(--ui-text-muted)">
               <div class="space-x-1">
                 <UKbd value="↑" variant="subtle" />
                 <UKbd value="↓" variant="subtle" />
@@ -227,20 +245,12 @@ watch(search, () => {
 <style scoped>
 @import "tailwindcss";
 
-.team-item-wrapper {
-  @apply px-2;
-}
-
 .team-item {
-  @apply cursor-pointer flex items-center gap-3 rounded-lg px-3 py-2.5;
+  @apply cursor-pointer flex items-center gap-3 rounded-lg m-2 px-3 py-2.5;
   @apply hover:bg-(--ui-bg-muted) relative overflow-hidden;
 }
 
 .team-item.selected {
-  @apply bg-(--ui-bg-accented);
-}
-
-.keyboard-shortcuts {
-  @apply flex flex-wrap justify-center gap-x-4 gap-y-2 border-t border-(--ui-border) pt-3 text-xs text-(--ui-text-muted);
+  @apply bg-(--ui-bg-accented)/50;
 }
 </style>

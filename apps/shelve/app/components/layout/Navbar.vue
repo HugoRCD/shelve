@@ -33,30 +33,6 @@ const updateNavbarWidth = () => {
   }
 }
 
-const handleProjectNavigation = () => {
-  const isProjectRoute = route.path.includes('/projects/')
-
-  if (isProjectRoute) {
-    const projectNavigation = {
-      title: 'Project Details',
-      icon: 'lucide:folder-open',
-      to: route.path,
-      name: 'Project Details',
-    }
-
-    const indexToReplace = navigationItems.value.findIndex((item) => item.to.includes('/projects/'))
-    if (indexToReplace !== -1) {
-      navigationItems.value.splice(indexToReplace, 1, projectNavigation)
-    } else {
-      navigationItems.value = [projectNavigation, ...navigationItems.value]
-    }
-  } else {
-    navigationItems.value = navigationItems.value.filter(item => !item.to.includes('/projects/'))
-  }
-
-  nextTick(updateNavbarWidth)
-}
-
 const toggleSearch = () => {
   isSearchActive.value = !isSearchActive.value
   selectedTeamIndex.value = 0
@@ -73,6 +49,7 @@ const toggleSearch = () => {
 
 defineShortcuts({
   meta_f: toggleSearch,
+  meta_k: toggleSearch,
   escape: {
     usingInput: true,
     handler: () => isSearchActive.value && toggleSearch()
@@ -109,8 +86,6 @@ watch(allNavigations, (newValue) => {
   navigationItems.value = [...newValue]
   nextTick(updateNavbarWidth)
 })
-
-watch(() => route.path, handleProjectNavigation, { immediate: true })
 </script>
 
 <template>
@@ -150,7 +125,7 @@ watch(() => route.path, handleProjectNavigation, { immediate: true })
               :class="nav.to.includes('/admin') ? 'hidden sm:flex' : ''"
               class="flex-shrink-0"
             >
-              <ULink v-bind="nav" exact>
+              <ULink v-bind="nav">
                 <UTooltip :text="nav.name" :content="{ side: 'top' }">
                   <div class="highlight-wrapper rounded-full" :data-active="nav.to === route.path">
                     <div class="nav-item" :data-active="nav.to === route.path">
