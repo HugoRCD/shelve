@@ -48,11 +48,11 @@ watch(() => route.path, handleProjectNavigation, { immediate: true })
 </script>
 
 <template>
-  <div class="navbar-wrapper">
-    <div class="highlight-wrapper highlight-gradient rounded-full">
+  <div class="navbar-wrapper flex items-center gap-4">
+    <BgHighlight rounded="full">
       <div class="navbar">
         <TransitionGroup tag="div" class="flex items-center gap-2" name="bezier" mode="out-in">
-          <div v-for="nav in navigationItems" :key="nav.to">
+          <div v-for="nav in navigationItems" :key="nav.to" :class="nav.to.includes('/admin') ? 'hidden sm:flex' : ''">
             <ULink v-bind="nav" exact>
               <UTooltip :text="nav.name" :content="{ side: 'top' }">
                 <div class="highlight-wrapper rounded-full" :data-active="nav.to === route.path">
@@ -65,7 +65,14 @@ watch(() => route.path, handleProjectNavigation, { immediate: true })
           </div>
         </TransitionGroup>
       </div>
-    </div>
+    </BgHighlight>
+    <BgHighlight rounded="full">
+      <div class="navbar">
+        <div class="nav-item">
+          <UIcon name="lucide:search" class="text-xl" />
+        </div>
+      </div>
+    </BgHighlight>
   </div>
 </template>
 
@@ -77,7 +84,8 @@ watch(() => route.path, handleProjectNavigation, { immediate: true })
 }
 
 .navbar {
-  @apply bg-(--ui-bg-elevated) backdrop-blur-lg shadow-2xl flex items-center gap-1 sm:gap-2 rounded-full border border-(--ui-border) p-2;
+  @apply backdrop-blur-lg shadow-2xl flex items-center gap-1 sm:gap-2 rounded-full p-2;
+  /*@apply inset-shadow-[3px_3px_6px_rgba(0,0,0,0.2)];*/
 }
 
 .nav-item {
@@ -85,13 +93,14 @@ watch(() => route.path, handleProjectNavigation, { immediate: true })
   @apply rounded-full p-2 flex items-center justify-center;
 
   /* Active */
-  @apply data-[active=true]:bg-(--ui-bg-accented) data-[active=true]:shadow-md bg-transparent;
+  @apply data-[active=true]:bg-(--ui-bg-accented) data-[active=true]:shadow-xl bg-transparent;
 
   /* Hover */
-  @apply hover:bg-(--ui-bg-accented) hover:shadow-md;
+  @apply data-[active=false]:hover:bg-(--ui-bg-muted) hover:shadow-md;
+  @apply data-[active=false]:hover:inset-shadow-[2px_2px_5px_rgba(0,0,0,0.4),-2px_-2px_2px_rgba(255,255,255,0.08)];
 
   .icon {
-    @apply sm:text-lg text-(--ui-text-highlighted);
+    @apply sm:text-xl text-(--ui-text-highlighted);
   }
 }
 </style>
