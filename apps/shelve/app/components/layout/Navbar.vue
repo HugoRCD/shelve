@@ -139,6 +139,8 @@ watch(() => route.path, handleProjectNavigation, { immediate: true })
         </Transition>
       </div>
     </BgHighlight>
+
+    <TeamManager v-model="isSearchActive" v-model:search="searchQuery" :headless="true" />
   </div>
 </template>
 
