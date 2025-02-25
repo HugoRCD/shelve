@@ -55,13 +55,13 @@
     "tinyglobby": "0.2.12"
   },
   "devDependencies": {
-    "@types/bun": "1.2.2",
+    "@types/bun": "1.2.3",
     "@types/npm-registry-fetch": "8.0.7",
     "@types/semver": "7.5.8",
     "eslint": "9.21.0",
     "typescript": "5.7.3",
     "unbuild": "3.3.1",
-    "vitest": "3.0.6"
+    "vitest": "3.0.7"
   },
   "publishConfig": {
     "access": "public"
