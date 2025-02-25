@@ -10,6 +10,7 @@ const search = defineModel<string>('search', { required: false })
 const selectedIndex = defineModel<number>('selectedIndex', { required: false, default: 0 })
 
 const teams = useTeams()
+const colorMode = useColorMode()
 
 const newTeamName = ref('')
 const open = ref(false)
@@ -59,22 +60,157 @@ const groups = computed(() => [
   }
 ])
 
-const filteredTeams = computed(() => {
-  if (!search.value) return teams.value
-  return teams.value.filter((team: Team) => {
-    return team.name.toLowerCase().includes(search.value!.toLowerCase())
-  })
+const themeCommands = ref([
+  {
+    id: 'theme-light',
+    label: 'Light Mode',
+    icon: 'lucide:sun',
+    description: 'Switch to light mode',
+    action: () => {
+      colorMode.preference = 'light'
+      isSearchActive.value = false
+    },
+    keywords: ['light', 'theme', 'mode', 'day', 'bright'],
+  },
+  {
+    id: 'theme-dark',
+    label: 'Dark Mode',
+    icon: 'lucide:moon',
+    description: 'Switch to dark mode',
+    action: () => {
+      colorMode.preference = 'dark'
+      isSearchActive.value = false
+    },
+    keywords: ['dark', 'theme', 'mode', 'night', 'black'],
+  }
+])
+
+const navigationCommands = ref([
+  {
+    id: 'nav-home',
+    label: 'Go to Dashboard',
+    icon: 'lucide:layout-dashboard',
+    description: 'Navigate to the dashboard',
+    action: () => {
+      navigateTo(`/${defaultTeamSlug.value}`)
+      isSearchActive.value = false
+    },
+    keywords: ['home', 'dashboard', 'main'],
+  },
+  {
+    id: 'nav-environments',
+    label: 'Environments',
+    icon: 'lucide:cloud',
+    description: 'Navigate to the environments page',
+    action: () => {
+      navigateTo(`/${defaultTeamSlug.value}/environments`)
+      isSearchActive.value = false
+    },
+    keywords: ['environments', 'projects', 'variables'],
+  },
+  {
+    id: 'nav-settings',
+    label: 'Settings',
+    icon: 'lucide:settings',
+    description: 'Open settings page',
+    action: () => {
+      navigateTo('/user/settings')
+      isSearchActive.value = false
+    },
+    keywords: ['settings', 'preferences', 'config'],
+  },
+  {
+    id: 'nav-profile',
+    label: 'Profile',
+    icon: 'lucide:user',
+    description: 'View your profile',
+    action: () => {
+      navigateTo('/user/profile')
+      isSearchActive.value = false
+    },
+    keywords: ['profile', 'account', 'user'],
+  },
+])
+
+const teamCommands = computed(() => {
+  return teams.value.map(team => ({
+    id: `team-${team.id}`,
+    label: team.name,
+    icon: team.logo || 'lucide:users',
+    isAvatar: Boolean(team.logo),
+    description: `Switch to ${team.name} team`,
+    action: () => selectHeadlessTeam(team),
+    keywords: ['team', 'switch', team.name],
+    active: team.id === currentTeam.value?.id,
+  }))
 })
 
+const commandGroups = computed(() => [
+  {
+    id: 'teams',
+    label: 'Teams',
+    items: teamCommands.value
+  },
+  {
+    id: 'navigation',
+    label: 'Navigation',
+    items: navigationCommands.value
+  },
+  {
+    id: 'theme',
+    label: 'Theme',
+    items: themeCommands.value
+  }
+])
+
+const filteredCommandGroups = computed(() => {
+  if (!search.value) {
+    return commandGroups.value
+  }
+
+  const searchLower = search.value.toLowerCase()
+
+  return commandGroups.value.map(group => {
+    const filteredItems = group.items.filter(item => {
+      if (item.label.toLowerCase().includes(searchLower)) {
+        return true
+      }
+
+      if (item.keywords && item.keywords.some(keyword => keyword.toLowerCase().includes(searchLower))) {
+        return true
+      }
+
+      return !!(item.description && item.description.toLowerCase().includes(searchLower))
+    })
+
+    return {
+      ...group,
+      items: filteredItems,
+    }
+  }).filter(group => group.items.length > 0)
+})
+
+const allFilteredItems = computed(() => {
+  return filteredCommandGroups.value.flatMap(group => group.items)
+})
+
+const getItemGlobalIndex = (groupIndex: number, itemIndex: number) => {
+  let globalIndex = 0
+  for (let i = 0; i < groupIndex; i++) {
+    globalIndex += filteredCommandGroups.value[i]!.items.length
+  }
+  return globalIndex + itemIndex
+}
+
 watch(selectedIndex, (newIndex) => {
-  if (filteredTeams.value.length === 0) return
+  if (allFilteredItems.value.length === 0) return
 
   if (newIndex === -1) {
-    selectedIndex.value = filteredTeams.value.length - 1
+    selectedIndex.value = allFilteredItems.value.length - 1
     return
   }
 
-  if (newIndex >= filteredTeams.value.length) {
+  if (newIndex >= allFilteredItems.value.length) {
     selectedIndex.value = 0
   }
 })
@@ -83,10 +219,12 @@ defineShortcuts({
   enter: {
     usingInput: true,
     handler: () => {
-      if (isSearchActive.value && filteredTeams.value.length > 0) {
-        const team = filteredTeams.value[selectedIndex.value]
-        if (team) {
-          selectHeadlessTeam(team)
+      if (isSearchActive.value && allFilteredItems.value.length > 0) {
+        const item = allFilteredItems.value[selectedIndex.value]
+        if (item && item.action) {
+          item.action()
+          search.value = ''
+          selectedIndex.value = 0
         }
       }
     }
@@ -104,6 +242,14 @@ function selectHeadlessTeam(team: Team) {
 watch(search, () => {
   selectedIndex.value = 0
 })
+
+function createTeamFromSearch() {
+  if (!search.value) return
+
+  createTeam(search.value)
+  isSearchActive.value = false
+  search.value = ''
+}
 </script>
 
 <template>
@@ -178,44 +324,59 @@ watch(search, () => {
     >
       <template #content>
         <div class="py-2 flex flex-col">
-          <div class="bg-(--ui-bg)/80 m-2 rounded-lg max-h-[400px] overflow-y-auto">
-            <div class="p-3 pb-1">
-              <span class="text-sm font-semibold text-(--ui-text-muted)">
-                Teams
-              </span>
-              <Separator />
-            </div>
-            <div v-if="filteredTeams.length === 0" class="px-4 py-6 text-center">
+          <div class="inset-shadow-[2px_2px_10px_rgba(0,0,0,0.4)] bg-(--ui-bg)/80 m-2 rounded-lg max-h-[400px] overflow-y-auto">
+            <div v-if="allFilteredItems.length === 0" class="px-4 py-6 text-center">
               <UIcon name="lucide:search-x" class="mx-auto mb-2 size-8 text-(--ui-text-muted)" />
               <p class="text-sm text-(--ui-text-muted)">
-                No teams found
+                No results found for "{{ search }}"
               </p>
-              <div class="mt-4 flex justify-center">
+              <div v-if="search" class="mt-4 flex justify-center">
                 <CustomButton
                   :label="`Create ${search} team`"
-                  @click="open = true"
+                  @click="createTeamFromSearch"
                 />
               </div>
             </div>
 
-            <div v-else class="space-y-1">
-              <div v-for="(team, index) in filteredTeams" :key="team.id">
-                <div
-                  class="team-item"
-                  :class="{
-                    'active': team.id === currentTeam?.id,
-                    'selected': index === selectedIndex
-                  }"
-                  @click="selectHeadlessTeam(team)"
-                >
-                  <UAvatar :src="team.logo" size="sm" alt="team name" />
-                  <span class="text-sm font-medium text-(--ui-text-highlighted) flex-1">
-                    {{ team.name }}
+            <template v-else>
+              <div v-for="(group, groupIndex) in filteredCommandGroups" :key="group.id" class="command-group">
+                <div class="p-3 pb-1">
+                  <span class="text-sm font-semibold text-(--ui-text-muted)">
+                    {{ group.label }}
                   </span>
-                  <UIcon v-if="team.id === currentTeam?.id" name="lucide:check" class="size-4 text-(--ui-text-highlighted)" />
+                  <Separator />
+                </div>
+
+                <div class="space-y-1">
+                  <div
+                    v-for="(item, itemIndex) in group.items"
+                    :key="item.id"
+                    class="command-item"
+                    :class="{
+                      'active': item.active,
+                      'selected': selectedIndex === getItemGlobalIndex(groupIndex, itemIndex)
+                    }"
+                    @click="item.action()"
+                  >
+                    <div v-if="item.isAvatar" class="flex-shrink-0">
+                      <UAvatar :src="item.icon" size="sm" :alt="item.label" />
+                    </div>
+                    <UIcon v-else :name="item.icon" class="size-5 text-(--ui-text-highlighted)" />
+
+                    <div class="flex flex-col flex-1">
+                      <span class="text-sm font-medium text-(--ui-text-highlighted)">
+                        {{ item.label }}
+                      </span>
+                      <span v-if="item.description" class="text-xs text-(--ui-text-muted)">
+                        {{ item.description }}
+                      </span>
+                    </div>
+
+                    <UIcon v-if="item.active" name="lucide:check" class="size-4 text-(--ui-text-highlighted)" />
+                  </div>
                 </div>
               </div>
-            </div>
+            </template>
           </div>
 
           <div>
@@ -245,12 +406,20 @@ watch(search, () => {
 <style scoped>
 @import "tailwindcss";
 
-.team-item {
+.command-item {
   @apply cursor-pointer flex items-center gap-3 rounded-lg m-2 px-3 py-2.5;
   @apply hover:bg-(--ui-bg-muted) relative overflow-hidden;
 }
 
-.team-item.selected {
+.command-item.selected {
   @apply bg-(--ui-bg-accented)/50;
+}
+
+.command-item.active {
+  @apply bg-(--ui-bg-accented)/30;
+}
+
+.command-item.selected.active {
+  @apply bg-(--ui-bg-accented)/70;
 }
 </style>

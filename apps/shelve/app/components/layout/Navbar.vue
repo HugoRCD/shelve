@@ -81,11 +81,6 @@ defineShortcuts({
 onMounted(() => {
   nextTick(updateNavbarWidth)
 })
-
-watch(allNavigations, (newValue) => {
-  navigationItems.value = [...newValue]
-  nextTick(updateNavbarWidth)
-})
 </script>
 
 <template>
