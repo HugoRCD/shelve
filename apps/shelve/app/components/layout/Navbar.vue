@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { Role } from '@types'
-import { useElementSize, useResizeObserver } from '@vueuse/core'
 
 const route = useRoute()
 const teamSlug = computed(() => route.params.teamSlug as string)
@@ -20,20 +19,29 @@ const allNavigations = computed(() => {
 
 const navigationItems = ref(allNavigations.value)
 
-watch(allNavigations, (newValue) => {
-  navigationItems.value = [...newValue]
-})
+const isSearchActive = ref(false)
+const searchQuery = ref('')
+const navbarWidth = ref('auto')
+
+const navItemsRef = ref(null)
+
+const updateNavbarWidth = () => {
+  if (navItemsRef.value) {
+    navbarWidth.value = `${navItemsRef.value.scrollWidth + 16}px`
+  }
+}
 
 const handleProjectNavigation = () => {
   const isProjectRoute = route.path.includes('/projects/')
-  const projectNavigation = {
-    title: 'Project Details',
-    icon: 'lucide:folder-open',
-    to: route.path,
-    name: 'Project Details',
-  }
 
   if (isProjectRoute) {
+    const projectNavigation = {
+      title: 'Project Details',
+      icon: 'lucide:folder-open',
+      to: route.path,
+      name: 'Project Details',
+    }
+
     const indexToReplace = navigationItems.value.findIndex((item) => item.to.includes('/projects/'))
     if (indexToReplace !== -1) {
       navigationItems.value.splice(indexToReplace, 1, projectNavigation)
@@ -43,19 +51,8 @@ const handleProjectNavigation = () => {
   } else {
     navigationItems.value = navigationItems.value.filter(item => !item.to.includes('/projects/'))
   }
-}
 
-const isSearchActive = ref(false)
-const searchQuery = ref('')
-
-const navItemsRef = ref(null)
-const navbarWidth = ref('auto')
-
-const updateNavbarWidth = () => {
-  if (navItemsRef.value) {
-    const width = navItemsRef.value.scrollWidth + 16
-    navbarWidth.value = `${width}px`
-  }
+  nextTick(updateNavbarWidth)
 }
 
 const toggleSearch = () => {
@@ -63,74 +60,65 @@ const toggleSearch = () => {
 
   if (!isSearchActive.value) {
     searchQuery.value = ''
-    nextTick(() => {
-      updateNavbarWidth()
-    })
+    nextTick(updateNavbarWidth)
   } else {
     setTimeout(() => {
       document.getElementById('search-input')?.focus()
-    }, 100)
+    }, 300)
   }
 }
 
-const handleKeydown = (e: KeyboardEvent) => {
-  if (e.key === 'Escape' && isSearchActive.value) {
-    toggleSearch()
+defineShortcuts({
+  meta_f: toggleSearch,
+  escape: {
+    usingInput: true,
+    handler: () => isSearchActive.value && toggleSearch()
   }
-}
+})
 
 onMounted(() => {
-  window.addEventListener('keydown', handleKeydown)
-  nextTick(() => {
-    updateNavbarWidth()
-  })
+  nextTick(updateNavbarWidth)
 })
 
-onUnmounted(() => {
-  window.removeEventListener('keydown', handleKeydown)
-})
-
-watch(() => navigationItems.value.length, () => {
-  nextTick(() => {
-    updateNavbarWidth()
-  })
+watch(allNavigations, (newValue) => {
+  navigationItems.value = [...newValue]
+  nextTick(updateNavbarWidth)
 })
 
 watch(() => route.path, handleProjectNavigation, { immediate: true })
 </script>
 
 <template>
-  <div class="navbar-wrapper flex items-center gap-4">
-    <BgHighlight rounded="full">
+  <div class="navbar-wrapper flex flex-col sm:flex-row sm:items-center gap-4">
+    <BgHighlight rounded="full" class="hover:scale-105">
       <div class="navbar">
-        <div class="nav-item cursor-pointer" @click="toggleSearch">
-          <UIcon :name="isSearchActive ? 'lucide:x' : 'lucide:search'" class="text-xl" />
+        <div class="nav-item p-0.5! cursor-pointer" @click="toggleSearch">
+          <UIcon :name="isSearchActive ? 'lucide:x' : 'lucide:search'" class="text-lg" />
         </div>
       </div>
     </BgHighlight>
 
-    <BgHighlight rounded="full">
-      <div
-        class="navbar main-navbar"
-        :style="{ width: isSearchActive ? '320px' : navbarWidth }"
-      >
+    <BgHighlight
+      rounded="full"
+      class="flex-1 size-full"
+      :style="{
+        width: isSearchActive ? '320px' : navbarWidth
+      }"
+    >
+      <div class="navbar">
         <Transition name="fade-blur" mode="out-in">
           <div v-if="isSearchActive" class="search-container">
-            <UIcon name="lucide:search" class="text-xl text-(--ui-text-highlighted) mr-2" />
+            <UIcon name="lucide:search" class="icon mb-0.5 mr-2" />
             <input
               id="search-input"
               v-model="searchQuery"
               type="text"
               placeholder="Search..."
-              class="bg-transparent border-none outline-none w-full text-(--ui-text-highlighted) placeholder:text-(--ui-text-muted)"
+              class="bg-transparent border-none outline-none size-full text-(--ui-text-highlighted) placeholder:text-(--ui-text-muted)"
             >
           </div>
 
-          <div
-            v-else
-            ref="navItemsRef"
-            class="flex items-center gap-2"
-          >
+          <div v-else ref="navItemsRef" class="flex items-center gap-2">
             <div
               v-for="nav in navigationItems"
               :key="nav.to"
@@ -158,27 +146,28 @@ watch(() => route.path, handleProjectNavigation, { immediate: true })
 @import "tailwindcss";
 
 .navbar-wrapper {
-  @apply absolute z-[99] bottom-2 sm:bottom-8 left-1/2 -translate-x-1/2 transition-all duration-200;
+  @apply absolute z-[99] bottom-2 sm:bottom-8 left-1/2 -translate-x-1/2 will-change-auto;
 }
 
 .navbar {
   @apply backdrop-blur-lg shadow-2xl flex items-center gap-1 sm:gap-2 rounded-full p-2;
 }
 
-.main-navbar {
-  @apply transition-all duration-300 ease-out;
-  will-change: width;
-}
-
 .search-container {
-  @apply flex items-center w-full px-1;
+  @apply flex items-center size-full p-2;
 }
 
 .nav-item {
   @apply rounded-full p-2 flex items-center justify-center;
   @apply data-[active=true]:bg-(--ui-bg-accented) data-[active=true]:shadow-xl bg-transparent;
-  @apply data-[active=false]:hover:bg-(--ui-bg-muted) hover:shadow-md;
-  @apply data-[active=false]:hover:inset-shadow-[2px_2px_5px_rgba(0,0,0,0.4),-2px_-2px_2px_rgba(255,255,255,0.08)];
+  @apply data-[active=false]:hover:inset-shadow-[2px_2px_2px_rgba(0,0,0,0.2)];
+}
+
+.dark {
+  .nav-item {
+    @apply data-[active=false]:hover:bg-(--ui-bg-muted) hover:shadow-md;
+    @apply data-[active=false]:hover:inset-shadow-[2px_2px_5px_rgba(0,0,0,0.4),-2px_-2px_2px_rgba(255,255,255,0.08)];
+  }
 }
 
 .icon {
@@ -187,20 +176,12 @@ watch(() => route.path, handleProjectNavigation, { immediate: true })
 
 .fade-blur-enter-active,
 .fade-blur-leave-active {
-  transition: opacity 0.2s ease, filter 0.2s ease, transform 0.2s ease;
+  transition: opacity 0.1s ease, filter 0.1s ease, transform 0.1s ease;
 }
 
 .fade-blur-enter-from,
 .fade-blur-leave-to {
   opacity: 0;
   filter: blur(4px);
-}
-
-.fade-blur-enter-from {
-  transform: translateX(10px);
-}
-
-.fade-blur-leave-to {
-  transform: translateX(-10px);
 }
 </style>

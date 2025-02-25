@@ -82,7 +82,7 @@ html, body, #__nuxt, #__layout {
 }
 
 .highlight-wrapper {
-  @apply h-fit w-fit p-[1px] transition-all duration-200 ease-in-out;
+  @apply size-fit p-px transition-all duration-200 ease-in-out;
 }
 
 .highlight-gradient {
