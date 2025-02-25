@@ -93,7 +93,7 @@ defineShortcuts({
         :initial="{ borderRadius: '9999px' }"
         :transition="{ type: 'spring', stiffness: 300, damping: 30 }"
       >
-        <BgHighlight rounded="full" class="flex-1">
+        <BgHighlight rounded="full">
           <Motion :layout="true" class="navbar">
             <Motion
               v-if="isSearchActive"
@@ -163,7 +163,7 @@ defineShortcuts({
 }
 
 .search-container {
-  @apply flex items-center size-full p-2;
+  @apply flex items-center size-full p-1;
   width: 320px;
 }
 

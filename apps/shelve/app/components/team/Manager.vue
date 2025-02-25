@@ -11,6 +11,7 @@ const selectedIndex = defineModel<number>('selectedIndex', { required: false, de
 
 const teams = useTeams()
 const colorMode = useColorMode()
+const { version } = useRuntimeConfig().public
 
 const newTeamName = ref('')
 const open = ref(false)
@@ -369,7 +370,7 @@ watch(isSearchActive, (newValue) => {
         <div class="py-2 flex flex-col">
           <div
             ref="scrollContainerRef"
-            class="inset-shadow-[2px_2px_10px_rgba(0,0,0,0.4)] bg-(--ui-bg)/80 m-2 rounded-lg max-h-[400px] overflow-y-auto scroll-smooth"
+            class="inset-shadow-[2px_2px_10px_rgba(0,0,0,0.2)] bg-(--ui-bg)/80 m-2 rounded-lg max-h-[400px] overflow-y-auto scroll-smooth"
           >
             <div v-if="allFilteredItems.length === 0" class="px-4 py-6 text-center">
               <UIcon name="lucide:search-x" class="mx-auto mb-2 size-8 text-(--ui-text-muted)" />
@@ -428,19 +429,27 @@ watch(isSearchActive, (newValue) => {
 
           <div>
             <Separator />
-            <div class="flex flex-wrap justify-center gap-x-4 gap-y-2 pt-3 text-xs text-(--ui-text-muted)">
-              <div class="space-x-1">
-                <UKbd value="↑" variant="subtle" />
-                <UKbd value="↓" variant="subtle" />
-                <span class="shortcut-label">to navigate</span>
+            <div class="px-2 pt-2 flex items-center justify-between">
+              <div class="hidden text-xs sm:flex items-center gap-2 text-(--ui-text-muted)/50">
+                <UIcon name="custom:shelve" />
+                <span>
+                  {{ version }}
+                </span>
               </div>
-              <div class="space-x-1">
-                <UKbd value="Enter" variant="subtle" />
-                <span class="shortcut-label">to select</span>
-              </div>
-              <div class="space-x-1">
-                <UKbd value="Esc" variant="subtle" />
-                <span class="shortcut-label">to close</span>
+              <div class="flex flex-wrap justify-center gap-x-4 text-xs text-(--ui-text-muted)">
+                <div class="space-x-1">
+                  <UKbd value="↑" variant="subtle" />
+                  <UKbd value="↓" variant="subtle" />
+                  <span class="shortcut-label">to navigate</span>
+                </div>
+                <div class="space-x-1">
+                  <UKbd value="Enter" variant="subtle" />
+                  <span class="shortcut-label">to select</span>
+                </div>
+                <div class="space-x-1">
+                  <UKbd value="Esc" variant="subtle" />
+                  <span class="shortcut-label">to close</span>
+                </div>
               </div>
             </div>
           </div>
