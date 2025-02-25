@@ -34,6 +34,7 @@ export default defineNuxtConfig({
     '@nuxt/ui',
     'nuxt-build-cache',
     'nuxt-visitors',
+    'motion-v/nuxt'
   ],
 
   nitro: {

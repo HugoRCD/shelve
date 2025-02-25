@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Role } from '@types'
+import { Motion, LayoutGroup } from 'motion-v'
 
 const route = useRoute()
 const teamSlug = computed(() => route.params.teamSlug as string)
@@ -21,17 +22,7 @@ const navigationItems = ref(allNavigations.value)
 
 const isSearchActive = ref(false)
 const searchQuery = ref('')
-const navbarWidth = ref('auto')
-
 const selectedTeamIndex = ref(0)
-
-const navItemsRef = ref(null)
-
-const updateNavbarWidth = () => {
-  if (navItemsRef.value) {
-    navbarWidth.value = `${navItemsRef.value.scrollWidth + 16}px`
-  }
-}
 
 const toggleSearch = () => {
   isSearchActive.value = !isSearchActive.value
@@ -39,17 +30,22 @@ const toggleSearch = () => {
 
   if (!isSearchActive.value) {
     searchQuery.value = ''
-    nextTick(updateNavbarWidth)
   } else {
     setTimeout(() => {
       document.getElementById('search-input')?.focus()
-    }, 300)
+    }, 100)
   }
 }
 
 defineShortcuts({
-  meta_f: toggleSearch,
-  meta_k: toggleSearch,
+  meta_f: {
+    usingInput: true,
+    handler: () => toggleSearch()
+  },
+  meta_k: {
+    usingInput: true,
+    handler: () => toggleSearch()
+  },
   escape: {
     usingInput: true,
     handler: () => isSearchActive.value && toggleSearch()
@@ -77,63 +73,73 @@ defineShortcuts({
     handler: () => {}
   }
 })
-
-onMounted(() => {
-  nextTick(updateNavbarWidth)
-})
 </script>
 
 <template>
   <div class="navbar-wrapper flex flex-col sm:flex-row sm:items-center gap-4">
-    <BgHighlight rounded="full" class="hover:scale-105">
-      <div class="navbar">
-        <div class="nav-item p-0.5! cursor-pointer" @click="toggleSearch">
-          <UIcon :name="isSearchActive ? 'lucide:x' : 'lucide:search'" class="text-lg" />
-        </div>
-      </div>
-    </BgHighlight>
-
-    <BgHighlight
-      rounded="full"
-      class="flex-1 size-full"
-      :style="{
-        width: isSearchActive ? '320px' : navbarWidth
-      }"
-    >
-      <div class="navbar">
-        <Transition name="fade-blur" mode="out-in">
-          <div v-if="isSearchActive" class="search-container">
-            <UIcon name="lucide:search" class="icon mb-0.5 mr-2" />
-            <input
-              id="search-input"
-              v-model="searchQuery"
-              type="text"
-              placeholder="Search..."
-              class="bg-transparent border-none outline-none size-full text-(--ui-text-highlighted) placeholder:text-(--ui-text-muted)"
-            >
-          </div>
-
-          <div v-else ref="navItemsRef" class="flex items-center gap-2">
-            <div
-              v-for="nav in navigationItems"
-              :key="nav.to"
-              :class="nav.to.includes('/admin') ? 'hidden sm:flex' : ''"
-              class="flex-shrink-0"
-            >
-              <ULink v-bind="nav">
-                <UTooltip :text="nav.name" :content="{ side: 'top' }">
-                  <div class="highlight-wrapper rounded-full" :data-active="nav.to === route.path">
-                    <div class="nav-item" :data-active="nav.to === route.path">
-                      <UIcon :name="nav.icon" class="icon" />
-                    </div>
-                  </div>
-                </UTooltip>
-              </ULink>
+    <LayoutGroup>
+      <Motion :layout="true" class="outline-none">
+        <BgHighlight rounded="full" class="hover:scale-105">
+          <div class="navbar">
+            <div class="nav-item p-0.5! cursor-pointer" @click="toggleSearch">
+              <UIcon :name="isSearchActive ? 'lucide:x' : 'lucide:search'" class="text-lg" />
             </div>
           </div>
-        </Transition>
-      </div>
-    </BgHighlight>
+        </BgHighlight>
+      </Motion>
+
+      <Motion
+        :layout="true"
+        :initial="{ borderRadius: '9999px' }"
+        :transition="{ type: 'spring', stiffness: 300, damping: 30 }"
+      >
+        <BgHighlight rounded="full" class="flex-1">
+          <Motion :layout="true" class="navbar">
+            <Motion
+              v-if="isSearchActive"
+              :layout="true"
+              class="search-container"
+              :initial="{ opacity: 0 }"
+              :animate="{ opacity: 1 }"
+              :exit="{ opacity: 0 }"
+              :transition="{ duration: 0.2 }"
+            >
+              <UIcon name="lucide:search" class="icon mb-0.5 mr-2" />
+              <input
+                id="search-input"
+                v-model="searchQuery"
+                type="text"
+                placeholder="Search..."
+                class="bg-transparent border-none outline-none size-full text-(--ui-text-highlighted) placeholder:text-(--ui-text-muted)"
+              >
+            </Motion>
+
+            <Motion v-else :layout="true" class="flex items-center gap-2">
+              <Motion
+                v-for="nav in navigationItems"
+                :key="nav.to"
+                :layout="true"
+                :initial="{ scale: 0.9, opacity: 0 }"
+                :animate="{ scale: 1, opacity: 1 }"
+                :transition="{ type: 'spring', stiffness: 500, damping: 30 }"
+                :class="nav.to.includes('/admin') ? 'hidden sm:flex' : ''"
+                class="flex-shrink-0"
+              >
+                <ULink v-bind="nav">
+                  <UTooltip :text="nav.name" :content="{ side: 'top' }">
+                    <div class="highlight-wrapper rounded-full" :data-active="nav.to === route.path">
+                      <div class="nav-item" :data-active="nav.to === route.path">
+                        <UIcon :name="nav.icon" class="icon" />
+                      </div>
+                    </div>
+                  </UTooltip>
+                </ULink>
+              </Motion>
+            </Motion>
+          </Motion>
+        </BgHighlight>
+      </Motion>
+    </LayoutGroup>
 
     <TeamManager
       v-model="isSearchActive"
@@ -153,10 +159,12 @@ onMounted(() => {
 
 .navbar {
   @apply backdrop-blur-lg shadow-2xl flex items-center gap-1 sm:gap-2 rounded-full p-2;
+  width: auto;
 }
 
 .search-container {
   @apply flex items-center size-full p-2;
+  width: 320px;
 }
 
 .nav-item {
@@ -174,16 +182,5 @@ onMounted(() => {
 
 .icon {
   @apply sm:text-xl text-(--ui-text-highlighted);
-}
-
-.fade-blur-enter-active,
-.fade-blur-leave-active {
-  transition: opacity 0.1s ease, filter 0.1s ease, transform 0.1s ease;
-}
-
-.fade-blur-enter-from,
-.fade-blur-leave-to {
-  opacity: 0;
-  filter: blur(4px);
 }
 </style>
