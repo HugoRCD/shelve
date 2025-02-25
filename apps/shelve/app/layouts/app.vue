@@ -11,20 +11,18 @@ const pages = computed(() => {
 const navigation = computed(() => {
   if (route.path.includes('/projects'))
     return { title: 'Project Details', to: '/projects', name: 'project', icon: 'lucide:folder-open' }
-  return pages.value.find((page) => page.path === route.path) || null
+  return pages.value.find((page) => page.to === route.path) || null
 })
 
 const routeTitle = computed(() => {
   return route.meta.title as string
 })
-
-
-const show = ref(true)
 </script>
 
 <template>
   <div class="max-layout-width relative flex h-screen">
     <LayoutSidebar />
+    <LayoutNavbar />
     <div class="main-container flex flex-1 flex-col overflow-hidden border-l border-l-(--ui-border)">
       <div class="flex justify-between gap-1 border-b border-(--ui-border) px-5 py-2">
         <div class="flex items-center gap-2">
