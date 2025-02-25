@@ -7,6 +7,7 @@ const props = defineProps<{
 
 const isSearchActive = defineModel<boolean>({ required: false })
 const search = defineModel<string>('search', { required: false })
+const selectedIndex = defineModel<number>('selectedIndex', { required: false, default: 0 })
 
 const teams = useTeams()
 
@@ -65,6 +66,33 @@ const filteredTeams = computed(() => {
   })
 })
 
+watch(selectedIndex, (newIndex) => {
+  if (filteredTeams.value.length === 0) return
+
+  if (newIndex === -1) {
+    selectedIndex.value = filteredTeams.value.length - 1
+    return
+  }
+
+  if (newIndex >= filteredTeams.value.length) {
+    selectedIndex.value = 0
+  }
+})
+
+defineShortcuts({
+  enter: {
+    usingInput: true,
+    handler: () => {
+      if (isSearchActive.value && filteredTeams.value.length > 0) {
+        const team = filteredTeams.value[selectedIndex.value]
+        if (team) {
+          selectHeadlessTeam(team)
+        }
+      }
+    }
+  }
+})
+
 function selectHeadlessTeam(team: Team) {
   if (props.headless) {
     isSearchActive.value = false
@@ -72,6 +100,10 @@ function selectHeadlessTeam(team: Team) {
   }
   selectTeam(team)
 }
+
+watch(search, () => {
+  selectedIndex.value = 0
+})
 </script>
 
 <template>
@@ -151,10 +183,13 @@ function selectHeadlessTeam(team: Team) {
           </div>
 
           <div v-else class="space-y-1">
-            <div v-for="team in filteredTeams" :key="team.id" class="team-item-wrapper">
+            <div v-for="(team, index) in filteredTeams" :key="team.id" class="team-item-wrapper">
               <div
                 class="team-item"
-                :class="{ 'active': team.id === currentTeam?.id }"
+                :class="{
+                  'active': team.id === currentTeam?.id,
+                  'selected': index === selectedIndex
+                }"
                 @click="selectHeadlessTeam(team)"
               >
                 <UAvatar :src="team.logo" size="sm" alt="team name" />
@@ -197,11 +232,11 @@ function selectHeadlessTeam(team: Team) {
 }
 
 .team-item {
-  @apply cursor-pointer flex items-center gap-3 rounded-lg px-3 py-2.5 transition-all;
+  @apply cursor-pointer flex items-center gap-3 rounded-lg px-3 py-2.5;
   @apply hover:bg-(--ui-bg-muted) relative overflow-hidden;
 }
 
-.team-item.active {
+.team-item.selected {
   @apply bg-(--ui-bg-accented);
 }
 

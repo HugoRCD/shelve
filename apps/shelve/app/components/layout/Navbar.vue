@@ -23,6 +23,8 @@ const isSearchActive = ref(false)
 const searchQuery = ref('')
 const navbarWidth = ref('auto')
 
+const selectedTeamIndex = ref(0)
+
 const navItemsRef = ref(null)
 
 const updateNavbarWidth = () => {
@@ -57,6 +59,7 @@ const handleProjectNavigation = () => {
 
 const toggleSearch = () => {
   isSearchActive.value = !isSearchActive.value
+  selectedTeamIndex.value = 0
 
   if (!isSearchActive.value) {
     searchQuery.value = ''
@@ -73,6 +76,28 @@ defineShortcuts({
   escape: {
     usingInput: true,
     handler: () => isSearchActive.value && toggleSearch()
+  },
+  arrowdown: {
+    usingInput: true,
+    handler: () => {
+      if (isSearchActive.value) {
+        selectedTeamIndex.value++
+      }
+    }
+  },
+  arrowup: {
+    usingInput: true,
+    handler: () => {
+      if (selectedTeamIndex.value > 0) {
+        selectedTeamIndex.value--
+      } else {
+        selectedTeamIndex.value = -1
+      }
+    }
+  },
+  enter: {
+    usingInput: true,
+    handler: () => {}
   }
 })
 
@@ -140,7 +165,12 @@ watch(() => route.path, handleProjectNavigation, { immediate: true })
       </div>
     </BgHighlight>
 
-    <TeamManager v-model="isSearchActive" v-model:search="searchQuery" :headless="true" />
+    <TeamManager
+      v-model="isSearchActive"
+      v-model:search="searchQuery"
+      v-model:selected-index="selectedTeamIndex"
+      headless
+    />
   </div>
 </template>
 
