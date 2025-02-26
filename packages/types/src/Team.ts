@@ -41,7 +41,8 @@ export type UpdateTeamInput = {
 }
 
 export type DeleteTeamInput = {
-  teamId: number
+  teamId: number,
+  slug: string
 }
 
 export type AddMemberInput = {

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Team } from '@types'
+import type { Team, CommandItem } from '@types'
 
 const props = defineProps<{
   headless?: boolean
@@ -9,27 +9,32 @@ const isSearchActive = defineModel<boolean>({ required: false })
 const search = defineModel<string>('search', { required: false })
 const selectedIndex = defineModel<number>('selectedIndex', { required: false, default: 0 })
 
-const teams = useTeams()
-const colorMode = useColorMode()
-const { version } = useRuntimeConfig().public
-
-const newTeamName = ref('')
-const open = ref(false)
-const scrollContainerRef = ref(null)
-const selectedItemRef = ref(null)
-
-const defaultTeamSlug = useCookie<string>('defaultTeamSlug', {
-  watch: true,
-})
-
-const _currentTeam = useTeam()
+// Command palette setup
+const { commandGroups, createTeamFromSearch, version } = useAppCommands()
 
 const {
-  loading,
-  createTeam,
-  selectTeam,
-  fetchTeams,
-} = useTeamsService()
+  scrollContainerRef,
+  filteredCommandGroups,
+  allFilteredItems,
+  getItemGlobalIndex,
+  navigateUp,
+  navigateDown,
+  selectCurrentItem
+} = useCommandPalette(search, commandGroups, {
+  onClose: () => {
+    isSearchActive.value = false
+    search.value = ''
+    selectedIndex.value = 0
+  }
+})
+
+// Legacy team management
+const teams = useTeams()
+const newTeamName = ref('')
+const open = ref(false)
+const defaultTeamSlug = useCookie<string>('defaultTeamSlug', { watch: true })
+const _currentTeam = useTeam()
+const { loading, createTeam, selectTeam, fetchTeams } = useTeamsService()
 fetchTeams()
 
 const currentTeam = computed(() => _currentTeam.value ?? teams.value.find((team) => team.slug === defaultTeamSlug.value))
@@ -63,170 +68,35 @@ const groups = computed(() => [
   }
 ])
 
-const themeCommands = ref([
-  {
-    id: 'theme-light',
-    label: 'Light Mode',
-    icon: 'lucide:sun',
-    description: 'Switch to light mode',
-    action: () => {
-      colorMode.preference = 'light'
-      isSearchActive.value = false
-    },
-    keywords: ['light', 'theme', 'mode', 'day', 'bright'],
-  },
-  {
-    id: 'theme-dark',
-    label: 'Dark Mode',
-    icon: 'lucide:moon',
-    description: 'Switch to dark mode',
-    action: () => {
-      colorMode.preference = 'dark'
-      isSearchActive.value = false
-    },
-    keywords: ['dark', 'theme', 'mode', 'night', 'black'],
-  }
-])
-
-const navigationCommands = ref([
-  {
-    id: 'nav-home',
-    label: 'Go to Dashboard',
-    icon: 'lucide:layout-dashboard',
-    description: 'Navigate to the dashboard',
-    action: () => {
-      navigateTo(`/${defaultTeamSlug.value}`)
-      isSearchActive.value = false
-    },
-    keywords: ['home', 'dashboard', 'main'],
-  },
-  {
-    id: 'nav-environments',
-    label: 'Environments',
-    icon: 'lucide:cloud',
-    description: 'Navigate to the environments page',
-    action: () => {
-      navigateTo(`/${defaultTeamSlug.value}/environments`)
-      isSearchActive.value = false
-    },
-    keywords: ['environments', 'projects', 'variables'],
-  },
-  {
-    id: 'nav-settings',
-    label: 'Settings',
-    icon: 'lucide:settings',
-    description: 'Open settings page',
-    action: () => {
-      navigateTo('/user/settings')
-      isSearchActive.value = false
-    },
-    keywords: ['settings', 'preferences', 'config'],
-  },
-  {
-    id: 'nav-profile',
-    label: 'Profile',
-    icon: 'lucide:user',
-    description: 'View your profile',
-    action: () => {
-      navigateTo('/user/profile')
-      isSearchActive.value = false
-    },
-    keywords: ['profile', 'account', 'user'],
-  },
-])
-
-const teamCommands = computed(() => {
-  return teams.value.map(team => ({
-    id: `team-${team.id}`,
-    label: team.name,
-    icon: team.logo || 'lucide:users',
-    isAvatar: Boolean(team.logo),
-    description: `Switch to ${team.name} team`,
-    action: () => selectHeadlessTeam(team),
-    keywords: ['team', 'switch', team.name],
-    active: team.id === currentTeam.value?.id,
-  }))
-})
-
-const commandGroups = computed(() => [
-  {
-    id: 'teams',
-    label: 'Teams',
-    items: teamCommands.value
-  },
-  {
-    id: 'navigation',
-    label: 'Navigation',
-    items: navigationCommands.value
-  },
-  {
-    id: 'theme',
-    label: 'Theme',
-    items: themeCommands.value
-  }
-])
-
-const filteredCommandGroups = computed(() => {
-  if (!search.value) {
-    return commandGroups.value
-  }
-
-  const searchLower = search.value.toLowerCase()
-
-  return commandGroups.value.map(group => {
-    const filteredItems = group.items.filter(item => {
-      if (item.label.toLowerCase().includes(searchLower)) {
-        return true
-      }
-
-      if (item.keywords && item.keywords.some(keyword => keyword.toLowerCase().includes(searchLower))) {
-        return true
-      }
-
-      return !!(item.description && item.description.toLowerCase().includes(searchLower))
-    })
-
-    return {
-      ...group,
-      items: filteredItems,
-    }
-  }).filter(group => group.items.length > 0)
-})
-
-const allFilteredItems = computed(() => {
-  return filteredCommandGroups.value.flatMap(group => group.items)
-})
-
-const getItemGlobalIndex = (groupIndex: number, itemIndex: number) => {
-  let globalIndex = 0
-  for (let i = 0; i < groupIndex; i++) {
-    globalIndex += filteredCommandGroups.value[i]!.items.length
-  }
-  return globalIndex + itemIndex
-}
-
-const scrollToSelectedItem = () => {
-  nextTick(() => {
-    const selectedElement = document.querySelector('.command-item.selected')
-    if (selectedElement && scrollContainerRef.value) {
-      const container = scrollContainerRef.value
-      // @ts-expect-error - This works
-      const containerRect = container.getBoundingClientRect()
-      const elementRect = selectedElement.getBoundingClientRect()
-
-      if (elementRect.bottom > containerRect.bottom) {
-        const scrollOffset = elementRect.bottom - containerRect.bottom + 8
-        // @ts-expect-error - This works
-        container.scrollTop += scrollOffset
-      } else if (elementRect.top < containerRect.top) {
-        const scrollOffset = elementRect.top - containerRect.top - 8
-        // @ts-expect-error - This works
-        container.scrollTop! += scrollOffset
+// Keyboard navigation
+defineShortcuts({
+  enter: {
+    usingInput: true,
+    handler: () => {
+      if (isSearchActive.value) {
+        selectCurrentItem()
       }
     }
-  })
-}
+  },
+  arrowup: {
+    usingInput: true,
+    handler: () => {
+      if (isSearchActive.value) {
+        navigateUp()
+      }
+    }
+  },
+  arrowdown: {
+    usingInput: true,
+    handler: () => {
+      if (isSearchActive.value) {
+        navigateDown()
+      }
+    }
+  }
+})
 
+// Watch for selectedIndex changes from parent
 watch(selectedIndex, (newIndex) => {
   if (allFilteredItems.value.length === 0) return
 
@@ -238,26 +108,9 @@ watch(selectedIndex, (newIndex) => {
   if (newIndex >= allFilteredItems.value.length) {
     selectedIndex.value = 0
   }
-
-  scrollToSelectedItem()
 })
 
-defineShortcuts({
-  enter: {
-    usingInput: true,
-    handler: () => {
-      if (isSearchActive.value && allFilteredItems.value.length > 0) {
-        const item = allFilteredItems.value[selectedIndex.value]
-        if (item && item.action) {
-          item.action()
-          search.value = ''
-          selectedIndex.value = 0
-        }
-      }
-    }
-  }
-})
-
+// Handle team selection
 function selectHeadlessTeam(team: Team) {
   if (props.headless) {
     isSearchActive.value = false
@@ -266,32 +119,10 @@ function selectHeadlessTeam(team: Team) {
   selectTeam(team)
 }
 
-watch(search, () => {
-  selectedIndex.value = 0
-  nextTick(() => {
-    if (scrollContainerRef.value) {
-      // @ts-expect-error - This works
-      scrollContainerRef.value.scrollTop! = 0
-    }
-  })
-})
-
-async function createTeamFromSearch() {
-  if (!search.value) return
-
-  await createTeam(search.value)
-  isSearchActive.value = false
-  search.value = ''
-}
-
+// Reset scroll position when search modal opens
 watch(isSearchActive, (newValue) => {
-  if (newValue) {
-    nextTick(() => {
-      if (scrollContainerRef.value) {
-        // @ts-expect-error - This works
-        scrollContainerRef.value.scrollTop! = 0
-      }
-    })
+  if (newValue && scrollContainerRef.value) {
+    scrollContainerRef.value.scrollTop = 0
   }
 })
 </script>
@@ -380,7 +211,8 @@ watch(isSearchActive, (newValue) => {
               <div v-if="search" class="mt-4 flex justify-center">
                 <CustomButton
                   :label="`Create ${search} team`"
-                  @click="createTeamFromSearch"
+                  loading-auto
+                  @click="createTeamFromSearch(search)"
                 />
               </div>
             </div>
@@ -398,13 +230,12 @@ watch(isSearchActive, (newValue) => {
                   <div
                     v-for="(item, itemIndex) in group.items"
                     :key="item.id"
-                    :ref="selectedIndex === getItemGlobalIndex(groupIndex, itemIndex) ? 'selectedItemRef' : undefined"
                     class="command-item"
                     :class="{
                       'active': item.active,
                       'selected': selectedIndex === getItemGlobalIndex(groupIndex, itemIndex)
                     }"
-                    @click="item.action()"
+                    @click="item.action(); isSearchActive = false; search = ''"
                   >
                     <div v-if="item.isAvatar" class="flex-shrink-0">
                       <UAvatar :src="item.icon" size="sm" :alt="item.label" />

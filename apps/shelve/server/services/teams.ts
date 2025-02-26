@@ -127,8 +127,9 @@ export class TeamsService {
   }
 
   async deleteTeam(input: DeleteTeamInput): Promise<void> {
-    const { teamId } = input
+    const { teamId, slug } = input
     await clearCache('Team', teamId)
+    await clearCache('Team', slug)
     const [team] = await useDrizzle().delete(tables.teams)
       .where(eq(tables.teams.id, teamId))
       .returning({ id: tables.teams.id, slug: tables.teams.slug })
