@@ -430,7 +430,7 @@ watch(isSearchActive, (newValue) => {
           <div>
             <Separator />
             <div class="px-2 pt-2 flex items-center justify-between">
-              <div class="hidden text-xs sm:flex items-center gap-2 text-(--ui-text-muted)/50">
+              <div class="hidden text-xs font-mono sm:flex items-center gap-1 text-(--ui-text-muted)/50">
                 <UIcon name="custom:shelve" />
                 <span>
                   {{ version }}
