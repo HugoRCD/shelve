@@ -96,6 +96,20 @@ export function useAppCommands() {
     }))
   })
 
+  // Other commands
+  const otherCommands = computed(() => [
+    {
+      id: 'issues',
+      label: 'Issues',
+      icon: 'lucide:bug',
+      description: 'Open issues page',
+      action: () => {
+        open('https://github.com/hugorcd/shelve/issues')
+      },
+      keywords: ['issues', 'bug', 'report'],
+    },
+  ])
+
   // Group all commands
   const commandGroups = computed<CommandGroup[]>(() => [
     {
@@ -112,7 +126,12 @@ export function useAppCommands() {
       id: 'theme',
       label: 'Theme',
       items: themeCommands.value
-    }
+    },
+    {
+      id: 'other',
+      label: 'Other',
+      items: otherCommands.value
+    },
   ])
 
   // Helper function to create a team
@@ -124,6 +143,7 @@ export function useAppCommands() {
   return {
     commandGroups,
     createTeamFromSearch,
-    version
+    version,
+    currentTeam
   }
 }

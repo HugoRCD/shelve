@@ -20,8 +20,7 @@ const routeTitle = computed(() => {
 </script>
 
 <template>
-  <div class="max-layout-width relative flex h-screen">
-    <LayoutSidebar />
+  <div class="relative flex h-screen">
     <LayoutNavbar />
     <div class="main-container flex flex-1 flex-col overflow-hidden border-l border-l-(--ui-border)">
       <div class="flex justify-between gap-1 border-b border-(--ui-border) px-5 py-2">
@@ -55,11 +54,11 @@ const routeTitle = computed(() => {
           <div id="action-items">
             <!-- action-items -->
           </div>
-          <LayoutSidebar mobile class="sm:hidden" />
+          <UserDropdown />
         </div>
       </div>
       <CliInstall />
-      <div class="flex h-full flex-col gap-4 overflow-y-auto px-3 py-6 sm:px-6">
+      <div class="flex mx-auto w-full flex-col gap-4 overflow-y-auto px-3 py-6 sm:px-6">
         <slot />
       </div>
     </div>
