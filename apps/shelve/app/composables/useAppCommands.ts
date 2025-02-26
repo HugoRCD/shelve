@@ -1,4 +1,4 @@
-import type { CommandGroup, CommandItem } from '@types'
+import type { CommandGroup, CommandItem, SubMenuState } from '@types'
 
 export function useAppCommands() {
   const teams = useTeams()
@@ -7,13 +7,36 @@ export function useAppCommands() {
   const defaultTeamSlug = useCookie<string>('defaultTeamSlug')
   const _currentTeam = useTeam()
   const { selectTeam, createTeam } = useTeamsService()
+  const route = useRoute()
+
+  // Submenu state
+  const subMenuState = reactive<SubMenuState>({
+    active: false,
+    parentId: '',
+    title: '',
+    items: []
+  })
+
+  const activateSubMenu = (parentId: string, title: string, items: CommandItem[]) => {
+    subMenuState.active = true
+    subMenuState.parentId = parentId
+    subMenuState.title = title
+    subMenuState.items = items
+  }
+
+  const deactivateSubMenu = () => {
+    subMenuState.active = false
+    subMenuState.parentId = ''
+    subMenuState.title = ''
+    subMenuState.items = []
+  }
 
   const currentTeam = computed(() =>
     _currentTeam.value ?? teams.value.find((team) => team.slug === defaultTeamSlug.value)
   )
 
-  // Theme commands
-  const themeCommands = ref<CommandItem[]>([
+  // Theme commands - fully reactive
+  const themeCommands = computed<CommandItem[]>(() => [
     {
       id: 'theme-light',
       label: 'Light Mode',
@@ -23,7 +46,7 @@ export function useAppCommands() {
         colorMode.preference = 'light'
       },
       keywords: ['light', 'theme', 'mode', 'day', 'bright'],
-      active: computed(() => colorMode.preference === 'light').value
+      active: colorMode.preference === 'light'
     },
     {
       id: 'theme-dark',
@@ -34,41 +57,153 @@ export function useAppCommands() {
         colorMode.preference = 'dark'
       },
       keywords: ['dark', 'theme', 'mode', 'night', 'black'],
-      active: computed(() => colorMode.preference === 'dark').value
+      active: colorMode.preference === 'dark'
+    },
+    {
+      id: 'theme-system',
+      label: 'System Theme',
+      icon: 'lucide:laptop',
+      description: 'Use system preference',
+      action: () => {
+        colorMode.preference = 'system'
+      },
+      keywords: ['system', 'theme', 'auto', 'default'],
+      active: colorMode.preference === 'system'
     }
   ])
 
-  // Navigation commands
-  const navigationCommands = ref<CommandItem[]>([
+  // Settings submenu items
+  const settingsSubMenuItems = computed<CommandItem[]>(() => [
+    {
+      id: 'settings-user',
+      label: 'User Settings',
+      icon: 'lucide:user-cog',
+      description: 'Manage your user account settings',
+      action: () => {
+        navigateTo('/user/settings')
+      },
+      keywords: ['user', 'account', 'settings', 'preferences'],
+      active: route.path === '/user/settings'
+    },
+    {
+      id: 'settings-team',
+      label: 'Team Settings',
+      icon: 'lucide:users-cog',
+      description: 'Manage team settings',
+      action: () => {
+        navigateTo(`/${currentTeam.value?.slug}/settings`)
+      },
+      keywords: ['team', 'organization', 'settings', 'preferences'],
+      active: route.path.includes('/settings') && !route.path.includes('/user/settings')
+    },
+    {
+      id: 'settings-billing',
+      label: 'Billing',
+      icon: 'lucide:credit-card',
+      description: 'Manage billing and subscription',
+      action: () => {
+        navigateTo(`/${currentTeam.value?.slug}/settings/billing`)
+      },
+      keywords: ['billing', 'payment', 'subscription', 'plan'],
+      active: route.path.includes('/settings/billing')
+    },
+    {
+      id: 'settings-api',
+      label: 'API Keys',
+      icon: 'lucide:key',
+      description: 'Manage API keys',
+      action: () => {
+        navigateTo(`/${currentTeam.value?.slug}/settings/api-keys`)
+      },
+      keywords: ['api', 'keys', 'tokens', 'access'],
+      active: route.path.includes('/settings/api-keys')
+    }
+  ])
+
+  // Environment submenu items
+  const environmentSubMenuItems = computed<CommandItem[]>(() => [
+    {
+      id: 'env-list',
+      label: 'All Environments',
+      icon: 'lucide:layers',
+      description: 'View all environments',
+      action: () => {
+        navigateTo(`/${currentTeam.value?.slug}/environments`)
+      },
+      keywords: ['environments', 'all', 'list'],
+      active: route.path === `/${currentTeam.value?.slug}/environments`
+    },
+    {
+      id: 'env-create',
+      label: 'Create Environment',
+      icon: 'lucide:plus-circle',
+      description: 'Create a new environment',
+      action: () => {
+        navigateTo(`/${currentTeam.value?.slug}/environments/new`)
+      },
+      keywords: ['environment', 'create', 'new', 'add'],
+      active: route.path === `/${currentTeam.value?.slug}/environments/new`
+    },
+    {
+      id: 'env-production',
+      label: 'Production Environment',
+      icon: 'lucide:globe',
+      description: 'View production environment',
+      action: () => {
+        navigateTo(`/${currentTeam.value?.slug}/environments/production`)
+      },
+      keywords: ['environment', 'production', 'live'],
+      active: route.path.includes('/environments/production')
+    },
+    {
+      id: 'env-staging',
+      label: 'Staging Environment',
+      icon: 'lucide:flask-conical',
+      description: 'View staging environment',
+      action: () => {
+        navigateTo(`/${currentTeam.value?.slug}/environments/staging`)
+      },
+      keywords: ['environment', 'staging', 'test'],
+      active: route.path.includes('/environments/staging')
+    }
+  ])
+
+  // Navigation commands with submenus
+  const navigationCommands = computed<CommandItem[]>(() => [
     {
       id: 'nav-home',
-      label: 'Go to Dashboard',
+      label: 'Dashboard',
       icon: 'lucide:layout-dashboard',
-      description: 'Navigate to the dashboard',
+      description: 'Go to your dashboard',
       action: () => {
-        navigateTo(`/${defaultTeamSlug.value}`)
+        navigateTo(`/${currentTeam.value?.slug}`)
       },
       keywords: ['home', 'dashboard', 'main'],
+      active: route.path === `/${currentTeam.value?.slug}`
     },
     {
       id: 'nav-environments',
       label: 'Environments',
       icon: 'lucide:cloud',
-      description: 'Navigate to the environments page',
+      description: 'Manage environments',
       action: () => {
-        navigateTo(`/${defaultTeamSlug.value}/environments`)
+        activateSubMenu('nav-environments', 'Environments', environmentSubMenuItems.value)
       },
       keywords: ['environments', 'projects', 'variables'],
+      active: route.path.includes('/environments'),
+      hasSubmenu: true
     },
     {
       id: 'nav-settings',
       label: 'Settings',
       icon: 'lucide:settings',
-      description: 'Open settings page',
+      description: 'Manage settings',
       action: () => {
-        navigateTo('/user/settings')
+        activateSubMenu('nav-settings', 'Settings', settingsSubMenuItems.value)
       },
       keywords: ['settings', 'preferences', 'config'],
+      active: route.path.includes('/settings'),
+      hasSubmenu: true
     },
     {
       id: 'nav-profile',
@@ -79,10 +214,11 @@ export function useAppCommands() {
         navigateTo('/user/profile')
       },
       keywords: ['profile', 'account', 'user'],
+      active: route.path === '/user/profile'
     },
   ])
 
-  // Team commands
+  // Team commands - reactive
   const teamCommands = computed<CommandItem[]>(() => {
     return teams.value.map(team => ({
       id: `team-${team.id}`,
@@ -96,43 +232,116 @@ export function useAppCommands() {
     }))
   })
 
-  // Other commands
-  const otherCommands = computed(() => [
+  // Help & Support commands
+  const helpCommands = computed<CommandItem[]>(() => [
     {
-      id: 'issues',
-      label: 'Issues',
-      icon: 'lucide:bug',
-      description: 'Open issues page',
+      id: 'help-docs',
+      label: 'Documentation',
+      icon: 'lucide:book-open',
+      description: 'Read the documentation',
       action: () => {
-        open('https://github.com/hugorcd/shelve/issues')
+        window.open('https://shelve.cloud/docs/getting-started', '_blank')
       },
-      keywords: ['issues', 'bug', 'report'],
+      keywords: ['docs', 'help', 'documentation', 'guide'],
     },
+    {
+      id: 'help-issues',
+      label: 'Report Issue',
+      icon: 'lucide:bug',
+      description: 'Report a bug or issue',
+      action: () => {
+        window.open('https://github.com/hugorcd/shelve/issues', '_blank')
+      },
+      keywords: ['issues', 'bug', 'report', 'problem'],
+    },
+    {
+      id: 'help-feedback',
+      label: 'Send Feedback',
+      icon: 'lucide:message-square',
+      description: 'Send feedback or suggestions',
+      action: () => {
+        window.open('mailto:contact@shelve.cloud', '_blank')
+      },
+      keywords: ['feedback', 'suggestion', 'contact'],
+    }
+  ])
+
+  // Utility commands
+  const utilityCommands = computed<CommandItem[]>(() => [
+    {
+      id: 'util-clipboard',
+      label: 'Copy Team ID',
+      icon: 'lucide:clipboard-copy',
+      description: 'Copy current team ID to clipboard',
+      action: () => {
+        if (currentTeam.value?.id) {
+          copyToClipboard(currentTeam.value.id.toString())
+        }
+      },
+      keywords: ['copy', 'clipboard', 'team', 'id'],
+    },
+    {
+      id: 'util-version',
+      label: `Version: ${version}`,
+      icon: 'lucide:info',
+      description: 'Current application version',
+      keywords: ['version', 'app', 'info'],
+    },
+    {
+      id: 'util-logout',
+      label: 'Log Out',
+      icon: 'lucide:log-out',
+      description: 'Sign out of your account',
+      action: async () => {
+        await useLogout()
+      },
+      keywords: ['logout', 'signout', 'exit'],
+    }
   ])
 
   // Group all commands
-  const commandGroups = computed<CommandGroup[]>(() => [
-    {
-      id: 'teams',
-      label: 'Teams',
-      items: teamCommands.value
-    },
-    {
-      id: 'navigation',
-      label: 'Navigation',
-      items: navigationCommands.value
-    },
-    {
-      id: 'theme',
-      label: 'Theme',
-      items: themeCommands.value
-    },
-    {
-      id: 'other',
-      label: 'Other',
-      items: otherCommands.value
-    },
-  ])
+  const commandGroups = computed<CommandGroup[]>(() => {
+    // If submenu is active, only show that
+    if (subMenuState.active) {
+      return [
+        {
+          id: `submenu-${subMenuState.parentId}`,
+          label: subMenuState.title,
+          items: subMenuState.items,
+          backAction: deactivateSubMenu
+        }
+      ]
+    }
+
+    // Otherwise show all command groups
+    return [
+      {
+        id: 'teams',
+        label: 'Teams',
+        items: teamCommands.value
+      },
+      {
+        id: 'navigation',
+        label: 'Navigation',
+        items: navigationCommands.value
+      },
+      {
+        id: 'theme',
+        label: 'Theme',
+        items: themeCommands.value
+      },
+      {
+        id: 'help',
+        label: 'Help & Support',
+        items: helpCommands.value
+      },
+      {
+        id: 'utility',
+        label: 'Utilities',
+        items: utilityCommands.value
+      }
+    ]
+  })
 
   // Helper function to create a team
   const createTeamFromSearch = async (teamName: string) => {
@@ -144,6 +353,8 @@ export function useAppCommands() {
     commandGroups,
     createTeamFromSearch,
     version,
-    currentTeam
+    currentTeam,
+    subMenuState,
+    deactivateSubMenu
   }
 }

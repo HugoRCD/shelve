@@ -96,7 +96,9 @@ export function useCommandPalette(
       const item = allFilteredItems.value[selectedIndex.value]
       if (item?.action) {
         await item.action()
-        if (options.onClose) {
+
+        // Only close if it's not a submenu item
+        if (!item.hasSubmenu && options.onClose) {
           options.onClose()
         }
       }
@@ -115,6 +117,7 @@ export function useCommandPalette(
 
   // Reset scroll when command groups change
   watch(commandGroups, () => {
+    selectedIndex.value = 0
     nextTick(() => {
       if (scrollContainerRef.value) {
         scrollContainerRef.value.scrollTop = 0

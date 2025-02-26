@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import type { Team } from '@types'
+import type { CommandItem } from '@types'
 
 const isSearchActive = defineModel<boolean>({ required: false })
 const search = defineModel<string>('search', { required: false })
 const selectedIndex = defineModel<number>('selectedIndex', { required: false, default: 0 })
 
 // Command palette setup
-const { commandGroups, createTeamFromSearch, version, currentTeam } = useAppCommands()
+const { commandGroups, createTeamFromSearch, version, subMenuState, deactivateSubMenu } = useAppCommands()
 
 const {
   scrollContainerRef,
@@ -21,6 +21,7 @@ const {
     isSearchActive.value = false
     search.value = ''
     selectedIndex.value = 0
+    deactivateSubMenu()
   }
 })
 
@@ -51,6 +52,15 @@ defineShortcuts({
         navigateDown()
       }
     }
+  },
+  backspace: {
+    usingInput: true,
+    handler: () => {
+      if (isSearchActive.value && subMenuState.active) {
+        deactivateSubMenu()
+        selectedIndex.value = 0
+      }
+    }
   }
 })
 
@@ -72,8 +82,17 @@ watch(selectedIndex, (newIndex) => {
 watch(isSearchActive, (newValue) => {
   if (newValue && scrollContainerRef.value) {
     scrollContainerRef.value.scrollTop = 0
+    deactivateSubMenu()
   }
 })
+
+function playAction(item: CommandItem) {
+  item.action()
+  if (!item.hasSubmenu) {
+    isSearchActive.value = false
+    search.value = ''
+  }
+}
 </script>
 
 <template>
@@ -108,10 +127,21 @@ watch(isSearchActive, (newValue) => {
 
           <template v-else>
             <div v-for="(group, groupIndex) in filteredCommandGroups" :key="group.id" class="command-group">
-              <div class="p-3 pb-1">
+              <div class="p-3 pb-1 flex items-center justify-between">
                 <span class="text-sm font-semibold text-(--ui-text-muted)">
                   {{ group.label }}
                 </span>
+
+                <!-- Back button for submenus -->
+                <button
+                  v-if="group.backAction"
+                  class="text-xs text-(--ui-text-muted) flex items-center gap-1 hover:text-(--ui-text-highlighted)"
+                  @click="group.backAction()"
+                >
+                  <UIcon name="lucide:arrow-left" class="size-3" />
+                  <span>Back</span>
+                </button>
+
                 <Separator />
               </div>
 
@@ -122,9 +152,10 @@ watch(isSearchActive, (newValue) => {
                   class="command-item"
                   :class="{
                     'active': item.active,
+                    'has-submenu': item.hasSubmenu,
                     'selected': selectedIndex === getItemGlobalIndex(groupIndex, itemIndex)
                   }"
-                  @click="item.action(); isSearchActive = false; search = ''"
+                  @click="playAction(item)"
                 >
                   <div v-if="item.isAvatar" class="flex-shrink-0">
                     <UAvatar :src="item.icon" size="sm" :alt="item.label" />
@@ -140,7 +171,16 @@ watch(isSearchActive, (newValue) => {
                     </span>
                   </div>
 
-                  <UIcon v-if="item.active" name="lucide:check" class="size-4 text-(--ui-text-highlighted)" />
+                  <UIcon
+                    v-if="item.hasSubmenu"
+                    name="lucide:chevron-right"
+                    class="size-4 text-(--ui-text-highlighted)"
+                  />
+                  <UIcon
+                    v-else-if="item.active"
+                    name="lucide:check"
+                    class="size-4 text-(--ui-text-highlighted)"
+                  />
                 </div>
               </div>
             </div>
@@ -170,6 +210,10 @@ watch(isSearchActive, (newValue) => {
                 <UKbd value="Esc" variant="subtle" />
                 <span class="shortcut-label">to close</span>
               </div>
+              <div v-if="subMenuState.active" class="space-x-1">
+                <UKbd value="Backspace" variant="subtle" />
+                <span class="shortcut-label">to go back</span>
+              </div>
             </div>
           </div>
         </div>
@@ -196,5 +240,13 @@ watch(isSearchActive, (newValue) => {
 
 .command-item.selected.active {
   @apply bg-(--ui-bg-accented)/70;
+}
+
+.command-item.has-submenu {
+  @apply pr-2;
+}
+
+.command-item.has-submenu:hover {
+  @apply bg-(--ui-bg-muted)/70;
 }
 </style>
