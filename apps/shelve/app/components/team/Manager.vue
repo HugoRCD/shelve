@@ -276,10 +276,10 @@ watch(search, () => {
   })
 })
 
-function createTeamFromSearch() {
+async function createTeamFromSearch() {
   if (!search.value) return
 
-  createTeam(search.value)
+  await createTeam(search.value)
   isSearchActive.value = false
   search.value = ''
 }

@@ -5,6 +5,7 @@ type ButtonProps = {
   rounded?: 'none' | 'sm' | 'md' | 'lg' | 'xl'
   to?: string
   loading?: boolean
+  loadingAuto?: boolean
   onClick?: ((event: MouseEvent) => void | Promise<void>) | Array<((event: MouseEvent) => void | Promise<void>)>
 }
 
@@ -28,7 +29,7 @@ const props = withDefaults(defineProps<ButtonProps>(), {
   >
     <UButton
       v-bind="props"
-      class="text-(--ui-text-highlighted) bg-transparent hover:bg-transparent"
+      class="text-(--ui-text-highlighted) bg-transparent hover:bg-transparent disabled:bg-transparent"
       :class="roundedType[props.rounded]"
     >
       <slot v-if="!!$slots.default" />

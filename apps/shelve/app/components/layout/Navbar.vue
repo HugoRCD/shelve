@@ -18,8 +18,6 @@ const allNavigations = computed(() => {
   return [...team, ...userNav, ...admin]
 })
 
-const navigationItems = ref(allNavigations.value)
-
 const isSearchActive = ref(false)
 const searchQuery = ref('')
 const selectedTeamIndex = ref(0)
@@ -116,7 +114,7 @@ defineShortcuts({
 
             <Motion v-else :layout="true" class="flex items-center gap-2">
               <Motion
-                v-for="nav in navigationItems"
+                v-for="nav in allNavigations"
                 :key="nav.to"
                 :layout="true"
                 :initial="{ scale: 0.9, opacity: 0 }"
