@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { CommandItem } from '@types'
+import { AnimatePresence, Motion } from 'motion-v'
 
 const isSearchActive = defineModel<boolean>({ required: false })
 const search = defineModel<string>('search', { required: false })
@@ -15,7 +16,8 @@ const {
   getItemGlobalIndex,
   navigateUp,
   navigateDown,
-  selectCurrentItem
+  selectCurrentItem,
+  scrollToSelectedItem
 } = useCommandPalette(search, commandGroups, {
   onClose: () => {
     isSearchActive.value = false
@@ -25,6 +27,58 @@ const {
   }
 })
 
+// Track animation direction
+const direction = ref(1) // 1 = forward, -1 = backward
+const isAnimating = ref(false)
+
+// Store the index to return to
+let savedMainMenuIndex = 0
+
+// Custom deactivate function that preserves the index
+const customDeactivateSubmenu = () => {
+  // Store the current state
+  const wasActive = subMenuState.active
+  const { parentId } = subMenuState
+
+  // Deactivate the submenu
+  deactivateSubMenu()
+
+  // If we were in a submenu, force the index after a delay
+  if (wasActive) {
+    setTimeout(() => {
+      selectedIndex.value = savedMainMenuIndex
+      scrollToSelectedItem()
+    }, 100)
+  }
+}
+
+// Handle submenu action
+const handleSubmenuAction = (item: CommandItem, index: number) => {
+  // Save the current index before entering submenu
+  savedMainMenuIndex = index
+
+  // Execute the action (which will activate the submenu)
+  item.action()
+
+  // Reset selection in new submenu
+  selectedIndex.value = 0
+
+  // Set animation direction
+  direction.value = 1
+  isAnimating.value = true
+}
+
+// Handle back action
+const handleBackAction = () => {
+  if (subMenuState.active) {
+    direction.value = -1
+    isAnimating.value = true
+
+    // Use our custom deactivate function
+    customDeactivateSubmenu()
+  }
+}
+
 useTeamsService().fetchTeams()
 
 // Keyboard navigation
@@ -32,8 +86,17 @@ defineShortcuts({
   enter: {
     usingInput: true,
     handler: () => {
-      if (isSearchActive.value) {
-        selectCurrentItem()
+      if (isSearchActive.value && allFilteredItems.value.length > 0) {
+        const item = allFilteredItems.value[selectedIndex.value]
+        if (item) {
+          if (item.hasSubmenu) {
+            handleSubmenuAction(item, selectedIndex.value)
+          } else {
+            item.action()
+            isSearchActive.value = false
+            search.value = ''
+          }
+        }
       }
     }
   },
@@ -53,12 +116,11 @@ defineShortcuts({
       }
     }
   },
-  backspace: {
+  meta_backspace: {
     usingInput: true,
     handler: () => {
       if (isSearchActive.value && subMenuState.active) {
-        deactivateSubMenu()
-        selectedIndex.value = 0
+        handleBackAction()
       }
     }
   }
@@ -76,19 +138,33 @@ watch(selectedIndex, (newIndex) => {
   if (newIndex >= allFilteredItems.value.length) {
     selectedIndex.value = 0
   }
+
+  // Ensure selected item is visible
+  scrollToSelectedItem()
 })
 
-// Reset scroll position when search modal opens
+// Reset when search modal opens
 watch(isSearchActive, (newValue) => {
-  if (newValue && scrollContainerRef.value) {
-    scrollContainerRef.value.scrollTop = 0
+  if (newValue) {
+    scrollContainerRef.value?.scrollTo(0, 0)
     deactivateSubMenu()
+    isAnimating.value = false
+    savedMainMenuIndex = 0
+    selectedIndex.value = 0
   }
 })
 
-function playAction(item: CommandItem) {
-  item.action()
-  if (!item.hasSubmenu) {
+// Reset when search changes
+watch(search, () => {
+  savedMainMenuIndex = 0
+  selectedIndex.value = 0
+})
+
+function playAction(item: CommandItem, index: number) {
+  if (item.hasSubmenu) {
+    handleSubmenuAction(item, index)
+  } else {
+    item.action()
     isSearchActive.value = false
     search.value = ''
   }
@@ -107,10 +183,7 @@ function playAction(item: CommandItem) {
   >
     <template #content>
       <div class="py-2 flex flex-col">
-        <div
-          ref="scrollContainerRef"
-          class="inset-shadow-[2px_2px_10px_rgba(0,0,0,0.2)] bg-(--ui-bg)/80 m-2 rounded-lg max-h-[400px] overflow-y-auto scroll-smooth"
-        >
+        <div class="inset-shadow-[2px_2px_10px_rgba(0,0,0,0.2)] bg-(--ui-bg)/80 m-2 rounded-lg max-h-[400px] overflow-hidden">
           <div v-if="allFilteredItems.length === 0" class="px-4 py-6 text-center">
             <UIcon name="lucide:search-x" class="mx-auto mb-2 size-8 text-(--ui-text-muted)" />
             <p class="text-sm text-(--ui-text-muted)">
@@ -125,66 +198,85 @@ function playAction(item: CommandItem) {
             </div>
           </div>
 
-          <template v-else>
-            <div v-for="(group, groupIndex) in filteredCommandGroups" :key="group.id" class="command-group">
-              <div class="p-3 pb-1 flex items-center justify-between">
-                <span class="text-sm font-semibold text-(--ui-text-muted)">
-                  {{ group.label }}
-                </span>
-
-                <!-- Back button for submenus -->
-                <button
-                  v-if="group.backAction"
-                  class="text-xs text-(--ui-text-muted) flex items-center gap-1 hover:text-(--ui-text-highlighted)"
-                  @click="group.backAction()"
-                >
-                  <UIcon name="lucide:arrow-left" class="size-3" />
-                  <span>Back</span>
-                </button>
-
-                <Separator />
-              </div>
-
-              <div class="space-y-1">
+          <div v-else class="menu-container">
+            <AnimatePresence mode="wait" @after-leave="isAnimating = false">
+              <Motion
+                :key="subMenuState.active ? `submenu-${subMenuState.parentId}` : 'main-menu'"
+                :initial="isAnimating ? { x: direction * 30, opacity: 0 } : { x: 0, opacity: 1 }"
+                :animate="{ x: 0, opacity: 1 }"
+                :exit="{ x: -direction * 30, opacity: 0 }"
+                :transition="{
+                  type: 'tween',
+                  duration: 0.08
+                }"
+                class="w-full"
+              >
                 <div
-                  v-for="(item, itemIndex) in group.items"
-                  :key="item.id"
-                  class="command-item"
-                  :class="{
-                    'active': item.active,
-                    'has-submenu': item.hasSubmenu,
-                    'selected': selectedIndex === getItemGlobalIndex(groupIndex, itemIndex)
-                  }"
-                  @click="playAction(item)"
+                  ref="scrollContainerRef"
+                  class="max-h-[400px] overflow-y-auto scroll-smooth"
                 >
-                  <div v-if="item.isAvatar" class="flex-shrink-0">
-                    <UAvatar :src="item.icon" size="sm" :alt="item.label" />
-                  </div>
-                  <UIcon v-else :name="item.icon" class="size-5 text-(--ui-text-highlighted)" />
+                  <div v-for="(group, groupIndex) in filteredCommandGroups" :key="group.id" class="command-group">
+                    <div class="px-3 pb-1 flex items-center justify-between">
+                      <span class="text-sm font-semibold text-(--ui-text-muted)">
+                        {{ group.label }}
+                      </span>
 
-                  <div class="flex flex-col flex-1">
-                    <span class="text-sm font-medium text-(--ui-text-highlighted)">
-                      {{ item.label }}
-                    </span>
-                    <span v-if="item.description" class="text-xs text-(--ui-text-muted)">
-                      {{ item.description }}
-                    </span>
-                  </div>
+                      <!-- Back button for submenus -->
+                      <button
+                        v-if="group.backAction"
+                        class="text-xs text-(--ui-text-muted) flex items-center gap-1 hover:text-(--ui-text-highlighted)"
+                        @click="handleBackAction"
+                      >
+                        <UIcon name="lucide:arrow-left" class="size-3" />
+                        <span>Back</span>
+                      </button>
 
-                  <UIcon
-                    v-if="item.hasSubmenu"
-                    name="lucide:chevron-right"
-                    class="size-4 text-(--ui-text-highlighted)"
-                  />
-                  <UIcon
-                    v-else-if="item.active"
-                    name="lucide:check"
-                    class="size-4 text-(--ui-text-highlighted)"
-                  />
+                      <Separator />
+                    </div>
+
+                    <div class="space-y-1">
+                      <div
+                        v-for="(item, itemIndex) in group.items"
+                        :key="item.id"
+                        class="command-item"
+                        :class="{
+                          'active': item.active,
+                          'has-submenu': item.hasSubmenu,
+                          'selected': selectedIndex === getItemGlobalIndex(groupIndex, itemIndex)
+                        }"
+                        @click="playAction(item, getItemGlobalIndex(groupIndex, itemIndex))"
+                      >
+                        <div v-if="item.isAvatar" class="flex-shrink-0">
+                          <UAvatar :src="item.icon" size="sm" :alt="item.label" />
+                        </div>
+                        <UIcon v-else :name="item.icon" class="size-5 text-(--ui-text-highlighted)" />
+
+                        <div class="flex flex-col flex-1">
+                          <span class="text-sm font-medium text-(--ui-text-highlighted)">
+                            {{ item.label }}
+                          </span>
+                          <span v-if="item.description" class="text-xs text-(--ui-text-muted)">
+                            {{ item.description }}
+                          </span>
+                        </div>
+
+                        <UIcon
+                          v-if="item.hasSubmenu"
+                          name="lucide:chevron-right"
+                          class="size-4 text-(--ui-text-highlighted)"
+                        />
+                        <UIcon
+                          v-else-if="item.active"
+                          name="lucide:check"
+                          class="size-4 text-(--ui-text-highlighted)"
+                        />
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-          </template>
+              </Motion>
+            </AnimatePresence>
+          </div>
         </div>
 
         <div>
@@ -211,7 +303,8 @@ function playAction(item: CommandItem) {
                 <span class="shortcut-label">to close</span>
               </div>
               <div v-if="subMenuState.active" class="space-x-1">
-                <UKbd value="Backspace" variant="subtle" />
+                <UKbd value="⌘" variant="subtle" />
+                <UKbd value="⌫" variant="subtle" />
                 <span class="shortcut-label">to go back</span>
               </div>
             </div>
@@ -224,6 +317,11 @@ function playAction(item: CommandItem) {
 
 <style scoped>
 @import "tailwindcss";
+
+.menu-container {
+  position: relative;
+  width: 100%;
+}
 
 .command-item {
   @apply cursor-pointer flex items-center gap-3 rounded-lg m-2 px-3 py-2.5;

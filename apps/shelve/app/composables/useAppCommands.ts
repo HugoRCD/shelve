@@ -58,17 +58,6 @@ export function useAppCommands() {
       },
       keywords: ['dark', 'theme', 'mode', 'night', 'black'],
       active: colorMode.preference === 'dark'
-    },
-    {
-      id: 'theme-system',
-      label: 'System Theme',
-      icon: 'lucide:laptop',
-      description: 'Use system preference',
-      action: () => {
-        colorMode.preference = 'system'
-      },
-      keywords: ['system', 'theme', 'auto', 'default'],
-      active: colorMode.preference === 'system'
     }
   ])
 
@@ -88,7 +77,7 @@ export function useAppCommands() {
     {
       id: 'settings-team',
       label: 'Team Settings',
-      icon: 'lucide:users-cog',
+      icon: 'lucide:users',
       description: 'Manage team settings',
       action: () => {
         navigateTo(`/${currentTeam.value?.slug}/settings`)
@@ -97,26 +86,15 @@ export function useAppCommands() {
       active: route.path.includes('/settings') && !route.path.includes('/user/settings')
     },
     {
-      id: 'settings-billing',
-      label: 'Billing',
-      icon: 'lucide:credit-card',
-      description: 'Manage billing and subscription',
-      action: () => {
-        navigateTo(`/${currentTeam.value?.slug}/settings/billing`)
-      },
-      keywords: ['billing', 'payment', 'subscription', 'plan'],
-      active: route.path.includes('/settings/billing')
-    },
-    {
       id: 'settings-api',
-      label: 'API Keys',
+      label: 'Tokens',
       icon: 'lucide:key',
-      description: 'Manage API keys',
+      description: 'Manage API tokens',
       action: () => {
-        navigateTo(`/${currentTeam.value?.slug}/settings/api-keys`)
+        navigateTo(`/user/tokens`)
       },
       keywords: ['api', 'keys', 'tokens', 'access'],
-      active: route.path.includes('/settings/api-keys')
+      active: route.path.includes('/user/tokens')
     }
   ])
 
