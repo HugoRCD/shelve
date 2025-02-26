@@ -92,7 +92,7 @@ defineShortcuts({
           if (item.hasSubmenu) {
             handleSubmenuAction(item, selectedIndex.value)
           } else {
-            item.action()
+            if (item.action) item.action()
             isSearchActive.value = false
             search.value = ''
           }
@@ -164,7 +164,7 @@ function playAction(item: CommandItem, index: number) {
   if (item.hasSubmenu) {
     handleSubmenuAction(item, index)
   } else {
-    item.action()
+    if (item.action) item.action()
     isSearchActive.value = false
     search.value = ''
   }
@@ -178,7 +178,7 @@ function playAction(item: CommandItem, index: number) {
     :modal="false"
     :dismissible="false"
     :ui="{
-      content: 'bg-(--ui-bg-muted)',
+      content: 'bg-(--ui-bg-muted) max-w-2xl',
     }"
   >
     <template #content>
@@ -198,8 +198,8 @@ function playAction(item: CommandItem, index: number) {
             </div>
           </div>
 
-          <div v-else class="menu-container">
-            <AnimatePresence mode="wait" @after-leave="isAnimating = false">
+          <div v-else>
+            <AnimatePresence mode="wait" class="outline-none" @after-leave="isAnimating = false">
               <Motion
                 :key="subMenuState.active ? `submenu-${subMenuState.parentId}` : 'main-menu'"
                 :initial="isAnimating ? { x: direction * 30, opacity: 0 } : { x: 0, opacity: 1 }"
@@ -211,12 +211,9 @@ function playAction(item: CommandItem, index: number) {
                 }"
                 class="w-full"
               >
-                <div
-                  ref="scrollContainerRef"
-                  class="max-h-[400px] overflow-y-auto scroll-smooth"
-                >
-                  <div v-for="(group, groupIndex) in filteredCommandGroups" :key="group.id" class="command-group">
-                    <div class="px-3 pb-1 flex items-center justify-between">
+                <div ref="scrollContainerRef" class="max-h-[400px] overflow-y-auto scroll-smooth">
+                  <div v-for="(group, groupIndex) in filteredCommandGroups" :key="group.id" class="group">
+                    <div class="px-3 pt-2 flex items-center justify-between">
                       <span class="text-sm font-semibold text-(--ui-text-muted)">
                         {{ group.label }}
                       </span>
@@ -230,8 +227,6 @@ function playAction(item: CommandItem, index: number) {
                         <UIcon name="lucide:arrow-left" class="size-3" />
                         <span>Back</span>
                       </button>
-
-                      <Separator />
                     </div>
 
                     <div class="space-y-1">
@@ -272,6 +267,7 @@ function playAction(item: CommandItem, index: number) {
                         />
                       </div>
                     </div>
+                    <Separator class="group-last:hidden my-2" />
                   </div>
                 </div>
               </Motion>
@@ -282,13 +278,13 @@ function playAction(item: CommandItem, index: number) {
         <div>
           <Separator />
           <div class="px-2 pt-2 flex items-center justify-between">
-            <div class="hidden text-xs font-mono sm:flex items-center gap-1 text-(--ui-text-muted)/50">
+            <div class="text-xs font-mono flex items-center gap-1 text-(--ui-text-muted)/50">
               <UIcon name="custom:shelve" />
               <span>
                 {{ version }}
               </span>
             </div>
-            <div class="flex flex-wrap justify-center gap-x-4 text-xs text-(--ui-text-muted)">
+            <div class="max-sm:hidden flex flex-wrap justify-center gap-x-4 text-xs text-(--ui-text-muted)">
               <div class="space-x-1">
                 <UKbd value="↑" variant="subtle" />
                 <UKbd value="↓" variant="subtle" />
@@ -317,11 +313,6 @@ function playAction(item: CommandItem, index: number) {
 
 <style scoped>
 @import "tailwindcss";
-
-.menu-container {
-  position: relative;
-  width: 100%;
-}
 
 .command-item {
   @apply cursor-pointer flex items-center gap-3 rounded-lg m-2 px-3 py-2.5;
