@@ -21,6 +21,7 @@ const allNavigations = computed(() => {
 const isSearchActive = ref(false)
 const searchQuery = ref('')
 const selectedTeamIndex = ref(0)
+const loading = useNavbarLoading()
 
 const toggleSearch = () => {
   isSearchActive.value = !isSearchActive.value
@@ -77,9 +78,9 @@ defineShortcuts({
   <div class="navbar-wrapper flex flex-col sm:flex-row sm:items-center gap-4">
     <LayoutGroup>
       <Motion :layout="true" class="outline-none">
-        <BgHighlight rounded="full" class="hover:scale-105">
+        <BgHighlight rounded="full" class="hover:scale-105 cursor-pointer" @click="toggleSearch">
           <div class="navbar">
-            <div class="nav-item p-0.5! cursor-pointer" @click="toggleSearch">
+            <div class="nav-item p-0.5!">
               <UIcon :name="isSearchActive ? 'lucide:x' : 'lucide:search'" class="text-lg" />
             </div>
           </div>
@@ -102,7 +103,7 @@ defineShortcuts({
               :exit="{ opacity: 0 }"
               :transition="{ duration: 0.2 }"
             >
-              <UIcon name="lucide:search" class="icon mb-0.5 mr-2" />
+              <UIcon :name="loading ? 'lucide:loader' : 'lucide:search'" class="icon mr-2" :class="loading ? 'animate-spin' : ''" />
               <input
                 id="search-input"
                 v-model="searchQuery"

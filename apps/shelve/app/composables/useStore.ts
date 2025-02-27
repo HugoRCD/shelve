@@ -43,3 +43,7 @@ export function useEnvironments(): Ref<Environment[]> {
 export function useVariables(projectId: string): Ref<Variable[]> {
   return useState<Variable[]>(`variables-${projectId}`)
 }
+
+export function useNavbarLoading(): Ref<boolean> {
+  return useState<boolean>('navbar-loading', () => false)
+}

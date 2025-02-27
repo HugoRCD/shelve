@@ -228,7 +228,7 @@ export function useAppCommands() {
       icon: 'lucide:bug',
       description: 'Report a bug or issue',
       action: () => {
-        window.open('https://github.com/hugorcd/shelve/issues', '_blank')
+        window.open('https://github.com/HugoRCD/shelve/issues/new/choose', '_blank')
       },
       keywords: ['issues', 'bug', 'report', 'problem'],
     },
@@ -321,15 +321,8 @@ export function useAppCommands() {
     ]
   })
 
-  // Helper function to create a team
-  const createTeamFromSearch = async (teamName: string) => {
-    if (!teamName) return
-    await createTeam(teamName)
-  }
-
   return {
     commandGroups,
-    createTeamFromSearch,
     version,
     currentTeam,
     subMenuState,

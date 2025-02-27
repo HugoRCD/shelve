@@ -22,6 +22,7 @@ export function useTeamsService() {
   const currentTeam = useTeam()
   const loading = ref(false)
   const createLoading = ref(false)
+  const navbarLoading = useNavbarLoading()
 
   const defaultTeamSlug = useCookie<string>('defaultTeamSlug')
 
@@ -50,6 +51,7 @@ export function useTeamsService() {
 
   async function createTeam(name: string): Promise<Team | undefined> {
     createLoading.value = true
+    navbarLoading.value = true
     try {
       const team = await $fetch<Team>('/api/teams', {
         method: 'POST',
@@ -67,6 +69,7 @@ export function useTeamsService() {
         toast.error('Failed to create team')
     } finally {
       createLoading.value = false
+      navbarLoading.value = false
     }
   }
 

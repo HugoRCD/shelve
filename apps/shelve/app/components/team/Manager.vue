@@ -2,12 +2,13 @@
 import type { CommandItem } from '@types'
 import { AnimatePresence, Motion } from 'motion-v'
 
-const isSearchActive = defineModel<boolean>({ required: false })
-const search = defineModel<string>('search', { required: false })
+const isSearchActive = defineModel<boolean>({ required: true })
+const search = defineModel<string>('search', { required: true })
 const selectedIndex = defineModel<number>('selectedIndex', { required: false, default: 0 })
+const { createTeam } = useTeamsService()
 
 // Command palette setup
-const { commandGroups, createTeamFromSearch, version, subMenuState, deactivateSubMenu } = useAppCommands()
+const { commandGroups, version, subMenuState, deactivateSubMenu } = useAppCommands()
 
 const {
   scrollContainerRef,
@@ -16,7 +17,6 @@ const {
   getItemGlobalIndex,
   navigateUp,
   navigateDown,
-  selectCurrentItem,
   scrollToSelectedItem
 } = useCommandPalette(search, commandGroups, {
   onClose: () => {
@@ -58,7 +58,7 @@ const handleSubmenuAction = (item: CommandItem, index: number) => {
   savedMainMenuIndex = index
 
   // Execute the action (which will activate the submenu)
-  item.action()
+  if (item.action) item.action()
 
   // Reset selection in new submenu
   selectedIndex.value = 0
@@ -193,7 +193,7 @@ function playAction(item: CommandItem, index: number) {
               <CustomButton
                 :label="`Create ${search} team`"
                 loading-auto
-                @click="createTeamFromSearch(search)"
+                @click="createTeam(search)"
               />
             </div>
           </div>
