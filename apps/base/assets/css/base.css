@@ -12,6 +12,15 @@
   border-radius: 5px;
 }
 
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
 :root {
   --ui-bg: var(--color-white);
   --ui-bg-muted: var(--color-neutral-50);

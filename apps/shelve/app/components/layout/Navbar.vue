@@ -161,21 +161,17 @@ defineShortcuts({
   @apply w-auto min-w-full flex-nowrap overflow-x-auto;
 }
 
-.mobile-navbar.no-scrollbar::-webkit-scrollbar {
-  display: none;
-}
-
-.mobile-navbar.no-scrollbar {
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-
 .nav-items-scrollable {
   @apply flex items-center flex-nowrap min-w-fit gap-2;
 }
 
 .navbar {
-  @apply backdrop-blur-lg shadow-2xl flex items-center gap-1 sm:gap-2 rounded-full p-2;
+  @apply backdrop-blur-lg flex items-center gap-1 sm:gap-2 rounded-full p-2;
+  box-shadow: 0 7px 20px 12px rgb(65 65 65 / 10%);
+}
+
+.dark .navbar {
+  box-shadow: 0 7px 20px 9px rgb(0 0 0 / 18%);
 }
 
 .search-container {
