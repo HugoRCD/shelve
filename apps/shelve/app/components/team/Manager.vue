@@ -183,7 +183,7 @@ function playAction(item: CommandItem, index: number) {
   >
     <template #content>
       <div class="py-2 flex flex-col">
-        <div class="inset-shadow-[2px_2px_10px_rgba(0,0,0,0.2)] bg-(--ui-bg)/80 m-2 rounded-lg max-h-[400px] overflow-hidden">
+        <div class="screen-container">
           <div v-if="allFilteredItems.length === 0" class="px-4 py-6 text-center">
             <UIcon name="lucide:search-x" class="mx-auto mb-2 size-8 text-(--ui-text-muted)" />
             <p class="text-sm text-(--ui-text-muted)">
@@ -313,6 +313,15 @@ function playAction(item: CommandItem, index: number) {
 
 <style scoped>
 @import "tailwindcss";
+
+.screen-container {
+  @apply bg-(--ui-bg)/80 m-2 rounded-lg max-h-[400px] overflow-hidden;
+  box-shadow: inset 3px 3px 5px rgba(173, 173, 173, 0.3);
+}
+
+.dark .screen-container {
+  box-shadow: inset 3px 3px 10px rgb(0 0 0 / 0.2);
+}
 
 .command-item {
   @apply cursor-pointer flex items-center gap-3 rounded-lg m-2 px-3 py-2.5;

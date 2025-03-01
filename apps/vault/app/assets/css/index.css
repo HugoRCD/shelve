@@ -1,20 +1,10 @@
-@import "tailwindcss";
+@import "tailwindcss" theme(static);
 @import "@nuxt/ui";
 
 :root {
   --ui-bg: white;
-
-  ::selection {
-    color: #282a30;
-    background-color: #c8c8c8;
-  }
 }
 
 .dark {
   --ui-bg: #070707;
-
-  ::selection {
-    color: #ffffff;
-    background-color: #474747;
-  }
 }
