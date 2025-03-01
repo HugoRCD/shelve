@@ -107,6 +107,7 @@ defineShortcuts({
               <input
                 id="search-input"
                 v-model="searchQuery"
+                autocomplete="off"
                 type="text"
                 placeholder="Search..."
                 class="bg-transparent border-none outline-none size-full text-(--ui-text-highlighted) placeholder:text-(--ui-text-muted)"

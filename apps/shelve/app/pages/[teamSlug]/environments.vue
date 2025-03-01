@@ -46,13 +46,15 @@ async function deleteEnv(env: Environment) {
   await fetchEnvironments()
 }
 
-const modal = useModal()
+const overlay = useOverlay()
+const modal = overlay.create(ConfirmModal)
+
 function openDeleteModal(env: Environment) {
   if (environments.value.length === 1) {
     toast.error('You cannot delete the last environment')
     return
   }
-  modal.open(ConfirmModal, {
+  modal.open({
     title: 'Are you sure?',
     description: `You are about to delete ${env.name}. This action cannot be undone and all variables associated with this environment will be lost.`,
     danger: true,

@@ -22,7 +22,8 @@ function changeMemberRole(memberId: number, role: TeamRole) {
   })
 }
 
-const modal = useModal()
+const overlay = useOverlay()
+const modal = overlay.create(ConfirmModal)
 
 const items = (row: Member) => [
   [
@@ -70,7 +71,7 @@ const items = (row: Member) => [
           toast.error('Cannot delete team owner')
           return
         }
-        modal.open(ConfirmModal, {
+        modal.open({
           title: 'Are you sure?',
           description: `You are about to remove ${row.user.username} from the team.`,
           danger: true,

@@ -11,7 +11,10 @@ const selectedVariables = defineModel<Variable[]>({ required: true })
 const { deleteVariables } = useVariablesService()
 
 const loading = ref(false)
-const modal = useModal()
+
+const overlay = useOverlay()
+const modal = overlay.create(ConfirmModal)
+
 const teamEnv = useEnvironments()
 
 function selectAllVisible() {
@@ -27,7 +30,7 @@ async function deleteSelectedVariables() {
 }
 
 function openDeleteModal() {
-  modal.open(ConfirmModal, {
+  modal.open({
     title: 'Are you sure?',
     description: `You are about to delete ${selectedVariables.value.length} variable${selectedVariables.value.length > 1 ? 's' : '' }, this action cannot be undone`,
     danger: true,

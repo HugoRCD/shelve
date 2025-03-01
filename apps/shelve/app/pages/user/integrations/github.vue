@@ -35,9 +35,11 @@ const manifest = {
   }
 }
 
-const modal = useModal()
+const overlay = useOverlay()
+const modal = overlay.create(ConfirmModal)
+
 function openDeleteModal(slug: string) {
-  modal.open(ConfirmModal, {
+  modal.open({
     title: 'Delete Github App',
     description: `You are about to delete ${slug}. This action cannot be undone.`,
     danger: true,

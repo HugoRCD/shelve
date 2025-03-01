@@ -30,9 +30,11 @@ async function deleteUser() {
   await useRouter().push('/login')
 }
 
-const modal = useModal()
+const overlay = useOverlay()
+const modal = overlay.create(ConfirmModal)
+
 function deleteAccount() {
-  modal.open(ConfirmModal, {
+  modal.open({
     title: 'Delete my account',
     description: `You are about to delete ${user.value!.username}. This action cannot be undone and all data associated with this account will be lost.`,
     danger: true,

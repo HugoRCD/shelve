@@ -38,7 +38,7 @@ const items = (row: Token) => [
       label: 'Delete',
       icon: 'lucide:trash',
       onSelect: () => {
-        modal.open(ConfirmModal, {
+        modal.open({
           title: 'Are you sure?',
           description: `You are about to delete ${row.name} token which is currently ${isTokenActive(row.updatedAt) ? 'active' : 'inactive'}, this action cannot be undone.`,
           danger: true,
@@ -76,7 +76,8 @@ async function fetchTokens() {
   loading.value = false
 }
 
-const modal = useModal()
+const overlay = useOverlay()
+const modal = overlay.create(ConfirmModal)
 
 async function deleteToken(token: Token) {
   await $fetch(`/api/tokens/${token.id}`, {
