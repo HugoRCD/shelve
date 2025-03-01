@@ -34,7 +34,7 @@ html, body, #__nuxt, #__layout {
   height: 100%;
 }
 
-@theme static {
+@theme {
   --font-sans: 'Geist', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
   --font-serif: 'Newsreader', serif;
