@@ -92,8 +92,8 @@ defineShortcuts({
         :initial="{ borderRadius: '9999px' }"
         :transition="{ type: 'spring', stiffness: 300, damping: 30 }"
       >
-        <BgHighlight rounded="full">
-          <Motion :layout="true" class="navbar">
+        <BgHighlight rounded="full" class="mobile-navbar-highlight">
+          <Motion :layout="true" class="navbar mobile-navbar">
             <Motion
               v-if="isSearchActive"
               :layout="true"
@@ -113,7 +113,7 @@ defineShortcuts({
               >
             </Motion>
 
-            <Motion v-else :layout="true" class="flex items-center gap-2">
+            <Motion v-else :layout="true" class="nav-items-scrollable">
               <Motion
                 v-for="nav in allNavigations"
                 :key="nav.to"
@@ -121,7 +121,6 @@ defineShortcuts({
                 :initial="{ scale: 0.9, opacity: 0 }"
                 :animate="{ scale: 1, opacity: 1 }"
                 :transition="{ type: 'spring', stiffness: 500, damping: 30 }"
-                :class="nav.to.includes('/admin') ? 'hidden sm:flex' : ''"
                 class="flex-shrink-0"
               >
                 <ULink v-bind="nav">
@@ -149,11 +148,24 @@ defineShortcuts({
 
 .navbar-wrapper {
   @apply absolute z-[99] bottom-4 sm:bottom-8 left-1/2 -translate-x-1/2 will-change-auto;
+  @apply max-w-[90vw];
+}
+
+.mobile-navbar-highlight {
+  @apply w-full;
+}
+
+.mobile-navbar {
+  @apply flex items-center gap-1 sm:gap-2 rounded-full p-2;
+  @apply w-auto min-w-full flex-nowrap overflow-x-auto;
+}
+
+.nav-items-scrollable {
+  @apply flex items-center flex-nowrap min-w-fit gap-2;
 }
 
 .navbar {
   @apply backdrop-blur-lg shadow-2xl flex items-center gap-1 sm:gap-2 rounded-full p-2;
-  width: auto;
 }
 
 .search-container {

@@ -6,7 +6,7 @@ export function useAppCommands() {
   const { version } = useRuntimeConfig().public
   const defaultTeamSlug = useCookie<string>('defaultTeamSlug')
   const _currentTeam = useTeam()
-  const { selectTeam, createTeam } = useTeamsService()
+  const { selectTeam } = useTeamsService()
   const route = useRoute()
 
   // Submenu state
@@ -165,11 +165,12 @@ export function useAppCommands() {
       icon: 'lucide:cloud',
       description: 'Manage environments',
       action: () => {
-        activateSubMenu('nav-environments', 'Environments', environmentSubMenuItems.value)
+        // activateSubMenu('nav-environments', 'Environments', environmentSubMenuItems.value)
+        navigateTo(`/${currentTeam.value?.slug}/environments`)
       },
       keywords: ['environments', 'projects', 'variables'],
       active: route.path.includes('/environments'),
-      hasSubmenu: true
+      // hasSubmenu: true
     },
     {
       id: 'nav-settings',
