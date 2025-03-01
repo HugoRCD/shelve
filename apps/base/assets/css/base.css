@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import "tailwindcss" theme(static);
 @import "@nuxt/ui";
 @import "./animations.css";
 
@@ -13,9 +13,16 @@
 }
 
 :root {
+  --ui-bg: var(--color-white);
+  --ui-bg-muted: var(--color-neutral-50);
   --ui-radius: var(--radius-sm);
 
   --ease-smooth: cubic-bezier(0.45, 0, 0.55, 1);
+
+  ::selection {
+    color: #282a30;
+    background-color: #c8c8c8;
+  }
 
   .default {
     --ui-container: var(--container-5xl);
@@ -27,7 +34,7 @@ html, body, #__nuxt, #__layout {
   height: 100%;
 }
 
-@theme {
+@theme static {
   --font-sans: 'Geist', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
   --font-serif: 'Newsreader', serif;
@@ -37,14 +44,14 @@ html, body, #__nuxt, #__layout {
   --animate-ripple-3: ripple 2.5s var(--ease-smooth) infinite 0.65s;
 }
 
-.light {
-  --ui-bg: var(--color-white);
-  --ui-bg-muted: var(--color-neutral-50);
-}
-
 .dark {
   --ui-bg: var(--color-neutral-950);
   --ui-bg-muted: var(--color-neutral-900);
+
+  ::selection {
+    color: #ffffff;
+    background-color: #474747;
+  }
 }
 
 .main-gradient {
