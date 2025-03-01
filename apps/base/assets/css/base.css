@@ -34,7 +34,7 @@ html, body, #__nuxt, #__layout {
   height: 100%;
 }
 
-@theme {
+@theme static {
   --font-sans: 'Geist', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
   --font-serif: 'Newsreader', serif;
@@ -100,4 +100,10 @@ html, body, #__nuxt, #__layout {
   .highlight-wrapper {
     @apply active:translate-y-[1px] hover:opacity-90 data-[active=true]:bg-gradient-to-br from-(--ui-bg-inverted) from-[3%] via-(--ui-bg-elevated) via-30% to-(--ui-bg);
   }
+}
+
+.cross {
+  @apply before:absolute after:absolute;
+  @apply before:top-[-4px] before:bg-(--ui-bg-inverted) before:content-[''] before:w-[1px] before:h-[9px];
+  @apply after:left-[-4px] after:bg-(--ui-bg-inverted) after:content-[''] after:w-[9px] after:h-[1px];
 }
