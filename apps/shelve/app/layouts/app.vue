@@ -57,7 +57,7 @@ const title = computed(() => {
 </template>
 
 <style scoped>
-@import "tailwindcss";
+@import "tailwindcss" theme(static);
 
 .main-container {
   @apply w-full mx-auto max-w-[90rem] mt-10 px-6;

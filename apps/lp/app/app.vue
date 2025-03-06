@@ -77,27 +77,23 @@ defineShortcuts({
 
 <template>
   <Html lang="en">
-    <Body class="overscroll-y-none selection:bg-primary overflow-x-hidden selection:text-inverted">
-      <ShelveMeta :default-og-image :title="route.meta.title" :description="route.meta.description" />
 
-      <NuxtLoadingIndicator color="#FFF" />
+  <Body class="overscroll-y-none selection:bg-primary overflow-x-hidden selection:text-inverted">
+    <ShelveMeta :default-og-image :title="route.meta.title" :description="route.meta.description" />
 
-      <UApp :tooltip="{ delayDuration: 0 }">
-        <NuxtLayout>
-          <NuxtPage />
-        </NuxtLayout>
+    <NuxtLoadingIndicator color="#FFF" />
 
-        <Toaster close-button position="top-center" />
-        <ClientOnly>
-          <LazyUContentSearch
-            :files
-            :links
-            :navigation
-            shortcut="meta_k"
-            :fuse="{ resultLimit: 42 }"
-          />
-        </ClientOnly>
-      </UApp>
-    </Body>
+    <UApp :tooltip="{ delayDuration: 0 }">
+      <NuxtLayout>
+        <NuxtPage />
+      </NuxtLayout>
+
+      <Toaster close-button position="top-center" />
+      <ClientOnly>
+        <LazyUContentSearch :files :links :navigation shortcut="meta_k" :fuse="{ resultLimit: 42 }" />
+      </ClientOnly>
+    </UApp>
+  </Body>
+
   </Html>
 </template>

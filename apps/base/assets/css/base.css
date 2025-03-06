@@ -2,6 +2,16 @@
 @import "@nuxt/ui";
 @import "./animations.css";
 
+@theme {
+  --font-sans: 'Geist', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --font-serif: 'Newsreader', serif;
+
+  --animate-ripple-1: ripple 2.5s var(--ease-smooth) infinite 0.15s;
+  --animate-ripple-2: ripple 2.5s var(--ease-smooth) infinite 0.4s;
+  --animate-ripple-3: ripple 2.5s var(--ease-smooth) infinite 0.65s;
+}
+
 ::-webkit-scrollbar {
   width: 5px;
   height: 2px;
@@ -41,16 +51,6 @@
 html, body, #__nuxt, #__layout {
   width: 100%;
   height: 100%;
-}
-
-@theme static {
-  --font-sans: 'Geist', sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
-  --font-serif: 'Newsreader', serif;
-
-  --animate-ripple-1: ripple 2.5s var(--ease-smooth) infinite 0.15s;
-  --animate-ripple-2: ripple 2.5s var(--ease-smooth) infinite 0.4s;
-  --animate-ripple-3: ripple 2.5s var(--ease-smooth) infinite 0.65s;
 }
 
 .dark {
