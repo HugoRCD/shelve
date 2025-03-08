@@ -2,6 +2,8 @@
 @import "@nuxt/ui";
 @import "./animations.css";
 
+@source "../../../";
+
 @theme {
   --font-sans: 'Geist', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
