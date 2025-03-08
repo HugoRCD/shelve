@@ -97,5 +97,5 @@ export default defineNuxtConfig({
     }
   },
 
-  css: ['./assets/css/base.css'],
+  css: [resolve('./assets/css/base.css')],
 })
