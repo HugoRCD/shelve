@@ -40,7 +40,7 @@ const items = [
 <template>
   <div class="flex flex-col">
     <ProjectMainSection />
-    <div class="mt-8 mb-4 border-b border-(--ui-border)">
+    <div class="mt-8 mb-4">
       <UNavigationMenu
         color="neutral"
         orientation="horizontal"
@@ -56,6 +56,7 @@ const items = [
         class="md:hidden"
       />
     </div>
+    <Separator />
     <NuxtPage />
   </div>
 </template>

@@ -89,13 +89,7 @@ defineShortcuts({
 
         <Toaster close-button position="top-center" />
         <ClientOnly>
-          <LazyUContentSearch
-            :files
-            :links
-            :navigation
-            shortcut="meta_k"
-            :fuse="{ resultLimit: 42 }"
-          />
+          <LazyUContentSearch :files :links :navigation shortcut="meta_k" :fuse="{ resultLimit: 42 }" />
         </ClientOnly>
       </UApp>
     </Body>

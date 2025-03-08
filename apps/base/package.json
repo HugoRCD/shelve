@@ -11,10 +11,20 @@
   },
   "packageManager": "pnpm@10.5.2",
   "devDependencies": {
+    "@iconify-json/heroicons": "1.2.2",
+    "@iconify-json/lucide": "1.2.27",
+    "@iconify-json/simple-icons": "1.2.26",
     "iron-webcrypto": "1.2.1",
     "nuxt": "3.15.4",
     "nuxt-visitors": "1.1.2",
     "typescript": "5.7.3",
-    "motion-v": "^0.11.0-beta.4"
+    "motion-v": "^0.11.0-beta.4",
+    "@nuxt/ui": "^3.0.0-beta.3",
+    "@nuxt/ui-pro": "^3.0.0-beta.3",
+    "@nuxt/content": "^3.3.0",
+    "@nuxt/scripts": "0.10.5",
+    "@vueuse/core": "12.7.0",
+    "@vueuse/nuxt": "12.7.0",
+    "@nuxt/image": "1.9.0"
   }
 }

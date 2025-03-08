@@ -106,7 +106,8 @@ const columns: TableColumn<User>[] = [
   },
 ]
 
-const modal = useModal()
+const overlay = useOverlay()
+const modal = overlay.create(ConfirmModal)
 
 const items = (row: User) => [
   [
@@ -139,7 +140,7 @@ const items = (row: User) => [
           toast.error('Cannot delete admin')
           return
         }
-        modal.open(ConfirmModal, {
+        modal.open({
           title: 'Are you sure?',
           description: `You are about to delete ${row.username ? row.username : row.email}, this action cannot be undone.`,
           danger: true,

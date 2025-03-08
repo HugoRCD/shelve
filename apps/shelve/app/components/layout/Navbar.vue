@@ -93,7 +93,7 @@ defineShortcuts({
         :transition="{ type: 'spring', stiffness: 300, damping: 30 }"
       >
         <BgHighlight rounded="full" class="mobile-navbar-highlight">
-          <Motion :layout="true" class="navbar mobile-navbar">
+          <Motion :layout="true" class="navbar mobile-navbar no-scrollbar">
             <Motion
               v-if="isSearchActive"
               :layout="true"
@@ -107,6 +107,7 @@ defineShortcuts({
               <input
                 id="search-input"
                 v-model="searchQuery"
+                autocomplete="off"
                 type="text"
                 placeholder="Search..."
                 class="bg-transparent border-none outline-none size-full text-(--ui-text-highlighted) placeholder:text-(--ui-text-muted)"
@@ -144,11 +145,11 @@ defineShortcuts({
 </template>
 
 <style scoped>
-@import "tailwindcss";
+@import "tailwindcss" theme(static);
 
 .navbar-wrapper {
   @apply absolute z-[99] bottom-4 sm:bottom-8 left-1/2 -translate-x-1/2 will-change-auto;
-  @apply max-w-[90vw];
+  @apply max-w-[95vw];
 }
 
 .mobile-navbar-highlight {
@@ -165,7 +166,12 @@ defineShortcuts({
 }
 
 .navbar {
-  @apply backdrop-blur-lg shadow-2xl flex items-center gap-1 sm:gap-2 rounded-full p-2;
+  @apply backdrop-blur-lg flex items-center gap-1 sm:gap-2 rounded-full p-2;
+  box-shadow: 0 7px 20px 12px rgb(65 65 65 / 10%);
+}
+
+.dark .navbar {
+  box-shadow: 0 7px 20px 9px rgb(0 0 0 / 18%);
 }
 
 .search-container {
@@ -187,6 +193,6 @@ defineShortcuts({
 }
 
 .icon {
-  @apply sm:text-xl text-(--ui-text-highlighted);
+  @apply text-lg sm:text-xl text-(--ui-text-highlighted);
 }
 </style>

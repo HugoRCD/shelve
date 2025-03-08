@@ -23,9 +23,11 @@ function updateCurrentTeam() {
   updateLoading.value = false
 }
 
-const modal = useModal()
+const overlay = useOverlay()
+const modal = overlay.create(ConfirmModal)
+
 function deleteCurrentTeam() {
-  modal.open(ConfirmModal, {
+  modal.open({
     title: 'Delete Team',
     description: 'Are you sure you want to delete this team?',
     danger: true,

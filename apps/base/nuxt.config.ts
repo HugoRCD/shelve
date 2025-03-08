@@ -31,10 +31,10 @@ export default defineNuxtConfig({
 
   modules: [
     '@nuxt/image',
-    '@nuxt/ui',
     'nuxt-build-cache',
     'nuxt-visitors',
-    'motion-v/nuxt'
+    '@vueuse/nuxt',
+    'motion-v/nuxt',
   ],
 
   nitro: {

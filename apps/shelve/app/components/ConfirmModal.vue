@@ -7,21 +7,20 @@ type ConfirmModalProps = {
 
 defineProps<ConfirmModalProps>()
 
-const modal = useModal()
-const emit = defineEmits(['success', 'cancel'])
+const emit = defineEmits<{ close: [boolean], success: [void], cancel: [void] }>()
 
 function onSuccess() {
   emit('success')
-  modal.close()
+  emit('close', false)
 }
 
 function onCancel() {
-  modal.close()
+  emit('close', false)
 }
 </script>
 
 <template>
-  <UModal :title :description>
+  <UModal :close="{ onClick: () => emit('close', false) }" :title :description>
     <template #footer>
       <div class="flex w-full justify-end gap-2">
         <UButton variant="ghost" @click="onCancel">

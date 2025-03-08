@@ -8,6 +8,8 @@ const pages = computed(() => {
   return [...teamNavigations, ...userNavigations, ...adminNavigations]
 })
 
+const { user } = useUserSession()
+
 const navigation = computed(() => {
   if (route.path.includes('/projects'))
     return { title: 'Project Details', to: '/projects', name: 'project', icon: 'lucide:folder-open' }
@@ -17,38 +19,27 @@ const navigation = computed(() => {
 const routeTitle = computed(() => {
   return route.meta.title as string
 })
+
+const title = computed(() => {
+  return route.path === `/${teamSlug.value}` ? `Welcome, ${user.value?.username}` : navigation.value?.title || routeTitle.value
+})
 </script>
 
 <template>
   <div class="relative flex h-screen">
     <LayoutNavbar />
-    <div class="main-container flex flex-1 flex-col overflow-hidden border-l border-l-(--ui-border)">
-      <div class="flex justify-between gap-1 border-b border-(--ui-border) px-5 py-2">
-        <div class="flex items-center gap-2">
-          <template v-if="navigation">
-            <Transition name="slide-to-bottom" mode="out-in">
-              <div :key="navigation.icon">
-                <UIcon :name="navigation.icon!" class="size-5" />
-              </div>
-            </Transition>
-            <Transition name="slide-to-top" mode="out-in">
-              <h1 :key="navigation.title" class="text-lg font-semibold">
-                {{ navigation.title }}
-              </h1>
-            </Transition>
-          </template>
-          <template v-else-if="route.meta.icon">
-            <Transition name="slide-to-bottom" mode="out-in">
-              <div :key="route.meta.icon as string">
-                <UIcon :name="route.meta.icon as string" class="size-5" />
-              </div>
-            </Transition>
-            <Transition name="slide-to-top" mode="out-in">
-              <h1 :key="routeTitle.toLowerCase()" class="text-lg font-semibold">
-                {{ routeTitle }}
-              </h1>
-            </Transition>
-          </template>
+    <div class="size-full noise -z-10 absolute opacity-40" />
+    <div class="main-container flex flex-1 flex-col overflow-hidden">
+      <div class="flex justify-between gap-1">
+        <div class="flex items-end gap-2">
+          <NuxtLink to="/">
+            <Logo :text="false" size="size-8" />
+          </NuxtLink>
+          <Transition name="slide-to-top" mode="out-in">
+            <h1 :key="title" class="text-xl font-semibold italic">
+              {{ title }}
+            </h1>
+          </Transition>
         </div>
         <div class="flex items-center gap-2">
           <div id="action-items">
@@ -58,9 +49,17 @@ const routeTitle = computed(() => {
         </div>
       </div>
       <CliInstall />
-      <div class="flex mx-auto w-full flex-col gap-4 overflow-y-auto px-3 py-6 sm:px-6">
+      <div class="flex flex-col overflow-y-auto no-scrollbar gap-4 mt-6">
         <slot />
       </div>
     </div>
   </div>
 </template>
+
+<style scoped>
+@import "tailwindcss" theme(static);
+
+.main-container {
+  @apply w-full mx-auto max-w-[90rem] mt-10 px-6;
+}
+</style>

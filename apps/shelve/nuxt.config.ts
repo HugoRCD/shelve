@@ -42,8 +42,5 @@ export default defineNuxtConfig({
     }
   },
 
-  modules: [
-    '@vueuse/nuxt',
-    'nuxt-auth-utils'
-  ],
+  modules: ['@nuxt/ui', 'nuxt-auth-utils'],
 })

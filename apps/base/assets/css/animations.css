@@ -10,11 +10,11 @@
 }
 
 .slide-to-top-enter-active {
-  animation: slide-to-top-in 0.3s ease-in-out;
+  animation: slide-to-top-in 0.2s ease-in-out;
 }
 
 .slide-to-top-leave-active {
-  animation: slide-to-top-out 0.3s ease-in-out;
+  animation: slide-to-top-out 0.2s ease-in-out;
 }
 
 @keyframes slide-to-top-in {
@@ -42,11 +42,11 @@
 }
 
 .slide-to-bottom-enter-active {
-  animation: slide-to-bottom-in 0.3s ease-in-out;
+  animation: slide-to-bottom-in 0.2s ease-in-out;
 }
 
 .slide-to-bottom-leave-active {
-  animation: slide-to-bottom-out 0.3s ease-in-out;
+  animation: slide-to-bottom-out 0.2s ease-in-out;
 }
 
 @keyframes slide-to-bottom-in {
