@@ -21,7 +21,7 @@
     "motion-v": "^0.11.0-beta.4",
     "@nuxt/ui": "^3.0.0-beta.3",
     "@nuxt/ui-pro": "^3.0.0-beta.3",
-    "@nuxt/content": "^3.2.2",
+    "@nuxt/content": "^3.3.0",
     "@nuxt/scripts": "0.10.5",
     "@vueuse/core": "12.7.0",
     "@vueuse/nuxt": "12.7.0",

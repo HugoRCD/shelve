@@ -42,7 +42,7 @@ importers:
         specifier: 1.2.26
         version: 1.2.26
       '@nuxt/content':
-        specifier: ^3.2.2
+        specifier: ^3.3.0
         version: 3.3.0(drizzle-orm@0.40.0(@cloudflare/workers-types@4.20250303.0)(better-sqlite3@11.8.1)(bun-types@1.2.4)(gel@2.0.1)(pg@8.13.3))(magicast@0.3.5)(typescript@5.7.3)
       '@nuxt/image':
         specifier: 1.9.0
