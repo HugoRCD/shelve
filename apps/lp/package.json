@@ -16,10 +16,10 @@
     "deploy": "nuxthub deploy"
   },
   "dependencies": {
-    "@number-flow/vue": "^0.4.3",
-    "@nuxthub/core": "0.8.17",
+    "@number-flow/vue": "^0.4.5",
+    "@nuxthub/core": "0.8.18",
     "@nuxtjs/seo": "2.2.0",
-    "nuxt": "3.15.4",
+    "nuxt": "3.16.0",
     "nuxt-build-cache": "0.1.1",
     "nuxt-llms": "0.1.0",
     "vue": "3.5.13",
@@ -28,8 +28,8 @@
   },
   "devDependencies": {
     "@shelve/cli": "^3.1.1",
-    "typescript": "5.7.3",
-    "wrangler": "^3.111.0"
+    "typescript": "5.8.2",
+    "wrangler": "^3.114.0"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
