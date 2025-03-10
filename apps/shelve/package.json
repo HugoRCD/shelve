@@ -27,6 +27,8 @@
     "jsonwebtoken": "^9.0.2",
     "libsodium-wrappers": "^0.7.15",
     "nuxt": "3.16.0",
+    "@unhead/vue": "^2.0.0-rc.9",
+    "nuxt-og-image": "^5.0.1",
     "nuxt-auth-utils": "0.5.16",
     "nuxt-build-cache": "0.1.1",
     "pg": "^8.13.3",
