@@ -49,7 +49,7 @@ const title = computed(() => {
         </div>
       </div>
       <CliInstall />
-      <div class="flex flex-col overflow-y-auto no-scrollbar gap-4 mt-6">
+      <div class="flex flex-col overflow-y-auto no-scrollbar gap-4 mt-12">
         <slot />
       </div>
     </div>
@@ -57,7 +57,7 @@ const title = computed(() => {
 </template>
 
 <style scoped>
-@import "tailwindcss" theme(static);
+@import "tailwindcss";
 
 .main-container {
   @apply w-full mx-auto max-w-[90rem] mt-10 px-6;

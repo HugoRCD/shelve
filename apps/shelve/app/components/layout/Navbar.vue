@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Role } from '@types'
 import { Motion, LayoutGroup } from 'motion-v'
+import CommandPalette from '~/components/CommandPalette.vue'
 
 const route = useRoute()
 const teamSlug = computed(() => route.params.teamSlug as string)
@@ -79,11 +80,13 @@ defineShortcuts({
     <LayoutGroup>
       <Motion :layout="true" class="outline-none">
         <BgHighlight rounded="full" class="hover:scale-105 cursor-pointer" @click="toggleSearch">
-          <div class="navbar">
-            <div class="nav-item p-0.5!">
-              <UIcon :name="isSearchActive ? 'lucide:x' : 'lucide:search'" class="text-lg" />
+          <UTooltip :text="isSearchActive ? 'Close Search' : 'Search'" :content="{ side: 'top' }">
+            <div class="navbar">
+              <div class="nav-item p-0.5!">
+                <UIcon :name="isSearchActive ? 'lucide:x' : 'lucide:search'" class="text-lg" />
+              </div>
             </div>
-          </div>
+          </UTooltip>
         </BgHighlight>
       </Motion>
 
@@ -140,7 +143,7 @@ defineShortcuts({
       </Motion>
     </LayoutGroup>
 
-    <TeamManager v-model="isSearchActive" v-model:search="searchQuery" v-model:selected-index="selectedTeamIndex" />
+    <CommandPalette v-model="isSearchActive" v-model:search="searchQuery" v-model:selected-index="selectedTeamIndex" />
   </div>
 </template>
 
