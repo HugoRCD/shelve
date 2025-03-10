@@ -26,7 +26,9 @@
     "drizzle-orm": "0.40.0",
     "jsonwebtoken": "^9.0.2",
     "libsodium-wrappers": "^0.7.15",
-    "nuxt": "3.15.4",
+    "nuxt": "3.16.0",
+    "@unhead/vue": "^2.0.0-rc.9",
+    "nuxt-og-image": "^5.0.1",
     "nuxt-auth-utils": "0.5.16",
     "nuxt-build-cache": "0.1.1",
     "pg": "^8.13.3",
@@ -38,10 +40,10 @@
     "zod": "3.24.2"
   },
   "devDependencies": {
-    "@nuxt/devtools": "2.1.1",
+    "@nuxt/devtools": "2.2.1",
     "@types/jsonwebtoken": "^9.0.9",
     "@types/libsodium-wrappers": "^0.7.14",
-    "typescript": "5.7.3"
+    "typescript": "5.8.2"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
