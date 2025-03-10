@@ -148,7 +148,7 @@ defineShortcuts({
 </template>
 
 <style scoped>
-@import "tailwindcss" theme(static);
+@import "tailwindcss";
 
 .navbar-wrapper {
   @apply absolute z-[99] bottom-4 sm:bottom-8 left-1/2 -translate-x-1/2 will-change-auto;
