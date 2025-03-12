@@ -9,7 +9,7 @@ const { loading, fetchVariables } = useVariablesService()
 
 if (!variables.value) fetchVariables()
 
-const selectedVariables = ref<Variable[]>([])
+const selectedVariables = useSelectedVariables(projectId)
 const lastSelectedIndex = ref<number | null>(null)
 const searchTerm = ref('')
 const selectedEnvironment = ref([])
@@ -100,7 +100,7 @@ const isVariableSelected = (variable: Variable) => {
         <USelectMenu v-model="selectedEnvironment" multiple :items class="w-full" placeholder="Select environment" />
       </div>
     </div>
-    <LazyVariableSelector v-model="selectedVariables" :variables="filteredVariables" />
+    <LazyVariableSelector :variables="filteredVariables" />
     <div v-if="!loading" class="flex flex-col gap-4">
       <div v-for="variable in filteredVariables" :key="variable.id">
         <VariableItem
@@ -121,5 +121,8 @@ const isVariableSelected = (variable: Variable) => {
         </UCard>
       </div>
     </div>
+    <!--    <Teleport defer to="#command-items">
+      <VariableActionsToggleSelection />
+    </Teleport>-->
   </div>
 </template>

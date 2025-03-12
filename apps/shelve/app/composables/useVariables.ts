@@ -12,6 +12,10 @@ function removeDuplicateKeyValues(variables: Array<{ key: string, value: string,
   })
 }
 
+export function useSelectedVariables(projectId: string): Ref<Variable[]> {
+  return useState<Variable[]>(`selected-variables-${projectId}`, () => [])
+}
+
 export function useVariablesService() {
   const route = useRoute()
   const projectId = route.params.projectId as string
