@@ -55,7 +55,7 @@
     "tinyglobby": "0.2.12"
   },
   "devDependencies": {
-    "@types/bun": "1.2.4",
+    "@types/bun": "1.2.5",
     "@types/npm-registry-fetch": "8.0.7",
     "@types/semver": "7.5.8",
     "eslint": "9.22.0",
