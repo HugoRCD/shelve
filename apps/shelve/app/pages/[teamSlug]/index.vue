@@ -11,11 +11,9 @@ if (!projects.value)
 
 <template>
   <div>
-    <div class="flex items-center justify-end">
-      <Teleport defer to="#action-items">
-        <ProjectCreate />
-      </Teleport>
-    </div>
+    <Teleport defer to="#action-items">
+      <ProjectCreate />
+    </Teleport>
     <div v-if="!loading">
       <div v-if="projects.length === 0" class="flex h-64 flex-col items-center justify-center gap-4">
         <UIcon name="heroicons:folder-open" class="size-10 text-(--ui-text-muted)" />

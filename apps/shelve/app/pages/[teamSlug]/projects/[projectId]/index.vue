@@ -56,7 +56,6 @@ const items = [
         class="md:hidden"
       />
     </div>
-    <Separator />
     <NuxtPage />
   </div>
 </template>

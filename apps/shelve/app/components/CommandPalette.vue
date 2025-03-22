@@ -182,7 +182,7 @@ function playAction(item: CommandItem, index: number) {
     }"
   >
     <template #content>
-      <div class="py-2 flex flex-col">
+      <div class="py-2 flex flex-col shadow-2xl">
         <div class="screen-container">
           <div v-if="allFilteredItems.length === 0" class="px-4 py-6 text-center">
             <UIcon name="lucide:search-x" class="mx-auto mb-2 size-8 text-(--ui-text-muted)" />
@@ -312,7 +312,7 @@ function playAction(item: CommandItem, index: number) {
 </template>
 
 <style scoped>
-@import "tailwindcss" theme(static);
+@import "tailwindcss";
 
 .screen-container {
   @apply bg-(--ui-bg)/80 m-2 rounded-lg max-h-[400px] overflow-hidden;

@@ -9,7 +9,9 @@ const { loading, fetchVariables } = useVariablesService()
 
 if (!variables.value) fetchVariables()
 
-const selectedVariables = ref<Variable[]>([])
+const project = useProject(projectId)
+const teamEnv = useEnvironments()
+const selectedVariables = useSelectedVariables(projectId)
 const lastSelectedIndex = ref<number | null>(null)
 const searchTerm = ref('')
 const selectedEnvironment = ref([])
@@ -81,13 +83,18 @@ const isVariableSelected = (variable: Variable) => {
 <template>
   <div class="flex flex-col gap-2">
     <VariableCreate v-if="environments && environments.length" :environments />
-    <div class="flex justify-between items-center mt-2">
-      <UInput
-        v-model="searchTerm"
-        placeholder="Search variables..."
-        icon="lucide:search"
-        class="w-1/3"
-      />
+    <div class="flex flex-col gap-2 sm:flex-row justify-between sm:items-center mt-2">
+      <div class="flex items-center gap-2">
+        <UInput
+          v-model="searchTerm"
+          placeholder="Search variables..."
+          icon="lucide:search"
+          class="w-full"
+        />
+        <template v-if="selectedVariables.length">
+          <LazyVariableSelector :variables />
+        </template>
+      </div>
       <div class="flex gap-1">
         <UTooltip :text="order === 'asc' ? 'Oldest first' : 'Newest first'">
           <UButton
@@ -100,7 +107,6 @@ const isVariableSelected = (variable: Variable) => {
         <USelectMenu v-model="selectedEnvironment" multiple :items class="w-full" placeholder="Select environment" />
       </div>
     </div>
-    <LazyVariableSelector v-model="selectedVariables" :variables="filteredVariables" />
     <div v-if="!loading" class="flex flex-col gap-4">
       <div v-for="variable in filteredVariables" :key="variable.id">
         <VariableItem
@@ -121,5 +127,8 @@ const isVariableSelected = (variable: Variable) => {
         </UCard>
       </div>
     </div>
+    <!--    <Teleport defer to="#command-items">
+      <VariableActionsToggleSelection />
+    </Teleport>-->
   </div>
 </template>
