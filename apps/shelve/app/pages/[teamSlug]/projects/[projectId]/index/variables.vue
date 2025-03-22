@@ -92,7 +92,7 @@ const isVariableSelected = (variable: Variable) => {
           class="w-full"
         />
         <template v-if="selectedVariables.length">
-          <LazyVariableSelector :variables="selectedVariables" />
+          <LazyVariableSelector :variables />
         </template>
       </div>
       <div class="flex gap-1">
