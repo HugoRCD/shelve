@@ -57,7 +57,7 @@ function copy(value: string) {
 </script>
 
 <template>
-  <Callout v-if="user && !user.cliInstalled && !closed">
+  <Callout v-if="user && !user.cliInstalled && !closed" class="rounded-lg">
     <div class="flex flex-col gap-1">
       <h2 class="text-sm font-semibold">
         Install the Shelve CLI

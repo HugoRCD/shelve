@@ -48,8 +48,8 @@ const title = computed(() => {
           <UserDropdown />
         </div>
       </div>
-      <CliInstall />
       <div class="flex flex-col overflow-y-auto no-scrollbar gap-4 mt-4 sm:mt-12 py-4">
+        <CliInstall />
         <slot />
       </div>
     </div>
