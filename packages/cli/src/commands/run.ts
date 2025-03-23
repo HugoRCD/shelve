@@ -4,6 +4,7 @@ import { defineCommand } from 'citty'
 import { intro } from '@clack/prompts'
 import type { EnvVar } from '@types'
 import consola from 'consola'
+import treeKill from 'tree-kill'
 import { handleCancel, loadShelveConfig } from '../utils'
 import { EnvironmentService, EnvService, ProjectService } from '../services'
 import { DEBUG } from '../constants'
@@ -51,6 +52,49 @@ export default defineCommand({
 
     try {
       const isNpx = getNrBinPath() === 'npx'
+
+      let hasExited = false
+      let exitTimeout: NodeJS.Timeout | null = null
+      const childPid: number | null = null
+
+      const cleanupAndExit = (code: number = 0): void => {
+        if (hasExited) return
+        hasExited = true
+
+        if (exitTimeout) {
+          clearTimeout(exitTimeout)
+        }
+
+        process.exit(code)
+      }
+
+      const handleSignal = (signal: string): void => {
+        consola.info(`Received ${signal}, terminating process...`)
+
+        if (childPid) {
+          treeKill(childPid, signal, (err) => {
+            if (err && DEBUG) consola.error(`Failed to kill process: ${err}`)
+          })
+
+          exitTimeout = setTimeout(() => {
+            consola.warn('Process did not exit gracefully, forcing termination...')
+            if (childPid) {
+              treeKill(childPid, 'SIGKILL', () => {
+                cleanupAndExit(1)
+              })
+            } else {
+              cleanupAndExit(1)
+            }
+          }, 3000)
+        } else {
+          cleanupAndExit(0)
+        }
+      }
+
+      ['SIGINT', 'SIGTERM', 'SIGHUP'].forEach(signal => {
+        process.on(signal, () => handleSignal(signal))
+      })
+
       const proc = x(
         getNrBinPath(),
         isNpx ? ['nr', command] : [command],
@@ -62,15 +106,13 @@ export default defineCommand({
         }
       )
 
-      const abortController = new AbortController()
-      process.on('SIGINT', () => {
-        consola.info('Exiting...')
-        abortController.abort()
-        proc.kill()
-        process.exit(0)
-      })
-
-      await proc
+      try {
+        await proc
+        cleanupAndExit(0)
+      } catch (err) {
+        if (DEBUG) consola.error(err)
+        cleanupAndExit(1)
+      }
     } catch (error) {
       if (DEBUG) consola.error(error)
       process.exit(1)
