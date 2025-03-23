@@ -14,7 +14,7 @@
     "url": {
       "type": "string",
       "description": "The URL of the Shelve instance can be overridden with the `SHELVE_URL` environment variable",
-      "default": "https://shelve.cloud"
+      "default": "https://app.shelve.cloud"
     },
     "defaultEnv": {
       "type": "string",
