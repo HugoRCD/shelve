@@ -14,8 +14,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@nuxthub/core": "0.8.18",
-    "@unhead/vue": "^2.0.0-rc.13",
+    "@nuxthub/core": "0.8.19",
+    "@unhead/vue": "^2.0.0",
     "nuxt-og-image": "^5.0.5",
     "nuxt": "^3.16.1",
     "vue": "latest",
