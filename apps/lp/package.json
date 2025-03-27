@@ -17,12 +17,12 @@
   },
   "dependencies": {
     "@number-flow/vue": "^0.4.6",
-    "@nuxthub/core": "0.8.19",
+    "@nuxthub/core": "0.8.21",
     "@nuxtjs/seo": "2.2.0",
     "nuxt": "3.16.1",
     "nuxt-build-cache": "0.1.1",
-    "@unhead/vue": "^2.0.0",
-    "nuxt-og-image": "^5.0.5",
+    "@unhead/vue": "^2.0.2",
+    "nuxt-og-image": "^5.1.0",
     "nuxt-llms": "0.1.2",
     "vue": "3.5.13",
     "vue-router": "4.5.0",
@@ -31,7 +31,7 @@
   "devDependencies": {
     "@shelve/cli": "^3.1.1",
     "typescript": "5.8.2",
-    "wrangler": "^3.114.2"
+    "wrangler": "^3.114.3"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
