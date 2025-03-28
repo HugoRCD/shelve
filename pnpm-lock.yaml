@@ -225,8 +225,8 @@ importers:
         specifier: 0.10.0
         version: 0.10.0
       c12:
-        specifier: 2.0.4
-        version: 2.0.4(magicast@0.3.5)
+        specifier: 3.0.2
+        version: 3.0.2(magicast@0.3.5)
       citty:
         specifier: ^0.1.6
         version: 0.1.6
@@ -11651,7 +11651,7 @@ snapshots:
       confbox: 0.1.8
       defu: 6.1.4
       dotenv: 16.4.7
-      exsolve: 1.0.2
+      exsolve: 1.0.4
       giget: 2.0.0
       jiti: 2.4.2
       ohash: 2.0.11
