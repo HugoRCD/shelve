@@ -1,14 +1,5 @@
 <script setup lang="ts">
-type ButtonProps = {
-  label?: string
-  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl'
-  rounded?: 'none' | 'sm' | 'md' | 'lg' | 'xl'
-  to?: string
-  loading?: boolean
-  icon?: string
-  loadingAuto?: boolean
-  onClick?: ((event: MouseEvent) => void | Promise<void>) | Array<((event: MouseEvent) => void | Promise<void>)>
-}
+import type { ButtonProps } from '@nuxt/ui'
 
 const roundedType = {
   none: 'rounded-none',
@@ -18,7 +9,11 @@ const roundedType = {
   xl: 'rounded-xl'
 }
 
-const props = withDefaults(defineProps<ButtonProps>(), {
+type CustomButtonProps = ButtonProps & {
+  rounded?: 'none' | 'sm' | 'md' | 'lg' | 'xl'
+}
+
+const props = withDefaults(defineProps<CustomButtonProps>(), {
   rounded: 'md',
 })
 </script>

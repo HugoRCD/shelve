@@ -164,9 +164,9 @@ const items = (row: User) => [
     <Teleport defer to="#action-items">
       <div class="hidden items-center justify-end gap-2 sm:flex">
         <UTooltip text="Delete cache">
-          <UButton variant="ghost" icon="i-lucide-trash" loading-auto @click="deleteCache" />
+          <UButton variant="ghost" size="sm" icon="i-lucide-trash" loading-auto @click="deleteCache" />
         </UTooltip>
-        <UInput v-model="search" label="Search" placeholder="Search a user" icon="heroicons:magnifying-glass-20-solid" />
+        <UInput v-model="search" size="sm" label="Search" placeholder="Search a user" icon="heroicons:magnifying-glass-20-solid" />
       </div>
     </Teleport>
     <UTable :data="filteredUsers" :columns :loading="status === 'pending' || updateLoading || deleteLoading">

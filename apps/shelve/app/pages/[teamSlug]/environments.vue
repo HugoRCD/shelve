@@ -87,6 +87,12 @@ function updateEnvironment(env: Environment) {
 
 <template>
   <div class="flex flex-col">
+    <Teleport defer to="#action-items">
+      <form v-if="canUpdate" class="flex items-center gap-2" @submit.prevent="createEnvironment">
+        <UInput v-model="newEnv" placeholder="New environment name" required />
+        <CustomButton label="Create" :loading="createLoading" size="sm" type="submit" />
+      </form>
+    </Teleport>
     <form class="flex flex-col">
       <div style="--stagger: 1" data-animate class="flex justify-between">
         <div>
@@ -97,10 +103,6 @@ function updateEnvironment(env: Environment) {
             Create, update, and delete environments
           </p>
         </div>
-        <form v-if="canUpdate" class="flex items-center gap-2" @submit.prevent="createEnvironment">
-          <UInput v-model="newEnv" placeholder="New environment name" required />
-          <UButton label="Create" :loading="createLoading" size="sm" type="submit" />
-        </form>
       </div>
       <div style="--stagger: 2" data-animate class="mt-6">
         <UTable :data="environments" :columns :loading>

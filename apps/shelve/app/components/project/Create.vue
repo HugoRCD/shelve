@@ -52,11 +52,9 @@ function importProject() {
 <template>
   <USlideover v-model:open="isOpen" title="Create a new project" description="Its time to create a new project, let's get started!">
     <CustomButton
-      size="xs"
-      icon="heroicons:plus-20-solid"
+      size="sm"
       :loading="projectLoading"
       label="Create project"
-      @click="isOpen = true"
     />
 
     <template #body>
