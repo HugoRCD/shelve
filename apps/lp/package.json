@@ -18,7 +18,7 @@
   "dependencies": {
     "@number-flow/vue": "^0.4.6",
     "@nuxthub/core": "0.8.21",
-    "@nuxtjs/seo": "2.2.0",
+    "@nuxtjs/seo": "3.0.1",
     "nuxt": "3.16.1",
     "nuxt-build-cache": "0.1.1",
     "nuxt-og-image": "5.0.5",
