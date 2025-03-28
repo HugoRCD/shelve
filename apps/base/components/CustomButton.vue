@@ -5,6 +5,7 @@ type ButtonProps = {
   rounded?: 'none' | 'sm' | 'md' | 'lg' | 'xl'
   to?: string
   loading?: boolean
+  icon?: string
   loadingAuto?: boolean
   onClick?: ((event: MouseEvent) => void | Promise<void>) | Array<((event: MouseEvent) => void | Promise<void>)>
 }
