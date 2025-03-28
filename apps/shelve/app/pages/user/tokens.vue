@@ -110,7 +110,7 @@ fetchTokens()
     <Teleport defer to="#action-items">
       <div class="hidden items-center justify-end gap-2 sm:flex">
         <TokenCreate v-model:search="search" @create="fetchTokens" />
-        <UInput v-model="search" size="xs" placeholder="Search tokens" />
+        <UInput v-model="search" size="sm" placeholder="Search tokens" />
       </div>
     </Teleport>
     <div style="--stagger: 2" data-animate class="mt-6">

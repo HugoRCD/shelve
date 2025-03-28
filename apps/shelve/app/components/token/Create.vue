@@ -27,9 +27,7 @@ async function createToken() {
 <template>
   <div class="hidden items-center justify-end gap-2 sm:flex">
     <UPopover arrow>
-      <UButton size="xs">
-        Create a token
-      </UButton>
+      <CustomButton size="sm" label="Create token" />
       <template #content>
         <form @submit.prevent="createToken(tokenName)">
           <UCard>

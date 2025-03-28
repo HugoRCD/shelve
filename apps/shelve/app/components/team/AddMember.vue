@@ -52,7 +52,7 @@ function addMemberFunction(email: string, role: TeamRole) {
 
 <template>
   <UPopover v-if="isOwner" v-model:open="open" arrow>
-    <UButton label="Add member" size="sm" />
+    <CustomButton label="Add member" size="sm" />
     <template #content>
       <UCard>
         <form @submit.prevent="addMemberFunction(newMember.email, newMember.role)">
