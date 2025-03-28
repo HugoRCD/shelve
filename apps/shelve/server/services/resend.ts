@@ -6,11 +6,12 @@ import welcomeEmail from '~~/server/emails/welcomeEmail.vue'
 export class EmailService {
 
   private readonly resend: Resend | null
-  private readonly SENDER = 'HugoRCD <contact@hrcd.fr>'
+  private readonly SENDER: string
 
   constructor(event: H3Event) {
     const config = useRuntimeConfig(event)
     this.resend = config.private.resendApiKey ? new Resend(config.private.resendApiKey) : null
+    this.SENDER = config.private.senderEmail || 'HugoRCD <contact@hrcd.fr>'
   }
 
   /*async sendOtp(email: string, otp: string, appUrl: string): Promise<void> {

@@ -29,6 +29,7 @@ export default defineNuxtConfig({
       resendApiKey: '',
       encryptionKey: '',
       adminEmails: '',
+      senderEmail: '',
     },
     oauth: {
       google: {
