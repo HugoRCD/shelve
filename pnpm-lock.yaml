@@ -253,8 +253,8 @@ importers:
         specifier: 1.4.1
         version: 1.4.1
       pkg-types:
-        specifier: 1.3.1
-        version: 1.3.1
+        specifier: 2.1.0
+        version: 2.1.0
       rc9:
         specifier: ^2.1.2
         version: 2.1.2
@@ -15055,7 +15055,7 @@ snapshots:
   pkg-types@2.1.0:
     dependencies:
       confbox: 0.2.1
-      exsolve: 1.0.2
+      exsolve: 1.0.4
       pathe: 2.0.3
 
   playwright-core@1.51.1: {}
