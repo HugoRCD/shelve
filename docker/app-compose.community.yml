@@ -18,6 +18,7 @@ services:
       # Optional
       - NUXT_PRIVATE_RESEND_API_KEY=${NUXT_PRIVATE_RESEND_API_KEY}
       - NUXT_PRIVATE_ADMIN_EMAILS=${NUXT_PRIVATE_ADMIN_EMAILS}
+      - NUXT_PRIVATE_SENDER_EMAIL=${NUXT_PRIVATE_SENDER_EMAIL}
     depends_on:
       shelve_redis:
         condition: service_healthy
