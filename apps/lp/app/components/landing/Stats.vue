@@ -8,7 +8,7 @@ onMounted(() => {
   loadingInterval.value = setInterval(() => {
     loadingDots.value = loadingDots.value.length >= 3
       ? '.'
-      : loadingDots.value + '.'
+      : `${loadingDots.value }.`
   }, 500) as unknown as number
 })
 

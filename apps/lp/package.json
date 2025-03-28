@@ -17,11 +17,11 @@
   },
   "dependencies": {
     "@number-flow/vue": "^0.4.6",
-    "@nuxthub/core": "0.8.21",
+    "@nuxthub/core": "0.8.22",
     "@nuxtjs/seo": "2.2.0",
     "nuxt": "3.16.1",
     "nuxt-build-cache": "0.1.1",
-    "nuxt-og-image": "5.0.5",
+    "nuxt-og-image": "5.1.1",
     "nuxt-llms": "0.1.2",
     "vue": "3.5.13",
     "vue-router": "4.5.0",
