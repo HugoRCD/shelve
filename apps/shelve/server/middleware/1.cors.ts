@@ -7,8 +7,8 @@ export default defineEventHandler((event) => {
 
     const devDomainPattern = /^http:\/\/(shelve\.)?localhost:\d+$/
 
-    const customAllowedDomains = runtimeConfig.allowedDomains
-      ? runtimeConfig.allowedDomains.split(',').map((d: string) => d.trim())
+    const customAllowedDomains = runtimeConfig.private.allowedOrigins
+      ? runtimeConfig.private.allowedOrigins.split(',').map((d: string) => d.trim())
       : []
 
     const isAllowedOrigin =
