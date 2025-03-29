@@ -151,7 +151,7 @@ defineShortcuts({
 @import "tailwindcss";
 
 .navbar-wrapper {
-  @apply absolute z-[99] bottom-4 sm:bottom-8 left-1/2 -translate-x-1/2 will-change-auto;
+  @apply fixed z-[99] bottom-4 sm:bottom-8 left-1/2 -translate-x-1/2 will-change-auto;
   @apply max-w-[95vw];
 }
 

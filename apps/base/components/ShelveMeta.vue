@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import colors from 'tailwindcss/colors'
+
 const { title: appTitle, link, description: appDescription, ogImage } = useAppConfig()
 
 const props = withDefaults(defineProps<{
@@ -10,10 +12,18 @@ const props = withDefaults(defineProps<{
   defaultOgImage: true
 })
 
+const appConfig = useAppConfig()
+const colorMode = useColorMode()
+const color = computed(() => colorMode.value === 'dark' ? (colors as any)[appConfig.ui.colors.neutral][950] : 'white')
+
 useHead({
   title: props.title || appTitle,
   titleTemplate: props.titleTemplate || `%s | ${appTitle}`,
   link: link,
+  meta: [
+    { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+    { key: 'theme-color', name: 'theme-color', content: color }
+  ]
 })
 
 const seoMetadata = ref({
