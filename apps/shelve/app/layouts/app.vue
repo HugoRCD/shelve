@@ -33,16 +33,16 @@ const title = computed(() => {
       <div class="flex justify-between gap-1">
         <div class="flex items-end gap-2">
           <NuxtLink to="/">
-            <Logo :text="false" size="size-8" />
+            <Logo :text="false" size="size-6 sm:size-8" />
           </NuxtLink>
           <Transition name="slide-to-top" mode="out-in">
-            <h1 :key="title" class="text-xl font-semibold italic">
+            <h1 :key="title" class="sm:text-xl font-semibold italic">
               {{ title }}
             </h1>
           </Transition>
         </div>
         <div class="flex items-center gap-2">
-          <div id="action-items">
+          <div id="action-items" class="hidden sm:flex">
             <!-- action-items -->
           </div>
           <UserDropdown />
