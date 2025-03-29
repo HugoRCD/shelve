@@ -26,7 +26,7 @@ const title = computed(() => {
 </script>
 
 <template>
-  <div class="relative flex h-screen">
+  <div class="relative flex min-h-dvh">
     <LayoutNavbar />
     <div class="size-full noise -z-10 absolute opacity-40" />
     <div class="main-container flex flex-1 flex-col overflow-hidden">
