@@ -159,6 +159,18 @@ To suggest new features, open an issue on the [GitHub Issues](https://github.com
 ### Acknowledgements
 We would like to thank all contributors and the open-source community for their support.
 
+<!-- automd:fetch url="gh:hugorcd/markdown/main/src/sponsors.md" -->
+
+## Sponsors
+
+<p align="center">
+  <a href="https://cdn.jsdelivr.net/gh/hugorcd/static/sponsors.svg">
+    <img src='https://cdn.jsdelivr.net/gh/hugorcd/static/sponsors.svg'/>
+  </a>
+</p>
+
+<!-- /automd -->
+
 <!-- automd:contributors license=Apache author=HugoRCD -->
 
 Published under the [APACHE](https://github.com/HugoRCD/shelve/blob/main/LICENSE) license.
@@ -174,6 +186,6 @@ Made by [@HugoRCD](https://github.com/HugoRCD) and [community](https://github.co
 
 ---
 
-_🤖 auto updated with [automd](https://automd.unjs.io) (last updated: Mon Feb 24 2025)_
+_🤖 auto updated with [automd](https://automd.unjs.io) (last updated: Mon Mar 31 2025)_
 
 <!-- /automd -->
