@@ -165,7 +165,7 @@ We would like to thank all contributors and the open-source community for their 
 
 <p align="center">
   <a href="https://cdn.jsdelivr.net/gh/hugorcd/static/sponsors.svg">
-    <img src='https://cdn.jsdelivr.net/gh/hugorcd/static/sponsors.svg'/>
+    <img src='https://cdn.jsdelivr.net/gh/hugorcd/static/sponsors.svg' alt="HugoRCD sponsors" />
   </a>
 </p>
 
