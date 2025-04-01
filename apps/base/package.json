@@ -16,7 +16,6 @@
     "@iconify-json/simple-icons": "1.2.30",
     "iron-webcrypto": "1.2.1",
     "nuxt": "3.16.1",
-    "nuxt-og-image": "5.1.1",
     "nuxt-visitors": "1.1.2",
     "typescript": "5.8.2",
     "motion-v": "^0.13.1",

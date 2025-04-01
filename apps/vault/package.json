@@ -15,7 +15,6 @@
   },
   "dependencies": {
     "@nuxthub/core": "0.8.22",
-    "nuxt-og-image": "5.1.1",
     "nuxt": "^3.16.1",
     "vue": "latest",
     "zod": "3.24.2"
