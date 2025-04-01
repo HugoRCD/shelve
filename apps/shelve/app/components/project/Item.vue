@@ -14,10 +14,10 @@ const active = useState('active-project')
 <template>
   <UCard variant="subtle" class="relative transition-all duration-300 group hover:z-10 h-full ring-transparent border border-(--ui-border) bg-transparent hover:bg-(--ui-bg-muted) rounded-none" @click="active = project.id">
     <NuxtLink class="absolute inset-0 z-10" :to="`/${teamSlug}/projects/${project.id}/variables`" />
-    <span class="dot-tl group-hover:opacity-100 opacity-0" />
-    <span class="dot-br group-hover:opacity-100 opacity-0" />
-    <span class="dot-tr group-hover:opacity-100 opacity-0" />
-    <span class="dot-bl group-hover:opacity-100 opacity-0" />
+    <span class="dot dot-tl" />
+    <span class="dot dot-br" />
+    <span class="dot dot-tr" />
+    <span class="dot dot-bl" />
     <div class="flex w-full items-start gap-4">
       <!-- <UAvatar
           :src="project.logo"
@@ -40,6 +40,14 @@ const active = useState('active-project')
 </template>
 
 <style scoped>
+.dot {
+  @apply opacity-0;
+}
+
+.group:hover .dot {
+  animation: dot-flicker 0.250s ease-in-out forwards;
+}
+
 .dot-tl {
   @apply before:absolute;
   @apply before:top-[-2px] before:left-[-2px] before:bg-(--ui-bg-inverted) before:content-[''] before:w-[3px] before:h-[3px];
@@ -58,6 +66,15 @@ const active = useState('active-project')
 .dot-bl {
   @apply before:absolute;
   @apply before:bottom-[-2px] before:left-[-2px] before:bg-(--ui-bg-inverted) before:content-[''] before:w-[3px] before:h-[3px];
+}
+
+@keyframes dot-flicker {
+  0% { opacity: 0; }
+  20% { opacity: 1; }
+  40% { opacity: 0; }
+  60% { opacity: 1; }
+  80% { opacity: 0; }
+  100% { opacity: 1; }
 }
 
 .logo.active {
