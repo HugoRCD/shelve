@@ -25,8 +25,8 @@ if (!projects.value)
         </p>
         <ProjectCreate />
       </div>
-      <div v-else class="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <ProjectItem v-for="project in projects" :key="project.id" :project />
+      <div v-else class="grid grid-cols-1 lg:grid-cols-3">
+        <ProjectItem v-for="project in projects" :key="project.id" :project class="-ml-[1px]" />
       </div>
     </div>
     <div v-else class="grid grid-cols-1 gap-4 lg:grid-cols-2">
