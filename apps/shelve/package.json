@@ -27,7 +27,6 @@
     "jsonwebtoken": "^9.0.2",
     "libsodium-wrappers": "^0.7.15",
     "nuxt": "3.16.1",
-    "nuxt-og-image": "5.1.1",
     "nuxt-auth-utils": "0.5.17",
     "nuxt-build-cache": "0.1.1",
     "pg": "^8.14.1",
