@@ -34,7 +34,7 @@
       "better-sqlite3"
     ]
   },
-  "packageManager": "pnpm@10.7.0",
+  "packageManager": "pnpm@10.7.1",
   "workspaces": [
     "packages/*",
     "apps/*"
