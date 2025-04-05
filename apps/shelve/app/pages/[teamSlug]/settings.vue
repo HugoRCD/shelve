@@ -46,13 +46,14 @@ const open = ref(false)
 
 <template>
   <PageSection
+    v-if="team"
     title="Team Settings"
     description="Manage team settings"
     :image="team.logo"
     :stagger="1"
   >
-    <form v-if="team" style="--stagger: 2" data-animate class="flex flex-col" @submit.prevent="updateCurrentTeam">
-      <div class="mt-6 flex flex-col gap-4">
+    <form class="flex flex-col" @submit.prevent="updateCurrentTeam">
+      <div class="flex flex-col gap-4">
         <div class="max-w-sm space-y-4">
           <UFormField label="Name">
             <UInput v-model="team.name" :disabled="!canUpdate" class="w-full" />

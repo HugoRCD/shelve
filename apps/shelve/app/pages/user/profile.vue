@@ -58,7 +58,7 @@ function deleteAccount() {
     :stagger="1"
   >
     <form class="flex flex-col" @submit.prevent="updateCurrentUser">
-      <div style="--stagger: 2" data-animate class="mt-6 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-6">
+      <div class="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-6">
         <div class="sm:col-span-3">
           <UFormField label="Username">
             <UInput v-model="user.username" class="w-full" />
@@ -75,7 +75,7 @@ function deleteAccount() {
           </UFormField>
         </div>
       </div>
-      <div style="--stagger: 4" data-animate class="mt-6 flex items-center justify-between gap-2">
+      <div style="--stagger: 3" data-animate class="mt-6 flex items-center justify-between gap-2">
         <UButton type="submit" :loading="updateLoading">
           Save
         </UButton>

@@ -66,7 +66,7 @@ function openDeleteModal(slug: string) {
     description="Github Apps are used to sync secrets and more..."
     :stagger="1"
   >
-    <div v-if="status !== 'pending'" class="grid grid-cols-1 gap-4 lg:grid-cols-2">
+    <div v-if="status !== 'pending' && apps.length" class="grid grid-cols-1 gap-4 lg:grid-cols-2">
       <div
         v-for="app in apps"
         :key="app.id"
@@ -126,14 +126,12 @@ function openDeleteModal(slug: string) {
         </div>
       </div>
     </div>
-    <div v-else class="grid grid-cols-1 gap-4 lg:grid-cols-2">
+    <div v-else-if="status === 'pending'" class="grid grid-cols-1 gap-4 lg:grid-cols-2">
       <USkeleton v-for="i in 4" :key="i" class="h-32" />
     </div>
     <div
-      v-if="status !== 'pending' && apps?.length === 0"
+      v-else
       class="flex flex-col items-center justify-center p-8 bg-(--ui-bg-elevated)/20 border border-(--ui-border) rounded-lg"
-      style="--stagger: 2"
-      data-animate
     >
       <div class="relative mb-6">
         <div class="flex items-center justify-center relative p-6 bg-(--ui-bg-elevated) rounded-full border border-(--ui-border)">

@@ -95,7 +95,7 @@ const items = (row: Member) => [
     description="Manage team members"
     :stagger="1"
   >
-    <TransitionGroup name="fade" tag="ul" class="flex flex-col gap-4" style="--stagger: 2" data-animate>
+    <TransitionGroup name="fade" tag="ul" class="flex flex-col gap-4">
       <div v-for="member in members" :key="member.id" class="flex flex-col gap-4 border-b last:border-b-0 border-(--ui-border) pb-4 last:pb-0">
         <div class="flex items-center justify-between gap-2">
           <div class="flex items-center gap-2">

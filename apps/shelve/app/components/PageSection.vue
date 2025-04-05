@@ -11,7 +11,7 @@ defineProps<SectionProps>()
 
 <template>
   <div :style="{ '--stagger': stagger }" v-bind="stagger ? { 'data-animate': true } : {}" class="flex flex-col gap-4">
-    <div class="flex items-center gap-4">
+    <div class="flex items-center gap-4 mb-2">
       <NuxtImg v-if="image" :src="image" class="size-10 rounded-full" format="webp" />
       <div>
         <h2 class="text-lg font-bold">
@@ -22,7 +22,9 @@ defineProps<SectionProps>()
         </p>
       </div>
     </div>
-    <slot />
+    <div :style="{ '--stagger': stagger === 1 ? 2 : 0 }" v-bind="{ 'data-animate': !!stagger }">
+      <slot />
+    </div>
 
     <Teleport defer to="#action-items">
       <slot name="actions" />

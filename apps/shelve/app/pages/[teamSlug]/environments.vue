@@ -92,50 +92,48 @@ function updateEnvironment(env: Environment) {
     description="Create, update, and delete environments"
     :stagger="1"
   >
-    <div style="--stagger: 2" data-animate class="mt-6">
-      <UTable
-        :data="environments"
-        :columns
-        :loading
-        :ui="{
-          base: 'table-fixed border-separate border-spacing-0',
-          thead: '[&>tr]:bg-(--ui-bg-elevated)/50 [&>tr]:after:content-none',
-          tbody: '[&>tr]:last:[&>td]:border-b-0',
-          th: 'first:rounded-l-[calc(var(--ui-radius)*2)] last:rounded-r-[calc(var(--ui-radius)*2)] border-y border-(--ui-border) first:border-l last:border-r',
-          td: 'border-b border-(--ui-border)'
-        }"
-      >
-        <template #name-cell="{ row }">
-          {{ capitalize(row.original.name) }}
-        </template>
-        <template #actions-cell="{ row }">
-          <div class="flex gap-2">
-            <UPopover v-if="canUpdate" arrow>
-              <UButton variant="soft" icon="heroicons:pencil" />
-              <template #content>
-                <UCard>
-                  <form @submit.prevent="updateEnvironment(row.original)">
-                    <UFormField label="Environment name">
-                      <div class="flex items-center gap-2">
-                        <UInput v-model="row.original.name" placeholder="New environment name" required />
-                        <UButton label="Update" :loading="updateLoading" size="sm" type="submit" />
-                      </div>
-                    </UFormField>
-                  </form>
-                </UCard>
-              </template>
-            </UPopover>
-            <UButton
-              v-if="canDelete"
-              color="error"
-              variant="soft"
-              icon="heroicons:trash"
-              @click="openDeleteModal(row.original)"
-            />
-          </div>
-        </template>
-      </UTable>
-    </div>
+    <UTable
+      :data="environments"
+      :columns
+      :loading
+      :ui="{
+        base: 'table-fixed border-separate border-spacing-0',
+        thead: '[&>tr]:bg-(--ui-bg-elevated)/50 [&>tr]:after:content-none',
+        tbody: '[&>tr]:last:[&>td]:border-b-0',
+        th: 'first:rounded-l-[calc(var(--ui-radius)*2)] last:rounded-r-[calc(var(--ui-radius)*2)] border-y border-(--ui-border) first:border-l last:border-r',
+        td: 'border-b border-(--ui-border)'
+      }"
+    >
+      <template #name-cell="{ row }">
+        {{ capitalize(row.original.name) }}
+      </template>
+      <template #actions-cell="{ row }">
+        <div class="flex gap-2">
+          <UPopover v-if="canUpdate" arrow>
+            <UButton variant="soft" icon="heroicons:pencil" />
+            <template #content>
+              <UCard>
+                <form @submit.prevent="updateEnvironment(row.original)">
+                  <UFormField label="Environment name">
+                    <div class="flex items-center gap-2">
+                      <UInput v-model="row.original.name" placeholder="New environment name" required />
+                      <UButton label="Update" :loading="updateLoading" size="sm" type="submit" />
+                    </div>
+                  </UFormField>
+                </form>
+              </UCard>
+            </template>
+          </UPopover>
+          <UButton
+            v-if="canDelete"
+            color="error"
+            variant="soft"
+            icon="heroicons:trash"
+            @click="openDeleteModal(row.original)"
+          />
+        </div>
+      </template>
+    </UTable>
 
     <template #actions>
       <form v-if="canUpdate" class="flex items-center gap-2" @submit.prevent="createEnvironment">
