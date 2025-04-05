@@ -91,7 +91,7 @@ To start contributing, you can follow these steps:
 3. Create a branch using conventional commits and the issue number as the branch name. For example, `feat/123` or `fix/456`.
 4. Make changes following the local development steps.
 5. Commit your changes following the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) specification.
-6. If your changes affect the code, run tests using `bun run test`.
+6. If your changes affect the code, run tests using `pnpm run test`.
 7. Create a pull request following the [Pull Request Template](https://github.com/HugoRCD/markdown/blob/main/src/pull_request_template.md).
    - To be merged, the pull request must pass the tests/workflow and have at least one approval.
    - If your changes affect the documentation, make sure to update it.
@@ -106,7 +106,7 @@ To start contributing, you can follow these steps:
 ## Sponsors
 
 <p align="center">
-  <a href="https://cdn.jsdelivr.net/gh/hugorcd/static/sponsors.svg">
+  <a href="https://github.com/sponsors/HugoRCD">
     <img src='https://cdn.jsdelivr.net/gh/hugorcd/static/sponsors.svg' alt="HugoRCD sponsors" />
   </a>
 </p>
@@ -128,6 +128,6 @@ Made by [@HugoRCD](https://github.com/HugoRCD) and [community](https://github.co
 
 ---
 
-_🤖 auto updated with [automd](https://automd.unjs.io) (last updated: Mon Mar 31 2025)_
+_🤖 auto updated with [automd](https://automd.unjs.io) (last updated: Sat Apr 05 2025)_
 
 <!-- /automd -->

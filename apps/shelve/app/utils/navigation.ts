@@ -10,25 +10,25 @@ export function getNavigation(where: Where, teamSlug?: string): Navigation[] {
         {
           name: 'Projects',
           to: `/${teamSlug}`,
-          icon: 'lucide:folders',
+          icon: 'nucleo:house',
           title: 'Projects',
         },
         {
           name: 'Members',
           to: `/${teamSlug}/members`,
-          icon: 'lucide:users',
+          icon: 'nucleo:users',
           title: 'Members',
         },
         {
           name: 'Environments',
           to: `/${teamSlug}/environments`,
-          icon: 'lucide:cloud',
+          icon: 'nucleo:cloud',
           title: 'Environments',
         },
         {
           name: 'Settings',
           to: `/${teamSlug}/settings`,
-          icon: 'heroicons:cog',
+          icon: 'nucleo:gear-2',
           title: 'Settings',
         },
       ]
@@ -37,25 +37,25 @@ export function getNavigation(where: Where, teamSlug?: string): Navigation[] {
         {
           name: 'Profile',
           to: '/user/profile',
-          icon: 'heroicons:user-circle',
+          icon: 'nucleo:user',
           title: 'Profile',
         },
         {
           name: 'API Tokens',
           to: '/user/tokens',
-          icon: 'heroicons:key',
+          icon: 'nucleo:key',
           title: 'API Tokens',
         },
         {
           name: 'Integrations',
           to: '/user/integrations',
-          icon: 'lucide:blocks',
+          icon: 'nucleo:algorithm',
           title: 'Integrations',
         },
         {
           name: 'Settings',
           to: '/user/settings',
-          icon: 'heroicons:cog',
+          icon: 'nucleo:gear-2',
           title: 'Settings',
         },
       ]
@@ -64,13 +64,13 @@ export function getNavigation(where: Where, teamSlug?: string): Navigation[] {
         {
           name: 'Dashboard',
           to: '/admin',
-          icon: 'heroicons:home',
+          icon: 'nucleo:shield-check',
           title: 'Dashboard',
         },
         {
           name: 'Tests',
           to: '/admin/tests',
-          icon: 'lucide:flask-conical',
+          icon: 'nucleo:list-checkbox',
           title: 'Tests',
         },
       ]

@@ -167,7 +167,7 @@ const pagination = ref({
 <template>
   <PageSection
     title="Stats"
-    description="all applications stats"
+    description="All applications stats"
     :stagger="1"
   >
     <AdminStats />
