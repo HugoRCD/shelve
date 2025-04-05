@@ -100,6 +100,17 @@ defineShortcuts({
       }
     }
   },
+  escape: {
+    usingInput: true,
+    handler: () => {
+      if (isSearchActive.value) {
+        isSearchActive.value = false
+        search.value = ''
+        selectedIndex.value = 0
+        deactivateSubMenu()
+      }
+    }
+  },
   arrowup: {
     usingInput: true,
     handler: () => {

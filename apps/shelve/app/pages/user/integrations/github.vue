@@ -77,14 +77,7 @@ function openDeleteModal(slug: string) {
       </form>
     </Teleport>
     <div style="--stagger: 1" data-animate class="flex flex-col gap-3">
-      <div class="flex flex-col gap-1">
-        <h2 class="text-lg font-bold flex items-center gap-2">
-          Your Github Apps
-        </h2>
-        <p class="text-sm text-(--ui-text-muted)">
-          Github Apps are used to sync secrets and more...
-        </p>
-      </div>
+      <LayoutSectionHeader title="Your Github Apps" description="Github Apps are used to sync secrets and more..." />
       <USeparator class="mb-3" />
       <div v-if="status !== 'pending'" class="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <div

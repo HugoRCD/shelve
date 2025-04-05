@@ -94,20 +94,11 @@ const items = (row: Member) => [
     <Teleport defer to="#action-items">
       <div v-if="canUpdate" class="flex gap-1">
         <TeamAddMember v-if="members" :members />
+        <UInput v-model="search" size="sm" label="Search" placeholder="Search a user" icon="heroicons:magnifying-glass-20-solid" />
       </div>
     </Teleport>
-    <div class="flex flex-col justify-end gap-4 sm:flex-row sm:items-center">
-      <UInput v-model="search" label="Search" placeholder="Search a user" icon="heroicons:magnifying-glass-20-solid" />
-    </div>
     <div class="flex flex-col gap-4">
-      <div>
-        <h2 class="text-lg font-bold">
-          Members
-        </h2>
-        <p class="text-sm text-(--ui-text-muted)">
-          Manage team members
-        </p>
-      </div>
+      <LayoutSectionHeader title="Members" description="Manage team members" />
       <TransitionGroup name="fade" tag="ul" class="flex flex-col gap-4">
         <div v-for="member in members" :key="member.id" class="flex flex-col gap-4">
           <div class="flex items-center justify-between gap-2">

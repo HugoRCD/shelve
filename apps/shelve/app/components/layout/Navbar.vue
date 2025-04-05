@@ -46,10 +46,6 @@ defineShortcuts({
     usingInput: true,
     handler: () => toggleSearch()
   },
-  escape: {
-    usingInput: true,
-    handler: () => isSearchActive.value && toggleSearch()
-  },
   arrowdown: {
     usingInput: true,
     handler: () => {
@@ -76,7 +72,7 @@ defineShortcuts({
 </script>
 
 <template>
-  <div class="navbar-wrapper flex flex-col sm:flex-row sm:items-center gap-4">
+  <div class="navbar-wrapper flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
     <LayoutGroup>
       <Motion :layout="true" class="outline-none">
         <BgHighlight rounded="full" class="hover:scale-105 cursor-pointer" @click="toggleSearch">
@@ -143,7 +139,7 @@ defineShortcuts({
       </Motion>
     </LayoutGroup>
 
-    <CommandPalette v-model="isSearchActive" v-model:search="searchQuery" v-model:selected-index="selectedTeamIndex" />
+    <CommandPalette v-if="isSearchActive" v-model="isSearchActive" v-model:search="searchQuery" v-model:selected-index="selectedTeamIndex" />
   </div>
 </template>
 
@@ -151,8 +147,8 @@ defineShortcuts({
 @import "tailwindcss";
 
 .navbar-wrapper {
-  @apply fixed z-[99] bottom-4 sm:bottom-8 left-1/2 -translate-x-1/2 will-change-auto;
-  @apply max-w-[95vw];
+  @apply fixed z-[99] bottom-6 sm:bottom-8 left-1/2 -translate-x-1/2 will-change-auto;
+  @apply max-w-[92vw] sm:max-w-[95vw];
 }
 
 .mobile-navbar-highlight {

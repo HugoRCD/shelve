@@ -3,12 +3,12 @@ import { type Environment, TeamRole } from '@types'
 import { ConfirmModal } from '#components'
 
 const teamRole = useTeamRole()
-const team = useTeam()
 
 const canDelete = computed(() => hasAccess(teamRole.value, TeamRole.OWNER))
 const canUpdate = computed(() => hasAccess(teamRole.value, TeamRole.ADMIN))
 
 const newEnv = ref('')
+const open = ref(false)
 
 const columns = [
   {
@@ -23,7 +23,6 @@ const columns = [
 
 const {
   loading,
-  createLoading,
   updateLoading,
   environments,
   fetchEnvironments,
@@ -31,6 +30,8 @@ const {
 const envService = useEnvironmentsService()
 
 async function create() {
+  await new Promise(resolve => setTimeout(resolve, 2000))
+
   await envService.createEnvironment(newEnv.value)
   await fetchEnvironments()
   newEnv.value = ''
@@ -89,20 +90,24 @@ function updateEnvironment(env: Environment) {
   <div class="flex flex-col">
     <Teleport defer to="#action-items">
       <form v-if="canUpdate" class="flex items-center gap-2" @submit.prevent="createEnvironment">
-        <UInput v-model="newEnv" placeholder="New environment name" required />
-        <CustomButton label="Create" :loading="createLoading" size="sm" type="submit" />
+        <UPopover v-if="canUpdate" v-model:open="open" arrow>
+          <CustomButton label="Create environment" size="sm" />
+          <template #content>
+            <UCard>
+              <form @submit.prevent="createEnvironment">
+                <div class="flex items-center gap-2">
+                  <UInput v-model="newEnv" placeholder="New environment name" required />
+                  <UButton label="Create" loading-auto size="sm" type="submit" />
+                </div>
+              </form>
+            </UCard>
+          </template>
+        </UPopover>
       </form>
     </Teleport>
     <form class="flex flex-col">
       <div style="--stagger: 1" data-animate class="flex justify-between">
-        <div>
-          <h2 class="text-base font-semibold leading-7">
-            Environment Settings
-          </h2>
-          <p class="text-sm leading-6 text-(--ui-text-muted)">
-            Create, update, and delete environments
-          </p>
-        </div>
+        <LayoutSectionHeader title="Environments" description="Create, update, and delete environments" />
       </div>
       <div style="--stagger: 2" data-animate class="mt-6">
         <UTable :data="environments" :columns :loading>

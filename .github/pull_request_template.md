@@ -1,7 +1,9 @@
 <!---
 ☝️ PR title should follow conventional commits (https://conventionalcommits.org)
-Here are the available types:
+Here are the available types and scopes:
 
+
+### Types
 - breaking (fix or feature that would cause existing functionality to change) 💥
 - feat (a non-breaking change that adds functionality) ✨
 - fix (a non-breaking change that fixes an issue) 🐞
@@ -16,6 +18,13 @@ Here are the available types:
 - refactor (a code change that neither fixes a bug nor adds a feature) 🛠
 - revert (reverts a previous commit) 🔄
 
+### Scopes
+- app (the main application)
+- lp (the landing page and documentation)
+- base (the base layer)
+- cli (the command line interface)
+- types (the type definitions)
+- utils (the utility functions)
 -->
 
 ### 🔗 Linked issue

@@ -1,11 +1,14 @@
 <script setup lang="ts">
 import { AuthType, type CreateUserInput } from '@types'
 
+const appUrl = window.location.origin
+
 const newUser = ref<CreateUserInput>({
   email: 'hrichard206@gmail.com',
   username: 'test',
   avatar: 'https://i.imgur.com/6VBx3io.png',
   authType: AuthType.GITHUB,
+  appUrl
 })
 const loading = ref(false)
 
@@ -30,12 +33,7 @@ async function testNewUserMail() {
 <template>
   <div class="flex flex-col gap-4">
     <div class="flex flex-col gap-4">
-      <h2 class="text-lg font-semibold">
-        Test new user email
-      </h2>
-      <p class="text-sm text-(--ui-text-muted)">
-        Send a test email to a new user
-      </p>
+      <LayoutSectionHeader title="Test new user email" description="Send a test email to a new user" />
       <div>
         <UButton
           label="Send email"

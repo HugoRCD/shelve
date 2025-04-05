@@ -1,4 +1,5 @@
 <script setup lang="ts">
+
 const reduceMotion = useCookie<boolean>('reduceMotion', {
   watch: true,
 })
@@ -57,23 +58,14 @@ watch(reduceMotion, () => {
   <div class="flex flex-col gap-4 pb-4">
     <template v-for="option in settingsOptions" :key="option.id">
       <div :style="`--stagger: ${option.stagger}`" data-animate class="flex flex-col gap-3">
-        <div class="flex flex-col gap-1">
-          <h2 class="text-lg font-bold">
-            {{ option.title }}
-          </h2>
-          <p class="text-sm text-(--ui-text-muted)">
-            {{ option.description }}
-          </p>
-        </div>
+        <LayoutSectionHeader :title="option.title" :description="option.description" />
         <USwitch v-model="option.modelValue" />
       </div>
       <USeparator class="my-4" />
     </template>
 
     <div style="--stagger: 3" data-animate class="flex flex-col gap-3">
-      <h2 class="text-lg font-bold">
-        Theme settings
-      </h2>
+      <LayoutSectionHeader title="Theme" description="Choose a theme for the app" />
       <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div
           v-for="theme in themes"

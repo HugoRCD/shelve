@@ -174,7 +174,8 @@
   .slide-to-top-enter-active,
   .slide-to-top-leave-active,
   .slide-to-bottom-enter-active,
-  .slide-to-bottom-leave-active {
+  .slide-to-bottom-leave-active,
+  .dot-flicker {
     animation: none !important;
   }
 }
@@ -185,7 +186,8 @@
   .slide-to-top-enter-active,
   .slide-to-top-leave-active,
   .slide-to-bottom-enter-active,
-  .slide-to-bottom-leave-active {
+  .slide-to-bottom-leave-active,
+  .dot-flicker {
     animation: none !important;
   }
 
@@ -205,5 +207,11 @@
   100% {
     transform: scale(2);
     opacity: 0;
+  }
+}
+
+@keyframes text {
+  to {
+    background-position: 200% center;
   }
 }

@@ -14,7 +14,6 @@ export default defineNuxtConfig({
     '@nuxt/ui-pro',
     '@nuxtjs/seo',
     '@nuxt/content',
-    'nuxt-og-image',
     '@nuxt/scripts',
     '@nuxthub/core',
     'nuxt-llms',
@@ -73,6 +72,7 @@ export default defineNuxtConfig({
   },
 
   image: {
+    format: ['webp', 'jpeg', 'jpg', 'png', 'svg'],
     provider: 'ipx'
   },
 

@@ -33,7 +33,7 @@ const editThisPage = computed(() => ({
 <template>
   <UMain class="mt-20 px-2">
     <ShelveMeta :default-og-image="false" :title="page?.title" :description="page?.description" />
-    <UContainer class="relative min-h-screen bg-(--ui-bg-muted) px-4 sm:px-6 pt-6 border-x border-t border-(--ui-border) rounded-t-sm shadow-sm">
+    <UContainer class="relative min-h-screen">
       <UPage v-if="page">
         <ULink to="/blog" class="font-mono text-sm flex items-center gap-1">
           <UIcon name="lucide:chevron-left" />

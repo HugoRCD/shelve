@@ -98,14 +98,10 @@ fetchTokens()
 <template>
   <div class="flex flex-col">
     <div style="--stagger: 1" data-animate class="flex items-center gap-4">
-      <div>
-        <h2 class="text-base font-semibold leading-7">
-          Tokens
-        </h2>
-        <p class="text-sm leading-6 text-(--ui-text-muted)">
-          Manage your tokens for the CLI
-        </p>
-      </div>
+      <LayoutSectionHeader
+        title="Tokens"
+        description="Manage your tokens for the CLI"
+      />
     </div>
     <Teleport defer to="#action-items">
       <div class="hidden items-center justify-end gap-2 sm:flex">

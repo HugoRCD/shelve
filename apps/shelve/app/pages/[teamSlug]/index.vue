@@ -11,10 +11,17 @@ if (!projects.value)
 
 <template>
   <div>
+    <LayoutSectionHeader
+      title="Projects"
+      description="All your projects in one place"
+      style="--stagger: 1"
+      data-animate
+      class="mb-4"
+    />
     <Teleport defer to="#action-items">
       <ProjectCreate />
     </Teleport>
-    <div v-if="!loading">
+    <div v-if="!loading" style="--stagger: 2" data-animate>
       <div v-if="projects.length === 0" class="flex h-64 flex-col items-center justify-center gap-4">
         <UIcon name="heroicons:folder-open" class="size-10 text-(--ui-text-muted)" />
         <h2 class="text-lg font-semibold">
@@ -25,8 +32,8 @@ if (!projects.value)
         </p>
         <ProjectCreate />
       </div>
-      <div v-else class="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <ProjectItem v-for="project in projects" :key="project.id" :project />
+      <div v-else class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <ProjectItem v-for="project in projects" :key="project.id" :project class="-ml-[1px]" />
       </div>
     </div>
     <div v-else class="grid grid-cols-1 gap-4 lg:grid-cols-2">
