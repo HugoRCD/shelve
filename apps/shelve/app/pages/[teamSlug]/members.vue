@@ -90,44 +90,44 @@ const items = (row: Member) => [
 </script>
 
 <template>
-  <div class="mt-1 flex flex-col gap-4">
-    <Teleport defer to="#action-items">
-      <div v-if="canUpdate" class="flex gap-1">
-        <TeamAddMember v-if="members" :members />
-        <UInput v-model="search" size="sm" label="Search" placeholder="Search a user" icon="heroicons:magnifying-glass-20-solid" />
-      </div>
-    </Teleport>
-    <div class="flex flex-col gap-4">
-      <LayoutSectionHeader title="Members" description="Manage team members" />
-      <TransitionGroup name="fade" tag="ul" class="flex flex-col gap-4">
-        <div v-for="member in members" :key="member.id" class="flex flex-col gap-4">
-          <div class="flex items-center justify-between gap-2">
-            <div class="flex items-center gap-2">
-              <UAvatar :src="member.user.avatar" :alt="member.user.username" img-class="object-cover" />
-              <div class="flex flex-col gap-1">
-                <div class="flex items-center gap-2">
-                  <span class="text-sm font-semibold">{{ member.user.username }}</span>
-                  <UBadge size="sm" :label="member.role.toUpperCase()" variant="subtle" :color="member.role === TeamRole.OWNER ? 'primary' : member.role === TeamRole.ADMIN ? 'success' : 'neutral'" />
-                </div>
-                <span class="text-xs text-(--ui-text-muted) hover:text-(--ui-text-highlighted) cursor-pointer" @click="copyToClipboard(member.user.email)">
-                  {{ member.user.email }}
-                </span>
+  <PageSection
+    title="Members"
+    description="Manage team members"
+    :stagger="1"
+  >
+    <TransitionGroup name="fade" tag="ul" class="flex flex-col gap-4">
+      <div v-for="member in members" :key="member.id" class="flex flex-col gap-4 border-b last:border-b-0 border-(--ui-border) pb-4 last:pb-0">
+        <div class="flex items-center justify-between gap-2">
+          <div class="flex items-center gap-2">
+            <UAvatar :src="member.user.avatar" :alt="member.user.username" img-class="object-cover" />
+            <div class="flex flex-col gap-1">
+              <div class="flex items-center gap-2">
+                <span class="text-sm font-semibold">{{ member.user.username }}</span>
+                <UBadge size="sm" :label="member.role.toUpperCase()" variant="subtle" :color="member.role === TeamRole.OWNER ? 'primary' : member.role === TeamRole.ADMIN ? 'success' : 'neutral'" />
               </div>
-            </div>
-            <div class="flex gap-2">
-              <div class="flex-col gap-1 text-xs text-(--ui-text-muted) hidden sm:flex">
-                <span>CreatedAt: {{ new Date(member.createdAt).toLocaleString() }}</span>
-                <span>UpdatedAt: {{ new Date(member.updatedAt).toLocaleString() }}</span>
-              </div>
-              <UDropdownMenu v-if="canUpdate" :items="items(member)">
-                <UButton variant="ghost" icon="heroicons:ellipsis-horizontal-20-solid" />
-              </UDropdownMenu>
+              <span class="text-xs text-(--ui-text-muted) hover:text-(--ui-text-highlighted) cursor-pointer" @click="copyToClipboard(member.user.email)">
+                {{ member.user.email }}
+              </span>
             </div>
           </div>
-          <USeparator />
+          <div class="flex gap-2">
+            <div class="flex-col gap-1 text-xs text-(--ui-text-muted) hidden sm:flex">
+              <span>CreatedAt: {{ new Date(member.createdAt).toLocaleString() }}</span>
+              <span>UpdatedAt: {{ new Date(member.updatedAt).toLocaleString() }}</span>
+            </div>
+            <UDropdownMenu v-if="canUpdate" :items="items(member)">
+              <UButton variant="ghost" icon="heroicons:ellipsis-horizontal-20-solid" />
+            </UDropdownMenu>
+          </div>
         </div>
-      </TransitionGroup>
-    </div>
-  </div>
-</template>
+      </div>
+    </TransitionGroup>
 
+    <template #actions>
+      <template v-if="canUpdate">
+        <TeamAddMember v-if="members" :members />
+        <UInput v-model="search" size="sm" label="Search" placeholder="Search a user" icon="heroicons:magnifying-glass-20-solid" />
+      </template>
+    </template>
+  </PageSection>
+</template>

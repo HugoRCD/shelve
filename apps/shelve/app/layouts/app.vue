@@ -42,7 +42,7 @@ const title = computed(() => {
           </Transition>
         </div>
         <div class="flex items-center gap-2">
-          <div id="action-items" class="hidden sm:flex">
+          <div id="action-items" class="hidden sm:flex items-center gap-1">
             <!-- action-items -->
           </div>
           <UserDropdown />

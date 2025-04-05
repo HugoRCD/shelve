@@ -45,15 +45,15 @@ const open = ref(false)
 </script>
 
 <template>
-  <div class="flex flex-col">
-    <form v-if="team" class="flex flex-col" @submit.prevent="updateCurrentTeam">
-      <div style="--stagger: 1" data-animate class="flex justify-between">
-        <div class="flex items-center gap-4">
-          <NuxtImg :src="team.logo" class="size-10 rounded-full" format="webp" />
-          <LayoutSectionHeader title="Team Settings" description="Manage team settings" />
-        </div>
-      </div>
-      <div style="--stagger: 2" data-animate class="mt-6 flex flex-col gap-4">
+  <PageSection
+    v-if="team"
+    title="Team Settings"
+    description="Manage team settings"
+    :image="team.logo"
+    :stagger="1"
+  >
+    <form class="flex flex-col" @submit.prevent="updateCurrentTeam">
+      <div class="flex flex-col gap-4">
         <div class="max-w-sm space-y-4">
           <UFormField label="Name">
             <UInput v-model="team.name" :disabled="!canUpdate" class="w-full" />
@@ -105,6 +105,6 @@ const open = ref(false)
         </template>
       </UCollapsible>
     </div>
-  </div>
+  </PageSection>
 </template>
 

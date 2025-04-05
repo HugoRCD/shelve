@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
+    <g class="nc-icon-wrapper" fill="currentColor">
+        <rect x="3" y="3" width="17" height="17" rx="3" fill="currentColor"></rect>
+        <path data-color="color-2"
+              d="M46.138,9.419,38.581,1.862a2.945,2.945,0,0,0-4.162,0L26.862,9.419a2.943,2.943,0,0,0,0,4.162l7.557,7.557a2.948,2.948,0,0,0,4.162,0l7.557-7.557a2.943,2.943,0,0,0,0-4.162Z"
+              fill="currentColor"></path>
+        <rect x="28" y="28" width="17" height="17" rx="3" fill="currentColor"></rect>
+        <rect x="3" y="28" width="17" height="17" rx="3" fill="currentColor"></rect>
+    </g>
+</svg>

@@ -31,18 +31,18 @@ async function testNewUserMail() {
 </script>
 
 <template>
-  <div class="flex flex-col gap-4">
-    <div class="flex flex-col gap-4">
-      <LayoutSectionHeader title="Test new user email" description="Send a test email to a new user" />
-      <div>
-        <UButton
-          label="Send email"
-          variant="soft"
-          icon="lucide:mail"
-          :loading
-          @click="testNewUserMail"
-        />
-      </div>
-    </div>
-  </div>
+  <PageSection
+    title="Test new user email"
+    description="Send a test email to a new user"
+    :stagger="1"
+  >
+    <UButton
+      label="Send email"
+      variant="soft"
+      icon="lucide:mail"
+      :loading
+      class="size-fit"
+      @click="testNewUserMail"
+    />
+  </PageSection>
 </template>

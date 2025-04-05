@@ -23,13 +23,7 @@ const items = [
     label: 'Environment Variables',
     icon: 'lucide:container',
     to: `/${teamSlug}/projects/${projectId}/variables`
-  },
-  {
-    label: 'Files',
-    icon: 'lucide:files',
-    to: `/${teamSlug}/projects/${projectId}/files`
-  },
-  {
+  }, {
     label: 'Settings',
     icon: 'heroicons:cog',
     to: `/${teamSlug}/projects/${projectId}/settings`
@@ -40,7 +34,7 @@ const items = [
 <template>
   <div class="flex flex-col">
     <ProjectMainSection />
-    <div class="mt-8 mb-4">
+    <div class="mt-4">
       <UNavigationMenu
         color="neutral"
         orientation="horizontal"

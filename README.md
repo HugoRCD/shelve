@@ -61,7 +61,7 @@ Shelve aims to become the ultimate development workspace by addressing common pa
   </tr>
   <tr>
     <td>📅 Next Release</td>
-    <td>v2.0.0 (Q1 2025)</td>
+    <td>v2.1.0 (Q2 2025)</td>
   </tr>
 </table>
 
@@ -70,7 +70,6 @@ Shelve aims to become the ultimate development workspace by addressing common pa
 - 🔄 Ecosystem management for multi-repository synchronization (e.g., [UnJs](https://unjs.io))
 - 🔌 Enhanced integrations (Vercel, Coolify) (e.g., environment variable syncing)
 - ⚡️ Automatic project setup with GitHub and Vercel (auto-repo creation, auto-deployment)
-- 🎨 Major UI improvements for a seamless experience (become one of the most beautiful dev tools)
 
 ## ✨ Features
 
@@ -164,7 +163,7 @@ We would like to thank all contributors and the open-source community for their 
 ## Sponsors
 
 <p align="center">
-  <a href="https://cdn.jsdelivr.net/gh/hugorcd/static/sponsors.svg">
+  <a href="https://github.com/sponsors/HugoRCD">
     <img src='https://cdn.jsdelivr.net/gh/hugorcd/static/sponsors.svg' alt="HugoRCD sponsors" />
   </a>
 </p>
@@ -186,6 +185,6 @@ Made by [@HugoRCD](https://github.com/HugoRCD) and [community](https://github.co
 
 ---
 
-_🤖 auto updated with [automd](https://automd.unjs.io) (last updated: Mon Mar 31 2025)_
+_🤖 auto updated with [automd](https://automd.unjs.io) (last updated: Sat Apr 05 2025)_
 
 <!-- /automd -->

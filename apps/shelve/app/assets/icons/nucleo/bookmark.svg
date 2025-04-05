@@ -1,1 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24"><g stroke-linecap="round" stroke-linejoin="round" class="nc-icon-wrapper"><path fill="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" d="m20,22l-8-5-8,5V4c0-1.105.895-2,2-2h12c1.105,0,2,.895,2,2v18Z"/></g></svg>
+<svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+  <g stroke-linecap="round" stroke-linejoin="round" class="nc-icon-wrapper">
+    <path fill="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2"
+          d="m20,22l-8-5-8,5V4c0-1.105.895-2,2-2h12c1.105,0,2,.895,2,2v18Z"/>
+  </g>
+</svg>

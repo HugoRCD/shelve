@@ -50,13 +50,15 @@ function deleteAccount() {
 </script>
 
 <template>
-  <div class="flex flex-col">
-    <form v-if="user" class="flex flex-col" @submit.prevent="updateCurrentUser">
-      <div style="--stagger: 1" data-animate class="flex items-center gap-4">
-        <NuxtImg :src="user.avatar" class="size-10 rounded-full" format="webp" />
-        <LayoutSectionHeader title="Personal Information" description="Update your personal information" />
-      </div>
-      <div style="--stagger: 2" data-animate class="mt-6 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-6">
+  <PageSection
+    v-if="user"
+    title="Personal Information"
+    description="Update your personal information"
+    :image="user.avatar"
+    :stagger="1"
+  >
+    <form class="flex flex-col" @submit.prevent="updateCurrentUser">
+      <div class="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-6">
         <div class="sm:col-span-3">
           <UFormField label="Username">
             <UInput v-model="user.username" class="w-full" />
@@ -73,7 +75,7 @@ function deleteAccount() {
           </UFormField>
         </div>
       </div>
-      <div style="--stagger: 4" data-animate class="mt-6 flex items-center justify-between gap-2">
+      <div style="--stagger: 3" data-animate class="mt-6 flex items-center justify-between gap-2">
         <UButton type="submit" :loading="updateLoading">
           Save
         </UButton>
@@ -82,5 +84,5 @@ function deleteAccount() {
         </UButton>
       </div>
     </form>
-  </div>
+  </PageSection>
 </template>

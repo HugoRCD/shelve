@@ -160,31 +160,39 @@ const items = (row: User) => [
 
 const pagination = ref({
   pageIndex: 0,
-  pageSize: 10
+  pageSize: 20
 })
 </script>
 
 <template>
-  <div class="mt-1 flex flex-col gap-4">
-    <LayoutSectionHeader title="Stats" description="all applications stats" />
+  <PageSection
+    title="Stats"
+    description="All applications stats"
+    :stagger="1"
+  >
     <AdminStats />
-    <Teleport defer to="#action-items">
-      <div class="hidden items-center justify-end gap-2 sm:flex">
-        <UTooltip text="Delete cache">
-          <UButton variant="ghost" size="sm" icon="i-lucide-trash" loading-auto @click="deleteCache" />
-        </UTooltip>
-        <UInput v-model="search" size="sm" label="Search" placeholder="Search a user" icon="heroicons:magnifying-glass-20-solid" />
-      </div>
-    </Teleport>
-    <USeparator class="my-4" />
-    <LayoutSectionHeader title="Admin" description="Manage users and their roles" />
+  </PageSection>
+  <USeparator class="my-4" />
+  <PageSection
+    title="Admin"
+    description="Manage users and their roles"
+    :stagger="2"
+  >
     <UTable
+      ref="table"
       v-model:pagination="pagination"
       :data="filteredUsers"
       :columns
       :loading="status === 'pending' || updateLoading || deleteLoading"
       :pagination-options="{
         getPaginationRowModel: getPaginationRowModel()
+      }"
+      :ui="{
+        base: 'table-fixed border-separate border-spacing-0',
+        thead: '[&>tr]:bg-(--ui-bg-elevated)/50 [&>tr]:after:content-none',
+        tbody: '[&>tr]:last:[&>td]:border-b-0',
+        th: 'first:rounded-l-[calc(var(--ui-radius)*2)] last:rounded-r-[calc(var(--ui-radius)*2)] border-y border-(--ui-border) first:border-l last:border-r',
+        td: 'border-b border-(--ui-border)'
       }"
     >
       <template #avatar-cell="{ row }">
@@ -215,15 +223,21 @@ const pagination = ref({
           <UButton variant="ghost" icon="heroicons:ellipsis-horizontal-20-solid" />
         </UDropdownMenu>
       </template>
-
-      <div class="flex justify-center border-t border-(--ui-border) pt-4">
-        <UPagination
-          :default-page="(table?.tableApi?.getState().pagination.pageIndex || 0) + 1"
-          :items-per-page="table?.tableApi?.getState().pagination.pageSize"
-          :total="table?.tableApi?.getFilteredRowModel().rows.length"
-          @update:page="(p) => table?.tableApi?.setPageIndex(p - 1)"
-        />
-      </div>
     </UTable>
-  </div>
+    <div v-if="filteredUsers?.length && filteredUsers?.length > 20" class="flex justify-center pt-4">
+      <UPagination
+        :default-page="(table?.tableApi?.getState().pagination.pageIndex || 0) + 1"
+        :items-per-page="table?.tableApi?.getState().pagination.pageSize"
+        :total="table?.tableApi?.getFilteredRowModel().rows.length"
+        @update:page="(p) => table?.tableApi?.setPageIndex(p - 1)"
+      />
+    </div>
+
+    <template #actions>
+      <UTooltip text="Delete cache">
+        <UButton variant="ghost" size="sm" icon="i-lucide-trash" loading-auto @click="deleteCache" />
+      </UTooltip>
+      <UInput v-model="search" size="sm" label="Search" placeholder="Search a user" icon="heroicons:magnifying-glass-20-solid" />
+    </template>
+  </PageSection>
 </template>

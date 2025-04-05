@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
+  <g class="nc-icon-wrapper" fill="currentColor">
+    <path
+      d="M46,1H37a1,1,0,0,0-.707.293L18.285,19.3a13.5,13.5,0,1,0,10.228,9.6l3.194-3.195A1,1,0,0,0,32,25V20h5a1,1,0,0,0,1-1V14h5a1,1,0,0,0,.707-.293l3-3A1,1,0,0,0,47,10V2A1,1,0,0,0,46,1ZM14,38a4,4,0,1,1,4-4A4,4,0,0,1,14,38Z"
+      fill="currentColor"></path>
+  </g>
+</svg>
