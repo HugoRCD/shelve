@@ -61,8 +61,11 @@ function openDeleteModal(slug: string) {
 </script>
 
 <template>
-  <div style="--stagger: 1" data-animate class="flex flex-col gap-3">
-    <LayoutSectionHeader title="Your Github Apps" description="Github Apps are used to sync secrets and more..." />
+  <PageSection
+    title="Your Github Apps"
+    description="Github Apps are used to sync secrets and more..."
+    :stagger="1"
+  >
     <div v-if="status !== 'pending'" class="grid grid-cols-1 gap-4 lg:grid-cols-2">
       <div
         v-for="app in apps"
@@ -129,6 +132,8 @@ function openDeleteModal(slug: string) {
     <div
       v-if="status !== 'pending' && apps?.length === 0"
       class="flex flex-col items-center justify-center p-8 bg-(--ui-bg-elevated)/20 border border-(--ui-border) rounded-lg"
+      style="--stagger: 2"
+      data-animate
     >
       <div class="relative mb-6">
         <div class="flex items-center justify-center relative p-6 bg-(--ui-bg-elevated) rounded-full border border-(--ui-border)">
@@ -181,7 +186,7 @@ function openDeleteModal(slug: string) {
         </div>
       </div>
     </div>
-  </div>
+  </PageSection>
 
   <Teleport defer to="#action-items">
     <form action="https://github.com/settings/apps/new" method="post" class="flex items-center gap-2">

@@ -9,9 +9,12 @@ const integrations = [
 </script>
 
 <template>
-  <div class="flex flex-col gap-4 pb-4">
-    <div style="--stagger: 1" data-animate class="flex flex-col gap-3">
-      <LayoutSectionHeader title="Integrations" description="Connect Shelve with other services to enhance your experience." />
+  <PageSection
+    title="Integrations"
+    description="Connect Shelve with other services to enhance your experience."
+    :stagger="1"
+  >
+    <div style="--stagger: 2" data-animate class="flex flex-col gap-3">
       <div class="flex flex-col gap-2">
         <NuxtLink v-for="integration in integrations" :key="integration.name" :to="`/user/integrations/${integration.name.toLowerCase()}`">
           <div class="border border-(--ui-border) rounded-lg hover:bg-(--ui-bg-muted) transition-colors duration-200">
@@ -31,5 +34,5 @@ const integrations = [
         </NuxtLink>
       </div>
     </div>
-  </div>
+  </PageSection>
 </template>

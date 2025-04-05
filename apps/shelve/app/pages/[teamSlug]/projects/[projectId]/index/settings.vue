@@ -73,7 +73,7 @@ async function onSubmit(event: FormSubmitEvent<UpdateProjectSchema>) {
             </div>
           </div>
         </div>
-        <USeparator class="my-2" />
+        <Separator class="my-2" />
         <div id="variable-prefix" class="flex flex-col gap-4" :class="route.hash === '#variable-prefix' ? 'ring ring-[var(--ui-primary)] rounded-lg p-4' : ''">
           <div>
             <h3 class="font-semibold">

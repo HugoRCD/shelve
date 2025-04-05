@@ -87,10 +87,11 @@ function updateEnvironment(env: Environment) {
 </script>
 
 <template>
-  <form class="flex flex-col">
-    <div style="--stagger: 1" data-animate class="flex justify-between">
-      <LayoutSectionHeader title="Environments" description="Create, update, and delete environments" />
-    </div>
+  <PageSection
+    title="Environments"
+    description="Create, update, and delete environments"
+    :stagger="1"
+  >
     <div style="--stagger: 2" data-animate class="mt-6">
       <UTable
         :data="environments"
@@ -135,7 +136,7 @@ function updateEnvironment(env: Environment) {
         </template>
       </UTable>
     </div>
-  </form>
+  </PageSection>
 
   <Teleport defer to="#action-items">
     <form v-if="canUpdate" class="flex items-center gap-2" @submit.prevent="createEnvironment">

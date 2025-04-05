@@ -165,11 +165,19 @@ const pagination = ref({
 </script>
 
 <template>
-  <div class="mt-1 flex flex-col gap-4">
-    <LayoutSectionHeader title="Stats" description="all applications stats" />
+  <PageSection
+    title="Stats"
+    description="all applications stats"
+    :stagger="1"
+  >
     <AdminStats />
-    <USeparator class="my-4" />
-    <LayoutSectionHeader title="Admin" description="Manage users and their roles" />
+  </PageSection>
+  <USeparator class="my-4" />
+  <PageSection
+    title="Admin"
+    description="Manage users and their roles"
+    :stagger="2"
+  >
     <UTable
       ref="table"
       v-model:pagination="pagination"
@@ -224,7 +232,7 @@ const pagination = ref({
         @update:page="(p) => table?.tableApi?.setPageIndex(p - 1)"
       />
     </div>
-  </div>
+  </PageSection>
 
   <Teleport defer to="#action-items">
     <div class="hidden items-center justify-end gap-2 sm:flex">

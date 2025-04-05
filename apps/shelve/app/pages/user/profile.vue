@@ -50,38 +50,39 @@ function deleteAccount() {
 </script>
 
 <template>
-  <form v-if="user" class="flex flex-col" @submit.prevent="updateCurrentUser">
-    <LayoutSectionHeader
-      style="--stagger: 1"
-      data-animate
-      title="Personal Information"
-      description="Update your personal information"
-      :image="user.avatar"
-    />
-    <div style="--stagger: 2" data-animate class="mt-6 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-6">
-      <div class="sm:col-span-3">
-        <UFormField label="Username">
-          <UInput v-model="user.username" class="w-full" />
-        </UFormField>
+  <PageSection
+    v-if="user"
+    title="Personal Information"
+    description="Update your personal information"
+    :image="user.avatar"
+    :stagger="1"
+  >
+    <form class="flex flex-col" @submit.prevent="updateCurrentUser">
+      <div style="--stagger: 2" data-animate class="mt-6 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-6">
+        <div class="sm:col-span-3">
+          <UFormField label="Username">
+            <UInput v-model="user.username" class="w-full" />
+          </UFormField>
+        </div>
+        <div class="sm:col-span-3">
+          <UFormField label="Email">
+            <UInput v-model="user.email" disabled class="w-full" />
+          </UFormField>
+        </div>
+        <div class="sm:col-span-4">
+          <UFormField label="Avatar">
+            <UInput v-model="user.avatar" class="w-full" />
+          </UFormField>
+        </div>
       </div>
-      <div class="sm:col-span-3">
-        <UFormField label="Email">
-          <UInput v-model="user.email" disabled class="w-full" />
-        </UFormField>
+      <div style="--stagger: 4" data-animate class="mt-6 flex items-center justify-between gap-2">
+        <UButton type="submit" :loading="updateLoading">
+          Save
+        </UButton>
+        <UButton color="error" @click="deleteAccount">
+          Delete Account
+        </UButton>
       </div>
-      <div class="sm:col-span-4">
-        <UFormField label="Avatar">
-          <UInput v-model="user.avatar" class="w-full" />
-        </UFormField>
-      </div>
-    </div>
-    <div style="--stagger: 4" data-animate class="mt-6 flex items-center justify-between gap-2">
-      <UButton type="submit" :loading="updateLoading">
-        Save
-      </UButton>
-      <UButton color="error" @click="deleteAccount">
-        Delete Account
-      </UButton>
-    </div>
-  </form>
+    </form>
+  </PageSection>
 </template>

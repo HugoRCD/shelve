@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import PageSection from '~/components/PageSection.vue'
+
 const route = useRoute()
 const teamSlug = computed(() => route.params.teamSlug as string)
 const projects = useProjects(teamSlug.value)
@@ -10,14 +12,11 @@ if (!projects.value)
 </script>
 
 <template>
-  <div>
-    <LayoutSectionHeader
-      title="Projects"
-      description="All your projects in one place"
-      style="--stagger: 1"
-      data-animate
-      class="mb-4"
-    />
+  <PageSection
+    title="Projects"
+    description="All your projects in one place"
+    :stagger="1"
+  >
     <div v-if="!loading" style="--stagger: 2" data-animate>
       <div v-if="projects.length === 0" class="flex h-64 flex-col items-center justify-center gap-4">
         <UIcon name="heroicons:folder-open" class="size-10 text-(--ui-text-muted)" />
@@ -36,7 +35,7 @@ if (!projects.value)
     <div v-else class="grid grid-cols-1 gap-4 lg:grid-cols-2">
       <USkeleton v-for="i in 4" :key="i" class="h-32" />
     </div>
-  </div>
+  </PageSection>
 
   <Teleport defer to="#action-items">
     <ProjectCreate />

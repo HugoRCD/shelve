@@ -96,13 +96,11 @@ fetchTokens()
 </script>
 
 <template>
-  <div class="flex flex-col">
-    <LayoutSectionHeader
-      style="--stagger: 1"
-      data-animate
-      title="Tokens"
-      description="Manage your tokens for the CLI"
-    />
+  <PageSection
+    title="Tokens"
+    description="Manage your tokens for the CLI"
+    :stagger="1"
+  >
     <div style="--stagger: 2" data-animate class="mt-6">
       <UTable
         :columns
@@ -150,7 +148,7 @@ fetchTokens()
         </template>
       </UTable>
     </div>
-  </div>
+  </PageSection>
 
   <Teleport defer to="#action-items">
     <div class="hidden items-center justify-end gap-2 sm:flex">
