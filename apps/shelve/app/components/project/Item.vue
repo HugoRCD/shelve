@@ -14,10 +14,10 @@ const active = useState('active-project')
 <template>
   <UCard variant="subtle" class="relative transition-all duration-300 group hover:z-10 h-full ring-transparent border border-(--ui-border) bg-transparent hover:bg-(--ui-bg-muted) rounded-none" @click="active = project.id">
     <NuxtLink class="absolute inset-0 z-10" :to="`/${teamSlug}/projects/${project.id}/variables`" />
-    <span class="dot dot-tl" />
-    <span class="dot dot-br" />
-    <span class="dot dot-tr" />
-    <span class="dot dot-bl" />
+    <span class="dot dot-flicker dot-tl" />
+    <span class="dot dot-flicker dot-br" />
+    <span class="dot dot-flicker dot-tr" />
+    <span class="dot dot-flicker dot-bl" />
     <div class="flex w-full items-start gap-4">
       <!-- <UAvatar
           :src="project.logo"
@@ -44,8 +44,8 @@ const active = useState('active-project')
   @apply opacity-0;
 }
 
-.group:hover .dot {
-  animation: dot-flicker 0.250s ease-in-out forwards;
+.group:hover .dot-flicker {
+  animation: dot-flicker 0.200s ease-in-out forwards;
 }
 
 .dot-tl {

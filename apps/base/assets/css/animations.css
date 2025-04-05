@@ -174,7 +174,8 @@
   .slide-to-top-enter-active,
   .slide-to-top-leave-active,
   .slide-to-bottom-enter-active,
-  .slide-to-bottom-leave-active {
+  .slide-to-bottom-leave-active,
+  .dot-flicker {
     animation: none !important;
   }
 }
@@ -185,7 +186,8 @@
   .slide-to-top-enter-active,
   .slide-to-top-leave-active,
   .slide-to-bottom-enter-active,
-  .slide-to-bottom-leave-active {
+  .slide-to-bottom-leave-active,
+  .dot-flicker {
     animation: none !important;
   }
 

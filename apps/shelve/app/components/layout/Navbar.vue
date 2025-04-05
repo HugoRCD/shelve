@@ -46,10 +46,6 @@ defineShortcuts({
     usingInput: true,
     handler: () => toggleSearch()
   },
-  escape: {
-    usingInput: true,
-    handler: () => isSearchActive.value && toggleSearch()
-  },
   arrowdown: {
     usingInput: true,
     handler: () => {
@@ -143,7 +139,7 @@ defineShortcuts({
       </Motion>
     </LayoutGroup>
 
-    <CommandPalette v-model="isSearchActive" v-model:search="searchQuery" v-model:selected-index="selectedTeamIndex" />
+    <CommandPalette v-if="isSearchActive" v-model="isSearchActive" v-model:search="searchQuery" v-model:selected-index="selectedTeamIndex" />
   </div>
 </template>
 
