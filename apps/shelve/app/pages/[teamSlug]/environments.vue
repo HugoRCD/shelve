@@ -136,23 +136,23 @@ function updateEnvironment(env: Environment) {
         </template>
       </UTable>
     </div>
-  </PageSection>
 
-  <Teleport defer to="#action-items">
-    <form v-if="canUpdate" class="flex items-center gap-2" @submit.prevent="createEnvironment">
-      <UPopover v-if="canUpdate" v-model:open="open" arrow>
-        <CustomButton label="Create environment" size="sm" />
-        <template #content>
-          <UCard>
-            <form @submit.prevent="createEnvironment">
-              <div class="flex items-center gap-2">
-                <UInput v-model="newEnv" placeholder="New environment name" required />
-                <UButton label="Create" loading-auto size="sm" type="submit" />
-              </div>
-            </form>
-          </UCard>
-        </template>
-      </UPopover>
-    </form>
-  </Teleport>
+    <template #actions>
+      <form v-if="canUpdate" class="flex items-center gap-2" @submit.prevent="createEnvironment">
+        <UPopover v-if="canUpdate" v-model:open="open" arrow>
+          <CustomButton label="Create environment" size="sm" />
+          <template #content>
+            <UCard>
+              <form @submit.prevent="createEnvironment">
+                <div class="flex items-center gap-2">
+                  <UInput v-model="newEnv" placeholder="New environment name" required />
+                  <UButton label="Create" loading-auto size="sm" type="submit" />
+                </div>
+              </form>
+            </UCard>
+          </template>
+        </UPopover>
+      </form>
+    </template>
+  </PageSection>
 </template>

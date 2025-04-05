@@ -232,14 +232,12 @@ const pagination = ref({
         @update:page="(p) => table?.tableApi?.setPageIndex(p - 1)"
       />
     </div>
-  </PageSection>
 
-  <Teleport defer to="#action-items">
-    <div class="hidden items-center justify-end gap-2 sm:flex">
+    <template #actions>
       <UTooltip text="Delete cache">
         <UButton variant="ghost" size="sm" icon="i-lucide-trash" loading-auto @click="deleteCache" />
       </UTooltip>
       <UInput v-model="search" size="sm" label="Search" placeholder="Search a user" icon="heroicons:magnifying-glass-20-solid" />
-    </div>
-  </Teleport>
+    </template>
+  </PageSection>
 </template>

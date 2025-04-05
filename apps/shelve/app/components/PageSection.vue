@@ -23,5 +23,9 @@ defineProps<SectionProps>()
       </div>
     </div>
     <slot />
+
+    <Teleport defer to="#action-items">
+      <slot name="actions" />
+    </Teleport>
   </div>
 </template>

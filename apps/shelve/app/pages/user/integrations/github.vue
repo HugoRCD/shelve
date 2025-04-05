@@ -186,20 +186,20 @@ function openDeleteModal(slug: string) {
         </div>
       </div>
     </div>
-  </PageSection>
 
-  <Teleport defer to="#action-items">
-    <form action="https://github.com/settings/apps/new" method="post" class="flex items-center gap-2">
-      <input id="manifest" type="text" name="manifest" class="hidden" :value="JSON.stringify(manifest)">
-      <!--      <UButton
-        icon="lucide:code-xml"
-        label="Documentation"
-        to="https://shelve.cloud/docs/integrations/github"
-        size="xs"
-        variant="subtle"
-        class="max-md:hidden rounded-none"
-      />-->
-      <CustomButton icon="simple-icons:github" label="Create GitHub App" size="xs" type="submit" :ui="{ label: 'mt-[1px]' }" />
-    </form>
-  </Teleport>
+    <template #actions>
+      <form action="https://github.com/settings/apps/new" method="post" class="flex items-center gap-2">
+        <input id="manifest" type="text" name="manifest" class="hidden" :value="JSON.stringify(manifest)">
+        <!--      <UButton
+          icon="lucide:code-xml"
+          label="Documentation"
+          to="https://shelve.cloud/docs/integrations/github"
+          size="xs"
+          variant="subtle"
+          class="max-md:hidden rounded-none"
+        />-->
+        <CustomButton icon="simple-icons:github" label="Create GitHub App" size="xs" type="submit" :ui="{ label: 'mt-[1px]' }" />
+      </form>
+    </template>
+  </PageSection>
 </template>

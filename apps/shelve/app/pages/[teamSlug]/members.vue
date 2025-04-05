@@ -122,13 +122,12 @@ const items = (row: Member) => [
         </div>
       </div>
     </TransitionGroup>
+
+    <template #actions>
+      <template v-if="canUpdate">
+        <TeamAddMember v-if="members" :members />
+        <UInput v-model="search" size="sm" label="Search" placeholder="Search a user" icon="heroicons:magnifying-glass-20-solid" />
+      </template>
+    </template>
   </PageSection>
-
-  <Teleport defer to="#action-items">
-    <div v-if="canUpdate" class="flex gap-1">
-      <TeamAddMember v-if="members" :members />
-      <UInput v-model="search" size="sm" label="Search" placeholder="Search a user" icon="heroicons:magnifying-glass-20-solid" />
-    </div>
-  </Teleport>
 </template>
-

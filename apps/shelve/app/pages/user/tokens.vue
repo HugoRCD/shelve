@@ -101,59 +101,51 @@ fetchTokens()
     description="Manage your tokens for the CLI"
     :stagger="1"
   >
-    <div style="--stagger: 2" data-animate class="mt-6">
-      <UTable
-        :columns
-        :data="filteredTokens"
-        :loading
-        :ui="{
-          base: 'table-fixed border-separate border-spacing-0',
-          thead: '[&>tr]:bg-(--ui-bg-elevated)/50 [&>tr]:after:content-none',
-          tbody: '[&>tr]:last:[&>td]:border-b-0',
-          th: 'first:rounded-l-[calc(var(--ui-radius)*2)] last:rounded-r-[calc(var(--ui-radius)*2)] border-y border-(--ui-border) first:border-l last:border-r',
-          td: 'border-b border-(--ui-border)'
-        }"
-      >
-        <template #token-cell="{ row }">
-          <TokenToggle :token="row.original.token" />
-        </template>
-        <!--        <template #empty-state>
-          <div class="flex flex-col items-center justify-center gap-3 py-6">
-            <span class="text-sm italic">No tokens here</span>
-            <TokenCreate @create="fetchTokens" />
-          </div>
-        </template>-->
-        <template #updatedAt-cell="{ row }">
-          <span class="flex items-center gap-1">
-            {{ row.original.updatedAt }}
-            <UTooltip v-if="!isTokenActive( row.original.updatedAt)" text="Token seems to be inactive">
-              <div>
-                <UIcon name="heroicons-outline:clock" class="size-4 text-red-600" />
-              </div>
-            </UTooltip>
-            <UTooltip v-else text="Token is active">
-              <div>
-                <UIcon name="heroicons-outline:clock" class="size-4 text-(--ui-text-muted)" />
-              </div>
-            </UTooltip>
-          </span>
-        </template>
-        <template #actions-cell="{ row }">
-          <UDropdownMenu :items="items(row.original)">
-            <UButton
-              variant="ghost"
-              icon="heroicons:ellipsis-horizontal-20-solid"
-            />
-          </UDropdownMenu>
-        </template>
-      </UTable>
-    </div>
-  </PageSection>
+    <UTable
+      style="--stagger: 2"
+      data-animate
+      :columns
+      :data="filteredTokens"
+      :loading
+      :ui="{
+        base: 'table-fixed border-separate border-spacing-0 mt-6',
+        thead: '[&>tr]:bg-(--ui-bg-elevated)/50 [&>tr]:after:content-none',
+        tbody: '[&>tr]:last:[&>td]:border-b-0',
+        th: 'first:rounded-l-[calc(var(--ui-radius)*2)] last:rounded-r-[calc(var(--ui-radius)*2)] border-y border-(--ui-border) first:border-l last:border-r',
+        td: 'border-b border-(--ui-border)'
+      }"
+    >
+      <template #token-cell="{ row }">
+        <TokenToggle :token="row.original.token" />
+      </template>
+      <template #updatedAt-cell="{ row }">
+        <span class="flex items-center gap-1">
+          {{ row.original.updatedAt }}
+          <UTooltip v-if="!isTokenActive( row.original.updatedAt)" text="Token seems to be inactive">
+            <div>
+              <UIcon name="heroicons-outline:clock" class="size-4 text-red-600" />
+            </div>
+          </UTooltip>
+          <UTooltip v-else text="Token is active">
+            <div>
+              <UIcon name="heroicons-outline:clock" class="size-4 text-(--ui-text-muted)" />
+            </div>
+          </UTooltip>
+        </span>
+      </template>
+      <template #actions-cell="{ row }">
+        <UDropdownMenu :items="items(row.original)">
+          <UButton
+            variant="ghost"
+            icon="heroicons:ellipsis-horizontal-20-solid"
+          />
+        </UDropdownMenu>
+      </template>
+    </UTable>
 
-  <Teleport defer to="#action-items">
-    <div class="hidden items-center justify-end gap-2 sm:flex">
+    <template #actions>
       <TokenCreate v-model:search="search" @create="fetchTokens" />
       <UInput v-model="search" size="sm" placeholder="Search tokens" />
-    </div>
-  </Teleport>
+    </template>
+  </PageSection>
 </template>

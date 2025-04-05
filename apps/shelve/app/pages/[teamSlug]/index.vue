@@ -35,10 +35,10 @@ if (!projects.value)
     <div v-else class="grid grid-cols-1 gap-4 lg:grid-cols-2">
       <USkeleton v-for="i in 4" :key="i" class="h-32" />
     </div>
-  </PageSection>
 
-  <Teleport defer to="#action-items">
-    <ProjectCreate />
-  </Teleport>
+    <template #actions>
+      <ProjectCreate />
+    </template>
+  </PageSection>
 </template>
 
