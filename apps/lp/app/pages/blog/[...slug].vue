@@ -16,11 +16,18 @@ const blogNavigation = computed(() => navigation.value.find(item => item.path ==
 
 const breadcrumb = computed(() => mapContentNavigation(findPageBreadcrumb(blogNavigation?.value, page.value)).map(({ icon, ...link }) => link))
 
-defineOgImageComponent('Docs', {
-  headline: breadcrumb.value.map(item => item.label).join(' > ')
-}, {
-  fonts: ['Geist:400', 'Geist:600'],
-})
+if (page.value.image) {
+  useSeoMeta({
+    ogImage: page.value.image,
+    twitterImage: page.value.image
+  })
+} else {
+  defineOgImageComponent('Docs', {
+    headline: breadcrumb.value.map(item => item.label).join(' > ')
+  }, {
+    fonts: ['Geist:400', 'Geist:600'],
+  })
+}
 
 const editThisPage = computed(() => ({
   icon: 'i-heroicons-pencil-square-solid',

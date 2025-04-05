@@ -6,8 +6,6 @@ const { post } = defineProps<{
   to: string
 }>()
 
-const router = useRouter()
-
 const formatDate = (dateString: string) => {
   return new Date(dateString).toLocaleDateString('en-US', {
     year: 'numeric',
@@ -18,16 +16,16 @@ const formatDate = (dateString: string) => {
 </script>
 
 <template>
-  <CrossedDiv as="article" class="group p-4 cursor-pointer border border-(--ui-border) rounded-lg relative">
+  <CrossedDiv as="article" class="p-4 cursor-pointer border border-(--ui-border) rounded-lg relative hover:bg-(--ui-bg-muted)/30 transition-colors duration-200">
     <NuxtLink :to class="absolute inset-0" />
     <div class="flex md:flex-row flex-col gap-4 sm:gap-6">
-      <NuxtImg
+      <img
         :src="post.image"
         :alt="post.title"
         loading="lazy"
         format="webp"
-        class="md:max-w-1/2 aspect-video rounded-lg object-cover group-hover:scale-105 transition-all duration-200"
-      />
+        class="md:max-w-1/2 aspect-video object-cover"
+      >
       <div class="flex flex-col justify-around gap-1">
         <div class="flex flex-col gap-1">
           <span class="text-xs font-medium text-(--ui-text-muted)">

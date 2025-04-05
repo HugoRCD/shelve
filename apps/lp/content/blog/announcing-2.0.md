@@ -79,8 +79,8 @@ While the visual and functional improvements are front and center, Shelve 2.0 al
 
 Shelve 2.0 is a massive step forward, and I'm incredibly excited for you to experience it. Whether you're a solo developer or part of a team, Shelve 2.0 is designed to streamline your environment management and empower you to build amazing things.
 
-- **Visit the Website:** [shelve.cloud](https://shelve.cloud)
-- **Explore the Documentation:** [shelve.cloud/docs](https://shelve.cloud/docs)
+- **Visit the Website:** [shelve.cloud](/)
+- **Explore the Documentation:** [shelve.cloud/docs/getting-started](/docs/getting-started)
 - **Contribute on GitHub:** [github.com/HugoRCD/shelve](https://github.com/HugoRCD/shelve)
 
 💚 Hugo

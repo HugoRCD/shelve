@@ -3,7 +3,12 @@ import colors from 'tailwindcss/colors'
 
 const { title: appTitle, link, description: appDescription, ogImage } = useAppConfig()
 
-const props = withDefaults(defineProps<{
+const {
+  title,
+  description,
+  defaultOgImage,
+  titleTemplate
+} = withDefaults(defineProps<{
   defaultOgImage?: boolean,
   title?: string,
   titleTemplate?: string,
@@ -17,8 +22,8 @@ const colorMode = useColorMode()
 const color = computed(() => colorMode.value === 'dark' ? (colors as any)[appConfig.ui.colors.neutral][950] : 'white')
 
 useHead({
-  title: props.title || appTitle,
-  titleTemplate: props.titleTemplate || `%s | ${appTitle}`,
+  title: title || appTitle,
+  titleTemplate: titleTemplate || `%s | ${appTitle}`,
   link: link,
   meta: [
     { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -27,20 +32,20 @@ useHead({
 })
 
 const seoMetadata = ref({
-  title: props.title || appTitle,
-  description: props.description || appDescription,
+  title: title || appTitle,
+  description: description || appDescription,
   author: 'Hugo Richard',
   twitterCreator: '@HugoRCD__',
-  twitterTitle: props.title || appTitle,
-  twitterDescription: props.description || appDescription,
+  twitterTitle: title || appTitle,
+  twitterDescription: description || appDescription,
   twitterCard: 'summary_large_image',
   ogUrl: 'https://shelve.cloud',
-  ogSiteName: props.title || appTitle,
-  ogTitle: props.title || appTitle,
-  ogDescription: props.description || appDescription,
+  ogSiteName: title || appTitle,
+  ogTitle: title || appTitle,
+  ogDescription: description || appDescription,
 })
 
-if (props.defaultOgImage) {
+if (defaultOgImage) {
   seoMetadata.value.twitterImage = ogImage
   seoMetadata.value.ogImage = ogImage
 }

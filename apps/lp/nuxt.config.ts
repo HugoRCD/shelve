@@ -1,6 +1,7 @@
 export default defineNuxtConfig({
   routeRules: {
     '/': { prerender: true },
+    '/docs': { redirect: { statusCode: 301, to: '/docs/getting-started' } },
     '/docs/core-features': { redirect: { statusCode: 301, to: '/docs/core-features/environments' } },
     '/docs/integrations': { redirect: { statusCode: 301, to: '/docs/integrations/github' } },
     '/docs/self-hosting': { redirect: { statusCode: 301, to: '/docs/self-hosting/docker' } },
@@ -69,11 +70,6 @@ export default defineNuxtConfig({
 
   experimental: {
     viewTransition: true,
-  },
-
-  image: {
-    format: ['webp', 'jpeg', 'jpg', 'png', 'svg'],
-    provider: 'ipx'
   },
 
   site: {
