@@ -97,20 +97,25 @@ fetchTokens()
 
 <template>
   <div class="flex flex-col">
-    <div style="--stagger: 1" data-animate class="flex items-center gap-4">
-      <LayoutSectionHeader
-        title="Tokens"
-        description="Manage your tokens for the CLI"
-      />
-    </div>
-    <Teleport defer to="#action-items">
-      <div class="hidden items-center justify-end gap-2 sm:flex">
-        <TokenCreate v-model:search="search" @create="fetchTokens" />
-        <UInput v-model="search" size="sm" placeholder="Search tokens" />
-      </div>
-    </Teleport>
+    <LayoutSectionHeader
+      style="--stagger: 1"
+      data-animate
+      title="Tokens"
+      description="Manage your tokens for the CLI"
+    />
     <div style="--stagger: 2" data-animate class="mt-6">
-      <UTable :columns :data="filteredTokens" :loading>
+      <UTable
+        :columns
+        :data="filteredTokens"
+        :loading
+        :ui="{
+          base: 'table-fixed border-separate border-spacing-0',
+          thead: '[&>tr]:bg-(--ui-bg-elevated)/50 [&>tr]:after:content-none',
+          tbody: '[&>tr]:last:[&>td]:border-b-0',
+          th: 'first:rounded-l-[calc(var(--ui-radius)*2)] last:rounded-r-[calc(var(--ui-radius)*2)] border-y border-(--ui-border) first:border-l last:border-r',
+          td: 'border-b border-(--ui-border)'
+        }"
+      >
         <template #token-cell="{ row }">
           <TokenToggle :token="row.original.token" />
         </template>
@@ -146,4 +151,11 @@ fetchTokens()
       </UTable>
     </div>
   </div>
+
+  <Teleport defer to="#action-items">
+    <div class="hidden items-center justify-end gap-2 sm:flex">
+      <TokenCreate v-model:search="search" @create="fetchTokens" />
+      <UInput v-model="search" size="sm" placeholder="Search tokens" />
+    </div>
+  </Teleport>
 </template>

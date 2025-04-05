@@ -1,12 +1,11 @@
 <script setup lang="ts">
-import type { FormError, FormSubmitEvent } from '@nuxt/ui'
+import type { FormError } from '@nuxt/ui'
 import { TeamRole } from '@types'
 import { updateProjectSchema } from '~/utils/zod/project'
 
 const showEdit = ref(false)
 const showDelete = ref(false)
 
-const projectName = ref('')
 const teamRole = useTeamRole()
 const route = useRoute()
 const teamSlug = route.params.teamSlug as string

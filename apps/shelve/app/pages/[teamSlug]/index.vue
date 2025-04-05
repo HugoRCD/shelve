@@ -18,9 +18,6 @@ if (!projects.value)
       data-animate
       class="mb-4"
     />
-    <Teleport defer to="#action-items">
-      <ProjectCreate />
-    </Teleport>
     <div v-if="!loading" style="--stagger: 2" data-animate>
       <div v-if="projects.length === 0" class="flex h-64 flex-col items-center justify-center gap-4">
         <UIcon name="heroicons:folder-open" class="size-10 text-(--ui-text-muted)" />
@@ -40,5 +37,9 @@ if (!projects.value)
       <USkeleton v-for="i in 4" :key="i" class="h-32" />
     </div>
   </div>
+
+  <Teleport defer to="#action-items">
+    <ProjectCreate />
+  </Teleport>
 </template>
 
