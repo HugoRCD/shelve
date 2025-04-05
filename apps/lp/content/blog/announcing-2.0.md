@@ -1,0 +1,86 @@
+---
+title: "Announcing 2.0"
+description: "Say hello to Shelve 2.0! A complete overhaul of the platform with a new visual identity, powerful features, and a focus on simplicity and elegance."
+image: /blog/2.0-release.png
+date: 04/05/2025
+tags:
+  - release
+authors:
+  - name: Hugo
+    description: Creator of Shelve
+    to: https://twitter.com/HugoRCD__
+    target: _blank
+    avatar:
+      src: https://avatars.githubusercontent.com/u/71938701?v=4
+      alt: Hugo Richard
+---
+## Shelve 2.0: A Giant Leap Forward
+
+For a long time, Shelve has been a passion project, a side endeavor born from my own needs as a developer. But today, I'm incredibly proud to announce that Shelve is taking a monumental leap forward. **Shelve 2.0 is here, and it marks its transformation from a side project to a truly polished and feature-rich tool.**
+
+This isn't just an incremental update. I've poured my heart and soul into rebuilding Shelve from the ground up, focusing on:
+
+- **Professional Polish:** A brand new visual identity, logo, and dedicated [brand guidelines](/brand). Shelve now looks and feels more professional than ever.
+- **Enhanced User Experience:** Every interaction has been refined for simplicity and elegance, making complex tasks feel intuitive.
+- **Powerful Core Features, Radically Simplified:** Shelve 2.0 is packed with features focused on environment management, now more accessible and user-friendly than ever.
+
+## A New Era, A New Identity ✨
+
+One of the most visible changes in Shelve 2.0 is the complete visual overhaul. I've invested heavily in crafting a brand identity that reflects the maturity and ambition of Shelve:
+
+- **Brand New Logo:** A modern, clean logo that embodies Shelve's core values of simplicity and efficiency.
+- **Dedicated Brand Guidelines:** Ensuring a consistent and professional experience across all platforms and touchpoints.
+- **Revamped Landing Page & Documentation:** A completely redesigned website built with Nuxt UI Pro, showcasing Shelve's polished new look and feel.
+
+This visual transformation isn't just cosmetic. It signals my commitment to building a tool that developers can rely on and be proud to use.
+
+## Power & Simplicity, Reimagined 🚀
+
+Shelve 2.0 is not just about looks. I've also massively enhanced the core functionality and developer experience around environment management:
+
+### Say Goodbye to .env Files with `shelve run`
+
+One of the flagship features of v2.0 is the **`shelve run` command**. Imagine running any npm script (`dev`, `build`, `start`, etc.) directly from your terminal, **without needing a `.env` file**.
+
+Shelve 2.0 introduces runtime secrets injection, allowing you to access your environment variables securely stored in Shelve, directly within your scripts. This radically simplifies your workflow and eliminates a major source of configuration headaches.
+
+### Seamlessly Push Variables to GitHub Secrets
+
+Taking integrations a step further, Shelve 2.0 now allows you to **push environment variables directly to your GitHub repositories as GitHub Secrets.**  This is a game-changer for streamlining your CI/CD pipelines and managing configurations across your projects.  Forget the cumbersome manual process of managing secrets directly in GitHub - Shelve makes it effortless. This integration is the first step towards deeper connections with other developer tools and platforms, expanding Shelve's reach beyond just environment variable management.
+
+### Introducing Vault as a standalone project for secrets sharing
+
+Vault, previously a feature within the Shelve landing page, is now a **completely standalone application, accessible at [vault.shelve.cloud](https://vault.shelve.cloud).** This self-hostable application allows anyone to securely share encrypted environment variables with others, independent of the main Shelve application. Vault provides a basic yet powerful solution for secure secret sharing, easily deployable and usable by anyone.
+
+### Enhanced Core Features & Developer Experience
+
+Beyond these highlights, v2.0 is packed with improvements across the board:
+
+- **Drizzle ORM Migration:** I've migrated from Prisma to Drizzle ORM, enhancing performance and flexibility.
+- **Citty CLI Framework:** A switch to Citty provides a more robust and extensible CLI experience.
+- **GitHub Secrets Sync:** Effortlessly synchronize your environment variables with GitHub Secrets for enhanced security and streamlined workflows.
+- **Monorepo Workflow Improvements:** Enhanced support for monorepos, making Shelve even more versatile for complex projects.
+- **Real-time Visitor Stats:** A new module to track website visitors in real-time.
+- **Vault UI Revamp:** A more intuitive and user-friendly interface for managing your secrets.
+- **Global Stats Dashboard:** Gain insights into your Shelve usage with a new global statistics dashboard.
+- **Improved Integrations View:** A cleaner and more informative view for managing your integrations.
+- **And much more:** From view transitions to enhanced search and sorting, v2.0 is filled with refinements and new features designed to elevate your development experience.
+
+## Under the Hood 🛠️
+
+While the visual and functional improvements are front and center, Shelve 2.0 also includes significant under-the-hood refactoring and enhancements:
+
+- **Server Upgrade:** Major server-side improvements for performance and stability.
+- **Codebase Refactoring:** Extensive codebase cleanup and refactoring for maintainability and scalability.
+- **Documentation Overhaul:** Comprehensive documentation updates and improvements, now integrated directly into the landing page for easier access.
+- **Testing & Bug Fixes:** Numerous bug fixes and stability improvements to ensure a rock-solid experience.
+
+## Try Shelve 2.0 Today! 🚀
+
+Shelve 2.0 is a massive step forward, and I'm incredibly excited for you to experience it. Whether you're a solo developer or part of a team, Shelve 2.0 is designed to streamline your environment management and empower you to build amazing things.
+
+- **Visit the Website:** [shelve.cloud](/)
+- **Explore the Documentation:** [shelve.cloud/docs/getting-started](/docs/getting-started)
+- **Contribute on GitHub:** [github.com/HugoRCD/shelve](https://github.com/HugoRCD/shelve)
+
+💚 Hugo

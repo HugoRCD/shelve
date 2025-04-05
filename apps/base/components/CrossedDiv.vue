@@ -1,11 +1,12 @@
 <script setup lang="ts">
-defineProps<{
+const { as = 'div' } = defineProps<{
+  as?: string
   line?: boolean
 }>()
 </script>
 
 <template>
-  <div class="relative -mb-px -ml-px">
+  <component :is="as" class="relative -mb-px -ml-px">
     <div v-if="line" class="h-0.5 w-[200rem] bg-(--ui-bg-elevated)/50 absolute -left-[100rem]" />
     <div v-if="line" class="h-[200rem] w-0.5 bg-(--ui-bg-elevated)/50 absolute -top-[100rem] -left-0.5" />
     <span class="cross absolute -bottom-px -left-px size-px" />
@@ -17,7 +18,7 @@ defineProps<{
     </div>
     <div v-if="line" class="h-0.5 w-[200rem] -z-1 bg-(--ui-bg-elevated)/50 absolute -right-[100rem]" />
     <div v-if="line" class="h-[200rem] w-0.5 -z-1 bg-(--ui-bg-elevated)/50 absolute -bottom-[100rem] -right-0.5" />
-  </div>
+  </component>
 </template>
 
 <style scoped>

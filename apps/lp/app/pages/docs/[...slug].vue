@@ -41,11 +41,17 @@ const editThisPage = computed(() => ({
 
 const communityLinks = computed(() => [
   {
+    icon: 'lucide:bot',
+    label: 'llms.txt',
+    to: '/llms.txt',
+  },
+  {
     icon: 'i-heroicons-star-solid',
     label: 'Star on GitHub',
     to: `https://github.com/hugorcd/shelve`,
     target: '_blank'
-  }, {
+  },
+  {
     icon: 'i-heroicons-lifebuoy-solid',
     label: 'Contributing',
     to: '/docs/contributing'
