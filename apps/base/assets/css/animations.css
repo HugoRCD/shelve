@@ -209,3 +209,9 @@
     opacity: 0;
   }
 }
+
+@keyframes text {
+  to {
+    background-position: 200% center;
+  }
+}

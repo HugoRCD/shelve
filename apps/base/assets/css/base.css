@@ -12,6 +12,7 @@
   --animate-ripple-1: ripple 2.5s var(--ease-smooth) infinite 0.15s;
   --animate-ripple-2: ripple 2.5s var(--ease-smooth) infinite 0.4s;
   --animate-ripple-3: ripple 2.5s var(--ease-smooth) infinite 0.65s;
+  --animate-text-gradient: text 1.5s linear infinite;
 }
 
 ::-webkit-scrollbar {
@@ -73,6 +74,10 @@ html, body, #__nuxt, #__layout {
   @apply w-full [background-size:4px_4px];
   @apply dark:[background-image:linear-gradient(-45deg,var(--color-neutral-700)_12.50%,transparent_12.50%,transparent_50%,var(--color-neutral-700)_50%,var(--color-neutral-700)_62.50%,transparent_62.50%,transparent_100%)];
   @apply not-dark:[background-image:linear-gradient(-45deg,var(--color-neutral-200)_12.50%,transparent_12.50%,transparent_50%,var(--color-neutral-200)_50%,var(--color-neutral-200)_62.50%,transparent_62.50%,transparent_100%)];
+}
+
+.animated-text {
+  @apply animate-text-gradient bg-gradient-to-r from-(--ui-text-highlighted) via-(--ui-text-muted) to-(--ui-text-highlighted) bg-[200%_auto] bg-clip-text text-transparent
 }
 
 .bg-dotted {
