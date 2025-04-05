@@ -44,5 +44,9 @@ export default defineNuxtConfig({
     }
   },
 
+  image: {
+    format: ['webp', 'jpeg', 'jpg', 'png', 'svg']
+  },
+
   modules: ['@nuxt/ui', 'nuxt-auth-utils'],
 })

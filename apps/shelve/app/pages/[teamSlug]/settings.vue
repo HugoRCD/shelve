@@ -49,7 +49,7 @@ const open = ref(false)
     <form v-if="team" class="flex flex-col" @submit.prevent="updateCurrentTeam">
       <div style="--stagger: 1" data-animate class="flex justify-between">
         <div class="flex items-center gap-4">
-          <NuxtImg :src="team.logo" class="size-10 rounded-full" />
+          <NuxtImg :src="team.logo" class="size-10 rounded-full" format="webp" />
           <LayoutSectionHeader title="Team Settings" description="Manage team settings" />
         </div>
       </div>
