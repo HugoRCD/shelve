@@ -47,12 +47,13 @@ const open = ref(false)
 <template>
   <div class="flex flex-col">
     <form v-if="team" class="flex flex-col" @submit.prevent="updateCurrentTeam">
-      <div style="--stagger: 1" data-animate class="flex justify-between">
-        <div class="flex items-center gap-4">
-          <NuxtImg :src="team.logo" class="size-10 rounded-full" format="webp" />
-          <LayoutSectionHeader title="Team Settings" description="Manage team settings" />
-        </div>
-      </div>
+      <LayoutSectionHeader
+        style="--stagger: 1"
+        data-animate
+        title="Team Settings"
+        description="Manage team settings"
+        :image="team.logo"
+      />
       <div style="--stagger: 2" data-animate class="mt-6 flex flex-col gap-4">
         <div class="max-w-sm space-y-4">
           <UFormField label="Name">

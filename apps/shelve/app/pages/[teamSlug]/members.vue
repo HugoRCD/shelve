@@ -98,8 +98,13 @@ const items = (row: Member) => [
       </div>
     </Teleport>
     <div class="flex flex-col gap-4">
-      <LayoutSectionHeader title="Members" description="Manage team members" />
-      <TransitionGroup name="fade" tag="ul" class="flex flex-col gap-4">
+      <LayoutSectionHeader
+        title="Members"
+        description="Manage team members"
+        style="--stagger: 1"
+        data-animate
+      />
+      <TransitionGroup name="fade" tag="ul" class="flex flex-col gap-4" style="--stagger: 2" data-animate>
         <div v-for="member in members" :key="member.id" class="flex flex-col gap-4">
           <div class="flex items-center justify-between gap-2">
             <div class="flex items-center gap-2">

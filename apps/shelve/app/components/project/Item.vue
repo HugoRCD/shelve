@@ -41,7 +41,7 @@ const active = useState('active-project')
 
 <style scoped>
 .dot {
-  @apply opacity-0;
+  @apply opacity-0 group-hover:opacity-100;
 }
 
 .group:hover .dot-flicker {
