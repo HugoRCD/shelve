@@ -35,6 +35,15 @@ const columns: TableColumn<Token>[] = [
 const items = (row: Token) => [
   [
     {
+      label: 'Copy Token',
+      icon: 'lucide:copy',
+      onSelect: () => {
+        copyToClipboard(row.token, 'Token copied to clipboard')
+      },
+    }
+  ],
+  [
+    {
       label: 'Delete',
       icon: 'lucide:trash',
       onSelect: () => {

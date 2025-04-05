@@ -13,18 +13,23 @@ const copy = () => {
 
 <template>
   <div class="flex select-none items-center gap-2">
-    <UTooltip text="Copy token" class="cursor-pointer text-sm font-semibold leading-6 text-(--ui-text-muted)">
-      <span v-if="visible" @click="copy">
-        {{ token.slice(0, 4) }}...{{ token.slice(-4) }}
-      </span>
-      <div v-else @click="copy">
-        **********
-      </div>
-    </UTooltip>
-    <UIcon
-      :name="visible ? 'lucide:eye-off' : 'lucide:eye'"
-      class="cursor-pointer text-(--ui-text-muted)"
-      @click="visible = !visible"
-    />
+    <div class="cursor-pointer text-sm text-(--ui-text-muted)" @click="copy">
+      **********
+    </div>
+    <UPopover>
+      <UButton
+        icon="lucide:eye"
+        size="sm"
+        variant="ghost"
+        @click="visible = !visible"
+      />
+      <template #content>
+        <UCard :ui="{ body: 'px-2 sm:px-2 py-1 sm:py-1' }" class="cursor-pointer hover:bg-(--ui-bg-muted)" @click="copy">
+          <span class="text-sm font-mono">
+            {{ token.slice(0, 4) }}...{{ token.slice(-4) }}
+          </span>
+        </UCard>
+      </template>
+    </UPopover>
   </div>
 </template>
