@@ -1,8 +1,8 @@
 <script setup lang="ts">
+import { getPaginationRowModel } from '@tanstack/vue-table'
 import type { TableColumn } from '@nuxt/ui'
 import { AuthType, Role, type User } from '@types'
 import { ConfirmModal } from '#components'
-import AdminStats from '~/components/AdminStats.vue'
 
 const { data: users, status, refresh } = useFetch<User[]>('/api/admin/users', {
   method: 'GET',
@@ -21,6 +21,7 @@ async function deleteCache() {
 }
 
 const search = ref('')
+const table = useTemplateRef('table')
 const updateLoading = ref(false)
 const deleteLoading = ref(false)
 const filteredUsers = computed(() => {
@@ -156,10 +157,16 @@ const items = (row: User) => [
     },
   ],
 ]
+
+const pagination = ref({
+  pageIndex: 0,
+  pageSize: 10
+})
 </script>
 
 <template>
   <div class="mt-1 flex flex-col gap-4">
+    <LayoutSectionHeader title="Stats" description="all applications stats" />
     <AdminStats />
     <Teleport defer to="#action-items">
       <div class="hidden items-center justify-end gap-2 sm:flex">
@@ -169,7 +176,17 @@ const items = (row: User) => [
         <UInput v-model="search" size="sm" label="Search" placeholder="Search a user" icon="heroicons:magnifying-glass-20-solid" />
       </div>
     </Teleport>
-    <UTable :data="filteredUsers" :columns :loading="status === 'pending' || updateLoading || deleteLoading">
+    <USeparator class="my-4" />
+    <LayoutSectionHeader title="Admin" description="Manage users and their roles" />
+    <UTable
+      v-model:pagination="pagination"
+      :data="filteredUsers"
+      :columns
+      :loading="status === 'pending' || updateLoading || deleteLoading"
+      :pagination-options="{
+        getPaginationRowModel: getPaginationRowModel()
+      }"
+    >
       <template #avatar-cell="{ row }">
         <UAvatar :src="row.original.avatar" :alt="row.original.username" size="sm" img-class="object-cover" />
       </template>
@@ -198,6 +215,15 @@ const items = (row: User) => [
           <UButton variant="ghost" icon="heroicons:ellipsis-horizontal-20-solid" />
         </UDropdownMenu>
       </template>
+
+      <div class="flex justify-center border-t border-(--ui-border) pt-4">
+        <UPagination
+          :default-page="(table?.tableApi?.getState().pagination.pageIndex || 0) + 1"
+          :items-per-page="table?.tableApi?.getState().pagination.pageSize"
+          :total="table?.tableApi?.getFilteredRowModel().rows.length"
+          @update:page="(p) => table?.tableApi?.setPageIndex(p - 1)"
+        />
+      </div>
     </UTable>
   </div>
 </template>

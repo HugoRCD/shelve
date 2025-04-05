@@ -18,4 +18,7 @@ const filteredStats = computed(() => {
       </div>
     </UCard>
   </div>
+  <div v-else-if="isLoading" class="grid sm:grid-cols-5 gap-4">
+    <USkeleton v-for="i in 5" :key="i" class="h-32" />
+  </div>
 </template>

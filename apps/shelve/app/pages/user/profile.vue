@@ -54,14 +54,7 @@ function deleteAccount() {
     <form v-if="user" class="flex flex-col" @submit.prevent="updateCurrentUser">
       <div style="--stagger: 1" data-animate class="flex items-center gap-4">
         <NuxtImg :src="user.avatar" class="size-10 rounded-full" />
-        <div>
-          <h2 class="font-semibold">
-            Personal Information
-          </h2>
-          <p class="text-sm text-(--ui-text-muted)">
-            Update your personal information
-          </p>
-        </div>
+        <LayoutSectionHeader title="Personal Information" description="Update your personal information" />
       </div>
       <div style="--stagger: 2" data-animate class="mt-6 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-6">
         <div class="sm:col-span-3">
