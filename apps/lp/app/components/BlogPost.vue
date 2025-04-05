@@ -19,13 +19,13 @@ const formatDate = (dateString: string) => {
   <CrossedDiv as="article" class="p-4 cursor-pointer border border-(--ui-border) rounded-lg relative hover:bg-(--ui-bg-muted)/30 transition-colors duration-200">
     <NuxtLink :to class="absolute inset-0" />
     <div class="flex md:flex-row flex-col gap-4 sm:gap-6">
-      <img
+      <NuxtImg
         :src="post.image"
         :alt="post.title"
         loading="lazy"
         format="webp"
         class="md:max-w-1/2 aspect-video object-cover"
-      >
+      />
       <div class="flex flex-col justify-around gap-1">
         <div class="flex flex-col gap-1">
           <span class="text-xs font-medium text-(--ui-text-muted)">

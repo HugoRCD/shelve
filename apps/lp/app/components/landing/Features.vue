@@ -7,24 +7,47 @@ defineProps<{
 </script>
 
 <template>
-  <div>
-    <div class="mb-10 flex flex-col italic items-center justify-center gap-2">
-      <h3 class="main-gradient  text-3xl">
+  <UPageSection
+    :description="features.description"
+    :ui="{
+      description: 'max-w-lg mx-auto text-pretty text-center text-sm text-(--ui-text-muted) italic sm:text-base',
+    }"
+  >
+    <template #title>
+      <h3 class="main-gradient text-3xl font-normal italic">
         <ScrambleText :label="features.title" />
       </h3>
-      <p class="max-w-lg text-pretty text-center text-sm text-(--ui-text-muted) sm:text-base">
-        {{ features.description }}
-      </p>
-    </div>
-    <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3 lg:gap-y-16">
-      <UPageFeature
+    </template>
+    <template #features>
+      <Motion
         v-for="(feature, index) in features.items"
-        :key="index"
-        orientation="horizontal"
-        v-bind="feature"
-        :style="{ '--stagger': index + 1 }"
-        data-animate
-      />
-    </div>
-  </div>
+        :key="feature.title"
+        as="li"
+        :initial="{ opacity: 0, transform: 'translateY(10px)' }"
+        :while-in-view="{ opacity: 1, transform: 'translateY(0)' }"
+        :transition="{ delay: 0.1 * index }"
+        :in-view-options="{ once: true }"
+      >
+        <UPageFeature
+          v-bind="feature"
+          orientation="vertical"
+        />
+      </Motion>
+      <Motion
+        as="li"
+        :initial="{ opacity: 0, transform: 'translateY(10px)' }"
+        :while-in-view="{ opacity: 1, transform: 'translateY(0)' }"
+        :transition="{ delay: 0.1 * features.items.length }"
+        :in-view-options="{ once: true }"
+        class="flex flex-col justify-center gap-4 p-4 bg-(--ui-bg-muted)/50 h-full"
+      >
+        <span class="text-lg font-semibold">
+          Explore everything you can do with Shelve
+        </span>
+        <div>
+          <UButton to="/docs/getting-started" size="sm" label="Read the docs" trailing-icon="lucide:arrow-right" />
+        </div>
+      </Motion>
+    </template>
+  </UPageSection>
 </template>

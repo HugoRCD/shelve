@@ -76,7 +76,7 @@ export default defineContentConfig({
         features: z.object({
           title: z.string(),
           description: z.string(),
-          features: z.array(z.object({
+          items: z.array(z.object({
             title: z.string().nonempty(),
             description: z.string().nonempty(),
             icon: z.string().nonempty(),

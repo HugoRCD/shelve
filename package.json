@@ -31,7 +31,8 @@
   },
   "pnpm": {
     "onlyBuiltDependencies": [
-      "better-sqlite3"
+      "better-sqlite3",
+      "sharp"
     ]
   },
   "packageManager": "pnpm@10.7.1",

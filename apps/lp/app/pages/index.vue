@@ -22,7 +22,7 @@ function useClipboard(text: string) {
 </script>
 
 <template>
-  <div v-if="data" class="relative flex flex-col gap-4">
+  <div v-if="data" class="relative flex flex-col gap-4 [--ui-container:75rem]">
     <div id="visitors" class="absolute">
       <!-- active visitors -->
     </div>
