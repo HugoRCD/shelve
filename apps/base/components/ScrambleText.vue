@@ -1,10 +1,7 @@
 <script setup lang="ts">
-const props = defineProps({
-  label: {
-    type: String,
-    required: true,
-  },
-})
+const props = defineProps<{
+  label: string
+}>()
 
 const displayText = ref(props.label)
 const charset = 'abcdefghijklmnopqrstuvwxyz1234567890'
