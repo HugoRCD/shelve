@@ -34,7 +34,7 @@ defineShortcuts({
       />
       <div class="mt-4 sm:hidden flex-col items-center justify-center gap-2 flex sm:gap-4">
         <UButton
-          :to="`https://app.shelve.cloud/login`"
+          to="https://app.shelve.cloud/login"
           label="Start your journey"
           icon="lucide:arrow-right"
           trailing
