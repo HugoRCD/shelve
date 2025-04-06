@@ -93,7 +93,7 @@ badge:
     - name: Dark
       value: https://shelve.cloud/button-dark.svg
       usage: For light-themed markdown files and documentation
-      markdown:  |
+      markdown: |
         <a href="https://shelve.cloud">
           <img src="https://shelve.cloud/button-dark.svg" alt="Shelve" width="150">
         </a>
