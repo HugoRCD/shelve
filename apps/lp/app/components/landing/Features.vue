@@ -7,18 +7,14 @@ defineProps<{
 </script>
 
 <template>
-  <UPageSection
-    :description="features.description"
-    :ui="{
-      description: 'max-w-lg mx-auto text-pretty text-center text-sm text-(--ui-text-muted) italic sm:text-base',
-    }"
-  >
-    <template #title>
-      <h3 class="main-gradient text-3xl font-normal italic">
-        <ScrambleText :label="features.title" />
-      </h3>
-    </template>
-    <template #features>
+  <UContainer class="flex flex-col gap-2">
+    <h3 class="main-gradient text-3xl font-normal italic text-center">
+      <ScrambleText :label="features.title" />
+    </h3>
+    <p class="max-w-lg mx-auto text-pretty text-center text-sm text-(--ui-text-muted) italic sm:text-base">
+      {{ features.description }}
+    </p>
+    <div class="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 list-none">
       <Motion
         v-for="(feature, index) in features.items"
         :key="feature.title"
@@ -44,10 +40,14 @@ defineProps<{
         <span class="text-lg font-semibold">
           Explore everything you can do with Shelve
         </span>
-        <div>
-          <UButton to="/docs/getting-started" size="sm" label="Read the docs" trailing-icon="lucide:arrow-right" />
-        </div>
+        <UButton
+          to="/docs/getting-started"
+          size="sm"
+          label="Read the docs"
+          trailing-icon="lucide:arrow-right"
+          class="rounded-none size-fit"
+        />
       </Motion>
-    </template>
-  </UPageSection>
+    </div>
+  </UContainer>
 </template>

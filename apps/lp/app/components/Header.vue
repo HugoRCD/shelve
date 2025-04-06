@@ -6,7 +6,7 @@ defineProps<{
   links: NavigationMenuItem[]
 }>()
 
-const navigation = inject<Ref<ContentNavigationItem[]>>('navigation')
+const navigation = inject<Ref<ContentNavigationItem[]>>('navigation', ref([]))
 const docsNavigation = computed(() => navigation.value.find(item => item.path === '/docs')?.children || [])
 
 const { version } = useRuntimeConfig().public

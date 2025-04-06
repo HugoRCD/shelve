@@ -6,10 +6,8 @@ useHead({
 
 const copy = ref(false)
 
-const { data } = await useAsyncData('index', () => {
-  return queryCollection('index').first()
-})
-if (!data.value)
+const { data: page } = await useAsyncData('index', () => queryCollection('index').first())
+if (!page.value)
   throw createError({ statusCode: 404, message: 'Page not found', fatal: true })
 
 function useClipboard(text: string) {
@@ -22,16 +20,16 @@ function useClipboard(text: string) {
 </script>
 
 <template>
-  <div v-if="data" class="relative flex flex-col gap-4 [--ui-container:75rem]">
+  <div v-if="page" class="relative flex flex-col gap-4 [--ui-container:75rem]">
     <div id="visitors" class="absolute">
       <!-- active visitors -->
     </div>
     <div class="flex h-full flex-col items-center justify-center gap-3">
       <LandingHero
         class="h-64"
-        :title="data.title"
-        :description="data.description"
-        :cta="data.cta"
+        :title="page.title"
+        :description="page.description"
+        :cta="page.cta"
       />
     </div>
     <UPageSection orientation="horizontal" :ui="{ container: 'sm:pb-0 lg:pb-8' }">
@@ -84,14 +82,12 @@ function useClipboard(text: string) {
         </div>
       </div>
     </UPageSection>
-    <UPageSection :ui="{ container: 'lg:pt-0' }">
-      <LandingFeatures :features="data.features" />
-    </UPageSection>
+    <LandingFeatures :features="page.features" />
     <UPageSection>
       <LandingStats />
     </UPageSection>
     <UPageSection>
-      <LandingFaq :faq="data.faq" />
+      <LandingFaq :faq="page.faq" />
     </UPageSection>
   </div>
 </template>
