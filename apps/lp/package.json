@@ -16,7 +16,7 @@
     "deploy": "nuxthub deploy"
   },
   "dependencies": {
-    "@number-flow/vue": "^0.4.6",
+    "@number-flow/vue": "^0.4.7",
     "@nuxthub/core": "0.8.23",
     "@nuxtjs/seo": "3.0.2",
     "nuxt": "3.16.2",
@@ -28,8 +28,8 @@
   },
   "devDependencies": {
     "@shelve/cli": "^3.1.1",
-    "typescript": "5.8.2",
-    "wrangler": "^4.6.0"
+    "typescript": "5.8.3",
+    "wrangler": "^4.7.2"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
