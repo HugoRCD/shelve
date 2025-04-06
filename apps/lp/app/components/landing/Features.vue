@@ -10,6 +10,7 @@ defineProps<{
   <UPageSection
     :description="features.description"
     :ui="{
+      container: 'lg:pt-0',
       description: 'max-w-lg mx-auto text-pretty text-center text-sm text-(--ui-text-muted) italic sm:text-base',
     }"
   >

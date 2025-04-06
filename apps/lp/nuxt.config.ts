@@ -26,6 +26,10 @@ export default defineNuxtConfig({
     }
   },
 
+  hub: {
+    cache: true
+  },
+
   llms: {
     domain: 'https://shelve.cloud',
     title: 'Shelve',
@@ -70,6 +74,12 @@ export default defineNuxtConfig({
 
   experimental: {
     viewTransition: true,
+  },
+
+  $development: {
+    site: {
+      url: 'http://localhost:3000'
+    }
   },
 
   site: {

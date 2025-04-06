@@ -6,16 +6,14 @@ const { title: appTitle, link, description: appDescription, ogImage } = useAppCo
 const {
   title,
   description,
-  defaultOgImage,
+  defaultOgImage = true,
   titleTemplate
-} = withDefaults(defineProps<{
+} = defineProps<{
   defaultOgImage?: boolean,
   title?: string,
   titleTemplate?: string,
   description?: string,
-}>(), {
-  defaultOgImage: true
-})
+}>()
 
 const appConfig = useAppConfig()
 const colorMode = useColorMode()

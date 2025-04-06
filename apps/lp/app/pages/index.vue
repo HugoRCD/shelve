@@ -84,9 +84,7 @@ function useClipboard(text: string) {
         </div>
       </div>
     </UPageSection>
-    <UPageSection :ui="{ container: 'lg:pt-0' }">
-      <LandingFeatures :features="data.features" />
-    </UPageSection>
+    <LandingFeatures :features="data.features" />
     <UPageSection>
       <LandingStats />
     </UPageSection>
