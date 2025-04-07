@@ -109,8 +109,6 @@ export function useTeamsService() {
       }
 
       updateTeamInList(currentTeam.value)
-
-      toast.success('Member added successfully')
     } catch (error) {
       toast.error('Failed to add member')
     }
