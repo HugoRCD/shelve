@@ -45,7 +45,22 @@ async function createTeamAndCompleteOnboarding() {
 <template>
   <div class="flex overflow-hidden size-full flex-col items-center justify-center">
     <div class="bg-white rounded-full w-50 h-96 blur-[250px] absolute -top-40 select-none" />
-    <div class="mx-auto w-full flex flex-col items-center justify-center gap-2 text-center">
+    <Motion
+      class="mx-auto w-full flex flex-col items-center justify-center gap-2 text-center"
+      :initial="{
+        scale: 1.1,
+        opacity: 0,
+        filter: 'blur(10px)'
+      }"
+      :animate="{
+        scale: 1,
+        opacity: 1,
+        filter: 'blur(0px)'
+      }"
+      :transition="{
+        duration: 0.7,
+      }"
+    >
       <UIcon name="custom:shelve" class="size-10" />
       <div class="flex flex-col items-center gap-1">
         <h1 class="text-center text-3xl leading-9">
@@ -55,10 +70,28 @@ async function createTeamAndCompleteOnboarding() {
           Let's create your first team together
         </p>
       </div>
-    </div>
-    <form class="mt-6 space-y-2 max-w-5xl" @submit.prevent="createTeamAndCompleteOnboarding">
+    </Motion>
+    <Motion
+      as="form"
+      class="mt-6 space-y-2 max-w-5xl"
+      :initial="{
+        scale: 1.1,
+        opacity: 0,
+        filter: 'blur(10px)',
+      }"
+      :animate="{
+        scale: 1,
+        opacity: 1,
+        filter: 'blur(0px)'
+      }"
+      :transition="{
+        duration: 0.7,
+        delay: 0.5
+      }"
+      @submit.prevent="createTeamAndCompleteOnboarding"
+    >
       <UInput v-model="teamName" class="w-full" placeholder="Nuxtlabs, Vercel, etc." required />
       <UButton label="Create Team" block :loading type="submit" />
-    </form>
+    </Motion>
   </div>
 </template>
