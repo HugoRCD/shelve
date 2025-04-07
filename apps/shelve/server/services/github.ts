@@ -42,6 +42,7 @@ export class GithubService {
   private readonly GITHUB_API = 'https://api.github.com'
   private readonly tokenCache = new Map<string, { token: string; expiresAt: Date }>()
   private readonly encryptionKey: string
+  private readonly config: ReturnType<typeof useRuntimeConfig>
 
   constructor(event: H3Event) {
     this.encryptionKey = useRuntimeConfig(event).private.encryptionKey
@@ -50,110 +51,149 @@ export class GithubService {
     } else {
       console.log('Encryption key loaded successfully.')
     }
+    this.config = useRuntimeConfig(event)
   }
 
-  private async encryptValue(value: string): Promise<string> {
-    return await seal(value, this.encryptionKey)
+  private getDecodedPrivateKey(): string {
+    const base64PrivateKey = this.config.private.github.privateKey
+
+    if (!base64PrivateKey) {
+      throw createError({
+        statusCode: 500,
+        statusMessage: 'GitHub App private key is missing'
+      })
+    }
+
+    try {
+      const privateKeyBuffer = Buffer.from(base64PrivateKey, 'base64')
+
+      return privateKeyBuffer.toString('utf8')
+    } catch (error) {
+      console.error('Error decoding private key:', error)
+      throw createError({
+        statusCode: 500,
+        statusMessage: 'Failed to decode GitHub App private key'
+      })
+    }
   }
 
-  private async decryptValue(value: string): Promise<string> {
-    return (await unseal(value, this.encryptionKey)) as string
+  private getAppJWT(): string {
+    const { appId } = this.config.private.github
+
+    if (!appId) {
+      throw createError({
+        statusCode: 500,
+        statusMessage: 'GitHub App ID is missing'
+      })
+    }
+
+    try {
+      const privateKey = this.getDecodedPrivateKey()
+
+      const now = Math.floor(Date.now() / 1000)
+      return jwt.sign(
+        {
+          iat: now - 60,
+          exp: now + 10 * 60,
+          iss: appId
+        },
+        privateKey,
+        { algorithm: 'RS256' }
+      )
+    } catch (error: any) {
+      console.error('Error signing JWT:', error)
+      throw createError({
+        statusCode: 500,
+        statusMessage: `Failed to sign JWT: ${error.message}`
+      })
+    }
   }
 
-  private async getAuthToken(userId: number): Promise<string> {
-    const cached = this.tokenCache.get(String(userId))
+  private async getInstallationToken(installationId: number): Promise<string> {
+    const cacheKey = `installation-${installationId}`
+    const cached = this.tokenCache.get(cacheKey)
+
     if (cached?.expiresAt && cached.expiresAt > new Date()) {
       return cached.token
     }
 
-    const app = await useDrizzle().query.githubApp.findFirst({
-      where: eq(tables.githubApp.userId, userId)
-    })
-    if (!app)
-      throw createError({
-        statusCode: 404,
-        statusMessage: 'GitHub App not found'
-      })
-    const privateKey = await this.decryptValue(app.privateKey)
+    const appJWT = this.getAppJWT()
 
-    const now = Math.floor(Date.now() / 1000)
-    const appJWT = jwt.sign(
-      {
-        iat: now - 60,
-        exp: now + 10 * 60,
-        iss: app.appId
-      },
-      privateKey,
-      { algorithm: 'RS256' }
-    )
-
-    const installations = await $fetch<{ id: number }[]>(
-      `${this.GITHUB_API}/app/installations`,
-      {
+    try {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      const { token, expires_at } = await $fetch<{
+        token: string
+        expires_at: string
+      }>(`${this.GITHUB_API}/app/installations/${installationId}/access_tokens`, {
+        method: 'POST',
         headers: {
           Authorization: `Bearer ${appJWT}`,
           Accept: 'application/vnd.github.v3+json'
         }
-      }
-    )
-    if (!installations.length)
-      throw createError({
-        statusCode: 404,
-        statusMessage:
-          'GitHub App not installed in any repositories'
       })
 
-    const { token } = await $fetch<{
-      token: string
-      expires_at: string
-    }>(`${this.GITHUB_API}/app/installations/${installations[0].id}/access_tokens`, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${appJWT}`,
-        Accept: 'application/vnd.github.v3+json'
-      }
-    })
-
-    this.tokenCache.set(String(userId), {
-      token,
-      expiresAt: new Date(Date.now() + 55 * 60 * 1000)
-    })
-
-    return token
-  }
-
-  getUserRepos = cachedFunction(async (userId: number, query?: string): Promise<GitHubRepo[]> => {
-    const token = await this.getAuthToken(userId)
-
-    try {
-      const response = await $fetch<{
-        repositories: GitHubRepo[]
-      }>(`${this.GITHUB_API}/installation/repositories?per_page=100`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: 'application/vnd.github.v3+json'
-        }
+      this.tokenCache.set(cacheKey, {
+        token,
+        expiresAt: new Date(expires_at)
       })
-      const repos = response.repositories
 
-      if (!query) return repos
-
-      return repos.filter((repo: GitHubRepo) =>
-        repo.name.toLowerCase().includes(query.toLowerCase())
-      )
+      return token
     } catch (error: any) {
+      console.error('Error getting installation token:', error)
       throw createError({
         statusCode: error.status || 500,
-        statusMessage: `Failed to fetch repositories: ${error.message}`
+        statusMessage: `Failed to get installation token: ${error.message}`
       })
     }
-  },
-  {
-    maxAge: 60 * 5,
-    name: 'getUserRepos',
-    getKey: (userId: number, query?: string) => `user-repos-${userId}-${query || ''}`,
-    swr: true
-  })
+  }
+
+  getUserRepos = cachedFunction(
+    async (userId: number, query?: string): Promise<GitHubRepo[]> => {
+      const installation = await useDrizzle().query.githubApp.findFirst({
+        where: eq(tables.githubApp.userId, userId)
+      })
+
+      if (!installation) {
+        throw createError({
+          statusCode: 404,
+          statusMessage: 'GitHub App installation not found'
+        })
+      }
+
+      try {
+        const token = await this.getInstallationToken(installation.installationId)
+
+        const response = await $fetch<{
+          repositories: GitHubRepo[]
+        }>(`${this.GITHUB_API}/installation/repositories?per_page=100`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: 'application/vnd.github.v3+json'
+          }
+        })
+
+        const repos = response.repositories
+
+        if (!query) return repos
+
+        return repos.filter((repo: GitHubRepo) =>
+          repo.name.toLowerCase().includes(query.toLowerCase())
+        )
+      } catch (error: any) {
+        console.error('Error fetching repositories:', error)
+        throw createError({
+          statusCode: error.status || 500,
+          statusMessage: `Failed to fetch repositories: ${error.message}`
+        })
+      }
+    },
+    {
+      maxAge: 60 * 5,
+      name: 'getUserRepos',
+      getKey: (userId: number, query?: string) => `user-repos-${userId}-${query || ''}`,
+      swr: true
+    }
+  )
 
   async sendSecrets(
     userId: number,
