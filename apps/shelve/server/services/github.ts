@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken'
 import type { H3Event } from 'h3'
-import type { GithubApp, GitHubAppResponse, GitHubRepo } from '@types'
+import type { GithubApp, GitHubRepo } from '@types'
 
 import nacl from 'tweetnacl'
 import { blake2b } from 'blakejs'
@@ -58,30 +58,6 @@ export class GithubService {
 
   private async decryptValue(value: string): Promise<string> {
     return (await unseal(value, this.encryptionKey)) as string
-  }
-
-  async handleAppCallback(userId: number, code: string) {
-    const appConfig = await $fetch<GitHubAppResponse>(
-      `${this.GITHUB_API}/app-manifests/${code}/conversions`,
-      {
-        method: 'POST',
-        headers: {
-          Accept: 'application/vnd.github.v3+json'
-        }
-      }
-    )
-
-    await useDrizzle().insert(tables.githubApp).values({
-      slug: appConfig.slug,
-      appId: appConfig.id,
-      privateKey: await this.encryptValue(appConfig.pem),
-      webhookSecret: await this.encryptValue(appConfig.webhook_secret),
-      clientId: appConfig.client_id,
-      clientSecret: await this.encryptValue(appConfig.client_secret),
-      userId: userId
-    })
-
-    return `https://github.com/apps/${appConfig.slug}/installations/new`
   }
 
   private async getAuthToken(userId: number): Promise<string> {
@@ -242,44 +218,25 @@ export class GithubService {
     }
   }
 
-  async getSecrets(userId: number, repository: string) {
-    const token = await this.getAuthToken(userId)
-
-    try {
-      return await $fetch(`${this.GITHUB_API}/repos/${repository}/actions/secrets`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: 'application/vnd.github.v3+json'
-        }
-      })
-    } catch (error: any) {
-      throw createError({
-        statusCode: error.status || 500,
-        statusMessage: `Failed to fetch secrets: ${error.message}`
-      })
-    }
-  }
-
   async getUserApps(userId: number): Promise<GithubApp[]> {
     return await useDrizzle().query.githubApp.findMany({
       where: eq(tables.githubApp.userId, userId)
     })
   }
 
-  async deleteApp(userId: number, slug: string) {
+  async deleteApp(userId: number, installationId: number) {
     await useDrizzle()
       .delete(tables.githubApp)
       .where(
         and(
           eq(tables.githubApp.userId, userId),
-          eq(tables.githubApp.slug, slug)
+          eq(tables.githubApp.installationId, installationId)
         )
       )
-
     return {
       statusCode: 200,
       message: 'App removed from Shelve. Dont forget to delete it from GitHub',
-      link: `https://github.com/settings/apps/${slug}/advanced`
+      link: `https://github.com/settings/installations/${installationId}`
     }
   }
 

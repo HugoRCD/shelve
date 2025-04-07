@@ -37,12 +37,8 @@ export const users = pgTable('users', {
 
 export const githubApp = pgTable('github_app', {
   id: bigint({ mode: 'number' }).primaryKey().generatedByDefaultAsIdentity(),
-  slug: varchar({ length: 100 }).unique().notNull(),
-  appId: bigint({ mode: 'number' }).notNull(),
-  privateKey: varchar().notNull(),
-  webhookSecret: varchar({ length: 500 }).notNull(),
-  clientId: varchar({ length: 500 }).notNull(),
-  clientSecret: varchar({ length: 500 }).notNull(),
+  installationId: bigint({ mode: 'number' }).notNull(),
+  isOrganisation: boolean().default(false).notNull(),
   userId: bigint({ mode: 'number' }).references(() => users.id, { onDelete: 'cascade' }).notNull(),
   ...timestamps,
 })
