@@ -1,5 +1,8 @@
 <template>
   <div class="relative flex h-full flex-col">
+    <div class="absolute top-4 right-4 opacity-50">
+      <SettingThemeToggle />
+    </div>
     <div class="flex-1">
       <slot />
     </div>

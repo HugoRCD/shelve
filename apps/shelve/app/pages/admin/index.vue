@@ -24,11 +24,6 @@ const search = ref('')
 const table = useTemplateRef('table')
 const updateLoading = ref(false)
 const deleteLoading = ref(false)
-const filteredUsers = computed(() => {
-  // eslint-disable-next-line
-  if (!search.value) return users.value?.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
-  return users.value!.filter((user: User) => user.username.toLowerCase().includes(search.value.toLowerCase()))
-})
 
 async function changeUserRole(id: number, role: string) {
   try {
@@ -181,7 +176,8 @@ const pagination = ref({
     <UTable
       ref="table"
       v-model:pagination="pagination"
-      :data="filteredUsers"
+      v-model:global-filter="search"
+      :data="users"
       :columns
       :loading="status === 'pending' || updateLoading || deleteLoading"
       :pagination-options="{

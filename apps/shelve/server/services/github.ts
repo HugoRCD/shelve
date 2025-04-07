@@ -146,10 +146,7 @@ export class GithubService {
     return token
   }
 
-  async getUserRepos(
-    userId: number,
-    query?: string
-  ): Promise<GitHubRepo[]> {
+  getUserRepos = cachedFunction(async (userId: number, query?: string): Promise<GitHubRepo[]> => {
     const token = await this.getAuthToken(userId)
 
     try {
@@ -174,7 +171,13 @@ export class GithubService {
         statusMessage: `Failed to fetch repositories: ${error.message}`
       })
     }
-  }
+  },
+  {
+    maxAge: 60 * 5,
+    name: 'getUserRepos',
+    getKey: (userId: number, query?: string) => `user-repos-${userId}-${query || ''}`,
+    swr: true
+  })
 
   async sendSecrets(
     userId: number,
