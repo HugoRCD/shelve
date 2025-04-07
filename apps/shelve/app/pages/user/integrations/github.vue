@@ -87,16 +87,6 @@ function openRemoveModal(installationId: string) {
               <span class="text-xs">Manage repositories</span>
               <UIcon name="lucide:external-link" class="size-3 ml-auto" />
             </NuxtLink>
-
-            <NuxtLink
-              :to="`https://github.com/settings/apps/${appName}/permissions`"
-              target="_blank"
-              class="flex items-center gap-2 px-2 py-1 rounded-md hover:bg-(--ui-bg-elevated) transition-colors"
-            >
-              <UIcon name="lucide:shield" class="size-4" />
-              <span class="text-xs">Permissions</span>
-              <UIcon name="lucide:external-link" class="size-3 ml-auto" />
-            </NuxtLink>
           </div>
         </div>
 

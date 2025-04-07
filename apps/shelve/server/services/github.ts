@@ -201,7 +201,18 @@ export class GithubService {
     variables: { key: string; value: string }[]
   ) {
     try {
-      const token = await this.getAuthToken(userId)
+      const installation = await useDrizzle().query.githubApp.findFirst({
+        where: eq(tables.githubApp.userId, userId)
+      })
+
+      if (!installation) {
+        throw createError({
+          statusCode: 404,
+          statusMessage: 'GitHub App installation not found'
+        })
+      }
+
+      const token = await this.getInstallationToken(installation.installationId)
 
       // eslint-disable-next-line @typescript-eslint/naming-convention
       const { key_id, key } = await $fetch<{
