@@ -63,7 +63,7 @@ export function useTeamsService() {
       toast.success('Team created')
       return team
     } catch (error: any) {
-      if (error.statusCode === 409)
+      if (error.statusCode === 409) // Team already exists
         toast.error(error.statusMessage)
       else
         toast.error('Failed to create team')
@@ -109,8 +109,6 @@ export function useTeamsService() {
       }
 
       updateTeamInList(currentTeam.value)
-
-      toast.success('Member added successfully')
     } catch (error) {
       toast.error('Failed to add member')
     }

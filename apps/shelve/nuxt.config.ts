@@ -24,6 +24,8 @@ export default defineNuxtConfig({
     }
   },
 
+  css: ['~/assets/css/index.css'],
+
   runtimeConfig: {
     private: {
       resendApiKey: '',
