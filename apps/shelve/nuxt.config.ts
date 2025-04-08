@@ -27,12 +27,20 @@ export default defineNuxtConfig({
   css: ['~/assets/css/index.css'],
 
   runtimeConfig: {
+    public: {
+      github: {
+        appName: '',
+      }
+    },
     private: {
       resendApiKey: '',
       encryptionKey: '',
       adminEmails: '',
       senderEmail: '',
       allowedOrigins: '',
+      github: {
+        privateKey: '',
+      }
     },
     oauth: {
       google: {

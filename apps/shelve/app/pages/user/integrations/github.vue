@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { getRandomGithubAppName } from '~~/server/utils/random'
 import { ConfirmModal } from '#components'
 
 definePageMeta({
@@ -12,39 +11,22 @@ const { data: apps, status, refresh } = await useFetch('/api/github/apps', {
   method: 'GET'
 })
 
-const appUrl = window.location.origin
-
-const manifest = {
-  name: getRandomGithubAppName(),
-  url: appUrl,
-  hook_attributes: {
-    url: `${appUrl}/api/githook`
-  },
-  redirect_url: `${appUrl}/callback/github`,
-  callback_urls: [`${appUrl}/callback/github`],
-  setup_url: `${ appUrl }/user/integrations/github`,
-  description: 'Shelve GitHub App',
-  public: false,
-  default_permissions: {
-    issues: 'write',
-    pull_requests: 'write',
-    administration: 'write',
-    contents: 'write',
-    metadata: 'read',
-    secrets: 'write',
-  }
-}
+const config = useRuntimeConfig()
+const { appName } = config.public.github
 
 const overlay = useOverlay()
 const modal = overlay.create(ConfirmModal)
 
-function openDeleteModal(slug: string) {
+function openRemoveModal(installationId: string) {
   modal.open({
-    title: 'Delete Github App',
-    description: `You are about to delete ${slug}. This action cannot be undone.`,
+    title: 'Remove Repository Access',
+    description: `You are about to remove access to your github repository. You can reinstall the app later if needed.`,
     danger: true,
     async onSuccess() {
-      const response = await $fetch(`/api/github/apps/${slug}`, {
+      const response = await $fetch<{
+        message: string
+        link: string
+      }>(`/api/github/apps/${installationId}`, {
         method: 'DELETE'
       })
       toast.success(response.message, {
@@ -66,7 +48,7 @@ function openDeleteModal(slug: string) {
     description="Github Apps are used to sync secrets and more..."
     :stagger="1"
   >
-    <div v-if="status !== 'pending' && apps.length" class="grid grid-cols-1 gap-4 lg:grid-cols-2">
+    <div v-if="status !== 'pending' && apps?.length" class="grid grid-cols-1 gap-4 lg:grid-cols-2">
       <div
         v-for="app in apps"
         :key="app.id"
@@ -79,7 +61,7 @@ function openDeleteModal(slug: string) {
             size="xs"
             class="opacity-0 group-hover:opacity-100 transition-opacity"
             color="error"
-            @click="openDeleteModal(app.slug)"
+            @click="openRemoveModal(app.installationId)"
           />
         </div>
 
@@ -90,29 +72,19 @@ function openDeleteModal(slug: string) {
             </div>
             <div class="flex flex-col">
               <h3 class="font-semibold">
-                {{ app.slug }}
+                {{ appName }}
               </h3>
               <span class="text-xs text-(--ui-text-muted)">GitHub App</span>
             </div>
           </div>
           <div class="flex flex-col gap-2">
             <NuxtLink
-              :to="`https://github.com/apps/${app.slug}/installations/new`"
+              :to="`https://github.com/apps/${appName}/installations/new`"
               target="_blank"
               class="flex items-center gap-2 px-2 py-1 rounded-md hover:bg-(--ui-bg-elevated) transition-colors"
             >
               <UIcon name="lucide:folder" class="size-4" />
               <span class="text-xs">Manage repositories</span>
-              <UIcon name="lucide:external-link" class="size-3 ml-auto" />
-            </NuxtLink>
-
-            <NuxtLink
-              :to="`https://github.com/settings/apps/${app.slug}/permissions`"
-              target="_blank"
-              class="flex items-center gap-2 px-2 py-1 rounded-md hover:bg-(--ui-bg-elevated) transition-colors"
-            >
-              <UIcon name="lucide:shield" class="size-4" />
-              <span class="text-xs">Permissions</span>
               <UIcon name="lucide:external-link" class="size-3 ml-auto" />
             </NuxtLink>
           </div>
@@ -150,11 +122,11 @@ function openDeleteModal(slug: string) {
           Create a GitHub App to start managing your repositories and synchronizing secrets across your environments.
         </p>
 
-        <form action="https://github.com/settings/apps/new" method="post" class="inline-block">
-          <input id="manifest-empty" type="text" name="manifest" class="hidden" :value="JSON.stringify(manifest)">
+        <div class="flex justify-center">
           <CustomButton
             type="submit"
             size="sm"
+            :to="`https://github.com/apps/${appName}/installations/new`"
             class="group rounded-none"
             icon="simple-icons:github"
             trailing-icon="lucide:arrow-right"
@@ -164,7 +136,7 @@ function openDeleteModal(slug: string) {
               trailingIcon: 'transition-transform group-hover:translate-x-1'
             }"
           />
-        </form>
+        </div>
       </div>
 
       <div class="mt-4 grid grid-cols-2 gap-4 w-full max-w-md">
@@ -186,9 +158,7 @@ function openDeleteModal(slug: string) {
     </div>
 
     <template #actions>
-      <form action="https://github.com/settings/apps/new" method="post" class="flex items-center gap-2">
-        <input id="manifest" type="text" name="manifest" class="hidden" :value="JSON.stringify(manifest)">
-        <!--      <UButton
+      <!--      <UButton
           icon="lucide:code-xml"
           label="Documentation"
           to="https://shelve.cloud/docs/integrations/github"
@@ -196,8 +166,14 @@ function openDeleteModal(slug: string) {
           variant="subtle"
           class="max-md:hidden rounded-none"
         />-->
-        <CustomButton icon="simple-icons:github" label="Create GitHub App" size="xs" type="submit" :ui="{ label: 'mt-[1px]' }" />
-      </form>
+      <CustomButton
+        icon="simple-icons:github"
+        label="Install GitHub App"
+        size="xs"
+        :to="`https://github.com/apps/${appName}/installations/new`"
+        target="_blank"
+        :ui="{ label: 'mt-[1px]' }"
+      />
     </template>
   </PageSection>
 </template>

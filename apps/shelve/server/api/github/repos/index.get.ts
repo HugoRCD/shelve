@@ -5,5 +5,11 @@ export default defineEventHandler(async (event) => {
   const { q } = await getValidatedQuery(event, z.object({
     q: z.string().optional(),
   }).parse)
-  return await new GithubService(event).getUserRepos(user.id, q)
+  const repos = await new GithubService(event).getUserRepos(user.id)
+
+  return repos.filter((repo) => {
+    const name = repo.name.toLowerCase()
+    const query = q?.toLowerCase()
+    return !query || name.includes(query)
+  })
 })
