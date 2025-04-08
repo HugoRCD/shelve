@@ -41,6 +41,7 @@ async function createTeamAndCompleteOnboarding(event: FormSubmitEvent<Schema>) {
 
     await selectTeam(team)
   } catch (error) {
+    console.error(error)
     toast.error('Failed to complete onboarding')
   }
 }
