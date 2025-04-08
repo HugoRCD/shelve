@@ -29,7 +29,6 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       github: {
-        clientId: '',
         appName: '',
       }
     },
@@ -40,8 +39,6 @@ export default defineNuxtConfig({
       senderEmail: '',
       allowedOrigins: '',
       github: {
-        clientSecret: '',
-        appId: '',
         privateKey: '',
       }
     },

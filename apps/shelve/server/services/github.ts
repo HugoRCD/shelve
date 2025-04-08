@@ -78,9 +78,9 @@ export class GithubService {
   }
 
   private getAppJWT(): string {
-    const { appId } = this.config.private.github
+    const { clientId } = this.config.oauth.github
 
-    if (!appId) {
+    if (!clientId) {
       throw createError({
         statusCode: 500,
         statusMessage: 'GitHub App ID is missing'
@@ -95,7 +95,7 @@ export class GithubService {
         {
           iat: now - 60,
           exp: now + 10 * 60,
-          iss: appId
+          iss: clientId
         },
         privateKey,
         { algorithm: 'RS256' }
@@ -148,7 +148,7 @@ export class GithubService {
   }
 
   getUserRepos = cachedFunction(
-    async (userId: number, query?: string): Promise<GitHubRepo[]> => {
+    async (userId: number): Promise<GitHubRepo[]> => {
       const installation = await useDrizzle().query.githubApp.findFirst({
         where: eq(tables.githubApp.userId, userId)
       })
@@ -172,13 +172,7 @@ export class GithubService {
           }
         })
 
-        const repos = response.repositories
-
-        if (!query) return repos
-
-        return repos.filter((repo: GitHubRepo) =>
-          repo.name.toLowerCase().includes(query.toLowerCase())
-        )
+        return response.repositories
       } catch (error: any) {
         console.error('Error fetching repositories:', error)
         throw createError({
