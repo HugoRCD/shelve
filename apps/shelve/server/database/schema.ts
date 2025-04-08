@@ -94,7 +94,7 @@ export const variableValues = pgTable('variable_values', {
   id: bigint({ mode: 'number' }).primaryKey().generatedByDefaultAsIdentity(),
   variableId: bigint({ mode: 'number' }).references(() => variables.id, { onDelete: 'cascade' }).notNull(),
   environmentId: bigint({ mode: 'number' }).references(() => environments.id, { onDelete: 'cascade' }).notNull(),
-  value: varchar({ length: 800 }).notNull(),
+  value: varchar({ length: 2000 }).notNull(),
   ...timestamps,
 }, (table) => [
   uniqueIndex('variable_values_variable_env_idx').on(
