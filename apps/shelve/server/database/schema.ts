@@ -1,7 +1,7 @@
 import { boolean, pgEnum, pgTable, varchar, index, uniqueIndex, bigint, integer } from 'drizzle-orm/pg-core'
 import { relations } from 'drizzle-orm'
-import { AuthType, Role, TeamRole } from '@types' // in prod
-// import { AuthType, Role, TeamRole } from '../../../../packages/types' // in dev
+// import { AuthType, Role, TeamRole } from '@types' // in prod
+import { AuthType, Role, TeamRole } from '../../../../packages/types' // in dev
 import { timestamps } from './column.helpers'
 
 const DEFAULT_AVATAR = 'https://i.imgur.com/6VBx3io.png'
@@ -94,7 +94,7 @@ export const variableValues = pgTable('variable_values', {
   id: bigint({ mode: 'number' }).primaryKey().generatedByDefaultAsIdentity(),
   variableId: bigint({ mode: 'number' }).references(() => variables.id, { onDelete: 'cascade' }).notNull(),
   environmentId: bigint({ mode: 'number' }).references(() => environments.id, { onDelete: 'cascade' }).notNull(),
-  value: varchar({ length: 2000 }).notNull(),
+  value: varchar({ length: 4000 }).notNull(),
   ...timestamps,
 }, (table) => [
   uniqueIndex('variable_values_variable_env_idx').on(
