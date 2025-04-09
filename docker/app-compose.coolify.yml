@@ -4,46 +4,42 @@
 # port: 3000
 
 services:
-  shelve_app:
-    image: ghcr.io/hugorcd/shelve:latest
-    container_name: shelve_app
+  app:
+    image: 'ghcr.io/hugorcd/shelve:latest'
     restart: always
     environment:
-      - DATABASE_URL=${DATABASE_URL:-postgres://postgres:postgres@shelve_db:5432/postgres}
-      - NUXT_PRIVATE_REDIS_URL=${NUXT_PRIVATE_REDIS_URL:-redis://shelve_redis:6379}
-      - NUXT_PRIVATE_ENCRYPTION_KEY=${SERVICE_PASSWORD_SHELVE}
-      - NUXT_SESSION_PASSWORD=${SERVICE_PASSWORD_SHELVE}
-      - NUXT_PRIVATE_ALLOWED_ORIGINS=${$SERVICE_FQDN_SHELVE}
-
-      # OAuth configuration
-      - NUXT_OAUTH_GITHUB_CLIENT_ID=${NUXT_OAUTH_GITHUB_CLIENT_ID}
-      - NUXT_OAUTH_GITHUB_CLIENT_SECRET=${NUXT_OAUTH_GITHUB_CLIENT_SECRET}
-      - NUXT_OAUTH_GOOGLE_CLIENT_ID=${NUXT_OAUTH_GOOGLE_CLIENT_ID}
-      - NUXT_OAUTH_GOOGLE_CLIENT_SECRET=${NUXT_OAUTH_GOOGLE_CLIENT_SECRET}
-
-      # GitHub app configuration
-      - NUXT_PUBLIC_GITHUB_APP_NAME=${NUXT_PUBLIC_GITHUB_APP_NAME}
-      - NUXT_PRIVATE_GITHUB_PRIVATE_KEY=${NUXT_PRIVATE_GITHUB_PRIVATE_KEY}
-
-      # Optional
-      - NUXT_PRIVATE_RESEND_API_KEY=${NUXT_PRIVATE_RESEND_API_KEY}
-      - NUXT_PRIVATE_ADMIN_EMAILS=${NUXT_PRIVATE_ADMIN_EMAILS}
-      - NUXT_PRIVATE_SENDER_EMAIL=${NUXT_PRIVATE_SENDER_EMAIL}
+      - SERVICE_FQDN_APP=/
+      - 'DATABASE_URL=postgres://shelve:${SERVICE_PASSWORD_POSTGRES}@postgres:5432/shelve'
+      - 'NUXT_PRIVATE_REDIS_URL=${NUXT_PRIVATE_REDIS_URL:-redis://redis:6379}'
+      - 'NUXT_PRIVATE_ENCRYPTION_KEY=${SERVICE_PASSWORD_SHELVE}'
+      - 'NUXT_SESSION_PASSWORD=${SERVICE_PASSWORD_SHELVE}'
+      - 'NUXT_OAUTH_GITHUB_CLIENT_ID=${NUXT_OAUTH_GITHUB_CLIENT_ID}'
+      - 'NUXT_OAUTH_GITHUB_CLIENT_SECRET=${NUXT_OAUTH_GITHUB_CLIENT_SECRET}'
+      - 'NUXT_OAUTH_GOOGLE_CLIENT_ID=${NUXT_OAUTH_GOOGLE_CLIENT_ID}'
+      - 'NUXT_OAUTH_GOOGLE_CLIENT_SECRET=${NUXT_OAUTH_GOOGLE_CLIENT_SECRET}'
+      - 'NUXT_PRIVATE_RESEND_API_KEY=${NUXT_PRIVATE_RESEND_API_KEY}'
+      - 'NUXT_PRIVATE_SENDER_EMAIL=${NUXT_PRIVATE_SENDER_EMAIL}'
+      - 'NUXT_PRIVATE_ADMIN_EMAILS=${NUXT_PRIVATE_ADMIN_EMAILS}'
+      - 'NUXT_PRIVATE_ALLOWED_ORIGINS=${SERVICE_FQDN_APP}'
     depends_on:
-      shelve_redis:
+      redis:
         condition: service_healthy
-      shelve_db:
+      postgres:
         condition: service_healthy
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:3000/api/hello" ]
+      test:
+        - CMD
+        - curl
+        - '-f'
+        - 'http://localhost:3000/api/hello'
       interval: 30s
       timeout: 10s
       retries: 3
     logging:
-      driver: "json-file"
+      driver: json-file
       options:
-        max-size: "10m"
-        max-file: "3"
+        max-size: 10m
+        max-file: '3'
     deploy:
       resources:
         limits:
@@ -52,43 +48,37 @@ services:
         reservations:
           cpus: '0.5'
           memory: 512M
-    networks:
-      - shelve-network
-  shelve_db:
-    container_name: shelve_db
-    image: postgres:17-alpine
-    restart: always
-    volumes:
-      - postgres:/var/lib/postgresql/data
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER:-postgres}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
-      POSTGRES_DB: ${POSTGRES_DB:-postgres}
-    healthcheck:
-      test: [ "CMD", "pg_isready", "-U", "postgres" ]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-    networks:
-      - shelve-network
-  shelve_redis:
-    container_name: shelve_redis
-    image: redis:7.4-alpine
-    restart: always
-    volumes:
-      - redis:/data
-    healthcheck:
-      test: [ "CMD", "redis-cli", "ping" ]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-    networks:
-      - shelve-network
-
-networks:
-  shelve-network:
-    driver: bridge
-
-volumes:
   postgres:
+    image: 'postgres:17-alpine'
+    restart: always
+    volumes:
+      - 'postgres:/var/lib/postgresql/data'
+    environment:
+      POSTGRES_USER: shelve
+      POSTGRES_PASSWORD: '${SERVICE_PASSWORD_POSTGRES}'
+      POSTGRES_DB: shelve
+    healthcheck:
+      test:
+        - CMD
+        - pg_isready
+        - '-U'
+        - shelve
+      interval: 30s
+      timeout: 10s
+      retries: 3
   redis:
+    image: 'redis:7.4-alpine'
+    restart: always
+    volumes:
+      - 'redis:/data'
+    healthcheck:
+      test:
+        - CMD
+        - redis-cli
+        - ping
+      interval: 30s
+      timeout: 10s
+      retries: 3
+volumes:
+  postgres: null
+  redis: null
