@@ -9,11 +9,11 @@
     "lint": "eslint .",
     "lint:fix": "eslint --fix ."
   },
-  "packageManager": "pnpm@10.7.1",
+  "packageManager": "pnpm@10.8.0",
   "devDependencies": {
     "@iconify-json/heroicons": "1.2.2",
-    "@iconify-json/lucide": "1.2.34",
-    "@iconify-json/simple-icons": "1.2.30",
+    "@iconify-json/lucide": "1.2.35",
+    "@iconify-json/simple-icons": "1.2.31",
     "iron-webcrypto": "1.2.1",
     "nuxt": "3.16.2",
     "nuxt-visitors": "1.1.2",
@@ -23,8 +23,8 @@
     "@nuxt/ui-pro": "^3.0.2",
     "@nuxt/content": "^3.4.0",
     "@nuxt/scripts": "0.11.5",
-    "@vueuse/core": "13.0.0",
-    "@vueuse/nuxt": "13.0.0",
+    "@vueuse/core": "13.1.0",
+    "@vueuse/nuxt": "13.1.0",
     "@nuxt/image": "1.10.0"
   }
 }
