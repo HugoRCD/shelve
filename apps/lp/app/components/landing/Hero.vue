@@ -39,7 +39,7 @@ defineShortcuts({
       >
         <MDC
           :value="title"
-          class="mx-auto max-w-md text-pretty *:font-normal *:mb-2 text-center text-3xl sm:text-4xl"
+          class="mx-auto max-w-md text-pretty text-shadow-sm *:font-normal *:mb-2 text-center text-3xl sm:text-4xl"
         />
       </Motion>
 

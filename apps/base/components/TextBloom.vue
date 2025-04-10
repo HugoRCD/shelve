@@ -1,9 +1,13 @@
 <script setup lang="ts">
-const {
-  color = '#46afc8'
-} = defineProps<{
-  color?: string
-}>()
+const props = withDefaults(defineProps<{
+  bloomColor?: string
+  textColor?: string
+  class?: string
+}>(), {
+  bloomColor: '#fff',
+  textColor: 'text-(--ui-text-muted)',
+  class: 'text-base font-semibold'
+})
 
 const bloomTextEl = ref(null)
 
@@ -36,8 +40,8 @@ const applyBloomEffect = (el: HTMLElement | null) => {
   const text = el.textContent || ''
   el.innerHTML = ''
 
-  if (color) {
-    const colors = calculateBloomColors(color)
+  if (props.bloomColor) {
+    const colors = calculateBloomColors(props.bloomColor)
     if (colors) {
       el.style.setProperty('--bloom-color-base', colors.base)
       el.style.setProperty('--bloom-color-light', colors.light)
@@ -65,19 +69,19 @@ onMounted(() => {
   applyBloomEffect(bloomTextEl.value)
 })
 
-watch(() => color, () => {
+watch(() => props.bloomColor, () => {
   applyBloomEffect(bloomTextEl.value)
 })
 </script>
 
 <template>
-  <div ref="bloomTextEl" class="text-(--ui-primary) text-base font-semibold [transform-style:preserve-3d]" :data-color="color">
+  <div ref="bloomTextEl" class="[transform-style:preserve-3d]" :data-color="bloomColor" :class="[props.class, props.textColor]">
     <slot>Generating summary...</slot>
   </div>
 </template>
 
 <style>
-@import 'tailwindcss';
+@import '../assets/css/base.css';
 
 .bloom-char {
   @apply relative inline-block [transform-style:preserve-3d] [transform-origin:100%_50%] [letter-spacing:0.01em];
@@ -93,7 +97,7 @@ watch(() => color, () => {
     text-shadow: 0 0 0 rgba(var(--bloom-color-base), 0);
   }
   12% {
-    transform: translate3D(2px,-1px,2px) scale(1.4) rotateY(6deg);
+    transform: translate3D(2px,-1px,2px) scale(1.3) rotateY(6deg);
     color: var(--bloom-color-light);
   }
   15% {
