@@ -21,13 +21,48 @@ defineShortcuts({
       <div class="flex items-center justify-center">
         <Logo :text="false" lp size="size-10" />
       </div>
-      <MDC
-        :value="title"
-        class="mx-auto max-w-md text-pretty *:font-normal *:mb-2 text-center text-3xl sm:text-4xl"
-      />
-      <p class="mx-auto mt-2 max-w-lg text-center text-(--ui-text-muted) sm:block">
-        {{ description }}
-      </p>
+      <Motion
+        :initial="{
+          scale: 1.1,
+          opacity: 0,
+          filter: 'blur(20px)'
+        }"
+        :animate="{
+          scale: 1,
+          opacity: 1,
+          filter: 'blur(0px)'
+        }"
+        :transition="{
+          duration: 0.6,
+          delay: 0.2
+        }"
+      >
+        <MDC
+          :value="title"
+          class="mx-auto max-w-md text-pretty *:font-normal *:mb-2 text-center text-3xl sm:text-4xl"
+        />
+      </Motion>
+
+      <Motion
+        :initial="{
+          scale: 1.1,
+          opacity: 0,
+          filter: 'blur(20px)'
+        }"
+        :animate="{
+          scale: 1,
+          opacity: 1,
+          filter: 'blur(0px)'
+        }"
+        :transition="{
+          duration: 0.6,
+          delay: 0.4
+        }"
+      >
+        <p class="mx-auto mt-2 max-w-lg text-center text-(--ui-text-muted) sm:block">
+          {{ description }}
+        </p>
+      </Motion>
       <MDC
         class="mt-4 hidden text-center text-(--ui-text-muted) sm:block"
         :value="cta"

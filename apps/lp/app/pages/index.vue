@@ -20,24 +20,16 @@ function useClipboard(text: string) {
 </script>
 
 <template>
-  <div v-if="page" class="relative flex flex-col gap-4 [--ui-container:75rem]">
-    <div id="visitors" class="absolute">
-      <!-- active visitors -->
-    </div>
-    <div class="flex h-full flex-col items-center justify-center gap-3">
-      <LandingHero
-        class="h-64"
-        :title="page.title"
-        :description="page.description"
-        :cta="page.cta"
-      />
-    </div>
+  <div v-if="page" class="relative flex flex-col gap-4">
+    <div id="visitors" class="absolute" />
+    <LandingHero
+      :title="page.title"
+      :description="page.description"
+      :cta="page.cta"
+    />
     <UPageSection orientation="horizontal" :ui="{ container: 'sm:pb-0 lg:pb-8' }">
       <template #leading>
         <div class="text-left">
-          <NuxtLink href="https://www.uneed.best/tool/shelve">
-            <img src="https://www.uneed.best/EMBED3B.png" alt="Uneed Embed Badge" width="150">
-          </NuxtLink>
           <h3 class="main-gradient italic text-2xl mb-2 mt-4">
             <ScrambleText label="> Welcome to Shelve" />
           </h3>
