@@ -57,8 +57,6 @@ if (!page.value)
         </div>
       </UPageSection>
     </div>
-
-    <LandingFeatures :features="page.features" />
     <UPageSection>
       <LandingStats />
     </UPageSection>

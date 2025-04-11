@@ -12,21 +12,17 @@ sections:
     title: Secrets Management, Simplified
     description: Shelve provides the secure, central platform you need for effortless secrets management. Bring all your API keys, tokens, and environment variables into one organized dashboard. Sync them seamlessly across stages using our powerful CLI and GitHub integration, ensuring your team always has the right configuration.
     links:
-      - label: Dashboard
+      - label: Secrets injection
         size: xs
-        icon: lucide:layout-dashboard
-        variant: ghost
-      - label: Api Keys
-        size: xs
-        icon: lucide:key
-        variant: ghost
-      - label: Github Sync
-        size: xs
-        icon: simple-icons:github
+        icon: lucide:syringe
         variant: ghost
       - label: CLI Access
         size: xs
         icon: lucide:terminal
+        variant: ghost
+      - label: Api Keys
+        size: xs
+        icon: lucide:key
         variant: ghost
   - id: env
     title: Ensure Environment Parity
@@ -68,35 +64,6 @@ sections:
         size: xs
         icon: lucide:git-pull-request
         variant: ghost
-features:
-  title: Features
-  description: Shelve is packed with features that make managing your environment variables a breeze. Here are some of the highlights.
-  features:
-    - title: Secrets Injection
-      description: Say goodbye to .env files and start your application without .env with runtime secrets injection. No more env files, more security.
-      icon: lucide:cpu
-    - title: Seamless Environment Management
-      description: One login, all projects. Push and pull environment variables instantly across your entire team without the hassle.
-      icon: lucide:lock
-    - title: Powerful CLI Experience
-      description: A CLI-first approach that makes managing env variables feel natural. Simple commands, powerful results.
-      icon: lucide:terminal
-    - title: Built for Teams
-      description: Manage multiple teams, control access levels, and collaborate effortlessly. Perfect for organizations with multiple projects.
-      icon: lucide:users
-    - title: Native Monorepo Support
-      description: Working with monorepos? Shelve automatically detects and manages configurations across all your projects.
-      icon: lucide:git-fork
-    - title: GitHub Integration
-      description: Sync your environment variables directly with GitHub Secrets. One click to secure your GitHub Actions workflows.
-      icon: simple-icons:github
-    - title: Self-Hosting Ready
-      description: Deploy Shelve on your own infrastructure with Docker. Keep full control of your data.
-      icon: lucide:cloud
-    - title: Advanced Integrations
-      description: 'More integrations coming soon: Vercel, Coolify, and more.'
-      icon: lucide:puzzle
-      soon: true
 faq:
   title: Frequently Asked Questions
   description: Frequently asked questions about Shelve. If you have a question that is not answered here, feel free to contact us.

@@ -12,9 +12,9 @@ const copy = ref(false)
 
 <template>
   <div class="relative flex items-center justify-center size-full">
-    <div class="absolute bottom-16 z-20 flex items-center justify-center [mask-image:linear-gradient(to_bottom,white,transparent)]">
+    <div class="absolute bottom-16 z-20 flex items-center justify-center">
       <div
-        class="flex items-center justify-center gap-4 rounded-md bg-(--ui-bg-inverted)/5 px-4 py-2 backdrop-blur-lg"
+        class="flex items-center cursor-pointer justify-center gap-4 rounded-md bg-(--ui-bg) px-3 py-1.5 backdrop-blur-lg border border-(--ui-border)/50 transition-all duration-200 ease-in-out hover:bg-(--ui-bg-inverted)/5 hover:shadow-lg hover:transform hover:scale-105"
         @click="useClipboard('npx nypm add -D @shelve/cli')"
       >
         <div class="flex cursor-pointer items-center justify-center gap-2 text-sm text-(--ui-text-muted)">
