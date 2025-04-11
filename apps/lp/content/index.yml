@@ -11,13 +11,13 @@ mainSection:
   title: Secrets Management, Simplified
   description: Shelve provides the secure, central platform you need for effortless secrets management. Bring all your API keys, tokens, and environment variables into one organized dashboard. Sync them seamlessly across stages using our powerful CLI and GitHub integration, ensuring your team always has the right configuration.
   links:
-    - label: Api Keys
-      size: xs
-      icon: lucide:key
-      variant: ghost
     - label: Dashboard
       size: xs
       icon: lucide:layout-dashboard
+      variant: ghost
+    - label: Api Keys
+      size: xs
+      icon: lucide:key
       variant: ghost
     - label: Github Sync
       size: xs
@@ -59,9 +59,9 @@ features:
 faq:
   title: Frequently Asked Questions
   description: Frequently asked questions about Shelve. If you have a question that is not answered here, feel free to contact us.
-  cta:
-    label: Contact us
-    to: mailto:contact@shelve.cloud
+  links:
+    - label: Contact us
+      to: mailto:contact@shelve.cloud
   items:
     - label: Is Shelve free?
       defaultOpen: true

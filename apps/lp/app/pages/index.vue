@@ -4,8 +4,6 @@ useHead({
   titleTemplate: 'Shelve',
 })
 
-const copy = ref(false)
-
 const { data: page } = await useAsyncData('index', () => queryCollection('index').first())
 if (!page.value)
   throw createError({ statusCode: 404, message: 'Page not found', fatal: true })
@@ -23,13 +21,13 @@ if (!page.value)
       :ui="{
         container: 'sm:pb-0 lg:pb-8',
         title: 'text-xl sm:text-xl lg:text-2xl font-normal',
-        description: 'mt-2 text-md text-xs sm:text-md lg:text-sm text-(--ui-text-muted)',
+        description: 'mt-2 text-sm sm:text-md lg:text-sm text-(--ui-text-muted)',
         links: 'mt-4 gap-3'
       }"
     >
       <BgGradient />
       <template #title>
-        <ScrambleText :label="page.mainSection.title" class="main-gradient italic" />
+        <ScrambleText :label="page.mainSection.title" class="main-gradient" />
       </template>
 
       <template #links>

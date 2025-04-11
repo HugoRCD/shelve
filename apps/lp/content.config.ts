@@ -124,10 +124,7 @@ export default defineContentConfig({
         hero: pageHeroSchema,
         mainSection: pageSectionSchema,
         features: pageFeatureSchema,
-        faq: z.object({
-          title: z.string().nonempty(),
-          description: z.string().nonempty(),
-          cta: buttonSchema,
+        faq: pageSectionSchema.extend({
           items: z.array(z.object({
             label: z.string().nonempty(),
             defaultOpen: z.boolean().optional(),

@@ -6,6 +6,8 @@ function useClipboard(text: string) {
     copy.value = false
   }, 1000)
 }
+
+const copy = ref(false)
 </script>
 
 <template>

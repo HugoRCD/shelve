@@ -30,7 +30,7 @@ startScrambling()
 </script>
 
 <template>
-  <span class="font-mono" @mouseover="startScrambling">
+  <span @mouseover="startScrambling">
     {{ displayText }}
   </span>
 </template>

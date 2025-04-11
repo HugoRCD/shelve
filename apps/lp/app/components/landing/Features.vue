@@ -8,10 +8,10 @@ defineProps<{
 
 <template>
   <UContainer class="flex flex-col gap-2">
-    <h3 class="main-gradient text-3xl font-normal italic text-center">
+    <h3 class="main-gradient text-3xl font-normal text-center">
       <ScrambleText :label="features.title" />
     </h3>
-    <p class="max-w-lg mx-auto text-pretty text-center text-sm text-(--ui-text-muted) italic sm:text-base">
+    <p class="max-w-lg mx-auto text-pretty text-center text-sm text-(--ui-text-muted) sm:text-base">
       {{ features.description }}
     </p>
     <div class="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 list-none">
