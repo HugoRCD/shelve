@@ -97,7 +97,8 @@ const ui = computed(() => ({
 </script>
 
 <template>
-  <UHeader>
+  <Blur position="both" class="z-10" />
+  <UHeader :ui="{ root: 'bg-transparent backdrop-blur-none border-transparent' }">
     <template #left>
       <Logo lp size="size-6" />
     </template>

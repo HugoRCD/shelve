@@ -19,10 +19,11 @@ defineShortcuts({
 
 <template>
   <UPageHero
+    class="bg-white dark:bg-black"
     :ui="{
       container: 'py-18 sm:py-24 lg:py-32',
       title: 'text-left max-w-xl text-pretty',
-      description: 'text-left mt-2 max-w-2xl text-pretty sm:text-md text-(--ui-text-muted)',
+      description: 'text-left mt-2 text-md max-w-2xl text-pretty sm:text-md text-(--ui-text-muted)',
       links: 'mt-4 justify-start'
     }"
   >
@@ -43,7 +44,9 @@ defineShortcuts({
           delay: 0.1
         }"
       >
-        <MDC :value="title" class="*:font-normal *:mb-2" />
+        <h1 class="font-normal text-3xl sm:text-4xl lg:text-5xl">
+          {{ title }}
+        </h1>
       </Motion>
     </template>
 
@@ -100,13 +103,10 @@ defineShortcuts({
     </template>
 
     <ClientOnly>
-      <video autoplay loop muted class="grayscale absolute opacity-10 top-0 inset-0 scale-105 size-full -z-10 object-cover">
+      <video autoplay loop muted class="invert dark:invert-0 grayscale absolute opacity-20 top-0 inset-0 scale-110 size-full -z-10 object-cover transform translate-x-1/2">
         <source src="/encryption.webm" type="video/webm">
         Your browser does not support the video tag.
       </video>
     </ClientOnly>
-    <!--
-    <div class="size-60 rounded-full dark:bg-gradient-to-br from-(&#45;&#45;ui-bg-inverted) to-(&#45;&#45;ui-bg-inverted)/50 absolute bottom-0 left-0 right-0 mx-auto -mb-40 blur-[200px] -z-1" />
--->
   </UPageHero>
 </template>
