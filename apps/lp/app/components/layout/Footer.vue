@@ -76,7 +76,7 @@ const route = useRoute()
 </script>
 
 <template>
-  <UFooter :ui="{ root: 'bg-(--ui-bg) z-10', top: 'py-0 lg:py-0' }" :class="route.path === '/' ? 'bg-white dark:bg-black' : 'bg-(--ui-bg)'">
+  <UFooter :ui="{ root: 'bg-(--ui-bg) z-10', top: 'py-0 lg:py-0' }">
     <template #top>
       <USeparator />
       <UContainer>

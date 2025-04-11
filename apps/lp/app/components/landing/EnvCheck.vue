@@ -45,11 +45,7 @@ const getTransform = (card: typeof cardsData[0]) => {
   let { sk } = card.initial
 
   if (isHovered) {
-    y = card.hover.y
-    z = card.hover.z
-    rx = card.hover.rx
-    ry = card.hover.ry
-    sk = card.hover.sk
+    ({ y, z, rx, ry, sk } = card.hover)
   }
 
   return `
@@ -65,7 +61,7 @@ const getTransform = (card: typeof cardsData[0]) => {
 
 <template>
   <div
-    class="relative flex items-center justify-center h-72 w-full"
+    class="relative flex items-center justify-center h-72 w-full max-sm:translate-x-8"
     style="perspective: 1200px;"
   >
     <div

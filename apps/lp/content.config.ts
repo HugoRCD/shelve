@@ -124,7 +124,7 @@ export default defineContentConfig({
       schema: z.object({
         hero: pageHeroSchema,
         sections: z.array(pageSectionSchema),
-        features: pageFeatureSchema,
+        features: pageSectionSchema,
         faq: pageSectionSchema.extend({
           items: z.array(z.object({
             label: z.string().nonempty(),

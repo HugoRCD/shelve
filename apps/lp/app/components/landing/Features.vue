@@ -7,16 +7,21 @@ defineProps<{
 </script>
 
 <template>
-  <UContainer class="flex flex-col gap-2">
-    <h3 class="main-gradient text-3xl font-normal text-center">
-      <ScrambleText :label="features.title" />
-    </h3>
-    <p class="max-w-lg mx-auto text-pretty text-center text-sm text-(--ui-text-muted) sm:text-base">
-      {{ features.description }}
-    </p>
+  <UPageSection
+    :description="features.description"
+    :ui="{
+      container: 'sm:pb-0 lg:pb-8',
+      title: 'text-xl text-2xl sm:text-3xl lg:text-4xl font-normal',
+      description: 'mt-2 sm:text-lg text-(--ui-text-muted)',
+      links: 'mt-4 gap-3'
+    }"
+  >
+    <template #title>
+      <ScrambleText :label="features.title" class="main-gradient" />
+    </template>
     <div class="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 list-none">
       <Motion
-        v-for="(feature, index) in features.items"
+        v-for="(feature, index) in features.features"
         :key="feature.title"
         as="li"
         :initial="{ opacity: 0, transform: 'translateY(10px)' }"
@@ -33,7 +38,7 @@ defineProps<{
         as="li"
         :initial="{ opacity: 0, transform: 'translateY(10px)' }"
         :while-in-view="{ opacity: 1, transform: 'translateY(0)' }"
-        :transition="{ delay: 0.1 * features.items.length }"
+        :transition="{ delay: 0.1 * features.features.length }"
         :in-view-options="{ once: true }"
         class="flex flex-col justify-center gap-4 p-4 bg-(--ui-bg-muted)/50 h-full"
       >
@@ -49,5 +54,5 @@ defineProps<{
         />
       </Motion>
     </div>
-  </UContainer>
+  </UPageSection>
 </template>

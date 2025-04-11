@@ -24,7 +24,7 @@ const timeSensitiveHeadline = computed(() => {
     class="relative rounded-none"
     :ui="{ links: 'gap-2' }"
   >
-    <div class="absolute bg-white dark:bg-black bg-stripes-darker inset-0 opacity-30 -z-10" />
+    <div class="absolute bg-stripes inset-0 opacity-30 -z-10" />
     <template #title>
       <span class="main-gradient">
         {{ timeSensitiveHeadline }}

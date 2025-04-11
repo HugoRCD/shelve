@@ -43,7 +43,7 @@ sections:
 features:
   title: Features
   description: Shelve is packed with features that make managing your environment variables a breeze. Here are some of the highlights.
-  items:
+  features:
     - title: Secrets Injection
       description: Say goodbye to .env files and start your application without .env with runtime secrets injection. No more env files, more security.
       icon: lucide:cpu
