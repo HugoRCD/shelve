@@ -43,7 +43,7 @@ defineShortcuts({
           delay: 0.1
         }"
       >
-        <h1 class="font-normal text-3xl sm:text-4xl lg:text-5xl">
+        <h1 class="font-normal main-gradient text-3xl sm:text-4xl lg:text-5xl">
           {{ title }}
         </h1>
       </Motion>

@@ -123,6 +123,7 @@ export default defineContentConfig({
       schema: z.object({
         hero: pageHeroSchema,
         mainSection: pageSectionSchema,
+        envCheck: pageSectionSchema,
         features: pageFeatureSchema,
         faq: pageSectionSchema.extend({
           items: z.array(z.object({

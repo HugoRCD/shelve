@@ -79,6 +79,12 @@ html, body, #__nuxt, #__layout {
   @apply not-dark:[background-image:linear-gradient(-45deg,var(--color-neutral-200)_12.50%,transparent_12.50%,transparent_50%,var(--color-neutral-200)_50%,var(--color-neutral-200)_62.50%,transparent_62.50%,transparent_100%)];
 }
 
+.bg-stripes-darker {
+  @apply w-full [background-size:4px_4px];
+  @apply dark:[background-image:linear-gradient(-45deg,var(--color-neutral-900)_12.50%,transparent_12.50%,transparent_50%,var(--color-neutral-900)_50%,var(--color-neutral-900)_62.50%,transparent_62.50%,transparent_100%)];
+  @apply not-dark:[background-image:linear-gradient(-45deg,var(--color-neutral-200)_12.50%,transparent_12.50%,transparent_50%,var(--color-neutral-200)_50%,var(--color-neutral-200)_62.50%,transparent_62.50%,transparent_100%)];
+}
+
 .animated-text {
   @apply animate-text-gradient bg-gradient-to-r from-(--ui-text-highlighted) via-(--ui-text-muted) to-(--ui-text-highlighted) bg-[200%_auto] bg-clip-text text-transparent
 }

@@ -29,7 +29,7 @@ const baseItems = [
   },
   {
     label: 'Download logo',
-    icon: 'custom:shelve',
+    icon: 'lucide:download',
     onSelect: () => {
       downloadLogo(logo.value!.outerHTML, 'shelve.svg')
     }

@@ -27,6 +27,14 @@ mainSection:
       size: xs
       icon: lucide:terminal
       variant: ghost
+envCheck:
+  title: Ensure Environment Parity
+  description: Stop runtime errors caused by missing variables. Shelve detects inconsistencies across your environments instantly.
+  links:
+    - label: Check Environment
+      size: xs
+      icon: lucide:check-circle
+      variant: ghost
 features:
   title: Features
   description: Shelve is packed with features that make managing your environment variables a breeze. Here are some of the highlights.

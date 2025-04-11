@@ -71,10 +71,12 @@ const columns = ref([
     ],
   },
 ])
+
+const route = useRoute()
 </script>
 
 <template>
-  <UFooter :ui="{ root: 'bg-(--ui-bg) z-10', top: 'py-0 lg:py-0' }">
+  <UFooter :ui="{ root: 'bg-(--ui-bg) z-10', top: 'py-0 lg:py-0' }" :class="route.path === '/' ? 'bg-white dark:bg-black' : 'bg-(--ui-bg)'">
     <template #top>
       <USeparator />
       <UContainer>
