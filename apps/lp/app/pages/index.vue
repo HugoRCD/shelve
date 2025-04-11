@@ -54,6 +54,7 @@ if (!page.value)
           <LandingEnvCheck v-if="section.id === 'env'" />
           <LandingGithubSync v-if="section.id === 'github'" />
           <LandingTeams v-if="section.id === 'team'" />
+          <LandingConsole v-if="section.id === 'console'" />
         </div>
       </UPageSection>
     </div>

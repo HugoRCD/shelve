@@ -64,6 +64,22 @@ sections:
         size: xs
         icon: lucide:git-pull-request
         variant: ghost
+  - id: console
+    title: Command Everything
+    description: Hit Cmd+K (or Ctrl+K) to unlock Shelve's command center. Instantly search, navigate, and execute actions across your entire workspace—from switching projects to managing secrets. The ultimate shortcut to peak productivity.
+    links:
+      - label: Quick Search
+        size: xs
+        icon: lucide:search
+        variant: ghost
+      - label: Keyboard First
+        size: xs
+        icon: lucide:keyboard
+        variant: ghost
+      - label: Warp Speed Navigation
+        size: xs
+        icon: lucide:fast-forward
+        variant: ghost
 faq:
   title: Frequently Asked Questions
   description: Frequently asked questions about Shelve. If you have a question that is not answered here, feel free to contact us.
