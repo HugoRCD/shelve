@@ -3,6 +3,12 @@
 
 @source "../../../content";
 
+@theme {
+  --font-sans: 'Geist', sans-serif;
+  --font-mono: 'Jetbrains Mono', monospace;
+  --font-serif: 'Newsreader', serif;
+}
+
 :root {
   --ui-primary: black;
 }

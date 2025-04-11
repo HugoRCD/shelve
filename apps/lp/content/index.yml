@@ -1,6 +1,32 @@
-title: 'Your secure foundation for effortless secrets management'
-description: Centralize, secure, and sync all your application secrets effortlessly. Manage team access, integrate via CLI & GitHub, and accelerate your deployments with confidence.
-cta: Press :kbd{value="S"} to start your journey
+hero:
+  title: 'Your secure foundation for effortless secrets management'
+  description: Centralize, secure, and sync all your application secrets effortlessly. Manage team access, integrate via CLI & GitHub, and accelerate your deployments with confidence.
+  links:
+    - label: Start Securing Secrets
+    - label: Read the Docs
+      variant: ghost
+      size: md
+      to: /docs/getting-started
+mainSection:
+  title: Secrets Management, Simplified
+  description: Shelve provides the secure, central platform you need for effortless secrets management. Bring all your API keys, tokens, and environment variables into one organized dashboard. Sync them seamlessly across stages using our powerful CLI and GitHub integration, ensuring your team always has the right configuration.
+  links:
+    - label: Api Keys
+      size: xs
+      icon: lucide:key
+      variant: ghost
+    - label: Dashboard
+      size: xs
+      icon: lucide:layout-dashboard
+      variant: ghost
+    - label: Github Sync
+      size: xs
+      icon: simple-icons:github
+      variant: ghost
+    - label: CLI
+      size: xs
+      icon: lucide:terminal
+      variant: ghost
 features:
   title: Features
   description: Shelve is packed with features that make managing your environment variables a breeze. Here are some of the highlights.

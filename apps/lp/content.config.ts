@@ -1,6 +1,57 @@
 import { defineCollection, defineContentConfig, z } from '@nuxt/content'
 import { asSeoCollection } from '@nuxtjs/seo/content'
 
+const buttonSchema = z.object({
+  label: z.string(),
+  icon: z.string(),
+  trailingIcon: z.string(),
+  to: z.string(),
+  color: z.enum(['primary', 'neutral']).optional(),
+  size: z.enum(['sm', 'md', 'lg', 'xl']).optional(),
+  variant: z.enum(['solid', 'outline', 'subtle', 'link']).optional(),
+  id: z.string().optional(),
+  target: z.enum(['_blank', '_self']).optional()
+})
+
+const pageFeatureSchema = z.object({
+  title: z.string(),
+  description: z.string(),
+  icon: z.string().editor({ input: 'icon' }),
+  to: z.string().optional(),
+  target: z.enum(['_blank', '_self']).optional(),
+  soon: z.boolean().optional()
+})
+
+const pageSectionSchema = z.object({
+  title: z.string(),
+  description: z.string(),
+  links: z.array(buttonSchema),
+  features: z.array(pageFeatureSchema),
+  image: z.object({
+    light: z.string().editor({ input: 'media' }),
+    dark: z.string().editor({ input: 'media' }),
+    width: z.number().optional(),
+    height: z.number().optional()
+  })
+})
+
+const pageHeroSchema = z.object({
+  title: z.string(),
+  description: z.string(),
+  image: z.object({
+    width: z.number().optional(),
+    height: z.number().optional(),
+    light: z.string().editor({ input: 'media' }),
+    dark: z.string().editor({ input: 'media' })
+  }).optional(),
+  headline: z.object({
+    label: z.string(),
+    to: z.string(),
+    icon: z.string().optional().editor({ input: 'icon' })
+  }).optional(),
+  links: z.array(buttonSchema).optional()
+})
+
 export default defineContentConfig({
   collections: {
     docs: defineCollection(
@@ -70,26 +121,13 @@ export default defineContentConfig({
       type: 'data',
       source: 'index.yml',
       schema: z.object({
-        title: z.string().nonempty(),
-        description: z.string().nonempty(),
-        cta: z.string().nonempty(),
-        features: z.object({
-          title: z.string(),
-          description: z.string(),
-          items: z.array(z.object({
-            title: z.string().nonempty(),
-            description: z.string().nonempty(),
-            icon: z.string().nonempty(),
-            soon: z.boolean().optional()
-          }))
-        }),
+        hero: pageHeroSchema,
+        mainSection: pageSectionSchema,
+        features: pageFeatureSchema,
         faq: z.object({
           title: z.string().nonempty(),
           description: z.string().nonempty(),
-          cta: z.object({
-            label: z.string().nonempty(),
-            to: z.string().nonempty()
-          }),
+          cta: buttonSchema,
           items: z.array(z.object({
             label: z.string().nonempty(),
             defaultOpen: z.boolean().optional(),

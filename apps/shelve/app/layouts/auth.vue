@@ -7,7 +7,7 @@
       <slot />
     </div>
     <div class="mt-6">
-      <LayoutDivider />
+      <Divider />
       <footer class="mx-auto flex max-w-7xl flex-col items-center justify-around gap-4 px-4 py-6 sm:flex-row">
         <div class="flex items-center text-(--ui-text-muted) gap-4">
           <span class="text-sm flex items-center">

@@ -1,11 +1,11 @@
 <script setup lang="ts">
+import type { ButtonProps } from '@nuxt/ui'
+
 defineProps<{
   title: string
   description: string
-  cta: string
+  links?: ButtonProps[]
 }>()
-
-const colorMode = useColorMode()
 
 defineShortcuts({
   s: {
@@ -19,7 +19,6 @@ defineShortcuts({
 
 <template>
   <UPageHero
-    class="bg-white dark:bg-black"
     :ui="{
       container: 'py-18 sm:py-24 lg:py-32',
       title: 'text-left max-w-xl text-pretty',
@@ -88,16 +87,9 @@ defineShortcuts({
           delay: 0.5
         }"
       >
-        <div class="flex items-center gap-2">
-          <CustomButton label="Start Securing Secrets" />
-          <UButton
-            label="Read the Docs"
-            variant="ghost"
-            :ui="{
-              label: 'main-gradient'
-            }"
-            to="/docs/getting-started"
-          />
+        <div v-if="links" class="flex items-center gap-2">
+          <CustomButton :label="links[0]?.label" />
+          <UButton :ui="{ label: 'main-gradient' }" v-bind="links[1]" />
         </div>
       </Motion>
     </template>
