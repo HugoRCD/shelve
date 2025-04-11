@@ -1,15 +1,6 @@
 <script setup lang="ts">
 const items = [
   {
-    label: 'Vault',
-    to: 'https://vault.shelve.cloud',
-    target: '_blank',
-  },
-  {
-    label: 'Blog',
-    to: '/blog',
-  },
-  {
     label: 'Features',
     slot: 'features',
     children: [
@@ -64,6 +55,10 @@ const items = [
     ]
   },
   {
+    label: 'Blog',
+    to: '/blog',
+  },
+  {
     label: 'Company',
     children: [
       {
@@ -85,6 +80,11 @@ const items = [
         to: 'mailto:contact@shelve.cloud'
       },
     ]
+  },
+  {
+    label: 'Vault',
+    to: 'https://vault.shelve.cloud',
+    target: '_blank',
   }
 ]
 
@@ -99,7 +99,7 @@ const ui = computed(() => ({
 <template>
   <UHeader>
     <template #left>
-      <Logo lp size="size-8" text-size="text-lg" />
+      <Logo lp size="size-6" />
     </template>
 
     <UNavigationMenu variant="link" color="neutral" :items :ui>
@@ -142,9 +142,9 @@ const ui = computed(() => ({
         </div>
       </div>
     </template>
+
+    <template #body>
+      <UNavigationMenu :items orientation="vertical" class="-m-2.5" />
+    </template>
   </UHeader>
 </template>
-
-<style scoped>
-
-</style>
