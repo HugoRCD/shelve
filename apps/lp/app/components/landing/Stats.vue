@@ -89,10 +89,10 @@ const finalStats = computed(() => [
     </ClientOnly>
 
     <div class="mb-10 flex flex-col gap-2">
-      <h3 class="main-gradient italic text-3xl leading-8">
+      <h3 class="main-gradient text-3xl leading-8">
         <ScrambleText label="Built for speed" />
       </h3>
-      <p class="flex gap-2 italic items-center text-pretty text-center text-(--ui-text-muted)">
+      <p class="flex gap-2 items-center text-pretty text-center text-(--ui-text-muted)">
         {{ !isLoading ? ' Stats are updated in real-time.' : `Loading stats${loadingDots}` }}
       </p>
     </div>

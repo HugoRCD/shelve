@@ -3,10 +3,24 @@
 
 @source "../../../content";
 
+@theme {
+  --font-sans: 'Geist', sans-serif;
+  --font-mono: 'Jetbrains Mono', monospace;
+  --font-serif: 'Newsreader', serif;
+}
+
 :root {
   --ui-primary: black;
+
+  .index {
+    --ui-bg: #f5f5f5;
+  }
 }
 
 .dark {
   --ui-primary: white;
+
+  .index {
+    --ui-bg: #000;
+  }
 }

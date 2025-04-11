@@ -71,6 +71,8 @@ const columns = ref([
     ],
   },
 ])
+
+const route = useRoute()
 </script>
 
 <template>
@@ -94,7 +96,6 @@ const columns = ref([
       </UContainer>
       <USeparator icon="custom:shelve" />
     </template>
-
 
     <template #left>
       <div class="text-xs font-mono italic tracking-tight">
