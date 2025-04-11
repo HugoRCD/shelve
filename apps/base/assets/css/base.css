@@ -6,7 +6,7 @@
 
 @theme {
   --font-sans: 'Geist', sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
+  --font-mono: 'Space Mono', monospace;
   --font-serif: 'Newsreader', serif;
 
   --animate-ripple-1: ripple 2.5s var(--ease-smooth) infinite 0.15s;

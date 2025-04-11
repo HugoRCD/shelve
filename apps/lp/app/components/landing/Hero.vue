@@ -5,6 +5,8 @@ defineProps<{
   cta: string
 }>()
 
+const colorMode = useColorMode()
+
 defineShortcuts({
   s: {
     usingInput: true,
@@ -16,11 +18,33 @@ defineShortcuts({
 </script>
 
 <template>
-  <div class="z-20 h-[400px] w-full bg-dotted sm:p-0 p-5 relative flex items-center justify-center overflow-hidden">
+  <div
+    class="z-20 h-[400px] w-full sm:p-0 p-5 relative flex items-center justify-center overflow-hidden"
+  >
+    <!--    <video autoplay loop muted class="grayscale absolute opacity-60 top-0 inset-0 scale-105 w-full -z-10 object-cover h-[400px]">
+      <source src="/encryption.webm" type="video/webm">
+      Your browser does not support the video tag.
+    </video>-->
     <div>
-      <div class="flex items-center justify-center">
-        <Logo :text="false" lp size="size-10" />
-      </div>
+      <Motion
+        :initial="{
+          scale: 1.1,
+          opacity: 0,
+          filter: 'blur(20px)'
+        }"
+        :animate="{
+          scale: 1,
+          opacity: 1,
+          filter: 'blur(0px)'
+        }"
+        :transition="{
+          duration: 0.6,
+        }"
+      >
+        <div class="flex items-center justify-center">
+          <Logo :text="false" lp size="size-10" />
+        </div>
+      </Motion>
       <Motion
         :initial="{
           scale: 1.1,
@@ -63,10 +87,27 @@ defineShortcuts({
           {{ description }}
         </p>
       </Motion>
-      <MDC
-        class="mt-4 hidden text-center text-(--ui-text-muted) sm:block"
-        :value="cta"
-      />
+      <Motion
+        :initial="{
+          scale: 1.1,
+          opacity: 0,
+          filter: 'blur(20px)'
+        }"
+        :animate="{
+          scale: 1,
+          opacity: 1,
+          filter: 'blur(0px)'
+        }"
+        :transition="{
+          duration: 0.6,
+          delay: 0.6
+        }"
+      >
+        <MDC
+          class="mt-4 hidden text-center text-(--ui-text-muted) sm:block"
+          :value="cta"
+        />
+      </Motion>
       <div class="mt-4 sm:hidden flex-col items-center justify-center gap-2 flex sm:gap-4">
         <UButton
           to="https://app.shelve.cloud/login"
@@ -76,7 +117,8 @@ defineShortcuts({
         />
       </div>
     </div>
-
-    <div class="size-60 rounded-full dark:bg-gradient-to-br from-(--ui-bg-inverted) to-(--ui-bg-inverted)/50 absolute bottom-0 left-0 right-0 mx-auto -mb-40 blur-[200px] -z-1" />
+    <!--
+    <div class="size-60 rounded-full dark:bg-gradient-to-br from-(&#45;&#45;ui-bg-inverted) to-(&#45;&#45;ui-bg-inverted)/50 absolute bottom-0 left-0 right-0 mx-auto -mb-40 blur-[200px] -z-1" />
+-->
   </div>
 </template>

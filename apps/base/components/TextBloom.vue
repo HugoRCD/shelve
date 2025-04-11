@@ -81,7 +81,7 @@ watch(() => props.bloomColor, () => {
 </template>
 
 <style>
-@import '../assets/css/base.css';
+@reference '../assets/css/base.css';
 
 .bloom-char {
   @apply relative inline-block [transform-style:preserve-3d] [transform-origin:100%_50%] [letter-spacing:0.01em];
@@ -116,5 +116,4 @@ watch(() => props.bloomColor, () => {
     opacity: 0.8;
   }
 }
-
 </style>
