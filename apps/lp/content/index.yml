@@ -7,34 +7,39 @@ hero:
       variant: ghost
       size: md
       to: /docs/getting-started
-mainSection:
-  title: Secrets Management, Simplified
-  description: Shelve provides the secure, central platform you need for effortless secrets management. Bring all your API keys, tokens, and environment variables into one organized dashboard. Sync them seamlessly across stages using our powerful CLI and GitHub integration, ensuring your team always has the right configuration.
-  links:
-    - label: Dashboard
-      size: xs
-      icon: lucide:layout-dashboard
-      variant: ghost
-    - label: Api Keys
-      size: xs
-      icon: lucide:key
-      variant: ghost
-    - label: Github Sync
-      size: xs
-      icon: simple-icons:github
-      variant: ghost
-    - label: CLI
-      size: xs
-      icon: lucide:terminal
-      variant: ghost
-envCheck:
-  title: Ensure Environment Parity
-  description: Stop runtime errors caused by missing variables. Shelve detects inconsistencies across your environments instantly.
-  links:
-    - label: Check Environment
-      size: xs
-      icon: lucide:check-circle
-      variant: ghost
+sections:
+  - id: secrets
+    title: Secrets Management, Simplified
+    description: Shelve provides the secure, central platform you need for effortless secrets management. Bring all your API keys, tokens, and environment variables into one organized dashboard. Sync them seamlessly across stages using our powerful CLI and GitHub integration, ensuring your team always has the right configuration.
+    links:
+      - label: Dashboard
+        size: xs
+        icon: lucide:layout-dashboard
+        variant: ghost
+      - label: Api Keys
+        size: xs
+        icon: lucide:key
+        variant: ghost
+      - label: Github Sync
+        size: xs
+        icon: simple-icons:github
+        variant: ghost
+      - label: CLI Access
+        size: xs
+        icon: lucide:terminal
+        variant: ghost
+  - id: env
+    title: Ensure Environment Parity
+    description: Stop runtime errors caused by missing variables. Shelve detects inconsistencies across your environments instantly.
+    links:
+      - label: Consistency Check
+        size: xs
+        icon: lucide:check-circle
+        variant: ghost
+      - label: Environment Sync
+        size: xs
+        icon: lucide:refresh-ccw
+        variant: ghost
 features:
   title: Features
   description: Shelve is packed with features that make managing your environment variables a breeze. Here are some of the highlights.

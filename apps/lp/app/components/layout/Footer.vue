@@ -97,7 +97,6 @@ const route = useRoute()
       <USeparator icon="custom:shelve" />
     </template>
 
-
     <template #left>
       <div class="text-xs font-mono italic tracking-tight">
         <span class="text-(--ui-text-muted)"> © {{ new Date().getFullYear() }} - Made by </span>

@@ -23,6 +23,7 @@ const pageFeatureSchema = z.object({
 })
 
 const pageSectionSchema = z.object({
+  id: z.string().optional(),
   title: z.string(),
   description: z.string(),
   links: z.array(buttonSchema),
@@ -122,8 +123,7 @@ export default defineContentConfig({
       source: 'index.yml',
       schema: z.object({
         hero: pageHeroSchema,
-        mainSection: pageSectionSchema,
-        envCheck: pageSectionSchema,
+        sections: z.array(pageSectionSchema),
         features: pageFeatureSchema,
         faq: pageSectionSchema.extend({
           items: z.array(z.object({
