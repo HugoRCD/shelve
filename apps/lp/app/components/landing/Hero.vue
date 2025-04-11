@@ -18,14 +18,15 @@ defineShortcuts({
 </script>
 
 <template>
-  <div
-    class="z-20 h-[400px] w-full sm:p-0 p-5 relative flex items-center justify-center overflow-hidden"
+  <UPageHero
+    :ui="{
+      container: 'py-18 sm:py-24 lg:py-32',
+      title: 'text-left max-w-xl text-pretty',
+      description: 'text-left mt-2 max-w-2xl text-pretty sm:text-md text-(--ui-text-muted)',
+      links: 'mt-4 justify-start'
+    }"
   >
-    <!--    <video autoplay loop muted class="grayscale absolute opacity-60 top-0 inset-0 scale-105 w-full -z-10 object-cover h-[400px]">
-      <source src="/encryption.webm" type="video/webm">
-      Your browser does not support the video tag.
-    </video>-->
-    <div>
+    <template #title>
       <Motion
         :initial="{
           scale: 1.1,
@@ -39,15 +40,14 @@ defineShortcuts({
         }"
         :transition="{
           duration: 0.6,
-          delay: 0.2
+          delay: 0.1
         }"
       >
-        <MDC
-          :value="title"
-          class="mx-auto max-w-md text-pretty text-shadow-sm *:font-normal *:mb-2 text-center text-3xl sm:text-5xl"
-        />
+        <MDC :value="title" class="*:font-normal *:mb-2" />
       </Motion>
+    </template>
 
+    <template #description>
       <Motion
         :initial="{
           scale: 1.1,
@@ -61,13 +61,14 @@ defineShortcuts({
         }"
         :transition="{
           duration: 0.6,
-          delay: 0.4
+          delay: 0.3
         }"
       >
-        <p class="mx-auto mt-2 max-w-xl text-center text-(--ui-text-muted) sm:block">
-          {{ description }}
-        </p>
+        {{ description }}
       </Motion>
+    </template>
+
+    <template #links>
       <Motion
         :initial="{
           scale: 1.1,
@@ -81,25 +82,31 @@ defineShortcuts({
         }"
         :transition="{
           duration: 0.6,
-          delay: 0.6
+          delay: 0.5
         }"
       >
-        <MDC
-          class="mt-4 hidden text-center text-(--ui-text-muted) sm:block"
-          :value="cta"
-        />
+        <div class="flex items-center gap-2">
+          <CustomButton label="Start Securing Secrets" />
+          <UButton
+            label="Read the Docs"
+            variant="ghost"
+            :ui="{
+              label: 'main-gradient'
+            }"
+            to="/docs/getting-started"
+          />
+        </div>
       </Motion>
-      <div class="mt-4 sm:hidden flex-col items-center justify-center gap-2 flex sm:gap-4">
-        <UButton
-          to="https://app.shelve.cloud/login"
-          label="Start your journey"
-          icon="lucide:arrow-right"
-          trailing
-        />
-      </div>
-    </div>
+    </template>
+
+    <ClientOnly>
+      <video autoplay loop muted class="grayscale absolute opacity-10 top-0 inset-0 scale-105 size-full -z-10 object-cover">
+        <source src="/encryption.webm" type="video/webm">
+        Your browser does not support the video tag.
+      </video>
+    </ClientOnly>
     <!--
     <div class="size-60 rounded-full dark:bg-gradient-to-br from-(&#45;&#45;ui-bg-inverted) to-(&#45;&#45;ui-bg-inverted)/50 absolute bottom-0 left-0 right-0 mx-auto -mb-40 blur-[200px] -z-1" />
 -->
-  </div>
+  </UPageHero>
 </template>
