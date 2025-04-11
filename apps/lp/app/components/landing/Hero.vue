@@ -95,10 +95,59 @@ defineShortcuts({
     </template>
 
     <ClientOnly>
-      <video autoplay loop muted class="invert dark:invert-0 grayscale absolute opacity-20 top-0 inset-0 scale-110 size-full -z-10 object-cover transform translate-x-1/2">
-        <source src="/encryption.webm" type="video/webm">
-        Your browser does not support the video tag.
-      </video>
+      <div class="hidden dark:block absolute grayscale invert dark:invert-0 inset-0 -z-10 overflow-hidden transform translate-x-1/2">
+        <div class="video-logo-container absolute size-full">
+          <video
+            autoplay
+            loop
+            muted
+            class="absolute inset-0 size-full object-contain scale-200"
+          >
+            <source src="/encryption.webm" type="video/webm">
+            Your browser does not support the video tag.
+          </video>
+        </div>
+      </div>
+      <div class="dark:hidden">
+        <video autoplay loop muted class="invert dark:invert-0 grayscale absolute opacity-20 top-0 inset-0 scale-110 size-full -z-10 object-cover transform translate-x-1/2">
+          <source src="/encryption.webm" type="video/webm">
+          Your browser does not support the video tag.
+        </video>
+      </div>
     </ClientOnly>
   </UPageHero>
 </template>
+
+<style>
+.video-logo-container {
+  -webkit-mask-image: url('/shelve.svg');
+  mask-image: url('/shelve.svg');
+  -webkit-mask-size: 50% auto;
+  mask-size: 50% auto;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  max-width: 40%;
+}
+
+@media (min-width: 1280px) {
+  .video-logo-container {
+    max-width: 40%;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .video-logo-mask video {
+    filter: brightness(1.5) contrast(1.2);
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  .video-logo-mask video {
+    filter: invert(1) brightness(1.5) contrast(1.2);
+  }
+}
+</style>
