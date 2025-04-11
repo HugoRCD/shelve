@@ -19,8 +19,10 @@ defineShortcuts({
 
 <template>
   <UPageHero
+    orientation="horizontal"
     :ui="{
       container: 'py-18 sm:py-24 lg:py-32',
+      wrapper: 'lg:w-[600px]',
       title: 'text-left max-w-xl text-pretty',
       description: 'text-left mt-2 text-md max-w-2xl text-pretty sm:text-md text-(--ui-text-muted)',
       links: 'mt-4 justify-start'
@@ -95,20 +97,21 @@ defineShortcuts({
     </template>
 
     <ClientOnly>
-      <div class="hidden dark:block absolute grayscale invert dark:invert-0 inset-0 -z-10 overflow-hidden transform translate-x-1/2">
-        <div class="video-logo-container absolute size-full">
-          <video
-            autoplay
-            loop
-            muted
-            class="absolute inset-0 size-full object-contain scale-200"
-          >
+      <div class="hidden lg:dark:block grayscale invert dark:invert-0 size-full -z-10 ">
+        <div class="video-logo-container size-full">
+          <video autoplay loop muted class="size-full object-contain scale-200">
             <source src="/encryption.webm" type="video/webm">
             Your browser does not support the video tag.
           </video>
         </div>
       </div>
-      <div class="dark:hidden">
+      <div class="max-sm:hidden max-sm:dark:hidden lg:hidden absolute inset-0">
+        <video autoplay loop muted class="invert dark:invert-0 grayscale absolute opacity-20 scale-110 size-full -z-10 object-cover transform translate-x-1/2">
+          <source src="/encryption.webm" type="video/webm">
+          Your browser does not support the video tag.
+        </video>
+      </div>
+      <div class="max-sm:hidden dark:hidden">
         <video autoplay loop muted class="invert dark:invert-0 grayscale absolute opacity-20 top-0 inset-0 scale-110 size-full -z-10 object-cover transform translate-x-1/2">
           <source src="/encryption.webm" type="video/webm">
           Your browser does not support the video tag.
@@ -122,21 +125,12 @@ defineShortcuts({
 .video-logo-container {
   -webkit-mask-image: url('/shelve.svg');
   mask-image: url('/shelve.svg');
-  -webkit-mask-size: 50% auto;
-  mask-size: 50% auto;
+  -webkit-mask-size: auto auto;
+  mask-size: auto auto;
   -webkit-mask-position: center;
   mask-position: center;
   -webkit-mask-repeat: no-repeat;
   mask-repeat: no-repeat;
-  max-width: 40%;
-}
-
-@media (min-width: 1280px) {
-  .video-logo-container {
-    max-width: 40%;
-    -webkit-mask-size: contain;
-    mask-size: contain;
-  }
 }
 
 @media (prefers-color-scheme: dark) {
