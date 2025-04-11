@@ -16,7 +16,7 @@ function randomChars(length: number) {
 async function scramble(input: string) {
   let prefix = ''
   for (let index = 0; index < input.length; index++) {
-    await new Promise((resolve) => setTimeout(resolve, 50))
+    await new Promise((resolve) => setTimeout(resolve, 20))
     prefix += input.charAt(index)
     displayText.value = prefix + randomChars(input.length - prefix.length)
   }
@@ -26,11 +26,10 @@ const startScrambling = () => {
   scramble(props.label)
   setTimeout(() => props.label.length * 50)
 }
-startScrambling()
 </script>
 
 <template>
-  <span @mouseover="startScrambling">
+  <span class="text-nowrap" @mouseover="startScrambling">
     {{ displayText }}
   </span>
 </template>

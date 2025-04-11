@@ -49,8 +49,12 @@ if (!page.value)
             <UButton :ui="{ label: 'bg-gradient-to-br from-(--ui-text-muted) to-(--ui-text-highlighted) to-50% bg-clip-text text-transparent' }" v-bind="link" />
           </Motion>
         </template>
-        <LandingInstall v-if="section.id === 'secrets'" />
-        <EnvCheck v-if="section.id === 'env'" />
+        <div class="min-h-[300px] flex items-center justify-center">
+          <LandingInstall v-if="section.id === 'secrets'" />
+          <LandingEnvCheck v-if="section.id === 'env'" />
+          <LandingGithubSync v-if="section.id === 'github'" />
+          <LandingTeams v-if="section.id === 'team'" />
+        </div>
       </UPageSection>
     </div>
 

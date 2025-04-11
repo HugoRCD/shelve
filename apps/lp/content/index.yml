@@ -40,6 +40,34 @@ sections:
         size: xs
         icon: lucide:refresh-ccw
         variant: ghost
+  - id: team
+    title: Built for Seamless Teamwork
+    description: Invite team members, manage access with clear roles (Owner, Admin, Member), and ensure everyone works with the correct, up-to-date configuration without compromising security.
+    links:
+      - label: Team Management
+        size: xs
+        icon: lucide:users
+        variant: ghost
+      - label: Access Control
+        size: xs
+        icon: lucide:shield-check
+        variant: ghost
+  - id: github
+    title: Keep GitHub Secrets Synced, Effortlessly
+    description: Connect your Shelve projects to GitHub repositories via our official GitHub App. Automatically keep your GitHub Actions secrets and repository secrets perfectly synchronized with your single source of truth in Shelve, eliminating manual updates.
+    links:
+      - label: GitHub App
+        size: xs
+        icon: simple-icons:github
+        variant: ghost
+      - label: Automatic Sync
+        size: xs
+        icon: lucide:refresh-ccw
+        variant: ghost
+      - label: CI/CD Integration
+        size: xs
+        icon: lucide:git-pull-request
+        variant: ghost
 features:
   title: Features
   description: Shelve is packed with features that make managing your environment variables a breeze. Here are some of the highlights.
