@@ -15,6 +15,8 @@ const timeSensitiveHeadline = computed(() => {
   }
   return headlines.default
 })
+
+const colorMode = useColorMode()
 </script>
 
 <template>
@@ -26,6 +28,16 @@ const timeSensitiveHeadline = computed(() => {
   >
     <div class="absolute bg-stripes inset-0 opacity-30 -z-10" />
     <template #title>
+      <ParticlesImg
+        :key="colorMode.value"
+        src="/shelve.svg"
+        alt="Shelve Logo"
+        :color="colorMode.value === 'dark' ? '#FFF' : '#000'"
+        class="sm:-translate-y-5"
+        :width="28"
+        :height="12"
+        :mouse-force="6"
+      />
       <span class="main-gradient">
         {{ timeSensitiveHeadline }}
       </span>

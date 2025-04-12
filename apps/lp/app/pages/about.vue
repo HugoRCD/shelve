@@ -18,8 +18,8 @@ const { data } = await useAsyncData('about', () => {
         <div class="text-center w-full h-full flex flex-col items-center justify-center">
           <CrossedDiv line>
             <div class="p-8 pointer-events-auto flex flex-col items-center justify-center">
-              <ParticlesImg :key="colorMode.value" src="/shelve.svg" alt="Shelve Logo" :max-width="200" :color="colorMode.value === 'dark' ? '#FFF' : '#000'" />
-              <ScrambleText class="mt-8 mb-2 main-gradient text-4xl sm:text-5xl" label="About Shelve" />
+              <ParticlesImg :key="colorMode.value" src="/shelve.svg" alt="Shelve Logo" :color="colorMode.value === 'dark' ? '#FFF' : '#000'" />
+              <ScrambleText class="sm:mt-8 mb-2 main-gradient text-4xl sm:text-5xl" label="About Shelve" />
               <p class="max-w-lg text-center text-xs text-(--ui-text-muted) sm:text-base">
                 Discover the story behind the project, its origins, and the journey to where we are today.
               </p>
