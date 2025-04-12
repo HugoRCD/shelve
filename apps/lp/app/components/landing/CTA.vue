@@ -5,9 +5,34 @@ const props = defineProps<{
   cta: Collections['index']['cta']
 }>()
 
-const headlines: Record<string, string> = props.cta.dynamicTitle
+// Utiliser useNuxtApp pour accéder à l'état du SSR
+const isHydrating = ref(false)
+const nuxtApp = useNuxtApp()
+onMounted(() => {
+  isHydrating.value = true
+})
 
-const userTimeSegment = useCookie<string | undefined>('userTimeSegment')
+const userTimeSegment = useCookie('userTimeSegment', {
+  maxAge: 60 * 60,
+  default: () => getTimeSegment(),
+})
+
+function getTimeSegment(): string {
+  const currentHour = new Date().getHours()
+  if (currentHour >= 6 && currentHour < 12) {
+    return 'morning'
+  }
+  if (currentHour >= 12 && currentHour < 18) {
+    return 'afternoon'
+  }
+  return 'evening'
+}
+
+onMounted(() => {
+  userTimeSegment.value = getTimeSegment()
+})
+
+const headlines: Record<string, string> = props.cta.dynamicTitle
 
 const timeSensitiveHeadline = computed(() => {
   const segment = userTimeSegment.value
