@@ -1,6 +1,6 @@
 about:
   - title: The Idea
-    image: /vercel-ascii.png
+    image: /about/vercel-ascii.png
     content: |
       Like many great tools, Shelve was born from a simple frustration. While managing **multiple projects**,
       I kept facing the same challenge: sharing environment variables with team members. The existing solutions
@@ -11,7 +11,7 @@ about:
       straightforward: make it easy for developers to share and manage their environment variables. Little did
       I know this small utility would grow into something much more significant.
   - title: The Beginning
-    image: /nuxt-ascii.png
+    image: /about/nuxt-ascii.png
     content: |
       Choosing **Nuxt** as Shelve's foundation wasn't just a technical decision - it became an opportunity
       to showcase the framework's incredible potential. More than an environment manager, Shelve aims to be
@@ -34,7 +34,7 @@ about:
       power in building modern, robust, and delightful web applications. Every new feature is an
       opportunity to demonstrate why Nuxt is the perfect choice for ambitious web projects.
   - title: The Future
-    image: /shelve-ascii.png
+    image: /about/shelve-ascii.png
     content: |
       The vision for Shelve extends far beyond environment management. I'm building a complete developer
       workspace that transforms how teams handle their development workflows. Every feature is carefully

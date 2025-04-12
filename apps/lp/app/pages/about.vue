@@ -15,7 +15,7 @@ const { data } = await useAsyncData('about', () => {
   <div class="relative overflow-hidden">
     <div class="fixed z-0 inset-0">
       <div class="max-w-5xl w-full mx-auto px-4 h-screen">
-        <div class="text-center w-full h-full flex flex-col italic font-mono items-center justify-center">
+        <div class="text-center w-full h-full flex flex-col items-center justify-center">
           <CrossedDiv line>
             <div class="p-8 pointer-events-auto flex flex-col items-center justify-center">
               <ParticlesImg :key="colorMode.value" src="/shelve.svg" alt="Shelve Logo" :max-width="200" :color="colorMode.value === 'dark' ? '#FFF' : '#000'" />
@@ -35,24 +35,22 @@ const { data } = await useAsyncData('about', () => {
       <USeparator />
       <div v-if="data" class="relative w-full pt-10 sm:pt-20 bg-(--ui-bg) z-10">
         <div v-for="(section, index) in data.about" :key="index" class="group max-w-5xl mx-auto px-4 pointer-events-auto">
-          <div class="flex flex-col sm:grid sm:grid-cols-12 gap-16 py-16 group-last:pb-0">
-            <div class="col-span-5 relative">
+          <div class="flex flex-col gap-16 py-16 group-last:pb-0">
+            <!--            <div class="col-span-5 relative">
               <ProseImg
                 :src="section.image"
                 :alt="section.title"
                 class="grayscale col-span-12 w-full mix-blend-lighten invert dark:invert-0"
               />
-            </div>
-            <div class="col-span-7">
-              <div class="space-y-3 mb-16">
-                <div class="text-(--ui-text-muted) text-center sm:text-left font-mono italic">
-                  Part {{ index + 1 < 10 ? '0' + (index + 1) : index + 1 }}
-                </div>
-                <h2 class="text-4xl sm:text-5xl text-center sm:text-left font-serif italic">
-                  {{ section.title }}
-                </h2>
-                <MDC class="text-sm leading-relaxed text-(--ui-text-muted)" :value="section.content" unwrap="p" />
+            </div>-->
+            <div class="space-y-3 mb-16">
+              <div class="text-(--ui-text-muted) text-center sm:text-left font-mono italic">
+                Part {{ index + 1 < 10 ? '0' + (index + 1) : index + 1 }}
               </div>
+              <h2 class="text-4xl sm:text-5xl text-center sm:text-left font-serif italic">
+                {{ section.title }}
+              </h2>
+              <MDC class="text-sm leading-relaxed text-(--ui-text-muted)" :value="section.content" unwrap="p" />
             </div>
             <div class="hidden group-last:flex col-span-12 justify-end bg-(--ui-bg) mb-16">
               <Signature />

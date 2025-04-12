@@ -76,7 +76,7 @@ defineShortcuts({
 
 <template>
   <Html lang="en">
-    <Body class="overscroll-y-none selection:bg-primary overflow-x-hidden selection:text-inverted" :class="route.path === '/' && 'index'">
+    <Body class="overscroll-y-none selection:bg-primary overflow-x-hidden selection:text-inverted">
       <ShelveMeta
         :default-og-image
         :title="route.meta.title"

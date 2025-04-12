@@ -11,16 +11,10 @@
 
 :root {
   --ui-primary: black;
-
-  .index {
-    --ui-bg: #f5f5f5;
-  }
+  --ui-bg: white;
 }
 
 .dark {
   --ui-primary: white;
-
-  .index {
-    --ui-bg: #000;
-  }
+  --ui-bg: #010101;
 }
