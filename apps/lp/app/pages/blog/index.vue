@@ -40,10 +40,25 @@ if (!posts.value) {
 </script>
 
 <template>
-  <div v-if="posts" class="py-20">
-    <UPageSection v-bind="page" :ui="{ title: 'text-left font-mono text-gradient', description: 'text-left mb-0' }" />
-    <USeparator class="mb-8" />
-    <UContainer>
+  <UPage v-if="page && posts">
+    <UPageHero
+      :description="page.description"
+      orientation="horizontal"
+      :ui="{
+        container: 'py-12 sm:py-16 lg:py-16',
+        wrapper: 'lg:w-[600px]',
+        title: 'text-left max-w-xl text-pretty',
+        description: 'text-left mt-2 text-md max-w-2xl text-pretty sm:text-md text-(--ui-text-muted)',
+      }"
+    >
+      <template #title>
+        <h1 class="font-normal main-gradient text-3xl sm:text-4xl lg:text-5xl">
+          {{ page.title }}
+        </h1>
+      </template>
+    </UPageHero>
+    <Divider />
+    <UContainer class="pt-8">
       <div class="flex flex-wrap gap-3 mb-6">
         <UButton
           v-for="tag in tags"
@@ -68,5 +83,5 @@ if (!posts.value) {
         <USkeleton v-for="i in 4" :key="i" class="h-32" />
       </div>
     </UContainer>
-  </div>
+  </UPage>
 </template>

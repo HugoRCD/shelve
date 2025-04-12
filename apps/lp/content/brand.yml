@@ -31,27 +31,21 @@ logo:
     - name: Black
       color: '#000000'
       icon: custom:shelve
-      usage: Primary choice for light backgrounds
     - name: White
       color: '#FFFFFF'
       icon: custom:shelve
-      usage: Primary choice for dark backgrounds
 colorPalette:
   description: Our color palette emphasizes clarity and sophistication, using carefully selected shades that maintain excellent contrast while being easy on the eyes
   primary:
-    - name: Rich Black
-      value: '#0A0A0A'
-      usage: Primary brand color, used for main elements
+    - name: Pure Black
+      value: '#010101'
     - name: Pure White
       value: '#FFFFFF'
-      usage: Clean backgrounds and contrast
   secondary:
     - name: Soft Black
-      value: '#141414'
-      usage: Secondary elements and depth
+      value: '#0A0A0A'
     - name: Interface Gray
       value: '#1A1A1A'
-      usage: Interactive elements and hover states
 typography:
   description: Our typography choices reflect our commitment to clarity and modern design
   primary: Geist

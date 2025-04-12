@@ -5,7 +5,7 @@ defineProps<{
 </script>
 
 <template>
-  <div class="p-6 rounded-md border border-solid border-(--ui-border)/50 bg-(--ui-bg-elevated) hover:bg-(--ui-bg-elevated)/50 transition-colors">
+  <div class="p-6 rounded-md border border-solid border-(--ui-border)/50 bg-(--ui-bg-muted)/20 hover:bg-(--ui-bg-muted)/50 transition-colors">
     <template v-if="font === 'geist'">
       <NuxtLink class="space-y-6 cursor-pointer" to="https://vercel.com/font">
         <div>
