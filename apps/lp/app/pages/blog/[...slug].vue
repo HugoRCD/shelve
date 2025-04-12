@@ -18,7 +18,7 @@ function paintResponse() {
   })
 }
 
-const [{ data: page, status }, { data: surround }] = await Promise.all([
+const [{ data: page }, { data: surround }] = await Promise.all([
   useAsyncData(kebabCase(path.value), () => paintResponse().then(() => nuxtApp.static[kebabCase(path.value)] ?? queryCollection('blog').path(path.value).first()), {
     watch: [path]
   }),
@@ -33,10 +33,7 @@ const blogNavigation = computed(() => navigation.value.find(item => item.path ==
 const breadcrumb = computed(() => mapContentNavigation(findPageBreadcrumb(blogNavigation?.value, page.value)).map(({ icon, ...link }) => link))
 
 if (page.value.image) {
-  useSeoMeta({
-    ogImage: page.value.image,
-    twitterImage: page.value.image
-  })
+  defineOgImage({ url: page.value.image })
 } else {
   defineOgImageComponent('Docs', {
     headline: breadcrumb.value.map(item => item.label).join(' > ')
@@ -44,6 +41,18 @@ if (page.value.image) {
     fonts: ['Geist:400', 'Geist:600'],
   })
 }
+
+const title = page.value.seo?.title || page.value.title
+const description = page.value.seo?.description || page.value.description
+const titleTemplate = ref('%s - Shelve Blog')
+
+useSeoMeta({
+  title,
+  titleTemplate,
+  description,
+  ogDescription: description,
+  ogTitle: titleTemplate.value?.includes('%s') ? titleTemplate.value.replace('%s', title) : title
+})
 
 const editThisPage = computed(() => ({
   icon: 'i-heroicons-pencil-square-solid',
@@ -55,7 +64,6 @@ const editThisPage = computed(() => ({
 
 <template>
   <UMain class="mt-20 px-2">
-    <ShelveMeta :default-og-image="false" :title="page?.title" :description="page?.description" />
     <UContainer class="relative min-h-screen">
       <UPage v-if="page">
         <ULink to="/blog" class="text-sm flex items-center gap-1">

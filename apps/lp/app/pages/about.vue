@@ -1,13 +1,24 @@
 <script setup lang="ts">
-definePageMeta({
-  title: 'About',
-  description: 'Discover the story behind the project, its origins, and the journey to where we are today.',
-})
+const { ogImage } = useAppConfig()
 
 const colorMode = useColorMode()
 
-const { data } = await useAsyncData('about', () => {
+const { data: page } = await useAsyncData('about', () => {
   return queryCollection('about').first()
+})
+
+const title = 'About Shelve'
+const description = 'Learn about Shelve\'s origins, the mission to simplify secrets management, and the vision for a unified, open-source developer workspace.'
+const titleTemplate = ref('%s - Our Story, Mission & Vision')
+
+defineOgImage({ url: ogImage })
+
+useSeoMeta({
+  title,
+  titleTemplate,
+  description,
+  ogDescription: description,
+  ogTitle: titleTemplate.value?.includes('%s') ? titleTemplate.value.replace('%s', title) : title
 })
 </script>
 
@@ -33,8 +44,8 @@ const { data } = await useAsyncData('about', () => {
       <div class="h-screen pointer-events-none" />
 
       <USeparator />
-      <div v-if="data" class="relative w-full pt-10 sm:pt-20 bg-(--ui-bg) z-10">
-        <div v-for="(section, index) in data.about" :key="index" class="group max-w-5xl mx-auto px-4 pointer-events-auto">
+      <div v-if="page" class="relative w-full pt-10 sm:pt-20 bg-(--ui-bg) z-10">
+        <div v-for="(section, index) in page.about" :key="index" class="group max-w-5xl mx-auto px-4 pointer-events-auto">
           <div class="flex flex-col gap-16 py-16 group-last:pb-0">
             <!--            <div class="col-span-5 relative">
               <ProseImg

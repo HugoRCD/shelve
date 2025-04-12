@@ -36,7 +36,7 @@ export default defineAppConfig({
     }
   },
   title: 'Shelve',
-  description: 'Shelve, is a project management tool for developers, etc... to make project creation and management easier.',
+  description: 'Your secure foundation for effortless secrets management',
   ogImage: 'https://shelve.cloud/og.png',
   email: 'contact@shelve.cloud',
   phone: '(+33) 6 21 56 22 18',

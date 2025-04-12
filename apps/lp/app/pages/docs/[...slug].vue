@@ -62,6 +62,26 @@ defineOgImageComponent('Docs', {
   fonts: ['Geist:400', 'Geist:600'],
 })
 
+const title = page.value.seo?.title || page.value.title
+const description = page.value.seo?.description || page.value.description
+const titleTemplate = ref('%s - Shelve Docs')
+
+useSeoMeta({
+  title,
+  titleTemplate,
+  description,
+  ogDescription: description,
+  ogTitle: titleTemplate.value?.includes('%s') ? titleTemplate.value.replace('%s', title) : title
+})
+
+defineOgImageComponent('Docs', {
+  headline: breadcrumb.value.length ? breadcrumb.value.map(link => link.label).join(' > ') : '',
+  title,
+  description
+}, {
+  fonts: ['Geist:400', 'Geist:600'],
+})
+
 const editThisPage = computed(() => ({
   icon: 'i-heroicons-pencil-square-solid',
   label: 'Edit this page',
@@ -92,7 +112,6 @@ const communityLinks = computed(() => [
 <template>
   <Header :links="[]" />
   <UMain>
-    <ShelveMeta :default-og-image="false" :title="page?.title" :description="page?.description" />
     <UContainer v-if="page">
       <UPage>
         <template #left>

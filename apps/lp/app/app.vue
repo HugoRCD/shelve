@@ -1,5 +1,18 @@
 <script setup lang="ts">
+import colors from 'tailwindcss/colors'
 import { Toaster } from 'vue-sonner'
+
+const appConfig = useAppConfig()
+const colorMode = useColorMode()
+const color = computed(() => colorMode.value === 'dark' ? (colors as any)[appConfig.ui.colors.neutral][950] : 'white')
+
+useHead({
+  link: appConfig.link,
+  meta: [
+    { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+    { key: 'theme-color', name: 'theme-color', content: color }
+  ]
+})
 
 useScriptPlausibleAnalytics({
   domain: 'shelve.cloud',
@@ -7,8 +20,6 @@ useScriptPlausibleAnalytics({
     src: 'https://analytics.hrcd.fr/js/script.js',
   }
 })
-
-const route = useRoute()
 
 const [{ data: navigation }, { data: files }] = await Promise.all([
   useAsyncData('navigation', () => {
@@ -31,7 +42,7 @@ const [{ data: navigation }, { data: files }] = await Promise.all([
 ])
 
 const links = computed(() => [
-  ...navigation.value.map(item => ({
+  ...navigation.value!.map(item => ({
     label: item.title,
     icon: item.icon,
     to: item.path === '/docs' ? '/docs/getting-started' : item.path
@@ -58,10 +69,6 @@ const links = computed(() => [
 
 provide('navigation', navigation!)
 
-const defaultOgImage = computed(() => {
-  return !route.path.startsWith('/docs/')
-})
-
 const { data, refresh } = useFetch('/llms.txt', {
   immediate: false
 })
@@ -77,12 +84,6 @@ defineShortcuts({
 <template>
   <Html lang="en">
     <Body class="overscroll-y-none selection:bg-primary overflow-x-hidden selection:text-inverted">
-      <ShelveMeta
-        :default-og-image
-        :title="route.meta.title"
-        :description="route.meta.description"
-      />
-
       <NuxtLoadingIndicator color="#FFF" />
 
       <UApp :tooltip="{ delayDuration: 0 }">

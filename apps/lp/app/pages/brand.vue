@@ -1,11 +1,24 @@
 <script setup lang="ts">
-definePageMeta({
-  title: 'Brand Guidelines',
-  description: 'Welcome to Shelve\'s brand guidelines. These guidelines ensure a consistent and professional representation of Shelve across all platforms, emphasizing our commitment to simplicity, elegance, and developer experience.',
-})
+const { ogImage } = useAppConfig()
 
 const { data: page } = await useAsyncData('brand', () => {
   return queryCollection('brand').first()
+})
+if (!page.value) {
+  throw createError({ statusCode: 404, message: 'Page not found', fatal: true })
+}
+
+const { title, description } = page.value
+const titleTemplate = ref('%s')
+
+defineOgImage({ url: ogImage })
+
+useSeoMeta({
+  title,
+  titleTemplate,
+  description,
+  ogDescription: description,
+  ogTitle: titleTemplate.value?.includes('%s') ? titleTemplate.value.replace('%s', title) : title
 })
 </script>
 

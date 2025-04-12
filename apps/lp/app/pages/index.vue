@@ -1,14 +1,20 @@
 <script setup lang="ts">
-import EnvCheck from '~/components/landing/EnvCheck.vue'
-
-useHead({
-  title: 'Shelve',
-  titleTemplate: 'Shelve',
-})
+const { title, description, ogImage } = useAppConfig()
 
 const { data: page } = await useAsyncData('index', () => queryCollection('index').first())
 if (!page.value)
   throw createError({ statusCode: 404, message: 'Page not found', fatal: true })
+
+const titleTemplate = ref('%s - Effortless secrets management')
+defineOgImage({ url: ogImage })
+
+useSeoMeta({
+  title,
+  titleTemplate,
+  description,
+  ogDescription: description,
+  ogTitle: titleTemplate.value?.includes('%s') ? titleTemplate.value.replace('%s', title) : title
+})
 </script>
 
 <template>

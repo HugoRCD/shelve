@@ -1,16 +1,32 @@
 <script setup lang="ts">
-definePageMeta({
-  title: 'Blog',
-  description: 'Explore our blog to learn more about our latest features, updates, and insights.',
-})
+const { ogImage } = useAppConfig()
 
 const route = useRoute()
 
 const { data: page } = await useAsyncData('blogPage', () => queryCollection('blogPage').first())
+if (!page.value) {
+  throw createError({ statusCode: 404, statusMessage: `Page not found: ${route.path}`, fatal: true })
+}
 
 const { data: posts, status } = await useAsyncData(route.path, () =>
   queryCollection('blog').order('date', 'DESC').all()
 )
+if (!posts.value) {
+  throw createError({ statusCode: 404, statusMessage: `Page not found: ${route.path}`, fatal: true })
+}
+
+const { title, description } = page.value
+const titleTemplate = ref('%s - Updates, Insights & Building in Public')
+
+defineOgImage({ url: ogImage })
+
+useSeoMeta({
+  title,
+  titleTemplate,
+  description,
+  ogDescription: description,
+  ogTitle: titleTemplate.value?.includes('%s') ? titleTemplate.value.replace('%s', title) : title
+})
 
 const active = ref('all')
 
@@ -33,10 +49,6 @@ const filteredPosts = computed(() => {
     )
   )
 })
-
-if (!posts.value) {
-  throw createError({ statusCode: 404, statusMessage: `Page not found: ${route.path}`, fatal: true })
-}
 </script>
 
 <template>

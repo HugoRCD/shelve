@@ -6,10 +6,8 @@ const { title: appTitle, link, description: appDescription, ogImage } = useAppCo
 const {
   title,
   description,
-  defaultOgImage = true,
   titleTemplate
 } = defineProps<{
-  defaultOgImage?: boolean,
   title?: string,
   titleTemplate?: string,
   description?: string,
@@ -29,7 +27,7 @@ useHead({
   ]
 })
 
-const seoMetadata = ref({
+useSeoMeta({
   title: title || appTitle,
   description: description || appDescription,
   author: 'Hugo Richard',
@@ -41,14 +39,9 @@ const seoMetadata = ref({
   ogSiteName: title || appTitle,
   ogTitle: title || appTitle,
   ogDescription: description || appDescription,
+  twitterImage: ogImage,
+  ogImage: ogImage
 })
-
-if (defaultOgImage) {
-  seoMetadata.value.twitterImage = ogImage
-  seoMetadata.value.ogImage = ogImage
-}
-
-useSeoMeta(seoMetadata.value)
 </script>
 
 <template>
