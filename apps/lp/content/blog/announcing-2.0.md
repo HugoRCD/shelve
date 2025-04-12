@@ -3,10 +3,11 @@ title: "Announcing 2.0"
 description: "Say hello to Shelve 2.0! A complete overhaul of the platform with a new visual identity, powerful features, and a focus on simplicity and elegance."
 image: /blog/2.0-release.png
 date: 04/05/2025
+minRead: 5
 tags:
   - release
 authors:
-  - name: Hugo
+  - name: Hugo Richard
     description: Creator of Shelve
     to: https://twitter.com/HugoRCD__
     target: _blank
