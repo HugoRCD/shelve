@@ -1,7 +1,7 @@
 export default defineNuxtPlugin(() => {
   const cookieName = 'userTimeSegment'
   const userTimeSegment = useCookie(cookieName, {
-    maxAge: 60 * 60 * 12, // 12 hours
+    maxAge: 60 * 60, // 1 hour
     path: '/',
     sameSite: 'lax',
   })
