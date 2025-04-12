@@ -4,19 +4,19 @@ const commands = ref([
     id: '1',
     name: 'Add new secret',
     icon: 'lucide:lock',
-    description: 'Create a new secret with the given name and value.'
+    description: 'Define a new secret variable for this project.'
   },
   {
     id: '2',
     name: 'Create a new project',
     icon: 'lucide:folder-plus',
-    description: 'Create a new project with the given name and options.',
+    description: 'Add a project to your workspace.',
   },
   {
     id: '3',
     name: 'Manage environment',
     icon: 'lucide:cloud',
-    description: 'Manage the environment variables for the project.',
+    description: 'Manage the environments for your current workspace.',
   }
 ])
 

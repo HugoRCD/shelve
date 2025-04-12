@@ -16,7 +16,7 @@ const formatDate = (dateString: string) => {
 </script>
 
 <template>
-  <div as="article" class="p-4 cursor-pointer rounded-lg relative hover:bg-(--ui-bg-muted)/10 transition-colors duration-200">
+  <article class="p-4 cursor-pointer rounded-lg relative hover:bg-(--ui-bg-muted)/10 transition-colors duration-200">
     <NuxtLink :to class="absolute inset-0" />
     <div class="flex md:flex-row flex-col gap-4 sm:gap-6">
       <NuxtImg
@@ -49,5 +49,5 @@ const formatDate = (dateString: string) => {
         </div>
       </div>
     </div>
-  </div>
+  </article>
 </template>

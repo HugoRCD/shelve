@@ -14,6 +14,8 @@ export default defineAppConfig({
     },
     icons: {
       loading: 'lucide:loader',
+      light: 'heroicons:sun',
+      dark: 'heroicons:moon',
     },
     checkbox: {
       defaultVariants: {

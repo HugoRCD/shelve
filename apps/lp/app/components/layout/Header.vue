@@ -135,7 +135,6 @@ const ui = computed(() => ({
 
     <template #right>
       <div class="flex items-center gap-2">
-        <UColorModeButton />
         <CustomButton to="https://app.shelve.cloud/login" size="xs">
           Open App
           <UKbd value="S" />
