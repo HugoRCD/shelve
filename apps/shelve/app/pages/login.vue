@@ -29,7 +29,7 @@ if (route.query.error === 'github' || route.query.error === 'google') {
     <div class="mx-auto w-full flex flex-col items-center justify-center gap-2 text-center">
       <UIcon name="custom:shelve" class="size-10" />
       <div class="flex flex-col items-center gap-1">
-        <h1 class="text-center text-3xl leading-9">
+        <h1 class="text-center text-3xl leading-9 main-gradient">
           Sign in to {{ title }}
         </h1>
         <p class="text-(--ui-text-muted) italic">

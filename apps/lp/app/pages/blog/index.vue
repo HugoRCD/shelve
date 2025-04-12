@@ -71,7 +71,7 @@ if (!posts.value) {
         />
       </div>
 
-      <div v-if="status !== 'pending'" class="flex flex-col">
+      <div v-if="status !== 'pending'" class="flex flex-col gap-4">
         <BlogPost
           v-for="(post, index) in filteredPosts"
           :key="index"

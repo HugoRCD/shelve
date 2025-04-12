@@ -105,7 +105,7 @@ const finalStats = computed(() => [
         }"
         class="overflow-hidden"
       >
-        <div class="noise flex gap-2 items-center">
+        <div class="flex gap-2 items-center">
           <span class="relative flex size-2">
             <span
               class="absolute bg-(--ui-bg-inverted) inline-flex size-full animate-ping rounded-full opacity-75"

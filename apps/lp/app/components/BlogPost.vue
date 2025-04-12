@@ -16,7 +16,7 @@ const formatDate = (dateString: string) => {
 </script>
 
 <template>
-  <CrossedDiv as="article" class="p-4 cursor-pointer border border-(--ui-border) rounded-lg relative hover:bg-(--ui-bg-muted)/30 transition-colors duration-200">
+  <div as="article" class="p-4 cursor-pointer rounded-lg relative hover:bg-(--ui-bg-muted)/10 transition-colors duration-200">
     <NuxtLink :to class="absolute inset-0" />
     <div class="flex md:flex-row flex-col gap-4 sm:gap-6">
       <NuxtImg
@@ -24,7 +24,7 @@ const formatDate = (dateString: string) => {
         :alt="post.title"
         loading="lazy"
         format="webp"
-        class="md:max-w-1/2 aspect-video object-cover"
+        class="md:max-w-1/2 aspect-video object-cover rounded-lg"
       />
       <div class="flex flex-col justify-around gap-1">
         <div class="flex flex-col gap-1">
@@ -49,5 +49,5 @@ const formatDate = (dateString: string) => {
         </div>
       </div>
     </div>
-  </CrossedDiv>
+  </div>
 </template>
