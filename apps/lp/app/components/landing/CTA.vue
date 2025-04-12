@@ -1,10 +1,11 @@
 <script setup lang="ts">
-const headlines: Record<string, string> = {
-  morning: 'Secure your build this morning.',
-  afternoon: 'Streamline your workflow this afternoon.',
-  evening: 'Ensure overnight builds run smoothly.',
-  default: 'Manage secrets effectively, anytime.'
-}
+import type { Collections } from '@nuxt/content'
+
+const props = defineProps<{
+  cta: Collections['index']['cta']
+}>()
+
+const headlines: Record<string, string> = props.cta.dynamicTitle
 
 const userTimeSegment = useCookie<string | undefined>('userTimeSegment')
 
@@ -22,7 +23,7 @@ const colorMode = useColorMode()
 <template>
   <UPageCTA
     :title="timeSensitiveHeadline"
-    description="Imagine your workflow, just smoother and more secure. That’s the developer experience Shelve is built to deliver."
+    :description="cta.description"
     class="relative rounded-none"
     :ui="{ links: 'gap-2' }"
   >
@@ -43,8 +44,8 @@ const colorMode = useColorMode()
       </span>
     </template>
     <template #links>
-      <CustomButton label="Get Started" to="https://app.shelve.cloud" />
-      <UButton label="Self-Host" to="/docs/self-hosting/docker" icon="simple-icons:docker" variant="ghost" />
+      <CustomButton v-bind="cta.links[0]" />
+      <UButton v-bind="cta.links[1]" :ui="{ label: 'bg-gradient-to-br from-(--ui-text-muted) to-(--ui-text-highlighted) to-50% bg-clip-text text-transparent' }" />
     </template>
   </UPageCTA>
 </template>

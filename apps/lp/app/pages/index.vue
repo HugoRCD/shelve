@@ -64,6 +64,6 @@ if (!page.value)
     <UPageSection>
       <LandingFaq :faq="page.faq" />
     </UPageSection>
-    <LandingCTA />
+    <LandingCTA :cta="page.cta" />
   </div>
 </template>

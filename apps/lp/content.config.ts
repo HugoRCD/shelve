@@ -131,6 +131,14 @@ export default defineContentConfig({
             defaultOpen: z.boolean().optional(),
             content: z.string().nonempty()
           }))
+        }),
+        cta: pageSectionSchema.extend({
+          dynamicTitle: z.object({
+            morning: z.string(),
+            afternoon: z.string(),
+            evening: z.string(),
+            default: z.string()
+          })
         })
       })
     }),
