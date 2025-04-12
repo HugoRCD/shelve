@@ -24,7 +24,7 @@ const selected = ref(commands.value[0])
 </script>
 
 <template>
-  <BgHighlight class="[mask-image:linear-gradient(to_bottom,white_50%,transparent)]">
+  <BgHighlight class="scale-90 sm:scale-100 [mask-image:linear-gradient(to_bottom,white_50%,transparent)]">
     <div class="bg-(--ui-bg)/50 p-2 w-[400px] rounded-md">
       <div class="screen-container p-2 rounded-md bg-(--ui-bg) flex size-full flex-col gap-2">
         <div v-for="command in commands" :key="command.id" class="cursor-pointer flex items-center gap-3 rounded-md px-2 py-1 hover:bg-(--ui-bg-muted)" :class="{ 'bg-(--ui-bg-accented)/40': selected?.id === command.id }" @click="selected = command">
