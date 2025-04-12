@@ -26,6 +26,12 @@ export default defineNuxtConfig({
     }
   },
 
+  runtimeConfig: {
+    public: {
+      payloadId: '',
+    }
+  },
+
   hub: {
     cache: true
   },

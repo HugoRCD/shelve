@@ -60,6 +60,14 @@ const editThisPage = computed(() => ({
   to: `https://github.com/hugorcd/shelve/edit/main/apps/lp/content/${page?.value?.stem}.md`,
   target: '_blank'
 }))
+
+const formatDate = (dateString: string) => {
+  return new Date(dateString).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric'
+  })
+}
 </script>
 
 <template>
@@ -78,14 +86,14 @@ const editThisPage = computed(() => ({
           />
           <div class="flex text-xs text-(--ui-text-muted) items-center justify-center gap-2">
             <span>
-              {{ page.date }}
+              {{ formatDate(page.date) }}
             </span>
             -
             <span>
               {{ page.minRead }} MIN READ
             </span>
           </div>
-          <h1 class="text-4xl main-gradient text-center">
+          <h1 class="text-4xl main-gradient text-center max-w-3xl mx-auto">
             {{ page.title }}
           </h1>
           <p class="text-(--ui-text-muted) text-center max-w-2xl mx-auto">
@@ -103,17 +111,17 @@ const editThisPage = computed(() => ({
             />
           </div>
         </div>
-        <UPageBody class="leading-relaxed">
+        <UPageBody class="max-w-3xl mx-auto">
           <Divider class="mt-4" />
           <ContentRenderer v-if="page.body" :value="page" />
 
-          <USeparator class="my-10">
+          <Divider class="my-10">
             <div class="flex items-center gap-2 text-sm text-(--ui-text-muted)">
               <UButton size="sm" variant="link" color="neutral" :to="editThisPage.to" target="_blank">
                 Edit this page on GitHub
               </UButton>
             </div>
-          </USeparator>
+          </Divider>
           <UContentSurround :surround />
         </UPageBody>
       </UPage>

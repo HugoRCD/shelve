@@ -134,9 +134,9 @@ const communityLinks = computed(() => [
           <UPageBody>
             <ContentRenderer v-if="page.body" :value="page" />
             <div>
-              <USeparator class="my-10">
+              <Divider class="my-10">
                 <div class="flex items-center gap-2 text-sm text-(--ui-text-muted)">
-                  <UButton size="sm" variant="link" color="neutral" to="https://github.com/nuxt/nuxt/issues/new/choose" target="_blank">
+                  <UButton size="sm" variant="link" color="neutral" to="https://github.com/hugorcd/shelve/issues/new/choose" target="_blank">
                     Report an issue
                   </UButton>
                   or
@@ -144,7 +144,7 @@ const communityLinks = computed(() => [
                     Edit this page on GitHub
                   </UButton>
                 </div>
-              </USeparator>
+              </Divider>
               <UContentSurround :surround />
             </div>
           </UPageBody>
