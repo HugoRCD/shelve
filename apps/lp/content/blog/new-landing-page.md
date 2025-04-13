@@ -1,7 +1,7 @@
 ---
 title: "Crafting Clarity: Introducing the New Shelve Landing Page"
 description: "Experience the redesigned shelve.cloud – a reflection of Shelve's commitment to simplicity, security, and exceptional Developer Experience."
-image: /blog/new-landing-page-hero.png
+image: /blog/new-landing-page.png
 date: 04/12/2025
 minRead: 5
 tags:
