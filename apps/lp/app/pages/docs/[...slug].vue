@@ -145,7 +145,7 @@ const communityLinks = computed(() => [
                   </UButton>
                 </div>
               </Divider>
-              <UContentSurround :surround />
+              <Surround :surround />
             </div>
           </UPageBody>
 

@@ -122,7 +122,7 @@ const formatDate = (dateString: string) => {
               </UButton>
             </div>
           </Divider>
-          <UContentSurround :surround />
+          <Surround :surround />
         </UPageBody>
       </UPage>
     </UContainer>
