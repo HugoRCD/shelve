@@ -60,7 +60,7 @@ const finalStats = computed(() => [
   <div>
     <ClientOnly>
       <Teleport defer to="#visitors">
-        <div class="fixed z-[999] flex items-center justify-center bottom-2 w-full">
+        <div class="fixed z-[999] right-2 bottom-2">
           <ULink
             to="https://github.com/HugoRCD/nuxt-visitors"
             target="_blank"
@@ -74,15 +74,13 @@ const finalStats = computed(() => [
                 class="relative bg-(--ui-success) inline-flex size-2 scale-90 rounded-full"
               />
             </span>
-            <span class="sm:flex hidden">
-              Active visitors:
-            </span>
             <NumberFlow
-              class="text-sm font-bold font-mono"
+              class="text-sm font-bold"
               :value="visitors ?? 0"
               continuous
               will-change
             />
+            <UIcon name="lucide:users" class="size-3" />
           </ULink>
         </div>
       </Teleport>

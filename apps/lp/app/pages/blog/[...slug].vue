@@ -60,6 +60,7 @@ const editThisPage = computed(() => ({
   to: `https://github.com/hugorcd/shelve/edit/main/apps/lp/content/${page?.value?.stem}.md`,
   target: '_blank'
 }))
+const articleLink = computed(() => `${window.location}${path.value}`)
 
 const formatDate = (dateString: string) => {
   return new Date(dateString).toLocaleDateString('en-US', {
@@ -117,9 +118,22 @@ const formatDate = (dateString: string) => {
 
           <Divider class="my-10">
             <div class="flex items-center gap-2 text-sm text-(--ui-text-muted)">
-              <UButton size="sm" variant="link" color="neutral" :to="editThisPage.to" target="_blank">
-                Edit this page on GitHub
-              </UButton>
+              <UButton
+                size="sm"
+                variant="link"
+                color="neutral"
+                label="Copy link"
+                @click="copyToClipboard(articleLink, 'Article link copied to clipboard')"
+              />
+              -
+              <UButton
+                size="sm"
+                variant="link"
+                color="neutral"
+                :to="editThisPage.to"
+                target="_blank"
+                label="Edit this page on GitHub"
+              />
             </div>
           </Divider>
           <Surround :surround />
