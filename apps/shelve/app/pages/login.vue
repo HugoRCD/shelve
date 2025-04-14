@@ -7,9 +7,7 @@ definePageMeta({
 })
 
 const route = useRoute()
-const otp = ref(false)
 const focus = ref(false)
-const email = ref('')
 
 if (route.query.error === 'github' || route.query.error === 'google') {
   toast.error(`An error occurred while logging in with ${route.query.error}.`, {

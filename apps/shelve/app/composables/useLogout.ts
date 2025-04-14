@@ -1,4 +1,12 @@
 export async function useLogout() {
-  await useUserSession().clear()
-  navigateTo('/login')
+  const { signOut } = useAuth()
+  const router = useRouter()
+
+  await signOut({
+    fetchOptions: {
+      onSuccess: () => {
+        router.push('/login')
+      },
+    },
+  })
 }

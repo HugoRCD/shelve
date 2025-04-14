@@ -45,6 +45,9 @@ async function createTeamAndCompleteOnboarding(event: FormSubmitEvent<Schema>) {
     toast.error('Failed to complete onboarding')
   }
 }
+
+const { useSession } = useAuth()
+const session = useSession()
 </script>
 
 <template>
@@ -128,5 +131,8 @@ async function createTeamAndCompleteOnboarding(event: FormSubmitEvent<Schema>) {
         />
       </UForm>
     </Motion>
+    <span class="text-xs max-w-sm mx-auto mt-4">
+      {{ session }}
+    </span>
   </div>
 </template>
