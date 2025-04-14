@@ -8,13 +8,10 @@ type ParticleProps = {
   color?: string
   width?: number
   height?: number
-  mobileWidth?: number
-  mobileHeight?: number
   gravity?: number
   mouseForce?: number
   noise?: number
   particleGap?: number
-  imageClass?: string
 }
 
 const props = withDefaults(defineProps<ParticleProps>(), {
@@ -24,63 +21,78 @@ const props = withDefaults(defineProps<ParticleProps>(), {
   noise: 4,
   particleGap: 2,
   alt: '',
-  width: 400,
-  height: 150,
-  mobileWidth: 200,
-  mobileHeight: 100,
+  width: 64,
+  height: 32,
 })
 
 const img = ref()
+const particleContainer = ref()
 const particleInstance = ref()
 
-const isMobile = ref(false)
+const pxWidth = computed(() => props.width * 4)
+const pxHeight = computed(() => props.height * 4)
 
-const checkMobile = () => {
-  isMobile.value = window.innerWidth <= 768
-}
-
-const updateParticleSize = () => {
-  if (!particleInstance.value) return
-
-  const width = isMobile.value ? props.mobileWidth : props.width
-  const height = isMobile.value ? props.mobileHeight : props.height
-
-  particleInstance.value.width = width
-  particleInstance.value.height = height
-  particleInstance.value.start()
-}
-
-onMounted(() => {
-  checkMobile()
+const initParticles = () => {
+  if (!img.value || !img.value.complete) return
 
   // @ts-expect-error - This is not typed
   particleInstance.value = new NextParticle({
     color: props.color,
     image: img.value,
-    width: isMobile.value ? props.mobileWidth : props.width,
-    height: isMobile.value ? props.mobileHeight : props.height,
+    width: pxWidth.value,
+    height: pxHeight.value,
     gravity: props.gravity,
     mouseForce: props.mouseForce,
     noise: props.noise,
     particleGap: props.particleGap
   })
+}
 
-  window.addEventListener('resize', () => {
-    const wasMobile = isMobile.value
-    checkMobile()
-    if (wasMobile !== isMobile.value) {
-      updateParticleSize()
+const handleResize = () => {
+  if (!particleInstance.value) return
+
+  particleInstance.value.width = pxWidth.value
+  particleInstance.value.height = pxHeight.value
+
+  if (typeof particleInstance.value.start === 'function') {
+    particleInstance.value.start()
+  }
+}
+
+onMounted(() => {
+  if (img.value) {
+    if (img.value.complete) {
+      initParticles()
+    } else {
+      img.value.onload = initParticles
     }
-  })
+  }
+
+  window.addEventListener('resize', handleResize)
 })
 
-onUnmounted(() => {
-  window.removeEventListener('resize', checkMobile)
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', handleResize)
+
+  if (particleInstance.value && typeof particleInstance.value.destroy === 'function') {
+    try {
+      particleInstance.value.destroy()
+    } catch (e) {
+      particleInstance.value = null
+    }
+  }
 })
 </script>
 
 <template>
-  <div class="particle-container">
+  <div
+    ref="particleContainer"
+    class="particle-container"
+    :style="{
+      width: `${pxWidth}px`,
+      height: `${pxHeight}px`
+    }"
+  >
     <img
       ref="img"
       class="hidden"
@@ -92,7 +104,24 @@ onUnmounted(() => {
 
 <style scoped>
 .particle-container {
-  width: fit-content;
+  position: relative;
   margin: 0 auto;
+}
+
+.hidden {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .particle-container {
+    transform: scale(0.7);
+    transform-origin: center center;
+  }
+}
+
+@media (max-width: 480px) {
+  .particle-container {
+    transform: scale(0.7);
+  }
 }
 </style>

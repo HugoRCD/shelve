@@ -1,54 +1,120 @@
-title: '# The all-in-one developer [workspace]{ .italic .animated-text }'
-description: Automate your workflow, manage your projects, and work faster with your team.
-cta: Press :kbd{value="S"} to start your journey
-features:
-  title: Features
-  description: Shelve is packed with features that make managing your environment variables a breeze. Here are some of the highlights.
-  items:
-    - title: Secrets Injection
-      description: Say goodbye to .env files and start your application without .env with runtime secrets injection. No more env files, more security.
-      icon: lucide:cpu
-    - title: Seamless Environment Management
-      description: One login, all projects. Push and pull environment variables instantly across your entire team without the hassle.
-      icon: lucide:lock
-    - title: Powerful CLI Experience
-      description: A CLI-first approach that makes managing env variables feel natural. Simple commands, powerful results.
-      icon: lucide:terminal
-    - title: Built for Teams
-      description: Manage multiple teams, control access levels, and collaborate effortlessly. Perfect for organizations with multiple projects.
-      icon: lucide:users
-    - title: Native Monorepo Support
-      description: Working with monorepos? Shelve automatically detects and manages configurations across all your projects.
-      icon: lucide:git-fork
-    - title: GitHub Integration
-      description: Sync your environment variables directly with GitHub Secrets. One click to secure your GitHub Actions workflows.
-      icon: simple-icons:github
-    - title: Self-Hosting Ready
-      description: Deploy Shelve on your own infrastructure with Docker. Keep full control of your data.
-      icon: lucide:cloud
-    - title: Advanced Integrations
-      description: 'More integrations coming soon: Vercel, Coolify, and more.'
-      icon: lucide:puzzle
-      soon: true
+hero:
+  title: Your secure foundation for effortless secrets management
+  description: Centralize, secure, and sync all your application secrets effortlessly. Manage team access, integrate via CLI & GitHub, and accelerate your deployments with confidence.
+  links:
+    - label: Start Securing Secrets
+    - label: Read the Docs
+      variant: ghost
+      size: md
+      to: /docs/getting-started
+sections:
+  - id: secrets
+    title: Secrets Management, Simplified
+    description: Shelve provides the secure, central platform you need for effortless secrets management. Bring all your API keys, tokens, and environment variables into one organized dashboard. Sync them seamlessly across stages using our powerful CLI and GitHub integration, ensuring your team always has the right configuration.
+    links:
+      - label: Secrets injection
+        size: xs
+        icon: lucide:syringe
+        variant: ghost
+      - label: CLI Access
+        size: xs
+        icon: lucide:terminal
+        variant: ghost
+      - label: Api Keys
+        size: xs
+        icon: lucide:key
+        variant: ghost
+  - id: env
+    title: Ensure Environment Parity
+    description: Stop runtime errors caused by missing variables. Shelve detects inconsistencies across your environments instantly.
+    links:
+      - label: Consistency Check
+        size: xs
+        icon: lucide:check-circle
+        variant: ghost
+      - label: Environment Sync
+        size: xs
+        icon: lucide:refresh-ccw
+        variant: ghost
+  - id: team
+    title: Built for Seamless Teamwork
+    description: Invite team members, manage access with clear roles (Owner, Admin, Member), and ensure everyone works with the correct, up-to-date configuration without compromising security.
+    links:
+      - label: Team Management
+        size: xs
+        icon: lucide:users
+        variant: ghost
+      - label: Role-Based Access
+        size: xs
+        icon: lucide:shield-check
+        variant: ghost
+  - id: github
+    title: Keep GitHub Secrets Synced, Effortlessly
+    description: Connect your Shelve projects to GitHub repositories via our official GitHub App. Automatically keep your GitHub Actions secrets and repository secrets perfectly synchronized with your single source of truth in Shelve, eliminating manual updates.
+    links:
+      - label: GitHub App
+        size: xs
+        icon: simple-icons:github
+        variant: ghost
+      - label: Automatic Sync
+        size: xs
+        icon: lucide:refresh-ccw
+        variant: ghost
+      - label: CI/CD Integration
+        size: xs
+        icon: lucide:git-pull-request
+        variant: ghost
+  - id: console
+    title: Command Everything
+    description: Hit Cmd+K (or Ctrl+K) to unlock Shelve's command center. Instantly search, navigate, and execute actions across your entire workspace—from switching projects to managing secrets. The ultimate shortcut to peak productivity.
+    links:
+      - label: Quick Search
+        size: xs
+        icon: lucide:search
+        variant: ghost
+      - label: Keyboard First
+        size: xs
+        icon: lucide:keyboard
+        variant: ghost
+      - label: Warp Speed Navigation
+        size: xs
+        icon: lucide:fast-forward
+        variant: ghost
 faq:
   title: Frequently Asked Questions
-  description: Frequently asked questions about Shelve. If you have a question that is not answered here, feel free to contact us.
-  cta:
-    label: Contact us
-    to: mailto:contact@shelve.cloud
+  description: Find answers to common questions about Shelve. If you don't see your question here, feel free to reach out.
+  links:
+    - label: Contact us
+      to: mailto:contact@shelve.cloud
   items:
     - label: Is Shelve free?
       defaultOpen: true
-      content: Yes! Shelve is completely free and open-source. While we may introduce additional features in the future, our core functionality will always remain free and accessible to everyone.
+      content: Yes! Shelve is **open-source** and **free** to use. We're committed to providing powerful core secrets management accessible to all developers. While we might introduce optional advanced features in the future, the core Shelve experience will always remain free.
     - label: Is Shelve secure?
-      content: Security is our top priority. We use industry-standard **encryption (AES-256)** to protect your data, and all variables are encrypted at rest. Being open-source, our security practices are transparent and can be audited by anyone on GitHub.
+      content: Security is fundamental to Shelve. Your secrets are hashed **(SHA-256)** for integrity and encrypted at rest using strong **AES-256 encryption**. Our open-source nature means our security practices are fully transparent and can be audited by the community directly on GitHub.
     - label: Can I self-host Shelve?
-      content: Absolutely! Shelve can be [self-hosted using Docker](/docs/self-hosting/docker) or with one-click using [Coolify](/docs/self-hosting/coolify). Self-hosting gives you full control over your data and infrastructure.
+      content: Absolutely. Shelve is designed for flexibility, including self-hosting. Deploy easily via [Docker](/docs/self-hosting/docker) or use a one-click setup with [Coolify](/docs/self-hosting/coolify) for complete control and data sovereignty over your secrets infrastructure.
     - label: Does Shelve integrate with other tools?
-      content: Yes! Shelve currently integrates with GitHub for secrets management, with more integrations planned. You can sync your environment variables directly with [GitHub Secrets](/docs/integrations/github).
+      content: Yes. Seamless integration is key to Shelve's vision. We currently offer robust synchronization with [GitHub Secrets](/docs/integrations/github), and we're actively working on expanding our integrations with more platforms and tools to further streamline your workflow.
     - label: How can I contribute to Shelve?
-      content: We welcome contributions! You can contribute by submitting PRs, reporting bugs, suggesting features, or improving our documentation. Check our [Contributing Guide](/docs/contributing) to get started.
+      content: We'd love your help! Shelve thrives on community contributions. Whether it's submitting PRs, reporting issues, suggesting features, or enhancing documentation, every contribution matters. Find out how to get involved in our [Contributing Guide](/docs/contributing).
     - label: Is Shelve production-ready?
-      content: Yes, Shelve is being actively used in production environments. While we're constantly adding new features, the core functionality is stable and reliable.
+      content: Yes. Shelve is actively used and trusted in production by developers and teams. The core platform is stable and reliable, and we're committed to continuous improvement and adding value.
     - label: How can I get support?
       content: For technical support, you can open an issue on [GitHub](https://git.new/shelve) or reach out via email at contact@shelve.cloud.
+cta:
+  dynamicTitle:
+    morning: Secure your build this morning
+    afternoon: Streamline your workflow this afternoon
+    evening: Ensure overnight builds run smoothly
+    default: Manage secrets effectively, anytime
+  description: Imagine your workflow, just smoother and more secure. That’s the developer experience Shelve is built to deliver.
+  links:
+    - label: Get Started
+      to: https://app.shelve.cloud
+      size: md
+    - label: Self-host
+      to: /docs/self-hosting
+      icon: simple-icons:docker
+      variant: ghost
+      size: md

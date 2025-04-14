@@ -1,59 +1,40 @@
 about:
-  - title: The Idea
-    image: /vercel-ascii.png
+  - title: The Spark
+    image: /about/vercel-ascii.png
     content: |
-      Like many great tools, Shelve was born from a simple frustration. While managing **multiple projects**,
-      I kept facing the same challenge: sharing environment variables with team members. The existing solutions
-      were either too expensive or too complex. Vercel's approach was elegant, but being locked behind an
-      expensive team plan, it wasn't accessible to everyone.
+      Shelve, like many tools developers rely on, started from a common frustration.
+      Managing multiple projects meant constantly wrestling with sharing `.env` files and environment variables across teams.
+      Existing solutions often felt overly complex or locked behind expensive plans – even elegant approaches like Vercel's weren't universally accessible.
       :br
-      One evening, tired of copying and pasting .env files, I started building a simple **CLI tool**. The goal was
-      straightforward: make it easy for developers to share and manage their environment variables. Little did
-      I know this small utility would grow into something much more significant.
-  - title: The Beginning
-    image: /nuxt-ascii.png
+      Tired of the copy-paste grind and seeking a **simpler, more open alternative**, I began building a CLI tool.
+      The initial goal was modest: make sharing and managing environment variables straightforward and secure.
+      But it quickly became clear that the need for an **accessible**, **developer-focused** solution ran deeper.
+  - title: Building the Foundation
+    image: /about/nuxt-ascii.png
     content: |
-      Choosing **Nuxt** as Shelve's foundation wasn't just a technical decision - it became an opportunity
-      to showcase the framework's incredible potential. More than an environment manager, Shelve aims to be
-      a testament to what's possible with modern Nuxt development.
+      Choosing the right technology was crucial.
+      **Nuxt** emerged as the ideal foundation, not just for its technical power, but because its focus on **Developer Experience (DX)**
+      mirrored the core philosophy intended for Shelve.
       :br
-      Built with the latest and most powerful features of the Nuxt ecosystem, Shelve pushes the boundaries
-      of what a web application can be. From the seamless **server-side capabilities** to the elegant
-      components of **Nuxt UI**, from blazing-fast performance to real-time updates - every feature
-      demonstrates Nuxt's strength in building complex applications.
-      :br
-      Developing in public and open-source, Shelve serves as a living example of Nuxt's potential.
-      It shows how the framework excels at handling complex state management, real-time communications,
-      and modern development patterns while maintaining an exceptional developer experience.
-      :br
-      The project has evolved into a playground for Nuxt's capabilities: type-safe APIs, modern
-      monorepo architecture, advanced component design - all working together seamlessly. It proves
-      that with Nuxt, you don't have to choose between powerful features and developer happiness.
-      :br
-      Through this journey, Shelve has become more than just a tool - it's a showcase of Nuxt's
-      power in building modern, robust, and delightful web applications. Every new feature is an
-      opportunity to demonstrate why Nuxt is the perfect choice for ambitious web projects.
-  - title: The Future
-    image: /shelve-ascii.png
+      Leveraging Nuxt allowed Shelve to be built with a focus on **real-time updates, a seamless user interface (thanks to Nuxt UI)**, and **robust security**,
+      all without sacrificing the elegant simplicity we aimed for.
+      It proved essential in crafting a tool that is both powerful under the hood and intuitive to use daily.
+      Shelve became, in part, a demonstration of how a focus on great DX in the framework translates directly into a better end-product for users.
+  - title: 'Beyond Secrets: The Vision'
+    image: /about/shelve-ascii.png
     content: |
-      The vision for Shelve extends far beyond environment management. I'm building a complete developer
-      workspace that transforms how teams handle their development workflows. Every feature is carefully
-      crafted with developer experience in mind, making complex tasks feel natural and intuitive.
+      Shelve's journey is just beginning. The vision extends beyond secrets management towards a unified **developer workspace** –
+      a central hub designed to streamline critical development workflows and eliminate friction.
+      Every feature is meticulously crafted with **Developer Experience** as the guiding principle,
+      aiming for that feeling of "this is how it _should_ work."
       :br
-      The roadmap is ambitious: deeper integrations with development tools, ecosystem-wide variable
-      management, advanced automation features, and even smarter collaboration tools. Imagine managing
-      entire development ecosystems from one place, with every tool and service working in perfect harmony.
+      The roadmap includes deeper integrations, managing configurations beyond just secrets (imagine syncing dotfiles or CI templates across repos!),
+      powerful automation, and smarter collaboration tools – all integrated seamlessly.
+      The goal? To give developers back their most valuable asset: **time and focus**.
       :br
-      I'm particularly excited about pushing the boundaries of what's possible with modern web technologies.
-      From real-time updates to advanced animations, from intelligent automations to seamless integrations -
-      every new feature is an opportunity to showcase the beauty of well-crafted software.
+      Continuous UI refinement is key, aiming for elegance and moments of delight in every interaction.
+      But fundamentally, Shelve remains committed to its core values: **open-source, accessible, secure, and built _for developers_**.
+      In an ecosystem often trending towards closed, expensive tooling,
+      Shelve champions the idea that powerful tools can, and should, empower everyone.
       :br
-      UI refinements are constantly in progress, aiming to make Shelve not just functional, but a joy to use.
-      The focus is on creating moments of delight - those small interactions that make developers smile and
-      think "this is how it should work."
-      :br
-      But perhaps most importantly, Shelve will always stay true to its roots: open-source, accessible, and
-      built for developers. In a world where development tools are increasingly becoming closed and expensive,
-      Shelve stands as proof that great tools can be both powerful and accessible to everyone.
-      :br
-      This is just the beginning of Shelve's journey - and there's so much more to come.
+      Stay tuned – there's much more to build.

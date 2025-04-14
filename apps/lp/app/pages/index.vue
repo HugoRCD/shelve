@@ -1,93 +1,75 @@
 <script setup lang="ts">
-useHead({
-  title: 'Shelve',
-  titleTemplate: 'Shelve',
-})
-
-const copy = ref(false)
+const { title, description, ogImage } = useAppConfig()
 
 const { data: page } = await useAsyncData('index', () => queryCollection('index').first())
 if (!page.value)
   throw createError({ statusCode: 404, message: 'Page not found', fatal: true })
 
-function useClipboard(text: string) {
-  copyToClipboard(text, 'Copied to clipboard')
-  copy.value = true
-  setTimeout(() => {
-    copy.value = false
-  }, 1000)
-}
+const titleTemplate = ref('%s - Effortless secrets management')
+defineOgImage({ url: ogImage })
+
+useSeoMeta({
+  title,
+  titleTemplate,
+  description,
+  ogDescription: description,
+  ogTitle: titleTemplate.value?.includes('%s') ? titleTemplate.value.replace('%s', title) : title
+})
 </script>
 
 <template>
-  <div v-if="page" class="relative flex flex-col gap-4 [--ui-container:75rem]">
-    <div id="visitors" class="absolute">
-      <!-- active visitors -->
-    </div>
-    <div class="flex h-full flex-col items-center justify-center gap-3">
-      <LandingHero
-        class="h-64"
-        :title="page.title"
-        :description="page.description"
-        :cta="page.cta"
-      />
-    </div>
-    <UPageSection orientation="horizontal" :ui="{ container: 'sm:pb-0 lg:pb-8' }">
-      <template #leading>
-        <div class="text-left">
-          <NuxtLink href="https://www.uneed.best/tool/shelve">
-            <img src="https://www.uneed.best/EMBED3B.png" alt="Uneed Embed Badge" width="150">
-          </NuxtLink>
-          <h3 class="main-gradient italic text-2xl mb-2 mt-4">
-            <ScrambleText label="> Welcome to Shelve" />
-          </h3>
-          <p class="text-(--ui-text-muted)">
-            Shelve is the best place to manage your projects, alone or with your team. Store your project secrets, data, files and more in one place.
-            Use our CLI to manage your projects without leaving your terminal.
-          </p>
-        </div>
-      </template>
-      <div class="relative flex items-center justify-center size-full">
-        <div class="absolute bottom-16 z-20 flex items-center justify-center [mask-image:linear-gradient(to_bottom,white,transparent)]">
-          <div
-            class="flex items-center justify-center gap-4 rounded-md bg-(--ui-bg-inverted)/5 px-4 py-2 backdrop-blur-lg"
-            @click="useClipboard('npx nypm add -D @shelve/cli')"
+  <div v-if="page" class="relative flex flex-col gap-4 overflow-hidden">
+    <div id="visitors" class="absolute" />
+    <LandingHero :title="page.hero.title" :description="page.hero.description" :links="page.hero.links" />
+
+    <div class="relative">
+      <BgGradient />
+      <UPageSection
+        v-for="(section, index) in page.sections"
+        :key="index"
+        :description="section.description"
+        :links="section.links"
+        orientation="horizontal"
+        :reverse="index % 2 === 0"
+        :ui="{
+          container: 'sm:pb-0 lg:pb-8',
+          title: 'text-xl sm:text-xl lg:text-2xl font-normal',
+          description: 'mt-2 text-sm sm:text-md lg:text-sm text-(--ui-text-muted)',
+          links: 'mt-4 gap-3'
+        }"
+      >
+        <template #title>
+          <ScrambleText :label="section.title" class="main-gradient" />
+        </template>
+
+        <template #links>
+          <Motion
+            v-for="(link, _index) in section.links"
+            :key="_index"
+            as-child
+            :initial="{ opacity: 0, transform: 'translateY(20px)' }"
+            :while-in-view="{ opacity: 1, transform: 'translateY(0)' }"
+            :transition="{ delay: 0.2 + 0.2 * _index }"
+            :in-view-options="{ once: true }"
           >
-            <div class="flex cursor-pointer items-center justify-center gap-2 text-sm text-(--ui-text-muted)">
-              <span>
-                npx nypm add -D @shelve/cli
-              </span>
-              <UIcon v-if="!copy" name="lucide:copy" />
-              <UIcon v-else name="lucide:check" class="text-(--ui-primary) text-lg" />
-            </div>
-          </div>
+            <UButton class="cursor-default hover:bg-transparent" :ui="{ label: 'bg-gradient-to-br from-(--ui-text-muted) to-(--ui-text-highlighted) to-50% bg-clip-text text-transparent' }" v-bind="link" />
+          </Motion>
+        </template>
+        <div class="min-h-[300px] flex items-center justify-center">
+          <LandingInstall v-if="section.id === 'secrets'" />
+          <LandingEnvCheck v-if="section.id === 'env'" />
+          <LandingGithubSync v-if="section.id === 'github'" />
+          <LandingTeams v-if="section.id === 'team'" />
+          <LandingConsole v-if="section.id === 'console'" />
         </div>
-
-        <div class="relative py-40 w-full">
-          <div class="absolute inset-0 flex items-center justify-center [mask-image:linear-gradient(to_bottom,white,transparent)]">
-            <div class="bg-(--ui-bg-inverted)/2.5 absolute size-96 rounded-full shadow-xl" />
-
-            <div class="bg-(--ui-bg-inverted)/2.5 absolute size-[19rem] rounded-full border border-white/5 shadow-xl" />
-
-            <div class="bg-(--ui-bg-inverted)/2.5 absolute size-56 rounded-full border border-white/10 shadow-xl" />
-
-            <div class="bg-(--ui-bg-inverted)/2.5 absolute size-36 rounded-full border border-dashed border-white/15 shadow-xl" />
-          </div>
-
-          <div class="relative flex items-center justify-center">
-            <div class="flex size-16 items-center justify-center rounded-full border border-white/10 bg-(--ui-bg-inverted)/2.5 p-3 shadow-md">
-              <UIcon name="lucide:lock" class="size-8 text-(--ui-text-muted)" />
-            </div>
-          </div>
-        </div>
-      </div>
-    </UPageSection>
-    <LandingFeatures :features="page.features" />
+      </UPageSection>
+    </div>
     <UPageSection>
       <LandingStats />
     </UPageSection>
     <UPageSection>
       <LandingFaq :faq="page.faq" />
     </UPageSection>
+    <LandingCTA :cta="page.cta" />
   </div>
 </template>

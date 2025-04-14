@@ -1,8 +1,10 @@
 <script setup lang="ts">
+import type { ButtonProps } from '@nuxt/ui'
+
 defineProps<{
   title: string
   description: string
-  cta: string
+  links?: ButtonProps[]
 }>()
 
 defineShortcuts({
@@ -16,32 +18,130 @@ defineShortcuts({
 </script>
 
 <template>
-  <div class="z-20 h-[400px] w-full bg-dotted sm:p-0 p-5 relative flex items-center justify-center overflow-hidden">
-    <div>
-      <div class="flex items-center justify-center">
-        <Logo :text="false" lp size="size-10" />
-      </div>
-      <MDC
-        :value="title"
-        class="mx-auto max-w-md text-pretty *:font-normal *:mb-2 text-center text-3xl sm:text-4xl"
-      />
-      <p class="mx-auto mt-2 max-w-lg text-center text-(--ui-text-muted) sm:block">
-        {{ description }}
-      </p>
-      <MDC
-        class="mt-4 hidden text-center text-(--ui-text-muted) sm:block"
-        :value="cta"
-      />
-      <div class="mt-4 sm:hidden flex-col items-center justify-center gap-2 flex sm:gap-4">
-        <UButton
-          to="https://app.shelve.cloud/login"
-          label="Start your journey"
-          icon="lucide:arrow-right"
-          trailing
-        />
-      </div>
-    </div>
+  <UPageHero
+    orientation="horizontal"
+    :ui="{
+      container: 'py-18 sm:py-24 lg:py-32',
+      wrapper: 'lg:w-[600px]',
+      title: 'text-left max-w-xl text-pretty',
+      description: 'text-left mt-2 text-md max-w-2xl text-pretty sm:text-md text-(--ui-text-muted)',
+      links: 'mt-4 justify-start'
+    }"
+  >
+    <template #title>
+      <Motion
+        :initial="{
+          scale: 1.1,
+          opacity: 0,
+          filter: 'blur(20px)'
+        }"
+        :animate="{
+          scale: 1,
+          opacity: 1,
+          filter: 'blur(0px)'
+        }"
+        :transition="{
+          duration: 0.6,
+          delay: 0.1
+        }"
+      >
+        <h1 class="font-normal main-gradient text-3xl sm:text-4xl lg:text-5xl">
+          {{ title }}
+        </h1>
+      </Motion>
+    </template>
 
-    <div class="size-60 rounded-full dark:bg-gradient-to-br from-(--ui-bg-inverted) to-(--ui-bg-inverted)/50 absolute bottom-0 left-0 right-0 mx-auto -mb-40 blur-[200px] -z-1" />
-  </div>
+    <template #description>
+      <Motion
+        :initial="{
+          scale: 1.1,
+          opacity: 0,
+          filter: 'blur(20px)'
+        }"
+        :animate="{
+          scale: 1,
+          opacity: 1,
+          filter: 'blur(0px)'
+        }"
+        :transition="{
+          duration: 0.6,
+          delay: 0.3
+        }"
+      >
+        {{ description }}
+      </Motion>
+    </template>
+
+    <template #links>
+      <Motion
+        :initial="{
+          scale: 1.1,
+          opacity: 0,
+          filter: 'blur(20px)'
+        }"
+        :animate="{
+          scale: 1,
+          opacity: 1,
+          filter: 'blur(0px)'
+        }"
+        :transition="{
+          duration: 0.6,
+          delay: 0.5
+        }"
+      >
+        <div v-if="links" class="flex items-center gap-2">
+          <CustomButton :label="links[0]?.label" />
+          <UButton :ui="{ label: 'main-gradient' }" v-bind="links[1]" />
+        </div>
+      </Motion>
+    </template>
+
+    <ClientOnly>
+      <div class="hidden lg:dark:block grayscale invert dark:invert-0 size-full -z-10 ">
+        <div class="video-logo-container size-full">
+          <video autoplay loop muted class="size-full object-contain scale-200">
+            <source src="/encryption.webm" type="video/webm">
+            Your browser does not support the video tag.
+          </video>
+        </div>
+      </div>
+      <div class="max-sm:hidden max-sm:dark:hidden lg:hidden absolute inset-0">
+        <video autoplay loop muted class="invert dark:invert-0 grayscale absolute opacity-20 scale-110 size-full -z-10 object-cover transform translate-x-1/2">
+          <source src="/encryption.webm" type="video/webm">
+          Your browser does not support the video tag.
+        </video>
+      </div>
+      <div class="max-sm:hidden dark:hidden">
+        <video autoplay loop muted class="invert dark:invert-0 grayscale absolute opacity-20 top-0 inset-0 scale-110 size-full -z-10 object-cover transform translate-x-1/2">
+          <source src="/encryption.webm" type="video/webm">
+          Your browser does not support the video tag.
+        </video>
+      </div>
+    </ClientOnly>
+  </UPageHero>
 </template>
+
+<style>
+.video-logo-container {
+  -webkit-mask-image: url('/shelve.svg');
+  mask-image: url('/shelve.svg');
+  -webkit-mask-size: auto auto;
+  mask-size: auto auto;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+}
+
+@media (prefers-color-scheme: dark) {
+  .video-logo-mask video {
+    filter: brightness(1.5) contrast(1.2);
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  .video-logo-mask video {
+    filter: invert(1) brightness(1.5) contrast(1.2);
+  }
+}
+</style>

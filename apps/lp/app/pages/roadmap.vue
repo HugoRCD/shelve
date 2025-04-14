@@ -1,6 +1,7 @@
 <script setup lang="ts">
 useHead({
-  title: 'Roadmap'
+  title: 'Roadmap',
+  titleTemplate: '%s - Shelve',
 })
 
 const appConfig = useAppConfig()
@@ -11,7 +12,7 @@ const src = computed(() => `https://volta.net/embed/${token}?neutral=${appConfig
 </script>
 
 <template>
-  <div class="flex size-full pt-20 items-center justify-center">
+  <div class="h-[calc(100vh-var(--ui-header-height))]">
     <ClientOnly>
       <iframe :src width="100%" height="100%" />
     </ClientOnly>

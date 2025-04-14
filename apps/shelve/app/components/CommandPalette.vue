@@ -274,7 +274,7 @@ function playAction(item: CommandItem, index: number) {
                         <UIcon
                           v-else-if="item.active"
                           name="lucide:check"
-                          class="size-4 text-(--ui-text-highlighted)"
+                          class="size-5 text-(--ui-text-highlighted)"
                         />
                       </div>
                     </div>
@@ -341,10 +341,6 @@ function playAction(item: CommandItem, index: number) {
 
 .command-item.selected {
   @apply bg-(--ui-bg-accented)/50;
-}
-
-.command-item.active {
-  @apply bg-(--ui-bg-accented)/30;
 }
 
 .command-item.selected.active {

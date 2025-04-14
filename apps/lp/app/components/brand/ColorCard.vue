@@ -2,7 +2,7 @@
 defineProps<{
   name: string
   value: string
-  usage: string
+  usage?: string
 }>()
 </script>
 
@@ -16,7 +16,7 @@ defineProps<{
       <div class="flex flex-col">
         <span class="font-bold">{{ name }}</span>
         <span class="text-sm text-(--ui-text-muted)">{{ value }}</span>
-        <span class="text-sm text-(--ui-text-muted)">{{ usage }}</span>
+        <span v-if="usage" class="text-sm text-(--ui-text-muted)">{{ usage }}</span>
       </div>
     </div>
   </BrandCopy>

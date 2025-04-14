@@ -60,7 +60,7 @@ const finalStats = computed(() => [
   <div>
     <ClientOnly>
       <Teleport defer to="#visitors">
-        <div class="fixed z-[999] flex items-center justify-center bottom-2 w-full">
+        <div class="fixed z-[999] right-2 bottom-2">
           <ULink
             to="https://github.com/HugoRCD/nuxt-visitors"
             target="_blank"
@@ -74,26 +74,24 @@ const finalStats = computed(() => [
                 class="relative bg-(--ui-success) inline-flex size-2 scale-90 rounded-full"
               />
             </span>
-            <span class="sm:flex hidden">
-              Active visitors:
-            </span>
             <NumberFlow
-              class="text-sm font-bold font-mono"
+              class="text-sm font-bold"
               :value="visitors ?? 0"
               continuous
               will-change
             />
+            <UIcon name="lucide:users" class="size-3" />
           </ULink>
         </div>
       </Teleport>
     </ClientOnly>
 
     <div class="mb-10 flex flex-col gap-2">
-      <h3 class="main-gradient italic text-3xl leading-8">
-        <ScrambleText label="Built for speed" />
+      <h3 class="main-gradient text-3xl leading-8">
+        <ScrambleText label="Real-time Impact" />
       </h3>
-      <p class="flex gap-2 italic items-center text-pretty text-center text-(--ui-text-muted)">
-        {{ !isLoading ? ' Stats are updated in real-time.' : `Loading stats${loadingDots}` }}
+      <p class="flex gap-2 items-center text-pretty text-center text-(--ui-text-muted)">
+        {{ !isLoading ? `Live insights into Shelve's usage and efficiency.` : `Loading stats${loadingDots}` }}
       </p>
     </div>
     <dl class="mt-16 grid grid-cols-1 gap-4 sm:mt-10 sm:grid-cols-3">
@@ -105,7 +103,7 @@ const finalStats = computed(() => [
         }"
         class="overflow-hidden"
       >
-        <div class="noise flex gap-2 items-center">
+        <div class="flex gap-2 items-center">
           <span class="relative flex size-2">
             <span
               class="absolute bg-(--ui-bg-inverted) inline-flex size-full animate-ping rounded-full opacity-75"

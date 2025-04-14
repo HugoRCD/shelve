@@ -3,10 +3,11 @@ title: "Introducing Shelve's Blog: Building in Public"
 description: "Starting a new chapter in Shelve's journey with our official blog, where we'll share insights, updates, and the journey of building a modern developer tool."
 image: /og.png
 date: 02/06/2025
+minRead: 5
 tags:
   - announcement
 authors:
-  - name: Hugo
+  - name: Hugo Richard
     description: Creator of Shelve
     to: https://twitter.com/HugoRCD__
     target: _blank

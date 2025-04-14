@@ -220,7 +220,7 @@ const pagination = ref({
         </UDropdownMenu>
       </template>
     </UTable>
-    <div v-if="users && users?.length > 20" class="flex justify-center pt-4">
+    <div class="flex justify-center pt-4">
       <UPagination
         :default-page="(table?.tableApi?.getState().pagination.pageIndex || 0) + 1"
         :items-per-page="table?.tableApi?.getState().pagination.pageSize"

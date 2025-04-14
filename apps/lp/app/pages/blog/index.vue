@@ -1,16 +1,32 @@
 <script setup lang="ts">
-definePageMeta({
-  title: 'Blog',
-  description: 'Explore our blog to learn more about our latest features, updates, and insights.',
-})
+const { ogImage } = useAppConfig()
 
 const route = useRoute()
 
 const { data: page } = await useAsyncData('blogPage', () => queryCollection('blogPage').first())
+if (!page.value) {
+  throw createError({ statusCode: 404, statusMessage: `Page not found: ${route.path}`, fatal: true })
+}
 
 const { data: posts, status } = await useAsyncData(route.path, () =>
   queryCollection('blog').order('date', 'DESC').all()
 )
+if (!posts.value) {
+  throw createError({ statusCode: 404, statusMessage: `Page not found: ${route.path}`, fatal: true })
+}
+
+const { title, description } = page.value
+const titleTemplate = ref('%s - Updates, Insights & Building in Public')
+
+defineOgImage({ url: ogImage })
+
+useSeoMeta({
+  title,
+  titleTemplate,
+  description,
+  ogDescription: description,
+  ogTitle: titleTemplate.value?.includes('%s') ? titleTemplate.value.replace('%s', title) : title
+})
 
 const active = ref('all')
 
@@ -33,17 +49,28 @@ const filteredPosts = computed(() => {
     )
   )
 })
-
-if (!posts.value) {
-  throw createError({ statusCode: 404, statusMessage: `Page not found: ${route.path}`, fatal: true })
-}
 </script>
 
 <template>
-  <div v-if="posts" class="py-20">
-    <UPageSection v-bind="page" :ui="{ title: 'text-left font-mono text-gradient', description: 'text-left mb-0' }" />
-    <USeparator class="mb-8" />
-    <UContainer>
+  <UPage v-if="page && posts">
+    <UPageHero
+      :description="page.description"
+      orientation="horizontal"
+      :ui="{
+        container: 'py-12 sm:py-16 lg:py-16',
+        wrapper: 'lg:w-[600px]',
+        title: 'text-left max-w-xl text-pretty',
+        description: 'text-left mt-2 text-md max-w-2xl text-pretty sm:text-md text-(--ui-text-muted)',
+      }"
+    >
+      <template #title>
+        <h1 class="font-normal main-gradient text-3xl sm:text-4xl lg:text-5xl">
+          {{ page.title }}
+        </h1>
+      </template>
+    </UPageHero>
+    <Divider />
+    <UContainer class="pt-8">
       <div class="flex flex-wrap gap-3 mb-6">
         <UButton
           v-for="tag in tags"
@@ -56,7 +83,7 @@ if (!posts.value) {
         />
       </div>
 
-      <div v-if="status !== 'pending'" class="flex flex-col">
+      <div v-if="status !== 'pending'" class="flex flex-col gap-4">
         <BlogPost
           v-for="(post, index) in filteredPosts"
           :key="index"
@@ -68,5 +95,5 @@ if (!posts.value) {
         <USkeleton v-for="i in 4" :key="i" class="h-32" />
       </div>
     </UContainer>
-  </div>
+  </UPage>
 </template>
