@@ -28,7 +28,7 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      payloadId: '',
+      payloadId: process.env.NUXT_PUBLIC_PAYLOAD_ID,
     }
   },
 
