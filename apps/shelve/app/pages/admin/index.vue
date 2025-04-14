@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { h, resolveComponent } from 'vue'
 import { getPaginationRowModel } from '@tanstack/vue-table'
 import type { TableColumn } from '@nuxt/ui'
 import { AuthType, Role, type User } from '@types'
@@ -20,10 +21,13 @@ async function deleteCache() {
   }
 }
 
-const search = ref('')
+const search = ref()
 const table = useTemplateRef('table')
 const updateLoading = ref(false)
 const deleteLoading = ref(false)
+
+// eslint-disable-next-line @typescript-eslint/naming-convention
+const UButton = resolveComponent('UButton')
 
 async function changeUserRole(id: number, role: string) {
   try {
@@ -84,14 +88,44 @@ const columns: TableColumn<User>[] = [
   },
   {
     accessorKey: 'createdAt',
-    header: 'Created At',
+    header: ({ column }) => {
+      const isSorted = column.getIsSorted()
+
+      return h(UButton, {
+        color: 'neutral',
+        variant: 'ghost',
+        label: 'Created At',
+        icon: isSorted
+          ? isSorted === 'asc'
+            ? 'i-lucide-arrow-up-narrow-wide'
+            : 'i-lucide-arrow-down-wide-narrow'
+          : 'i-lucide-arrow-up-down',
+        class: '-mx-2.5',
+        onClick: () => column.toggleSorting(column.getIsSorted() === 'asc')
+      })
+    },
     cell: ({ row }) => {
       return new Date(row.getValue('createdAt')).toLocaleString()
     }
   },
   {
     accessorKey: 'updatedAt',
-    header: 'Updated At',
+    header: ({ column }) => {
+      const isSorted = column.getIsSorted()
+
+      return h(UButton, {
+        color: 'neutral',
+        variant: 'ghost',
+        label: 'Updated At',
+        icon: isSorted
+          ? isSorted === 'asc'
+            ? 'i-lucide-arrow-up-narrow-wide'
+            : 'i-lucide-arrow-down-wide-narrow'
+          : 'i-lucide-arrow-up-down',
+        class: '-mx-2.5',
+        onClick: () => column.toggleSorting(column.getIsSorted() === 'asc')
+      })
+    },
     cell: ({ row }) => {
       return new Date(row.getValue('updatedAt')).toLocaleString()
     }
@@ -157,6 +191,13 @@ const pagination = ref({
   pageIndex: 0,
   pageSize: 20
 })
+
+const sorting = ref([
+  {
+    id: 'createdAt',
+    desc: true,
+  }
+])
 </script>
 
 <template>
@@ -177,6 +218,7 @@ const pagination = ref({
       ref="table"
       v-model:pagination="pagination"
       v-model:global-filter="search"
+      v-model:sorting="sorting"
       :data="users"
       :columns
       :loading="status === 'pending' || updateLoading || deleteLoading"

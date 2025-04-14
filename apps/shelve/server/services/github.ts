@@ -40,17 +40,9 @@ function cryptoBoxSeal(
 export class GithubService {
 
   private readonly GITHUB_API = 'https://api.github.com'
-  private readonly tokenCache = new Map<string, { token: string; expiresAt: Date }>()
-  private readonly encryptionKey: string
   private readonly config: ReturnType<typeof useRuntimeConfig>
 
   constructor(event: H3Event) {
-    this.encryptionKey = useRuntimeConfig(event).private.encryptionKey
-    if (!this.encryptionKey) {
-      console.error('Encryption key is not defined in runtime config!')
-    } else {
-      console.log('Encryption key loaded successfully.')
-    }
     this.config = useRuntimeConfig(event)
   }
 
@@ -109,14 +101,7 @@ export class GithubService {
     }
   }
 
-  private async getInstallationToken(installationId: number): Promise<string> {
-    const cacheKey = `installation-${installationId}`
-    const cached = this.tokenCache.get(cacheKey)
-
-    if (cached?.expiresAt && cached.expiresAt > new Date()) {
-      return cached.token
-    }
-
+  private getInstallationToken = cachedFunction(async (event: H3Event, installationId: number): Promise<string> => {
     const appJWT = this.getAppJWT()
 
     try {
@@ -132,11 +117,6 @@ export class GithubService {
         }
       })
 
-      this.tokenCache.set(cacheKey, {
-        token,
-        expiresAt: new Date(expires_at)
-      })
-
       return token
     } catch (error: any) {
       console.error('Error getting installation token:', error)
@@ -145,25 +125,29 @@ export class GithubService {
         statusMessage: `Failed to get installation token: ${error.message}`
       })
     }
-  }
+  }, {
+    maxAge: 3600,
+    name: 'getInstallationToken',
+    getKey: (event: H3Event, installationId: number) => `installation-token-${installationId}`,
+    swr: true
+  })
 
-  getUserRepos = cachedFunction(
-    async (userId: number): Promise<GitHubRepo[]> => {
-      const installation = await useDrizzle().query.githubApp.findFirst({
-        where: eq(tables.githubApp.userId, userId)
+  getUserRepos = cachedFunction(async (event, userId: number): Promise<GitHubRepo[]> => {
+    const installation = await useDrizzle().query.githubApp.findFirst({
+      where: eq(tables.githubApp.userId, userId)
+    })
+
+    if (!installation) {
+      throw createError({
+        statusCode: 404,
+        statusMessage: 'GitHub App installation not found'
       })
+    }
 
-      if (!installation) {
-        throw createError({
-          statusCode: 404,
-          statusMessage: 'GitHub App installation not found'
-        })
-      }
+    try {
+      const token = await this.getInstallationToken(event, installation.installationId)
 
-      try {
-        const token = await this.getInstallationToken(installation.installationId)
-
-        const response = await $fetch<{
+      const response = await $fetch<{
           repositories: GitHubRepo[]
         }>(`${this.GITHUB_API}/installation/repositories?per_page=100`, {
           headers: {
@@ -172,24 +156,23 @@ export class GithubService {
           }
         })
 
-        return response.repositories
-      } catch (error: any) {
-        console.error('Error fetching repositories:', error)
-        throw createError({
-          statusCode: error.status || 500,
-          statusMessage: `Failed to fetch repositories: ${error.message}`
-        })
-      }
-    },
-    {
-      maxAge: 60 * 5,
-      name: 'getUserRepos',
-      getKey: (userId: number, query?: string) => `user-repos-${userId}-${query || ''}`,
-      swr: true
+      return response.repositories
+    } catch (error: any) {
+      console.error('Error fetching repositories:', error)
+      throw createError({
+        statusCode: error.status || 500,
+        statusMessage: `Failed to fetch repositories: ${error.message}`
+      })
     }
-  )
+  }, {
+    maxAge: 60 * 5,
+    name: 'getUserRepos',
+    getKey: (event: H3Event, userId: number, query?: string) => `user-repos-${userId}-${query || ''}`,
+    swr: true
+  })
 
   async sendSecrets(
+    event: H3Event,
     userId: number,
     repository: string,
     variables: { key: string; value: string }[]
@@ -206,7 +189,7 @@ export class GithubService {
         })
       }
 
-      const token = await this.getInstallationToken(installation.installationId)
+      const token = await this.getInstallationToken(event, installation.installationId)
 
       // eslint-disable-next-line @typescript-eslint/naming-convention
       const { key_id, key } = await $fetch<{
