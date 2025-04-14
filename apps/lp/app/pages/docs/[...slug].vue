@@ -110,7 +110,7 @@ const communityLinks = computed(() => [
 </script>
 
 <template>
-  <Header :links="[]" />
+  <Header />
   <UMain>
     <UContainer v-if="page">
       <UPage>
@@ -125,7 +125,11 @@ const communityLinks = computed(() => [
           </UPageAside>
         </template>
         <UPage>
-          <UPageHeader v-bind="page" :links="page.links?.map((link: any) => ({ ...link, size: 'md' }))">
+          <UPageHeader
+            :title="page.title"
+            :description="page.description"
+            :links="page.links?.map((link: any) => ({ ...link, size: 'md' }))"
+          >
             <template #headline>
               <UBreadcrumb :items="breadcrumb" />
             </template>

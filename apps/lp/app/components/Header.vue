@@ -2,8 +2,8 @@
 import type { ContentNavigationItem } from '@nuxt/content'
 import type { NavigationMenuItem } from '@nuxt/ui'
 
-defineProps<{
-  links: NavigationMenuItem[]
+const { links = [] } = defineProps<{
+  links?: NavigationMenuItem[]
 }>()
 
 const navigation = inject<Ref<ContentNavigationItem[]>>('navigation', ref([]))
