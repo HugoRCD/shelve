@@ -1,9 +1,5 @@
 <script setup lang="ts">
-const searchTerm = ref('')
-
-const { data: apps, status: appsLoading, error } = useFetch('/api/github/apps', {
-  method: 'GET'
-})
+const { repos, apps, refreshRepos, query, loading } = useGitHub()
 
 const repo = defineModel({ type: String })
 
@@ -14,26 +10,34 @@ function selectRepo(url: string) {
   open.value = false
 }
 
-const { data: repos, status, refresh } = useFetch('/api/github/repos', {
+/*const { data: repos, status, refresh } = useFetch('/api/github/repos', {
   params: { q: searchTerm },
   transform: (data: { id: number; name: string; html_url: string }[]) => {
     return data?.map(repo => ({ id: repo.id, label: repo.name, suffix: repo.html_url, onSelect: () => selectRepo(repo.html_url) }))
   },
   immediate: false
+})*/
+
+const formattedRepos = computed(() => {
+  return repos.value?.map(repo => ({
+    id: repo.id,
+    label: repo.name,
+    suffix: repo.html_url,
+    onSelect: () => selectRepo(repo.html_url)
+  })) || []
 })
 
 async function openModal() {
   open.value = true
-  if (!repos.value) await refresh()
+  if (!repos.value || repos.value.length === 0)
+    await refreshRepos()
 }
-
-const loading = computed(() => status.value === 'pending' || appsLoading.value === 'pending')
 
 const groups = computed(() => [
   {
     id: 'repos',
-    label: searchTerm.value ? `Repos matching “${searchTerm.value}”...` : 'Repos',
-    items: repos.value || [],
+    label: query.value ? `Repos matching “${query.value}”...` : 'Repos',
+    items: formattedRepos.value || [],
     ignoreFilter: true
   }
 ])
@@ -47,7 +51,7 @@ const groups = computed(() => [
 
     <template #content>
       <UCommandPalette
-        v-model:search-term="searchTerm"
+        v-model:search-term="query"
         :loading
         :groups
         placeholder="Search repos..."

@@ -20,7 +20,7 @@ async function deleteCache() {
   }
 }
 
-const search = ref('')
+const search = ref()
 const table = useTemplateRef('table')
 const updateLoading = ref(false)
 const deleteLoading = ref(false)
@@ -188,7 +188,7 @@ const items = (row: User) => [
 
 const pagination = ref({
   pageIndex: 0,
-  pageSize: 5
+  pageSize: 20
 })
 
 const sorting = ref([
