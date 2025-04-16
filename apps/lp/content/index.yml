@@ -3,6 +3,7 @@ hero:
   description: Centralize, secure, and sync all your application secrets effortlessly. Manage team access, integrate via CLI & GitHub, and accelerate your deployments with confidence.
   links:
     - label: Start Securing Secrets
+      to: https://app.shelve.cloud
     - label: Read the Docs
       variant: ghost
       size: md
