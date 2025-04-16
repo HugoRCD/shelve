@@ -72,8 +72,8 @@ importers:
         specifier: 3.16.2
         version: 3.16.2(@parcel/watcher@2.5.1)(@types/node@22.13.10)(better-sqlite3@11.9.1)(db0@0.3.1(better-sqlite3@11.9.1)(drizzle-orm@0.42.0(@cloudflare/workers-types@4.20250416.0)(better-sqlite3@11.9.1)(bun-types@1.2.9)(gel@2.0.1)(pg@8.14.1)))(drizzle-orm@0.42.0(@cloudflare/workers-types@4.20250416.0)(better-sqlite3@11.9.1)(bun-types@1.2.9)(gel@2.0.1)(pg@8.14.1))(encoding@0.1.13)(eslint@9.24.0(jiti@2.4.2))(ioredis@5.6.0)(lightningcss@1.29.2)(magicast@0.3.5)(optionator@0.9.4)(rollup@4.36.0)(terser@5.39.0)(typescript@5.8.3)(vite@6.2.4(@types/node@22.13.10)(jiti@2.4.2)(lightningcss@1.29.2)(terser@5.39.0)(yaml@2.7.0))(yaml@2.7.0)
       nuxt-visitors:
-        specifier: 1.2.0
-        version: 1.2.0(magicast@0.3.5)
+        specifier: 1.2.1
+        version: 1.2.1(magicast@0.3.5)
       typescript:
         specifier: 5.8.3
         version: 5.8.3
@@ -5713,8 +5713,8 @@ packages:
   nuxt-site-config@3.1.7:
     resolution: {integrity: sha512-28YrXiqnk8qwHb4pjA25o46NgMspBOGR9VfUiM9Z9avCILfihyZ5QDPuln5zqFhnGTerC8AblvEtN2VrCipLug==}
 
-  nuxt-visitors@1.2.0:
-    resolution: {integrity: sha512-gSWKRpTamzIhTPqYmtQpZp3MX40bI0KMN4phtWqIwVy/0mVvRVQhjS+wMEdQ30CaNyrnmClih2Df7V/HbwkSRA==}
+  nuxt-visitors@1.2.1:
+    resolution: {integrity: sha512-hDWC7SPjXTKty5J1EDKU4dUUUtivU2zb7MBwcqf8voYnl69jNH1/TtVYm1UTpvvgxaplkzPDE+xGCz97ydAQMA==}
 
   nuxt@3.16.2:
     resolution: {integrity: sha512-yjIC/C4HW8Pd+m0ACGliEF0HnimXYGYvUzjOsTiLQKkDDt2T+djyZ+pCl9BfhQBA8rYmnsym2jUI+ubjv1iClw==}
@@ -9152,7 +9152,7 @@ snapshots:
       scule: 1.3.0
       semver: 7.7.1
       std-env: 3.8.1
-      ufo: 1.5.4
+      ufo: 1.6.1
       unctx: 2.4.1
       unimport: 4.1.2
       untyped: 2.0.0
@@ -9191,7 +9191,7 @@ snapshots:
       c12: 3.0.3(magicast@0.3.5)
       consola: 3.4.2
       defu: 6.1.4
-      destr: 2.0.3
+      destr: 2.0.5
       errx: 0.1.0
       exsolve: 1.0.4
       globby: 14.1.0
@@ -9205,8 +9205,8 @@ snapshots:
       pkg-types: 2.1.0
       scule: 1.3.0
       semver: 7.7.1
-      std-env: 3.8.1
-      ufo: 1.5.4
+      std-env: 3.9.0
+      ufo: 1.6.1
       unctx: 2.4.1
       unimport: 4.1.3
       untyped: 2.0.0
@@ -12968,7 +12968,7 @@ snapshots:
       pathe: 1.1.2
       sharp: 0.32.6
       svgo: 3.3.2
-      ufo: 1.5.4
+      ufo: 1.6.1
       unstorage: 1.15.0(db0@0.3.1(better-sqlite3@11.9.1)(drizzle-orm@0.42.0(@cloudflare/workers-types@4.20250416.0)(better-sqlite3@11.9.1)(bun-types@1.2.9)(gel@2.0.1)(pg@8.14.1)))(ioredis@5.6.0)
       xss: 1.0.15
     transitivePeerDependencies:
@@ -14259,7 +14259,7 @@ snapshots:
       - magicast
       - vue
 
-  nuxt-visitors@1.2.0(magicast@0.3.5):
+  nuxt-visitors@1.2.1(magicast@0.3.5):
     dependencies:
       '@nuxt/kit': 3.16.2(magicast@0.3.5)
       ufo: 1.6.1
