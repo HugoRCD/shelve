@@ -14,12 +14,12 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@nuxthub/core": "0.8.23",
+    "@nuxthub/core": "0.8.24",
     "nuxt": "^3.16.2",
     "vue": "latest",
     "zod": "3.24.2"
   },
   "devDependencies": {
-    "wrangler": "^4.9.1"
+    "wrangler": "^4.11.1"
   }
 }
