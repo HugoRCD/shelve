@@ -90,7 +90,7 @@ defineShortcuts({
         }"
       >
         <div v-if="links" class="flex items-center gap-2">
-          <CustomButton :label="links[0]?.label" />
+          <CustomButton :label="links[0]?.label" :to="links[0]?.to" />
           <UButton :ui="{ label: 'main-gradient' }" v-bind="links[1]" />
         </div>
       </Motion>
