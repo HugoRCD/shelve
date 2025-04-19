@@ -1,19 +1,24 @@
 <script setup lang="ts">
 const route = useRoute()
-const id = computed(() => route.query.id)
 
-const value = ref('')
+const state = ref({
+  value: '',
+})
 
-const localId = ref(id)
+const id = ref(route.query.id as string || '')
 const timeLeft = ref('')
 const readsLeft = ref(0)
 
 async function decryptEnvFile() {
   try {
-    const { decryptedValue, reads, ttl } = await $fetch(`/api/vault?id=${localId.value}`, {
+    const { decryptedValue, reads, ttl } = await $fetch<{
+      decryptedValue: string
+      reads: number
+      ttl: string
+    }>(`/api/vault?id=${id.value}`, {
       method: 'POST',
     })
-    value.value = decryptedValue
+    state.value.value = decryptedValue
     readsLeft.value = reads
     timeLeft.value = ttl
     toast.success('Your secret(s) has been decrypted')
@@ -28,12 +33,12 @@ async function decryptEnvFile() {
 </script>
 
 <template>
-  <form class="mx-auto mt-8 flex w-full flex-col justify-center gap-2 px-5 sm:px-0" @submit.prevent="decryptEnvFile">
-    <template v-if="!value">
+  <UForm :state class="mx-auto mt-8 flex w-full flex-col justify-center gap-2 px-5 sm:px-0" @submit.prevent="decryptEnvFile">
+    <template v-if="!state.value">
       <div class="relative flex w-full flex-col gap-2">
         <UFormField label="Share ID">
           <UInput
-            v-model="localId"
+            v-model="id"
             class="w-full"
             placeholder="o75adqf..."
             required
@@ -52,7 +57,7 @@ async function decryptEnvFile() {
     <template v-else>
       <div class="mt-4">
         <UTextarea
-          v-model="value"
+          v-model="state.value"
           autoresize
           autofocus
           :rows="5"
@@ -61,7 +66,7 @@ async function decryptEnvFile() {
         />
       </div>
     </template>
-    <div class="mt-4 flex w-full items-center justify-between gap-2">
+    <div v-if="state.value" class="mt-2 flex w-full items-center justify-between gap-2">
       <span v-if="timeLeft" class="text-sm font-semibold text-(--ui-text-muted)/80">
         Time left: {{ timeLeft }}
       </span>
@@ -69,6 +74,11 @@ async function decryptEnvFile() {
         Reads left: {{ readsLeft }}
       </span>
     </div>
-  </form>
+    <div class="mt-2 flex w-full flex-col items-center justify-center">
+      <ULink to="/" class="text-center text-sm text-(--ui-text-muted)/80 hover:underline">
+        I want to create a new secret
+      </ULink>
+    </div>
+  </UForm>
 </template>
 

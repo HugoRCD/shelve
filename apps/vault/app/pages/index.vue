@@ -7,6 +7,7 @@ const ttl = ref([
   '1d',
   '7d',
   '30d',
+  'Indefinitely',
 ])
 const selectedTtl = ref(ttl.value[0])
 const loading = ref(false)
@@ -129,6 +130,9 @@ function handleDrop(event: DragEvent) {
             default-value="1d"
             value-attribute="value"
             option-attribute="label"
+            :ui="{
+              content: 'min-w-fit'
+            }"
           />
         </UFormField>
       </UTooltip>
@@ -140,6 +144,11 @@ function handleDrop(event: DragEvent) {
         type="submit"
         loading-auto
       />
+    </div>
+    <div class="mt-2 flex w-full flex-col items-center justify-center">
+      <ULink to="/decrypt" class="text-center text-sm text-(--ui-text-muted)/80 hover:underline">
+        I already have a secret to decrypt
+      </ULink>
     </div>
     <div v-if="shareUrl" class="mt-4 flex w-full rounded-lg border border-green-600/20 bg-green-600/10 p-4 shadow-md">
       <div class="flex w-full items-center justify-between gap-2">
