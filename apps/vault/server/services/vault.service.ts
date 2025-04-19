@@ -10,7 +10,8 @@ export class VaultService {
   private readonly TTL_MAP = {
     '1d': 24 * 60 * 60, // 1 day in seconds
     '7d': 7 * 24 * 60 * 60, // 7 days in seconds
-    '30d': 30 * 24 * 60 * 60 // 30 days in seconds
+    '30d': 30 * 24 * 60 * 60, // 30 days in seconds
+    'Infinite': -1 // Infinite TTL
   }
 
   constructor(event: H3Event) {
@@ -36,6 +37,8 @@ export class VaultService {
   }
 
   private formatTimeLeft(seconds: number): string {
+    if (seconds === -1) return 'Infinite'
+
     if (seconds <= 0) return 'Expired'
 
     const days = Math.floor(seconds / (24 * 60 * 60))
@@ -95,10 +98,6 @@ export class VaultService {
     const decryptedValue = await unseal(encryptedValue, this.encryptionKey) as string
 
     const updatedReads = reads - 1
-    /*await this.storage.setItem(key, {
-      ...storedData,
-      reads: updatedReads
-    })*/
     await hubKV().set(key, {
       ...storedData,
       reads: updatedReads
@@ -132,7 +131,7 @@ export class VaultService {
   }
 
   private generateShareUrl(id: string): string {
-    return `${this.siteUrl}/vault?id=${id}`
+    return `${this.siteUrl}/decrypt?id=${id}`
   }
 
 }

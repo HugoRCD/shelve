@@ -56,6 +56,7 @@ jobs:
         run: pnpm build
         env:
           NUXT_UI_PRO_LICENSE: ${{ secrets.NUXT_UI_PRO_LICENSE }}
+          NUXT_PUBLIC_PAYLOAD_ID: ${{ secrets.NUXT_PUBLIC_PAYLOAD_ID }}
 
       - name: Deploy to NuxtHub
         uses: nuxt-hub/action@v1
