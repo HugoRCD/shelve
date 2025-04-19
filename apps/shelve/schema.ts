@@ -1,10 +1,20 @@
-import { boolean, pgEnum, pgTable, varchar, index, uniqueIndex, bigint, integer } from 'drizzle-orm/pg-core'
+import {
+  boolean,
+  pgEnum,
+  pgTable,
+  varchar,
+  index,
+  uniqueIndex,
+  bigint,
+  integer,
+  text,
+  timestamp
+} from 'drizzle-orm/pg-core'
 import { relations } from 'drizzle-orm'
 // import { AuthType, Role, TeamRole } from '@types' // in prod
-import { AuthType, Role, TeamRole } from '../../../../packages/types' // in dev
-import { timestamps } from './column.helpers'
+import { AuthType, Role, TeamRole } from '../../packages/types' // in dev
+import { users } from './auth-schema'
 
-const DEFAULT_AVATAR = 'https://i.imgur.com/6VBx3io.png'
 const DEFAULT_LOGO = 'https://github.com/HugoRCD/shelve/blob/main/assets/default.webp?raw=true'
 
 export const teamRoleEnum = pgEnum('team_role', [
@@ -13,33 +23,18 @@ export const teamRoleEnum = pgEnum('team_role', [
   TeamRole.MEMBER,
 ])
 
-export const rolesEnum = pgEnum('roles', [
-  Role.USER,
-  Role.ADMIN,
-])
+const timestamps = {
+  updatedAt: timestamp().notNull().$onUpdate(() => new Date()),
+  createdAt: timestamp().defaultNow().notNull(),
+}
 
-export const authTypesEnum = pgEnum('auth_types', [
-  AuthType.GITHUB,
-  AuthType.GOOGLE,
-])
-
-export const users = pgTable('users', {
-  id: bigint({ mode: 'number' }).primaryKey().generatedByDefaultAsIdentity(),
-  username: varchar({ length: 25 }).unique().notNull(),
-  email: varchar({ length: 50 }).unique().notNull(),
-  avatar: varchar({ length: 500 }).default(DEFAULT_AVATAR).notNull(),
-  role: rolesEnum().default(Role.USER).notNull(),
-  authType: authTypesEnum().notNull(),
-  onboarding: boolean().default(false).notNull(),
-  cliInstalled: boolean().default(false).notNull(),
-  ...timestamps,
-})
+export * from './auth-schema'
 
 export const githubApp = pgTable('github_app', {
   id: bigint({ mode: 'number' }).primaryKey().generatedByDefaultAsIdentity(),
   installationId: bigint({ mode: 'number' }).notNull(),
   isOrganisation: boolean().default(false).notNull(),
-  userId: bigint({ mode: 'number' }).references(() => users.id, { onDelete: 'cascade' }).notNull(),
+  userId: text().references(() => users.id, { onDelete: 'cascade' }).notNull(),
   ...timestamps,
 })
 
@@ -53,7 +48,7 @@ export const teams = pgTable('teams', {
 
 export const members = pgTable('members', {
   id: bigint({ mode: 'number' }).primaryKey().generatedByDefaultAsIdentity(),
-  userId: bigint({ mode: 'number' }).references(() => users.id, { onDelete: 'cascade' }).notNull(),
+  userId: text().references(() => users.id, { onDelete: 'cascade' }).notNull(),
   teamId: bigint({ mode: 'number' }).references(() => teams.id, { onDelete: 'cascade' }).notNull(),
   role: teamRoleEnum().default(TeamRole.MEMBER).notNull(),
   ...timestamps,
@@ -108,7 +103,7 @@ export const tokens = pgTable('tokens', {
   id: bigint({ mode: 'number' }).primaryKey().generatedByDefaultAsIdentity(),
   token: varchar({ length: 800 }).unique().notNull(),
   name: varchar({ length: 25 }).notNull(),
-  userId: bigint({ mode: 'number' }).references(() => users.id, { onDelete: 'cascade' }).notNull(),
+  userId: text().references(() => users.id, { onDelete: 'cascade' }).notNull(),
   ...timestamps,
 }, (table) => [
   uniqueIndex('tokens_token_idx').on(table.token),

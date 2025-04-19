@@ -1,4 +1,6 @@
 <script setup lang="ts">
+const { signIn } = useAuth()
+
 const loading = ref(false)
 const props = defineProps({
   label: {
@@ -17,7 +19,18 @@ const props = defineProps({
 
 function open() {
   loading.value = true
-  window.location.href = `/auth/${props.provider}`
+  if (props.provider === 'google') {
+    signIn.social({
+      provider: 'google',
+      newUserCallbackURL: '/onboarding',
+    })
+  }
+  if (props.provider === 'github') {
+    signIn.social({
+      provider: 'github',
+      newUserCallbackURL: '/onboarding',
+    })
+  }
 }
 </script>
 

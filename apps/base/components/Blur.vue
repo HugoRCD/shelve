@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
-
 const { position = 'top', size = 75 } = defineProps<{
   position: 'top' | 'bottom' | 'both'
   size?: number
