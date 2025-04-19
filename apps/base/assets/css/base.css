@@ -60,7 +60,7 @@ html, body, #__nuxt, #__layout {
 
 .dark {
   --ui-primary: white;
-  --ui-bg: var(--color-neutral-950);
+  --ui-bg: #010101;
   --ui-bg-muted: var(--color-neutral-900);
 
   ::selection {

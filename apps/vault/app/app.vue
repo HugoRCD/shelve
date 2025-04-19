@@ -25,11 +25,6 @@ useSeoMeta({
   author: 'Hugo Richard',
 })
 
-const route = useRoute()
-const id = computed(() => route.query.id)
-
-const sealMode = computed(() => id.value)
-
 const items = [
   {
     label: 'What is Vault by Shelve?',
@@ -60,7 +55,7 @@ const items = [
       <UApp>
         <div class="flex flex-col items-center justify-center py-4 sm:py-20">
           <div class="w-full border-y border-neutral-500/20">
-            <div class="mx-auto flex max-w-4xl font-mono italic justify-center px-5 sm:px-0">
+            <div class="mx-auto flex max-w-4xl justify-center px-5 sm:px-0">
               <EncryptDiv encrypted-text class="w-full border-x border-neutral-500/20">
                 <div>
                   <h1 class="main-gradient font-medium text-3xl">
@@ -74,8 +69,7 @@ const items = [
             </div>
           </div>
           <div class="max-w-4xl w-full mx-auto">
-            <Encrypt v-if="!sealMode" />
-            <Decrypt v-else />
+            <NuxtPage />
             <div class="mt-32 flex flex-col gap-4 px-5">
               <div class="flex flex-col font-mono items-center justify-center">
                 <h3 class="main-gradient text-2xl">
@@ -92,7 +86,7 @@ const items = [
               />
             </div>
             <footer class="mt-20 flex flex-col gap-4 px-5">
-              <USeparator />
+              <Divider />
               <div class="flex items-center justify-between">
                 <span class="text-xs font-mono italic tracking-tight text-(--ui-text-muted)">
                   © {{ new Date().getFullYear() }} - Made by <NuxtLink to="https://hrcd.fr/" class="text-(--ui-text-muted) hover:text-neutral-200">

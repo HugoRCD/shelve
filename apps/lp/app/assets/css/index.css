@@ -8,13 +8,3 @@
   --font-mono: 'Jetbrains Mono', monospace;
   --font-serif: 'Newsreader', serif;
 }
-
-:root {
-  --ui-primary: black;
-  --ui-bg: white;
-}
-
-.dark {
-  --ui-primary: white;
-  --ui-bg: #010101;
-}

@@ -19,36 +19,31 @@ function downloadLogo(svg: string, filename: string) {
   toast.success('Logo downloaded successfully')
 }
 
-const baseItems = [
-  {
-    label: 'Copy logo as SVG',
-    icon: 'custom:shelve',
-    onSelect: () => {
-      copyToClipboard(logo.value!.outerHTML, 'Logo copied to clipboard')
+const items = [
+  [
+    {
+      label: 'Copy logo as SVG',
+      icon: 'custom:shelve',
+      onSelect: () => {
+        copyToClipboard(logo.value!.outerHTML, 'Logo copied to clipboard')
+      }
+    },
+    {
+      label: 'Download logo',
+      icon: 'lucide:download',
+      onSelect: () => {
+        downloadLogo(logo.value!.outerHTML, 'shelve.svg')
+      }
+    },
+  ],
+  [
+    {
+      label: 'Brand Assets',
+      icon: 'i-heroicons-photo',
+      to: 'https://shelve.cloud/brand'
     }
-  },
-  {
-    label: 'Download logo',
-    icon: 'lucide:download',
-    onSelect: () => {
-      downloadLogo(logo.value!.outerHTML, 'shelve.svg')
-    }
-  }
+  ]
 ]
-
-const brandAssetsItem = {
-  label: 'Brand Assets',
-  icon: 'i-heroicons-photo',
-  to: '/brand'
-}
-
-const items = computed(() => {
-  const menuItems = [baseItems]
-  if (lp) {
-    menuItems.push([brandAssetsItem])
-  }
-  return menuItems
-})
 </script>
 
 <template>
