@@ -62,7 +62,7 @@ function copy(value: string) {
       <h2 class="text-sm font-semibold">
         Install the Shelve CLI
       </h2>
-      <p class="text-sm leading-6 text-(--ui-text-muted)">
+      <p class="text-sm leading-6 text-muted">
         In order to fully utilize Shelve, you need to install the Shelve CLI.
       </p>
       <UTabs color="neutral" variant="link" :items class="w-full">

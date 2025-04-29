@@ -10,10 +10,10 @@ const next = computed(() => props.surround[1])
 </script>
 
 <template>
-  <div class="bg-(--ui-bg-muted) p-1 rounded-lg flex items-center justify-between w-full gap-2">
-    <div v-if="prev" :class="next ? 'relative group flex items-center gap-1 text-(--ui-text-muted) sm:p-3 hover:text-(--ui-text-highlighted)' : 'overflow-hidden relative group flex items-center gap-2 w-full bg-(--ui-bg)/90 p-3 rounded-md hover:ring-2 ring-(--ui-border)'">
+  <div class="bg-muted p-1 rounded-lg flex items-center justify-between w-full gap-2">
+    <div v-if="prev" :class="next ? 'relative group flex items-center gap-1 text-muted sm:p-3 hover:text-highlighted' : 'overflow-hidden relative group flex items-center gap-2 w-full bg-default/90 p-3 rounded-md hover:ring-2 ring-default'">
       <NuxtLink :to="prev.path" class="absolute inset-0 z-10" />
-      <div class="flex items-center gap-1 text-(--ui-text-muted) group-hover:text-(--ui-text-highlighted)">
+      <div class="flex items-center gap-1 text-muted group-hover:text-highlighted">
         <UIcon name="lucide:chevron-left" />
         <span class="text-sm">
           Previous
@@ -24,23 +24,23 @@ const next = computed(() => props.surround[1])
         <p class="font-medium main-gradient brightness-150 text-sm">
           {{ prev.title }}
         </p>
-        <p class="max-sm:hidden text-[var(--ui-text-muted)] line-clamp-1 text-sm">
+        <p class="max-sm:hidden text-muted line-clamp-1 text-sm">
           {{ prev.description }}
         </p>
       </div>
     </div>
-    <div v-if="next" class="overflow-hidden relative group flex items-center gap-2 w-full justify-end bg-(--ui-bg)/90 p-3 rounded-md hover:ring-2 ring-(--ui-border)">
+    <div v-if="next" class="overflow-hidden relative group flex items-center gap-2 w-full justify-end bg-default/90 p-3 rounded-md hover:ring-2 ring-default">
       <NuxtLink :to="next.path" class="absolute inset-0 z-10" />
       <div class="flex flex-col text-right truncate">
         <p class="font-medium main-gradient brightness-150 text-sm">
           {{ next.title }}
         </p>
-        <p class="max-sm:hidden text-[var(--ui-text-muted)] line-clamp-1 text-sm">
+        <p class="max-sm:hidden text-muted line-clamp-1 text-sm">
           {{ next.description }}
         </p>
       </div>
       <USeparator orientation="vertical" class="w-2 h-[24px]" />
-      <div class="flex items-center gap-1 text-(--ui-text-muted) group-hover:text-(--ui-text-highlighted)">
+      <div class="flex items-center gap-1 text-muted group-hover:text-highlighted">
         <span class="text-sm">
           Next
         </span>

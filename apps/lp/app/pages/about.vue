@@ -31,7 +31,7 @@ useSeoMeta({
             <div class="p-8 pointer-events-auto flex flex-col items-center justify-center">
               <ParticlesImg :key="colorMode.value" src="/shelve.svg" alt="Shelve Logo" :color="colorMode.value === 'dark' ? '#FFF' : '#000'" />
               <ScrambleText class="sm:mt-8 mb-2 main-gradient text-4xl sm:text-5xl" label="About Shelve" />
-              <p class="max-w-lg text-center text-xs text-(--ui-text-muted) sm:text-base">
+              <p class="max-w-lg text-center text-xs text-muted sm:text-base">
                 Discover the story behind the project, its origins, and the journey to where we are today.
               </p>
             </div>
@@ -44,7 +44,7 @@ useSeoMeta({
       <div class="h-screen pointer-events-none" />
 
       <USeparator />
-      <div v-if="page" class="relative w-full pt-10 sm:pt-20 bg-(--ui-bg) z-10">
+      <div v-if="page" class="relative w-full pt-10 sm:pt-20 bg-default z-10">
         <div v-for="(section, index) in page.about" :key="index" class="group max-w-5xl mx-auto px-4 pointer-events-auto">
           <div class="flex flex-col gap-16 py-16 group-last:pb-0">
             <!--            <div class="col-span-5 relative">
@@ -55,15 +55,15 @@ useSeoMeta({
               />
             </div>-->
             <div class="space-y-3 mb-16">
-              <div class="text-(--ui-text-muted) text-center sm:text-left font-mono italic">
+              <div class="text-muted text-center sm:text-left font-mono italic">
                 Part {{ index + 1 < 10 ? '0' + (index + 1) : index + 1 }}
               </div>
               <h2 class="text-4xl sm:text-5xl text-center sm:text-left font-serif italic">
                 {{ section.title }}
               </h2>
-              <MDC class="leading-relaxed text-(--ui-text-muted)" :value="section.content" unwrap="p" />
+              <MDC class="leading-relaxed text-muted" :value="section.content" unwrap="p" />
             </div>
-            <div class="hidden group-last:flex col-span-12 justify-end bg-(--ui-bg) mb-16">
+            <div class="hidden group-last:flex col-span-12 justify-end bg-default mb-16">
               <Signature />
             </div>
           </div>

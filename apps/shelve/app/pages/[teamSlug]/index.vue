@@ -19,11 +19,11 @@ if (!projects.value)
   >
     <div v-if="!loading">
       <div v-if="projects.length === 0" class="flex h-64 flex-col items-center justify-center gap-4">
-        <UIcon name="heroicons:folder-open" class="size-10 text-(--ui-text-muted)" />
+        <UIcon name="heroicons:folder-open" class="size-10 text-muted" />
         <h2 class="text-lg font-semibold">
           No projects found
         </h2>
-        <p class="text-sm text-(--ui-text-muted)">
+        <p class="text-sm text-muted">
           You don't have any projects yet. Create one now!
         </p>
         <ProjectCreate />

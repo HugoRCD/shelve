@@ -139,7 +139,7 @@ const communityLinks = computed(() => [
             <ContentRenderer v-if="page.body" :value="page" />
             <div>
               <Divider class="my-10">
-                <div class="flex items-center gap-2 text-sm text-(--ui-text-muted)">
+                <div class="flex items-center gap-2 text-sm text-muted">
                   <UButton size="sm" variant="link" color="neutral" to="https://github.com/hugorcd/shelve/issues/new/choose" target="_blank">
                     Report an issue
                   </UButton>

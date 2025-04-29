@@ -68,8 +68,8 @@ const getTransform = (card: typeof cardsData[0]) => {
       v-for="card in cardsData"
       :key="card.id"
       class="card absolute transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] origin-center
-             bg-(--ui-bg)/60 backdrop-blur-lg
-             ring-1 ring-(--ui-border)/80 shadow-lg dark:shadow-2xl rounded-lg p-4 w-[320px] h-fit"
+             bg-default/60 backdrop-blur-lg
+             ring-1 ring-default/80 shadow-lg dark:shadow-2xl rounded-lg p-4 w-[320px] h-fit"
       :class="`z-${card.id * 10}`"
       :style="{
         transform: getTransform(card),
@@ -82,15 +82,15 @@ const getTransform = (card: typeof cardsData[0]) => {
         {{ card.variable }}
       </p>
       <div class="mt-2 space-y-1 text-sm">
-        <div class="flex items-center" :class="card.devStatus === 'ok' ? 'text-(--ui-success)' : 'text-(--ui-error)'">
+        <div class="flex items-center" :class="card.devStatus === 'ok' ? 'text-success' : 'text-error'">
           <UIcon :name="checkIconName" class="w-4 h-4 mr-1.5 shrink-0" />
           Development
         </div>
-        <div class="flex items-center" :class="card.stagingStatus === 'ok' ? 'text-(--ui-success)' : 'text-(--ui-error)'">
+        <div class="flex items-center" :class="card.stagingStatus === 'ok' ? 'text-success' : 'text-error'">
           <UIcon :name="card.stagingStatus === 'ok' ? checkIconName : xMarkIconName" class="size-4 mr-1.5 shrink-0" />
           feat/418
         </div>
-        <div class="flex items-center" :class="card.prodStatus === 'ok' ? 'text-(--ui-success)' : 'text-(--ui-error)'">
+        <div class="flex items-center" :class="card.prodStatus === 'ok' ? 'text-success' : 'text-error'">
           <UIcon :name="card.prodStatus === 'ok' ? checkIconName : xMarkIconName" class="size-4 mr-1.5 shrink-0" />
           Production
         </div>

@@ -72,25 +72,25 @@ function handleExecute() {
 
 <template>
   <BgHighlight class="scale-90 sm:scale-100 [mask-image:linear-gradient(to_bottom,white_50%,transparent)]">
-    <div class="bg-(--ui-bg)/50 p-2 w-[400px] rounded-md">
+    <div class="bg-default/50 p-2 w-[400px] rounded-md">
       <div
-        class="screen-container p-2 rounded-md bg-(--ui-bg) flex size-full flex-col gap-2"
+        class="screen-container p-2 rounded-md bg-default flex size-full flex-col gap-2"
         :class="[listHeightClass, 'overflow-y-scroll', 'scrollbar-hide']"
       >
         <div
           v-for="command in commands"
           :key="command.id"
-          class="cursor-pointer flex items-center gap-3 rounded-md px-2 py-1 hover:bg-(--ui-bg-muted)"
-          :class="{ 'bg-(--ui-bg-accented)/40': selected?.id === command.id }"
+          class="cursor-pointer flex items-center gap-3 rounded-md px-2 py-1 hover:bg-muted"
+          :class="{ 'bg-accented/40': selected?.id === command.id }"
           @click="selected = command"
         >
           <div class="flex items-center gap-3">
-            <UIcon :name="command.icon" class="text-(--ui-text-muted)" />
+            <UIcon :name="command.icon" class="text-muted" />
             <div>
-              <h3 class="text-sm font-semibold text-(--ui-text)">
+              <h3 class="text-sm font-semibold text-default">
                 {{ command.name }}
               </h3>
-              <p class="text-xs text-(--ui-text-muted)">
+              <p class="text-xs text-muted">
                 {{ command.description }}
               </p>
             </div>

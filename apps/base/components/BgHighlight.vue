@@ -17,7 +17,7 @@ const props = withDefaults(defineProps<{
 
 <template>
   <div class="highlight-wrapper highlight-gradient" :class="roundedType[props.rounded]">
-    <div class="bg-(--ui-bg-elevated)" :class="roundedType[props.rounded]">
+    <div class="bg-elevated" :class="roundedType[props.rounded]">
       <slot />
     </div>
   </div>

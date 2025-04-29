@@ -24,11 +24,11 @@ defineProps<{
             :name="`i-simple-icons-${platform.logo}`"
             class="size-5"
           />
-          <span class="text-(--ui-primary) hover:underline font-medium">
+          <span class="text-primary hover:underline font-medium">
             {{ platform.handle }}
           </span>
         </div>
-        <p class="text-sm text-(--ui-text-muted)">
+        <p class="text-sm text-muted">
           {{ platform.usage }}
         </p>
       </div>

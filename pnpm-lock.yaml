@@ -54,8 +54,8 @@ importers:
         specifier: https://pkg.pr.new/@nuxt/ui@be9b1f6
         version: https://pkg.pr.new/@nuxt/ui@be9b1f6(@babel/parser@7.27.0)(@netlify/blobs@8.2.0)(db0@0.3.2(better-sqlite3@11.9.1)(drizzle-orm@0.43.1(@cloudflare/workers-types@4.20250425.0)(better-sqlite3@11.9.1)(bun-types@1.2.11)(pg@8.15.6)))(embla-carousel@8.6.0)(encoding@0.1.13)(ioredis@5.6.1)(jwt-decode@4.0.0)(magicast@0.3.5)(typescript@5.8.3)(valibot@1.0.0(typescript@5.8.3))(vite@6.3.3(@types/node@22.15.2)(jiti@2.4.2)(lightningcss@1.29.2)(terser@5.39.0)(yaml@2.7.1))(vue-router@4.5.1(vue@3.5.13(typescript@5.8.3)))(vue@3.5.13(typescript@5.8.3))(zod@3.24.3)
       '@nuxt/ui-pro':
-        specifier: https://pkg.pr.new/@nuxt/ui-pro@5cd5f14
-        version: https://pkg.pr.new/@nuxt/ui-pro@5cd5f14(@babel/parser@7.27.0)(@netlify/blobs@8.2.0)(db0@0.3.2(better-sqlite3@11.9.1)(drizzle-orm@0.43.1(@cloudflare/workers-types@4.20250425.0)(better-sqlite3@11.9.1)(bun-types@1.2.11)(pg@8.15.6)))(embla-carousel@8.6.0)(encoding@0.1.13)(ioredis@5.6.1)(jwt-decode@4.0.0)(magicast@0.3.5)(typescript@5.8.3)(valibot@1.0.0(typescript@5.8.3))(vite@6.3.3(@types/node@22.15.2)(jiti@2.4.2)(lightningcss@1.29.2)(terser@5.39.0)(yaml@2.7.1))(vue-router@4.5.1(vue@3.5.13(typescript@5.8.3)))(vue@3.5.13(typescript@5.8.3))(zod@3.24.3)
+        specifier: https://pkg.pr.new/@nuxt/ui-pro@ddb3b0b
+        version: https://pkg.pr.new/@nuxt/ui-pro@ddb3b0b(@babel/parser@7.27.0)(@netlify/blobs@8.2.0)(db0@0.3.2(better-sqlite3@11.9.1)(drizzle-orm@0.43.1(@cloudflare/workers-types@4.20250425.0)(better-sqlite3@11.9.1)(bun-types@1.2.11)(pg@8.15.6)))(embla-carousel@8.6.0)(encoding@0.1.13)(ioredis@5.6.1)(jwt-decode@4.0.0)(magicast@0.3.5)(typescript@5.8.3)(valibot@1.0.0(typescript@5.8.3))(vite@6.3.3(@types/node@22.15.2)(jiti@2.4.2)(lightningcss@1.29.2)(terser@5.39.0)(yaml@2.7.1))(vue-router@4.5.1(vue@3.5.13(typescript@5.8.3)))(vue@3.5.13(typescript@5.8.3))(zod@3.24.3)
       '@vueuse/core':
         specifier: 13.1.0
         version: 13.1.0(vue@3.5.13(typescript@5.8.3))
@@ -1626,8 +1626,8 @@ packages:
     engines: {node: '>=18.12.0'}
     hasBin: true
 
-  '@nuxt/ui-pro@https://pkg.pr.new/@nuxt/ui-pro@5cd5f14':
-    resolution: {tarball: https://pkg.pr.new/@nuxt/ui-pro@5cd5f14}
+  '@nuxt/ui-pro@https://pkg.pr.new/@nuxt/ui-pro@ddb3b0b':
+    resolution: {tarball: https://pkg.pr.new/@nuxt/ui-pro@ddb3b0b}
     version: 3.1.0
     peerDependencies:
       joi: ^17.13.0
@@ -9778,7 +9778,7 @@ snapshots:
     transitivePeerDependencies:
       - magicast
 
-  '@nuxt/ui-pro@https://pkg.pr.new/@nuxt/ui-pro@5cd5f14(@babel/parser@7.27.0)(@netlify/blobs@8.2.0)(db0@0.3.2(better-sqlite3@11.9.1)(drizzle-orm@0.43.1(@cloudflare/workers-types@4.20250425.0)(better-sqlite3@11.9.1)(bun-types@1.2.11)(pg@8.15.6)))(embla-carousel@8.6.0)(encoding@0.1.13)(ioredis@5.6.1)(jwt-decode@4.0.0)(magicast@0.3.5)(typescript@5.8.3)(valibot@1.0.0(typescript@5.8.3))(vite@6.3.3(@types/node@22.15.2)(jiti@2.4.2)(lightningcss@1.29.2)(terser@5.39.0)(yaml@2.7.1))(vue-router@4.5.1(vue@3.5.13(typescript@5.8.3)))(vue@3.5.13(typescript@5.8.3))(zod@3.24.3)':
+  '@nuxt/ui-pro@https://pkg.pr.new/@nuxt/ui-pro@ddb3b0b(@babel/parser@7.27.0)(@netlify/blobs@8.2.0)(db0@0.3.2(better-sqlite3@11.9.1)(drizzle-orm@0.43.1(@cloudflare/workers-types@4.20250425.0)(better-sqlite3@11.9.1)(bun-types@1.2.11)(pg@8.15.6)))(embla-carousel@8.6.0)(encoding@0.1.13)(ioredis@5.6.1)(jwt-decode@4.0.0)(magicast@0.3.5)(typescript@5.8.3)(valibot@1.0.0(typescript@5.8.3))(vite@6.3.3(@types/node@22.15.2)(jiti@2.4.2)(lightningcss@1.29.2)(terser@5.39.0)(yaml@2.7.1))(vue-router@4.5.1(vue@3.5.13(typescript@5.8.3)))(vue@3.5.13(typescript@5.8.3))(zod@3.24.3)':
     dependencies:
       '@ai-sdk/vue': 1.2.8(vue@3.5.13(typescript@5.8.3))(zod@3.24.3)
       '@nuxt/kit': 3.17.1(magicast@0.3.5)

@@ -24,7 +24,7 @@ defineShortcuts({
       container: 'py-18 sm:py-24 lg:py-32',
       wrapper: 'lg:w-[600px]',
       title: 'text-left max-w-xl text-pretty',
-      description: 'text-left mt-2 text-md max-w-2xl text-pretty sm:text-md text-(--ui-text-muted)',
+      description: 'text-left mt-2 text-md max-w-2xl text-pretty sm:text-md text-muted',
       links: 'mt-4 justify-start'
     }"
   >

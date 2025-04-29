@@ -45,16 +45,16 @@ async function navigateToTeam(team: Team) {
           Logout
         </UButton>
       </div>
-      <div class="size-80 absolute rounded-full dark:bg-(--ui-bg-inverted)/20 -top-20 -z-1 -left-20 blur-[200px]" />
+      <div class="size-80 absolute rounded-full dark:bg-inverted/20 -top-20 -z-1 -left-20 blur-[200px]" />
       <CrossedDiv line>
-        <div class="bg-(--ui-bg-muted) p-8 dark:shadow-lg border border-(--ui-border) w-full backdrop-blur-md">
+        <div class="bg-muted p-8 dark:shadow-lg border border-default w-full backdrop-blur-md">
           <div class="flex flex-col items-center gap-2">
             <UAvatar :src="user?.avatar" class="size-18 avatar" />
             <div class="flex flex-col items-center">
               <h1 class="text-lg font-semibold">
                 Welcome back, {{ user?.username }}
               </h1>
-              <p class="text-(--ui-text-muted) italic">
+              <p class="text-muted italic">
                 Select a team to get started
               </p>
             </div>
@@ -63,14 +63,14 @@ async function navigateToTeam(team: Team) {
             <div
               v-for="team in teams"
               :key="team.id"
-              class="flex items-center justify-between gap-4 cursor-pointer bg-(--ui-bg) p-4 rounded-lg dark:shadow-md ring-2 ring-transparent hover:ring-(--ui-primary) transition-colors duration-300 ease-in-out"
+              class="flex items-center justify-between gap-4 cursor-pointer bg-default p-4 rounded-lg dark:shadow-md ring-2 ring-transparent hover:ring-primary transition-colors duration-300 ease-in-out"
               @click="navigateToTeam(team)"
             >
               <div class="flex items-center gap-2">
                 <UAvatar :src="team.logo" class="size-10 logo" :class="{ active: active === team.id }" />
                 <div class="flex flex-col">
                   <span class="text-sm font-semibold team-name" :class="{ active: active === team.id }">{{ team.name }}</span>
-                  <span class="text-xs text-(--ui-text-muted)">{{ team.slug }}</span>
+                  <span class="text-xs text-muted">{{ team.slug }}</span>
                 </div>
               </div>
               <UButton size="sm" variant="soft" trailing :loading="navLoading && active === team.id">
@@ -79,7 +79,7 @@ async function navigateToTeam(team: Team) {
             </div>
           </div>
           <div v-else class="flex flex-col gap-4 mt-6">
-            <div v-for="i in 2" :key="i" class="flex items-center justify-between gap-4 bg-(--ui-bg) p-4 rounded-lg dark:shadow-md">
+            <div v-for="i in 2" :key="i" class="flex items-center justify-between gap-4 bg-default p-4 rounded-lg dark:shadow-md">
               <div class="flex items-center gap-2">
                 <USkeleton class="size-10 rounded-full" />
                 <div class="flex flex-col gap-2">
@@ -97,7 +97,7 @@ async function navigateToTeam(team: Team) {
       </div>
     </div>
     <footer class="absolute bottom-0 mx-auto flex max-w-7xl flex-col items-center justify-around gap-4 px-4 py-6 sm:flex-row">
-      <div class="flex items-center text-(--ui-text-muted) gap-4">
+      <div class="flex items-center text-muted gap-4">
         <span class="text-sm flex items-center">
           Want to go back to homepage ?
           <UButton

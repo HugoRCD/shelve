@@ -146,7 +146,7 @@ function handleDrop(event: DragEvent) {
       />
     </div>
     <div class="mt-2 flex w-full flex-col items-center justify-center">
-      <ULink to="/decrypt" class="text-center text-sm text-(--ui-text-muted)/80 hover:underline">
+      <ULink to="/decrypt" class="text-center text-sm text-muted/80 hover:underline">
         I already have a secret to decrypt
       </ULink>
     </div>

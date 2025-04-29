@@ -60,7 +60,7 @@ const filteredPosts = computed(() => {
         container: 'py-12 sm:py-16 lg:py-16',
         wrapper: 'lg:w-[600px]',
         title: 'text-left max-w-xl text-pretty',
-        description: 'text-left mt-2 text-md max-w-2xl text-pretty sm:text-md text-(--ui-text-muted)',
+        description: 'text-left mt-2 text-md max-w-2xl text-pretty sm:text-md text-muted',
       }"
     >
       <template #title>

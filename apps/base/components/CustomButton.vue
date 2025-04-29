@@ -25,7 +25,7 @@ const props = withDefaults(defineProps<CustomButtonProps>(), {
   >
     <UButton
       v-bind="props"
-      class="text-(--ui-text-highlighted) bg-transparent hover:bg-transparent disabled:bg-transparent"
+      class="text-highlighted bg-transparent hover:bg-transparent disabled:bg-transparent"
       :class="roundedType[props.rounded]"
     >
       <slot v-if="!!$slots.default" />

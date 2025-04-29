@@ -13,7 +13,7 @@ const copy = () => {
 
 <template>
   <div class="flex select-none items-center gap-2">
-    <div class="cursor-pointer text-sm text-(--ui-text-muted)" @click="copy">
+    <div class="cursor-pointer text-sm text-muted" @click="copy">
       **********
     </div>
     <UPopover>
@@ -24,7 +24,7 @@ const copy = () => {
         @click="visible = !visible"
       />
       <template #content>
-        <UCard :ui="{ body: 'px-2 sm:px-2 py-1 sm:py-1' }" class="cursor-pointer hover:bg-(--ui-bg-muted)" @click="copy">
+        <UCard :ui="{ body: 'px-2 sm:px-2 py-1 sm:py-1' }" class="cursor-pointer hover:bg-muted" @click="copy">
           <span class="text-sm font-mono">
             {{ token.slice(0, 4) }}...{{ token.slice(-4) }}
           </span>

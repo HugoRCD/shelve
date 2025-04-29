@@ -45,6 +45,6 @@ defineEmits<(e: 'click') => void>()
 
 .nav-item {
   @apply rounded-full p-2 flex items-center justify-center;
-  @apply hover:bg-(--ui-bg-muted) hover:shadow-md;
+  @apply hover:bg-muted hover:shadow-md;
 }
 </style>

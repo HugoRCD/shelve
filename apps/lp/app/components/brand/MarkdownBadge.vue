@@ -9,12 +9,12 @@ defineProps<{
 
 <template>
   <BrandCopy :content="markdown" copy-label="Copy badge">
-    <div class="space-y-4 p-6 rounded-md border border-(--ui-border)/50">
+    <div class="space-y-4 p-6 rounded-md border border-default/50">
       <div class="space-y-2">
         <h4 class="font-medium">
           {{ name }}
         </h4>
-        <p class="text-sm text-(--ui-text-muted)">
+        <p class="text-sm text-muted">
           {{ usage }}
         </p>
       </div>

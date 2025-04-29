@@ -31,7 +31,7 @@ useSeoMeta({
         container: 'py-12 sm:py-16 lg:py-16',
         wrapper: 'lg:w-[600px]',
         title: 'text-left max-w-xl text-pretty',
-        description: 'text-left mt-2 text-md max-w-2xl text-pretty sm:text-md text-(--ui-text-muted)',
+        description: 'text-left mt-2 text-md max-w-2xl text-pretty sm:text-md text-muted',
       }"
     >
       <template #title>
@@ -59,7 +59,7 @@ useSeoMeta({
           <h3 class="font-bold">
             {{ value.name }}
           </h3>
-          <p class="text-(--ui-text-muted)">
+          <p class="text-muted">
             {{ value.description }}
           </p>
         </UPageCard>
@@ -175,8 +175,8 @@ useSeoMeta({
           v-bind="badge"
         />
       </div>
-      <div class="space-y-4 p-6 text-sm rounded-md border border-(--ui-border)/50">
-        <div class="text-(--ui-text-muted) font-medium">
+      <div class="space-y-4 p-6 text-sm rounded-md border border-default/50">
+        <div class="text-muted font-medium">
           Usage
         </div>
         <div v-for="usage in page.badge.usage" :key="usage">

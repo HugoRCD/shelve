@@ -17,7 +17,7 @@ defineProps<SectionProps>()
         <h2 class="text-lg font-bold">
           {{ title }}
         </h2>
-        <p class="text-sm text-(--ui-text-muted)">
+        <p class="text-sm text-muted">
           {{ description }}
         </p>
       </div>

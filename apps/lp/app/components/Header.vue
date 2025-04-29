@@ -21,7 +21,7 @@ defineShortcuts({
 <template>
   <UHeader :ui="{ left: 'min-w-0' }" mode="drawer" :menu="{ shouldScaleBackground: true }">
     <template #left>
-      <Logo lp /> <span class="text-xs font-mono text-(--ui-text-muted)">| v{{ version }}</span>
+      <Logo lp /> <span class="text-xs font-mono text-muted">| v{{ version }}</span>
     </template>
 
     <UContentSearchButton :collapsed="false" class="w-[300px]" />

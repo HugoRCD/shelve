@@ -53,7 +53,7 @@ const items = [
       content: 'w-48'
     }"
   >
-    <div class="cursor-pointer flex items-center gap-2 text-(--ui-text-highlighted)">
+    <div class="cursor-pointer flex items-center gap-2 text-highlighted">
       <svg ref="logo" xmlns="http://www.w3.org/2000/svg" :class="size" fill="currentColor" viewBox="0 0 717 488">
         <path
           d="M700.867 0L577.808 142.717C563.922 158.728 542.573 168.197 519.836 168.197H388.098C379.94 168.197 373.518 162.343 373.518 155.113V110.696C373.518 98.3011 355.814 92.9643 347.309 102.777L182.593 293.698C168.708 309.709 147.359 319.177 124.622 319.177H0L253.583 25.4791C267.468 9.46859 288.817 0 311.554 0H700.867Z"

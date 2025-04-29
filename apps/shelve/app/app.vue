@@ -28,10 +28,10 @@ if (import.meta.client) setPrefersReducedMotion(reduceMotion.value)
           <template #fallback>
             <div class="size-full flex flex-col gap-4 items-center justify-center">
               <div class="relative">
-                <div class="absolute -z-1 -inset-5 rounded-full border border-(--ui-border) animate-ripple-1 opacity-0" />
-                <div class="absolute -z-1 -inset-3 rounded-full border border-(--ui-border) animate-ripple-2 opacity-0" />
-                <div class="absolute -z-1 -inset-1 rounded-full border border-(--ui-border) animate-ripple-3 opacity-0" />
-                <div class="rounded-full flex items-center justify-center z-10 border-1 border-(--ui-border) bg-(--ui-bg-muted) p-4 shadow-sm dark:shadow-lg">
+                <div class="absolute -z-1 -inset-5 rounded-full border border-default animate-ripple-1 opacity-0" />
+                <div class="absolute -z-1 -inset-3 rounded-full border border-default animate-ripple-2 opacity-0" />
+                <div class="absolute -z-1 -inset-1 rounded-full border border-default animate-ripple-3 opacity-0" />
+                <div class="rounded-full flex items-center justify-center z-10 border-1 border-default bg-muted p-4 shadow-sm dark:shadow-lg">
                   <Icon name="custom:shelve" class="size-8 animate-pulse" />
                 </div>
               </div>

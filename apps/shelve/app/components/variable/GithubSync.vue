@@ -86,10 +86,10 @@ async function onSubmit(event: FormSubmitEvent<SyncVariablesSchema>) {
         <div class="flex items-center gap-3">
           <UIcon name="simple-icons:github" class="size-8" />
           <div>
-            <h3 class="text-lg font-semibold text-(--ui-text-highlighted)">
+            <h3 class="text-lg font-semibold text-highlighted">
               Sync with GitHub
             </h3>
-            <p class="text-sm text-(--ui-text-muted)">
+            <p class="text-sm text-muted">
               Please select which environment you want to use.
             </p>
           </div>
@@ -99,7 +99,7 @@ async function onSubmit(event: FormSubmitEvent<SyncVariablesSchema>) {
       <template #body>
         <UForm v-if="status !== 'pending'" :state @submit="onSubmit">
           <div v-if="apps && apps.length" class="space-y-4">
-            <div class="bg-(--ui-bg-muted) p-4 rounded-lg">
+            <div class="bg-muted p-4 rounded-lg">
               <UFormField name="repository" label="Target Repository">
                 <template #help>
                   <div class="text-xs">
@@ -112,19 +112,19 @@ async function onSubmit(event: FormSubmitEvent<SyncVariablesSchema>) {
                 <div class="flex items-center gap-2">
                   <UIcon
                     name="lucide:git-fork"
-                    class="size-4 text-(--ui-text-muted)"
+                    class="size-4 text-muted"
                   />
                   <UInput
                     v-model="state.repository"
                     :placeholder="sanitizeGithubUrl(state.repository)"
                     disabled
-                    class="w-full bg-(--ui-bg-elevated)"
+                    class="w-full bg-elevated"
                   />
                 </div>
               </UFormField>
             </div>
 
-            <div class="bg-(--ui-bg-muted) p-4 rounded-lg">
+            <div class="bg-muted p-4 rounded-lg">
               <UFormField
                 name="environment"
                 label="Target Environment"
@@ -143,12 +143,12 @@ async function onSubmit(event: FormSubmitEvent<SyncVariablesSchema>) {
               </UFormField>
             </div>
 
-            <div class="bg-(--ui-bg-muted) p-4 rounded-lg space-y-2">
+            <div class="bg-muted p-4 rounded-lg space-y-2">
               <div>
-                <h4 class="text-sm font-medium text-(--ui-text-highlighted)">
+                <h4 class="text-sm font-medium text-highlighted">
                   Summary
                 </h4>
-                <p class="text-sm text-(--ui-text-muted)">
+                <p class="text-sm text-muted">
                   {{ variablesToSend.length }} variable(s) will be synchronized to your GitHub repository
                 </p>
               </div>
@@ -161,23 +161,23 @@ async function onSubmit(event: FormSubmitEvent<SyncVariablesSchema>) {
                 block
               />
             </div>
-            <p class="text-xs text-(--ui-text-muted) mt-2 bg-(--ui-bg-muted) p-2 rounded-lg">
+            <p class="text-xs text-muted mt-2 bg-muted p-2 rounded-lg">
               <UIcon name="lucide:info" class="text-sm align-sub" /> This might cause overwriting of existing secrets in your repository
             </p>
           </div>
 
           <div v-else class="text-center py-8">
-            <div class="bg-(--ui-bg-muted) p-6 rounded-lg">
+            <div class="bg-muted p-6 rounded-lg">
               <div class="flex flex-col items-center gap-4">
                 <UIcon
                   name="simple-icons:github"
-                  class="size-8 text-(--ui-text-muted)"
+                  class="size-8 text-muted"
                 />
                 <div>
                   <h3 class="text-lg font-semibold mb-1">
                     No GitHub Apps Found
                   </h3>
-                  <p class="text-sm text-(--ui-text-muted) mb-4">
+                  <p class="text-sm text-muted mb-4">
                     Create a GitHub app to start syncing your secrets
                   </p>
                   <ULink href="/user/integrations/github">

@@ -88,7 +88,7 @@ async function createTeamAndCompleteOnboarding(event: FormSubmitEvent<Schema>) {
         <h1 class="text-center main-gradient text-3xl leading-9 italic">
           <ScrambleText label="Welcome to Shelve" />
         </h1>
-        <p class="text-(--ui-text-muted) italic">
+        <p class="text-muted italic">
           Let's create your first team together
         </p>
       </div>

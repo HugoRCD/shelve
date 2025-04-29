@@ -14,7 +14,7 @@ const div2Ref = ref(null)
         <div class="flex flex-row justify-between">
           <div
             ref="div1Ref"
-            class="z-10 flex size-12 items-center justify-center rounded-full border border-(--ui-border) bg-(--ui-bg-muted) p-2 ring ring-(--ui-border) ring-offset-2 ring-offset-(--ui-bg)"
+            class="z-10 flex size-12 items-center justify-center rounded-full border border-default bg-muted p-2 ring ring-default ring-offset-2 ring-offset-default"
           >
             <Icon
               name="custom:shelve"
@@ -24,7 +24,7 @@ const div2Ref = ref(null)
           </div>
           <div
             ref="div2Ref"
-            class="z-10 flex size-12 items-center justify-center rounded-full border border-(--ui-border) bg-(--ui-bg-muted) p-2 ring ring-(--ui-border) ring-offset-2 ring-offset-(--ui-bg)"
+            class="z-10 flex size-12 items-center justify-center rounded-full border border-default bg-muted p-2 ring ring-default ring-offset-2 ring-offset-default"
           >
             <Icon
               name="simple-icons:github"

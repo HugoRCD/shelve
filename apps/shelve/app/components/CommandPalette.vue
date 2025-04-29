@@ -189,15 +189,15 @@ function playAction(item: CommandItem, index: number) {
     :modal="false"
     :dismissible="false"
     :ui="{
-      content: 'bg-(--ui-bg-muted) max-w-2xl',
+      content: 'bg-muted max-w-2xl',
     }"
   >
     <template #content>
       <div class="py-2 flex flex-col shadow-2xl">
         <div class="screen-container">
           <div v-if="allFilteredItems.length === 0" class="px-4 py-6 text-center">
-            <UIcon name="lucide:search-x" class="mx-auto mb-2 size-8 text-(--ui-text-muted)" />
-            <p class="text-sm text-(--ui-text-muted)">
+            <UIcon name="lucide:search-x" class="mx-auto mb-2 size-8 text-muted" />
+            <p class="text-sm text-muted">
               No results found for "{{ search }}"
             </p>
             <div v-if="search" class="mt-4 flex justify-center">
@@ -225,14 +225,14 @@ function playAction(item: CommandItem, index: number) {
                 <div ref="scrollContainerRef" class="max-h-[400px] overflow-y-auto scroll-smooth">
                   <div v-for="(group, groupIndex) in filteredCommandGroups" :key="group.id" class="group">
                     <div class="px-3 pt-2 flex items-center justify-between">
-                      <span class="text-sm font-semibold text-(--ui-text-muted)">
+                      <span class="text-sm font-semibold text-muted">
                         {{ group.label }}
                       </span>
 
                       <!-- Back button for submenus -->
                       <button
                         v-if="group.backAction"
-                        class="text-xs text-(--ui-text-muted) flex items-center gap-1 hover:text-(--ui-text-highlighted)"
+                        class="text-xs text-muted flex items-center gap-1 hover:text-highlighted"
                         @click="handleBackAction"
                       >
                         <UIcon name="lucide:arrow-left" class="size-3" />
@@ -255,13 +255,13 @@ function playAction(item: CommandItem, index: number) {
                         <div v-if="item.isAvatar" class="flex-shrink-0">
                           <UAvatar :src="item.icon" size="sm" :alt="item.label" />
                         </div>
-                        <UIcon v-else :name="item.icon" class="size-5 text-(--ui-text-highlighted)" />
+                        <UIcon v-else :name="item.icon" class="size-5 text-highlighted" />
 
                         <div class="flex flex-col flex-1">
-                          <span class="text-sm font-medium text-(--ui-text-highlighted)">
+                          <span class="text-sm font-medium text-highlighted">
                             {{ item.label }}
                           </span>
-                          <span v-if="item.description" class="text-xs text-(--ui-text-muted)">
+                          <span v-if="item.description" class="text-xs text-muted">
                             {{ item.description }}
                           </span>
                         </div>
@@ -269,12 +269,12 @@ function playAction(item: CommandItem, index: number) {
                         <UIcon
                           v-if="item.hasSubmenu"
                           name="lucide:chevron-right"
-                          class="size-4 text-(--ui-text-highlighted)"
+                          class="size-4 text-highlighted"
                         />
                         <UIcon
                           v-else-if="item.active"
                           name="lucide:check"
-                          class="size-5 text-(--ui-text-highlighted)"
+                          class="size-5 text-highlighted"
                         />
                       </div>
                     </div>
@@ -289,13 +289,13 @@ function playAction(item: CommandItem, index: number) {
         <div>
           <Separator />
           <div class="px-2 pt-2 flex items-center justify-between">
-            <div class="text-xs font-mono flex items-center gap-1 text-(--ui-text-muted)/50">
+            <div class="text-xs font-mono flex items-center gap-1 text-muted/50">
               <UIcon name="custom:shelve" />
               <span>
                 {{ version }}
               </span>
             </div>
-            <div class="max-sm:hidden flex flex-wrap justify-center gap-x-4 text-xs text-(--ui-text-muted)">
+            <div class="max-sm:hidden flex flex-wrap justify-center gap-x-4 text-xs text-muted">
               <div class="space-x-1">
                 <UKbd value="↑" variant="subtle" />
                 <UKbd value="↓" variant="subtle" />
@@ -326,7 +326,7 @@ function playAction(item: CommandItem, index: number) {
 @import "tailwindcss";
 
 .screen-container {
-  @apply bg-(--ui-bg)/80 m-2 rounded-lg max-h-[400px] overflow-hidden;
+  @apply bg-default/80 m-2 rounded-lg max-h-[400px] overflow-hidden;
   box-shadow: inset 3px 3px 5px rgba(173, 173, 173, 0.3);
 }
 
@@ -336,15 +336,15 @@ function playAction(item: CommandItem, index: number) {
 
 .command-item {
   @apply cursor-pointer flex items-center gap-3 rounded-lg m-2 px-3 py-2.5;
-  @apply hover:bg-(--ui-bg-muted) relative overflow-hidden;
+  @apply hover:bg-muted relative overflow-hidden;
 }
 
 .command-item.selected {
-  @apply bg-(--ui-bg-accented)/50;
+  @apply bg-accented/50;
 }
 
 .command-item.selected.active {
-  @apply bg-(--ui-bg-accented)/70;
+  @apply bg-accented/70;
 }
 
 .command-item.has-submenu {
@@ -352,6 +352,6 @@ function playAction(item: CommandItem, index: number) {
 }
 
 .command-item.has-submenu:hover {
-  @apply bg-(--ui-bg-muted)/70;
+  @apply bg-muted/70;
 }
 </style>
