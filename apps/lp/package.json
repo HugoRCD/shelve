@@ -19,7 +19,7 @@
     "@number-flow/vue": "^0.4.7",
     "@nuxthub/core": "0.8.25",
     "@nuxtjs/seo": "3.0.3",
-    "nuxt": "3.16.2",
+    "nuxt": "3.17.1",
     "nuxt-build-cache": "0.1.1",
     "nuxt-llms": "0.1.2",
     "vue": "3.5.13",
@@ -29,7 +29,7 @@
   "devDependencies": {
     "@shelve/cli": "^3.1.1",
     "typescript": "5.8.3",
-    "wrangler": "^4.13.2"
+    "wrangler": "^4.14.0"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
