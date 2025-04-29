@@ -22,6 +22,7 @@ jobs:
         id: lint_pr_title
         with:
           scopes: |
+            apps
             app
             lp
             base
