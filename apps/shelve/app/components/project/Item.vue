@@ -40,6 +40,8 @@ const active = useState('active-project')
 </template>
 
 <style scoped>
+@reference '../../assets/css/index.css';
+
 .dot {
   @apply opacity-0 group-hover:opacity-100;
 }

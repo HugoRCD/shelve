@@ -323,7 +323,7 @@ function playAction(item: CommandItem, index: number) {
 </template>
 
 <style scoped>
-@import "tailwindcss";
+@reference '../assets/css/index.css';
 
 .screen-container {
   @apply bg-default/80 m-2 rounded-lg max-h-[400px] overflow-hidden;

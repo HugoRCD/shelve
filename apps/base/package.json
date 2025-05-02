@@ -19,7 +19,7 @@
     "nuxt-visitors": "1.2.2",
     "typescript": "5.8.3",
     "motion-v": "^1.0.1",
-    "@nuxt/ui": "https://pkg.pr.new/@nuxt/ui@be9b1f6",
+    "@nuxt/ui": "https://pkg.pr.new/@nuxt/ui@9b17c66",
     "@nuxt/ui-pro": "https://pkg.pr.new/@nuxt/ui-pro@ddb3b0b",
     "@nuxt/content": "^3.5.1",
     "@nuxt/scripts": "0.11.6",
