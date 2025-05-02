@@ -30,7 +30,7 @@
     "nuxt-auth-utils": "0.5.20",
     "nuxt-build-cache": "0.1.1",
     "pg": "^8.15.6",
-    "resend": "4.4.1",
+    "resend": "4.5.0",
     "tweetnacl": "^1.0.3",
     "vue": "3.5.13",
     "vue-router": "4.5.1",
