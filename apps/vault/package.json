@@ -17,7 +17,7 @@
     "@nuxthub/core": "0.8.25",
     "nuxt": "^3.17.1",
     "vue": "latest",
-    "zod": "3.24.3"
+    "zod": "3.24.4"
   },
   "devDependencies": {
     "wrangler": "^4.14.0"
