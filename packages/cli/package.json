@@ -56,10 +56,10 @@
     "tree-kill": "^1.2.2"
   },
   "devDependencies": {
-    "@types/bun": "1.2.11",
+    "@types/bun": "1.2.12",
     "@types/npm-registry-fetch": "8.0.7",
     "@types/semver": "7.7.0",
-    "eslint": "9.25.1",
+    "eslint": "9.26.0",
     "typescript": "5.8.3",
     "unbuild": "3.5.0",
     "vitest": "3.1.2"
