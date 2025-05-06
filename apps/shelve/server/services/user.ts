@@ -1,4 +1,4 @@
-import { H3Event } from 'h3'
+import type { H3Event } from 'h3'
 import type { CreateUserInput, User } from '@types'
 import { AuthType, Role } from '@types'
 
@@ -24,7 +24,7 @@ export async function handleOAuthUser(input: CreateUserInput, event: H3Event): P
   const [foundUser] = await useDrizzle()
     .select()
     .from(tables.users)
-    .where(eq(tables.users.username, input.username))
+    .where(eq(tables.users.email, input.email))
 
   if (!foundUser) return await createUser(input, event)
   return foundUser
