@@ -12,7 +12,7 @@ const active = useState('active-project')
 </script>
 
 <template>
-  <UCard variant="subtle" class="relative transition-all duration-300 group hover:z-10 h-full ring-transparent border border-(--ui-border) bg-transparent hover:bg-(--ui-bg-muted) rounded-none" @click="active = project.id">
+  <UCard variant="subtle" class="relative transition-all duration-300 group hover:z-10 h-full ring-transparent border border-default bg-transparent hover:bg-muted rounded-none" @click="active = project.id">
     <NuxtLink class="absolute inset-0 z-10" :to="`/${teamSlug}/projects/${project.id}/variables`" />
     <span class="dot dot-flicker dot-tl" />
     <span class="dot dot-flicker dot-br" />
@@ -28,10 +28,10 @@ const active = useState('active-project')
           :class="{ active: active === project.id }"
         /> -->
       <div class="flex flex-col gap-1">
-        <h3 class="flex flex-col text-lg text-(--ui-text-highlighted) font-semibold" :class="{ active: active === project.id }">
+        <h3 class="flex flex-col text-lg text-highlighted font-semibold" :class="{ active: active === project.id }">
           {{ project.name }}
         </h3>
-        <div class="text-xs font-normal text-(--ui-text-muted)" :class="{ active: active === project.id }">
+        <div class="text-xs font-normal text-muted" :class="{ active: active === project.id }">
           {{ project.description }}
         </div>
       </div>
@@ -40,6 +40,8 @@ const active = useState('active-project')
 </template>
 
 <style scoped>
+@reference '../../assets/css/index.css';
+
 .dot {
   @apply opacity-0 group-hover:opacity-100;
 }
@@ -50,22 +52,22 @@ const active = useState('active-project')
 
 .dot-tl {
   @apply before:absolute;
-  @apply before:top-[-2px] before:left-[-2px] before:bg-(--ui-bg-inverted) before:content-[''] before:w-[3px] before:h-[3px];
+  @apply before:top-[-2px] before:left-[-2px] before:bg-inverted before:content-[''] before:w-[3px] before:h-[3px];
 }
 
 .dot-br {
   @apply before:absolute;
-  @apply before:bottom-[-2px] before:right-[-2px] before:bg-(--ui-bg-inverted) before:content-[''] before:w-[3px] before:h-[3px];
+  @apply before:bottom-[-2px] before:right-[-2px] before:bg-inverted before:content-[''] before:w-[3px] before:h-[3px];
 }
 
 .dot-tr {
   @apply before:absolute;
-  @apply before:top-[-2px] before:right-[-2px] before:bg-(--ui-bg-inverted) before:content-[''] before:w-[3px] before:h-[3px];
+  @apply before:top-[-2px] before:right-[-2px] before:bg-inverted before:content-[''] before:w-[3px] before:h-[3px];
 }
 
 .dot-bl {
   @apply before:absolute;
-  @apply before:bottom-[-2px] before:left-[-2px] before:bg-(--ui-bg-inverted) before:content-[''] before:w-[3px] before:h-[3px];
+  @apply before:bottom-[-2px] before:left-[-2px] before:bg-inverted before:content-[''] before:w-[3px] before:h-[3px];
 }
 
 @keyframes dot-flicker {

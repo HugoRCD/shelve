@@ -16,7 +16,7 @@ const formatDate = (dateString: string) => {
 </script>
 
 <template>
-  <article class="p-4 cursor-pointer rounded-lg relative hover:bg-(--ui-bg-muted)/10 transition-colors duration-200">
+  <article class="p-4 cursor-pointer rounded-lg relative hover:bg-muted/10 transition-colors duration-200">
     <NuxtLink :to class="absolute inset-0" />
     <div class="flex md:flex-row flex-col gap-4 sm:gap-6">
       <NuxtImg
@@ -28,13 +28,13 @@ const formatDate = (dateString: string) => {
       />
       <div class="flex flex-col justify-around gap-1">
         <div class="flex flex-col gap-1">
-          <span class="text-xs font-medium text-(--ui-text-muted)">
+          <span class="text-xs font-medium text-muted">
             {{ formatDate(post.date) }}
           </span>
-          <h2 class="text-xl font-bold text-(--ui-primary)">
+          <h2 class="text-xl font-bold text-primary">
             {{ post.title }}
           </h2>
-          <p class="text-(--ui-text-muted)">
+          <p class="text-muted">
             {{ post.description }}
           </p>
         </div>

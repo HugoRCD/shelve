@@ -61,7 +61,7 @@ watch(reduceMotion, () => {
     :title="option.title"
     :description="option.description"
     :stagger="option.stagger"
-    class="border-b border-(--ui-border) pb-6"
+    class="border-b border-default pb-6"
   >
     <USwitch v-model="option.modelValue" />
   </PageSection>
@@ -77,24 +77,24 @@ watch(reduceMotion, () => {
         :key="theme.id"
         :class="[
           theme.class,
-          'flex cursor-pointer flex-col gap-2 rounded-lg border border-(--ui-border) bg-(--ui-bg) p-4 shadow-md hover:bg-(--ui-bg-muted)'
+          'flex cursor-pointer flex-col gap-2 rounded-lg border border-default bg-default p-4 shadow-md hover:bg-muted'
         ]"
         @click="$colorMode.preference = theme.id"
       >
-        <h3 class="text-lg font-semibold text-(--ui-text-highlighted)">
+        <h3 class="text-lg font-semibold text-highlighted">
           {{ theme.name }}
         </h3>
-        <p class="text-sm text-(--ui-text-muted)">
+        <p class="text-sm text-muted">
           {{ theme.description }}
         </p>
         <div class="mt-2 flex flex-col gap-1">
           <div class="flex gap-2">
-            <div class="h-3 w-1/2 rounded-full bg-(--ui-bg-elevated)" />
-            <div class="h-3 w-1/4 rounded-full bg-(--ui-bg-elevated)" />
+            <div class="h-3 w-1/2 rounded-full bg-elevated" />
+            <div class="h-3 w-1/4 rounded-full bg-elevated" />
           </div>
           <div class="flex gap-2">
-            <div class="h-3 w-1/4 rounded-full bg-(--ui-bg-elevated)" />
-            <div class="h-3 w-1/2 rounded-full bg-(--ui-bg-elevated)" />
+            <div class="h-3 w-1/4 rounded-full bg-elevated" />
+            <div class="h-3 w-1/2 rounded-full bg-elevated" />
           </div>
         </div>
       </div>

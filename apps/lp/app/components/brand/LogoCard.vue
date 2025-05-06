@@ -21,7 +21,7 @@ const pngLink = computed(() => props.showText ? `/logo/logo-${props.name.toLower
           backgroundColor: color === '#000000' ? '#FFFFFF' : '#0A0A0A'
         }"
         :class="[
-          'flex rounded-md border border-solid border-(--ui-border)/50',
+          'flex rounded-md border border-solid border-default/50',
           showText ? 'items-center gap-2 text-3xl px-6 py-8' : 'items-center justify-center p-4 aspect-square'
         ]"
       >

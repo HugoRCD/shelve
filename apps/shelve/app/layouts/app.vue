@@ -48,7 +48,7 @@ const title = computed(() => {
           <UserDropdown />
         </div>
       </div>
-      <div class="flex flex-col overflow-y-auto no-scrollbar border border-(--ui-border)/50 gap-4 mt-4 sm:mt-12 mb-24 p-4 sm:p-6 bg-(--ui-bg) rounded-md">
+      <div class="flex flex-col overflow-y-auto no-scrollbar border border-default/50 gap-4 mt-4 sm:mt-12 mb-24 p-4 sm:p-6 bg-default rounded-md">
         <CliInstall />
         <slot />
       </div>

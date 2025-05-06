@@ -134,7 +134,7 @@ function getProjectManager(manager: string) {
             <h3 class="text-base font-semibold leading-7">
               {{ project.name }}
             </h3>
-            <p class="text-sm leading-6 text-(--ui-text-muted)">
+            <p class="text-sm leading-6 text-muted">
               {{ project.description }}
             </p>
           </div>

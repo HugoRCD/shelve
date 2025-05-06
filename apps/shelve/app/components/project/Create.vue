@@ -71,7 +71,7 @@ function importProject() {
             <h3 class="font-semibold">
               Quick Links
             </h3>
-            <p class="text-pretty text-xs text-(--ui-text-muted)">
+            <p class="text-pretty text-xs text-muted">
               Add quick links to your project repository, homepage, etc...
             </p>
           </div>
@@ -99,7 +99,7 @@ function importProject() {
             <h3 class="font-semibold">
               Logo
             </h3>
-            <p class="text-pretty text-xs text-(--ui-text-muted)">
+            <p class="text-pretty text-xs text-muted">
               Add a logo to your project
             </p>
           </div>

@@ -34,7 +34,7 @@ useSeoMeta({
         :ui="{
           container: 'sm:pb-0 lg:pb-8',
           title: 'text-xl sm:text-xl lg:text-2xl font-normal',
-          description: 'mt-2 text-sm sm:text-md lg:text-sm text-(--ui-text-muted)',
+          description: 'mt-2 text-sm sm:text-md lg:text-sm text-muted',
           links: 'mt-4 gap-3'
         }"
       >
@@ -52,7 +52,7 @@ useSeoMeta({
             :transition="{ delay: 0.2 + 0.2 * _index }"
             :in-view-options="{ once: true }"
           >
-            <UButton class="cursor-default hover:bg-transparent" :ui="{ label: 'bg-gradient-to-br from-(--ui-text-muted) to-(--ui-text-highlighted) to-50% bg-clip-text text-transparent' }" v-bind="link" />
+            <UButton class="cursor-default hover:bg-transparent" :ui="{ label: 'bg-gradient-to-br from-muted to-inverted to-50% bg-clip-text text-transparent' }" v-bind="link" />
           </Motion>
         </template>
         <div class="min-h-[300px] flex items-center justify-center">

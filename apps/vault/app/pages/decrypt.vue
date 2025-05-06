@@ -67,15 +67,15 @@ async function decryptEnvFile() {
       </div>
     </template>
     <div v-if="state.value" class="mt-2 flex w-full items-center justify-between gap-2">
-      <span v-if="timeLeft" class="text-sm font-semibold text-(--ui-text-muted)/80">
+      <span v-if="timeLeft" class="text-sm font-semibold text-muted/80">
         Time left: {{ timeLeft }}
       </span>
-      <span v-if="readsLeft" class="text-sm font-semibold text-(--ui-text-muted)/80">
+      <span v-if="readsLeft" class="text-sm font-semibold text-muted/80">
         Reads left: {{ readsLeft }}
       </span>
     </div>
     <div class="mt-2 flex w-full flex-col items-center justify-center">
-      <ULink to="/" class="text-center text-sm text-(--ui-text-muted)/80 hover:underline">
+      <ULink to="/" class="text-center text-sm text-muted/80 hover:underline">
         I want to create a new secret
       </ULink>
     </div>

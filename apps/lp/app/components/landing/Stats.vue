@@ -68,10 +68,10 @@ const finalStats = computed(() => [
           >
             <span class="relative flex size-2">
               <span
-                class="absolute bg-(--ui-success) inline-flex size-full animate-ping rounded-full opacity-75"
+                class="absolute bg-success inline-flex size-full animate-ping rounded-full opacity-75"
               />
               <span
-                class="relative bg-(--ui-success) inline-flex size-2 scale-90 rounded-full"
+                class="relative bg-success inline-flex size-2 scale-90 rounded-full"
               />
             </span>
             <NumberFlow
@@ -90,7 +90,7 @@ const finalStats = computed(() => [
       <h3 class="main-gradient text-3xl leading-8">
         <ScrambleText label="Real-time Impact" />
       </h3>
-      <p class="flex gap-2 items-center text-pretty text-center text-(--ui-text-muted)">
+      <p class="flex gap-2 items-center text-pretty text-center text-muted">
         {{ !isLoading ? `Live insights into Shelve's usage and efficiency.` : `Loading stats${loadingDots}` }}
       </p>
     </div>
@@ -106,10 +106,10 @@ const finalStats = computed(() => [
         <div class="flex gap-2 items-center">
           <span class="relative flex size-2">
             <span
-              class="absolute bg-(--ui-bg-inverted) inline-flex size-full animate-ping rounded-full opacity-75"
+              class="absolute bg-inverted inline-flex size-full animate-ping rounded-full opacity-75"
             />
             <span
-              class="relative bg-(--ui-bg-inverted) inline-flex size-2 scale-90 rounded-full"
+              class="relative bg-inverted inline-flex size-2 scale-90 rounded-full"
             />
           </span>
           <NumberFlow
@@ -120,12 +120,12 @@ const finalStats = computed(() => [
             will-change
           />
         </div>
-        <dd class="text-sm font-mono text-(--ui-text-muted)">
+        <dd class="text-sm font-mono text-muted">
           {{ stat.label }}
         </dd>
       </UPageCard>
     </dl>
-    <span class="text-xs text-(--ui-text-muted) text-center mt-4 block">
+    <span class="text-xs text-muted text-center mt-4 block">
       Saved time is calculated by comparing manual env file sharing (5min) vs Shelve operations (5s).
     </span>
   </div>

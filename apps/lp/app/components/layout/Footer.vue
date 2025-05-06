@@ -32,10 +32,10 @@ const route = useRoute()
 
 <template>
   <USeparator icon="custom:shelve" class="h-px z-20" />
-  <UFooter :ui="{ root: 'bg-(--ui-bg) z-10' }">
+  <UFooter :ui="{ root: 'bg-default z-10' }">
     <template #left>
       <div class="text-xs font-mono italic tracking-tight">
-        <span class="text-(--ui-text-muted)"> © {{ new Date().getFullYear() }} - Made by </span>
+        <span class="text-muted"> © {{ new Date().getFullYear() }} - Made by </span>
         <ULink to="https://hrcd.fr/">
           HugoRCD
         </ULink>

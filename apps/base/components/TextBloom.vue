@@ -5,7 +5,7 @@ const props = withDefaults(defineProps<{
   class?: string
 }>(), {
   bloomColor: '#fff',
-  textColor: 'text-(--ui-text-muted)',
+  textColor: 'text-muted',
   class: 'text-base font-semibold'
 })
 

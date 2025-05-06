@@ -109,7 +109,7 @@ defineShortcuts({
                 autocomplete="off"
                 type="text"
                 placeholder="Search..."
-                class="bg-transparent border-none outline-none size-full text-(--ui-text-highlighted) placeholder:text-(--ui-text-muted)"
+                class="bg-transparent border-none outline-none size-full text-highlighted placeholder:text-muted"
               >
             </Motion>
 
@@ -144,7 +144,7 @@ defineShortcuts({
 </template>
 
 <style scoped>
-@import "tailwindcss";
+@reference '../../assets/css/index.css';
 
 .navbar-wrapper {
   @apply fixed z-[99] bottom-6 sm:bottom-8 left-1/2 -translate-x-1/2 will-change-auto;
@@ -180,18 +180,18 @@ defineShortcuts({
 
 .nav-item {
   @apply rounded-full p-2 flex items-center justify-center;
-  @apply data-[active=true]:bg-(--ui-bg-accented) data-[active=true]:shadow-xl bg-transparent;
+  @apply data-[active=true]:bg-accented data-[active=true]:shadow-xl bg-transparent;
   @apply data-[active=false]:hover:inset-shadow-[2px_2px_2px_rgba(0,0,0,0.2)];
 }
 
 .dark {
   .nav-item {
-    @apply data-[active=false]:hover:bg-(--ui-bg-muted) hover:shadow-md;
+    @apply data-[active=false]:hover:bg-muted hover:shadow-md;
     @apply data-[active=false]:hover:inset-shadow-[2px_2px_5px_rgba(0,0,0,0.4),-2px_-2px_2px_rgba(255,255,255,0.08)];
   }
 }
 
 .icon {
-  @apply text-lg sm:text-xl text-(--ui-text-highlighted);
+  @apply text-lg sm:text-xl text-highlighted;
 }
 </style>

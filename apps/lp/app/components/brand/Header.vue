@@ -8,6 +8,6 @@ defineProps<{
 <template>
   <div class="flex flex-col gap-2">
     <span class="text-lg font-bold">{{ title }}</span>
-    <span class="text-(--ui-text-muted)">{{ description }}</span>
+    <span class="text-muted">{{ description }}</span>
   </div>
 </template>

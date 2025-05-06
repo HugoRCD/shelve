@@ -24,7 +24,7 @@ const { navItem, active = false } = defineProps<NavItemProps>()
 
 .nav-item {
   @apply cursor-pointer rounded-lg px-3 py-1.5 flex flex-row items-center gap-2 transition-transform duration-200 ease-in-out;
-  @apply border border-transparent hover:border-(--ui-border) data-[active=true]:border-(--ui-border);
-  @apply bg-transparent hover:bg-(--ui-bg-muted) data-[active=true]:bg-(--ui-bg-accented)/50;
+  @apply border border-transparent hover:border-default data-[active=true]:border-default;
+  @apply bg-transparent hover:bg-muted data-[active=true]:bg-accented/50;
 }
 </style>

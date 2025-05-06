@@ -98,10 +98,10 @@ const items = [
 const headerUi = computed(() => ({
   root: [
     '@container h-fit fixed mt-2 px-0 rounded-xl py-2 transition-all duration-500 left-1/2 -translate-x-1/2',
-    props.scroll > 0.02 ? 'bg-(--ui-bg)/50 backdrop-blur-lg' : 'bg-transparent backdrop-blur-none',
+    props.scroll > 0.02 ? 'bg-default/50 backdrop-blur-lg' : 'bg-transparent backdrop-blur-none',
     props.scroll > 0.02 ? 'border' : 'border-transparent',
     props.scroll > 0.005 ? '[--header-width:90%] sm:[--header-width:60%]' : '[--header-width:100%]',
-    'w-[var(--header-width)]'
+    'w-(--header-width)'
   ] as never as string,
   container: '',
   center: '@min-[620px]:flex',
@@ -112,7 +112,7 @@ const headerUi = computed(() => ({
 const navigationUi = computed(() => ({
   item: 'py-0',
   linkTrailingIcon: 'hidden',
-  viewport: 'bg-(--ui-bg) font-mono outline outline-offset-4 outline-(--ui-border)',
+  viewport: 'bg-default font-mono outline outline-offset-4 outline-default',
   viewportWrapper: 'w-[600px] transition-all duration-500 left-1/2 -translate-x-1/2',
 }))
 </script>
@@ -139,13 +139,13 @@ const navigationUi = computed(() => ({
             <ul class="flex flex-col gap-1">
               <li v-for="child in item.children" :key="child.label">
                 <ULink
-                  class="text-sm cursor-pointer w-full text-left rounded-md p-3 transition-colors hover:bg-[var(--ui-bg-elevated)]/50"
+                  class="text-sm cursor-pointer w-full text-left rounded-md p-3 transition-colors hover:bg-elevated/50"
                   @click="navigateTo(child.to)"
                 >
-                  <p class="font-medium text-[var(--ui-text-highlighted)]">
+                  <p class="font-medium text-highlighted">
                     {{ child.label }}
                   </p>
-                  <p class="text-[var(--ui-text-muted)] line-clamp-2">
+                  <p class="text-muted line-clamp-2">
                     {{ child.description }}
                   </p>
                 </ULink>

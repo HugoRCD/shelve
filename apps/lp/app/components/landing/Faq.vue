@@ -12,7 +12,7 @@ defineProps<{
       <h3 class="main-gradient text-3xl">
         <ScrambleText :label="faq.title" />
       </h3>
-      <p class="max-w-lg text-center text-sm text-(--ui-text-muted) sm:text-base">
+      <p class="max-w-lg text-center text-sm text-muted sm:text-base">
         {{ faq.description }}
       </p>
       <div class="mt-2">

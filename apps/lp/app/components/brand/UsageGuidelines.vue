@@ -6,9 +6,9 @@ const { do: doGuidelines, dont: dontGuidelines } = defineProps<{
 </script>
 
 <template>
-  <div class="space-y-4 p-6 rounded-md border border-(--ui-border)/50 grid lg:grid-cols-2 gap-6">
+  <div class="space-y-4 p-6 rounded-md border border-default/50 grid lg:grid-cols-2 gap-6">
     <div class="space-y-4 text-sm">
-      <h4 class="font-medium text-(--ui-success)">
+      <h4 class="font-medium text-success">
         Do's
       </h4>
       <ul class="space-y-2">
@@ -23,7 +23,7 @@ const { do: doGuidelines, dont: dontGuidelines } = defineProps<{
       </ul>
     </div>
     <div class="space-y-4 text-sm">
-      <h4 class="font-medium text-(--ui-error)">
+      <h4 class="font-medium text-error">
         Don'ts
       </h4>
       <ul class="space-y-2">
@@ -32,7 +32,7 @@ const { do: doGuidelines, dont: dontGuidelines } = defineProps<{
           :key="item"
           class="flex items-center gap-2"
         >
-          <UIcon name="i-heroicons-x-circle" class="text-(--ui-error)" />
+          <UIcon name="i-heroicons-x-circle" class="text-error" />
           <span>{{ item }}</span>
         </li>
       </ul>

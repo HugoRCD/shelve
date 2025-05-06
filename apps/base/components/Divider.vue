@@ -10,8 +10,8 @@ const slot = defineSlots<{
 
 <template>
   <div class="linebreak relative inset-0 h-[1px] w-full mx-auto">
-    <div class="absolute flex w-full -translate-y-1/2 items-center justify-center text-(--ui-text-muted)">
-      <div class="bg-(--ui-bg) px-2">
+    <div class="absolute flex w-full -translate-y-1/2 items-center justify-center text-muted">
+      <div class="bg-default px-2">
         <span v-if="text && !!slot.default">
           {{ text }}
         </span>

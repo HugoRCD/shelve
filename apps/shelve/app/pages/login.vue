@@ -25,14 +25,14 @@ if (route.query.error === 'github' || route.query.error === 'google') {
 
 <template>
   <div class="flex overflow-hidden size-full flex-col items-center justify-center">
-    <div class="dark:bg-(--ui-bg-inverted) rounded-full w-50 h-96 blur-[250px] absolute -top-40 select-none" />
+    <div class="dark:bg-inverted rounded-full w-50 h-96 blur-[250px] absolute -top-40 select-none" />
     <div class="mx-auto w-full flex flex-col items-center justify-center gap-2 text-center">
       <Logo :text="false" size="size-10" />
       <div class="flex flex-col items-center gap-1">
         <h1 class="text-center text-3xl leading-9 main-gradient">
           Sign in to {{ title }}
         </h1>
-        <p class="text-(--ui-text-muted) italic">
+        <p class="text-muted italic">
           Welcome to the future of environment management.
         </p>
       </div>

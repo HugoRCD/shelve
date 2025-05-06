@@ -32,7 +32,7 @@ const { width } = useElementSize(el)
 <template>
   <div
     ref="contributorsRef"
-    class="isolate rounded-full relative circle size-[70%] aspect-[1/1] p-8 before:absolute before:inset-px before:bg-(--ui-bg) before:rounded-full z-(--level)"
+    class="isolate rounded-full relative circle size-[70%] aspect-[1/1] p-8 before:absolute before:inset-px before:bg-default before:rounded-full z-(--level)"
     :class="{ 'animation-paused': isContributorsHovered }"
     :style="{
       '--duration': `${((level + 1) * 8)}s`,
@@ -77,7 +77,7 @@ const { width } = useElementSize(el)
             :src="`https://ipx.nuxt.com/s_56x56/gh_avatar/${contributor.username}`"
             :srcset="`https://ipx.nuxt.com/s_112x112/gh_avatar/${contributor.username} 2x`"
             :alt="contributor.username"
-            class="ring-2 grayscale ring-(--ui-border) lg:hover:ring-(--ui-border-inverted) transition rounded-full size-7"
+            class="ring-2 grayscale ring-default lg:hover:ring-inverted transition rounded-full size-7"
             loading="lazy"
           >
         </NuxtLink>
@@ -90,7 +90,7 @@ const { width } = useElementSize(el)
 .circle:after {
   --start: 0deg;
   --end: 360deg;
-  --border-color: var(--ui-border);
+  --border-color: vardefault;
   --highlight-color: var(--ui-color-neutral-400);
 
   content: '';

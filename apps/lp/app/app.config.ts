@@ -11,7 +11,7 @@ export default defineAppConfig({
         'docker-compose.yml': 'simple-icons:docker'
       },
       a: {
-        base: 'border-b border-(--ui-secondary)'
+        base: 'border-b border-secondary'
       }
     },
     pageSection: {

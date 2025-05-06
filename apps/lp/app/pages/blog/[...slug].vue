@@ -85,7 +85,7 @@ const formatDate = (dateString: string) => {
             :alt="page.title"
             class="rounded-lg w-full h-[250px] object-cover object-center"
           />
-          <div class="flex text-xs text-(--ui-text-muted) items-center justify-center gap-2">
+          <div class="flex text-xs text-muted items-center justify-center gap-2">
             <span>
               {{ formatDate(page.date) }}
             </span>
@@ -97,7 +97,7 @@ const formatDate = (dateString: string) => {
           <h1 class="text-4xl main-gradient text-center max-w-3xl mx-auto">
             {{ page.title }}
           </h1>
-          <p class="text-(--ui-text-muted) text-center max-w-2xl mx-auto">
+          <p class="text-muted text-center max-w-2xl mx-auto">
             {{ page.description }}
           </p>
           <div class="flex items-center justify-center gap-2 mt-2">
@@ -117,7 +117,7 @@ const formatDate = (dateString: string) => {
           <ContentRenderer v-if="page.body" :value="page" />
 
           <Divider class="my-10">
-            <div class="flex items-center gap-2 text-sm text-(--ui-text-muted)">
+            <div class="flex items-center gap-2 text-sm text-muted">
               <UButton
                 size="sm"
                 variant="link"

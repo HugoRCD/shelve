@@ -27,7 +27,7 @@ async function onSubmit(event: FormSubmitEvent<UpdateProjectSchema>) {
             <h2 class="text-lg font-semibold">
               Project Settings
             </h2>
-            <p class="text-pretty text-sm text-(--ui-text-muted)">
+            <p class="text-pretty text-sm text-muted">
               Configure your project settings, quick links, environment variables prefix, etc...
             </p>
           </div>
@@ -39,12 +39,12 @@ async function onSubmit(event: FormSubmitEvent<UpdateProjectSchema>) {
             <h3 class="font-semibold">
               Quick Links
             </h3>
-            <p class="text-pretty text-xs text-(--ui-text-muted)">
+            <p class="text-pretty text-xs text-muted">
               Add quick links to your project repository, homepage, etc...
             </p>
           </div>
           <div class="my-2 flex flex-col gap-4">
-            <div :class="route.hash === '#repository' ? 'ring ring-[var(--ui-primary)] rounded-lg p-4' : ''">
+            <div :class="route.hash === '#repository' ? 'ring ring-primary rounded-lg p-4' : ''">
               <USkeleton v-if="currentLoading" class="h-8" />
               <UFormField
                 v-else
@@ -74,12 +74,12 @@ async function onSubmit(event: FormSubmitEvent<UpdateProjectSchema>) {
           </div>
         </div>
         <Separator class="my-2" />
-        <div id="variable-prefix" class="flex flex-col gap-4" :class="route.hash === '#variable-prefix' ? 'ring ring-[var(--ui-primary)] rounded-lg p-4' : ''">
+        <div id="variable-prefix" class="flex flex-col gap-4" :class="route.hash === '#variable-prefix' ? 'ring ring-primary rounded-lg p-4' : ''">
           <div>
             <h3 class="font-semibold">
               Environment Variables Prefix
             </h3>
-            <p class="text-pretty text-xs text-(--ui-text-muted)">
+            <p class="text-pretty text-xs text-muted">
               Add a prefix to your environment variables
             </p>
           </div>
@@ -90,7 +90,7 @@ async function onSubmit(event: FormSubmitEvent<UpdateProjectSchema>) {
                 <UTextarea v-model="project.variablePrefix" class="w-full" :disabled="!canUpdate" :rows="4" />
               </UFormField>
               <UTooltip text="Yes this will be improved in the future 😅">
-                <p class="mt-1 text-xs text-(--ui-text-muted)">
+                <p class="mt-1 text-xs text-muted">
                   Write your prefix separated by a comma, for example: <code>NUXT_PUBLIC_, REACT_APP_</code>
                 </p>
               </UTooltip>

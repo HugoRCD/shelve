@@ -90,10 +90,10 @@ const items = [
 
 const ui = computed(() => ({
   // item: 'py-0',
-  childLink: 'hover:bg-(--ui-bg)/50',
+  childLink: 'hover:bg-default/50',
   childLinkLabel: 'main-gradient brightness-150',
   linkTrailingIcon: 'hidden',
-  viewport: 'bg-(--ui-bg-muted) ring ring-offset-6 ring-offset-(--ui-bg) ring-(--ui-border) border border-(--ui-border)',
+  viewport: 'bg-muted ring ring-offset-6 ring-offset-default ring-default border border-default',
   viewportWrapper: 'w-[700px] transition-all duration-500 left-1/2 -translate-x-1/2',
 }))
 </script>
@@ -114,13 +114,13 @@ const ui = computed(() => ({
           <ul class="flex flex-col gap-1 w-1/2">
             <li v-for="child in item.children" :key="child.label">
               <ULink
-                class="text-sm cursor-pointer w-full text-left rounded-md p-3 transition-colors hover:bg-[var(--ui-bg-elevated)]/50"
+                class="text-sm cursor-pointer w-full text-left rounded-md p-3 transition-colors hover:bg-elevated/50"
                 @click="navigateTo(child.to)"
               >
                 <p class="font-medium main-gradient brightness-150">
                   {{ child.label }}
                 </p>
-                <p class="text-[var(--ui-text-muted)] line-clamp-2">
+                <p class="text-muted line-clamp-2">
                   {{ child.description }}
                 </p>
               </ULink>

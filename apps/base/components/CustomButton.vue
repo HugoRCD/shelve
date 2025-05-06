@@ -1,5 +1,13 @@
 <script setup lang="ts">
-import type { ButtonProps } from '@nuxt/ui'
+type ButtonProps = {
+  type?: 'button' | 'submit' | 'reset'
+  disabled?: boolean
+  class?: string
+  onClick?: (event: MouseEvent) => void
+  label?: string
+  to?: string
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl'
+}
 
 const roundedType = {
   none: 'rounded-none',
@@ -25,7 +33,7 @@ const props = withDefaults(defineProps<CustomButtonProps>(), {
   >
     <UButton
       v-bind="props"
-      class="text-(--ui-text-highlighted) bg-transparent hover:bg-transparent disabled:bg-transparent"
+      class="text-highlighted bg-transparent hover:bg-transparent disabled:bg-transparent"
       :class="roundedType[props.rounded]"
     >
       <slot v-if="!!$slots.default" />
