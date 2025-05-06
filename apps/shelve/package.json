@@ -16,7 +16,8 @@
     "typecheck": "tsc --noEmit",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
-    "db:push": "drizzle-kit push"
+    "db:push": "drizzle-kit push",
+    "deploy": "nuxthub deploy"
   },
   "dependencies": {
     "@nuxthub/core": "0.8.26",
