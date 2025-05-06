@@ -1,5 +1,13 @@
 <script setup lang="ts">
-import type { ButtonProps } from '@nuxt/ui'
+type ButtonProps = {
+  type?: 'button' | 'submit' | 'reset'
+  disabled?: boolean
+  class?: string
+  onClick?: (event: MouseEvent) => void
+  label?: string
+  to?: string
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl'
+}
 
 const roundedType = {
   none: 'rounded-none',

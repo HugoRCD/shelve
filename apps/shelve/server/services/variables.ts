@@ -1,5 +1,5 @@
 import type { UpdateVariableInput, CreateVariablesInput, Variable } from '@types'
-import { H3Event } from 'h3'
+import type { H3Event } from 'h3'
 
 export class VariablesService {
 
