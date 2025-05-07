@@ -69,7 +69,7 @@ html, body, #__nuxt, #__layout {
 }
 
 .main-gradient {
-  @apply bg-gradient-to-r from-muted to-inverted to-50% bg-clip-text text-transparent;
+  @apply bg-gradient-to-r from-inverted/45 to-inverted to-50% bg-clip-text text-transparent;
 }
 
 .bg-stripes {
