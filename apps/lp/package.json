@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "@number-flow/vue": "^0.4.7",
-    "@nuxthub/core": "0.8.25",
+    "@nuxthub/core": "0.8.26",
     "@nuxtjs/seo": "3.0.3",
     "nuxt": "3.17.2",
     "nuxt-build-cache": "0.1.1",
