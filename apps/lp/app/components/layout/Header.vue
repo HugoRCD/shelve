@@ -93,7 +93,7 @@ const ui = computed(() => ({
   childLink: 'hover:bg-default/50',
   childLinkLabel: 'main-gradient brightness-150',
   linkTrailingIcon: 'hidden',
-  viewport: 'bg-muted ring ring-offset-6 ring-offset-default ring-default border border-default',
+  viewport: 'bg-muted ring ring-offset-6 ring-offset-(--ui-bg) ring-default border border-default',
   viewportWrapper: 'w-[700px] transition-all duration-500 left-1/2 -translate-x-1/2',
 }))
 </script>
