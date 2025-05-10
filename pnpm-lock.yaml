@@ -84,8 +84,8 @@ importers:
         specifier: ^0.4.7
         version: 0.4.7(vue@3.5.13(typescript@5.8.3))
       '@nuxthub/core':
-        specifier: 0.8.26
-        version: 0.8.26(@netlify/blobs@8.2.0)(db0@0.3.2(better-sqlite3@11.9.1)(drizzle-orm@0.43.1(@cloudflare/workers-types@4.20250425.0)(better-sqlite3@11.9.1)(bun-types@1.2.12)(pg@8.15.6)))(ioredis@5.6.1)(magicast@0.3.5)(vite@6.3.5(@types/node@22.15.2)(jiti@2.4.2)(lightningcss@1.29.2)(terser@5.39.0)(yaml@2.7.1))
+        specifier: 0.8.27
+        version: 0.8.27(@netlify/blobs@8.2.0)(db0@0.3.2(better-sqlite3@11.9.1)(drizzle-orm@0.43.1(@cloudflare/workers-types@4.20250425.0)(better-sqlite3@11.9.1)(bun-types@1.2.12)(pg@8.15.6)))(ioredis@5.6.1)(magicast@0.3.5)(vite@6.3.5(@types/node@22.15.2)(jiti@2.4.2)(lightningcss@1.29.2)(terser@5.39.0)(yaml@2.7.1))
       '@nuxtjs/seo':
         specifier: 3.0.3
         version: 3.0.3(@unhead/vue@2.0.8(vue@3.5.13(typescript@5.8.3)))(h3@1.15.3)(magicast@0.3.5)(rollup@4.40.0)(unstorage@1.16.0(@netlify/blobs@8.2.0)(db0@0.3.2(better-sqlite3@11.9.1)(drizzle-orm@0.43.1(@cloudflare/workers-types@4.20250425.0)(better-sqlite3@11.9.1)(bun-types@1.2.12)(pg@8.15.6)))(ioredis@5.6.1))(vite@6.3.5(@types/node@22.15.2)(jiti@2.4.2)(lightningcss@1.29.2)(terser@5.39.0)(yaml@2.7.1))(vue@3.5.13(typescript@5.8.3))
@@ -115,8 +115,8 @@ importers:
         specifier: 5.8.3
         version: 5.8.3
       wrangler:
-        specifier: ^4.14.3
-        version: 4.14.3(@cloudflare/workers-types@4.20250425.0)
+        specifier: ^4.14.4
+        version: 4.14.4(@cloudflare/workers-types@4.20250425.0)
 
   apps/shelve:
     dependencies:
@@ -188,8 +188,8 @@ importers:
   apps/vault:
     dependencies:
       '@nuxthub/core':
-        specifier: 0.8.26
-        version: 0.8.26(@netlify/blobs@8.2.0)(db0@0.3.2(better-sqlite3@11.9.1)(drizzle-orm@0.43.1(@cloudflare/workers-types@4.20250425.0)(better-sqlite3@11.9.1)(bun-types@1.2.12)(pg@8.15.6)))(ioredis@5.6.1)(magicast@0.3.5)(vite@6.3.5(@types/node@22.15.2)(jiti@2.4.2)(lightningcss@1.29.2)(terser@5.39.0)(yaml@2.7.1))
+        specifier: 0.8.27
+        version: 0.8.27(@netlify/blobs@8.2.0)(db0@0.3.2(better-sqlite3@11.9.1)(drizzle-orm@0.43.1(@cloudflare/workers-types@4.20250425.0)(better-sqlite3@11.9.1)(bun-types@1.2.12)(pg@8.15.6)))(ioredis@5.6.1)(magicast@0.3.5)(vite@6.3.5(@types/node@22.15.2)(jiti@2.4.2)(lightningcss@1.29.2)(terser@5.39.0)(yaml@2.7.1))
       nuxt:
         specifier: ^3.17.2
         version: 3.17.2(@netlify/blobs@8.2.0)(@parcel/watcher@2.5.1)(@types/node@22.15.2)(better-sqlite3@11.9.1)(db0@0.3.2(better-sqlite3@11.9.1)(drizzle-orm@0.43.1(@cloudflare/workers-types@4.20250425.0)(better-sqlite3@11.9.1)(bun-types@1.2.12)(pg@8.15.6)))(drizzle-orm@0.43.1(@cloudflare/workers-types@4.20250425.0)(better-sqlite3@11.9.1)(bun-types@1.2.12)(pg@8.15.6))(encoding@0.1.13)(eslint@9.26.0(jiti@2.4.2))(ioredis@5.6.1)(lightningcss@1.29.2)(magicast@0.3.5)(optionator@0.9.4)(rollup@4.40.0)(terser@5.39.0)(typescript@5.8.3)(vite@6.3.5(@types/node@22.15.2)(jiti@2.4.2)(lightningcss@1.29.2)(terser@5.39.0)(yaml@2.7.1))(yaml@2.7.1)
@@ -201,8 +201,8 @@ importers:
         version: 3.24.4
     devDependencies:
       wrangler:
-        specifier: ^4.14.3
-        version: 4.14.3(@cloudflare/workers-types@4.20250425.0)
+        specifier: ^4.14.4
+        version: 4.14.4(@cloudflare/workers-types@4.20250425.0)
 
   packages/cli:
     dependencies:
@@ -1697,8 +1697,8 @@ packages:
     peerDependencies:
       vue: ^3.3.4
 
-  '@nuxthub/core@0.8.26':
-    resolution: {integrity: sha512-RVyizT0y1ek8rnrkyhxke7elmqtTDJ3sWSuJniis6hEaQiFYtVWYC/naVP0DBOvMs9bKgSLhtRQ76GMzh8Cp2A==}
+  '@nuxthub/core@0.8.27':
+    resolution: {integrity: sha512-clQ0sa8XrG8z7c/USAKHpbYgivV5zaEfYiGfjTP7H17ySioqO+zfMsmtu87c17A7Tv0pnBAiD8btgE4YD1a/hQ==}
 
   '@nuxtjs/color-mode@3.5.2':
     resolution: {integrity: sha512-cC6RfgZh3guHBMLLjrBB2Uti5eUoGM9KyauOaYS9ETmxNWBMTvpgjvSiSJp1OFljIXPIqVTJ3xtJpSNZiO3ZaA==}
@@ -8132,8 +8132,8 @@ packages:
     engines: {node: '>=16'}
     hasBin: true
 
-  wrangler@4.14.3:
-    resolution: {integrity: sha512-gY2n3cC8yb8VyaM0aY9fXX5AIah+VkGefmAHltUBgVpJaM4QXun6O85BydtTEljLL67JTyFyBDn/UPyg2WhESQ==}
+  wrangler@4.14.4:
+    resolution: {integrity: sha512-HIdOdiMIcJV5ymw80RKsr3Uzen/p1kRX4jnCEmR2XVeoEhV2Qw6GABxS5WMTlSES2/vEX0Y+ezUAdsprcUhJ5g==}
     engines: {node: '>=18.0.0'}
     hasBin: true
     peerDependencies:
@@ -9712,7 +9712,7 @@ snapshots:
       consola: 3.4.2
       css-tree: 3.1.0
       defu: 6.1.4
-      esbuild: 0.25.3
+      esbuild: 0.25.4
       fontaine: 0.6.0(encoding@0.1.13)
       h3: 1.15.3
       jiti: 2.4.2
@@ -10170,7 +10170,7 @@ snapshots:
       - vue-tsc
       - yaml
 
-  '@nuxthub/core@0.8.26(@netlify/blobs@8.2.0)(db0@0.3.2(better-sqlite3@11.9.1)(drizzle-orm@0.43.1(@cloudflare/workers-types@4.20250425.0)(better-sqlite3@11.9.1)(bun-types@1.2.12)(pg@8.15.6)))(ioredis@5.6.1)(magicast@0.3.5)(vite@6.3.5(@types/node@22.15.2)(jiti@2.4.2)(lightningcss@1.29.2)(terser@5.39.0)(yaml@2.7.1))':
+  '@nuxthub/core@0.8.27(@netlify/blobs@8.2.0)(db0@0.3.2(better-sqlite3@11.9.1)(drizzle-orm@0.43.1(@cloudflare/workers-types@4.20250425.0)(better-sqlite3@11.9.1)(bun-types@1.2.12)(pg@8.15.6)))(ioredis@5.6.1)(magicast@0.3.5)(vite@6.3.5(@types/node@22.15.2)(jiti@2.4.2)(lightningcss@1.29.2)(terser@5.39.0)(yaml@2.7.1))':
     dependencies:
       '@cloudflare/workers-types': 4.20250425.0
       '@nuxt/devtools-kit': 2.4.0(magicast@0.3.5)(vite@6.3.5(@types/node@22.15.2)(jiti@2.4.2)(lightningcss@1.29.2)(terser@5.39.0)(yaml@2.7.1))
@@ -14769,7 +14769,7 @@ snapshots:
       citty: 0.1.6
       cssnano: 7.0.6(postcss@8.5.3)
       defu: 6.1.4
-      esbuild: 0.25.3
+      esbuild: 0.25.4
       jiti: 1.21.7
       mlly: 1.7.4
       pathe: 2.0.3
@@ -17477,7 +17477,7 @@ snapshots:
 
   vite@6.3.3(@types/node@22.15.2)(jiti@2.4.2)(lightningcss@1.29.2)(terser@5.39.0)(yaml@2.7.1):
     dependencies:
-      esbuild: 0.25.3
+      esbuild: 0.25.4
       fdir: 6.4.4(picomatch@4.0.2)
       picomatch: 4.0.2
       postcss: 8.5.3
@@ -17493,7 +17493,7 @@ snapshots:
 
   vite@6.3.5(@types/node@22.15.2)(jiti@2.4.2)(lightningcss@1.29.2)(terser@5.39.0)(yaml@2.7.1):
     dependencies:
-      esbuild: 0.25.3
+      esbuild: 0.25.4
       fdir: 6.4.4(picomatch@4.0.2)
       picomatch: 4.0.2
       postcss: 8.5.3
@@ -17662,7 +17662,7 @@ snapshots:
       '@cloudflare/workerd-linux-arm64': 1.20250507.0
       '@cloudflare/workerd-windows-64': 1.20250507.0
 
-  wrangler@4.14.3(@cloudflare/workers-types@4.20250425.0):
+  wrangler@4.14.4(@cloudflare/workers-types@4.20250425.0):
     dependencies:
       '@cloudflare/kv-asset-handler': 0.4.0
       '@cloudflare/unenv-preset': 2.3.1(unenv@2.0.0-rc.15)(workerd@1.20250507.0)
