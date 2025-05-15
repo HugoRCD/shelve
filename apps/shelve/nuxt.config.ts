@@ -18,7 +18,10 @@ export default defineNuxtConfig({
     bindings: {
       hyperdrive: {
         POSTGRES: '9a8a0a80be594574b4a6a53fb1014bc1'
-      }
+      },
+      observability: {
+        logs: true,
+      },
     }
   },
 
