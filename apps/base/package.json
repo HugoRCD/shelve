@@ -9,13 +9,13 @@
     "lint": "eslint .",
     "lint:fix": "eslint --fix ."
   },
-  "packageManager": "pnpm@10.10.0",
+  "packageManager": "pnpm@10.11.0",
   "devDependencies": {
     "@iconify-json/heroicons": "1.2.2",
-    "@iconify-json/lucide": "1.2.41",
-    "@iconify-json/simple-icons": "1.2.33",
+    "@iconify-json/lucide": "1.2.43",
+    "@iconify-json/simple-icons": "1.2.34",
     "iron-webcrypto": "1.2.1",
-    "nuxt": "3.17.2",
+    "nuxt": "3.17.3",
     "nuxt-visitors": "1.2.2",
     "typescript": "5.8.3",
     "motion-v": "^1.0.2",
@@ -23,8 +23,8 @@
     "@nuxt/ui-pro": "^3.1.1",
     "@nuxt/content": "^3.5.1",
     "@nuxt/scripts": "0.11.6",
-    "@vueuse/core": "13.1.0",
-    "@vueuse/nuxt": "13.1.0",
+    "@vueuse/core": "13.2.0",
+    "@vueuse/nuxt": "13.2.0",
     "@nuxt/image": "1.10.0"
   }
 }

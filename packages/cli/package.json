@@ -51,12 +51,12 @@
     "ofetch": "1.4.1",
     "pkg-types": "2.1.0",
     "rc9": "^2.1.2",
-    "semver": "7.7.1",
+    "semver": "7.7.2",
     "tinyglobby": "0.2.13",
     "tree-kill": "^1.2.2"
   },
   "devDependencies": {
-    "@types/bun": "1.2.12",
+    "@types/bun": "1.2.13",
     "@types/npm-registry-fetch": "8.0.8",
     "@types/semver": "7.7.0",
     "eslint": "9.26.0",
