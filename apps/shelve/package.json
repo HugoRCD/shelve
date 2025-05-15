@@ -16,9 +16,11 @@
     "typecheck": "tsc --noEmit",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
-    "db:push": "drizzle-kit push"
+    "db:push": "drizzle-kit push",
+    "deploy": "nuxthub deploy"
   },
   "dependencies": {
+    "@nuxthub/core": "0.8.26",
     "@vue-email/components": "0.0.21",
     "@vue-email/render": "0.0.9",
     "blakejs": "^1.2.1",
@@ -30,6 +32,7 @@
     "nuxt-auth-utils": "0.5.20",
     "nuxt-build-cache": "0.1.1",
     "pg": "^8.16.0",
+    "postgres": "^3.4.5",
     "resend": "4.5.1",
     "tweetnacl": "^1.0.3",
     "vue": "3.5.13",
@@ -41,6 +44,7 @@
     "@nuxt/devtools": "2.4.1",
     "@types/jsonwebtoken": "^9.0.9",
     "@types/libsodium-wrappers": "^0.7.14",
-    "typescript": "5.8.3"
+    "typescript": "5.8.3",
+    "wrangler": "^4.14.0"
   }
 }
