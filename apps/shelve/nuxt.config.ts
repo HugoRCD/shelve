@@ -14,6 +14,7 @@ export default defineNuxtConfig({
   hub: {
     kv: true,
     cache: true,
+    workers: true,
     bindings: {
       hyperdrive: {
         POSTGRES: '9a8a0a80be594574b4a6a53fb1014bc1'
