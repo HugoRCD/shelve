@@ -7,6 +7,7 @@ export const useCurrentLoading = () => {
 
 export function useProjectsService() {
   const route = useRoute()
+  const router = useRouter()
   const projectId = route.params.projectId as string
   const teamSlug = route.params.teamSlug as string
   const projects = useProjects(teamSlug)
@@ -45,10 +46,15 @@ export function useProjectsService() {
         body: input
       })
       projects.value.push(project)
+      router.push(`/${teamSlug}`)
       toast.success('Project created')
-    } catch (error) {
+    } catch (error: any) {
       console.error(error)
-      toast.error('Failed to create project')
+      if (error.statusMessage) {
+        toast.error(error.statusMessage)
+      } else {
+        toast.error('Failed to create project')
+      }
     }
   }
 

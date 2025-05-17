@@ -6,6 +6,7 @@ type ButtonProps = {
   onClick?: (event: MouseEvent) => void
   label?: string
   to?: string
+  icon?: string
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl'
 }
 
@@ -22,7 +23,7 @@ type CustomButtonProps = ButtonProps & {
 }
 
 const props = withDefaults(defineProps<CustomButtonProps>(), {
-  rounded: 'md',
+  rounded: 'md'
 })
 </script>
 
