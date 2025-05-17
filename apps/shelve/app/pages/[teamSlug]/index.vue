@@ -26,7 +26,11 @@ if (!projects.value)
         <p class="text-sm text-muted">
           You don't have any projects yet. Create one now!
         </p>
-        <ProjectCreate />
+        <CustomButton
+          size="sm"
+          :to="`/${teamSlug}/projects/create`"
+          label="Create project"
+        />
       </div>
       <div v-else class="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <ProjectItem v-for="project in projects" :key="project.id" :project class="-ml-[1px]" />
@@ -37,7 +41,11 @@ if (!projects.value)
     </div>
 
     <template #actions>
-      <ProjectCreate />
+      <CustomButton
+        size="sm"
+        :to="`/${teamSlug}/projects/create`"
+        label="Create project"
+      />
     </template>
   </PageSection>
 </template>

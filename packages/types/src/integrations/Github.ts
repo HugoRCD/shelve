@@ -14,6 +14,7 @@ export type GitHubRepo = {
   ssh_url: string
   clone_url: string
   default_branch: string
+  homepage: string
   owner: {
     login: string
     id: number

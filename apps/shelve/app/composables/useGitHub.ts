@@ -3,9 +3,9 @@ import type { GitHubRepo } from '@types'
 export function useGitHub() {
   const query = ref('')
 
-  const { data: apps, status: appsStatus } = useFetch('/api/github/apps', {
+  const { data: apps, status: appsStatus } = useAsyncData('user-apps', () => $fetch('/api/github/apps', {
     method: 'GET'
-  })
+  }))
 
   const { data: repos, status: reposStatus, refresh: refreshRepos } = useFetch<{
     data: GitHubRepo[]

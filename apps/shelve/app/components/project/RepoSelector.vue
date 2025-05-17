@@ -1,22 +1,18 @@
 <script setup lang="ts">
+import type { GitHubRepo } from '@types'
+
 const { repos, apps, refreshRepos, query, loading } = useGitHub()
 
 const repo = defineModel({ type: String })
+const fullRepo = defineModel<GitHubRepo>('fullRepo')
 
 const open = ref(false)
 
 function selectRepo(url: string) {
   repo.value = url
+  fullRepo.value = repos.value?.find(repo => repo.html_url === url)
   open.value = false
 }
-
-/*const { data: repos, status, refresh } = useFetch('/api/github/repos', {
-  params: { q: searchTerm },
-  transform: (data: { id: number; name: string; html_url: string }[]) => {
-    return data?.map(repo => ({ id: repo.id, label: repo.name, suffix: repo.html_url, onSelect: () => selectRepo(repo.html_url) }))
-  },
-  immediate: false
-})*/
 
 const formattedRepos = computed(() => {
   return repos.value?.map(repo => ({
@@ -41,13 +37,22 @@ const groups = computed(() => [
     ignoreFilter: true
   }
 ])
+
+const slots = defineSlots<{
+  default: any
+}>()
 </script>
 
 <template>
-  <UModal v-model:open="open">
-    <UTooltip v-if="apps && apps.length > 0" :content="{ side: 'top' }" text="Select Repository">
-      <UButton variant="soft" icon="simple-icons:github" :loading @click="openModal" />
-    </UTooltip>
+  <UModal v-if="apps && apps.length > 0" v-model:open="open">
+    <div @click="openModal">
+      <slot>
+        <UTooltip :content="{ side: 'top' }" text="Select Repository">
+          <UButton variant="soft" icon="simple-icons:github" :loading />
+        </UTooltip>
+      </slot>
+    </div>
+
 
     <template #content>
       <UCommandPalette
