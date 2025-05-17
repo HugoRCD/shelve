@@ -45,14 +45,13 @@ const slots = defineSlots<{
 
 <template>
   <UModal v-if="apps && apps.length > 0" v-model:open="open">
-    <div @click="openModal">
-      <slot>
-        <UTooltip :content="{ side: 'top' }" text="Select Repository">
+    <UTooltip :content="{ side: 'top' }" text="Select Repository">
+      <div @click="openModal">
+        <slot>
           <UButton variant="soft" icon="simple-icons:github" :loading />
-        </UTooltip>
-      </slot>
-    </div>
-
+        </slot>
+      </div>
+    </UTooltip>
 
     <template #content>
       <UCommandPalette

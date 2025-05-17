@@ -3,8 +3,8 @@ import type { GitHubRepo } from '@types'
 import type { FormSubmitEvent } from '#ui/types'
 import { type CreateProjectSchema, createProjectSchema } from '~/utils/zod/project'
 
-const router = useRouter()
 const repoToImport = ref<GitHubRepo | undefined>(undefined)
+
 const state = ref<Partial<CreateProjectSchema>>({
   name: undefined,
   description: undefined,
@@ -15,14 +15,10 @@ const state = ref<Partial<CreateProjectSchema>>({
   variablePrefix: undefined,
 })
 
-const {
-  loading: projectLoading,
-  createProject,
-} = useProjectsService()
+const { createProject } = useProjectsService()
 
 async function onSubmit(event: FormSubmitEvent<CreateProjectSchema>) {
   await createProject(event.data)
-  router.push('/projects')
 }
 
 function importProject() {
@@ -60,11 +56,11 @@ useSeoMeta({
 
 watch(repoToImport, (newRepo) => {
   if (newRepo) {
-    state.value.repository = newRepo.html_url
-    state.value.name = newRepo.name
-    state.value.description = newRepo.description
-    state.value.logo = newRepo.owner.avatar_url
-    state.value.homepage = newRepo.homepage
+    state.value.repository = newRepo.html_url || undefined
+    state.value.name = newRepo.name || undefined
+    state.value.description = newRepo.description || undefined
+    state.value.logo = newRepo.owner.avatar_url || undefined
+    state.value.homepage = newRepo.homepage || undefined
   }
 })
 
@@ -164,7 +160,7 @@ function reset() {
           </UButton>
           <UButton
             type="submit"
-            :loading="projectLoading"
+            loading-auto
             trailing
             form="createForm"
             label="Create Project"
