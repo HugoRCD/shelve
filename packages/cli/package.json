@@ -43,7 +43,7 @@
   "dependencies": {
     "@antfu/ni": "^24.4.0",
     "@clack/prompts": "0.10.1",
-    "c12": "3.0.3",
+    "c12": "3.0.4",
     "citty": "^0.1.6",
     "defu": "^6.1.4",
     "npm-registry-fetch": "18.0.2",
