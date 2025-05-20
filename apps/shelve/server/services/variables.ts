@@ -135,7 +135,7 @@ export class VariablesService {
       const project = await new ProjectsService().getProject(projectId)
       if (!project || !project.repository) throw createError({ statusCode: 400, statusMessage: 'No GitHub repository linked to this project.' })
       const variablesToSend = varsToCreate.map(v => ({ key: autoUppercase ? v.key.toUpperCase() : v.key, value: v.value }))
-      await new GithubService(event).sendSecrets(event, user.id, project.repository, variablesToSend)
+      await new GithubService(event).sendSecrets(user.id, project.repository, variablesToSend)
     }
   }
 

@@ -101,7 +101,7 @@ export class GithubService {
     }
   }
 
-  private getInstallationToken = cachedFunction(async (event: H3Event, installationId: number): Promise<string> => {
+  private getInstallationToken = cachedFunction(async (installationId: number): Promise<string> => {
     const appJWT = this.getAppJWT()
 
     try {
@@ -172,7 +172,6 @@ export class GithubService {
   })
 
   async sendSecrets(
-    event: H3Event,
     userId: number,
     repository: string,
     variables: { key: string; value: string }[]
@@ -190,7 +189,7 @@ export class GithubService {
         })
       }
 
-      const token = await this.getInstallationToken(event, installation.installationId)
+      const token = await this.getInstallationToken(installation.installationId)
       // eslint-disable-next-line @typescript-eslint/naming-convention
       const { key_id, key } = await $fetch<{
         key_id: string
