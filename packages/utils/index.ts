@@ -8,5 +8,8 @@ export * from './envfile'
  */
 export function sanitizeGithubUrl(url: string) {
   const githubUrl = 'https://github.com/'
-  return url.replace(githubUrl, '')
+  if (url.startsWith(githubUrl)) {
+    return url.replace(githubUrl, '');
+  }
+  return url;
 }
