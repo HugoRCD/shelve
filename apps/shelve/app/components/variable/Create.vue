@@ -145,6 +145,7 @@ const handlePasswordGenerated = (password: string, index: number) => variablesIn
           >
             <UIcon name="lucide:info" class="text-muted size-4" />
           </UTooltip>
+          <TextGradient text="New" class="font-normal text-sm" />
         </div>
         <Separator class="my-1" />
         <p class="text-xs font-normal text-muted">
