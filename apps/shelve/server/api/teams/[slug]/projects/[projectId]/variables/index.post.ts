@@ -14,6 +14,7 @@ const schema = z.object({
       required_error: 'Variable value is required',
     }).min(1).trim(),
   })).min(1).max(100),
+  syncWithGitHub: z.boolean().optional(),
 })
 
 export default eventHandler(async (event) => {
@@ -22,14 +23,15 @@ export default eventHandler(async (event) => {
   const { projectId } = await getValidatedRouterParams(event, projectIdParamsSchema.parse)
 
   const variablesService = new VariablesService(event)
-  await variablesService.createVariables({
+  await variablesService.createVariables(event, {
     projectId,
     autoUppercase: body.autoUppercase,
     environmentIds: body.environmentIds,
     variables: body.variables.map(variable => ({
       key: variable.key,
       value: variable.value,
-    }))
+    })),
+    syncWithGitHub: body.syncWithGitHub,
   })
 
   variablesService.incrementStatAsync(team.id, 'push')
