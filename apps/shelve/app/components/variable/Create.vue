@@ -6,6 +6,7 @@ const { environments } = defineProps<{
 }>()
 
 const { createLoading, createVariables } = useVariablesService()
+const { repos, apps } = useGitHub()
 
 const route = useRoute()
 const projectId = route.params.projectId as string
@@ -137,7 +138,7 @@ const handlePasswordGenerated = (password: string, index: number) => variablesIn
           </UTooltip>
         </div>
         <div class="flex items-center gap-2 mt-2">
-          <USwitch v-model="syncWithGitHub" size="sm" label="Sync with GitHub" />
+          <USwitch v-model="syncWithGitHub" size="sm" label="Sync with GitHub" :disabled="!apps || apps.length === 0" />
           <UTooltip
             class="hidden sm:block"
             :content="{ side: 'right' }"
