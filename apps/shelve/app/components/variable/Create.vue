@@ -127,18 +127,28 @@ const handlePasswordGenerated = (password: string, index: number) => variablesIn
         </div>
         <Separator class="my-1" />
         <div class="flex items-center gap-2">
-          <USwitch v-model="autoUppercase" size="xs" />
-          <h3 class="cursor-pointer text-sm font-semibold" @click="autoUppercase = !autoUppercase">
-            Auto uppercase
-          </h3>
+          <USwitch v-model="autoUppercase" size="sm" label="Auto uppercase" />
+          <UTooltip
+            class="hidden sm:block"
+            :content="{ side: 'right' }"
+            text="Automatically uppercase all variable keys (e.g. Api_Key -> API_KEY)"
+          >
+            <UIcon name="lucide:info" class="text-muted size-4" />
+          </UTooltip>
         </div>
         <div class="flex items-center gap-2 mt-2">
-          <USwitch v-model="syncWithGitHub" size="xs" />
-          <span class="text-sm font-semibold">Sync with GitHub</span>
+          <USwitch v-model="syncWithGitHub" size="sm" label="Sync with GitHub" />
+          <UTooltip
+            class="hidden sm:block"
+            :content="{ side: 'right' }"
+            text="Automatically send your environment variables to GitHub secrets"
+          >
+            <UIcon name="lucide:info" class="text-muted size-4" />
+          </UTooltip>
         </div>
         <Separator class="my-1" />
         <p class="text-xs font-normal text-muted">
-          🤫 You can also paste all your environment variables (.env) as key value pairs to prefilled the form
+          You can also paste all your environment variables (.env) as key value pairs to prefilled the form
         </p>
         <div class="mb-4 flex flex-col gap-2">
           <div class="hidden items-center sm:flex">
