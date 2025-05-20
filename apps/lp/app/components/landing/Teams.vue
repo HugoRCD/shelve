@@ -90,7 +90,7 @@ const { width } = useElementSize(el)
 .circle:after {
   --start: 0deg;
   --end: 360deg;
-  --border-color: vardefault;
+  --border-color: var(--ui-border);
   --highlight-color: var(--ui-color-neutral-400);
 
   content: '';
