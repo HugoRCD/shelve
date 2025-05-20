@@ -227,7 +227,6 @@ export class GithubService {
             }
           })
         } catch (error: any) {
-          console.log('error', error)
           throw createError({
             statusCode: 500,
             statusMessage: `Failed to encrypt or send secret ${secretKey}: ${error.message}`
@@ -240,7 +239,6 @@ export class GithubService {
         message: 'Secrets successfully encrypted and sent to GitHub repository'
       }
     } catch (error: any) {
-      console.log('error', error)
       throw createError({
         statusCode: error.status || 500,
         statusMessage: `Failed to process secrets: ${error.message}`
