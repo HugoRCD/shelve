@@ -33,6 +33,8 @@ const {
   variablesInput.value.variables = vars
 })
 
+const syncWithGitHub = ref(false)
+
 function validateVariables(variables: CreateVariablesInput['variables']) {
   const groupedValues: { [key: string]: Set<string> } = {}
   variables.forEach(variable => {
@@ -62,7 +64,10 @@ async function handleCreateVariables() {
     return
   }
   if (!validateVariables(variablesInput.value.variables)) return
-  await createVariables(variablesInput.value)
+  await createVariables({
+    ...variablesInput.value,
+    syncWithGitHub: syncWithGitHub.value,
+  })
   resetForm()
 }
 
@@ -126,6 +131,10 @@ const handlePasswordGenerated = (password: string, index: number) => variablesIn
           <h3 class="cursor-pointer text-sm font-semibold" @click="autoUppercase = !autoUppercase">
             Auto uppercase
           </h3>
+        </div>
+        <div class="flex items-center gap-2 mt-2">
+          <USwitch v-model="syncWithGitHub" size="xs" />
+          <span class="text-sm font-semibold">Sync with GitHub</span>
         </div>
         <Separator class="my-1" />
         <p class="text-xs font-normal text-muted">

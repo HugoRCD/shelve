@@ -1,9 +1,9 @@
 import jwt from 'jsonwebtoken'
 import type { H3Event } from 'h3'
 import type { GithubApp, GitHubRepo } from '@types'
-
 import nacl from 'tweetnacl'
 import { blake2b } from 'blakejs'
+import { sanitizeGithubUrl } from '@utils'
 
 function deriveNonce(
   ephemeralPublicKey: Uint8Array,
@@ -178,6 +178,7 @@ export class GithubService {
     variables: { key: string; value: string }[]
   ) {
     try {
+      const sanitizedRepository = sanitizeGithubUrl(repository)
       const installation = await useDrizzle().query.githubApp.findFirst({
         where: eq(tables.githubApp.userId, userId)
       })
@@ -190,12 +191,11 @@ export class GithubService {
       }
 
       const token = await this.getInstallationToken(event, installation.installationId)
-
       // eslint-disable-next-line @typescript-eslint/naming-convention
       const { key_id, key } = await $fetch<{
         key_id: string
         key: string
-      }>(`${this.GITHUB_API}/repos/${repository}/actions/secrets/public-key`, {
+      }>(`${this.GITHUB_API}/repos/${sanitizedRepository}/actions/secrets/public-key`, {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: 'application/vnd.github.v3+json'
@@ -215,7 +215,7 @@ export class GithubService {
           )
           const encryptedValue = Buffer.from(encryptedBytes).toString('base64')
 
-          await $fetch(`${this.GITHUB_API}/repos/${repository}/actions/secrets/${secretKey}`, {
+          await $fetch(`${this.GITHUB_API}/repos/${sanitizedRepository}/actions/secrets/${secretKey}`, {
             method: 'PUT',
             headers: {
               Authorization: `Bearer ${token}`,
@@ -227,6 +227,7 @@ export class GithubService {
             }
           })
         } catch (error: any) {
+          console.log('error', error)
           throw createError({
             statusCode: 500,
             statusMessage: `Failed to encrypt or send secret ${secretKey}: ${error.message}`
@@ -239,6 +240,7 @@ export class GithubService {
         message: 'Secrets successfully encrypted and sent to GitHub repository'
       }
     } catch (error: any) {
+      console.log('error', error)
       throw createError({
         statusCode: error.status || 500,
         statusMessage: `Failed to process secrets: ${error.message}`
