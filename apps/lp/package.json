@@ -29,6 +29,6 @@
   "devDependencies": {
     "@shelve/cli": "^3.1.1",
     "typescript": "5.8.3",
-    "wrangler": "^4.16.0"
+    "wrangler": "^4.16.1"
   }
 }
