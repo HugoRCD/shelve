@@ -22,7 +22,7 @@
     "nuxt": "3.17.4",
     "nuxt-build-cache": "0.1.1",
     "nuxt-llms": "0.1.2",
-    "vue": "3.5.14",
+    "vue": "3.5.15",
     "vue-router": "4.5.1",
     "vue-sonner": "2.0.0"
   },
