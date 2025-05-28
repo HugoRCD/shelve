@@ -11,6 +11,7 @@ export function useGitHub() {
     data: GitHubRepo[]
   }>('/api/github/repos', {
     params: { q: query },
+    dedupe: 'defer',
     immediate: false
   })
 
