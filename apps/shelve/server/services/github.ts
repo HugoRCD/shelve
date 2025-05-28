@@ -145,7 +145,7 @@ export class GithubService {
     }
 
     try {
-      const token = await this.getInstallationToken(event, installation.installationId)
+      const token = await this.getInstallationToken(installation.installationId)
 
       const response = await $fetch<{
           repositories: GitHubRepo[]
