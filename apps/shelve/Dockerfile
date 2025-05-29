@@ -1,5 +1,5 @@
 # Stage 1: Build Stage
-FROM node:22.15.0-alpine AS build
+FROM node:22.16.0-alpine AS build
 
 ARG TURBO_TEAM
 ARG TURBO_TOKEN
@@ -22,7 +22,7 @@ RUN pnpm install --frozen-lockfile
 RUN pnpm run build:app
 
 # Stage 2: Final Stage
-FROM node:22.15.0-alpine AS final
+FROM node:22.16.0-alpine AS final
 
 WORKDIR /app
 

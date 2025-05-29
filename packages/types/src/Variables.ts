@@ -25,6 +25,7 @@ export type CreateVariablesInput = {
     key: string;
     value: string;
   }[];
+  syncWithGitHub?: boolean;
 };
 
 export type EnvVar = {
