@@ -56,7 +56,7 @@
     "tree-kill": "^1.2.2"
   },
   "devDependencies": {
-    "@types/bun": "1.2.14",
+    "@types/bun": "1.2.15",
     "@types/npm-registry-fetch": "8.0.8",
     "@types/semver": "7.7.0",
     "eslint": "9.27.0",
