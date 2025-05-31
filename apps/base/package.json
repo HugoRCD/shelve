@@ -23,8 +23,10 @@
     "@nuxt/ui-pro": "^3.1.3",
     "@nuxt/content": "^3.5.1",
     "@nuxt/scripts": "0.11.7",
+    "@nuxthub/core": "0.8.27",
     "@vueuse/core": "13.3.0",
     "@vueuse/nuxt": "13.3.0",
-    "@nuxt/image": "1.10.0"
+    "@nuxt/image": "1.10.0",
+    "wrangler": "^4.17.0"
   }
 }

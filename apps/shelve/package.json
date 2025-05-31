@@ -16,7 +16,8 @@
     "typecheck": "tsc --noEmit",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
-    "db:push": "drizzle-kit push"
+    "db:push": "drizzle-kit push",
+    "deploy": "nuxthub deploy"
   },
   "dependencies": {
     "@vue-email/components": "0.0.21",
@@ -30,6 +31,7 @@
     "nuxt-auth-utils": "0.5.20",
     "nuxt-build-cache": "0.1.1",
     "pg": "^8.16.0",
+    "postgres": "^3.4.5",
     "resend": "4.5.1",
     "tweetnacl": "^1.0.3",
     "vue": "3.5.16",
