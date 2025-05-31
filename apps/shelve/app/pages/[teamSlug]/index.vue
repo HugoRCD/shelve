@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import PageSection from '~/components/PageSection.vue'
-
 const route = useRoute()
 const teamSlug = computed(() => route.params.teamSlug as string)
 const projects = useProjects(teamSlug.value)
@@ -15,7 +13,6 @@ if (!projects.value)
   <PageSection
     title="Projects"
     description="All your projects in one place"
-    :stagger="1"
   >
     <div v-if="!loading">
       <div v-if="projects.length === 0" class="flex h-64 flex-col items-center justify-center gap-4">

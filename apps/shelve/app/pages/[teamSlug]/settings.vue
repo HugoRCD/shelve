@@ -50,7 +50,6 @@ const open = ref(false)
     title="Team Settings"
     description="Manage team settings"
     :image="team.logo"
-    :stagger="1"
   >
     <form class="flex flex-col" @submit.prevent="updateCurrentTeam">
       <div class="flex flex-col gap-4">
@@ -76,7 +75,7 @@ const open = ref(false)
           <UInput v-model="team.logo" :disabled="!canUpdate" class="w-full" />
         </UFormField>
       </div>
-      <div style="--stagger: 4" data-animate class="mt-6 flex items-center justify-between gap-2">
+      <div class="mt-6 flex items-center justify-between gap-2">
         <UButton v-if="canUpdate" type="submit" :loading="updateLoading">
           Save
         </UButton>

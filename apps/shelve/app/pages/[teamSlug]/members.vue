@@ -93,7 +93,6 @@ const items = (row: Member) => [
   <PageSection
     title="Members"
     description="Manage team members"
-    :stagger="1"
   >
     <TransitionGroup name="fade" tag="ul" class="flex flex-col gap-4">
       <div v-for="member in members" :key="member.id" class="flex flex-col gap-4 border-b last:border-b-0 border-default pb-4 last:pb-0">

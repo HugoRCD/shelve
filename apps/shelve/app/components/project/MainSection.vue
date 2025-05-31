@@ -120,7 +120,10 @@ const projectManager = [
 
 function getProjectManager(manager: string) {
   if (!manager) return
-  return projectManager.find((item) => manager.includes(item.value))
+  return projectManager.find((item) => manager.includes(item.value)) || {
+    label: 'project manager',
+    icon: 'lucide:folder',
+  }
 }
 </script>
 

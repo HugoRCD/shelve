@@ -34,7 +34,6 @@ async function testNewUserMail() {
   <PageSection
     title="Test new user email"
     description="Send a test email to a new user"
-    :stagger="1"
   >
     <UButton
       label="Send email"

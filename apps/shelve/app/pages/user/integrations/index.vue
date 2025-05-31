@@ -12,7 +12,6 @@ const integrations = [
   <PageSection
     title="Integrations"
     description="Connect Shelve with other services to enhance your experience."
-    :stagger="1"
   >
     <div class="flex flex-col gap-2">
       <NuxtLink v-for="integration in integrations" :key="integration.name" :to="`/user/integrations/${integration.name.toLowerCase()}`">

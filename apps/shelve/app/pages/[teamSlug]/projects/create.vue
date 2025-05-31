@@ -81,7 +81,6 @@ function reset() {
   <PageSection
     title="Create a new project"
     description="Let's set up your new project. Fill in the details below to get started."
-    :stagger="1"
   >
     <UForm
       id="createForm"

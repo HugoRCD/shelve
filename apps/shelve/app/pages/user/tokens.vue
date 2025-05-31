@@ -108,7 +108,6 @@ fetchTokens()
   <PageSection
     title="Tokens"
     description="Manage your tokens for the CLI"
-    :stagger="1"
   >
     <UTable
       :columns
