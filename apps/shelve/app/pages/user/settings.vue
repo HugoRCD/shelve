@@ -69,7 +69,6 @@ watch(reduceMotion, () => {
   <PageSection
     title="Theme"
     description="Choose a theme for the app"
-    :stagger="3"
   >
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
       <div

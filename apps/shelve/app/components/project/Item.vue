@@ -9,15 +9,61 @@ defineProps<{
 }>()
 
 const active = useState('active-project')
+const isHovered = ref(false)
+
+const containerVariants = {
+  hidden: { 
+    transition: {
+      staggerChildren: 0.05,
+      staggerDirection: -1,
+      when: 'afterChildren'
+    }
+  },
+  visible: { 
+    transition: {
+      staggerChildren: 0.05,
+      when: 'beforeChildren'
+    }
+  }
+}
+
+const dotVariants = {
+  hidden: { 
+    opacity: 0 
+  },
+  visible: { 
+    opacity: [0, 1, 0, 1, 0, 1],
+    transition: {
+      duration: 0.2,
+      ease: 'easeInOut'
+    }
+  }
+}
 </script>
 
 <template>
-  <UCard variant="subtle" class="relative transition-all duration-300 group hover:z-10 h-full ring-transparent border border-default bg-transparent hover:bg-muted rounded-none" @click="active = project.id">
+  <UCard 
+    variant="subtle" 
+    class="relative transition-all duration-300 group hover:z-10 h-full ring-transparent border border-default bg-transparent hover:bg-muted rounded-none" 
+    @click="active = project.id"
+    @mouseenter="isHovered = true"
+    @mouseleave="isHovered = false"
+  >
     <NuxtLink class="absolute inset-0 z-10" :to="`/${teamSlug}/projects/${project.id}/variables`" />
-    <Motion as="span" class="dot dot-flicker dot-tl" />
-    <Motion as="span" class="dot dot-flicker dot-br" />
-    <Motion as="span" class="dot dot-flicker dot-tr" />
-    <Motion as="span" class="dot dot-flicker dot-bl" />
+    
+    <MotionConfig :transition="{ duration: 0.2, ease: 'easeInOut' }">
+      <Motion
+        :variants="containerVariants"
+        :animate="isHovered ? 'visible' : 'hidden'"
+        class="absolute inset-0 pointer-events-none"
+      >
+        <Motion as="span" class="dot dot-tl" :variants="dotVariants" />
+        <Motion as="span" class="dot dot-br" :variants="dotVariants" />
+        <Motion as="span" class="dot dot-tr" :variants="dotVariants" />
+        <Motion as="span" class="dot dot-bl" :variants="dotVariants" />
+      </Motion>
+    </MotionConfig>
+    
     <div class="flex w-full items-start gap-4">
       <!-- <UAvatar 
           :src="project.logo"
@@ -42,14 +88,6 @@ const active = useState('active-project')
 <style scoped>
 @reference '../../assets/css/index.css';
 
-.dot {
-  @apply opacity-0 group-hover:opacity-100;
-}
-
-.group:hover .dot-flicker {
-  animation: dot-flicker 0.200s ease-in-out forwards;
-}
-
 .dot-tl {
   @apply before:absolute;
   @apply before:top-[-2px] before:left-[-2px] before:bg-inverted before:content-[''] before:w-[3px] before:h-[3px];
@@ -68,15 +106,6 @@ const active = useState('active-project')
 .dot-bl {
   @apply before:absolute;
   @apply before:bottom-[-2px] before:left-[-2px] before:bg-inverted before:content-[''] before:w-[3px] before:h-[3px];
-}
-
-@keyframes dot-flicker {
-  0% { opacity: 0; }
-  20% { opacity: 1; }
-  40% { opacity: 0; }
-  60% { opacity: 1; }
-  80% { opacity: 0; }
-  100% { opacity: 1; }
 }
 
 .logo.active {

@@ -204,7 +204,6 @@ const sorting = ref([
   <PageSection
     title="Stats"
     description="All applications stats"
-    :stagger="1"
   >
     <AdminStats />
   </PageSection>
@@ -212,7 +211,6 @@ const sorting = ref([
   <PageSection
     title="Admin"
     description="Manage users and their roles"
-    :stagger="2"
   >
     <UTable
       ref="table"
