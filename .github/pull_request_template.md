@@ -19,6 +19,7 @@ Here are the available types and scopes:
 - revert (reverts a previous commit) 🔄
 
 ### Scopes
+- apps (all applications)
 - app (the main application)
 - lp (the landing page and documentation)
 - base (the base layer)
