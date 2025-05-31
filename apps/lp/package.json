@@ -17,7 +17,6 @@
   },
   "dependencies": {
     "@number-flow/vue": "^0.4.7",
-    "@nuxthub/core": "0.8.27",
     "@nuxtjs/seo": "3.0.3",
     "nuxt": "3.17.4",
     "nuxt-build-cache": "0.1.1",
@@ -28,7 +27,6 @@
   },
   "devDependencies": {
     "@shelve/cli": "^3.1.1",
-    "typescript": "5.8.3",
-    "wrangler": "^4.17.0"
+    "typescript": "5.8.3"
   }
 }
