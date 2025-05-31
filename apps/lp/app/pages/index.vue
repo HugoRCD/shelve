@@ -6,7 +6,6 @@ if (!page.value)
   throw createError({ statusCode: 404, message: 'Page not found', fatal: true })
 
 const titleTemplate = ref('%s - Effortless secrets management')
-defineOgImage({ url: ogImage })
 
 useSeoMeta({
   title,
@@ -15,6 +14,8 @@ useSeoMeta({
   ogDescription: description,
   ogTitle: titleTemplate.value?.includes('%s') ? titleTemplate.value.replace('%s', title) : title
 })
+
+defineOgImage({ url: ogImage })
 </script>
 
 <template>
