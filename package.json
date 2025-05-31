@@ -30,6 +30,9 @@
     "typescript": "5.8.3"
   },
   "pnpm": {
+    "overrides": {
+      "vite": "npm:rolldown-vite@latest"
+    },
     "onlyBuiltDependencies": [
       "better-sqlite3",
       "sharp"
