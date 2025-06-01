@@ -81,12 +81,6 @@ export default defineNuxtConfig({
     viewTransition: true,
   },
 
-  vite: {
-    experimental: {
-      enableNativePlugin: true
-    }
-  },
-
   $development: {
     site: {
       url: 'http://localhost:3000'

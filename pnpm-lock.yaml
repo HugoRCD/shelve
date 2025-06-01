@@ -68,6 +68,9 @@ importers:
       iron-webcrypto:
         specifier: 1.2.1
         version: 1.2.1
+      motion-plus-vue:
+        specifier: ^1.1.6
+        version: 1.1.6(motion-v@1.1.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(vue@3.5.16(typescript@5.8.3)))(vue@3.5.16(typescript@5.8.3))
       motion-v:
         specifier: ^1.1.1
         version: 1.1.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(vue@3.5.16(typescript@5.8.3))
@@ -5912,6 +5915,12 @@ packages:
 
   motion-dom@12.12.1:
     resolution: {integrity: sha512-GXq/uUbZBEiFFE+K1Z/sxdPdadMdfJ/jmBALDfIuHGi0NmtealLOfH9FqT+6aNPgVx8ilq0DtYmyQlo6Uj9LKQ==}
+
+  motion-plus-vue@1.1.6:
+    resolution: {integrity: sha512-vrWf5fFyuVbYvxRYTkf9d6fqB1otwi8datIXKyIbUG/x/qPyXZvpY2i0CHDo2sArqQxlzT7BtzLHse8swUwVJw==}
+    peerDependencies:
+      motion-v: '>=0.13.0-beta.1'
+      vue: '>=3.0.0'
 
   motion-utils@12.12.1:
     resolution: {integrity: sha512-f9qiqUHm7hWSLlNW8gS9pisnsN7CRFRD58vNjptKdsqFLpkVnX00TNeD6Q0d27V9KzT7ySFyK1TZ/DShfVOv6w==}
@@ -15274,6 +15283,11 @@ snapshots:
   motion-dom@12.12.1:
     dependencies:
       motion-utils: 12.12.1
+
+  motion-plus-vue@1.1.6(motion-v@1.1.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(vue@3.5.16(typescript@5.8.3)))(vue@3.5.16(typescript@5.8.3)):
+    dependencies:
+      motion-v: 1.1.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(vue@3.5.16(typescript@5.8.3))
+      vue: 3.5.16(typescript@5.8.3)
 
   motion-utils@12.12.1: {}
 
