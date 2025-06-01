@@ -23,7 +23,7 @@
     "@vue-email/render": "0.0.9",
     "blakejs": "^1.2.1",
     "drizzle-kit": "0.31.1",
-    "drizzle-orm": "0.44.0",
+    "drizzle-orm": "0.44.1",
     "jsonwebtoken": "^9.0.2",
     "libsodium-wrappers": "^0.7.15",
     "nuxt": "3.17.4",
@@ -35,7 +35,7 @@
     "vue": "3.5.16",
     "vue-router": "4.5.1",
     "vue-sonner": "2.0.0",
-    "zod": "3.25.36"
+    "zod": "3.25.45"
   },
   "devDependencies": {
     "@nuxt/devtools": "2.4.1",
