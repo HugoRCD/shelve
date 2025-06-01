@@ -55,7 +55,6 @@ function deleteAccount() {
     title="Personal Information"
     description="Update your personal information"
     :image="user.avatar"
-    :stagger="1"
   >
     <form class="flex flex-col" @submit.prevent="updateCurrentUser">
       <div class="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-6">
@@ -75,7 +74,7 @@ function deleteAccount() {
           </UFormField>
         </div>
       </div>
-      <div style="--stagger: 3" data-animate class="mt-6 flex items-center justify-between gap-2">
+      <div class="mt-6 flex items-center justify-between gap-2">
         <UButton type="submit" :loading="updateLoading">
           Save
         </UButton>

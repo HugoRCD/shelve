@@ -46,7 +46,6 @@ function openRemoveModal(installationId: string) {
   <PageSection
     title="Your Github Apps"
     description="Github Apps are used to sync secrets and more..."
-    :stagger="1"
   >
     <div v-if="status !== 'pending' && apps?.length" class="grid grid-cols-1 gap-4 lg:grid-cols-2">
       <div

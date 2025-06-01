@@ -83,7 +83,7 @@ const isVariableSelected = (variable: Variable) => {
 <template>
   <div class="flex flex-col gap-2">
     <VariableCreate v-if="environments && environments.length" :environments />
-    <div class="flex flex-col gap-2 sm:flex-row justify-between sm:items-center mt-2">
+    <div class="flex flex-col gap-2 sm:flex-row justify-between sm:items-center my-2">
       <div class="flex items-center gap-2">
         <UInput
           v-model="searchTerm"

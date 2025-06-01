@@ -90,7 +90,6 @@ function updateEnvironment(env: Environment) {
   <PageSection
     title="Environments"
     description="Create, update, and delete environments"
-    :stagger="1"
   >
     <UTable
       :data="environments"

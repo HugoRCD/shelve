@@ -1,6 +1,6 @@
 {
   "name": "shelve",
-  "version": "2.3.0",
+  "version": "2.3.1",
   "private": true,
   "type": "module",
   "repository": "https://github.com/HugoRCD/shelve",
@@ -25,8 +25,8 @@
     "@hrcd/eslint-config": "^3.0.3",
     "@shelve/cli": "workspace:*",
     "automd": "0.4.0",
-    "eslint": "9.27.0",
-    "turbo": "2.5.3",
+    "eslint": "9.28.0",
+    "turbo": "2.5.4",
     "typescript": "5.8.3"
   },
   "pnpm": {
