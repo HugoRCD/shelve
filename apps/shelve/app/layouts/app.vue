@@ -35,11 +35,19 @@ const title = computed(() => {
           <NuxtLink to="/">
             <Logo :text="false" size="size-6 sm:size-8" />
           </NuxtLink>
-          <Transition name="slide-to-top" mode="out-in">
-            <h1 :key="title" class="sm:text-xl font-semibold italic">
+          <AnimatePresence mode="wait">
+            <Motion
+              :key="title"
+              :initial="{ opacity: 0, y: '-10%' }"
+              :animate="{ opacity: 1, y: '0%' }"
+              :exit="{ opacity: 0, y: '-10%' }"
+              :transition="{ duration: 0.2, ease: 'easeInOut' }"
+              as="h1"
+              class="sm:text-xl font-semibold italic"
+            >
               {{ title }}
-            </h1>
-          </Transition>
+            </Motion>
+          </AnimatePresence>
         </div>
         <div class="flex items-center gap-2">
           <div id="action-items" class="hidden sm:flex items-center gap-1">
