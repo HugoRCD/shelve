@@ -11,6 +11,20 @@ export default defineNuxtConfig({
 
   ssr: false,
 
+  hub: {
+    kv: true,
+    cache: true,
+    workers: true,
+    bindings: {
+      hyperdrive: {
+        POSTGRES: '9a8a0a80be594574b4a6a53fb1014bc1'
+      },
+      observability: {
+        logs: true,
+      },
+    }
+  },
+
   nitro: {
     experimental: {
       openAPI: true
@@ -58,5 +72,5 @@ export default defineNuxtConfig({
     format: ['webp', 'jpeg', 'jpg', 'png', 'svg']
   },
 
-  modules: ['@nuxt/ui', 'nuxt-auth-utils'],
+  modules: ['@nuxt/ui', 'nuxt-auth-utils', '@nuxthub/core'],
 })
