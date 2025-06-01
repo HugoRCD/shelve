@@ -93,9 +93,8 @@ const items = (row: Member) => [
   <PageSection
     title="Members"
     description="Manage team members"
-    :stagger="1"
   >
-    <TransitionGroup name="fade" tag="ul" class="flex flex-col gap-4">
+    <ul class="flex flex-col gap-4">
       <div v-for="member in members" :key="member.id" class="flex flex-col gap-4 border-b last:border-b-0 border-default pb-4 last:pb-0">
         <div class="flex items-center justify-between gap-2">
           <div class="flex items-center gap-2">
@@ -121,7 +120,7 @@ const items = (row: Member) => [
           </div>
         </div>
       </div>
-    </TransitionGroup>
+    </ul>
 
     <template #actions>
       <template v-if="canUpdate">

@@ -125,11 +125,6 @@ export class GithubService {
         statusMessage: `Failed to get installation token: ${error.message}`
       })
     }
-  }, {
-    maxAge: 3600,
-    name: 'getInstallationToken',
-    getKey: (event: H3Event, installationId: number) => `installation-token-${installationId}`,
-    swr: true
   })
 
   getUserRepos = cachedFunction(async (event, userId: number): Promise<GitHubRepo[]> => {
