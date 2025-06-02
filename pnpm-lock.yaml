@@ -42,8 +42,8 @@ importers:
         specifier: 1.2.45
         version: 1.2.45
       '@iconify-json/simple-icons':
-        specifier: 1.2.36
-        version: 1.2.36
+        specifier: 1.2.37
+        version: 1.2.37
       '@nuxt/content':
         specifier: ^3.5.1
         version: 3.5.1(drizzle-orm@0.44.1(@cloudflare/workers-types@4.20250425.0)(better-sqlite3@11.9.1)(bun-types@1.2.15)(pg@8.16.0))(magicast@0.3.5)(typescript@5.8.3)
@@ -175,8 +175,8 @@ importers:
         specifier: 2.0.0
         version: 2.0.0
       zod:
-        specifier: 3.25.45
-        version: 3.25.45
+        specifier: 3.25.46
+        version: 3.25.46
     devDependencies:
       '@nuxt/devtools':
         specifier: 2.4.1
@@ -203,8 +203,8 @@ importers:
         specifier: latest
         version: 3.5.16(typescript@5.8.3)
       zod:
-        specifier: 3.25.45
-        version: 3.25.45
+        specifier: 3.25.46
+        version: 3.25.46
     devDependencies:
       wrangler:
         specifier: ^4.18.0
@@ -1171,8 +1171,8 @@ packages:
   '@iconify-json/lucide@1.2.45':
     resolution: {integrity: sha512-izW3wk7Ll5HgNMc/m41eOKXb7nL1zFxXZdMyBOtqdwusHXPr8IWSC/ReSgWgxUF3xyNwiQsso5Ppkta2wsUrPg==}
 
-  '@iconify-json/simple-icons@1.2.36':
-    resolution: {integrity: sha512-ZMpVdoW/7hhbt2aHVSvudjH8eSVNNjKkAAjwAQHgiuPUiIfbvNakVin+H9uhUz4N9TbDT/nanzV/4Slb+6dDXw==}
+  '@iconify-json/simple-icons@1.2.37':
+    resolution: {integrity: sha512-jZwTBznpYVDYKWyAuRpepPpCiHScVrX6f8WRX8ReX6pdii99LYVHwJywKcH2excWQrWmBomC9nkxGlEKzXZ/wQ==}
 
   '@iconify/collections@1.0.551':
     resolution: {integrity: sha512-5Jy+BoI4nsNE1nHqukQh5ZxxppGThyU3VR794PLmZtbF7YJGYYa4SETnGRl4hz/5lKiTe8OhlXf5Ns45ZGLz5w==}
@@ -8524,8 +8524,8 @@ packages:
   zod@3.24.4:
     resolution: {integrity: sha512-OdqJE9UDRPwWsrHjLN2F8bPxvwJBK22EHLWtanu0LSYr5YqzsaaW3RMgmjwr8Rypg5k+meEJdSPXJZXE/yqOMg==}
 
-  zod@3.25.45:
-    resolution: {integrity: sha512-kv1swJBZqv98NQibL0oVvkQE8rXT+6qGNM1FpZkFcJG2jnz4vbtu48bgaitp85CaBPLSKXibrEsU7MzJoVoZAA==}
+  zod@3.25.46:
+    resolution: {integrity: sha512-IqRxcHEIjqLd4LNS/zKffB3Jzg3NwqJxQQ0Ns7pdrvgGkwQsEBdEQcOHaBVqvvZArShRzI39+aMST3FBGmTrLQ==}
 
   zwitch@2.0.4:
     resolution: {integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==}
@@ -9378,7 +9378,7 @@ snapshots:
     dependencies:
       '@iconify/types': 2.0.0
 
-  '@iconify-json/simple-icons@1.2.36':
+  '@iconify-json/simple-icons@1.2.37':
     dependencies:
       '@iconify/types': 2.0.0
 
@@ -9683,7 +9683,7 @@ snapshots:
       unixify: 1.0.0
       urlpattern-polyfill: 8.0.2
       yargs: 17.7.2
-      zod: 3.25.45
+      zod: 3.25.46
     transitivePeerDependencies:
       - encoding
       - rollup
@@ -18569,6 +18569,6 @@ snapshots:
 
   zod@3.24.4: {}
 
-  zod@3.25.45: {}
+  zod@3.25.46: {}
 
   zwitch@2.0.4: {}
