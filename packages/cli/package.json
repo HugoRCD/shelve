@@ -62,7 +62,7 @@
     "eslint": "9.28.0",
     "typescript": "5.8.3",
     "unbuild": "3.5.0",
-    "vitest": "3.1.4"
+    "vitest": "3.2.0"
   },
   "publishConfig": {
     "access": "public"
