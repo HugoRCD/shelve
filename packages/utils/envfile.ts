@@ -1,31 +1,25 @@
-function getEachLines(content: string): string[] {
-  return content.split('\n').filter((line) => line.trim() !== '') // remove empty lines
-}
-
-function removeComments(content: string[]): string[] {
-  return content.filter((line) => !line.startsWith('#'))
-}
-
-function getKeyValue(content: string): { key: string; value: string } {
-  const [key, value] = content.split(/=(.+)/) // split on the first = and the rest of the line
-  if (!key || !value) {
-    throw new Error('Invalid .env')
-  }
-  return {
-    key: key.replace(/[\n\r'"]+/g, ''),
-    value: value.replace(/[\n\r'"]+/g, ''),
-  }
-}
+import { parse } from 'dotenv'
 
 export function parseEnvFile(content: string, withIndex: boolean = false):
   { index?: number; key: string; value: string }[] {
-  const lines = getEachLines(content)
-  const filteredLines = removeComments(lines)
-  return filteredLines.map((line, index) => {
-    const { key, value } = getKeyValue(line)
-    if (withIndex) {
-      return { index, key, value }
-    }
-    return { key, value }
-  })
+  try {
+    const parsed = parse(content)
+    
+    const variables = Object.entries(parsed).map(([key, value], index) => {
+      const result: { index?: number; key: string; value: string } = {
+        key,
+        value: value || ''
+      }
+      
+      if (withIndex) {
+        result.index = index
+      }
+      
+      return result
+    })
+    
+    return variables
+  } catch (error) {
+    throw new Error('Invalid .env file format')
+  }
 }
