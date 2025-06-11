@@ -99,21 +99,11 @@ function reset() {
           </UFormField>
         </div>
 
-        <div class="flex flex-col gap-6">
-          <div>
-            <h3 class="font-semibold">
-              Logo
-            </h3>
-            <p class="text-pretty text-xs text-muted">
-              Add a logo to your project
-            </p>
-          </div>
-          <div class="flex flex-col items-center justify-center gap-4">
-            <UFormField name="logo" label="Project Logo" class="w-full">
-              <UInput v-model="state.logo" class="w-full" />
-            </UFormField>
-            <UAvatar :src="state.logo" size="3xl" :alt="state.name" />
-          </div>
+        <div class="flex flex-col items-center  gap-4">
+          <UFormField name="logo" label="Project Logo" class="w-full">
+            <UInput v-model="state.logo" class="w-full" />
+          </UFormField>
+          <UAvatar :src="state.logo" size="3xl" :alt="state.name" />
         </div>
       </div>
 

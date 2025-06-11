@@ -1,46 +1,42 @@
 <script setup lang="ts">
 import type { GitHubRepo } from '@types'
 
-const { repos, apps, refreshRepos, query, loading } = useGitHub()
+const { repos, apps, refreshRepos, loading } = useGitHub()
+const { searchTerm, filterRepos, formatRepos } = useRepoSearch()
 
-const repo = defineModel({ type: String })
+const repo = defineModel<string>()
 const fullRepo = defineModel<GitHubRepo>('fullRepo')
-
 const open = ref(false)
 
-function selectRepo(url: string) {
-  repo.value = url
-  fullRepo.value = repos.value?.find(repo => repo.html_url === url)
+function selectRepo(selectedRepo: GitHubRepo) {
+  repo.value = selectedRepo.html_url
+  fullRepo.value = selectedRepo
   open.value = false
 }
 
-const formattedRepos = computed(() => {
-  return repos.value?.map(repo => ({
-    id: repo.id,
-    label: repo.name,
-    suffix: repo.html_url,
-    onSelect: () => selectRepo(repo.html_url)
-  })) || []
-})
+const filteredRepos = computed(() => 
+  filterRepos(repos.value?.data || [], searchTerm.value)
+)
+
+const formattedRepos = computed(() => 
+  formatRepos(filteredRepos.value, selectRepo)
+)
 
 async function openModal() {
   open.value = true
-  if (!repos.value || repos.value.length === 0)
-    await refreshRepos()
+  if (!repos.value?.data?.length) await refreshRepos()
 }
 
 const groups = computed(() => [
   {
     id: 'repos',
-    label: query.value ? `Repos matching “${query.value}”...` : 'Repos',
-    items: formattedRepos.value || [],
+    label: searchTerm.value ? `Repos matching "${searchTerm.value}"` : 'Repos',
+    items: formattedRepos.value,
     ignoreFilter: true
   }
 ])
 
-const slots = defineSlots<{
-  default: any
-}>()
+defineSlots<{ default?: any }>()
 </script>
 
 <template>
@@ -55,7 +51,7 @@ const slots = defineSlots<{
 
     <template #content>
       <UCommandPalette
-        v-model:search-term="query"
+        v-model:search-term="searchTerm"
         :loading
         :groups
         placeholder="Search repos..."
@@ -63,14 +59,24 @@ const slots = defineSlots<{
         :ui="{ empty: 'py-2' }"
       >
         <template #empty>
-          <div v-if="!loading" class="flex flex-col items-center justify-center gap-2">
-            <UIcon name="simple-icons:github" class="size-8" />
-            <p class="text-pretty text-muted">
-              No repositories found.
+          <div v-if="loading" class="flex flex-col items-center justify-center gap-2 px-2 py-4">
+            <UIcon name="i-heroicons-magnifying-glass" class="size-6 animate-pulse" />
+            <p class="text-sm text-muted">
+              Loading repositories...
+            </p>
+            <USkeleton v-for="n in 3" :key="n" class="h-6 w-full rounded-sm" />
+          </div>
+          <div v-else-if="searchTerm && !formattedRepos.length" class="flex flex-col items-center justify-center gap-2 py-4">
+            <UIcon name="i-heroicons-magnifying-glass-slash" class="size-8 text-muted" />
+            <p class="text-muted text-center">
+              No repositories found for "{{ searchTerm }}"
             </p>
           </div>
-          <div v-else class="flex flex-col items-center justify-center gap-2 px-2">
-            <USkeleton v-for="n in 5" :key="n" class="h-6 w-full rounded-sm" />
+          <div v-else class="flex flex-col items-center justify-center gap-2 py-4">
+            <UIcon name="simple-icons:github" class="size-8" />
+            <p class="text-muted">
+              No repositories found.
+            </p>
           </div>
         </template>
       </UCommandPalette>
