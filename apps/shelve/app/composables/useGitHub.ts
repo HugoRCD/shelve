@@ -1,31 +1,24 @@
 import type { GitHubRepo } from '@types'
 
 export function useGitHub() {
-  const query = ref('')
+  const { data: apps, status: appsStatus } = useAsyncData('github-apps', () => 
+    $fetch('/api/github/apps')
+  )
 
-  const { data: apps, status: appsStatus } = useAsyncData('user-apps', () => $fetch('/api/github/apps', {
-    method: 'GET'
-  }))
-
-  const { data: repos, status: reposStatus, refresh: refreshRepos } = useFetch<{
-    data: GitHubRepo[]
-  }>('/api/github/repos', {
-    params: { q: query },
-    dedupe: 'defer',
+  const { data: repos, status: reposStatus, refresh: refreshRepos } = useFetch<GitHubRepo[]>('/api/github/repos', {
+    key: 'github-repos',
+    server: false,
     immediate: false
   })
 
-  const reposLoading = computed(() => reposStatus.value === 'pending')
-  const appsLoading = computed(() => appsStatus.value === 'pending')
-  const loading = computed(() => reposLoading.value || appsLoading.value)
+  const loading = computed(() => 
+    reposStatus.value === 'pending' || appsStatus.value === 'pending'
+  )
 
   return {
     apps,
     repos,
-    query,
     loading,
-    reposLoading,
-    appsLoading,
     refreshRepos
   }
 }
