@@ -99,7 +99,7 @@ function reset() {
           </UFormField>
         </div>
 
-        <div class="flex flex-col items-center  gap-4">
+        <div class="flex flex-col items-center gap-4">
           <UFormField name="logo" label="Project Logo" class="w-full">
             <UInput v-model="state.logo" class="w-full" />
           </UFormField>

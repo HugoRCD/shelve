@@ -15,7 +15,7 @@ function selectRepo(selectedRepo: GitHubRepo) {
 }
 
 const filteredRepos = computed(() => 
-  filterRepos(repos.value?.data || [], searchTerm.value)
+  filterRepos(repos.value || [], searchTerm.value)
 )
 
 const formattedRepos = computed(() => 
@@ -24,7 +24,7 @@ const formattedRepos = computed(() =>
 
 async function openModal() {
   open.value = true
-  if (!repos.value?.data?.length) await refreshRepos()
+  if (!repos.value?.length) await refreshRepos()
 }
 
 const groups = computed(() => [
