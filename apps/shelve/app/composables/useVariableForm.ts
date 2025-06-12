@@ -6,6 +6,11 @@ export function useVariableForm(projectId: number, teamEnv: Environment[]) {
     default: () => true,
   })
 
+  const syncWithGitHub = useCookie<boolean>('syncWithGitHub', {
+    watch: true,
+    default: () => false,
+  })
+
   const variablesToCreate = ref(1)
   const selectedEnvironments = ref<Record<number, boolean>>(
     Object.fromEntries(
@@ -69,6 +74,7 @@ export function useVariableForm(projectId: number, teamEnv: Environment[]) {
     selectedEnvironments,
     environmentIds,
     autoUppercase,
+    syncWithGitHub,
     addVariable,
     removeVariable,
     resetForm,
