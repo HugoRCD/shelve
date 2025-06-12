@@ -17,6 +17,7 @@ const {
   selectedEnvironments,
   environmentIds,
   autoUppercase,
+  syncWithGitHub,
   addVariable,
   removeVariable,
   resetForm,
@@ -33,8 +34,6 @@ const {
   variablesToCreate.value = vars.length
   variablesInput.value.variables = vars
 })
-
-const syncWithGitHub = ref(false)
 
 function validateVariables(variables: CreateVariablesInput['variables']) {
   const groupedValues: { [key: string]: Set<string> } = {}

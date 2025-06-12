@@ -9,6 +9,11 @@ const autoUppercase = useCookie<boolean>('autoUppercase', {
   default: () => true,
 })
 
+const syncWithGitHub = useCookie<boolean>('syncWithGitHub', {
+  watch: true,
+  default: () => false,
+})
+
 function setPrefersReducedMotion() {
   if (reduceMotion.value) {
     document.documentElement.setAttribute('data-reduce-motion', 'reduce')
@@ -41,11 +46,18 @@ const settingsOptions = ref([
     stagger: 1
   },
   {
+    id: 'syncWithGitHub',
+    title: 'Sync with GitHub',
+    description: 'Automatically sync environment variables with GitHub secrets by default',
+    modelValue: syncWithGitHub,
+    stagger: 2
+  },
+  {
     id: 'reduceMotion',
     title: 'Reduce Motion',
     description: 'Remove all transitions and animations from the site.',
     modelValue: reduceMotion,
-    stagger: 2
+    stagger: 3
   }
 ])
 
