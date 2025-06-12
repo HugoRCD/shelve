@@ -27,9 +27,6 @@ jobs:
     if: needs.check-changes.outputs.src == 'true'
     name: "Deploy to NuxtHub"
     runs-on: ubuntu-latest
-    environment:
-      name: ${{ github.ref == 'refs/heads/main' && 'production' || 'preview' }}
-      url: ${{ steps.deploy.outputs.deployment-url }}
     permissions:
       contents: read
       id-token: write
@@ -52,15 +49,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Build application
-        run: pnpm build
-        env:
-          NUXT_UI_PRO_LICENSE: ${{ secrets.NUXT_UI_PRO_LICENSE }}
-          NUXT_PUBLIC_PAYLOAD_ID: ${{ secrets.NUXT_PUBLIC_PAYLOAD_ID }}
-
       - name: Deploy to NuxtHub
-        uses: nuxt-hub/action@v1
+        uses: nuxt-hub/action@v2
         id: deploy
         with:
           project-key: shelve-lp-s26a
-          directory: ./apps/lp/dist
+          directory: ./apps/lp

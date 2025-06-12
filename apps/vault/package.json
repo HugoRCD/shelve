@@ -14,12 +14,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@nuxthub/core": "0.9.0",
     "nuxt": "^3.17.5",
     "vue": "latest",
     "zod": "3.25.58"
-  },
-  "devDependencies": {
-    "wrangler": "^4.19.0"
   }
 }
