@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { SpeedInsights } from '@vercel/speed-insights/nuxt'
 import colors from 'tailwindcss/colors'
 import { Toaster } from 'vue-sonner'
 

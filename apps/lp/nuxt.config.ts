@@ -16,7 +16,6 @@ export default defineNuxtConfig({
     '@nuxtjs/seo',
     '@nuxt/content',
     '@nuxt/scripts',
-    '@nuxthub/core',
     'nuxt-llms',
   ],
 
