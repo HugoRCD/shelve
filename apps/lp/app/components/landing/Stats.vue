@@ -3,6 +3,7 @@ import NumberFlow from '@number-flow/vue'
 
 const loadingDots = ref('.')
 const loadingInterval = ref<number | null>(null)
+const autoRefreshInterval = ref<number | null>(null)
 
 onMounted(() => {
   loadingInterval.value = setInterval(() => {
@@ -10,11 +11,18 @@ onMounted(() => {
       ? '.'
       : `${loadingDots.value }.`
   }, 500) as unknown as number
+
+  autoRefreshInterval.value = setInterval(() => {
+    fetchStats()
+  }, 5000) as unknown as number
 })
 
 onUnmounted(() => {
   if (loadingInterval.value) {
     clearInterval(loadingInterval.value)
+  }
+  if (autoRefreshInterval.value) {
+    clearInterval(autoRefreshInterval.value)
   }
 })
 
