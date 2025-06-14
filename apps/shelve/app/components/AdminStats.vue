@@ -3,9 +3,8 @@ const { stats, isLoading } = useStats()
 
 const filteredStats = computed(() => {
   if (!stats.value) return []
-
   const { savedTime, ...rest } = stats.value
-  return rest
+  return Object.values(rest)
 })
 </script>
 
