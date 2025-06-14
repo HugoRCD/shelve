@@ -6,7 +6,7 @@ export function useStats(options: UseStatsOptions = {}) {
   const error = ref<string | null>(null)
 
   async function fetchStats() {
-    const baseUrl = options.baseUrl || location.host
+    const baseUrl = options.baseUrl || (typeof window !== 'undefined' ? window.location.origin : '')
     isLoading.value = true
     try {
       stats.value = await $fetch(`${ baseUrl }/api/stats`)

@@ -19,8 +19,7 @@ onUnmounted(() => {
 })
 
 const baseUrl = useRuntimeConfig().public.apiUrl
-
-const { stats, isLoading } = useStats({ baseUrl })
+const { stats, isLoading, fetchStats } = useStats({ baseUrl })
 
 const finalStats = computed(() => [
   {
@@ -56,11 +55,23 @@ const finalStats = computed(() => [
 <template>
   <div>
     <div class="mb-10 flex flex-col gap-2">
-      <h3 class="main-gradient text-3xl leading-8">
-        <ScrambleText label="Real-time Impact" />
-      </h3>
+      <div class="flex items-center justify-center gap-2">
+        <h3 class="main-gradient text-3xl leading-8">
+          <ScrambleText label="Stats & Impact" />
+        </h3>
+        <UButton
+          icon="i-lucide-refresh-cw"
+          size="xs"
+          color="primary"
+          variant="soft"
+          :loading="isLoading"
+          aria-label="Refresh stats"
+          class="ml-2"
+          @click="fetchStats"
+        />
+      </div>
       <p class="flex gap-2 items-center text-pretty text-center text-muted">
-        {{ !isLoading ? `Live insights into Shelve's usage and efficiency.` : `Loading stats${loadingDots}` }}
+        {{ isLoading ? `Loading stats${loadingDots}` : `Latest usage and efficiency data.` }}
       </p>
     </div>
     <dl class="mt-16 grid grid-cols-1 gap-4 sm:mt-10 sm:grid-cols-3">

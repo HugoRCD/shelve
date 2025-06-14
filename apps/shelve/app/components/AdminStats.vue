@@ -1,6 +1,5 @@
 <script setup lang="ts">
-const baseUrl = useRuntimeConfig().public.apiUrl
-const { stats, isLoading } = useStats({ baseUrl })
+const { stats, isLoading } = useStats()
 
 const filteredStats = computed(() => {
   if (!stats.value) return []
