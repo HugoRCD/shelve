@@ -55,7 +55,7 @@ const finalStats = computed(() => [
 <template>
   <div>
     <div class="mb-10 flex flex-col gap-2">
-      <div class="flex items-center justify-center gap-2">
+      <div class="flex items-center gap-1">
         <h3 class="main-gradient text-3xl leading-8">
           <ScrambleText label="Stats & Impact" />
         </h3>
@@ -63,7 +63,7 @@ const finalStats = computed(() => [
           icon="i-lucide-refresh-cw"
           size="xs"
           color="primary"
-          variant="soft"
+          variant="ghost"
           :loading="isLoading"
           aria-label="Refresh stats"
           class="ml-2"
