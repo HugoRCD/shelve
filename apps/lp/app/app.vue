@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { SpeedInsights } from '@vercel/speed-insights/nuxt'
 import colors from 'tailwindcss/colors'
 import { Toaster } from 'vue-sonner'
 
@@ -84,6 +85,7 @@ defineShortcuts({
 <template>
   <Html lang="en">
     <Body class="overscroll-y-none selection:bg-primary overflow-x-hidden selection:text-inverted">
+      <SpeedInsights />
       <NuxtLoadingIndicator color="#FFF" />
 
       <UApp :tooltip="{ delayDuration: 0 }">
