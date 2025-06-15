@@ -47,6 +47,10 @@ function deleteAccount() {
     },
   })
 }
+
+useSeoMeta({
+  title: () => `Profile - ${user.value?.username}`,
+})
 </script>
 
 <template>

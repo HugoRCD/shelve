@@ -42,6 +42,10 @@ function deleteCurrentTeam() {
 }
 
 const open = ref(false)
+
+useSeoMeta({
+  title: 'Settings',
+})
 </script>
 
 <template>

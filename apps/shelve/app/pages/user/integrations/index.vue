@@ -6,6 +6,10 @@ const integrations = [
     icon: 'simple-icons:github'
   }
 ]
+
+useSeoMeta({
+  title: 'Integrations',
+})
 </script>
 
 <template>

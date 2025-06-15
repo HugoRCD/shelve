@@ -12,14 +12,12 @@ defaultTeamSlug.value = teamSlug.value
 
 const { fetchTeam } = useTeamsService()
 
-await fetchTeam(defaultTeamSlug.value)
+await fetchTeam(teamSlug.value)
 
 useEnvironmentsService().fetchEnvironments()
 
-const titleTemplate = computed(() => `%s - ${team.value?.name} - Shelve`)
-
 useSeoMeta({
-  titleTemplate,
+  titleTemplate: () => `%s - ${team.value?.name} - Shelve`
 })
 </script>
 

@@ -16,6 +16,11 @@ const canUpdate = computed(() => hasAccess(teamRole.value, TeamRole.ADMIN))
 async function onSubmit(event: FormSubmitEvent<UpdateProjectSchema>) {
   await useProjectsService().updateProject(event.data)
 }
+
+useSeoMeta({
+  title: () => project.value?.name,
+  titleTemplate: () => `%s project - Settings - Shelve`
+})
 </script>
 
 <template>

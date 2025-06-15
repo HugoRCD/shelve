@@ -198,6 +198,10 @@ const sorting = ref([
     desc: true,
   }
 ])
+
+useSeoMeta({
+  title: 'Admin',
+})
 </script>
 
 <template>

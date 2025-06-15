@@ -29,6 +29,11 @@ const items = [
     to: `/${teamSlug}/projects/${projectId}/settings`
   },
 ]
+
+useSeoMeta({
+  title: () => project.value?.name,
+  titleTemplate: () => `%s project - Shelve`
+})
 </script>
 
 <template>

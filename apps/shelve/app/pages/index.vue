@@ -26,6 +26,11 @@ async function navigateToTeam(team: Team) {
   await new Promise((resolve) => setTimeout(resolve, 100))
   await selectTeam(team)
 }
+
+useSeoMeta({
+  title: () => `Home - ${user.value?.username}`,
+  titleTemplate: '%s - Shelve'
+})
 </script>
 
 <template>
