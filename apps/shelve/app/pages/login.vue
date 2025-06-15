@@ -21,6 +21,11 @@ if (route.query.error === 'github' || route.query.error === 'google') {
     }
   })
 }
+
+useSeoMeta({
+  title: 'Login',
+  titleTemplate: '%s - Shelve'
+})
 </script>
 
 <template>

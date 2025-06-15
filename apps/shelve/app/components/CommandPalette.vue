@@ -5,7 +5,7 @@ import { AnimatePresence, Motion } from 'motion-v'
 const isSearchActive = defineModel<boolean>({ required: true })
 const search = defineModel<string>('search', { required: true })
 const selectedIndex = defineModel<number>('selectedIndex', { required: false, default: 0 })
-const { createTeam } = useTeamsService()
+const { createTeam, teams } = useTeamsService()
 
 // Command palette setup
 const { commandGroups, version, subMenuState, deactivateSubMenu } = useAppCommands()
@@ -38,7 +38,6 @@ let savedMainMenuIndex = 0
 const customDeactivateSubmenu = () => {
   // Store the current state
   const wasActive = subMenuState.active
-  const { parentId } = subMenuState
 
   // Deactivate the submenu
   deactivateSubMenu()
@@ -79,7 +78,9 @@ const handleBackAction = () => {
   }
 }
 
-useTeamsService().fetchTeams()
+if (!teams.value || teams.value.length === 0) {
+  useTeamsService().fetchTeams()
+}
 
 // Keyboard navigation
 defineShortcuts({

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import colors from 'tailwindcss/colors'
 import { Toaster } from 'vue-sonner'
+import 'vue-sonner/style.css'
 
 const appConfig = useAppConfig()
 const colorMode = useColorMode()

@@ -4,8 +4,6 @@ export function useAppCommands() {
   const teams = useTeams()
   const colorMode = useColorMode()
   const { version } = useRuntimeConfig().public
-  const defaultTeamSlug = useCookie<string>('defaultTeamSlug')
-  const _currentTeam = useTeam()
   const { selectTeam } = useTeamsService()
   const route = useRoute()
 
@@ -31,9 +29,7 @@ export function useAppCommands() {
     subMenuState.items = []
   }
 
-  const currentTeam = computed(() =>
-    _currentTeam.value ?? teams.value.find((team) => team.slug === defaultTeamSlug.value)
-  )
+  const currentTeam = computed(() => teams.value.find((team) => team.slug === route.params.teamSlug))
 
   // Theme commands - fully reactive
   const themeCommands = computed<CommandItem[]>(() => [
@@ -207,7 +203,7 @@ export function useAppCommands() {
       description: `Switch to ${team.name} team`,
       action: () => selectTeam(team),
       keywords: ['team', 'switch', team.name],
-      active: team.id === currentTeam.value?.id,
+      active: team.slug === route.params.teamSlug,
     }))
   })
 

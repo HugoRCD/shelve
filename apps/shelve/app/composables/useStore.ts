@@ -8,11 +8,10 @@ export function useTeams(): Ref<Team[]> {
 }
 
 /**
- * Current selected team (current workspace context)
+ * Current selected team
  */
 export function useTeam(): Ref<Team> {
-  const defaultTeamSlug = useCookie<string>('defaultTeamSlug')
-  return useState<Team>(`team-${defaultTeamSlug.value}`)
+  return useState<Team>('team')
 }
 
 /**

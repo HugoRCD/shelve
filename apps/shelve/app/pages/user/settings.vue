@@ -64,6 +64,10 @@ const settingsOptions = ref([
 watch(reduceMotion, () => {
   setPrefersReducedMotion()
 })
+
+useSeoMeta({
+  title: 'Settings',
+})
 </script>
 
 <template>

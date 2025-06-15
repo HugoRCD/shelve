@@ -3,6 +3,10 @@ definePageMeta({
   layout: 'app',
   middleware: ['auth']
 })
+
+useSeoMeta({
+  titleTemplate: '%s - Shelve',
+})
 </script>
 
 <template>

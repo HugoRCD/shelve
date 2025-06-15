@@ -24,9 +24,13 @@ async function navigateToTeam(team: Team) {
   active.value = team.id
   navLoading.value = true
   await new Promise((resolve) => setTimeout(resolve, 100))
-  await selectTeam(team, false)
-  await useRouter().push(`/${team.slug}`)
+  await selectTeam(team)
 }
+
+useSeoMeta({
+  title: () => `Home - ${user.value?.username}`,
+  titleTemplate: '%s - Shelve'
+})
 </script>
 
 <template>
