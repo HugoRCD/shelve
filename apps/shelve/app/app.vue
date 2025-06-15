@@ -20,7 +20,6 @@ watch(reduceMotion, (value) => {
     <Body class="overscroll-y-none selection:bg-primary relative overflow-x-hidden selection:text-inverted">
       <SpeedInsights />
       <ShelveMeta title="Application" />
-      <UButton label="Hello" @click="toast.success('Hello')" />
       <MotionConfig :reduce-motion="reduceMotion ? 'always' : 'never'">
         <UApp :tooltip="{ delayDuration: 0 }">
           <Suspense>
