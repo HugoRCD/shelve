@@ -4,14 +4,23 @@ definePageMeta({
   middleware: ['auth', 'onboarding', 'default-team']
 })
 
-const defaultTeamSlug = useCookie<number>('defaultTeamSlug', {
-  watch: true,
-})
-
+const route = useRoute()
 const team = useTeam()
-if (!team.value) team.value = await useTeamsService().fetchTeam(defaultTeamSlug.value)
+const teamSlug = computed(() => route.params.teamSlug as string)
+const defaultTeamSlug = useCookie<string>('defaultTeamSlug')
+defaultTeamSlug.value = teamSlug.value
+
+const { fetchTeam } = useTeamsService()
+
+await fetchTeam(defaultTeamSlug.value)
 
 useEnvironmentsService().fetchEnvironments()
+
+const titleTemplate = computed(() => `%s - ${team.value?.name} - Shelve`)
+
+useSeoMeta({
+  titleTemplate,
+})
 </script>
 
 <template>

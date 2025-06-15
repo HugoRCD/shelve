@@ -6,7 +6,7 @@ import { ConfirmModal } from '#components'
 const { updateMember, removeMember } = useTeamsService()
 
 const currentTeam = useTeam()
-const members = computed(() => currentTeam.value.members.filter((member) => member.user.username.toLowerCase().includes(search.value.toLowerCase())))
+const members = computed(() => currentTeam.value?.members.filter((member) => member.user.username.toLowerCase().includes(search.value.toLowerCase())))
 
 const teamRole = useTeamRole()
 const canDelete = computed(() => hasAccess(teamRole.value, TeamRole.OWNER))
@@ -87,6 +87,10 @@ const items = (row: Member) => [
     },
   ],
 ]
+
+useSeoMeta({
+  title: 'Members',
+})
 </script>
 
 <template>

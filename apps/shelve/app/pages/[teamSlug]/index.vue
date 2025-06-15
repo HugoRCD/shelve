@@ -7,6 +7,10 @@ const { loading, fetchProjects } = useProjectsService()
 
 if (!projects.value)
   await fetchProjects()
+
+useSeoMeta({
+  title: 'Projects'
+})
 </script>
 
 <template>

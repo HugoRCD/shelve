@@ -45,10 +45,6 @@ function importProject() {
   input.click()
 }
 
-useHead({
-  title: 'Create New Project',
-})
-
 useSeoMeta({
   title: 'Create New Project',
   description: 'Create a new project in Shelve',
