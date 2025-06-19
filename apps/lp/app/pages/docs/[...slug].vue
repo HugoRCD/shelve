@@ -4,57 +4,28 @@ import type { ContentNavigationItem } from '@nuxt/content'
 import { findPageBreadcrumb, mapContentNavigation } from '#ui-pro/utils'
 
 definePageMeta({
-  layout: false,
-  key: 'docs'
+  layout: 'docs'
 })
 
 const navigation = inject<Ref<ContentNavigationItem[]>>('navigation', ref([]))
-const docsNavigation = computed(() => navigation.value.find(item => item.path === '/docs')?.children || [])
 
 const route = useRoute()
-const nuxtApp = useNuxtApp()
 
-const path = computed(() => route.path.replace(/\/$/, ''))
-
-function paintResponse() {
-  if (import.meta.server) {
-    return Promise.resolve()
-  }
-  return new Promise((resolve) => {
-    setTimeout(resolve, 100)
-    requestAnimationFrame(() => setTimeout(resolve, 0))
-  })
+const { data: page } = await useAsyncData(kebabCase(route.path), () => queryCollection('docs').path(route.path).first())
+if (!page.value) {
+  throw createError({ statusCode: 404, statusMessage: 'Page not found', fatal: true })
 }
 
-const [{ data: page, status }, { data: surround }] = await Promise.all([
-  useAsyncData(kebabCase(path.value), () => paintResponse().then(() => nuxtApp.static[kebabCase(path.value)] ?? queryCollection('docs').path(path.value).first()), {
-    watch: [path]
-  }),
-  useAsyncData(`${kebabCase(path.value)}-surround`, () => paintResponse().then(() => nuxtApp.static[`${kebabCase(path.value)}-surround`] ?? queryCollectionItemSurroundings('docs', path.value, {
+const { data: surround } = await useAsyncData(`${kebabCase(route.path)}-surround`, () => {
+  return queryCollectionItemSurroundings('docs', route.path, {
     fields: ['description']
-  })), { watch: [path] })
-])
-
-watch(status, (status) => {
-  if (status === 'pending') {
-    nuxtApp.hooks.callHook('page:loading:start')
-  } else if (status === 'success' || status === 'error') {
-    nuxtApp.hooks.callHook('page:loading:end')
-  }
+  })
 })
 
-watch(page, (page) => {
-  if (!page) {
-    throw createError({ statusCode: 404, statusMessage: 'Page not found', fatal: true })
-  }
-}, { immediate: true })
-
-const breadcrumb = computed(() => {
-  return mapContentNavigation(findPageBreadcrumb(navigation.value, page.value)).map(link => ({
-    label: link.label,
-    to: link.to
-  }))
-})
+const breadcrumb = computed(() => mapContentNavigation(findPageBreadcrumb(navigation.value, page.value)).map(link => ({
+  label: link.label,
+  to: link.to
+})))
 
 defineOgImageComponent('Docs', {
   headline: breadcrumb.value.map(item => item.label).join(' > ')
@@ -110,61 +81,44 @@ const communityLinks = computed(() => [
 </script>
 
 <template>
-  <Header />
-  <UMain>
-    <UContainer v-if="page">
-      <UPage>
-        <template #left>
-          <UPageAside>
-            <UContentNavigation
-              :navigation="docsNavigation"
-              trailing-icon="i-lucide-chevron-right"
-              :ui="{ linkTrailingIcon: 'group-data-[state=open]:rotate-90' }"
-              highlight
-            />
-          </UPageAside>
+  <UPage v-if="page">
+    <UPageHeader
+      :title="page.title"
+      :description="page.description"
+      :links="page.links?.map((link: any) => ({ ...link, size: 'md' }))"
+    >
+      <template #headline>
+        <UBreadcrumb :items="breadcrumb" />
+      </template>
+    </UPageHeader>
+
+    <UPageBody>
+      <ContentRenderer v-if="page.body" :value="page" />
+      <div>
+        <Divider class="my-10">
+          <div class="flex items-center gap-2 text-sm text-muted">
+            <UButton size="sm" variant="link" color="neutral" to="https://github.com/hugorcd/shelve/issues/new/choose" target="_blank">
+              Report an issue
+            </UButton>
+            or
+            <UButton size="sm" variant="link" color="neutral" :to="editThisPage.to" target="_blank">
+              Edit this page on GitHub
+            </UButton>
+          </div>
+        </Divider>
+        <Surround :surround="(surround as any)" />
+      </div>
+    </UPageBody>
+
+    <template v-if="page?.body?.toc?.links?.length" #right>
+      <UContentToc :links="page.body?.toc?.links" highlight class="lg:backdrop-blur-none">
+        <template #bottom>
+          <div class="hidden lg:block space-y-6" :class="{ '!mt-6': page.body?.toc?.links?.length }">
+            <USeparator v-if="page.body?.toc?.links?.length" type="dashed" />
+            <UPageLinks title="Community" :links="communityLinks" />
+          </div>
         </template>
-        <UPage>
-          <UPageHeader
-            :title="page.title"
-            :description="page.description"
-            :links="page.links?.map((link: any) => ({ ...link, size: 'md' }))"
-          >
-            <template #headline>
-              <UBreadcrumb :items="breadcrumb" />
-            </template>
-          </UPageHeader>
-
-          <UPageBody>
-            <ContentRenderer v-if="page.body" :value="page" />
-            <div>
-              <Divider class="my-10">
-                <div class="flex items-center gap-2 text-sm text-muted">
-                  <UButton size="sm" variant="link" color="neutral" to="https://github.com/hugorcd/shelve/issues/new/choose" target="_blank">
-                    Report an issue
-                  </UButton>
-                  or
-                  <UButton size="sm" variant="link" color="neutral" :to="editThisPage.to" target="_blank">
-                    Edit this page on GitHub
-                  </UButton>
-                </div>
-              </Divider>
-              <Surround :surround />
-            </div>
-          </UPageBody>
-
-          <template v-if="page?.body?.toc?.links?.length" #right>
-            <UContentToc :links="page.body?.toc?.links" highlight class="lg:backdrop-blur-none">
-              <template #bottom>
-                <div class="hidden lg:block space-y-6" :class="{ '!mt-6': page.body?.toc?.links?.length }">
-                  <USeparator v-if="page.body?.toc?.links?.length" type="dashed" />
-                  <UPageLinks title="Community" :links="communityLinks" />
-                </div>
-              </template>
-            </UContentToc>
-          </template>
-        </UPage>
-      </UPage>
-    </UContainer>
-  </UMain>
+      </UContentToc>
+    </template>
+  </UPage>
 </template>
