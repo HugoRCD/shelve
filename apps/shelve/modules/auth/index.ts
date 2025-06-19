@@ -14,6 +14,9 @@ export default defineNuxtModule({
       if (process.env.NUXT_OAUTH_GOOGLE_CLIENT_ID && process.env.NUXT_OAUTH_GOOGLE_CLIENT_SECRET)
         isGoogleEnabled = true
 
+      console.log('isGithubEnabled', isGithubEnabled)
+      console.log('isGoogleEnabled', isGoogleEnabled)
+
       nuxt.options.appConfig.googleEnabled = isGoogleEnabled
       nuxt.options.appConfig.githubEnabled = isGithubEnabled
     })

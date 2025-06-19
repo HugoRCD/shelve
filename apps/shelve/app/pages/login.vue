@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { title } = useAppConfig()
+const { title, githubEnabled, googleEnabled } = useAppConfig()
 
 definePageMeta({
   layout: 'auth',
@@ -51,8 +51,8 @@ useSeoMeta({
             width: focus ? '300px' : '250px',
           }"
         >
-          <AuthButton icon="simple-icons:github" label="Sign in with GitHub" provider="github" />
-          <AuthButton icon="simple-icons:google" label="Sign in with Google" provider="google" />
+          <AuthButton v-if="githubEnabled" icon="simple-icons:github" label="Sign in with GitHub" provider="github" />
+          <AuthButton v-if="googleEnabled" icon="simple-icons:google" label="Sign in with Google" provider="google" />
         </div>
       </CrossedDiv>
     </div>
