@@ -2,6 +2,7 @@
 import { SpeedInsights } from '@vercel/speed-insights/nuxt'
 import { MotionGlobalConfig } from 'motion-v'
 import { Toaster } from 'vue-sonner'
+import 'vue-sonner/style.css'
 
 const reduceMotion = useCookie<boolean>('reduceMotion', {
   watch: true,
@@ -18,7 +19,7 @@ watch(reduceMotion, (value) => {
   <Html lang="en">
     <Body class="overscroll-y-none selection:bg-primary relative overflow-x-hidden selection:text-inverted">
       <SpeedInsights />
-      <ShelveMeta title="Application" title-template="%s | Shelve" />
+      <ShelveMeta title="Application" />
       <MotionConfig :reduce-motion="reduceMotion ? 'always' : 'never'">
         <UApp :tooltip="{ delayDuration: 0 }">
           <Suspense>

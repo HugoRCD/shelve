@@ -28,6 +28,10 @@ async function testNewUserMail() {
   }
   loading.value = false
 }
+
+useSeoMeta({
+  title: 'Tests',
+})
 </script>
 
 <template>

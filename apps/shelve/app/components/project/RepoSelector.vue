@@ -59,11 +59,13 @@ defineSlots<{ default?: any }>()
         :ui="{ empty: 'py-2' }"
       >
         <template #empty>
-          <div v-if="loading" class="flex flex-col items-center justify-center gap-2 px-2 py-4">
-            <UIcon name="i-heroicons-magnifying-glass" class="size-6 animate-pulse" />
-            <p class="text-sm text-muted">
-              Loading repositories...
-            </p>
+          <div v-if="loading" class="flex flex-col gap-2 p-2">
+            <div class="flex items-center gap-2">
+              <UIcon name="i-lucide-loader-circle" class="size-4 animate-spin" />
+              <p class="text-sm text-muted text-left">
+                Loading repositories...
+              </p>
+            </div>
             <USkeleton v-for="n in 3" :key="n" class="h-6 w-full rounded-sm" />
           </div>
           <div v-else-if="searchTerm && !formattedRepos.length" class="flex flex-col items-center justify-center gap-2 py-4">

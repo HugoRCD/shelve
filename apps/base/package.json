@@ -27,6 +27,7 @@
     "@vueuse/nuxt": "13.3.0",
     "iron-webcrypto": "1.2.1",
     "motion-plus-vue": "^1.2.1",
+    "vue-sonner": "2.0.0",
     "motion-v": "^1.2.1",
     "nuxt": "3.17.5",
     "nuxt-visitors": "1.2.2",

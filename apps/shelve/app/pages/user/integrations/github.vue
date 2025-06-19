@@ -40,6 +40,10 @@ function openRemoveModal(installationId: string) {
     },
   })
 }
+
+useSeoMeta({
+  title: 'Github Integration',
+})
 </script>
 
 <template>

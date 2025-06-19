@@ -102,6 +102,10 @@ function isTokenActive(value: string) {
 }
 
 fetchTokens()
+
+useSeoMeta({
+  title: 'Tokens',
+})
 </script>
 
 <template>
