@@ -49,8 +49,8 @@ const items = [
       {
         label: 'Self-Hosting',
         icon: 'heroicons:server-stack-solid',
-        description: 'Host Shelve on your own infrastructure',
-        to: '/docs/self-hosting/docker'
+        description: 'Host Shelve on your own Vercel account',
+        to: '/docs/self-hosting/vercel'
       }
     ]
   },
