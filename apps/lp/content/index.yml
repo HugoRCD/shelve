@@ -116,6 +116,6 @@ cta:
       size: md
     - label: Self-host
       to: /docs/self-hosting
-      icon: simple-icons:docker
+      icon: simple-icons:vercel
       variant: ghost
       size: md
