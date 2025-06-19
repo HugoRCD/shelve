@@ -53,7 +53,7 @@ defineOgImage({ url: ogImage })
             :transition="{ delay: 0.2 + 0.2 * _index }"
             :in-view-options="{ once: true }"
           >
-            <UButton class="cursor-default hover:bg-transparent" :ui="{ label: 'bg-gradient-to-br from-muted to-inverted to-50% bg-clip-text text-transparent' }" v-bind="link" />
+            <UButton class="cursor-default hover:bg-transparent" :ui="{ label: 'main-gradient' }" v-bind="link" />
           </Motion>
         </template>
         <div class="min-h-[300px] flex items-center justify-center">

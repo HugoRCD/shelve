@@ -70,7 +70,7 @@ const colorMode = useColorMode()
     </template>
     <template #links>
       <CustomButton v-bind="cta.links[0]" />
-      <UButton v-bind="cta.links[1]" :ui="{ label: 'bg-gradient-to-br from-muted to-inverted to-50% bg-clip-text text-transparent' }" />
+      <UButton v-bind="cta.links[1]" :ui="{ label: 'main-gradient' }" />
     </template>
   </UPageCTA>
 </template>
