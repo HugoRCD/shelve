@@ -9,6 +9,7 @@ definePageMeta({
 const teams = useTeams()
 const navLoading = ref(false)
 const { user } = useUserSession()
+const defaultTeamSlug = useCookie<string>('defaultTeamSlug')
 
 const {
   loading,
@@ -24,6 +25,7 @@ async function navigateToTeam(team: Team) {
   active.value = team.id
   navLoading.value = true
   await new Promise((resolve) => setTimeout(resolve, 100))
+  defaultTeamSlug.value = team.slug
   await selectTeam(team)
 }
 
