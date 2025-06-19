@@ -1,4 +1,19 @@
-import { createResolver, defineNuxtModule, addServerHandler } from 'nuxt/kit'
+import { defineNuxtModule } from 'nuxt/kit'
+import { z } from 'zod'
+
+const envSchema = z.object({
+  NUXT_OAUTH_GITHUB_CLIENT_ID: z.string().optional(),
+  NUXT_OAUTH_GITHUB_CLIENT_SECRET: z.string().optional(),
+  NUXT_OAUTH_GOOGLE_CLIENT_ID: z.string().optional(),
+  NUXT_OAUTH_GOOGLE_CLIENT_SECRET: z.string().optional(),
+  NUXT_PRIVATE_GITHUB_PRIVATE_KEY: z.string().optional(),
+  NUXT_SESSION_PASSWORD: z.string(),
+  NUXT_PRIVATE_ENCRYPTION_KEY: z.string(),
+  NUXT_PRIVATE_RESEND_API_KEY: z.string().optional(),
+  NUXT_PRIVATE_ADMIN_EMAILS: z.string().optional(),
+  NUXT_PRIVATE_SENDER_EMAIL: z.string().optional(),
+  NUXT_PRIVATE_ALLOWED_ORIGINS: z.string().optional(),
+})
 
 export default defineNuxtModule({
   meta: {
@@ -9,30 +24,15 @@ export default defineNuxtModule({
       let isGithubEnabled = false
       let isGoogleEnabled = false
 
-      if (process.env.NUXT_OAUTH_GITHUB_CLIENT_ID && process.env.NUXT_OAUTH_GITHUB_CLIENT_SECRET)
-        isGithubEnabled = true
-      if (process.env.NUXT_OAUTH_GOOGLE_CLIENT_ID && process.env.NUXT_OAUTH_GOOGLE_CLIENT_SECRET)
-        isGoogleEnabled = true
+      const env = envSchema.parse(process.env)
 
-      console.log('isGithubEnabled', isGithubEnabled)
-      console.log('isGoogleEnabled', isGoogleEnabled)
+      if (env.NUXT_OAUTH_GITHUB_CLIENT_ID && env.NUXT_OAUTH_GITHUB_CLIENT_SECRET)
+        isGithubEnabled = true
+      if (env.NUXT_OAUTH_GOOGLE_CLIENT_ID && env.NUXT_OAUTH_GOOGLE_CLIENT_SECRET)
+        isGoogleEnabled = true
 
       nuxt.options.appConfig.googleEnabled = isGoogleEnabled
       nuxt.options.appConfig.githubEnabled = isGithubEnabled
     })
-
-    /*if (isGithubEnabled) {
-      addServerHandler({
-        route: '/auth/github',
-        handler: resolve('./runtime/github')
-      })
-    }
-
-    if (isGoogleEnabled) {
-      addServerHandler({
-        route: '/auth/google',
-        handler: resolve('./runtime/google')
-      })
-    }*/
   }
 })
