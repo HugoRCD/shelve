@@ -58,7 +58,7 @@ While Shelve excels at secrets management today, our vision extends further. We 
   </tr>
   <tr>
     <td>📅 Next Release</td>
-    <td>v2.1.0 (Target: Q2 2025)</td>
+    <td>v2.5.0 (Target: Q4 2025)</td>
   </tr>
 </table>
 
@@ -109,9 +109,9 @@ While Shelve excels at secrets management today, our vision extends further. We 
 -   **Framework:** Nuxt
 -   **UI:** Nuxt UI, Tailwind CSS
 -   **Server:** Nitro
--   **Database:** DrizzleORM, SQLite (or preferred DB via Drizzle)
+-   **Database:** PostgreSQL, DrizzleORM
 -   **Monorepo:** Turborepo
--   **Deployment:** NuxtHub, Docker, Coolify
+-   **Deployment:** Vercel
 -   **Mailer:** Resend
 -   **Validation:** Zod
 -   **CI/CD:** GitHub Actions
