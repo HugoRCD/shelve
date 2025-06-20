@@ -27,11 +27,6 @@ export default defineNuxtConfig({
   css: ['~/assets/css/index.css'],
 
   runtimeConfig: {
-    public: {
-      github: {
-        appName: '',
-      }
-    },
     private: {
       resendApiKey: '',
       encryptionKey: '',
@@ -52,6 +47,26 @@ export default defineNuxtConfig({
         clientSecret: '',
       },
     }
+  },
+
+  $development: {
+    runtimeConfig: {
+      public: {
+        github: {
+          appName: 'shelve-local',
+        },
+      },
+    },
+  },
+
+  $production: {
+    runtimeConfig: {
+      public: {
+        github: {
+          appName: 'shelve-cloud',
+        },
+      },
+    },
   },
 
   image: {
