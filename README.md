@@ -128,7 +128,7 @@ For comprehensive guides, API references, and setup instructions, visit the [She
 
 ### Self-Hosting
 
-Want full control? Deploy Shelve on your own infrastructure using [Docker](https://shelve.cloud/docs/self-hosting/docker) or [Coolify](https://shelve.cloud/docs/self-hosting/coolify).
+Want full control? Deploy Shelve on your own Vercel account using [Vercel](https://shelve.cloud/docs/self-hosting/vercel).
 
 ## 💬 Community & Support
 

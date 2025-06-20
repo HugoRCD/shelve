@@ -9,7 +9,22 @@
         "dist/**",
         ".output/**",
         ".nuxt/**"
+      ],
+      "env": [
+        "DATABASE_URL",
+        "NUXT_SESSION_PASSWORD",
+        "NUXT_PRIVATE_ENCRYPTION_KEY",
+        "NUXT_OAUTH_GITHUB_CLIENT_ID",
+        "NUXT_OAUTH_GITHUB_CLIENT_SECRET",
+        "NUXT_OAUTH_GOOGLE_CLIENT_ID",
+        "NUXT_OAUTH_GOOGLE_CLIENT_SECRET",
+        "NUXT_PRIVATE_GITHUB_PRIVATE_KEY",
+        "NUXT_PRIVATE_RESEND_API_KEY",
+        "NUXT_PRIVATE_SENDER_EMAIL",
+        "NUXT_PRIVATE_ADMIN_EMAILS",
+        "NUXT_PRIVATE_ALLOWED_ORIGINS"
       ]
+
     },
     "generate": {
       "dependsOn": [

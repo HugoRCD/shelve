@@ -17,7 +17,7 @@ export default defineEventHandler(async (event) => {
       userId: user.id
     })
 
-    return sendRedirect(event, '/user/integrations/github?setup=success')
+    return sendRedirect(event, '/user/integrations?integration=github&setup=success')
   } catch (error: any) {
     console.error('Error saving GitHub installation:', error)
     throw createError({

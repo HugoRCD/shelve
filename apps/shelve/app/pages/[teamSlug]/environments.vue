@@ -84,6 +84,10 @@ function updateEnvironment(env: Environment) {
     error: 'Error updating environment',
   })
 }
+
+useSeoMeta({
+  title: 'Environments',
+})
 </script>
 
 <template>

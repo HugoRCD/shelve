@@ -49,8 +49,8 @@ const items = [
       {
         label: 'Self-Hosting',
         icon: 'heroicons:server-stack-solid',
-        description: 'Host Shelve on your own infrastructure',
-        to: '/docs/self-hosting/docker'
+        description: 'Host Shelve on your own Vercel account',
+        to: '/docs/self-hosting/vercel'
       }
     ]
   },
@@ -91,7 +91,7 @@ const items = [
 const ui = computed(() => ({
   // item: 'py-0',
   childLink: 'hover:bg-default/50',
-  childLinkLabel: 'main-gradient brightness-150',
+  childLinkLabel: '',
   linkTrailingIcon: 'hidden',
   viewport: 'bg-muted ring ring-offset-6 ring-offset-(--ui-bg) ring-default border border-default',
   viewportWrapper: 'w-[700px] transition-all duration-500 left-1/2 -translate-x-1/2',
@@ -109,7 +109,13 @@ const ui = computed(() => ({
       <template #features-content="{ item }">
         <div class="flex flex-row p-2 gap-2">
           <div class="w-1/2">
-            <NuxtImg src="/og.png" alt="Shelve" class="rounded-md size-full object-cover" />
+            <NuxtImg 
+              preload
+              format="webp"
+              src="/og.png"
+              alt="Shelve"
+              class="rounded-md size-full object-cover"
+            />
           </div>
           <ul class="flex flex-col gap-1 w-1/2">
             <li v-for="child in item.children" :key="child.label">
@@ -117,7 +123,7 @@ const ui = computed(() => ({
                 class="text-sm cursor-pointer w-full text-left rounded-md p-3 transition-colors hover:bg-elevated/50"
                 @click="navigateTo(child.to)"
               >
-                <p class="font-medium main-gradient brightness-150">
+                <p class="font-medium text-highlighted">
                   {{ child.label }}
                 </p>
                 <p class="text-muted line-clamp-2">

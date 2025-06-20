@@ -25,21 +25,16 @@ useSeoMeta({
 <template>
   <UPage v-if="page">
     <UPageHero
+      :title="page.title"
       :description="page.description"
       orientation="horizontal"
       :ui="{
         container: 'py-12 sm:py-16 lg:py-16',
         wrapper: 'lg:w-[600px]',
-        title: 'text-left max-w-xl text-pretty',
+        title: 'text-left max-w-xl text-pretty font-normal main-gradient text-3xl sm:text-4xl lg:text-5xl',
         description: 'text-left mt-2 text-md max-w-2xl text-pretty sm:text-md text-muted',
       }"
-    >
-      <template #title>
-        <h1 class="font-normal main-gradient text-3xl sm:text-4xl lg:text-5xl">
-          {{ page.title }}
-        </h1>
-      </template>
-    </UPageHero>
+    />
 
     <Divider />
 

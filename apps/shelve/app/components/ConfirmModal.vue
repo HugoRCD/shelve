@@ -20,7 +20,14 @@ function onCancel() {
 </script>
 
 <template>
-  <UModal :close="{ onClick: () => emit('close', false) }" :title :description>
+  <UModal 
+    :close="{ onClick: onCancel }"
+    :title
+    :description
+    :ui="{
+      overlay: 'bg-default/10 backdrop-blur-sm',
+    }"
+  >
     <template #footer>
       <div class="flex w-full justify-end gap-2">
         <UButton variant="ghost" @click="onCancel">

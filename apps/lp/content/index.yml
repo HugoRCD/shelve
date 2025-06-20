@@ -94,7 +94,7 @@ faq:
     - label: Is Shelve secure?
       content: Security is fundamental to Shelve. Your secrets are hashed **(SHA-256)** for integrity and encrypted at rest using strong **AES-256 encryption**. Our open-source nature means our security practices are fully transparent and can be audited by the community directly on GitHub.
     - label: Can I self-host Shelve?
-      content: Absolutely. Shelve is designed for flexibility, including self-hosting. Deploy easily via [Docker](/docs/self-hosting/docker) or use a one-click setup with [Coolify](/docs/self-hosting/coolify) for complete control and data sovereignty over your secrets infrastructure.
+      content: Absolutely. Shelve is designed for flexibility, including self-hosting. You can deploy your own instance of Shelve using [Vercel](/docs/self-hosting/vercel), and more providers coming soon.
     - label: Does Shelve integrate with other tools?
       content: Yes. Seamless integration is key to Shelve's vision. We currently offer robust synchronization with [GitHub Secrets](/docs/integrations/github), and we're actively working on expanding our integrations with more platforms and tools to further streamline your workflow.
     - label: How can I contribute to Shelve?
@@ -116,6 +116,6 @@ cta:
       size: md
     - label: Self-host
       to: /docs/self-hosting
-      icon: simple-icons:docker
+      icon: simple-icons:vercel
       variant: ghost
       size: md

@@ -27,9 +27,6 @@ jobs:
     if: needs.check-changes.outputs.src == 'true'
     name: "Deploy to NuxtHub"
     runs-on: ubuntu-latest
-    environment:
-      name: ${{ github.ref == 'refs/heads/main' && 'production' || 'preview' }}
-      url: ${{ steps.deploy.outputs.deployment-url }}
     permissions:
       contents: read
       id-token: write
@@ -52,12 +49,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Build application
-        run: pnpm build
-
       - name: Deploy to NuxtHub
-        uses: nuxt-hub/action@v1
+        uses: nuxt-hub/action@v2
         id: deploy
         with:
           project-key: shelve-vault-e7ft
-          directory: ./apps/vault/dist
+          directory: ./apps/vault

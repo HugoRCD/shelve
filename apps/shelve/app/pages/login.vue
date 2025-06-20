@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { title } = useAppConfig()
+const { title, auth: { isGithubEnabled, isGoogleEnabled } } = useAppConfig()
 
 definePageMeta({
   layout: 'auth',
@@ -21,6 +21,11 @@ if (route.query.error === 'github' || route.query.error === 'google') {
     }
   })
 }
+
+useSeoMeta({
+  title: 'Login',
+  titleTemplate: '%s - Shelve'
+})
 </script>
 
 <template>
@@ -46,8 +51,8 @@ if (route.query.error === 'github' || route.query.error === 'google') {
             width: focus ? '300px' : '250px',
           }"
         >
-          <AuthButton icon="simple-icons:github" label="Sign in with GitHub" provider="github" />
-          <AuthButton icon="simple-icons:google" label="Sign in with Google" provider="google" />
+          <AuthButton v-if="isGithubEnabled" icon="simple-icons:github" label="Sign in with GitHub" provider="github" />
+          <AuthButton v-if="isGoogleEnabled" icon="simple-icons:google" label="Sign in with Google" provider="google" />
         </div>
       </CrossedDiv>
     </div>

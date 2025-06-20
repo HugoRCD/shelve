@@ -87,6 +87,7 @@ export default defineContentConfig({
           minRead: z.number(),
           image: z.string(),
           tags: z.array(z.string()),
+          word: z.string(),
           authors: z.array(z.object({
             name: z.string(),
             description: z.string(),

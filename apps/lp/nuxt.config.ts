@@ -4,7 +4,7 @@ export default defineNuxtConfig({
     '/docs': { redirect: { statusCode: 301, to: '/docs/getting-started' } },
     '/docs/core-features': { redirect: { statusCode: 301, to: '/docs/core-features/environments' } },
     '/docs/integrations': { redirect: { statusCode: 301, to: '/docs/integrations/github' } },
-    '/docs/self-hosting': { redirect: { statusCode: 301, to: '/docs/self-hosting/docker' } },
+    '/docs/self-hosting': { redirect: { statusCode: 301, to: '/docs/self-hosting/vercel' } },
   },
 
   future: {
@@ -16,7 +16,6 @@ export default defineNuxtConfig({
     '@nuxtjs/seo',
     '@nuxt/content',
     '@nuxt/scripts',
-    '@nuxthub/core',
     'nuxt-llms',
   ],
 
