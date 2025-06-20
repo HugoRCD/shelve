@@ -20,6 +20,7 @@ const state = reactive<Partial<Schema>>({
 })
 
 const { user } = useUserSession()
+const defaultTeamSlug = useCookie<string>('defaultTeamSlug')
 
 const {
   createTeam,
@@ -39,6 +40,7 @@ async function createTeamAndCompleteOnboarding(event: FormSubmitEvent<Schema>) {
 
     user.value!.onboarding = true
 
+    defaultTeamSlug.value = team.slug
     await selectTeam(team)
   } catch (error) {
     console.error(error)
