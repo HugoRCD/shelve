@@ -85,9 +85,10 @@ export default defineNuxtModule({
   },
   setup(options, nuxt) {
     try {
+      const skipValidation = process.env.SKIP_ENV_VALIDATION
       const isNonVercelCI = process.env.CI && !process.env.VERCEL
-      if (isNonVercelCI) {
-        console.log('Non-Vercel CI environment detected. Skipping environment variable validation.')
+      if (isNonVercelCI || skipValidation) {
+        console.log('Non-Vercel CI environment detected or SKIP_ENV_VALIDATION is set. Skipping environment variable validation.')
         return
       }
       const env = envSchema.parse(process.env)
