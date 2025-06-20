@@ -85,6 +85,11 @@ export default defineNuxtModule({
   },
   setup(options, nuxt) {
     try {
+      const isNonVercelCI = process.env.CI && !process.env.VERCEL
+      if (isNonVercelCI) {
+        console.log('Non-Vercel CI environment detected. Skipping environment variable validation.')
+        return
+      }
       const env = envSchema.parse(process.env)
       
       const isGithubEnabled = !!(env.NUXT_OAUTH_GITHUB_CLIENT_ID && env.NUXT_OAUTH_GITHUB_CLIENT_SECRET)
