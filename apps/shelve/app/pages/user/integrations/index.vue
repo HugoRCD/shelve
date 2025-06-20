@@ -4,6 +4,11 @@ const integrations = [
     name: 'Github',
     description: 'Connect Shelve with Github to sync secrets and more...',
     icon: 'simple-icons:github'
+  },
+  {
+    name: 'Vercel',
+    description: 'Connect Shelve with Vercel to sync secrets and more...',
+    icon: 'simple-icons:vercel'
   }
 ]
 
