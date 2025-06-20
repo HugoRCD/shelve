@@ -7,12 +7,14 @@ interface IntegrationModalProps {
   }
 }
 
-defineProps<IntegrationModalProps>()
+const props = defineProps<IntegrationModalProps>()
 
 const emit = defineEmits<{ 
   close: [boolean]
   connected: [void] 
 }>()
+
+const { on: onIntegrationEvent } = useIntegrationEvents()
 
 function onConnected() {
   emit('connected')
@@ -22,6 +24,19 @@ function onConnected() {
 function onClose() {
   emit('close', false)
 }
+
+onMounted(() => {
+  const unsubscribe = onIntegrationEvent((data) => {
+    const integrationType = props.integration.name.toLowerCase()
+    if (data.type === integrationType && data.action === 'disconnected') {
+      emit('close', false)
+    }
+  })
+
+  onUnmounted(() => {
+    unsubscribe()
+  })
+})
 </script>
 
 <template>

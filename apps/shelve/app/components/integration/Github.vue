@@ -6,6 +6,7 @@ interface Props {
 }
 
 const props = defineProps<Props>()
+const { emit: emitIntegrationEvent } = useIntegrationEvents()
 
 const { data: apps, refresh } = await useFetch('/api/github/apps', {
   method: 'GET'
@@ -39,6 +40,7 @@ function openRemoveModal(installationId: string) {
         }
       })
       await refresh()
+      emitIntegrationEvent({ type: 'github', action: 'disconnected' })
     },
   })
 }
@@ -51,6 +53,7 @@ function handleConnect() {
     if (apps.value && apps.value.length > 0) {
       clearInterval(checkConnection)
       toast.success('GitHub integration connected successfully!')
+      emitIntegrationEvent({ type: 'github', action: 'connected' })
       props.onConnected()
     }
   }, 2000)
