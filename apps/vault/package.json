@@ -16,6 +16,6 @@
   "dependencies": {
     "nuxt": "^3.17.5",
     "vue": "latest",
-    "zod": "3.25.58"
+    "zod": "3.25.67"
   }
 }
