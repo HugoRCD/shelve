@@ -14,22 +14,16 @@ export function getNavigation(where: Where, teamSlug?: string): Navigation[] {
           title: 'Projects',
         },
         {
-          name: 'Members',
-          to: `/${teamSlug}/members`,
+          name: 'Team',
+          to: `/${teamSlug}/team`,
           icon: 'nucleo:users',
-          title: 'Members',
+          title: 'Team',
         },
         {
           name: 'Environments',
           to: `/${teamSlug}/environments`,
           icon: 'nucleo:cloud',
           title: 'Environments',
-        },
-        {
-          name: 'Settings',
-          to: `/${teamSlug}/settings`,
-          icon: 'nucleo:gear-2',
-          title: 'Settings',
         },
       ]
     case 'user':
