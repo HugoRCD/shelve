@@ -15,16 +15,10 @@ const columns: TableColumn<Token>[] = [
   {
     accessorKey: 'createdAt',
     header: 'Created',
-    cell: ({ row }) => {
-      return new Date(row.getValue('createdAt')).toLocaleString()
-    }
   },
   {
     accessorKey: 'updatedAt',
     header: 'Last Used',
-    cell: ({ row }) => {
-      return new Date(row.getValue('updatedAt')).toLocaleString()
-    }
   },
   {
     accessorKey: 'actions',
@@ -128,18 +122,17 @@ useSeoMeta({
       <template #token-cell="{ row }">
         <TokenToggle :token="row.original.token" />
       </template>
+      <template #createdAt-cell="{ row }">
+        <DatePopover :date="row.original.createdAt" label="Created At" />
+      </template>
       <template #updatedAt-cell="{ row }">
         <span class="flex items-center gap-1">
-          {{ row.original.updatedAt }}
+          <DatePopover :date="row.original.updatedAt" label="Last Used" />
           <UTooltip v-if="!isTokenActive( row.original.updatedAt)" text="Token seems to be inactive">
-            <div>
-              <UIcon name="heroicons-outline:clock" class="size-4 text-red-600" />
-            </div>
+            <UIcon name="heroicons-outline:clock" class="size-4 text-red-600" />
           </UTooltip>
           <UTooltip v-else text="Token is active">
-            <div>
-              <UIcon name="heroicons-outline:clock" class="size-4 text-muted" />
-            </div>
+            <UIcon name="heroicons-outline:clock" class="size-4 text-muted" />
           </UTooltip>
         </span>
       </template>

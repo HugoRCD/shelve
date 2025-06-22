@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { h, resolveComponent } from 'vue'
+import { getPaginationRowModel } from '@tanstack/vue-table'
+import type { TableColumn } from '@nuxt/ui'
 import type { Member } from '@types'
 import { TeamRole } from '@types'
 import { ConfirmModal } from '#components'
@@ -13,17 +16,86 @@ const canDelete = computed(() => hasAccess(teamRole.value, TeamRole.OWNER))
 const canUpdate = computed(() => hasAccess(teamRole.value, TeamRole.ADMIN))
 
 const search = ref('')
+const table = useTemplateRef('table')
+const updateLoading = ref(false)
+
+// eslint-disable-next-line @typescript-eslint/naming-convention
+const UButton = resolveComponent('UButton')
+
 
 function changeMemberRole(memberId: number, role: TeamRole) {
+  updateLoading.value = true
   toast.promise(updateMember(memberId, role), {
     loading: 'Updating member role...',
     success: 'Member role updated successfully',
     error: 'Error updating member role',
   })
+  updateLoading.value = false
 }
 
 const overlay = useOverlay()
 const modal = overlay.create(ConfirmModal)
+
+const columns: TableColumn<Member>[] = [
+  {
+    accessorKey: 'avatar',
+    header: 'Avatar',
+  },
+  {
+    accessorKey: 'username',
+    header: 'Username',
+  },
+  {
+    accessorKey: 'email',
+    header: 'Email',
+  },
+  {
+    accessorKey: 'role',
+    header: 'Role',
+  },
+  {
+    accessorKey: 'createdAt',
+    header: ({ column }) => {
+      const isSorted = column.getIsSorted()
+
+      return h(UButton, {
+        color: 'neutral',
+        variant: 'ghost',
+        label: 'Created At',
+        icon: isSorted
+          ? isSorted === 'asc'
+            ? 'i-lucide-arrow-up-narrow-wide'
+            : 'i-lucide-arrow-down-wide-narrow'
+          : 'i-lucide-arrow-up-down',
+        class: '-mx-2.5',
+        onClick: () => column.toggleSorting(column.getIsSorted() === 'asc')
+      })
+    },
+  },
+  {
+    accessorKey: 'updatedAt',
+    header: ({ column }) => {
+      const isSorted = column.getIsSorted()
+
+      return h(UButton, {
+        color: 'neutral',
+        variant: 'ghost',
+        label: 'Updated At',
+        icon: isSorted
+          ? isSorted === 'asc'
+            ? 'i-lucide-arrow-up-narrow-wide'
+            : 'i-lucide-arrow-down-wide-narrow'
+          : 'i-lucide-arrow-up-down',
+        class: '-mx-2.5',
+        onClick: () => column.toggleSorting(column.getIsSorted() === 'asc')
+      })
+    },
+  },
+  {
+    accessorKey: 'actions',
+    header: 'Actions',
+  },
+]
 
 const items = (row: Member) => [
   [
@@ -88,6 +160,18 @@ const items = (row: Member) => [
   ],
 ]
 
+const pagination = ref({
+  pageIndex: 0,
+  pageSize: 20
+})
+
+const sorting = ref([
+  {
+    id: 'createdAt',
+    desc: true,
+  }
+])
+
 useSeoMeta({
   title: 'Members',
 })
@@ -98,33 +182,66 @@ useSeoMeta({
     title="Members"
     description="Manage team members"
   >
-    <ul class="flex flex-col gap-4">
-      <div v-for="member in members" :key="member.id" class="flex flex-col gap-4 border-b last:border-b-0 border-default pb-4 last:pb-0">
-        <div class="flex items-center justify-between gap-2">
-          <div class="flex items-center gap-2">
-            <UAvatar :src="member.user.avatar" :alt="member.user.username" img-class="object-cover" />
-            <div class="flex flex-col gap-1">
-              <div class="flex items-center gap-2">
-                <span class="text-sm font-semibold">{{ member.user.username }}</span>
-                <UBadge size="sm" :label="member.role.toUpperCase()" variant="subtle" :color="member.role === TeamRole.OWNER ? 'primary' : member.role === TeamRole.ADMIN ? 'success' : 'neutral'" />
-              </div>
-              <span class="text-xs text-muted hover:text-highlighted cursor-pointer" @click="copyToClipboard(member.user.email)">
-                {{ member.user.email }}
-              </span>
-            </div>
-          </div>
-          <div class="flex gap-2">
-            <div class="flex-col gap-1 text-xs text-muted hidden sm:flex">
-              <span>CreatedAt: {{ new Date(member.createdAt).toLocaleString() }}</span>
-              <span>UpdatedAt: {{ new Date(member.updatedAt).toLocaleString() }}</span>
-            </div>
-            <UDropdownMenu v-if="canUpdate" :items="items(member)">
-              <UButton variant="ghost" icon="heroicons:ellipsis-horizontal-20-solid" />
-            </UDropdownMenu>
-          </div>
-        </div>
-      </div>
-    </ul>
+    <UTable
+      ref="table"
+      v-model:pagination="pagination"
+      v-model:global-filter="search"
+      v-model:sorting="sorting"
+      :data="members"
+      :columns
+      :loading="updateLoading"
+      :pagination-options="{
+        getPaginationRowModel: getPaginationRowModel()
+      }"
+      :ui="{
+        base: 'table-fixed border-separate border-spacing-0',
+        thead: '[&>tr]:bg-elevated/50 [&>tr]:after:content-none',
+        tbody: '[&>tr]:last:[&>td]:border-b-0',
+        th: 'first:rounded-l-lg last:rounded-r-lg border-y border-default first:border-l last:border-r',
+        td: 'border-b border-default'
+      }"
+    >
+      <template #avatar-cell="{ row }">
+        <UAvatar :src="row.original.user.avatar" :alt="row.original.user.username" size="sm" img-class="object-cover" />
+      </template>
+      <template #username-cell="{ row }">
+        <span class="font-semibold">
+          {{ row.original.user.username }}
+        </span>
+      </template>
+      <template #email-cell="{ row }">
+        <span class="text-muted hover:text-highlighted cursor-pointer" @click="copyToClipboard(row.original.user.email)">
+          {{ row.original.user.email }}
+        </span>
+      </template>
+      <template #role-cell="{ row }">
+        <UBadge 
+          :label="row.original.role.toUpperCase()" 
+          :color="row.original.role === TeamRole.OWNER ? 'primary' : row.original.role === TeamRole.ADMIN ? 'success' : 'neutral'" 
+          variant="subtle" 
+        />
+      </template>
+      <template #createdAt-cell="{ row }">
+        <DatePopover :date="row.original.createdAt" label="Created At" />
+      </template>
+      <template #updatedAt-cell="{ row }">
+        <DatePopover :date="row.original.updatedAt" label="Updated At" />
+      </template>
+      <template #actions-cell="{ row }">
+        <UDropdownMenu v-if="canUpdate && row.original.role !== TeamRole.OWNER" :items="items(row.original)">
+          <UButton variant="ghost" icon="heroicons:ellipsis-horizontal-20-solid" />
+        </UDropdownMenu>
+      </template>
+    </UTable>
+    
+    <div v-if="(table?.tableApi?.getFilteredRowModel().rows.length || 0) > pagination.pageSize" class="flex justify-center pt-4">
+      <UPagination
+        :default-page="(table?.tableApi?.getState().pagination.pageIndex || 0) + 1"
+        :items-per-page="table?.tableApi?.getState().pagination.pageSize"
+        :total="table?.tableApi?.getFilteredRowModel().rows.length"
+        @update:page="(p) => table?.tableApi?.setPageIndex(p - 1)"
+      />
+    </div>
 
     <template #actions>
       <template v-if="canUpdate">
