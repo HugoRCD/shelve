@@ -8,5 +8,6 @@
         </UPage>
       </UContainer>
     </UMain>
+    <LayoutFooter />
   </div>
 </template>
