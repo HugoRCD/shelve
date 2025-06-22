@@ -1,7 +1,8 @@
-import { AuthType } from '@types'
+import type { User } from '@types'
+import type { H3Event } from 'h3'
 import { gt } from 'drizzle-orm'
-import { eq, and } from '../utils/drizzle'
 import { users } from '../database/schema'
+import { handleEmailUser } from './user'
 
 const db = useDrizzle()
 const OTP_EXPIRY_MINUTES = 10
@@ -10,9 +11,11 @@ export function generateOTPCode(): string {
   return Math.floor(100000 + Math.random() * 900000).toString()
 }
 
-export async function generateOTPForUser(email: string): Promise<string> {
+export async function generateOTPForEmail(email: string, event: H3Event): Promise<string> {
   const code = generateOTPCode()
   const expiresAt = new Date(Date.now() + OTP_EXPIRY_MINUTES * 60 * 1000)
+
+  await handleEmailUser(email, event)
 
   await db
     .update(users)
@@ -25,7 +28,7 @@ export async function generateOTPForUser(email: string): Promise<string> {
   return code
 }
 
-export async function verifyOTPForUser(email: string, code: string): Promise<{ success: boolean; message: string; user?: any }> {
+export async function verifyOTPForUser(email: string, code: string): Promise<{ success: boolean; message: string; user?: User }> {
   const user = await db
     .select()
     .from(users)
@@ -53,31 +56,6 @@ export async function verifyOTPForUser(email: string, code: string): Promise<{ s
   return { success: true, message: 'OTP verified successfully', user: user[0] }
 }
 
-export async function findOrCreateUserByEmail(email: string): Promise<any> {
-  const existingUser = await db
-    .select()
-    .from(users)
-    .where(eq(users.email, email))
-    .limit(1)
-
-  if (existingUser.length) {
-    return existingUser[0]
-  }
-
-  const username = email.split('@')[0] + Math.floor(Math.random() * 1000)
-  
-  const newUser = await db
-    .insert(users)
-    .values({
-      email,
-      username,
-      authType: AuthType.EMAIL,
-      avatar: 'https://i.imgur.com/6VBx3io.png',
-    })
-    .returning()
-
-  return newUser[0]
-}
 
 export async function clearExpiredOTPs(): Promise<void> {
   await db

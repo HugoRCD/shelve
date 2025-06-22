@@ -1,4 +1,3 @@
-import { verifyOTPForUser } from '../../services/otp'
 import { userSchema } from '../../database/zod'
 
 export default defineEventHandler(async (event) => {
@@ -16,14 +15,16 @@ export default defineEventHandler(async (event) => {
       return sendRedirect(event, `/login?error=invalid-otp&email=${encodeURIComponent(email as string)}`)
     }
 
+    const { user, isNewUser } = await handleEmailUser(email as string, event)
+
     const session = {
-      user: userSchema.parse(result.user),
+      user: userSchema.parse(user),
       loggedInAt: new Date(),
     }
 
     await setUserSession(event, session)
 
-    return sendRedirect(event, result.user!.onboarding ? '/' : '/onboarding')
+    return sendRedirect(event, isNewUser ? '/onboarding' : '/')
   } catch (error) {
     console.error('OTP verification error:', error)
     return sendRedirect(event, `/login?error=otp-verification&email=${encodeURIComponent(email as string)}`)

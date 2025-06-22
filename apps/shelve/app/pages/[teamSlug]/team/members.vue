@@ -175,6 +175,10 @@ const sorting = ref([
 useSeoMeta({
   title: 'Members',
 })
+
+definePageMeta({
+  title: 'Members',
+})
 </script>
 
 <template>

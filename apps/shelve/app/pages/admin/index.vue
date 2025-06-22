@@ -249,14 +249,18 @@ useSeoMeta({
           <UIcon 
             v-if="row.original.authType === AuthType.GITHUB" 
             name="i-simple-icons-github" 
-            class="h-5 w-5 text-foreground"
+            class="size-5"
           />
           <UIcon 
             v-else-if="row.original.authType === AuthType.GOOGLE" 
             name="i-simple-icons-google" 
-            class="h-5 w-5 text-foreground"
+            class="size-5"
           />
-          <span v-else class="text-xs text-muted">{{ row.original.authType }}</span>
+          <UIcon 
+            v-else-if="row.original.authType === AuthType.EMAIL" 
+            name="i-lucide-mail" 
+            class="size-5"
+          />
         </div>
       </template>
       <template #onboarding-cell="{ row }">

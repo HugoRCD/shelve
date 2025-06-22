@@ -8,7 +8,7 @@ export default defineEventHandler(async (event) => {
   try {
     const { email } = await readValidatedBody(event, bodySchema.parse)
     
-    const otpCode = await generateOTPForUser(email)
+    const otpCode = await generateOTPForEmail(email, event)
 
     const emailService = new EmailService(event)
     const redirectUrl = `${getRequestURL(event).origin}/auth/otp?email=${encodeURIComponent(email)}&otp=${otpCode}`

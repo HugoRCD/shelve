@@ -21,6 +21,10 @@ useSeoMeta({
   title: () => project.value?.name,
   titleTemplate: () => `Settings - %s project - Shelve`
 })
+
+definePageMeta({
+  title: 'Project Settings',
+})
 </script>
 
 <template>
