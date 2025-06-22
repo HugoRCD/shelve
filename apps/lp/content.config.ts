@@ -225,6 +225,18 @@ export default defineContentConfig({
           }))
         })
       })
-    })
+    }),
+    legal: defineCollection(
+      asSeoCollection({
+        type: 'page',
+        source: 'legal/**/*.md',
+        schema: z.object({
+          title: z.string().nonempty(),
+          description: z.string().nonempty(),
+          lastUpdated: z.string(),
+          effectiveDate: z.string()
+        })
+      })
+    )
   }
 })

@@ -80,6 +80,10 @@ defineShortcuts({
     copyToClipboard(data.value!, 'llms.txt copied!')
   }
 })
+
+useSeoMeta({
+  titleTemplate: '%s - Shelve',
+})
 </script>
 
 <template>

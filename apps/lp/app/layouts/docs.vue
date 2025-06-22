@@ -25,5 +25,6 @@ const docsNavigation = computed(() => navigation.value.find(item => item.path ==
         </UPage>
       </UContainer>
     </UMain>
+    <LayoutFooter />
   </div>
 </template>
