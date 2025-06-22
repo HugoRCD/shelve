@@ -73,13 +73,13 @@ export function useAppCommands() {
     {
       id: 'settings-team',
       label: 'Team Settings',
-      icon: 'lucide:users',
+      icon: 'lucide:settings',
       description: 'Manage team settings',
       action: () => {
-        navigateTo(`/${currentTeam.value?.slug}/settings`)
+        navigateTo(`/${currentTeam.value?.slug}/team/settings`)
       },
       keywords: ['team', 'organization', 'settings', 'preferences'],
-      active: route.path.includes('/settings') && !route.path.includes('/user/settings')
+      active: route.path.includes('/team/settings')
     },
     {
       id: 'settings-api',

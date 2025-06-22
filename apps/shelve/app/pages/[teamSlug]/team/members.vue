@@ -9,9 +9,10 @@ import { ConfirmModal } from '#components'
 const { updateMember, removeMember } = useTeamsService()
 
 const currentTeam = useTeam()
-const members = computed(() => currentTeam.value?.members.filter((member) => member.user.username.toLowerCase().includes(search.value.toLowerCase())))
-
 const teamRole = useTeamRole()
+
+// Members logic
+const members = computed(() => currentTeam.value?.members.filter((member) => member.user.username.toLowerCase().includes(search.value.toLowerCase())))
 const canDelete = computed(() => hasAccess(teamRole.value, TeamRole.OWNER))
 const canUpdate = computed(() => hasAccess(teamRole.value, TeamRole.ADMIN))
 
@@ -21,7 +22,6 @@ const updateLoading = ref(false)
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 const UButton = resolveComponent('UButton')
-
 
 function changeMemberRole(memberId: number, role: TeamRole) {
   updateLoading.value = true
@@ -178,10 +178,7 @@ useSeoMeta({
 </script>
 
 <template>
-  <PageSection
-    title="Members"
-    description="Manage team members"
-  >
+  <div>
     <UTable
       ref="table"
       v-model:pagination="pagination"
@@ -233,7 +230,7 @@ useSeoMeta({
         </UDropdownMenu>
       </template>
     </UTable>
-    
+      
     <div v-if="(table?.tableApi?.getFilteredRowModel().rows.length || 0) > pagination.pageSize" class="flex justify-center pt-4">
       <UPagination
         :default-page="(table?.tableApi?.getState().pagination.pageIndex || 0) + 1"
@@ -243,11 +240,9 @@ useSeoMeta({
       />
     </div>
 
-    <template #actions>
-      <template v-if="canUpdate">
-        <TeamAddMember v-if="members" :members />
-        <UInput v-model="search" size="sm" label="Search" placeholder="Search a user" icon="heroicons:magnifying-glass-20-solid" />
-      </template>
-    </template>
-  </PageSection>
-</template>
+    <Teleport defer to="#action-items">
+      <TeamAddMember v-if="members && canUpdate" :members />
+      <UInput v-model="search" size="sm" label="Search" placeholder="Search a user" icon="heroicons:magnifying-glass-20-solid" />
+    </Teleport>
+  </div>
+</template> 

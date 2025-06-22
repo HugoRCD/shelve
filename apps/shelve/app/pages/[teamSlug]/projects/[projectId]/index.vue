@@ -10,6 +10,7 @@ definePageMeta({
 })
 
 const route = useRoute()
+const router = useRouter()
 const projectId = route.params.projectId as string
 const teamSlug = route.params.teamSlug as string
 
@@ -22,13 +23,25 @@ const items = [
   {
     label: 'Environment Variables',
     icon: 'lucide:container',
-    to: `/${teamSlug}/projects/${projectId}/variables`
-  }, {
-    label: 'Settings',
+    value: 'variables'
+  },
+  {
+    label: 'Settings', 
     icon: 'heroicons:cog',
-    to: `/${teamSlug}/projects/${projectId}/settings`
+    value: 'settings'
   },
 ]
+
+const activeTab = computed({
+  get() {
+    return route.path.split('/').pop() || 'variables'
+  },
+  set(tab) {
+    router.push({
+      path: `/${teamSlug}/projects/${projectId}/${tab}`
+    })
+  }
+})
 
 useSeoMeta({
   title: () => project.value?.name,
@@ -39,22 +52,7 @@ useSeoMeta({
 <template>
   <div class="flex flex-col">
     <ProjectMainSection />
-    <div class="mt-4">
-      <UNavigationMenu
-        color="neutral"
-        orientation="horizontal"
-        :items
-        class="hidden md:block"
-      />
-      <UNavigationMenu
-        highlight
-        variant="link"
-        color="neutral"
-        orientation="vertical"
-        :items
-        class="md:hidden"
-      />
-    </div>
+    <UTabs v-model="activeTab" :items variant="link" class="w-full mt-4 mb-2" />
     <NuxtPage />
   </div>
 </template>
