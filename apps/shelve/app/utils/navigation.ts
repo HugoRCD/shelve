@@ -15,7 +15,7 @@ export function getNavigation(where: Where, teamSlug?: string): Navigation[] {
         },
         {
           name: 'Team',
-          to: `/${teamSlug}/team`,
+          to: `/${teamSlug}/team/members`,
           icon: 'nucleo:users',
           title: 'Team',
         },
@@ -29,12 +29,6 @@ export function getNavigation(where: Where, teamSlug?: string): Navigation[] {
     case 'user':
       return [
         {
-          name: 'Profile',
-          to: '/user/profile',
-          icon: 'nucleo:user',
-          title: 'Profile',
-        },
-        {
           name: 'API Tokens',
           to: '/user/tokens',
           icon: 'nucleo:key',
@@ -45,12 +39,6 @@ export function getNavigation(where: Where, teamSlug?: string): Navigation[] {
           to: '/user/integrations',
           icon: 'nucleo:algorithm',
           title: 'Integrations',
-        },
-        {
-          name: 'Settings',
-          to: '/user/settings',
-          icon: 'nucleo:gear-2',
-          title: 'Settings',
         },
       ]
     case 'admin':

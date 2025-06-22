@@ -1,12 +1,43 @@
 <script setup lang="ts">
-const { loggedIn, user } = useUserSession()
+import type { DropdownMenuItem } from '@nuxt/ui'
 
-const items = [
+const { loggedIn, user } = useUserSession()
+const colorMode = useColorMode()
+
+const items = computed<DropdownMenuItem[][]>(() => [
   [
     {
-      label: user.value?.email || '',
-      slot: 'account',
-      disabled: true
+      label: user.value?.username || '',
+      avatar: {
+        src: user.value?.avatar || ''
+      },
+      type: 'label'
+    }
+  ],
+  [
+    {
+      label: 'Profile',
+      icon: 'nucleo:user',
+      to: '/user/profile'
+    },
+    {
+      label: 'API Tokens',
+      icon: 'nucleo:key',
+      to: '/user/tokens'
+    },
+    {
+      label: 'Settings',
+      icon: 'nucleo:gear-2',
+      to: '/user/settings'
+    }
+  ],
+  [
+    {
+      label: `Turn ${colorMode.value === 'dark' ? 'Light' : 'Dark'} mode`,
+      icon: colorMode.value === 'dark' ? 'lucide:sun' : 'lucide:moon',
+      onSelect: () => {
+        colorMode.value = colorMode.value === 'dark' ? 'light' : 'dark'
+      }
     }
   ],
   [
@@ -16,28 +47,22 @@ const items = [
       onSelect: async () => await useLogout()
     }
   ]
-]
+])
 </script>
 
 <template>
-  <div class="flex items-center justify-center">
-    <UDropdownMenu
-      v-if="loggedIn"
-      :items
-    >
-      <UAvatar :src="user.avatar" :alt="user.username" size="sm" class="cursor-pointer" />
+  <UDropdownMenu
+    v-if="loggedIn"
+    :items
 
-      <template #account="{ item }">
-        <div class="text-left">
-          <p>
-            Signed in as
-          </p>
-          <p class="truncate font-medium">
-            {{ item.label }}
-          </p>
-        </div>
-      </template>
-    </UDropdownMenu>
-    <UButton v-else to="/login" label="Login" variant="soft" />
-  </div>
+    :content="{
+      align: 'end',
+      side: 'bottom',
+    }"
+    :ui="{
+      content: 'w-48'
+    }"
+  >
+    <UAvatar :src="user.avatar" :alt="user.username" size="sm" />
+  </UDropdownMenu>
 </template>

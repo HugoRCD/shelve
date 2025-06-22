@@ -19,7 +19,7 @@ async function onSubmit(event: FormSubmitEvent<UpdateProjectSchema>) {
 
 useSeoMeta({
   title: () => project.value?.name,
-  titleTemplate: () => `%s project - Settings - Shelve`
+  titleTemplate: () => `Settings - %s project - Shelve`
 })
 </script>
 
