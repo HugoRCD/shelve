@@ -27,9 +27,9 @@ function open() {
     :disabled="loading"
     external
     :icon
+    block
     class="rounded-none"
+    :label
     @click="open"
-  >
-    {{ label }}
-  </UButton>
+  />
 </template>

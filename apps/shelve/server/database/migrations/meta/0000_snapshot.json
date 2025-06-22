@@ -1,5 +1,5 @@
 {
-  "id": "1b03115c-3c00-4ed4-8aa3-19a924e529e6",
+  "id": "95a434ef-9532-445e-bb01-797820eabdf3",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -852,6 +852,18 @@
           "notNull": true,
           "default": false
         },
+        "otpCode": {
+          "name": "otpCode",
+          "type": "varchar(6)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "otpExpiresAt": {
+          "name": "otpExpiresAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
         "updatedAt": {
           "name": "updatedAt",
           "type": "timestamp",
@@ -924,7 +936,7 @@
         },
         "value": {
           "name": "value",
-          "type": "varchar(2000)",
+          "type": "varchar(4000)",
           "primaryKey": false,
           "notNull": true
         },
@@ -1142,7 +1154,8 @@
       "schema": "public",
       "values": [
         "github",
-        "google"
+        "google",
+        "email"
       ]
     },
     "public.roles": {

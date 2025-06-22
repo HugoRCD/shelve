@@ -6,6 +6,7 @@ export enum Role {
 export enum AuthType {
   GITHUB = 'github',
   GOOGLE = 'google',
+  EMAIL = 'email',
 }
 
 export type User = {
@@ -14,7 +15,7 @@ export type User = {
   email: string;
   avatar: string;
   role: 'admin' | 'user';
-  authType: 'github' | 'google';
+  authType: 'github' | 'google' | 'email';
   onboarding: boolean;
   cliInstalled: boolean;
   createdAt: Date;

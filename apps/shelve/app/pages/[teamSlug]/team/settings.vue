@@ -46,6 +46,10 @@ const open = ref(false)
 useSeoMeta({
   title: 'Settings',
 })
+
+definePageMeta({
+  title: 'Settings',
+})
 </script>
 
 <template>
