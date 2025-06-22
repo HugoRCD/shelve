@@ -16,6 +16,14 @@ const columns = [
     header: 'Name',
   },
   {
+    accessorKey: 'createdAt',
+    header: 'Created At',
+  },
+  {
+    accessorKey: 'updatedAt',
+    header: 'Updated At',
+  },
+  {
     accessorKey: 'actions',
     header: 'Actions',
   }
@@ -109,6 +117,12 @@ useSeoMeta({
     >
       <template #name-cell="{ row }">
         {{ capitalize(row.original.name) }}
+      </template>
+      <template #createdAt-cell="{ row }">
+        <DatePopover :date="row.original.createdAt" label="Created At" />
+      </template>
+      <template #updatedAt-cell="{ row }">
+        <DatePopover :date="row.original.updatedAt" label="Updated At" />
       </template>
       <template #actions-cell="{ row }">
         <div class="flex gap-2">
