@@ -5,15 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1744122796288,
-      "tag": "0000_rich_avengers",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1744130316941,
-      "tag": "0001_deep_ricochet",
+      "when": 1750603936403,
+      "tag": "0000_tired_anthem",
       "breakpoints": true
     }
   ]

@@ -8,7 +8,7 @@ declare module '#auth-utils' {
     username: string
     email: string
     avatar: string
-    authType: 'github' | 'google'
+    authType: 'github' | 'google' | 'email'
     onboarding: boolean
     cliInstalled: boolean
     role: 'admin' | 'user'

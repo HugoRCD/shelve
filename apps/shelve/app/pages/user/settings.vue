@@ -68,6 +68,10 @@ watch(reduceMotion, () => {
 useSeoMeta({
   title: 'Settings',
 })
+
+definePageMeta({
+  title: 'User Settings',
+})
 </script>
 
 <template>

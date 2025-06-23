@@ -1,8 +1,11 @@
-import { boolean, pgEnum, pgTable, varchar, index, uniqueIndex, bigint, integer } from 'drizzle-orm/pg-core'
+import { boolean, pgEnum, pgTable, varchar, index, uniqueIndex, bigint, integer, timestamp } from 'drizzle-orm/pg-core'
 import { relations } from 'drizzle-orm'
-import { AuthType, Role, TeamRole } from '@types' // in prod
-// import { AuthType, Role, TeamRole } from '../../../../packages/types' // in dev
-import { timestamps } from './column.helpers'
+import { AuthType, Role, TeamRole } from '@types'
+
+const timestamps = {
+  updatedAt: timestamp().notNull().$onUpdate(() => new Date()),
+  createdAt: timestamp().defaultNow().notNull(),
+}
 
 const DEFAULT_AVATAR = 'https://i.imgur.com/6VBx3io.png'
 const DEFAULT_LOGO = 'https://github.com/HugoRCD/shelve/blob/main/assets/default.webp?raw=true'
@@ -21,6 +24,7 @@ export const rolesEnum = pgEnum('roles', [
 export const authTypesEnum = pgEnum('auth_types', [
   AuthType.GITHUB,
   AuthType.GOOGLE,
+  AuthType.EMAIL,
 ])
 
 export const users = pgTable('users', {
@@ -32,6 +36,8 @@ export const users = pgTable('users', {
   authType: authTypesEnum().notNull(),
   onboarding: boolean().default(false).notNull(),
   cliInstalled: boolean().default(false).notNull(),
+  otpCode: varchar({ length: 6 }),
+  otpExpiresAt: timestamp(),
   ...timestamps,
 })
 

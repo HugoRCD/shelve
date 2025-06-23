@@ -46,15 +46,14 @@ const open = ref(false)
 useSeoMeta({
   title: 'Settings',
 })
+
+definePageMeta({
+  title: 'Settings',
+})
 </script>
 
 <template>
-  <PageSection
-    v-if="team"
-    title="Team Settings"
-    description="Manage team settings"
-    :image="team.logo"
-  >
+  <div v-if="team">
     <form class="flex flex-col" @submit.prevent="updateCurrentTeam">
       <div class="flex flex-col gap-4">
         <div class="max-w-sm space-y-4">
@@ -108,6 +107,5 @@ useSeoMeta({
         </template>
       </UCollapsible>
     </div>
-  </PageSection>
-</template>
-
+  </div>
+</template> 

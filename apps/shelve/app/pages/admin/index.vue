@@ -29,6 +29,7 @@ const deleteLoading = ref(false)
 // eslint-disable-next-line @typescript-eslint/naming-convention
 const UButton = resolveComponent('UButton')
 
+
 async function changeUserRole(id: number, role: string) {
   try {
     updateLoading.value = true
@@ -104,9 +105,6 @@ const columns: TableColumn<User>[] = [
         onClick: () => column.toggleSorting(column.getIsSorted() === 'asc')
       })
     },
-    cell: ({ row }) => {
-      return new Date(row.getValue('createdAt')).toLocaleString()
-    }
   },
   {
     accessorKey: 'updatedAt',
@@ -126,9 +124,6 @@ const columns: TableColumn<User>[] = [
         onClick: () => column.toggleSorting(column.getIsSorted() === 'asc')
       })
     },
-    cell: ({ row }) => {
-      return new Date(row.getValue('updatedAt')).toLocaleString()
-    }
   },
   {
     accessorKey: 'actions',
@@ -250,13 +245,35 @@ useSeoMeta({
         <UBadge :label="row.original.role.toUpperCase()" :color="row.original.role === Role.ADMIN ? 'primary' : 'neutral'" variant="subtle" />
       </template>
       <template #authType-cell="{ row }">
-        <UBadge :label="row.original.authType.toUpperCase()" :color="row.original.authType === AuthType.GITHUB ? 'primary' : 'neutral'" variant="subtle" />
+        <div class="flex items-center justify-center">
+          <UIcon 
+            v-if="row.original.authType === AuthType.GITHUB" 
+            name="i-simple-icons-github" 
+            class="size-5"
+          />
+          <UIcon 
+            v-else-if="row.original.authType === AuthType.GOOGLE" 
+            name="i-simple-icons-google" 
+            class="size-5"
+          />
+          <UIcon 
+            v-else-if="row.original.authType === AuthType.EMAIL" 
+            name="i-lucide-mail" 
+            class="size-5"
+          />
+        </div>
       </template>
       <template #onboarding-cell="{ row }">
         <UBadge :label="row.original.onboarding ? 'Yes' : 'No'" :color="row.original.onboarding ? 'success' : 'neutral'" variant="subtle" />
       </template>
       <template #cliInstalled-cell="{ row }">
         <UBadge :label="row.original.cliInstalled ? 'Yes' : 'No'" :color="row.original.cliInstalled ? 'success' : 'neutral'" variant="subtle" />
+      </template>
+      <template #createdAt-cell="{ row }">
+        <DatePopover :date="row.original.createdAt" label="Created At" />
+      </template>
+      <template #updatedAt-cell="{ row }">
+        <DatePopover :date="row.original.updatedAt" label="Updated At" />
       </template>
       <template #actions-cell="{ row }">
         <UDropdownMenu :items="items(row.original)">
@@ -266,6 +283,7 @@ useSeoMeta({
     </UTable>
     <div class="flex justify-center pt-4">
       <UPagination
+        v-if="(table?.tableApi?.getFilteredRowModel().rows.length || 0) > pagination.pageSize"
         :default-page="(table?.tableApi?.getState().pagination.pageIndex || 0) + 1"
         :items-per-page="table?.tableApi?.getState().pagination.pageSize"
         :total="table?.tableApi?.getFilteredRowModel().rows.length"

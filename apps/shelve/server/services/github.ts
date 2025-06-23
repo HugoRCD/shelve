@@ -240,8 +240,8 @@ export class GithubService {
     }
   }
 
-  async getUserApps(userId: number): Promise<GithubApp[]> {
-    return await useDrizzle().query.githubApp.findMany({
+  getUserApps(userId: number) {
+    return useDrizzle().query.githubApp.findMany({
       where: eq(tables.githubApp.userId, userId)
     })
   }

@@ -1,1 +1,0 @@
-ALTER TABLE "variable_values" ALTER COLUMN "value" SET DATA TYPE varchar(4000);
