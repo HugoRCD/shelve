@@ -174,8 +174,7 @@ defineShortcuts({
 }
 
 .search-container {
-  @apply flex items-center size-full p-1;
-  width: 320px;
+  @apply flex items-center size-full p-1 w-[320px] sm:w-[400px];
 }
 
 .nav-item {
