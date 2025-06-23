@@ -18,7 +18,7 @@ const integrations = [
         name: 'Vercel',
         description: 'Sync environment variables with Vercel projects',
         icon: 'simple-icons:vercel',
-        status: 'soon'
+        status: 'available'
       }
     ]
   },
@@ -40,9 +40,14 @@ const { data: githubApps, refresh: refreshGithub } = await useFetch('/api/github
   method: 'GET'
 })
 
+const { data: vercelIntegrations, refresh: refreshVercel } = await useFetch('/api/vercel/integrations', {
+  method: 'GET'
+})
+
 const { on: onIntegrationEvent } = useIntegrationEvents()
 
 const isGithubConnected = computed(() => githubApps.value && githubApps.value.length > 0)
+const isVercelConnected = computed(() => vercelIntegrations.value && vercelIntegrations.value.length > 0)
 
 onMounted(() => {
   const integration = route.query.integration as string
@@ -62,9 +67,26 @@ onMounted(() => {
     router.replace({ query: {} })
   }
 
+  if (integration === 'vercel' && setup === 'success') {
+    toast.success('Vercel integration connected successfully!', {
+      description: 'You can now sync your environment variables with Vercel projects',
+      duration: 5000,
+      action: {
+        label: 'Got it',
+        onClick: () => {}
+      }
+    })
+    
+    const router = useRouter()
+    router.replace({ query: {} })
+  }
+
   const unsubscribe = onIntegrationEvent((data) => {
     if (data.type === 'github') {
       refreshGithub()
+    }
+    if (data.type === 'vercel') {
+      refreshVercel()
     }
   })
 
@@ -87,9 +109,7 @@ function openIntegrationModal(integration: any) {
   
   modal.open({
     integration,
-    onConnected() {
-      // Events are now handled globally via useIntegrationEvents
-    },
+    onConnected() {},
   })
 }
 
@@ -97,6 +117,8 @@ function getConnectionStatus(integrationName: string) {
   switch (integrationName.toLowerCase()) {
     case 'github':
       return isGithubConnected.value
+    case 'vercel':
+      return isVercelConnected.value
     default:
       return false
   }
@@ -139,7 +161,7 @@ useSeoMeta({
           </p>
         </div>
         
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div
             v-for="integration in category.items"
             :key="integration.name"

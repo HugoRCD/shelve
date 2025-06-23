@@ -69,6 +69,10 @@ onMounted(() => {
         v-if="integration.name.toLowerCase() === 'github'"
         :on-connected 
       />
+      <IntegrationVercel 
+        v-if="integration.name.toLowerCase() === 'vercel'"
+        :on-connected 
+      />
     </template>
   </UModal>
 </template> 

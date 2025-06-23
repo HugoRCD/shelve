@@ -44,6 +44,8 @@ const authProvidersSchema = z.object({
   NUXT_OAUTH_GITHUB_CLIENT_SECRET: z.string().optional(),
   NUXT_OAUTH_GOOGLE_CLIENT_ID: z.string().optional(),
   NUXT_OAUTH_GOOGLE_CLIENT_SECRET: z.string().optional(),
+  NUXT_OAUTH_VERCEL_CLIENT_ID: z.string().optional(),
+  NUXT_OAUTH_VERCEL_CLIENT_SECRET: z.string().optional(),
   NUXT_PRIVATE_GITHUB_PRIVATE_KEY: z.string().optional(),
 })
 
@@ -64,6 +66,7 @@ export const envSchema = requiredCoreSchema
   .superRefine((data, ctx) => {
     validateOAuthPair(data, ctx, 'NUXT_OAUTH_GITHUB_CLIENT_ID', 'NUXT_OAUTH_GITHUB_CLIENT_SECRET', 'GitHub')
     validateOAuthPair(data, ctx, 'NUXT_OAUTH_GOOGLE_CLIENT_ID', 'NUXT_OAUTH_GOOGLE_CLIENT_SECRET', 'Google')
+    validateOAuthPair(data, ctx, 'NUXT_OAUTH_VERCEL_CLIENT_ID', 'NUXT_OAUTH_VERCEL_CLIENT_SECRET', 'Vercel')
   })
 
 function handleValidationError(error: z.ZodError) {
@@ -95,17 +98,20 @@ export default defineNuxtModule({
       
       const isGithubEnabled = !!(env.NUXT_OAUTH_GITHUB_CLIENT_ID && env.NUXT_OAUTH_GITHUB_CLIENT_SECRET)
       const isGoogleEnabled = !!(env.NUXT_OAUTH_GOOGLE_CLIENT_ID && env.NUXT_OAUTH_GOOGLE_CLIENT_SECRET)
+      const isVercelEnabled = !!(env.NUXT_OAUTH_VERCEL_CLIENT_ID && env.NUXT_OAUTH_VERCEL_CLIENT_SECRET)
       const isEmailEnabled = !!env.NUXT_PRIVATE_RESEND_API_KEY
       
       nuxt.options.appConfig.auth = {
         isGoogleEnabled,
         isGithubEnabled,
+        isVercelEnabled,
         isEmailEnabled
       }
       
       console.log('🔐 Auth configuration validated:')
       console.log(`  GitHub OAuth: ${isGithubEnabled ? '✅' : '❌'}`)
       console.log(`  Google OAuth: ${isGoogleEnabled ? '✅' : '❌'}`)
+      console.log(`  Vercel OAuth: ${isVercelEnabled ? '✅' : '❌'}`)
       console.log(`  Email Service: ${isEmailEnabled ? '✅' : '❌'}`)
     } catch (error) {
       if (error instanceof z.ZodError) {

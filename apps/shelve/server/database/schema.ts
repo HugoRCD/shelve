@@ -49,6 +49,14 @@ export const githubApp = pgTable('github_app', {
   ...timestamps,
 })
 
+export const vercelIntegration = pgTable('vercel_integration', {
+  id: bigint({ mode: 'number' }).primaryKey().generatedByDefaultAsIdentity(),
+  configurationId: varchar({ length: 50 }).unique().notNull(),
+  accessToken: varchar({ length: 800 }).notNull(),
+  userId: bigint({ mode: 'number' }).references(() => users.id, { onDelete: 'cascade' }).notNull(),
+  ...timestamps,
+})
+
 export const teams = pgTable('teams', {
   id: bigint({ mode: 'number' }).primaryKey().generatedByDefaultAsIdentity(),
   name: varchar({ length: 50 }).notNull(),
@@ -201,5 +209,12 @@ export const variableValuesRelations = relations(variableValues, ({ one }) => ({
   environment: one(environments, {
     fields: [variableValues.environmentId],
     references: [environments.id],
+  })
+}))
+
+export const vercelIntegrationRelations = relations(vercelIntegration, ({ one }) => ({
+  user: one(users, {
+    fields: [vercelIntegration.userId],
+    references: [users.id],
   })
 }))

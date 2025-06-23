@@ -46,6 +46,10 @@ export default defineNuxtConfig({
         clientId: '',
         clientSecret: '',
       },
+      vercel: {
+        clientId: '',
+        clientSecret: '',
+      },
     }
   },
 
