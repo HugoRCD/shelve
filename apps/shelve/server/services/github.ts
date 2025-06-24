@@ -23,18 +23,22 @@ function cryptoBoxSeal(
 ): Uint8Array {
   const ephemeralKeyPair = nacl.box.keyPair()
   const nonce = deriveNonce(ephemeralKeyPair.publicKey, recipientPublicKey)
+
   const encryptedMessage = nacl.box(
     message,
     nonce,
     recipientPublicKey,
     ephemeralKeyPair.secretKey
   )
-  const sealedBox = new Uint8Array(
-    ephemeralKeyPair.publicKey.length + encryptedMessage.length
-  )
-  sealedBox.set(ephemeralKeyPair.publicKey, 0)
-  sealedBox.set(encryptedMessage, ephemeralKeyPair.publicKey.length)
-  return sealedBox
+
+  if (!encryptedMessage) {
+    throw new Error('Failed to encrypt message')
+  }
+
+  return new Uint8Array([
+    ...ephemeralKeyPair.publicKey,
+    ...encryptedMessage
+  ])
 }
 
 export class GithubService {
@@ -58,7 +62,6 @@ export class GithubService {
 
     try {
       const privateKeyBuffer = Buffer.from(base64PrivateKey, 'base64')
-
       return privateKeyBuffer.toString('utf8')
     } catch (error) {
       console.error('Error decoding private key:', error)
@@ -105,11 +108,7 @@ export class GithubService {
     const appJWT = this.getAppJWT()
 
     try {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      const { token, expires_at } = await $fetch<{
-        token: string
-        expires_at: string
-      }>(`${this.GITHUB_API}/app/installations/${installationId}/access_tokens`, {
+      const { token } = await $fetch<{ token: string; expires_at: string }>(`${this.GITHUB_API}/app/installations/${installationId}/access_tokens`, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${appJWT}`,
@@ -128,11 +127,9 @@ export class GithubService {
   })
 
   getUserRepos = cachedFunction(async (event, userId: number): Promise<GitHubRepo[]> => {
-    const installation = await useDrizzle().query.githubApp.findFirst({
-      where: eq(tables.githubApp.userId, userId)
-    })
-
-    if (!installation) {
+    const installation = await this.getIntegrations(userId)
+    
+    if (!installation.length) {
       throw createError({
         statusCode: 404,
         statusMessage: 'GitHub App installation not found'
@@ -140,16 +137,14 @@ export class GithubService {
     }
 
     try {
-      const token = await this.getInstallationToken(installation.installationId)
+      const token = await this.getInstallationToken(installation[0].installationId)
 
-      const response = await $fetch<{
-          repositories: GitHubRepo[]
-        }>(`${this.GITHUB_API}/installation/repositories?per_page=100`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            Accept: 'application/vnd.github.v3+json'
-          }
-        })
+      const response = await $fetch<{ repositories: GitHubRepo[] }>(`${this.GITHUB_API}/installation/repositories?per_page=100`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: 'application/vnd.github.v3+json'
+        }
+      })
 
       return response.repositories
     } catch (error: any) {
@@ -160,7 +155,6 @@ export class GithubService {
       })
     }
   }, {
-    maxAge: 60 * 5,
     name: 'getUserRepos',
     getKey: (event: H3Event, userId: number, query?: string) => `user-repos-${userId}-${query || ''}`,
     swr: true
@@ -173,40 +167,31 @@ export class GithubService {
   ) {
     try {
       const sanitizedRepository = sanitizeGithubUrl(repository)
-      const installation = await useDrizzle().query.githubApp.findFirst({
-        where: eq(tables.githubApp.userId, userId)
-      })
+      const integrations = await this.getIntegrations(userId)
 
-      if (!installation) {
+      if (!integrations.length) {
         throw createError({
           statusCode: 404,
           statusMessage: 'GitHub App installation not found'
         })
       }
 
-      const token = await this.getInstallationToken(installation.installationId)
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      const { key_id, key } = await $fetch<{
-        key_id: string
-        key: string
-      }>(`${this.GITHUB_API}/repos/${sanitizedRepository}/actions/secrets/public-key`, {
+      const token = await this.getInstallationToken(integrations[0].installationId)
+      
+      // eslint-disable-next-line
+      const { key_id, key } = await $fetch<{ key_id: string; key: string }>(`${this.GITHUB_API}/repos/${sanitizedRepository}/actions/secrets/public-key`, {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: 'application/vnd.github.v3+json'
         }
       })
 
-      const binaryPublicKey = Uint8Array.from(
-        Buffer.from(key, 'base64')
-      )
+      const binaryPublicKey = Uint8Array.from(Buffer.from(key, 'base64'))
 
       for (const { key: secretKey, value: secretValue } of variables) {
         try {
           const binarySecretValue = new TextEncoder().encode(secretValue)
-          const encryptedBytes = cryptoBoxSeal(
-            binarySecretValue,
-            binaryPublicKey
-          )
+          const encryptedBytes = cryptoBoxSeal(binarySecretValue, binaryPublicKey)
           const encryptedValue = Buffer.from(encryptedBytes).toString('base64')
 
           await $fetch(`${this.GITHUB_API}/repos/${sanitizedRepository}/actions/secrets/${secretKey}`, {
@@ -240,25 +225,92 @@ export class GithubService {
     }
   }
 
-  getUserApps(userId: number) {
-    return useDrizzle().query.githubApp.findMany({
-      where: eq(tables.githubApp.userId, userId)
-    })
+  async getIntegrations(userId: number): Promise<GithubApp[]> {
+    try {
+      return await useDrizzle().query.githubApp.findMany({
+        where: eq(tables.githubApp.userId, userId),
+        orderBy: (integrations, { desc }) => [desc(integrations.createdAt)]
+      })
+    } catch (error: any) {
+      console.error('Error fetching GitHub integrations:', error)
+      throw createError({
+        statusCode: 500,
+        statusMessage: `Failed to fetch GitHub integrations: ${error.message}`
+      })
+    }
   }
 
-  async deleteApp(userId: number, installationId: number) {
-    await useDrizzle()
-      .delete(tables.githubApp)
-      .where(
-        and(
-          eq(tables.githubApp.userId, userId),
-          eq(tables.githubApp.installationId, installationId)
+  async deleteIntegration(installationId: string, userId: number): Promise<{ success: boolean; message: string; link?: string }> {
+    try {
+      await useDrizzle()
+        .delete(tables.githubApp)
+        .where(
+          and(
+            eq(tables.githubApp.userId, userId),
+            eq(tables.githubApp.installationId, +installationId)
+          )
         )
-      )
-    return {
-      statusCode: 200,
-      message: 'App removed from Shelve. Dont forget to delete it from GitHub',
-      link: `https://github.com/settings/installations/${installationId}`
+      
+      return {
+        success: true,
+        message: 'App removed from Shelve. Dont forget to delete it from GitHub',
+        link: `https://github.com/settings/installations/${installationId}`
+      }
+    } catch (error: any) {
+      console.error('Error deleting GitHub integration:', error)
+      throw createError({
+        statusCode: 500,
+        statusMessage: `Failed to delete GitHub integration: ${error.message}`
+      })
+    }
+  }
+
+  async storeIntegration(data: { installationId: string; userId: number; isOrganisation?: boolean }): Promise<GithubApp> {
+    try {
+      const [integration] = await useDrizzle()
+        .insert(tables.githubApp)
+        .values({
+          installationId: +data.installationId,
+          userId: data.userId,
+          isOrganisation: data.isOrganisation || false
+        })
+        .returning()
+
+      return integration
+    } catch (error: any) {
+      console.error('Error storing GitHub integration:', error)
+      throw createError({
+        statusCode: 500,
+        statusMessage: `Failed to store GitHub integration: ${error.message}`
+      })
+    }
+  }
+
+  async testConnection(userId: number): Promise<{ connected: boolean; message: string; data?: any }> {
+    try {
+      const integrations = await this.getIntegrations(userId)
+      
+      if (!integrations.length) {
+        return { 
+          connected: false, 
+          message: 'No GitHub integration found' 
+        }
+      }
+
+      const repos = await this.getUserRepos({} as H3Event, userId)
+      const repoCount = repos?.length || 0
+      
+      return {
+        connected: true,
+        message: `Connected to GitHub with access to ${repoCount} ${repoCount === 1 ? 'repository' : 'repositories'}`,
+        data: { repoCount }
+      }
+    } catch (error: any) {
+      console.error('Error testing GitHub connection:', error)
+      return { 
+        connected: false, 
+        message: `GitHub connection failed: ${error.message}` 
+      }
     }
   }
 

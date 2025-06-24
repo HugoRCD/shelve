@@ -1,7 +1,14 @@
+import { z } from 'zod'
+
 export default defineEventHandler(async (event) => {
-  const query = getQuery(event)
-  console.log('Vercel callback', query)
-  const { code, configurationId, teamId: vercelTeamId, next, source } = query
+  const query = await getValidatedQuery(event, z.object({
+    code: z.string(),
+    configurationId: z.string(),
+    teamId: z.string().optional(),
+    next: z.string().optional()
+  }).parse)
+
+  const { code, configurationId, teamId, next } = query
 
   if (!code || !configurationId) {
     throw createError({
@@ -17,27 +24,22 @@ export default defineEventHandler(async (event) => {
     const requestURL = getRequestURL(event)
     const redirectUri = `${requestURL.protocol}//${requestURL.host}/api/vercel/integrations/callback`
 
-    // Exchange code for access token
-    const tokenResponse = await vercelService.exchangeCodeForToken(code as string, redirectUri)
-
-    console.log('Vercel access token', tokenResponse.access_token)
-
-    await vercelService.storeIntegration(
-      configurationId as string,
-      tokenResponse.access_token,
-      user.id
+    await vercelService.handleOAuthCallback(
+      code, 
+      configurationId, 
+      redirectUri, 
+      user.id,
+      teamId || null
     )
 
-    // Redirect to success page or decode the next URL
     const redirectUrl = next 
-      ? decodeURIComponent(next as string)
+      ? decodeURIComponent(next)
       : '/user/integrations?integration=vercel&setup=success'
 
     await sendRedirect(event, redirectUrl)
   } catch (error: any) {
     console.error('Vercel callback error:', error)
-    
-    // Redirect to error page
+      
     await sendRedirect(event, '/user/integrations?integration=vercel&setup=error')
   }
 }) 

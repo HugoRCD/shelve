@@ -30,7 +30,7 @@ const state = ref({
   environment: teamEnv.value[0]?.id,
 })
 
-const { data: apps, status, refresh, error } = await useFetch('/api/github/apps', {
+const { data: apps, status, refresh, error } = await useFetch('/api/integrations/github', {
   method: 'GET',
   immediate: false,
 })

@@ -53,6 +53,7 @@ export const vercelIntegration = pgTable('vercel_integration', {
   id: bigint({ mode: 'number' }).primaryKey().generatedByDefaultAsIdentity(),
   configurationId: varchar({ length: 50 }).unique().notNull(),
   accessToken: varchar({ length: 800 }).notNull(),
+  teamId: varchar({ length: 50 }),
   userId: bigint({ mode: 'number' }).references(() => users.id, { onDelete: 'cascade' }).notNull(),
   ...timestamps,
 })

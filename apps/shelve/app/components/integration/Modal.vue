@@ -25,10 +25,30 @@ function onClose() {
   emit('close', false)
 }
 
+// Configuration des intégrations avec leurs features spécifiques
+const integrationConfigs = {
+  github: {
+    features: [
+      'Automatically sync secrets to GitHub',
+      'Secure repository access management',
+      'Keep CI/CD pipelines up to date'
+    ]
+  },
+  vercel: {
+    features: [
+      'Automatically sync environment variables to Vercel',
+      'Deploy with up-to-date configurations',
+      'Keep projects synchronized'
+    ]
+  }
+}
+
+const integrationType = computed(() => props.integration.name.toLowerCase())
+const integrationConfig = computed(() => integrationConfigs[integrationType.value as keyof typeof integrationConfigs])
+
 onMounted(() => {
   const unsubscribe = onIntegrationEvent((data) => {
-    const integrationType = props.integration.name.toLowerCase()
-    if (data.type === integrationType && data.action === 'disconnected') {
+    if (data.type === integrationType.value && data.action === 'disconnected') {
       emit('close', false)
     }
   })
@@ -65,14 +85,27 @@ onMounted(() => {
     </template>
 
     <template #body>
-      <IntegrationGithub 
-        v-if="integration.name.toLowerCase() === 'github'"
-        :on-connected 
+      <!-- Nouveau composant de base standardisé -->
+      <IntegrationBase
+        v-if="integrationConfig"
+        :type="integrationType"
+        :name="integration.name"
+        :icon="integration.icon"
+        :features="integrationConfig.features"
+        :on-connected
       />
-      <IntegrationVercel 
-        v-if="integration.name.toLowerCase() === 'vercel'"
-        :on-connected 
-      />
+      
+      <!-- Fallback pour les intégrations non encore migrées -->
+      <div v-else>
+        <IntegrationGithub 
+          v-if="integrationType === 'github'"
+          :on-connected 
+        />
+        <IntegrationVercel 
+          v-if="integrationType === 'vercel'"
+          :on-connected 
+        />
+      </div>
     </template>
   </UModal>
 </template> 

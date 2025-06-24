@@ -1,35 +1,18 @@
 import type { H3Event } from 'h3'
 import { Vercel } from '@vercel/sdk'
+import type { VercelIntegration, IntegrationConfig, OAuthTokenResponse } from '@types'
+import { BaseIntegrationService } from './base-integration'
 
-export class VercelService {
+export class VercelService extends BaseIntegrationService<VercelIntegration> {
 
   private readonly VERCEL_API = 'https://api.vercel.com'
-  private readonly config: ReturnType<typeof useRuntimeConfig>
 
   constructor(event: H3Event) {
-    this.config = useRuntimeConfig(event)
+    super(event, 'Vercel')
   }
 
-  private createVercelClient(accessToken: string) {
-    return new Vercel({
-      bearerToken: accessToken,
-    })
-  }
-
-  async exchangeCodeForToken(code: string, redirectUri: string): Promise<{
-    access_token: string
-    token_type: string
-    installation_id?: string
-    user_id?: string
-    team_id?: string
-  }> {
+  protected getOAuthConfig(): IntegrationConfig {
     const { clientId, clientSecret } = this.config.oauth.vercel
-
-    console.log('Vercel OAuth config:', {
-      clientId: clientId ? `${clientId.substring(0, 4)}...` : 'MISSING',
-      clientSecret: clientSecret ? `${clientSecret.substring(0, 4)}...` : 'MISSING',
-      code: code ? `${code.substring(0, 8)}...` : 'MISSING'
-    })
 
     if (!clientId || !clientSecret) {
       throw createError({
@@ -37,6 +20,18 @@ export class VercelService {
         statusMessage: 'Vercel OAuth credentials are missing'
       })
     }
+
+    return { clientId, clientSecret }
+  }
+
+  protected createClient(accessToken: string) {
+    return new Vercel({
+      bearerToken: accessToken,
+    })
+  }
+
+  protected async exchangeCodeForToken(code: string, redirectUri: string): Promise<OAuthTokenResponse> {
+    const { clientId, clientSecret } = this.getOAuthConfig()
 
     try {
       const requestBody = new URLSearchParams({
@@ -46,19 +41,7 @@ export class VercelService {
         redirect_uri: redirectUri,
       })
 
-      console.log('Vercel token exchange request:', {
-        url: `${this.VERCEL_API}/v2/oauth/access_token`,
-        redirect_uri: redirectUri,
-        bodyParams: requestBody.toString()
-      })
-
-      const response = await $fetch<{
-        access_token: string
-        token_type: string
-        installation_id?: string
-        user_id?: string
-        team_id?: string
-      }>(`${this.VERCEL_API}/v2/oauth/access_token`, {
+      const response = await $fetch<OAuthTokenResponse>(`${this.VERCEL_API}/v2/oauth/access_token`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -66,70 +49,43 @@ export class VercelService {
         body: requestBody.toString(),
       })
 
-      console.log('Vercel token exchange success:', response)
-
       return response
     } catch (error: any) {
-      console.error('Vercel token exchange error details:', {
-        status: error.status,
-        statusText: error.statusText,
-        data: error.data,
-        message: error.message
-      })
-      throw createError({
-        statusCode: error.status || 500,
-        statusMessage: `Failed to exchange code for token: ${error.message}`
-      })
+      this.handleError('exchange code for token', error)
     }
   }
 
-  async storeIntegration(
-    configurationId: string,
-    accessToken: string,
-    userId: number
-  ) {
-    const { encryptionKey } = this.config.private
+  protected async validateAndDecryptToken(integration: VercelIntegration): Promise<string> {
+    return await this.decryptToken(integration.accessToken)
+  }
 
-    try {
-      const encryptedToken = await seal(accessToken, encryptionKey)
-
-      const [integration] = await useDrizzle()
-        .insert(tables.vercelIntegration)
-        .values({
-          configurationId,
-          accessToken: encryptedToken,
-          userId,
-        })
-        .returning()
-
-      return integration
-    } catch (error: any) {
-      console.error('Error storing Vercel integration:', error)
-      throw createError({
-        statusCode: 500,
-        statusMessage: `Failed to store Vercel integration: ${error.message}`
-      })
+  protected async performConnectionTest(client: Vercel): Promise<{ user: any; data: any }> {
+    const { user } = await client.user.getAuthUser()
+    
+    const projectsResponse = await client.projects.getProjects({ limit: '100' })
+    const projectCount = projectsResponse.projects?.length || 0
+    
+    return { 
+      user,
+      data: { 
+        username: user.username || user.email,
+        projectCount 
+      }
     }
   }
 
-  async getIntegrations(userId: number) {
+  async getIntegrations(userId: number): Promise<VercelIntegration[]> {
     try {
-      const integrations = await useDrizzle().query.vercelIntegration.findMany({
+      return await useDrizzle().query.vercelIntegration.findMany({
         where: eq(tables.vercelIntegration.userId, userId),
         orderBy: (integrations, { desc }) => [desc(integrations.createdAt)]
       })
-
-      return integrations
     } catch (error: any) {
-      console.error('Error fetching Vercel integrations:', error)
-      throw createError({
-        statusCode: 500,
-        statusMessage: `Failed to fetch Vercel integrations: ${error.message}`
-      })
+      this.handleError('fetch', error)
     }
   }
 
-  async deleteIntegration(configurationId: string, userId: number) {
+  async deleteIntegration(configurationId: string, userId: number): Promise<{ success: boolean }> {
     try {
       const integration = await useDrizzle().query.vercelIntegration.findFirst({
         where: and(
@@ -151,44 +107,44 @@ export class VercelService {
 
       return { success: true }
     } catch (error: any) {
-      console.error('Error deleting Vercel integration:', error)
-      throw createError({
-        statusCode: error.statusCode || 500,
-        statusMessage: error.statusMessage || `Failed to delete Vercel integration: ${error.message}`
-      })
+      this.handleError('delete', error)
     }
   }
 
-  async testConnection(userId: number) {
+  async storeIntegration(data: {
+    configurationId: string
+    accessToken: string
+    userId: number
+    teamId?: string | null
+  }): Promise<VercelIntegration> {
     try {
-      const integration = await useDrizzle().query.vercelIntegration.findFirst({
-        where: eq(tables.vercelIntegration.userId, userId)
-      })
+      const encryptedToken = await this.encryptToken(data.accessToken)
 
-      if (!integration) {
-        return { connected: false, message: 'No Vercel integration found' }
-      }
+      const [integration] = await useDrizzle()
+        .insert(tables.vercelIntegration)
+        .values({
+          configurationId: data.configurationId,
+          accessToken: encryptedToken,
+          teamId: data.teamId,
+          userId: data.userId,
+        })
+        .returning()
 
-      const { encryptionKey } = this.config.private
-      const accessToken = await unseal(integration.accessToken, encryptionKey)
-      console.log('Vercel access token', accessToken)
-
-      const vercel = this.createVercelClient(accessToken as string)
-
-      const user = await vercel.user.getAuthUser()
-
-      return {
-        connected: true,
-        message: 'Vercel connection successful',
-        user: user
-      }
+      return integration
     } catch (error: any) {
-      console.error('Error testing Vercel connection:', error)
-      return { 
-        connected: false, 
-        message: `Connection failed: ${error.message}` 
-      }
+      this.handleError('store', error)
     }
+  }
+
+  async handleOAuthCallback(code: string, configurationId: string, redirectUri: string, userId: number, teamId?: string | null): Promise<VercelIntegration> {
+    const tokenResponse = await this.exchangeCodeForToken(code, redirectUri)
+    
+    return await this.storeIntegration({
+      configurationId,
+      accessToken: tokenResponse.access_token,
+      userId,
+      teamId
+    })
   }
 
 } 

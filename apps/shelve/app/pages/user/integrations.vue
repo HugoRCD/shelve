@@ -36,11 +36,11 @@ const integrations = [
   }
 ]
 
-const { data: githubApps, refresh: refreshGithub } = await useFetch('/api/github/apps', {
+const { data: githubApps, refresh: refreshGithub } = await useFetch('/api/integrations/github', {
   method: 'GET'
 })
 
-const { data: vercelIntegrations, refresh: refreshVercel } = await useFetch('/api/vercel/integrations', {
+const { data: vercelIntegrations, refresh: refreshVercel } = await useFetch('/api/integrations/vercel', {
   method: 'GET'
 })
 
