@@ -25,7 +25,6 @@ function onClose() {
   emit('close', false)
 }
 
-// Configuration des intégrations avec leurs features spécifiques
 const integrationConfigs = {
   github: {
     features: [
@@ -85,7 +84,6 @@ onMounted(() => {
     </template>
 
     <template #body>
-      <!-- Nouveau composant de base standardisé -->
       <IntegrationBase
         v-if="integrationConfig"
         :type="integrationType"
@@ -95,7 +93,6 @@ onMounted(() => {
         :on-connected
       />
       
-      <!-- Fallback pour les intégrations non encore migrées -->
       <div v-else>
         <IntegrationGithub 
           v-if="integrationType === 'github'"

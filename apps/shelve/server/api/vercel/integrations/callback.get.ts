@@ -18,7 +18,18 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    const { user } = await requireUserSession(event)
+    const session = await getUserSession(event)
+    
+    if (!session.user) {
+      const requestURL = getRequestURL(event)
+      const callbackUrl = `${requestURL.href}`
+      const loginUrl = `/login?redirect=${encodeURIComponent(callbackUrl)}`
+      
+      await sendRedirect(event, loginUrl)
+      return
+    }
+
+    const { user } = session
     const vercelService = new VercelService(event)
 
     const requestURL = getRequestURL(event)
