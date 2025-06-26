@@ -59,15 +59,16 @@ export function useIntegrations() {
   }
 
   function getConnectionModalUrl(type: string): string {
+    const config = useRuntimeConfig()
     switch (type.toLowerCase()) {
       case 'github':
-        const config = useRuntimeConfig()
-        const { appName } = config.public.github
-        return `https://github.com/apps/${appName}/installations/new`
+        const githubAppName = config.public.github.appName
+        return `https://github.com/apps/${githubAppName}/installations/new`
       
       case 'vercel':
+        const vercelAppName = config.public.vercel.appName
         const redirectUri = `${window.location.origin}/api/vercel/integrations/callback`
-        return `https://vercel.com/integrations/shelve/new?redirect_uri=${encodeURIComponent(redirectUri)}`
+        return `https://vercel.com/integrations/${vercelAppName}/new?redirect_uri=${encodeURIComponent(redirectUri)}`
       
       default:
         throw new Error(`Unsupported integration type: ${type}`)

@@ -45,21 +45,25 @@ export abstract class BaseIntegrationService<T extends StoredIntegration = Store
   abstract deleteIntegration(uniqueId: string, userId: number): Promise<{ success: boolean }>
 
   abstract storeIntegration(data: Record<string, any>): Promise<T>
+  
+  async getClient(userId: number): Promise<any> {
+    const integrations = await this.getIntegrations(userId)
+
+    if (!integrations.length) {
+      throw createError({
+        statusCode: 404,
+        statusMessage: `No ${this.integrationName} integration found`
+      })
+    }
+
+    const [integration] = integrations
+    const accessToken = await this.validateAndDecryptToken(integration)
+    return this.createClient(accessToken)
+  }
 
   async testConnection(userId: number): Promise<IntegrationConnection> {
     try {
-      const integrations = await this.getIntegrations(userId)
-      
-      if (!integrations.length) {
-        return { 
-          connected: false, 
-          message: `No ${this.integrationName} integration found` 
-        }
-      }
-
-      const [integration] = integrations
-      const accessToken = await this.validateAndDecryptToken(integration)
-      const client = this.createClient(accessToken)
+      const client = await this.getClient(userId)
       const testResult = await this.performConnectionTest(client)
 
       let message = `${this.integrationName} connection successful`

@@ -136,7 +136,14 @@ export class VercelService extends BaseIntegrationService<VercelIntegration> {
     }
   }
 
-  async handleOAuthCallback(code: string, configurationId: string, redirectUri: string, userId: number, teamId?: string | null): Promise<VercelIntegration> {
+  // eslint-disable-next-line
+  async handleOAuthCallback(
+    code: string,
+    configurationId: string,
+    redirectUri: string,
+    userId: number,
+    teamId?: string | null
+  ): Promise<VercelIntegration> {
     const tokenResponse = await this.exchangeCodeForToken(code, redirectUri)
     
     return await this.storeIntegration({
