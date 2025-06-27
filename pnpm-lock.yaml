@@ -72,8 +72,8 @@ importers:
         specifier: ^13.4.0
         version: 13.4.0(magicast@0.3.5)(nuxt@3.17.5(@netlify/blobs@8.2.0)(@parcel/watcher@2.5.1)(@types/node@22.15.2)(better-sqlite3@11.9.1)(db0@0.3.2(better-sqlite3@11.9.1)(drizzle-orm@0.44.2(@cloudflare/workers-types@4.20250610.0)(better-sqlite3@11.9.1)(bun-types@1.2.15)(pg@8.16.2)))(drizzle-orm@0.44.2(@cloudflare/workers-types@4.20250610.0)(better-sqlite3@11.9.1)(bun-types@1.2.15)(pg@8.16.2))(encoding@0.1.13)(eslint@9.29.0(jiti@2.4.2))(ioredis@5.6.1)(magicast@0.3.5)(optionator@0.9.4)(rolldown-vite@7.0.2(@types/node@22.15.2)(esbuild@0.25.5)(jiti@2.4.2)(terser@5.39.0)(yaml@2.7.1))(rollup@4.41.0)(terser@5.39.0)(typescript@5.8.3)(yaml@2.7.1))(vue@3.5.17(typescript@5.8.3))
       dotenv:
-        specifier: ^16.5.0
-        version: 16.5.0
+        specifier: ^16.6.0
+        version: 16.6.0
       iron-webcrypto:
         specifier: ^1.2.1
         version: 1.2.1
@@ -142,8 +142,8 @@ importers:
         specifier: ^1.2.1
         version: 1.2.1
       drizzle-kit:
-        specifier: ^0.31.2
-        version: 0.31.2
+        specifier: ^0.31.3
+        version: 0.31.3
       drizzle-orm:
         specifier: ^0.44.2
         version: 0.44.2(@cloudflare/workers-types@4.20250610.0)(better-sqlite3@11.9.1)(bun-types@1.2.15)(pg@8.16.2)
@@ -209,8 +209,8 @@ importers:
         specifier: ^6.1.4
         version: 6.1.4
       dotenv:
-        specifier: ^16.5.0
-        version: 16.5.0
+        specifier: ^16.6.0
+        version: 16.6.0
       npm-registry-fetch:
         specifier: 18.0.2
         version: 18.0.2
@@ -221,8 +221,8 @@ importers:
         specifier: 1.4.1
         version: 1.4.1
       pkg-types:
-        specifier: 2.1.0
-        version: 2.1.0
+        specifier: 2.1.1
+        version: 2.1.1
       rc9:
         specifier: ^2.1.2
         version: 2.1.2
@@ -3931,12 +3931,12 @@ packages:
     resolution: {integrity: sha512-1gxPBJpI/pcjQhKgIU91II6Wkay+dLcN3M6rf2uwP8hRur3HtQXjVrdAK3sjC0piaEuxzMwjXChcETiJl47lAQ==}
     engines: {node: '>=18'}
 
-  dotenv@16.5.0:
-    resolution: {integrity: sha512-m/C+AwOAr9/W1UOIZUo232ejMNnJAJtYQjUbHoNTBNTJSvqzzDh7vnrei3o3r3m9blf6ZoDkvcw0VmozNRFJxg==}
+  dotenv@16.6.0:
+    resolution: {integrity: sha512-Omf1L8paOy2VJhILjyhrhqwLIdstqm1BvcDPKg4NGAlkwEu9ODyrFbvk8UymUOMCT+HXo31jg1lArIrVAAhuGA==}
     engines: {node: '>=12'}
 
-  drizzle-kit@0.31.2:
-    resolution: {integrity: sha512-Z2Uqxvu4HNFzlDkG3NQ2BYpII8SlOMkpjsC5XFh9TsYP2nYhfVamVjQ8spiMFXH3vGOyUt1cQ5FZ1JSgl6+8QQ==}
+  drizzle-kit@0.31.3:
+    resolution: {integrity: sha512-M8/o1oNvTzb0nhMch2W5i+Dz2YUp7ZjAeVx4L85hLjnFMxkB+LkKHTGg2MPAGc6ENFSVyozrxMa3DPqVrJt94w==}
     hasBin: true
 
   drizzle-orm@0.44.2:
@@ -4399,6 +4399,9 @@ packages:
 
   exsolve@1.0.5:
     resolution: {integrity: sha512-pz5dvkYYKQ1AHVrgOzBKWeP4u4FRb3a6DNK2ucr0OoNwYIU4QWsJ+NM36LLzORT+z845MzKHHhpXiUF5nvQoJg==}
+
+  exsolve@1.0.7:
+    resolution: {integrity: sha512-VO5fQUzZtI6C+vx4w/4BWJpg3s/5l+6pRQEHzFRM8WFi4XffSP1Z+4qi7GbjWbvRQEbdIco5mIMq+zX4rPuLrw==}
 
   extend@3.0.2:
     resolution: {integrity: sha512-fjquC59cD7CyW6urNXK0FBufkZcoiGG80wTuPujX590cB5Ttln20E2UB4S/WARVqhXffZl2LNgS+gQdPIIim/g==}
@@ -6405,6 +6408,9 @@ packages:
 
   pkg-types@2.1.0:
     resolution: {integrity: sha512-wmJwA+8ihJixSoHKxZJRBQG1oY8Yr9pGLzRmSsNms0iNWyHHAlZCa7mmKiFR10YPZuz/2k169JiS/inOjBCZ2A==}
+
+  pkg-types@2.1.1:
+    resolution: {integrity: sha512-eY0QFb6eSwc9+0d/5D2lFFUq+A3n3QNGSy/X2Nvp+6MfzGw2u6EbA7S80actgjY1lkvvI0pqB+a4hioMh443Ew==}
 
   playwright-core@1.53.1:
     resolution: {integrity: sha512-Z46Oq7tLAyT0lGoFx4DOuB1IA9D1TPj0QkYxpPVUnGDqHHvDpCftu1J2hM2PiWsNMoZh8+LQaarAWcDfPBc6zg==}
@@ -9456,7 +9462,7 @@ snapshots:
       ohash: 2.0.11
       pathe: 2.0.3
       perfect-debounce: 1.0.0
-      pkg-types: 2.1.0
+      pkg-types: 2.1.1
       scule: 1.3.0
       semver: 7.7.2
       std-env: 3.9.0
@@ -9550,7 +9556,7 @@ snapshots:
       execa: 8.0.1
       magicast: 0.3.5
       pathe: 2.0.3
-      pkg-types: 2.1.0
+      pkg-types: 2.1.1
       prompts: 2.4.2
       semver: 7.7.2
 
@@ -9764,7 +9770,7 @@ snapshots:
       mlly: 1.7.4
       ohash: 2.0.11
       pathe: 2.0.3
-      pkg-types: 2.1.0
+      pkg-types: 2.1.1
       scule: 1.3.0
       semver: 7.7.2
       std-env: 3.9.0
@@ -9817,7 +9823,7 @@ snapshots:
       mlly: 1.7.4
       ohash: 2.0.11
       pathe: 2.0.3
-      pkg-types: 2.1.0
+      pkg-types: 2.1.1
       scule: 1.3.0
       semver: 7.7.2
       std-env: 3.9.0
@@ -9894,7 +9900,7 @@ snapshots:
       citty: 0.1.6
       consola: 3.4.2
       destr: 2.0.5
-      dotenv: 16.5.0
+      dotenv: 16.6.0
       git-url-parse: 16.1.0
       is-docker: 3.0.0
       ofetch: 1.4.1
@@ -9915,7 +9921,7 @@ snapshots:
       '@vueuse/core': 13.4.0(vue@3.5.17(typescript@5.8.3))
       consola: 3.4.2
       defu: 6.1.4
-      dotenv: 16.5.0
+      dotenv: 16.6.0
       git-url-parse: 16.1.0
       motion-v: 1.3.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(vue@3.5.17(typescript@5.8.3))
       ofetch: 1.4.1
@@ -10085,7 +10091,7 @@ snapshots:
       ohash: 2.0.11
       pathe: 2.0.3
       perfect-debounce: 1.0.0
-      pkg-types: 2.1.0
+      pkg-types: 2.1.1
       postcss: 8.5.4
       rollup-plugin-visualizer: 6.0.3(rollup@4.41.0)
       std-env: 3.9.0
@@ -10228,7 +10234,7 @@ snapshots:
       defu: 6.1.4
       nuxt-site-config: 3.2.2(magicast@0.3.5)(vue@3.5.17(typescript@5.8.3))
       pathe: 2.0.3
-      pkg-types: 2.1.0
+      pkg-types: 2.1.1
       sirv: 3.0.1
       std-env: 3.9.0
       ufo: 1.6.1
@@ -10288,7 +10294,7 @@ snapshots:
       nuxt-site-config: 3.2.2(magicast@0.3.5)(vue@3.5.17(typescript@5.8.3))
       ofetch: 1.4.1
       pathe: 2.0.3
-      pkg-types: 2.1.0
+      pkg-types: 2.1.1
       radix3: 1.1.2
       semver: 7.7.2
       sirv: 3.0.1
@@ -11902,7 +11908,7 @@ snapshots:
       ofetch: 1.4.1
       pathe: 2.0.3
       perfect-debounce: 1.0.0
-      pkg-types: 2.1.0
+      pkg-types: 2.1.1
       scule: 1.3.0
       tinyglobby: 0.2.14
       untyped: 2.0.0
@@ -12056,7 +12062,7 @@ snapshots:
       chokidar: 4.0.3
       confbox: 0.1.8
       defu: 6.1.4
-      dotenv: 16.5.0
+      dotenv: 16.6.0
       giget: 1.2.5
       jiti: 2.4.2
       mlly: 1.7.4
@@ -12073,14 +12079,14 @@ snapshots:
       chokidar: 4.0.3
       confbox: 0.2.2
       defu: 6.1.4
-      dotenv: 16.5.0
+      dotenv: 16.6.0
       exsolve: 1.0.5
       giget: 2.0.0
       jiti: 2.4.2
       ohash: 2.0.11
       pathe: 2.0.3
       perfect-debounce: 1.0.0
-      pkg-types: 2.1.0
+      pkg-types: 2.1.1
       rc9: 2.1.2
     optionalDependencies:
       magicast: 0.3.5
@@ -12683,9 +12689,9 @@ snapshots:
     dependencies:
       type-fest: 4.40.0
 
-  dotenv@16.5.0: {}
+  dotenv@16.6.0: {}
 
-  drizzle-kit@0.31.2:
+  drizzle-kit@0.31.3:
     dependencies:
       '@drizzle-team/brocli': 0.10.2
       '@esbuild-kit/esm-loader': 2.6.5
@@ -13210,6 +13216,8 @@ snapshots:
   expect-type@1.2.1: {}
 
   exsolve@1.0.5: {}
+
+  exsolve@1.0.7: {}
 
   extend@3.0.2: {}
 
@@ -14205,7 +14213,7 @@ snapshots:
   lambda-local@2.2.0:
     dependencies:
       commander: 10.0.1
-      dotenv: 16.5.0
+      dotenv: 16.6.0
       winston: 3.17.0
 
   launch-editor@2.10.0:
@@ -14313,7 +14321,7 @@ snapshots:
   local-pkg@1.1.1:
     dependencies:
       mlly: 1.7.4
-      pkg-types: 2.1.0
+      pkg-types: 2.1.1
       quansync: 0.2.10
 
   locate-path@5.0.0:
@@ -14902,7 +14910,7 @@ snapshots:
       jiti: 1.21.7
       mlly: 1.7.4
       pathe: 2.0.3
-      pkg-types: 2.1.0
+      pkg-types: 2.1.1
       postcss: 8.5.6
       postcss-nested: 7.0.2(postcss@8.5.6)
       semver: 7.7.2
@@ -14993,7 +15001,7 @@ snapshots:
     dependencies:
       consola: 3.4.2
       mlly: 1.7.4
-      pkg-types: 2.1.0
+      pkg-types: 2.1.1
 
   nitropack@2.11.12(@netlify/blobs@8.2.0)(better-sqlite3@11.9.1)(drizzle-orm@0.44.2(@cloudflare/workers-types@4.20250610.0)(better-sqlite3@11.9.1)(bun-types@1.2.15)(pg@8.16.2))(encoding@0.1.13):
     dependencies:
@@ -15045,7 +15053,7 @@ snapshots:
       ohash: 2.0.11
       pathe: 2.0.3
       perfect-debounce: 1.0.0
-      pkg-types: 2.1.0
+      pkg-types: 2.1.1
       pretty-bytes: 6.1.1
       radix3: 1.1.2
       rollup: 4.41.0
@@ -15266,7 +15274,7 @@ snapshots:
       nuxt-site-config: 3.2.2(magicast@0.3.5)(vue@3.5.17(typescript@5.8.3))
       ofetch: 1.4.1
       pathe: 2.0.3
-      pkg-types: 2.1.0
+      pkg-types: 2.1.1
       radix3: 1.1.2
       sirv: 3.0.1
       std-env: 3.9.0
@@ -15323,7 +15331,7 @@ snapshots:
       ofetch: 1.4.1
       ohash: 2.0.11
       pathe: 2.0.3
-      pkg-types: 2.1.0
+      pkg-types: 2.1.1
       playwright-core: 1.53.1
       radix3: 1.1.2
       satori: 0.15.2
@@ -15349,7 +15357,7 @@ snapshots:
       defu: 6.1.4
       nuxt-site-config: 3.2.2(magicast@0.3.5)(vue@3.5.17(typescript@5.8.3))
       pathe: 2.0.3
-      pkg-types: 2.1.0
+      pkg-types: 2.1.1
       sirv: 3.0.1
     optionalDependencies:
       '@unhead/vue': 2.0.10(vue@3.5.17(typescript@5.8.3))
@@ -15370,7 +15378,7 @@ snapshots:
       image-size: 2.0.2
       nuxt-site-config: 3.2.2(magicast@0.3.5)(vue@3.5.17(typescript@5.8.3))
       pathe: 2.0.3
-      pkg-types: 2.1.0
+      pkg-types: 2.1.1
       scule: 1.3.0
       semver: 7.7.2
       ufo: 1.6.1
@@ -15382,7 +15390,7 @@ snapshots:
   nuxt-site-config-kit@3.2.2(magicast@0.3.5)(vue@3.5.17(typescript@5.8.3)):
     dependencies:
       '@nuxt/kit': 3.17.5(magicast@0.3.5)
-      pkg-types: 2.1.0
+      pkg-types: 2.1.1
       site-config-stack: 3.2.2(vue@3.5.17(typescript@5.8.3))
       std-env: 3.9.0
       ufo: 1.6.1
@@ -15395,7 +15403,7 @@ snapshots:
       '@nuxt/kit': 3.17.5(magicast@0.3.5)
       nuxt-site-config-kit: 3.2.2(magicast@0.3.5)(vue@3.5.17(typescript@5.8.3))
       pathe: 2.0.3
-      pkg-types: 2.1.0
+      pkg-types: 2.1.1
       sirv: 3.0.1
       site-config-stack: 3.2.2(vue@3.5.17(typescript@5.8.3))
       ufo: 1.6.1
@@ -15669,7 +15677,7 @@ snapshots:
       citty: 0.1.6
       consola: 3.4.2
       pathe: 2.0.3
-      pkg-types: 2.1.0
+      pkg-types: 2.1.1
       tinyexec: 0.3.2
 
   oauth4webapi@3.5.0: {}
@@ -15975,6 +15983,12 @@ snapshots:
     dependencies:
       confbox: 0.2.2
       exsolve: 1.0.5
+      pathe: 2.0.3
+
+  pkg-types@2.1.1:
+    dependencies:
+      confbox: 0.2.2
+      exsolve: 1.0.7
       pathe: 2.0.3
 
   playwright-core@1.53.1: {}
@@ -17466,7 +17480,7 @@ snapshots:
       mkdist: 2.3.0(typescript@5.8.3)(vue@3.5.17(typescript@5.8.3))
       mlly: 1.7.4
       pathe: 2.0.3
-      pkg-types: 2.1.0
+      pkg-types: 2.1.1
       pretty-bytes: 6.1.1
       rollup: 4.41.0
       rollup-plugin-dts: 6.2.1(rollup@4.41.0)(typescript@5.8.3)
@@ -17553,7 +17567,7 @@ snapshots:
       mlly: 1.7.4
       pathe: 2.0.3
       picomatch: 4.0.2
-      pkg-types: 2.1.0
+      pkg-types: 2.1.1
       scule: 1.3.0
       strip-literal: 3.0.0
       tinyglobby: 0.2.14
@@ -17570,7 +17584,7 @@ snapshots:
       mlly: 1.7.4
       pathe: 2.0.3
       picomatch: 4.0.2
-      pkg-types: 2.1.0
+      pkg-types: 2.1.1
       scule: 1.3.0
       strip-literal: 3.0.0
       tinyglobby: 0.2.14
