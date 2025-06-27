@@ -22,7 +22,7 @@
     "@vue-email/components": "^0.0.21",
     "@vue-email/render": "^0.0.9",
     "blakejs": "^1.2.1",
-    "drizzle-kit": "^0.31.2",
+    "drizzle-kit": "^0.31.3",
     "drizzle-orm": "^0.44.2",
     "jsonwebtoken": "^9.0.2",
     "libsodium-wrappers": "^0.7.15",
