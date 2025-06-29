@@ -82,12 +82,18 @@ const toggleVariable = (variable: Variable, event?: MouseEvent) => {
 const isVariableSelected = (variable: Variable) => {
   return selectedVariables.value.some((v) => v.id === variable.id)
 }
+
+function handleProjectLinked(updatedProject: any) {
+  if (project.value) {
+    Object.assign(project.value, updatedProject)
+  }
+}
 </script>
 
 <template>
   <div class="flex flex-col gap-2">
     <VariableCreate v-if="environments && environments.length" :environments />
-    <div class="flex flex-col gap-2 sm:flex-row justify-between sm:items-center my-2">
+    <div v-if="variables && variables.length" class="flex flex-col gap-2 sm:flex-row justify-between sm:items-center my-2">
       <div class="flex items-center gap-2">
         <UInput
           v-model="searchTerm"
@@ -131,8 +137,11 @@ const isVariableSelected = (variable: Variable) => {
         </UCard>
       </div>
     </div>
-    <!--    <Teleport defer to="#command-items">
-      <VariableActionsToggleSelection />
-    </Teleport>-->
+
+    <LazyProjectVercelSuggestion
+      v-if="project"
+      :project
+      @linked="handleProjectLinked"
+    />
   </div>
 </template>

@@ -154,4 +154,32 @@ export class VercelService extends BaseIntegrationService<VercelIntegration> {
     })
   }
 
+  async getProjects(userId: number): Promise<{ id: string; name: string; createdAt: number; framework?: string; link?: string }[]> {
+    try {
+      const integrations = await this.getIntegrations(userId)
+      
+      if (!integrations.length) {
+        throw createError({
+          statusCode: 404,
+          statusMessage: 'Vercel integration not found'
+        })
+      }
+
+      const accessToken = await this.validateAndDecryptToken(integrations[0])
+      const client = this.createClient(accessToken)
+      
+      const projectsResponse = await client.projects.getProjects({ limit: '100' })
+      
+      return projectsResponse.projects?.map(project => ({
+        id: project.id!,
+        name: project.name!,
+        createdAt: project.createdAt!,
+        framework: project.framework || undefined,
+        link: project.link?.type === 'github' ? `https://github.com/${project.link.org}/${project.link.repo}` : undefined
+      })) || []
+    } catch (error: any) {
+      this.handleError('fetch projects', error)
+    }
+  }
+
 } 

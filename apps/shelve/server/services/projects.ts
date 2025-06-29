@@ -18,7 +18,7 @@ export class ProjectsService {
     const existingProject = await this.getProject(input.id)
     if (!existingProject) throw createError({ statusCode: 404, message: `Project not found with id ${input.id}` })
 
-    if (existingProject.name !== input.name)
+    if (input.name && existingProject.name !== input.name)
       await this.validateProjectName(input.name, existingProject.teamId, input.id)
 
     const [updatedProject] = await useDrizzle().update(tables.projects)
