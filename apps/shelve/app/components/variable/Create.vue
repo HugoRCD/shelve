@@ -6,7 +6,8 @@ const { environments } = defineProps<{
 }>()
 
 const { createLoading, createVariables } = useVariablesService()
-const { repos, apps } = useGitHub()
+const { repos } = useGitHub()
+const { getIntegrations } = useIntegrations()
 
 const route = useRoute()
 const projectId = route.params.projectId as string
@@ -18,6 +19,7 @@ const {
   environmentIds,
   autoUppercase,
   syncWithGitHub,
+  syncWithVercel,
   addVariable,
   removeVariable,
   resetForm,
@@ -34,6 +36,14 @@ const {
   variablesToCreate.value = vars.length
   variablesInput.value.variables = vars
 })
+
+const { data: githubIntegrations } = await useAsyncData('github-integrations', () => 
+  getIntegrations('github')
+)
+
+const { data: vercelIntegrations } = await useAsyncData('vercel-integrations', () => 
+  getIntegrations('vercel')
+)
 
 function validateVariables(variables: CreateVariablesInput['variables']) {
   const groupedValues: { [key: string]: Set<string> } = {}
@@ -67,6 +77,7 @@ async function handleCreateVariables() {
   await createVariables({
     ...variablesInput.value,
     syncWithGitHub: syncWithGitHub.value,
+    syncWithVercel: syncWithVercel.value,
   })
   resetForm()
 }
@@ -137,11 +148,21 @@ const handlePasswordGenerated = (password: string, index: number) => variablesIn
           </UTooltip>
         </div>
         <div class="flex items-center gap-2 mt-2">
-          <USwitch v-model="syncWithGitHub" size="sm" label="Sync with GitHub" :disabled="!apps || apps.length === 0" />
+          <USwitch v-model="syncWithGitHub" size="sm" label="Sync with GitHub" :disabled="!Array.isArray(githubIntegrations) || githubIntegrations.length === 0" />
           <UTooltip
             class="hidden sm:block"
             :content="{ side: 'right' }"
             text="Automatically send your environment variables to GitHub secrets"
+          >
+            <UIcon name="lucide:info" class="text-muted size-4" />
+          </UTooltip>
+        </div>
+        <div class="flex items-center gap-2 mt-2">
+          <USwitch v-model="syncWithVercel" size="sm" label="Sync with Vercel" :disabled="!Array.isArray(vercelIntegrations) || vercelIntegrations.length === 0" />
+          <UTooltip
+            class="hidden sm:block"
+            :content="{ side: 'right' }"
+            text="Automatically send your environment variables to Vercel project"
           >
             <UIcon name="lucide:info" class="text-muted size-4" />
           </UTooltip>

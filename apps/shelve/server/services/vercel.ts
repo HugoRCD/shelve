@@ -182,4 +182,51 @@ export class VercelService extends BaseIntegrationService<VercelIntegration> {
     }
   }
 
+  async sendSecrets(
+    userId: number,
+    vercelProjectId: string,
+    variables: { key: string; value: string }[]
+  ) {
+    try {
+      const integrations = await this.getIntegrations(userId)
+
+      if (!integrations.length) {
+        throw createError({
+          statusCode: 404,
+          statusMessage: 'Vercel integration not found'
+        })
+      }
+
+      const accessToken = await this.validateAndDecryptToken(integrations[0])
+      const client = this.createClient(accessToken)
+
+      for (const { key: secretKey, value: secretValue } of variables) {
+        try {
+          await client.projects.createProjectEnv({
+            idOrName: vercelProjectId,
+            upsert: 'true',
+            requestBody: {
+              key: secretKey,
+              value: secretValue,
+              target: ['production', 'preview', 'development'],
+              type: 'encrypted'
+            }
+          })
+        } catch (error: any) {
+          throw createError({
+            statusCode: 500,
+            statusMessage: `Failed to send secret ${secretKey}: ${error.message}`
+          })
+        }
+      }
+
+      return {
+        statusCode: 201,
+        message: 'Secrets successfully sent to Vercel project'
+      }
+    } catch (error: any) {
+      this.handleError('send secrets', error)
+    }
+  }
+
 } 

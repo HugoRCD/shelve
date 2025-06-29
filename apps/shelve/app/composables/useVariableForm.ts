@@ -11,6 +11,10 @@ export function useVariableForm(projectId: number, teamEnv: Environment[]) {
     default: () => false,
   })
 
+  const syncWithVercel = useCookie<boolean>('syncWithVercel', {
+    default: () => false,
+  })
+
   const variablesToCreate = ref(1)
   const selectedEnvironments = ref<Record<number, boolean>>(
     Object.fromEntries(
@@ -75,6 +79,7 @@ export function useVariableForm(projectId: number, teamEnv: Environment[]) {
     environmentIds,
     autoUppercase,
     syncWithGitHub,
+    syncWithVercel,
     addVariable,
     removeVariable,
     resetForm,

@@ -2,6 +2,7 @@ import type { UpdateVariableInput, CreateVariablesInput, Variable } from '@types
 import type { H3Event } from 'h3'
 import { GithubService } from './github'
 import { ProjectsService } from './projects'
+import { VercelService } from './vercel'
 
 export class VariablesService {
 
@@ -71,7 +72,7 @@ export class VariablesService {
 
   // Public methods
   async createVariables(event: H3Event, input: CreateVariablesInput): Promise<void> {
-    const { projectId, variables: varsToCreate, autoUppercase = true, environmentIds, syncWithGitHub } = input
+    const { projectId, variables: varsToCreate, autoUppercase = true, environmentIds, syncWithGitHub, syncWithVercel } = input
     const db = useDrizzle()
 
     await db.transaction(async (tx) => {
@@ -136,6 +137,14 @@ export class VariablesService {
       if (!project || !project.repository) throw createError({ statusCode: 400, statusMessage: 'No GitHub repository linked to this project.' })
       const variablesToSend = varsToCreate.map(v => ({ key: autoUppercase ? v.key.toUpperCase() : v.key, value: v.value }))
       await new GithubService(event).sendSecrets(user.id, project.repository, variablesToSend)
+    }
+
+    if (syncWithVercel) {
+      const { user } = await requireUserSession(event)
+      const project = await new ProjectsService().getProject(projectId)
+      if (!project || !project.vercelProjectId) throw createError({ statusCode: 400, statusMessage: 'No Vercel project linked to this project.' })
+      const variablesToSend = varsToCreate.map(v => ({ key: autoUppercase ? v.key.toUpperCase() : v.key, value: v.value }))
+      await new VercelService(event).sendSecrets(user.id, project.vercelProjectId, variablesToSend)
     }
   }
 
