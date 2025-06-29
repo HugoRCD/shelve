@@ -144,7 +144,7 @@ export class VariablesService {
       const project = await new ProjectsService().getProject(projectId)
       if (!project || !project.vercelProjectId) throw createError({ statusCode: 400, statusMessage: 'No Vercel project linked to this project.' })
       const variablesToSend = varsToCreate.map(v => ({ key: autoUppercase ? v.key.toUpperCase() : v.key, value: v.value }))
-      await new VercelService(event).sendSecrets(user.id, project.vercelProjectId, variablesToSend)
+      await new VercelService(event).sendSecrets(user.id, project.vercelProjectId, variablesToSend, environmentIds)
     }
   }
 

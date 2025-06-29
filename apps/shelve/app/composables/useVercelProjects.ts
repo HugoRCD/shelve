@@ -9,42 +9,16 @@ interface VercelProject {
 }
 
 export function useVercelProjects() {
-  const loading = ref(false)
-  const initialLoading = ref(false)
-  const projects = ref<VercelProject[]>([])
-  const lastFetch = ref<number | null>(null)
-  const CACHE_DURATION = 5 * 60 * 1000
+  const { 
+    fetchVercelProjects: globalFetchProjects, 
+    getVercelProjects, 
+    projectsLoading 
+  } = useAppIntegrations()
+  
+  const importLoading = ref(false)
 
   async function fetchVercelProjects(force = false): Promise<VercelProject[]> {
-    const now = Date.now()
-    
-    if (!force && projects.value.length > 0 && lastFetch.value && (now - lastFetch.value) < CACHE_DURATION) {
-      return projects.value
-    }
-    
-    if (projects.value.length === 0) {
-      initialLoading.value = true
-    } else {
-      loading.value = true
-    }
-    
-    try {
-      const data = await $fetch<VercelProject[]>('/api/vercel/projects')
-      projects.value = data
-      lastFetch.value = now
-      return data
-    } catch (error: any) {
-      console.error('Error fetching Vercel projects:', error)
-      if (error.statusCode !== 404) {
-        toast.error('Failed to fetch Vercel projects', {
-          description: error.message || 'Please check your Vercel integration'
-        })
-      }
-      return []
-    } finally {
-      loading.value = false
-      initialLoading.value = false
-    }
+    return await globalFetchProjects(force)
   }
 
   async function linkProjectToVercel(projectId: number, vercelProjectId: string): Promise<Project | null> {
@@ -91,7 +65,7 @@ export function useVercelProjects() {
 
   function getLinkedVercelProject(project: Project): VercelProject | undefined {
     if (!project.vercelProjectId) return undefined
-    return projects.value.find(vp => vp.id === project.vercelProjectId)
+    return getVercelProjects().find(vp => vp.id === project.vercelProjectId)
   }
 
   function isProjectLinked(project: Project): boolean {
@@ -119,27 +93,15 @@ export function useVercelProjects() {
     return frameworkMap[framework.toLowerCase()] || 'i-simple-icons-vercel'
   }
 
-  function clearCache() {
-    projects.value = []
-    lastFetch.value = null
-    initialLoading.value = false
-  }
-
-  function refreshProjects() {
-    return fetchVercelProjects(true)
-  }
-
   return {
-    loading: readonly(loading),
-    initialLoading: readonly(initialLoading),
-    projects: readonly(projects),
+    loading: projectsLoading,
+    importLoading: readonly(importLoading),
+    projects: computed(() => getVercelProjects()),
     fetchVercelProjects,
     linkProjectToVercel,
     unlinkProjectFromVercel,
     getLinkedVercelProject,
     isProjectLinked,
-    getFrameworkIcon,
-    clearCache,
-    refreshProjects
+    getFrameworkIcon
   }
 } 

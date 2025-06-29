@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import type { CreateVariablesInput, Environment } from '@types'
+import { motion } from 'motion-v'
 
 const { environments } = defineProps<{
   environments: Environment[]
 }>()
 
 const { createLoading, createVariables } = useVariablesService()
-const { repos } = useGitHub()
-const { getIntegrations } = useIntegrations()
+const { hasGithubIntegration } = useGitHub()
+const { hasIntegration } = useAppIntegrations()
 
 const route = useRoute()
 const projectId = route.params.projectId as string
@@ -37,13 +38,7 @@ const {
   variablesInput.value.variables = vars
 })
 
-const { data: githubIntegrations } = await useAsyncData('github-integrations', () => 
-  getIntegrations('github')
-)
-
-const { data: vercelIntegrations } = await useAsyncData('vercel-integrations', () => 
-  getIntegrations('vercel')
-)
+const showVercelModal = ref(false)
 
 function validateVariables(variables: CreateVariablesInput['variables']) {
   const groupedValues: { [key: string]: Set<string> } = {}
@@ -66,6 +61,22 @@ function validateVariables(variables: CreateVariablesInput['variables']) {
     }
   }
   return true
+}
+
+function getVercelEnvironmentMapping(envName: string): string {
+  const name = envName.toLowerCase()
+  switch (name) {
+    case 'development':
+      return 'development'
+    case 'preview':
+    case 'staging':
+      return 'preview'
+    case 'production':
+    case 'prod':
+      return 'production'
+    default:
+      return 'preview'
+  }
 }
 
 async function handleCreateVariables() {
@@ -148,7 +159,7 @@ const handlePasswordGenerated = (password: string, index: number) => variablesIn
           </UTooltip>
         </div>
         <div class="flex items-center gap-2 mt-2">
-          <USwitch v-model="syncWithGitHub" size="sm" label="Sync with GitHub" :disabled="!Array.isArray(githubIntegrations) || githubIntegrations.length === 0" />
+          <USwitch v-model="syncWithGitHub" size="sm" label="Sync with GitHub" :disabled="!hasGithubIntegration" />
           <UTooltip
             class="hidden sm:block"
             :content="{ side: 'right' }"
@@ -157,17 +168,103 @@ const handlePasswordGenerated = (password: string, index: number) => variablesIn
             <UIcon name="lucide:info" class="text-muted size-4" />
           </UTooltip>
         </div>
-        <div class="flex items-center gap-2 mt-2">
-          <USwitch v-model="syncWithVercel" size="sm" label="Sync with Vercel" :disabled="!Array.isArray(vercelIntegrations) || vercelIntegrations.length === 0" />
-          <UTooltip
-            class="hidden sm:block"
-            :content="{ side: 'right' }"
-            text="Automatically send your environment variables to Vercel project"
-          >
+        <div v-if="hasIntegration('vercel')" class="flex items-center gap-2">
+          <USwitch v-model="syncWithVercel" size="sm" label="Sync with Vercel" />
+          <UTooltip class="max-w-xs" text="Automatically sync variables to Vercel with smart environment mapping">
             <UIcon name="lucide:info" class="text-muted size-4" />
           </UTooltip>
-          <TextGradient text="New" class="font-normal text-sm" />
+          <UButton
+            v-if="syncWithVercel"
+            size="xs"
+            variant="outline"
+            icon="i-lucide-settings"
+            label="Configure"
+            @click="showVercelModal = true"
+          />
         </div>
+
+        <UModal v-model:open="showVercelModal">
+          <template #content>
+            <UCard>
+              <template #header>
+                <div class="flex items-center gap-2">
+                  <UIcon name="i-simple-icons-vercel" class="size-5" />
+                  <h3 class="text-lg font-semibold">
+                    Vercel Sync Configuration
+                  </h3>
+                </div>
+              </template>
+
+              <div class="space-y-4">
+                <p class="text-sm text-muted">
+                  Variables will be synced to corresponding Vercel environments based on your selected Shelve environments:
+                </p>
+
+                <div class="overflow-hidden rounded-lg border border-default">
+                  <table class="w-full text-sm">
+                    <thead class="bg-muted/50">
+                      <tr>
+                        <th class="px-4 py-2 text-left font-medium">
+                          Shelve Environment
+                        </th>
+                        <th class="px-4 py-2 text-center font-medium">
+                          →
+                        </th>
+                        <th class="px-4 py-2 text-left font-medium">
+                          Vercel Environment
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody class="divide-y divide-default">
+                      <tr v-for="env in environments.filter(e => selectedEnvironments[e.id])" :key="env.id" class="hover:bg-muted/30">
+                        <td class="px-4 py-2">
+                          <div class="flex items-center gap-2">
+                            <div class="size-2 rounded-full bg-primary" />
+                            <span class="font-medium">{{ env.name }}</span>
+                          </div>
+                        </td>
+                        <td class="px-4 py-2 text-center">
+                          <UIcon name="i-lucide-arrow-right" class="size-4 text-muted" />
+                        </td>
+                        <td class="px-4 py-2">
+                          <div class="flex items-center gap-2">
+                            <UIcon name="i-simple-icons-vercel" class="size-3 text-muted" />
+                            <span>{{ getVercelEnvironmentMapping(env.name) }}</span>
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <div class="bg-muted/30 rounded-lg p-3">
+                  <div class="flex items-start gap-2">
+                    <UIcon name="i-lucide-info" class="size-4 text-primary mt-0.5 flex-shrink-0" />
+                    <div class="text-xs text-muted">
+                      <p class="font-medium mb-1">
+                        Environment Mapping Rules:
+                      </p>
+                      <ul class="space-y-0.5">
+                        <li>• <code>development</code> → <code>development</code></li>
+                        <li>• <code>preview</code>, <code>staging</code> → <code>preview</code></li>
+                        <li>• <code>production</code>, <code>prod</code> → <code>production</code></li>
+                        <li>• Other environments → <code>preview</code> (default)</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <template #footer>
+                <div class="flex justify-end">
+                  <UButton variant="outline" @click="showVercelModal = false">
+                    Close
+                  </UButton>
+                </div>
+              </template>
+            </UCard>
+          </template>
+        </UModal>
         <Separator class="my-1" />
         <p class="text-xs font-normal text-muted">
           You can also paste all your environment variables (.env) as key value pairs to prefilled the form

@@ -14,7 +14,6 @@ const emit = defineEmits<{
 const { getIntegrations } = useIntegrations()
 const { 
   loading: vercelLoading,
-  initialLoading,
   projects: vercelProjects, 
   fetchVercelProjects, 
   linkProjectToVercel, 
@@ -45,7 +44,7 @@ const linkedVercelProject = computed(() => getLinkedVercelProject(currentProject
 const isLinked = computed(() => isProjectLinked(currentProject.value))
 
 const isLoadingState = computed(() => {
-  return hasVercelIntegration.value && currentProject.value.vercelProjectId && initialLoading.value
+  return hasVercelIntegration.value && currentProject.value.vercelProjectId && vercelLoading.value
 })
 
 const filteredProjects = computed(() => {

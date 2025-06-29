@@ -185,7 +185,8 @@ export class VercelService extends BaseIntegrationService<VercelIntegration> {
   async sendSecrets(
     userId: number,
     vercelProjectId: string,
-    variables: { key: string; value: string }[]
+    variables: { key: string; value: string }[],
+    environmentIds?: number[]
   ) {
     try {
       const integrations = await this.getIntegrations(userId)
@@ -200,6 +201,8 @@ export class VercelService extends BaseIntegrationService<VercelIntegration> {
       const accessToken = await this.validateAndDecryptToken(integrations[0])
       const client = this.createClient(accessToken)
 
+      const vercelTargets = environmentIds ? await this.mapShelveToVercelEnvironments(environmentIds) : ['production', 'preview', 'development'] as const
+
       for (const { key: secretKey, value: secretValue } of variables) {
         try {
           await client.projects.createProjectEnv({
@@ -208,7 +211,7 @@ export class VercelService extends BaseIntegrationService<VercelIntegration> {
             requestBody: {
               key: secretKey,
               value: secretValue,
-              target: ['production', 'preview', 'development'],
+              target: vercelTargets as any,
               type: 'encrypted'
             }
           })
@@ -226,6 +229,42 @@ export class VercelService extends BaseIntegrationService<VercelIntegration> {
       }
     } catch (error: any) {
       this.handleError('send secrets', error)
+    }
+  }
+
+  private async mapShelveToVercelEnvironments(environmentIds: number[]): Promise<('production' | 'preview' | 'development')[]> {
+    try {
+      const environments = await useDrizzle().query.environments.findMany({
+        where: inArray(tables.environments.id, environmentIds)
+      })
+
+      const vercelTargets: ('production' | 'preview' | 'development')[] = []
+      
+      for (const env of environments) {
+        const envName = env.name.toLowerCase()
+        
+        switch (envName) {
+          case 'development':
+            vercelTargets.push('development')
+            break
+          case 'preview':
+          case 'staging':
+            vercelTargets.push('preview')
+            break
+          case 'production':
+          case 'prod':
+            vercelTargets.push('production')
+            break
+          default:
+            vercelTargets.push('preview')
+            break
+        }
+      }
+
+      return [...new Set(vercelTargets)]
+    } catch (error) {
+      console.error('Error mapping environments:', error)
+      return ['production', 'preview', 'development']
     }
   }
 
