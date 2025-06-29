@@ -97,7 +97,7 @@ defineShortcuts({
     </template>
 
     <ClientOnly>
-      <div class="hidden lg:dark:block grayscale invert dark:invert-0 size-full -z-10 ">
+      <div class="hidden lg:dark:block grayscale invert dark:invert-0 size-full -z-10 pointer-events-none">
         <div class="video-logo-container size-full">
           <video autoplay loop muted class="size-full object-contain scale-200">
             <source src="/encryption.webm" type="video/webm">
@@ -105,13 +105,13 @@ defineShortcuts({
           </video>
         </div>
       </div>
-      <div class="max-sm:hidden max-sm:dark:hidden lg:hidden absolute inset-0">
+      <div class="max-sm:hidden max-sm:dark:hidden lg:hidden absolute inset-0 pointer-events-none">
         <video autoplay loop muted class="invert dark:invert-0 grayscale absolute opacity-20 scale-110 size-full -z-10 object-cover transform translate-x-1/2">
           <source src="/encryption.webm" type="video/webm">
           Your browser does not support the video tag.
         </video>
       </div>
-      <div class="max-sm:hidden dark:hidden">
+      <div class="max-sm:hidden dark:hidden pointer-events-none">
         <video autoplay loop muted class="invert dark:invert-0 grayscale absolute opacity-20 top-0 inset-0 scale-110 size-full -z-10 object-cover transform translate-x-1/2">
           <source src="/encryption.webm" type="video/webm">
           Your browser does not support the video tag.

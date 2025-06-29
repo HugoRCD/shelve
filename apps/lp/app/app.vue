@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { Analytics } from '@vercel/analytics/nuxt'
 import colors from 'tailwindcss/colors'
 import { Toaster } from 'vue-sonner'
 import 'vue-sonner/style.css'
@@ -90,7 +91,7 @@ useSeoMeta({
   <Html lang="en">
     <Body class="overscroll-y-none selection:bg-primary overflow-x-hidden selection:text-inverted">
       <NuxtLoadingIndicator color="#FFF" />
-
+      <Analytics />
       <UApp :tooltip="{ delayDuration: 0 }">
         <NuxtLayout>
           <NuxtPage />

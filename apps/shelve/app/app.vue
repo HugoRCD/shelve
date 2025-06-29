@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { SpeedInsights } from '@vercel/speed-insights/nuxt'
+import { Analytics } from '@vercel/analytics/nuxt'
 import { MotionGlobalConfig } from 'motion-v'
 import { Toaster } from 'vue-sonner'
 import 'vue-sonner/style.css'
@@ -19,6 +20,7 @@ watch(reduceMotion, (value) => {
   <Html lang="en">
     <Body class="overscroll-y-none selection:bg-primary relative overflow-x-hidden selection:text-inverted">
       <SpeedInsights />
+      <Analytics />
       <ShelveMeta title="Application" />
       <MotionConfig :reduce-motion="reduceMotion ? 'always' : 'never'">
         <UApp :tooltip="{ delayDuration: 0 }">
