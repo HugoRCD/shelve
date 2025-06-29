@@ -203,29 +203,44 @@ export class VercelService extends BaseIntegrationService<VercelIntegration> {
 
       const vercelTargets = environmentIds ? await this.mapShelveToVercelEnvironments(environmentIds) : ['production', 'preview', 'development'] as const
 
-      for (const { key: secretKey, value: secretValue } of variables) {
-        try {
-          await client.projects.createProjectEnv({
-            idOrName: vercelProjectId,
-            upsert: 'true',
-            requestBody: {
-              key: secretKey,
-              value: secretValue,
-              target: vercelTargets as any,
-              type: 'encrypted'
-            }
-          })
-        } catch (error: any) {
-          throw createError({
-            statusCode: 500,
-            statusMessage: `Failed to send secret ${secretKey}: ${error.message}`
-          })
-        }
+      const results = await Promise.allSettled(
+        variables.map(async ({ key: secretKey, value: secretValue }) => {
+          try {
+            await client.projects.createProjectEnv({
+              idOrName: vercelProjectId,
+              upsert: 'true',
+              requestBody: {
+                key: secretKey,
+                value: secretValue,
+                target: vercelTargets as any,
+                type: 'encrypted'
+              }
+            })
+            return { key: secretKey, status: 'success' }
+          } catch (error: any) {
+            return { key: secretKey, status: 'error', error: error.message }
+          }
+        })
+      )
+
+      const successful = results.filter(r => r.status === 'fulfilled' && r.value.status === 'success')
+      const failed = results.filter(r => r.status === 'fulfilled' && r.value.status === 'error')
+
+      if (failed.length === variables.length) {
+        throw createError({
+          statusCode: 500,
+          statusMessage: `All variables failed to sync: ${failed.map(f => (f as any).value.key).join(', ')}`
+        })
       }
 
       return {
         statusCode: 201,
-        message: 'Secrets successfully sent to Vercel project'
+        message: `Successfully synced ${successful.length}/${variables.length} variables to Vercel`,
+        results: {
+          successful: successful.length,
+          failed: failed.length,
+          details: failed.length > 0 ? failed.map(f => (f as any).value) : undefined
+        }
       }
     } catch (error: any) {
       this.handleError('send secrets', error)

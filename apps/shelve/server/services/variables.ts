@@ -131,12 +131,14 @@ export class VariablesService {
 
     await clearCache('Variables', projectId)
 
+    const syncPromises = []
+    
     if (syncWithGitHub) {
       const { user } = await requireUserSession(event)
       const project = await new ProjectsService().getProject(projectId)
       if (!project || !project.repository) throw createError({ statusCode: 400, statusMessage: 'No GitHub repository linked to this project.' })
       const variablesToSend = varsToCreate.map(v => ({ key: autoUppercase ? v.key.toUpperCase() : v.key, value: v.value }))
-      await new GithubService(event).sendSecrets(user.id, project.repository, variablesToSend)
+      syncPromises.push(new GithubService(event).sendSecrets(user.id, project.repository, variablesToSend))
     }
 
     if (syncWithVercel) {
@@ -144,7 +146,11 @@ export class VariablesService {
       const project = await new ProjectsService().getProject(projectId)
       if (!project || !project.vercelProjectId) throw createError({ statusCode: 400, statusMessage: 'No Vercel project linked to this project.' })
       const variablesToSend = varsToCreate.map(v => ({ key: autoUppercase ? v.key.toUpperCase() : v.key, value: v.value }))
-      await new VercelService(event).sendSecrets(user.id, project.vercelProjectId, variablesToSend, environmentIds)
+      syncPromises.push(new VercelService(event).sendSecrets(user.id, project.vercelProjectId, variablesToSend, environmentIds))
+    }
+
+    if (syncPromises.length > 0) {
+      await Promise.allSettled(syncPromises)
     }
   }
 

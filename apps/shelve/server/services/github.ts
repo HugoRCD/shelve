@@ -178,8 +178,7 @@ export class GithubService {
 
       const token = await this.getInstallationToken(integrations[0].installationId)
       
-      // eslint-disable-next-line
-      const { key_id, key } = await $fetch<{ key_id: string; key: string }>(`${this.GITHUB_API}/repos/${sanitizedRepository}/actions/secrets/public-key`, {
+      const { key_id: keyId, key } = await $fetch<{ key_id: string; key: string }>(`${this.GITHUB_API}/repos/${sanitizedRepository}/actions/secrets/public-key`, {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: 'application/vnd.github.v3+json'
@@ -188,34 +187,49 @@ export class GithubService {
 
       const binaryPublicKey = Uint8Array.from(Buffer.from(key, 'base64'))
 
-      for (const { key: secretKey, value: secretValue } of variables) {
-        try {
-          const binarySecretValue = new TextEncoder().encode(secretValue)
-          const encryptedBytes = cryptoBoxSeal(binarySecretValue, binaryPublicKey)
-          const encryptedValue = Buffer.from(encryptedBytes).toString('base64')
+      const results = await Promise.allSettled(
+        variables.map(async ({ key: secretKey, value: secretValue }) => {
+          try {
+            const binarySecretValue = new TextEncoder().encode(secretValue)
+            const encryptedBytes = cryptoBoxSeal(binarySecretValue, binaryPublicKey)
+            const encryptedValue = Buffer.from(encryptedBytes).toString('base64')
 
-          await $fetch(`${this.GITHUB_API}/repos/${sanitizedRepository}/actions/secrets/${secretKey}`, {
-            method: 'PUT',
-            headers: {
-              Authorization: `Bearer ${token}`,
-              Accept: 'application/vnd.github.v3+json'
-            },
-            body: {
-              encrypted_value: encryptedValue,
-              key_id: key_id
-            }
-          })
-        } catch (error: any) {
-          throw createError({
-            statusCode: 500,
-            statusMessage: `Failed to encrypt or send secret ${secretKey}: ${error.message}`
-          })
-        }
+            await $fetch(`${this.GITHUB_API}/repos/${sanitizedRepository}/actions/secrets/${secretKey}`, {
+              method: 'PUT',
+              headers: {
+                Authorization: `Bearer ${token}`,
+                Accept: 'application/vnd.github.v3+json'
+              },
+              body: {
+                encrypted_value: encryptedValue,
+                key_id: keyId
+              }
+            })
+            return { key: secretKey, status: 'success' }
+          } catch (error: any) {
+            return { key: secretKey, status: 'error', error: error.message }
+          }
+        })
+      )
+
+      const successful = results.filter(r => r.status === 'fulfilled' && r.value.status === 'success')
+      const failed = results.filter(r => r.status === 'fulfilled' && r.value.status === 'error')
+
+      if (failed.length === variables.length) {
+        throw createError({
+          statusCode: 500,
+          statusMessage: `All variables failed to sync: ${failed.map(f => (f as any).value.key).join(', ')}`
+        })
       }
 
       return {
         statusCode: 201,
-        message: 'Secrets successfully encrypted and sent to GitHub repository'
+        message: `Successfully synced ${successful.length}/${variables.length} variables to GitHub`,
+        results: {
+          successful: successful.length,
+          failed: failed.length,
+          details: failed.length > 0 ? failed.map(f => (f as any).value) : undefined
+        }
       }
     } catch (error: any) {
       throw createError({
