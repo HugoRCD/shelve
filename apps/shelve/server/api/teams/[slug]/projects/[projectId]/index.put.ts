@@ -1,13 +1,14 @@
 import { z } from 'zod'
 
 const updateProjectSchema = z.object({
-  name: z.string().min(1).max(255).trim(),
+  name: z.string().min(1).max(255).trim().optional(),
   description: z.string().trim().optional(),
   homepage: z.string().trim().optional(),
   projectManager: z.string().trim().optional(),
   variablePrefix: z.string().trim().optional(),
   repository: z.string().trim().optional(),
   logo: z.string().trim().optional(),
+  vercelProjectId: z.string().trim().nullish(),
 })
 
 const projectIdParamsSchema = z.object({

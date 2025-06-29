@@ -33,7 +33,7 @@ async function handleOtpComplete(value: string[]) {
     
     emit('otpVerified')
     toast.success('Login successful!')
-    
+
     await reloadNuxtApp()
   } catch (error: any) {
     toast.error(error.data?.message || 'Invalid verification code')

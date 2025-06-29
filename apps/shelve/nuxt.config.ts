@@ -46,6 +46,10 @@ export default defineNuxtConfig({
         clientId: '',
         clientSecret: '',
       },
+      vercel: {
+        clientId: '',
+        clientSecret: '',
+      },
     }
   },
 
@@ -54,6 +58,9 @@ export default defineNuxtConfig({
       public: {
         github: {
           appName: 'shelve-local',
+        },
+        vercel: {
+          appName: 'shelve-localhost',
         },
       },
     },
@@ -64,6 +71,9 @@ export default defineNuxtConfig({
       public: {
         github: {
           appName: 'shelve-cloud',
+        },
+        vercel: {
+          appName: 'shelve',
         },
       },
     },

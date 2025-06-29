@@ -15,6 +15,7 @@ const schema = z.object({
     }).min(1).trim(),
   })).min(1).max(100),
   syncWithGitHub: z.boolean().optional(),
+  syncWithVercel: z.boolean().optional(),
 })
 
 export default eventHandler(async (event) => {
@@ -32,6 +33,7 @@ export default eventHandler(async (event) => {
       value: variable.value,
     })),
     syncWithGitHub: body.syncWithGitHub,
+    syncWithVercel: body.syncWithVercel,
   })
 
   variablesService.incrementStatAsync(team.id, 'push')
