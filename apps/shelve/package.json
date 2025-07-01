@@ -22,20 +22,20 @@
     "@vue-email/components": "^0.0.21",
     "@vue-email/render": "^0.0.9",
     "blakejs": "^1.2.1",
-    "drizzle-kit": "^0.31.3",
+    "drizzle-kit": "^0.31.4",
     "drizzle-orm": "^0.44.2",
     "jsonwebtoken": "^9.0.2",
     "libsodium-wrappers": "^0.7.15",
     "nuxt": "^3.17.5",
     "nuxt-auth-utils": "^0.5.20",
     "nuxt-build-cache": "^0.1.1",
-    "pg": "^8.16.2",
+    "pg": "^8.16.3",
     "resend": "^4.6.0",
     "tweetnacl": "^1.0.3",
     "vue-router": "^4.5.1"
   },
   "devDependencies": {
-    "@nuxt/devtools": "^2.5.0",
+    "@nuxt/devtools": "^2.6.0",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/libsodium-wrappers": "^0.7.14"
   }
