@@ -31,10 +31,6 @@ export default defineNuxtConfig({
     }
   },
 
-  hub: {
-    cache: true
-  },
-
   llms: {
     domain: 'https://shelve.cloud',
     title: 'Shelve',
