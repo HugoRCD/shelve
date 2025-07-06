@@ -12,11 +12,11 @@
   "packageManager": "pnpm@10.12.4",
   "devDependencies": {
     "@iconify-json/heroicons": "^1.2.2",
-    "@iconify-json/lucide": "^1.2.54",
+    "@iconify-json/lucide": "^1.2.55",
     "@iconify-json/simple-icons": "^1.2.41",
-    "@nuxt/content": "^3.6.2",
+    "@nuxt/content": "^3.6.3",
     "@nuxt/image": "^1.10.0",
-    "@nuxt/scripts": "^0.11.8",
+    "@nuxt/scripts": "^0.11.9",
     "@nuxt/ui": "^3.2.0",
     "@nuxt/ui-pro": "^3.2.0",
     "@nuxthub/core": "^0.9.0",
@@ -31,8 +31,8 @@
     "nuxt-visitors": "^1.2.2",
     "vue": "^3.5.17",
     "vue-sonner": "^2.0.1",
-    "wrangler": "^4.22.0",
-    "zod": "^3.25.70"
+    "wrangler": "^4.23.0",
+    "zod": "^3.25.74"
   },
   "dependencies": {
     "@vercel/analytics": "^1.5.0"
