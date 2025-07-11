@@ -49,6 +49,15 @@ export const githubApp = pgTable('github_app', {
   ...timestamps,
 })
 
+export const vercelIntegration = pgTable('vercel_integration', {
+  id: bigint({ mode: 'number' }).primaryKey().generatedByDefaultAsIdentity(),
+  configurationId: varchar({ length: 50 }).unique().notNull(),
+  accessToken: varchar({ length: 800 }).notNull(),
+  teamId: varchar({ length: 50 }),
+  userId: bigint({ mode: 'number' }).references(() => users.id, { onDelete: 'cascade' }).notNull(),
+  ...timestamps,
+})
+
 export const teams = pgTable('teams', {
   id: bigint({ mode: 'number' }).primaryKey().generatedByDefaultAsIdentity(),
   name: varchar({ length: 50 }).notNull(),
@@ -78,6 +87,7 @@ export const projects = pgTable('projects', {
   projectManager: varchar({ length: 100 }).default('').notNull(),
   homepage: varchar({ length: 100 }).default('').notNull(),
   variablePrefix: varchar({ length: 500 }).default('').notNull(),
+  vercelProjectId: varchar({ length: 50 }).default(''),
   logo: varchar({ length: 500 }).default(DEFAULT_LOGO).notNull(),
   ...timestamps,
 }, (table) => [
@@ -201,5 +211,12 @@ export const variableValuesRelations = relations(variableValues, ({ one }) => ({
   environment: one(environments, {
     fields: [variableValues.environmentId],
     references: [environments.id],
+  })
+}))
+
+export const vercelIntegrationRelations = relations(vercelIntegration, ({ one }) => ({
+  user: one(users, {
+    fields: [vercelIntegration.userId],
+    references: [users.id],
   })
 }))

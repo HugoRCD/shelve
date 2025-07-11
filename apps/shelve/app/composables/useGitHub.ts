@@ -1,9 +1,7 @@
 import type { GitHubRepo } from '@types'
 
 export function useGitHub() {
-  const { data: apps, status: appsStatus } = useAsyncData('github-apps', () => 
-    $fetch('/api/github/apps')
-  )
+  const { getIntegrations, hasIntegration } = useAppIntegrations()
 
   const { data: repos, status: reposStatus, refresh: refreshRepos } = useFetch<GitHubRepo[]>('/api/github/repos', {
     key: 'github-repos',
@@ -11,14 +9,18 @@ export function useGitHub() {
     immediate: false
   })
 
+  const apps = computed(() => getIntegrations('github'))
+  const hasGithubIntegration = computed(() => hasIntegration('github'))
+
   const loading = computed(() => 
-    reposStatus.value === 'pending' || appsStatus.value === 'pending'
+    reposStatus.value === 'pending'
   )
 
   return {
     apps,
     repos,
     loading,
-    refreshRepos
+    refreshRepos,
+    hasGithubIntegration
   }
 }

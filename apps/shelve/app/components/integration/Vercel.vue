@@ -6,17 +6,17 @@ interface Props {
 const props = defineProps<Props>()
 
 const features = [
-  'Automatically sync secrets to GitHub',
-  'Secure repository access management',
-  'Keep CI/CD pipelines up to date'
+  'Automatically sync environment variables to Vercel',
+  'Deploy with up-to-date configurations',
+  'Keep projects synchronized'
 ]
 </script>
 
 <template>
   <IntegrationBase
-    type="github"
-    name="GitHub"
-    icon="simple-icons:github"
+    type="vercel"
+    name="Vercel"
+    icon="simple-icons:vercel"
     :features
     :on-connected="props.onConnected"
   />

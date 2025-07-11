@@ -1,5 +1,7 @@
 <script setup lang="ts">
+const route = useRoute()
 const loading = ref(false)
+
 const props = defineProps({
   label: {
     type: String,
@@ -15,9 +17,26 @@ const props = defineProps({
   },
 })
 
-function open() {
+async function open() {
   loading.value = true
-  window.location.href = `/auth/${props.provider}`
+  
+  try {
+    const redirectParam = route.query.redirect as string | undefined
+    
+    const { oauthUrl } = await $fetch('/api/auth/prepare-oauth', {
+      method: 'POST',
+      body: {
+        provider: props.provider,
+        redirectUrl: redirectParam
+      }
+    })
+    
+    window.location.href = oauthUrl
+  } catch (error) {
+    console.error('OAuth preparation failed:', error)
+    loading.value = false
+    window.location.href = `/auth/${props.provider}`
+  }
 }
 </script>
 

@@ -26,6 +26,7 @@ export type CreateVariablesInput = {
     value: string;
   }[];
   syncWithGitHub?: boolean;
+  syncWithVercel?: boolean;
 };
 
 export type EnvVar = {

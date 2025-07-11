@@ -25,9 +25,9 @@ export type GitHubRepo = {
 
 export type GithubApp = {
   id: number
-  installationId: string
+  installationId: number
   isOrganisation: boolean
   userId: number
-  createdAt: string
-  updatedAt: string
+  createdAt: Date
+  updatedAt: Date
 }
