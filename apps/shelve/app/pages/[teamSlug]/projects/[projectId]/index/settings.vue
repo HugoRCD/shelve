@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { TeamRole } from '@types'
-import { useCurrentLoading } from '~/composables/useProjects'
 import type { FormSubmitEvent } from '#ui/types'
 import { type UpdateProjectSchema, updateProjectSchema } from '~/utils/zod/project'
 
@@ -98,12 +97,24 @@ definePageMeta({
               <UFormField v-else v-model="project.variablePrefix" label="Prefix" class="md:w-2/3">
                 <UTextarea v-model="project.variablePrefix" class="w-full" :disabled="!canUpdate" :rows="4" />
               </UFormField>
-              <UTooltip text="Yes this will be improved in the future 😅">
-                <p class="mt-1 text-xs text-muted">
-                  Write your prefix separated by a comma, for example: <code>NUXT_PUBLIC_, REACT_APP_</code>
-                </p>
-              </UTooltip>
+              <p class="mt-1 text-xs text-muted">
+                Write your prefix separated by a comma, for example: <code>NUXT_PUBLIC_, REACT_APP_</code>
+              </p>
             </div>
+          </div>
+        </div>
+        <Separator class="my-2" />
+        <div class="flex flex-col gap-4">
+          <div>
+            <h3 class="font-semibold">
+              Integrations
+            </h3>
+            <p class="text-pretty text-xs text-muted">
+              Connect your project with external services
+            </p>
+          </div>
+          <div class="my-2">
+            <ProjectVercelLink :project @updated="(updatedProject) => project = updatedProject" />
           </div>
         </div>
       </div>

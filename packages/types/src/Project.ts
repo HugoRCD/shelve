@@ -6,6 +6,7 @@ export type Project = {
   projectManager: string;
   homepage: string;
   variablePrefix: string;
+  vercelProjectId?: string | null;
   logo: string;
   teamId: number;
   createdAt: Date;
@@ -20,18 +21,20 @@ export type CreateProjectInput = {
   projectManager?: string;
   homepage?: string;
   variablePrefix?: string;
+  vercelProjectId?: string | null;
   teamId: number;
 };
 
 export type ProjectUpdateInput = {
   id: number;
-  name: string;
+  name?: string;
   description?: string;
   logo?: string;
   homepage?: string;
   repository?: string;
   projectManager?: string;
   variablePrefix?: string;
+  vercelProjectId?: string | null;
   teamId: number;
 };
 
