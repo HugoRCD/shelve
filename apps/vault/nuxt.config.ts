@@ -7,7 +7,7 @@ export default defineNuxtConfig({
     '/': { prerender: true }
   },
 
-  modules: ['@nuxt/ui', '@nuxt/scripts', '@nuxthub/core'],
+  modules: ['@nuxt/ui', '@nuxt/scripts'],
 
   runtimeConfig: {
     private: {
@@ -15,13 +15,24 @@ export default defineNuxtConfig({
     },
   },
 
-  hub: {
-    kv: true,
+  $production: {
+    nitro: {
+      storage: {
+        vault: {
+          driver: 'redis',
+          url: process.env.REDIS_URL
+        }
+      }
+    }
   },
 
   $development: {
-    hub: {
-      remote: true
+    nitro: {
+      storage: {
+        vault: {
+          driver: 'memory'
+        }
+      }
     }
   },
 
