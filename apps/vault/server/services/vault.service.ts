@@ -5,6 +5,7 @@ export class VaultService {
 
   private readonly encryptionKey: string
   private readonly siteUrl: string
+  private readonly storage = useStorage('vault')
   private readonly PREFIX = 'cache:'
 
   private readonly TTL_MAP = {
@@ -67,7 +68,7 @@ export class VaultService {
 
   async decrypt(id: string): Promise<DecryptResponse> {
     const key = this.generateKey(id)
-    const storedData = await useStorage('vault').get<StoredData>(key)
+    const storedData = await this.storage.get<StoredData>(key)
 
     if (!storedData) {
       throw createError({
@@ -80,7 +81,7 @@ export class VaultService {
     const timeLeft = this.calculateTimeLeft(createdAt, ttl)
 
     if (timeLeft <= 0) {
-      await useStorage('vault').del(key)
+      await this.storage.del(key)
       throw createError({
         statusCode: 400,
         statusMessage: 'Link has expired'
@@ -88,7 +89,7 @@ export class VaultService {
     }
 
     if (reads <= 0) {
-      await useStorage('vault').del(key)
+      await this.storage.del(key)
       throw createError({
         statusCode: 400,
         statusMessage: 'Maximum number of reads reached'
@@ -98,13 +99,13 @@ export class VaultService {
     const decryptedValue = await unseal(encryptedValue, this.encryptionKey) as string
 
     const updatedReads = reads - 1
-    await useStorage('vault').set(key, {
+    await this.storage.set(key, {
       ...storedData,
       reads: updatedReads
     })
 
     if (updatedReads === 0) {
-      await useStorage('vault').del(key)
+      await this.storage.del(key)
     }
 
     return {
@@ -126,7 +127,7 @@ export class VaultService {
       ttl: data.ttl
     }
 
-    await useStorage('vault').set(key, storedData)
+    await this.storage.set(key, storedData)
     return this.generateShareUrl(randomId)
   }
 
