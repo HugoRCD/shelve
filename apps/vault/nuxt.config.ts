@@ -11,19 +11,11 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     private: {
+      redis: {
+        url: '',
+      },
       encryptionKey: '',
     },
-  },
-
-  $production: {
-    nitro: {
-      storage: {
-        vault: {
-          driver: 'redis',
-          url: process.env.REDIS_URL
-        }
-      }
-    }
   },
 
   $development: {
