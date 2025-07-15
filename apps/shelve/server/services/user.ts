@@ -30,6 +30,29 @@ export async function handleOAuthUser(input: CreateUserInput, event: H3Event): P
   return foundUser
 }
 
+export async function handleEmailUser(email: string, event: H3Event): Promise<{ user: User; isNewUser: boolean }> {
+  const [foundUser] = await useDrizzle()
+    .select()
+    .from(tables.users)
+    .where(eq(tables.users.email, email))
+
+  if (foundUser) {
+    return { user: foundUser, isNewUser: false }
+  }
+
+  const username = await validateUsername(email.split('@')[0], AuthType.EMAIL)
+  const userInput: CreateUserInput = {
+    email,
+    username,
+    authType: AuthType.EMAIL,
+    avatar: 'https://i.imgur.com/6VBx3io.png',
+    appUrl: getRequestHost(event),
+  }
+
+  const newUser = await createUser(userInput, event)
+  return { user: newUser, isNewUser: true }
+}
+
 export async function validateUsername(username: string, authType?: AuthType): Promise<string> {
   const foundUser = await useDrizzle()
     .select({

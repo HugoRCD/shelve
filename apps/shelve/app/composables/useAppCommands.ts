@@ -4,8 +4,12 @@ export function useAppCommands() {
   const teams = useTeams()
   const colorMode = useColorMode()
   const { version } = useRuntimeConfig().public
-  const { selectTeam } = useTeamsService()
+  const { selectTeam, fetchTeams } = useTeamsService()
   const route = useRoute()
+
+  if (!teams.value || teams.value.length === 0) {
+    fetchTeams()
+  }
 
   // Submenu state
   const subMenuState = reactive<SubMenuState>({
@@ -29,7 +33,22 @@ export function useAppCommands() {
     subMenuState.items = []
   }
 
-  const currentTeam = computed(() => teams.value.find((team) => team.slug === route.params.teamSlug))
+  const currentTeam = computed(() => {
+    if (!teams.value || teams.value.length === 0) {
+      return null
+    }
+    
+    const teamSlug = route.params.teamSlug as string
+    if (!teamSlug) {
+      return teams.value[0] || null
+    }
+    
+    return teams.value.find((team) => team.slug === teamSlug) || teams.value[0] || null
+  })
+
+  const getTeamSlug = () => {
+    return currentTeam.value?.slug || teams.value[0]?.slug
+  }
 
   // Theme commands - fully reactive
   const themeCommands = computed<CommandItem[]>(() => [
@@ -73,13 +92,17 @@ export function useAppCommands() {
     {
       id: 'settings-team',
       label: 'Team Settings',
-      icon: 'lucide:users',
+      icon: 'lucide:settings',
       description: 'Manage team settings',
       action: () => {
-        navigateTo(`/${currentTeam.value?.slug}/settings`)
+        const teamSlug = getTeamSlug()
+        if (teamSlug) {
+          navigateTo(`/${teamSlug}/team/settings`)
+        }
       },
       keywords: ['team', 'organization', 'settings', 'preferences'],
-      active: route.path.includes('/settings') && !route.path.includes('/user/settings')
+      active: route.path.includes('/team/settings'),
+      disabled: !getTeamSlug()
     },
     {
       id: 'settings-api',
@@ -102,10 +125,14 @@ export function useAppCommands() {
       icon: 'lucide:layers',
       description: 'View all environments',
       action: () => {
-        navigateTo(`/${currentTeam.value?.slug}/environments`)
+        const teamSlug = getTeamSlug()
+        if (teamSlug) {
+          navigateTo(`/${teamSlug}/environments`)
+        }
       },
       keywords: ['environments', 'all', 'list'],
-      active: route.path === `/${currentTeam.value?.slug}/environments`
+      active: route.path === `/${getTeamSlug()}/environments`,
+      disabled: !getTeamSlug()
     },
     {
       id: 'env-create',
@@ -113,10 +140,14 @@ export function useAppCommands() {
       icon: 'lucide:plus-circle',
       description: 'Create a new environment',
       action: () => {
-        navigateTo(`/${currentTeam.value?.slug}/environments/new`)
+        const teamSlug = getTeamSlug()
+        if (teamSlug) {
+          navigateTo(`/${teamSlug}/environments/new`)
+        }
       },
       keywords: ['environment', 'create', 'new', 'add'],
-      active: route.path === `/${currentTeam.value?.slug}/environments/new`
+      active: route.path === `/${getTeamSlug()}/environments/new`,
+      disabled: !getTeamSlug()
     },
     {
       id: 'env-production',
@@ -124,10 +155,14 @@ export function useAppCommands() {
       icon: 'lucide:globe',
       description: 'View production environment',
       action: () => {
-        navigateTo(`/${currentTeam.value?.slug}/environments/production`)
+        const teamSlug = getTeamSlug()
+        if (teamSlug) {
+          navigateTo(`/${teamSlug}/environments/production`)
+        }
       },
       keywords: ['environment', 'production', 'live'],
-      active: route.path.includes('/environments/production')
+      active: route.path.includes('/environments/production'),
+      disabled: !getTeamSlug()
     },
     {
       id: 'env-staging',
@@ -135,10 +170,14 @@ export function useAppCommands() {
       icon: 'lucide:flask-conical',
       description: 'View staging environment',
       action: () => {
-        navigateTo(`/${currentTeam.value?.slug}/environments/staging`)
+        const teamSlug = getTeamSlug()
+        if (teamSlug) {
+          navigateTo(`/${teamSlug}/environments/staging`)
+        }
       },
       keywords: ['environment', 'staging', 'test'],
-      active: route.path.includes('/environments/staging')
+      active: route.path.includes('/environments/staging'),
+      disabled: !getTeamSlug()
     }
   ])
 
@@ -150,10 +189,14 @@ export function useAppCommands() {
       icon: 'lucide:layout-dashboard',
       description: 'Go to your dashboard',
       action: () => {
-        navigateTo(`/${currentTeam.value?.slug}`)
+        const teamSlug = getTeamSlug()
+        if (teamSlug) {
+          navigateTo(`/${teamSlug}`)
+        }
       },
       keywords: ['home', 'dashboard', 'main'],
-      active: route.path === `/${currentTeam.value?.slug}`
+      active: route.path === `/${getTeamSlug()}`,
+      disabled: !getTeamSlug()
     },
     {
       id: 'nav-environments',
@@ -161,12 +204,14 @@ export function useAppCommands() {
       icon: 'lucide:cloud',
       description: 'Manage environments',
       action: () => {
-        // activateSubMenu('nav-environments', 'Environments', environmentSubMenuItems.value)
-        navigateTo(`/${currentTeam.value?.slug}/environments`)
+        const teamSlug = getTeamSlug()
+        if (teamSlug) {
+          navigateTo(`/${teamSlug}/environments`)
+        }
       },
       keywords: ['environments', 'projects', 'variables'],
       active: route.path.includes('/environments'),
-      // hasSubmenu: true
+      disabled: !getTeamSlug()
     },
     {
       id: 'nav-settings',
@@ -254,6 +299,7 @@ export function useAppCommands() {
         }
       },
       keywords: ['copy', 'clipboard', 'team', 'id'],
+      disabled: !currentTeam.value?.id
     },
     {
       id: 'util-version',
@@ -288,34 +334,49 @@ export function useAppCommands() {
       ]
     }
 
-    // Otherwise show all command groups
-    return [
-      {
+    // Filter out empty command groups
+    const groups = []
+
+    // Only show teams if available
+    if (teams.value && teams.value.length > 0) {
+      groups.push({
         id: 'teams',
         label: 'Teams',
         items: teamCommands.value
-      },
-      {
+      })
+    }
+
+    // Only show navigation if we have teams
+    if (teams.value && teams.value.length > 0) {
+      groups.push({
         id: 'navigation',
         label: 'Navigation',
         items: navigationCommands.value
-      },
-      {
-        id: 'theme',
-        label: 'Theme',
-        items: themeCommands.value
-      },
-      {
-        id: 'help',
-        label: 'Help & Support',
-        items: helpCommands.value
-      },
-      {
-        id: 'utility',
-        label: 'Utilities',
-        items: utilityCommands.value
-      }
-    ]
+      })
+    }
+
+    // Always show theme commands
+    groups.push({
+      id: 'theme',
+      label: 'Theme',
+      items: themeCommands.value
+    })
+
+    // Always show help commands
+    groups.push({
+      id: 'help',
+      label: 'Help & Support',
+      items: helpCommands.value
+    })
+
+    // Always show utility commands
+    groups.push({
+      id: 'utility',
+      label: 'Utilities',
+      items: utilityCommands.value
+    })
+
+    return groups
   })
 
   return {

@@ -116,6 +116,16 @@ const projectManager = [
     value: 'volta',
     icon: 'custom:volta',
   },
+  {
+    label: 'GitHub',
+    value: 'github',
+    icon: 'simple-icons:github',
+  },
+  {
+    label: 'Jira',
+    value: 'jira',
+    icon: 'simple-icons:jira',
+  }
 ]
 
 function getProjectManager(manager: string) {
@@ -130,84 +140,69 @@ function getProjectManager(manager: string) {
 <template>
   <div>
     <div v-if="!currentLoading && project">
-      <div class="flex items-start justify-between gap-4">
-        <div class="flex items-start gap-4">
-          <UAvatar :src="project.logo" size="xl" :alt="project.name" class="logo" />
-          <div>
-            <h3 class="text-base font-semibold leading-7">
-              {{ project.name }}
-            </h3>
-            <p class="text-sm leading-6 text-muted">
-              {{ project.description }}
-            </p>
-          </div>
-          <UModal v-model:open="showEdit" title="Edit project" description="Update your project settings">
-            <template #body>
-              <UForm :state="project" :schema="updateProjectSchema" class="flex flex-col gap-4" @submit.prevent="updateCurrentProject">
-                <UFormField label="Name" name="name">
-                  <UInput v-model="project.name" class="w-full" />
-                </UFormField>
-                <UFormField label="Description" name="description">
-                  <UTextarea v-model="project.description" class="w-full" />
-                </UFormField>
-                <div class="flex items-center gap-4 w-full">
-                  <UAvatar :src="project.logo" size="xl" :alt="project.name" />
-                  <UFormField label="Logo" name="logo" class="w-full">
-                    <UInput v-model="project.logo" class="w-full" />
-                  </UFormField>
-                </div>
-                <div class="flex justify-end gap-4">
-                  <UButton variant="ghost" @click="showEdit = false">
-                    Cancel
-                  </UButton>
-                  <UButton type="submit" trailing :loading="updateLoading">
-                    Save
-                  </UButton>
-                </div>
-              </UForm>
-            </template>
-          </UModal>
+      <PageSection
+        :title="project.name"
+        :description="project.description"
+        :image="project.logo"
+        :actions="items"
+      >
+        <div v-if="project.projectManager || project.repository || project.homepage" class="flex flex-wrap gap-3 sm:flex-row sm:items-center">
+          <NuxtLink v-if="project.projectManager" target="_blank" :to="project.projectManager">
+            <UButton
+              variant="soft"
+              size="sm"
+              :icon="getProjectManager(project.projectManager)?.icon"
+              :label="`Open ${getProjectManager(project.projectManager)?.label}`"
+              class="rounded-none"
+            />
+          </NuxtLink>
+          <NuxtLink v-if="project.repository" target="_blank" :to="project.repository">
+            <UButton
+              variant="soft"
+              size="sm"
+              icon="simple-icons:github"
+              label="Open repository"
+              class="rounded-none"
+            />
+          </NuxtLink>
+          <NuxtLink v-if="project.homepage" target="_blank" :to="project.homepage">
+            <UButton
+              variant="soft"
+              size="sm"
+              icon="nucleo:house"
+              label="Open homepage"
+              class="rounded-none"
+            />
+          </NuxtLink>
         </div>
-        <UDropdownMenu
-          v-if="hasAccess(teamRole, TeamRole.ADMIN)"
-          :items
-          :content="{
-            align: 'start',
-            side: 'right',
-            sideOffset: 8
-          }"
-        >
-          <UButton variant="ghost" icon="heroicons:ellipsis-horizontal-20-solid" />
-        </UDropdownMenu>
-      </div>
-      <div v-if="project.projectManager || project.repository || project.homepage" class="mt-6 flex flex-wrap gap-4 sm:flex-row sm:items-center">
-        <NuxtLink v-if="project.projectManager" target="_blank" :to="project.projectManager">
-          <UButton
-            variant="soft"
-            size="xs"
-            :icon="getProjectManager(project.projectManager)?.icon"
-            :label="`Open ${getProjectManager(project.projectManager)?.label}`"
-            :ui="{ leadingIcon: 'dark:fill-white fill-black' }"
-          />
-        </NuxtLink>
-        <NuxtLink v-if="project.repository" target="_blank" :to="project.repository">
-          <UButton
-            variant="soft"
-            size="xs"
-            icon="simple-icons:github"
-            label="Open repository"
-            :ui="{ leadingIcon: 'dark:fill-white fill-black' }"
-          />
-        </NuxtLink>
-        <NuxtLink v-if="project.homepage" target="_blank" :to="project.homepage">
-          <UButton
-            variant="soft"
-            size="xs"
-            icon="heroicons:home"
-            label="Open homepage"
-          />
-        </NuxtLink>
-      </div>
+
+        <UModal v-model:open="showEdit" title="Edit project" description="Update your project settings">
+          <template #body>
+            <UForm :state="project" :schema="updateProjectSchema" class="flex flex-col gap-4" @submit.prevent="updateCurrentProject">
+              <UFormField label="Name" name="name">
+                <UInput v-model="project.name" class="w-full" />
+              </UFormField>
+              <UFormField label="Description" name="description">
+                <UTextarea v-model="project.description" class="w-full" />
+              </UFormField>
+              <div class="flex items-center gap-4 w-full">
+                <UAvatar :src="project.logo" size="xl" :alt="project.name" />
+                <UFormField label="Logo" name="logo" class="w-full">
+                  <UInput v-model="project.logo" class="w-full" />
+                </UFormField>
+              </div>
+              <div class="flex justify-end gap-4">
+                <UButton variant="ghost" @click="showEdit = false">
+                  Cancel
+                </UButton>
+                <UButton type="submit" trailing :loading="updateLoading">
+                  Save
+                </UButton>
+              </div>
+            </UForm>
+          </template>
+        </UModal>
+      </PageSection>
     </div>
     <div v-else class="flex items-start justify-between gap-4">
       <div class="flex w-full items-start gap-4">

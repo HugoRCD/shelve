@@ -102,7 +102,7 @@ const items = computed(() => [
         </div>
         <div class="flex items-center gap-2">
           <p class="hidden text-right text-xs font-normal text-muted md:block">
-            Last updated: {{ new Date(variable.updatedAt).toLocaleDateString() }}
+            <DatePopover :date="variable.updatedAt" label="Last Updated" />
           </p>
         </div>
       </div>

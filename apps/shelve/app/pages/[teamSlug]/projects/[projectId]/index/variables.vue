@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import type { Variable } from '@types'
 
+definePageMeta({
+  title: 'Project',
+})
+
 const route = useRoute()
 const projectId = route.params.projectId as string
 const variables = useVariables(projectId)

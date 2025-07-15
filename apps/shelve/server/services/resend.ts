@@ -2,6 +2,7 @@ import { Resend } from 'resend'
 import { render } from '@vue-email/render'
 import type { H3Event } from 'h3'
 import welcomeEmail from '~~/server/emails/welcomeEmail.vue'
+import verifyOtp from '~~/server/emails/verifyOtp.vue'
 
 export class EmailService {
 
@@ -14,22 +15,29 @@ export class EmailService {
     this.SENDER = config.private.senderEmail || 'HugoRCD <contact@hrcd.fr>'
   }
 
-  /*async sendOtp(email: string, otp: string, appUrl: string): Promise<void> {
-    const template = await this.generateOtpTemplate(email, otp, appUrl)
+  async sendOtp(email: string, otp: string, redirectUrl: string): Promise<void> {
+    if (!this.resend) {
+      console.warn('Resend API key not found, set NUXT_PRIVATE_RESEND_API_KEY in your environment variables to enable email sending')
+      console.log('Development mode: OTP code is', otp)
+      return
+    }
+    
+    const template = await this.generateOtpTemplate(otp, redirectUrl)
 
     try {
       await this.resend.emails.send({
         from: this.SENDER,
         to: [email],
-        subject: 'Welcome to Shelve!',
+        subject: 'Your Shelve Login Code',
         html: template,
       }).then((response) => {
-        console.log('Email sent: ', response)
+        console.log('OTP email sent: ', response)
       })
     } catch (error) {
-      console.log('Error sending email: ', error)
+      console.log('Error sending OTP email: ', error)
+      throw error
     }
-  }*/
+  }
 
   async sendWelcomeEmail(email: string, username: string, appUrl: string): Promise<void> {
     if (!this.resend) {
@@ -60,16 +68,16 @@ export class EmailService {
     }
   }
 
-  /*private async generateOtpTemplate(email: string, otp: string, appUrl: string): Promise<string> {
+  private async generateOtpTemplate(otp: string, redirectUrl: string): Promise<string> {
     try {
       return await render(verifyOtp, {
         otp,
-        redirectUrl: `${appUrl}/login?email=${email}&otp=${otp}`,
+        redirectUrl,
       })
     } catch (error) {
       return `<h1>OTP: ${otp}</h1>`
     }
-  }*/
+  }
 
   private async generateWelcomeTemplate(username: string, appUrl: string): Promise<string> {
     try {
