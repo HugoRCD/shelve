@@ -129,6 +129,9 @@ importers:
 
   apps/shelve:
     dependencies:
+      '@vercel/sdk':
+        specifier: ^1.8.5
+        version: 1.10.0(zod@3.25.76)
       '@vue-email/components':
         specifier: ^0.0.21
         version: 0.0.21(typescript@5.8.3)(vue@3.5.17(typescript@5.8.3))
@@ -2638,6 +2641,16 @@ packages:
     resolution: {integrity: sha512-6lLqMNX3TuycBPABycx7A9F1bHQR7kiQln6abjFbPrf5C/05qHM9M5E4PeTE59c7z8g6vHnx1Ioihb2AQl7BTA==}
     engines: {node: '>=18'}
     hasBin: true
+
+  '@vercel/sdk@1.10.0':
+    resolution: {integrity: sha512-Z3bTFhDkQoEt2wviWxbvmkrkTPxVCYZaRlkV2Y3O/oRwVRnYiZ1tAK7NkjnSNtc19vARRkEAma/DfiaqVMlPzQ==}
+    hasBin: true
+    peerDependencies:
+      '@modelcontextprotocol/sdk': '>=1.5.0 <1.10.0'
+      zod: ^3
+    peerDependenciesMeta:
+      '@modelcontextprotocol/sdk':
+        optional: true
 
   '@vercel/speed-insights@1.2.0':
     resolution: {integrity: sha512-y9GVzrUJ2xmgtQlzFP2KhVRoCglwfRQgjyfY607aU0hh0Un6d0OUyrJkjuAlsV18qR4zfoFPs/BiIj9YDS6Wzw==}
@@ -11097,6 +11110,10 @@ snapshots:
       - encoding
       - rollup
       - supports-color
+
+  '@vercel/sdk@1.10.0(zod@3.25.76)':
+    dependencies:
+      zod: 3.25.76
 
   '@vercel/speed-insights@1.2.0(react@19.1.0)(vue-router@4.5.1(vue@3.5.17(typescript@5.8.3)))(vue@3.5.17(typescript@5.8.3))':
     optionalDependencies:

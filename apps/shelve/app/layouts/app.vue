@@ -23,6 +23,16 @@ const routeTitle = computed(() => {
 const title = computed(() => {
   return route.path === `/${teamSlug.value}` ? `Welcome, ${user.value?.username}` : navigation.value?.title || routeTitle.value
 })
+
+const { fetchAllIntegrations, fetchVercelProjects, hasIntegration } = useAppIntegrations()
+
+onMounted(async () => {
+  await fetchAllIntegrations()
+  
+  if (hasIntegration('vercel')) {
+    fetchVercelProjects()
+  }
+})
 </script>
 
 <template>
