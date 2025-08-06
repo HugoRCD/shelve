@@ -27,7 +27,7 @@
     "automd": "^0.4.0",
     "eslint": "^9.32.0",
     "turbo": "^2.5.5",
-    "typescript": "^5.8.3"
+    "typescript": "^5.9.2"
   },
   "pnpm": {
     "overrides": {
@@ -43,7 +43,7 @@
       "vue-demi"
     ]
   },
-  "packageManager": "pnpm@10.13.1",
+  "packageManager": "pnpm@10.14.0",
   "workspaces": [
     "packages/*",
     "apps/*"
