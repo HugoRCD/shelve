@@ -21,12 +21,12 @@
     "dev:cli": "turbo dev --filter=@shelve/cli"
   },
   "devDependencies": {
-    "@changesets/cli": "^2.29.5",
+    "@changesets/cli": "^2.29.6",
     "@hrcd/eslint-config": "^3.0.3",
     "@shelve/cli": "workspace:*",
     "automd": "^0.4.0",
     "eslint": "^9.33.0",
-    "turbo": "^2.5.5",
+    "turbo": "^2.5.6",
     "typescript": "^5.9.2"
   },
   "pnpm": {
