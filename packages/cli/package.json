@@ -59,7 +59,7 @@
   "devDependencies": {
     "@types/npm-registry-fetch": "^8.0.8",
     "@types/semver": "^7.7.0",
-    "unbuild": "^3.6.0",
+    "unbuild": "^3.6.1",
     "vitest": "^3.2.4"
   },
   "publishConfig": {
