@@ -50,7 +50,7 @@
     "npm-registry-fetch": "18.0.2",
     "nypm": "0.6.1",
     "ofetch": "1.4.1",
-    "pkg-types": "2.2.0",
+    "pkg-types": "2.3.0",
     "rc9": "^2.1.2",
     "semver": "7.7.2",
     "tinyglobby": "0.2.14",
