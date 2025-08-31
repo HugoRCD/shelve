@@ -22,7 +22,7 @@
     "@vercel/speed-insights": "^1.2.0",
     "@vueuse/core": "^13.8.0",
     "@vueuse/nuxt": "^13.8.0",
-    "dotenv": "^16.6.1",
+    "dotenv": "^17.2.1",
     "iron-webcrypto": "^1.2.1",
     "motion-plus-vue": "^1.4.0",
     "motion-v": "^1.7.1",
