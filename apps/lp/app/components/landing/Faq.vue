@@ -20,11 +20,11 @@ defineProps<{
       </div>
     </div>
     <div>
-      <UPageAccordion size="sm" :items="faq.items">
+      <UAccordion size="sm" :unmount-on-hide="false" :items="faq.items">
         <template #body="{ item }">
           <MDC :value="item.content" unwrap="p" />
         </template>
-      </UPageAccordion>
+      </UAccordion>
     </div>
   </div>
 </template>
