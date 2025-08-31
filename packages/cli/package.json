@@ -47,7 +47,7 @@
     "dotenv": "^16.6.1",
     "citty": "^0.1.6",
     "defu": "^6.1.4",
-    "npm-registry-fetch": "18.0.2",
+    "npm-registry-fetch": "19.0.0",
     "nypm": "0.6.1",
     "ofetch": "1.4.1",
     "pkg-types": "2.3.0",
