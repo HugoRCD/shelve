@@ -1,4 +1,4 @@
-import type { FooterColumn } from '@nuxt/ui-pro'
+import type { FooterColumn } from '@nuxt/ui'
 
 export const useFooterLinks = () => {
   const footerLinks: FooterColumn[] = [

@@ -26,7 +26,6 @@
     "drizzle-orm": "^0.44.5",
     "jsonwebtoken": "^9.0.2",
     "libsodium-wrappers": "^0.7.15",
-    "nuxt": "^3.18.1",
     "nuxt-auth-utils": "^0.5.23",
     "nuxt-build-cache": "^0.1.1",
     "pg": "^8.16.3",

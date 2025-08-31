@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import type { ContentNavigationItem } from '@nuxt/content'
 import { kebabCase } from 'scule'
-import { findPageBreadcrumb, mapContentNavigation } from '#ui-pro/utils/content'
+import { findPageBreadcrumb } from '@nuxt/content/utils'
+import { mapContentNavigation } from '@nuxt/ui/utils/content'
 
 const route = useRoute()
 
@@ -18,7 +19,7 @@ const { data: surround } = await useAsyncData(`${kebabCase(route.path)}-surround
 
 const navigation = inject<Ref<ContentNavigationItem[]>>('navigation', ref([]))
 
-const breadcrumb = computed(() => mapContentNavigation(findPageBreadcrumb(navigation.value, page.value)).map(link => ({
+const breadcrumb = computed(() => mapContentNavigation(findPageBreadcrumb(navigation.value, page.value?.path)).map(link => ({
   label: link.label,
   to: link.to
 })))
@@ -51,7 +52,7 @@ const editThisPage = computed(() => ({
   to: `https://github.com/hugorcd/shelve/edit/main/apps/lp/content/${page?.value?.stem}.md`,
   target: '_blank'
 }))
-const articleLink = computed(() => `${window.location}${path.value}`)
+const articleLink = computed(() => `${window.location}${page.value?.path}`)
 
 const formatDate = (dateString: string) => {
   return new Date(dateString).toLocaleDateString('en-US', {

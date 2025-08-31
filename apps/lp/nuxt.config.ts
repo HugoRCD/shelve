@@ -7,12 +7,8 @@ export default defineNuxtConfig({
     '/docs/self-hosting': { redirect: { statusCode: 301, to: '/docs/self-hosting/vercel' } },
   },
 
-  future: {
-    compatibilityVersion: 4,
-  },
-
   modules: [
-    '@nuxt/ui-pro',
+    '@nuxt/ui',
     '@nuxtjs/seo',
     '@nuxt/content',
     '@nuxt/scripts',
@@ -29,10 +25,6 @@ export default defineNuxtConfig({
     public: {
       payloadId: process.env.NUXT_PUBLIC_PAYLOAD_ID,
     }
-  },
-
-  hub: {
-    cache: true
   },
 
   llms: {
