@@ -12,8 +12,5 @@
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "typecheck": "tsc --noEmit"
-  },
-  "dependencies": {
-    "nuxt": "^3.18.1"
   }
 }

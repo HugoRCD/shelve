@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { kebabCase } from 'scule'
 import type { ContentNavigationItem } from '@nuxt/content'
-import { findPageBreadcrumb, mapContentNavigation } from '#ui-pro/utils'
+import { findPageBreadcrumb } from '@nuxt/content/utils'
+import { mapContentNavigation } from '@nuxt/ui/utils/content'
 
 definePageMeta({
   layout: 'docs'
@@ -22,7 +23,7 @@ const { data: surround } = await useAsyncData(`${kebabCase(route.path)}-surround
   })
 })
 
-const breadcrumb = computed(() => mapContentNavigation(findPageBreadcrumb(navigation.value, page.value)).map(link => ({
+const breadcrumb = computed(() => mapContentNavigation(findPageBreadcrumb(navigation.value, page.value?.path)).map(link => ({
   label: link.label,
   to: link.to
 })))
