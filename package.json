@@ -27,7 +27,7 @@
     "automd": "^0.4.2",
     "eslint": "^9.36.0",
     "turbo": "^2.5.8",
-    "typescript": "^5.9.2"
+    "typescript": "^5.9.3"
   },
   "pnpm": {
     "overrides": {
