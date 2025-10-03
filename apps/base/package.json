@@ -8,7 +8,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint --fix ."
   },
-  "packageManager": "pnpm@10.17.1",
+  "packageManager": "pnpm@10.18.0",
   "devDependencies": {
     "@iconify-json/heroicons": "^1.2.3",
     "@iconify-json/lucide": "^1.2.68",
@@ -16,7 +16,7 @@
     "@nuxt/content": "^3.7.1",
     "@nuxt/image": "^1.11.0",
     "@nuxt/scripts": "^0.12.1",
-    "@nuxt/ui": "^4.0.0",
+    "@nuxt/ui": "^4.0.1",
     "@vercel/speed-insights": "^1.2.0",
     "@vueuse/core": "^13.9.0",
     "@vueuse/nuxt": "^13.9.0",
@@ -27,7 +27,7 @@
     "nuxt": "^4.1.2",
     "nuxt-visitors": "^1.2.2",
     "vue": "^3.5.22",
-    "vue-sonner": "^2.0.8",
+    "vue-sonner": "^2.0.9",
     "zod": "^3.25.76",
     "@vercel/analytics": "^1.5.0"
   }
