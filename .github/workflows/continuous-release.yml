@@ -8,7 +8,7 @@ jobs:
       src: ${{ steps.changes.outputs.src }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Check if there are changes
         uses: dorny/paths-filter@v3
@@ -30,7 +30,7 @@ jobs:
       TURBO_TEAM: ${{ vars.TURBO_TEAM }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Install pnpm
         uses: pnpm/action-setup@v2

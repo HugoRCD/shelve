@@ -13,10 +13,6 @@ export default defineNuxtConfig({
 
   compatibilityDate: '2025-01-24',
 
-  future: {
-    compatibilityVersion: 4,
-  },
-
   devtools: {
     enabled: true,
     timeline: {
