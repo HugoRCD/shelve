@@ -5,7 +5,7 @@
   "type": "module",
   "repository": "https://github.com/HugoRCD/shelve",
   "scripts": {
-    "dev": "turbo dev --filter=@shelve/{app,lp}",
+    "dev": "turbo dev --filter=@shelve/app --filter=@shelve/lp",
     "build": "turbo build",
     "lint": "turbo lint",
     "lint:fix": "turbo lint:fix",
