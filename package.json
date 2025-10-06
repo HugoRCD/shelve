@@ -25,7 +25,7 @@
     "@hrcd/eslint-config": "^3.0.3",
     "@shelve/cli": "workspace:*",
     "automd": "^0.4.2",
-    "eslint": "^9.36.0",
+    "eslint": "^9.37.0",
     "turbo": "^2.5.8",
     "typescript": "^5.9.3"
   },
