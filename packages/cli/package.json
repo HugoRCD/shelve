@@ -52,7 +52,7 @@
     "ofetch": "1.4.1",
     "pkg-types": "2.3.0",
     "rc9": "^2.1.2",
-    "semver": "7.7.2",
+    "semver": "7.7.3",
     "tinyglobby": "0.2.15",
     "tree-kill": "^1.2.2"
   },
