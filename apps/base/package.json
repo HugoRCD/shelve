@@ -11,7 +11,7 @@
   "packageManager": "pnpm@10.18.3",
   "devDependencies": {
     "@iconify-json/heroicons": "^1.2.3",
-    "@iconify-json/lucide": "^1.2.69",
+    "@iconify-json/lucide": "^1.2.70",
     "@iconify-json/simple-icons": "^1.2.54",
     "@nuxt/content": "^3.7.1",
     "@nuxt/image": "^1.11.0",
