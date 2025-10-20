@@ -21,13 +21,13 @@
     "dev:cli": "turbo dev --filter=@shelve/cli"
   },
   "devDependencies": {
-    "@changesets/cli": "^2.29.6",
+    "@changesets/cli": "^2.29.7",
     "@hrcd/eslint-config": "^3.0.3",
     "@shelve/cli": "workspace:*",
-    "automd": "^0.4.0",
-    "eslint": "^9.35.0",
-    "turbo": "^2.5.6",
-    "typescript": "^5.9.2"
+    "automd": "^0.4.2",
+    "eslint": "^9.38.0",
+    "turbo": "^2.5.8",
+    "typescript": "^5.9.3"
   },
   "pnpm": {
     "overrides": {
@@ -43,7 +43,7 @@
       "vue-demi"
     ]
   },
-  "packageManager": "pnpm@10.15.1",
+  "packageManager": "pnpm@10.18.3",
   "workspaces": [
     "packages/*",
     "apps/*"
