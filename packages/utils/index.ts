@@ -1,4 +1,5 @@
 export * from './envfile'
+export * from "./objects"
 
 /**
  * Removes the GitHub base URL from a given URL.

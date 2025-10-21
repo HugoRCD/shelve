@@ -1,0 +1,55 @@
+services:
+  shelve:
+    env_file:
+      - ".env"
+    environment:
+      - DB_NAME=${DB_NAME:-master}
+      - DB_PASSWORD=${DB_PASSWORD:-__default}
+      - DB_USER=postgres
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DATABASE_URL=postgres://postgres:${DB_PASSWORD:-__default}@${DB_HOST:-db}:${DB_PORT:-5432}/${DB_NAME:-master}
+    depends_on:
+      db:
+        condition: service_healthy
+
+  docs:
+    env_file:
+      - ".env"
+    environment:
+      - NUXT_APP_BASE_URL=/docs/
+
+  vault:
+    env_file:
+      - ".env"
+    environment:
+      - NUXT_APP_BASE_URL=/vault/
+
+  db:
+    image: postgres:latest
+    environment:
+      - POSTGRES_DB=${DB_NAME:-master}
+      - POSTGRES_PASSWORD=${DB_PASSWORD:-__default}
+      - POSTGRES_USER=${DB_USER:-postgres}
+      - PGDATA=/data/pgdata
+    volumes:
+      - postgres_data:/data/pgdata
+    healthcheck:
+      interval: 5s
+      timeout: 10s
+      retries: 10
+      test: pg_isready -h localhost -U $$POSTGRES_USER
+
+  nginx:
+    image: nginx:stable
+    container_name: nginx
+    ports:
+      - "${NGINX_PORT:-80}:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - shelve
+      - docs
+
+volumes:
+  postgres_data:

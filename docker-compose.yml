@@ -1,0 +1,33 @@
+services:
+  shelve:
+    extends:
+      file: docker-compose.base.yml
+      service: shelve
+    image: ghcr.io/hugorcd/shelve:v2.3.2
+
+  db:
+    extends:
+      file: docker-compose.base.yml
+      service: db
+
+  vault:
+    extends:
+      file: docker-compose.base.yml
+      service: vault
+    build:
+      context: .
+      dockerfile: apps/vault/Dockerfile
+
+  docs:
+    extends:
+      file: docker-compose.base.yml
+      service: docs
+    build: apps/lp/Dockerfile
+
+  nginx:
+    extends:
+      file: docker-compose.base.yml
+      service: nginx
+
+volumes:
+  postgres_data:

@@ -19,11 +19,14 @@
     "@number-flow/vue": "^0.4.8",
     "@nuxtjs/seo": "^3.2.2",
     "@vercel/speed-insights": "^1.2.0",
-    "nuxt-build-cache": "^0.1.1",
     "nuxt-llms": "^0.1.3",
     "vue-router": "^4.6.3"
   },
   "devDependencies": {
+    "@nuxt/content": "^3.7.1",
     "@shelve/cli": "^3.1.1"
+  },
+  "engines": {
+    "node": ">=24"
   }
 }

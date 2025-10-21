@@ -24,10 +24,6 @@ jobs:
     needs: check-changes
     if: needs.check-changes.outputs.src == 'true'
     runs-on: ubuntu-latest
-    env:
-      NUXT_UI_PRO_LICENSE: ${{ secrets.NUXT_UI_PRO_LICENSE }}
-      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-      TURBO_TEAM: ${{ vars.TURBO_TEAM }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v5

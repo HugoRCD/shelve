@@ -1,0 +1,39 @@
+services:
+  shelve:
+    extends:
+      file: docker-compose.base.yml
+      service: shelve
+    build:
+      context: .
+      dockerfile: apps/shelve/Dockerfile
+    ports:
+      - "${APP_PORT:-3000}:${PORT:-3000}"
+
+  docs:
+    extends:
+      file: docker-compose.base.yml
+      service: docs
+    build:
+      context: .
+      dockerfile: apps/lp/Dockerfile
+
+  vault:
+    extends:
+      file: docker-compose.base.yml
+      service: vault
+    build:
+      context: .
+      dockerfile: apps/vault/Dockerfile
+
+  db:
+    extends:
+      file: docker-compose.base.yml
+      service: db
+
+  nginx:
+    extends:
+      file: docker-compose.base.yml
+      service: nginx
+
+volumes:
+  postgres_data:
