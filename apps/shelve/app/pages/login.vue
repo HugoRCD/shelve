@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { motion } from 'motion-v'
 
-const { title, auth: { isGithubEnabled, isGoogleEnabled, isEmailEnabled } } = useAppConfig()
+const { title } = useAppConfig()
+
+const {data} = useFetch("/api/features")
 
 definePageMeta({
   layout: 'auth',
@@ -101,19 +103,19 @@ useSeoMeta({
           style="will-change: transform"
         >
           <!-- OAuth Buttons -->
-          <motion.div 
-            v-if="authMode === 'oauth'" 
+          <motion.div
+            v-if="authMode === 'oauth'"
             class="flex flex-col gap-3 w-full"
             :initial="{ opacity: 0, y: 20 }"
             :animate="{ opacity: 1, y: 0 }"
             :exit="{ opacity: 0, y: -20 }"
             :transition="{ duration: 0.3 }"
           >
-            <AuthButton v-if="isGithubEnabled" icon="simple-icons:github" label="Sign in with GitHub" provider="github" />
-            <AuthButton v-if="isGoogleEnabled" icon="simple-icons:google" label="Sign in with Google" provider="google" />
-            
-            <motion.div 
-              v-if="isEmailEnabled && (isGithubEnabled || isGoogleEnabled)" 
+            <AuthButton v-if="data?.isGithubEnabled" icon="simple-icons:github" label="Sign in with GitHub" provider="github" />
+            <AuthButton v-if="data?.isGoogleEnabled" icon="simple-icons:google" label="Sign in with Google" provider="google" />
+
+            <motion.div
+              v-if="data?.isEmailEnabled && (data?.isGithubEnabled || data?.isGoogleEnabled)"
               class="flex items-center gap-3 my-2"
               :initial="{ opacity: 0, scaleX: 0 }"
               :animate="{ opacity: 1, scaleX: 1 }"
@@ -123,9 +125,9 @@ useSeoMeta({
               <span class="text-xs text-muted">or</span>
               <div class="flex-1 h-px bg-accented" />
             </motion.div>
-            
+
             <UButton
-              v-if="isEmailEnabled"
+              v-if="data?.isEmailEnabled"
               variant="outline"
               size="lg"
               icon="heroicons:envelope"
@@ -137,15 +139,15 @@ useSeoMeta({
           </motion.div>
 
           <!-- Email/OTP Form -->
-          <motion.div 
-            v-else-if="authMode === 'email'" 
+          <motion.div
+            v-else-if="authMode === 'email'"
             class="w-full space-y-4"
             :initial="{ opacity: 0, x: 20 }"
             :animate="{ opacity: 1, x: 0 }"
             :exit="{ opacity: 0, x: -20 }"
             :transition="{ duration: 0.3 }"
           >
-            <motion.div 
+            <motion.div
               v-if="!showOtp"
               :initial="{ opacity: 0, y: 10 }"
               :animate="{ opacity: 1, y: 0 }"
@@ -163,15 +165,15 @@ useSeoMeta({
                 />
               </div>
             </motion.div>
-            
-            <motion.div 
+
+            <motion.div
               v-else
               :initial="{ opacity: 0, y: 10 }"
               :animate="{ opacity: 1, y: 0 }"
               :transition="{ duration: 0.3, delay: 0.1 }"
             >
-              <AuthOtpForm 
-                :email 
+              <AuthOtpForm
+                :email
                 :prefilled-otp
                 @back-to-email="handleBackToEmail"
                 @otp-verified="handleOtpVerified"
