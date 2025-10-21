@@ -12,18 +12,24 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    networks:
+      - shelve_network
 
   docs:
     env_file:
       - ".env"
     environment:
       - NUXT_APP_BASE_URL=/docs/
+    networks:
+      - shelve_network
 
   vault:
     env_file:
       - ".env"
     environment:
       - NUXT_APP_BASE_URL=/vault/
+    networks:
+      - shelve_network
 
   db:
     image: postgres:latest
@@ -39,6 +45,8 @@ services:
       timeout: 10s
       retries: 10
       test: pg_isready -h localhost -U $$POSTGRES_USER
+    networks:
+      - shelve_network
 
   nginx:
     image: nginx:stable
@@ -50,6 +58,12 @@ services:
     depends_on:
       - shelve
       - docs
+    networks:
+      - shelve_network
 
 volumes:
   postgres_data:
+
+networks:
+  shelve_network:
+    driver: 'bridge'
