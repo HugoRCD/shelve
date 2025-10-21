@@ -109,7 +109,7 @@ const ui = computed(() => ({
       <template #features-content="{ item }">
         <div class="flex flex-row p-2 gap-2">
           <div class="w-1/2">
-            <NuxtImg 
+            <NuxtImg
               preload
               format="webp"
               src="/og.png"
@@ -138,7 +138,7 @@ const ui = computed(() => ({
 
     <template #right>
       <div class="flex items-center gap-2">
-        <CustomButton to="https://app.shelve.cloud/login" size="xs">
+        <CustomButton :to="$config.public.client.appURL" size="xs">
           Open App
           <UKbd value="S" />
         </CustomButton>

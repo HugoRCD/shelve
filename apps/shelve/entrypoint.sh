@@ -1,7 +1,14 @@
 #!/bin/sh
+set -e
 
-echo "Running database migrations..."
-pnpm run db:push
+echo "Installing Drizzle dependencies..."
+pnpm add drizzle-kit drizzle-orm postgres --save-dev
 
-echo "Starting the Shelve application..."
-exec node .output/server/index.mjs
+echo "Running Drizzle migrations..."
+pnpm drizzle-kit migrate
+
+echo "Removing Drizzle dependencies..."
+pnpm remove drizzle-kit drizzle-orm postgres
+
+echo "Starting Node server..."
+exec node /app/.output/server/index.mjs

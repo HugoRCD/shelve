@@ -26,8 +26,8 @@
     "drizzle-orm": "^0.44.6",
     "jsonwebtoken": "^9.0.2",
     "libsodium-wrappers": "^0.7.15",
+    "nodemailer": "^7.0.9",
     "nuxt-auth-utils": "^0.5.25",
-    "nuxt-build-cache": "^0.1.1",
     "pg": "^8.16.3",
     "resend": "^6.2.0",
     "tweetnacl": "^1.0.3",
@@ -36,6 +36,7 @@
   "devDependencies": {
     "@nuxt/devtools": "^2.6.5",
     "@types/jsonwebtoken": "^9.0.10",
-    "@types/libsodium-wrappers": "^0.7.14"
+    "@types/libsodium-wrappers": "^0.7.14",
+    "@types/nodemailer": "^7.0.2"
   }
 }

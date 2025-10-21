@@ -1,71 +1,66 @@
-import { Resend } from 'resend'
-import { render } from '@vue-email/render'
-import type { H3Event } from 'h3'
-import welcomeEmail from '~~/server/emails/welcomeEmail.vue'
-import verifyOtp from '~~/server/emails/verifyOtp.vue'
+import { Resend } from "resend";
+import nodemailer from "nodemailer";
+import { render } from "@vue-email/render";
+import type { H3Event } from "h3";
+import welcomeEmail from "~~/server/emails/welcomeEmail.vue";
+import verifyOtp from "~~/server/emails/verifyOtp.vue";
 
 export class EmailService {
-
-  private readonly resend: Resend | null
-  private readonly SENDER: string
+  private readonly resend: Resend | null = null;
+  private readonly transporter: nodemailer.Transporter | null = null;
+  private readonly sender: string;
 
   constructor(event: H3Event) {
-    const config = useRuntimeConfig(event)
-    this.resend = config.private.resendApiKey ? new Resend(config.private.resendApiKey) : null
-    this.SENDER = config.private.senderEmail || 'HugoRCD <contact@hrcd.fr>'
+    const config = useRuntimeConfig(event);
+    const { private: priv } = config;
+
+    if (priv.resendApiKey) {
+      this.resend = new Resend(priv.resendApiKey);
+    } else if (priv.smtp?.host) {
+      this.transporter = nodemailer.createTransport({
+        host: priv.smtp.host,
+        port: Number(priv.smtp.port || 587),
+        secure: Number(priv.smtp.port) === 465,
+        auth: {
+          user: priv.smtp.user,
+          pass: priv.smtp.pass,
+        },
+      });
+    }
+
+    this.sender = priv.senderEmail || priv.smtp.user || "noreply@example.com";
   }
 
-  async sendOtp(email: string, otp: string, redirectUrl: string): Promise<void> {
-    if (!this.resend) {
-      console.warn('Resend API key not found, set NUXT_PRIVATE_RESEND_API_KEY in your environment variables to enable email sending')
-      console.log('Development mode: OTP code is', otp)
-      return
-    }
-    
-    const template = await this.generateOtpTemplate(otp, redirectUrl)
-
-    try {
+  private async sendEmail(to: string, subject: string, html: string) {
+    if (this.resend) {
       await this.resend.emails.send({
-        from: this.SENDER,
-        to: [email],
-        subject: 'Your Shelve Login Code',
-        html: template,
-      }).then((response) => {
-        console.log('OTP email sent: ', response)
-      })
-    } catch (error) {
-      console.log('Error sending OTP email: ', error)
-      throw error
+        from: this.sender,
+        to: [to],
+        subject,
+        html,
+      });
+    } else if (this.transporter) {
+      await this.transporter.sendMail({
+        from: this.sender,
+        to,
+        subject,
+        html,
+      });
+    } else {
+      console.warn(
+        "No email provider configured. Set either NUXT_PRIVATE_RESEND_API_KEY or SMTP credentials."
+      );
     }
   }
 
-  async sendWelcomeEmail(email: string, username: string, appUrl: string): Promise<void> {
-    if (!this.resend) {
-      console.warn('Resend API key not found, set NUXT_PRIVATE_RESEND_API_KEY in your environment variables to enable email sending')
-      return
-    }
-    const template = await this.generateWelcomeTemplate(username, appUrl)
+  async sendOtp(email: string, otp: string, redirectUrl: string) {
+    const html = await this.generateOtpTemplate(otp, redirectUrl);
+    await this.sendEmail(email, "Your Login Code", html);
+  }
 
-    try {
-      await this.resend.emails.send({
-        from: this.SENDER,
-        to: [email],
-        subject: 'Welcome to Shelve!',
-        html: template,
-      }).then((response) => {
-        console.log('Welcome email sent: ', response)
-      })
-      await this.resend.emails.send({
-        from: this.SENDER,
-        to: ['contact@shelve.cloud'],
-        subject: 'New user registered',
-        html: `New user registered: ${username} - ${email}`,
-      }).then((response) => {
-        console.log('New user email sent: ', response)
-      })
-    } catch (error) {
-      console.log('Error sending welcome email: ', error)
-    }
+  async sendWelcomeEmail(email: string, username: string, appUrl: string) {
+    const html = await this.generateWelcomeTemplate(username, appUrl);
+    await this.sendEmail(email, "Welcome to Shelve!", html);
   }
 
   private async generateOtpTemplate(otp: string, redirectUrl: string): Promise<string> {
@@ -75,6 +70,7 @@ export class EmailService {
         redirectUrl,
       })
     } catch (error) {
+      console.error(error)
       return `<h1>OTP: ${otp}</h1>`
     }
   }
@@ -86,8 +82,8 @@ export class EmailService {
         redirectUrl: appUrl,
       })
     } catch (error) {
+      console.error(error)
       return `<h1>Welcome to Shelve, ${username}!</h1>`
     }
   }
-
 }
