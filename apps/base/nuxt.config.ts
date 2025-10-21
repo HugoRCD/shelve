@@ -6,12 +6,12 @@ const { resolve } = createResolver(import.meta.url)
 export default defineNuxtConfig({
   app: {
     head: {
-      viewport: 'width=device-width, initial-scale=1',
-      charset: 'utf-8',
+      viewport: "width=device-width, initial-scale=1",
+      charset: "utf-8",
     },
   },
 
-  compatibilityDate: '2025-01-24',
+  compatibilityDate: "2025-01-24",
 
   devtools: {
     enabled: true,
@@ -21,22 +21,16 @@ export default defineNuxtConfig({
   },
 
   alias: {
-    '@types': resolve('../../packages/types'),
-    '@utils': resolve('../../packages/utils'),
+    "@types": resolve("../../packages/types"),
+    "@utils": resolve("../../packages/utils"),
   },
 
-  modules: [
-    '@nuxt/image',
-    'nuxt-build-cache',
-    'nuxt-visitors',
-    '@vueuse/nuxt',
-    'motion-v/nuxt',
-  ],
+  modules: ["@nuxt/image", "nuxt-visitors", "@vueuse/nuxt", "motion-v/nuxt"],
 
   nitro: {
     experimental: {
-      websocket: true
-    }
+      websocket: true,
+    },
   },
 
   experimental: {
@@ -46,52 +40,57 @@ export default defineNuxtConfig({
   imports: {
     presets: [
       {
-        from: 'vue-sonner',
-        imports: ['toast']
-      }
-    ]
+        from: "vue-sonner",
+        imports: ["toast"],
+      },
+    ],
   },
 
   icon: {
     customCollections: [
       {
-        prefix: 'custom',
-        dir: './app/assets/icons'
+        prefix: "custom",
+        dir: "./app/assets/icons",
       },
       {
-        prefix: 'nucleo',
-        dir: './app/assets/icons/nucleo'
+        prefix: "nucleo",
+        dir: "./app/assets/icons/nucleo",
       },
     ],
     clientBundle: {
       scan: true,
-      includeCustomCollections: true
+      includeCustomCollections: true,
     },
-    provider: 'iconify'
+    provider: "iconify",
   },
 
   colorMode: {
-    preference: 'dark',
-    fallback: 'dark'
+    preference: "dark",
+    fallback: "dark",
   },
 
   $development: {
     runtimeConfig: {
       public: {
-        apiUrl: 'http://localhost:3001',
-        version: pkg.version
-      }
-    }
+        apiUrl: "http://localhost:3001",
+        version: pkg.version,
+      },
+    },
   },
 
   $production: {
     runtimeConfig: {
       public: {
-        apiUrl: 'https://app.shelve.cloud',
-        version: pkg.version
-      }
-    }
+        apiUrl: "https://app.shelve.cloud",
+        version: pkg.version,
+      },
+    },
   },
 
-  css: [resolve('./assets/css/base.css')],
-})
+  css: [resolve("./assets/css/base.css")],
+  // content: {
+  //   experimental: {
+  //     sqliteConnector: "native",
+  //   },
+  // },
+});
