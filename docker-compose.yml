@@ -37,3 +37,7 @@ services:
 
 volumes:
   postgres_data:
+  
+networks:
+  shelve_network:
+    driver: 'bridge'
