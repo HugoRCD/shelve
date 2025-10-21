@@ -3,12 +3,19 @@ services:
     extends:
       file: docker-compose.base.yml
       service: shelve
-    image: ghcr.io/hugorcd/shelve:v2.3.2
+    build:
+      context: .
+      dockerfile: apps/shelve/Dockerfile
+    ports:
+      - "${APP_PORT:-3000}:${PORT:-3000}"
 
-  db:
+  docs:
     extends:
       file: docker-compose.base.yml
-      service: db
+      service: docs
+    build:
+      context: .
+      dockerfile: apps/lp/Dockerfile
 
   vault:
     extends:
@@ -18,11 +25,10 @@ services:
       context: .
       dockerfile: apps/vault/Dockerfile
 
-  docs:
+  db:
     extends:
       file: docker-compose.base.yml
-      service: docs
-    build: apps/lp/Dockerfile
+      service: db
 
   nginx:
     extends:
