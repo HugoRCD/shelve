@@ -11,4 +11,4 @@ echo "Removing Drizzle dependencies..."
 pnpm remove drizzle-kit drizzle-orm postgres
 
 echo "Starting Node server..."
-exec node .output/server/index.mjs
+exec node /app/.output/server/index.mjs
