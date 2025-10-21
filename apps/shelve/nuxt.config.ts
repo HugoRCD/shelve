@@ -16,7 +16,6 @@ export default defineNuxtConfig({
       openAPI: true
     },
     rollupConfig: {
-      // @ts-expect-error - this is not typed
       plugins: [vue()]
     },
     imports: {
@@ -35,7 +34,13 @@ export default defineNuxtConfig({
       allowedOrigins: '',
       github: {
         privateKey: '',
-      }
+      },
+      smtp: {
+        host: '',
+        port: '',
+        user: '',
+        pass: '',
+      },
     },
     oauth: {
       google: {
@@ -73,5 +78,5 @@ export default defineNuxtConfig({
     format: ['webp', 'jpeg', 'jpg', 'png', 'svg']
   },
 
-  modules: ['@nuxt/ui', 'nuxt-auth-utils'],
+  modules: ['@nuxt/ui', 'nuxt-auth-utils']
 })
