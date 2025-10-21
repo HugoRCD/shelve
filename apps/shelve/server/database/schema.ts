@@ -1,6 +1,6 @@
 import { boolean, pgEnum, pgTable, varchar, index, uniqueIndex, bigint, integer, timestamp } from 'drizzle-orm/pg-core'
 import { relations } from 'drizzle-orm'
-import { AuthType, Role, TeamRole } from '@types'
+import { TeamRole, Role, AuthType } from './constants'
 
 const timestamps = {
   updatedAt: timestamp().notNull().$onUpdate(() => new Date()),
