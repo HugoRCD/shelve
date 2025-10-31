@@ -194,6 +194,10 @@ const sorting = ref([
   }
 ])
 
+watch(search, () => {
+  pagination.value.pageIndex = 0
+})
+
 useSeoMeta({
   title: 'Admin',
 })
@@ -246,19 +250,19 @@ useSeoMeta({
       </template>
       <template #authType-cell="{ row }">
         <div class="flex items-center justify-center">
-          <UIcon 
-            v-if="row.original.authType === AuthType.GITHUB" 
-            name="i-simple-icons-github" 
+          <UIcon
+            v-if="row.original.authType === AuthType.GITHUB"
+            name="i-simple-icons-github"
             class="size-5"
           />
-          <UIcon 
-            v-else-if="row.original.authType === AuthType.GOOGLE" 
-            name="i-simple-icons-google" 
+          <UIcon
+            v-else-if="row.original.authType === AuthType.GOOGLE"
+            name="i-simple-icons-google"
             class="size-5"
           />
-          <UIcon 
-            v-else-if="row.original.authType === AuthType.EMAIL" 
-            name="i-lucide-mail" 
+          <UIcon
+            v-else-if="row.original.authType === AuthType.EMAIL"
+            name="i-lucide-mail"
             class="size-5"
           />
         </div>

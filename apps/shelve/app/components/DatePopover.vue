@@ -14,7 +14,7 @@ const dateObj = computed(() => {
   return typeof props.date === 'string' ? new Date(props.date) : props.date
 })
 
-const rtf = new Intl.RelativeTimeFormat('en-US', { 
+const rtf = new Intl.RelativeTimeFormat('en-US', {
   numeric: 'auto',
   style: 'short'
 })
@@ -22,7 +22,7 @@ const rtf = new Intl.RelativeTimeFormat('en-US', {
 function getRelativeTime(date: Date) {
   const now = new Date()
   const diffMs = now.getTime() - date.getTime()
-  
+
   const absDiffMs = Math.abs(diffMs)
   const seconds = Math.floor(absDiffMs / 1000)
   const minutes = Math.floor(absDiffMs / (1000 * 60))
@@ -41,7 +41,7 @@ function getRelativeTime(date: Date) {
   if (hours > 0) return rtf.format(sign * hours, 'hour')
   if (minutes > 0) return rtf.format(sign * minutes, 'minute')
   if (seconds > 10) return rtf.format(sign * seconds, 'second')
-  
+
   return 'just now'
 }
 
@@ -49,19 +49,19 @@ const relativeTime = computed(() => getRelativeTime(dateObj.value))
 
 const formattedDate = computed(() => {
   const date = dateObj.value
-  
+
   const dayName = date.toLocaleDateString('en-US', { weekday: 'short' })
   const month = date.toLocaleDateString('en-US', { month: 'short' })
   const day = date.getDate()
   const year = date.getFullYear()
-  
+
   return `${dayName}, ${month} ${day}, ${year}`
 })
 
 const formattedTime = computed(() => {
   const date = dateObj.value
-  
-  return date.toLocaleTimeString('en-US', { 
+
+  return date.toLocaleTimeString('en-US', {
     hour: 'numeric',
     minute: '2-digit',
     second: '2-digit',
@@ -74,24 +74,23 @@ const additionalInfo = computed(() => {
   const now = new Date()
   const diffMs = now.getTime() - date.getTime()
   const absDiffMs = Math.abs(diffMs)
-    
+
   const totalSeconds = Math.floor(absDiffMs / 1000)
   const hours = Math.floor(totalSeconds / 3600)
   const minutes = Math.floor((totalSeconds % 3600) / 60)
   const seconds = totalSeconds % 60
-  
+
   const suffix = diffMs >= 0 ? 'ago' : 'from now'
   return `${hours} hours, ${minutes} minutes, ${seconds} seconds ${suffix}`
 })
 </script>
 
 <template>
-  <UPopover 
+  <UPopover
     arrow
-    mode="hover" 
-    :ui="{ 
+    mode="hover"
+    :ui="{
       content: 'min-w-80 p-0',
-      arrow: { ring: 'ring-1 ring-border' },
       panel: 'rounded-lg border border-border bg-background shadow-lg'
     }"
     :placement
@@ -99,13 +98,13 @@ const additionalInfo = computed(() => {
     <span class="text-sm cursor-pointer transition-colors font-medium text-nowrap">
       {{ relativeTime }}
     </span>
-    
+
     <template #content>
       <div class="p-3">
         <div class="text-sm font-medium mb-2">
           {{ label }}
         </div>
-        
+
         <div class="flex items-center justify-between gap-4">
           <div class="text-sm">
             {{ formattedDate }}
@@ -114,7 +113,7 @@ const additionalInfo = computed(() => {
             {{ formattedTime }}
           </div>
         </div>
-        
+
         <div class="mt-2 pt-2 border-t border-default">
           <div class="text-xs">
             {{ additionalInfo }}
@@ -123,4 +122,4 @@ const additionalInfo = computed(() => {
       </div>
     </template>
   </UPopover>
-</template> 
+</template>

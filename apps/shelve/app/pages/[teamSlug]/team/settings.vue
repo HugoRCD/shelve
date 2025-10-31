@@ -61,7 +61,7 @@ definePageMeta({
             <UInput v-model="team.name" :disabled="!canUpdate" class="w-full" />
           </UFormField>
           <UFormField label="Slug" help="This is the unique identifier for your team (used by the CLI)" :ui="{ help: 'text-xs' }">
-            <UButtonGroup class="w-full">
+            <UFieldGroup class="w-full">
               <UButton
                 color="neutral"
                 variant="subtle"
@@ -71,7 +71,7 @@ definePageMeta({
               <UTooltip text="Copy to clipboard">
                 <UButton color="neutral" variant="subtle" icon="lucide:clipboard" @click="copyToClipboard(team.slug)" />
               </UTooltip>
-            </UButtonGroup>
+            </UFieldGroup>
           </UFormField>
         </div>
         <UFormField label="Logo">
@@ -108,4 +108,4 @@ definePageMeta({
       </UCollapsible>
     </div>
   </div>
-</template> 
+</template>

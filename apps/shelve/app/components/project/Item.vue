@@ -12,14 +12,14 @@ const active = useState('active-project')
 const isHovered = ref(false)
 
 const containerVariants = {
-  hidden: { 
+  hidden: {
     transition: {
       staggerChildren: 0.05,
       staggerDirection: -1,
       when: 'afterChildren'
     }
   },
-  visible: { 
+  visible: {
     transition: {
       staggerChildren: 0.05,
       when: 'beforeChildren'
@@ -28,10 +28,10 @@ const containerVariants = {
 }
 
 const dotVariants = {
-  hidden: { 
-    opacity: 0 
+  hidden: {
+    opacity: 0
   },
-  visible: { 
+  visible: {
     opacity: [0, 1, 0, 1, 0, 1],
     transition: {
       duration: 0.2,
@@ -42,15 +42,15 @@ const dotVariants = {
 </script>
 
 <template>
-  <UCard 
-    variant="subtle" 
-    class="relative transition-all duration-300 group hover:z-10 h-full ring-transparent border border-default bg-transparent hover:bg-muted rounded-none" 
+  <UCard
+    variant="subtle"
+    class="relative transition-all duration-300 overflow-visible group hover:z-10 h-full ring-transparent border border-default bg-transparent hover:bg-muted rounded-none"
     @click="active = project.id"
     @mouseenter="isHovered = true"
     @mouseleave="isHovered = false"
   >
     <NuxtLink class="absolute inset-0 z-10" :to="`/${teamSlug}/projects/${project.id}/variables`" />
-    
+
     <MotionConfig :transition="{ duration: 0.2, ease: 'easeInOut' }">
       <Motion
         :variants="containerVariants"
@@ -63,9 +63,9 @@ const dotVariants = {
         <Motion as="span" class="dot dot-bl" :variants="dotVariants" />
       </Motion>
     </MotionConfig>
-    
+
     <div class="flex w-full items-start gap-4">
-      <!-- <UAvatar 
+      <!-- <UAvatar
           :src="project.logo"
           :alt="project.name"
           size="sm"
