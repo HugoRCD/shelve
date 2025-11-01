@@ -47,9 +47,9 @@
     "dotenv": "^17.2.3",
     "citty": "^0.1.6",
     "defu": "^6.1.4",
-    "npm-registry-fetch": "19.0.0",
+    "npm-registry-fetch": "19.1.0",
     "nypm": "0.6.2",
-    "ofetch": "1.4.1",
+    "ofetch": "1.5.1",
     "pkg-types": "2.3.0",
     "rc9": "^2.1.2",
     "semver": "7.7.3",
@@ -57,7 +57,7 @@
     "tree-kill": "^1.2.2"
   },
   "devDependencies": {
-    "@types/npm-registry-fetch": "^8.0.8",
+    "@types/npm-registry-fetch": "^8.0.9",
     "@types/semver": "^7.7.1",
     "unbuild": "^3.6.1",
     "vitest": "^4.0.6"
