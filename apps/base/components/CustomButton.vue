@@ -21,7 +21,7 @@ const props = withDefaults(defineProps<CustomButtonProps>(), {
 <template>
   <BgHighlight
     :rounded="props.rounded"
-    class="active:translate-y-[1px] hover:opacity-90 shadow-lg dark:shadow-none"
+    class="active:translate-y-px hover:opacity-90 shadow-lg dark:shadow-none"
   >
     <UButton
       v-bind="props"

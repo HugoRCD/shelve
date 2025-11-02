@@ -3,9 +3,9 @@ import { AuthType } from '@types'
 
 const updateUserSchema = z.object({
   username: z.string().min(3).max(50).trim().optional(),
-  email: z.string().email().trim().optional(),
+  email: z.email().trim().optional(),
   avatar: z.string().trim().optional(),
-  authType: z.nativeEnum(AuthType).optional(),
+  authType: z.enum(AuthType).optional(),
 })
 
 export default eventHandler(async (event) => {

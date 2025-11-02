@@ -4,10 +4,10 @@ import { AuthType, Role } from '@types'
 export const userSchema = z.object({
   id: z.number(),
   username: z.string().min(3).max(50),
-  email: z.string().email(),
+  email: z.email(),
   avatar: z.string(),
-  role: z.nativeEnum(Role),
-  authType: z.nativeEnum(AuthType),
+  role: z.enum(Role),
+  authType: z.enum(AuthType),
   onboarding: z.boolean(),
   cliInstalled: z.boolean(),
   createdAt: z.date(),
