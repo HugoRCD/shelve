@@ -7,7 +7,7 @@ export default eventHandler(async (event) => {
   const { projectId } = await getValidatedRouterParams(event, projectIdParamsSchema.parse)
   const { envId } = await getValidatedRouterParams(event, z.object({
     envId: z.coerce.number({
-      required_error: 'Environment ID is required',
+      error: 'Environment ID is required',
     }).int().positive(),
   }).parse)
 

@@ -40,8 +40,6 @@ export const BLACKLIST_TEAM_SLUGS: string[] = [
 export class TeamsService {
 
   async createTeam(input: CreateTeamInput): Promise<Team> {
-    const db = useDrizzle()
-
     const team = await db.transaction(async (tx) => {
       const slug = input.name.toLowerCase().replace(/\s/g, '-')
       const isSlugUnique = await this.isSlugUnique(slug)
@@ -52,7 +50,7 @@ export class TeamsService {
         throw createError({ statusCode: 409, statusMessage: 'Team slug is blacklisted' })
       }
 
-      const [newTeam] = await tx.insert(tables.teams)
+      const [newTeam] = await tx.insert(schema.teams)
         .values({
           slug,
           name: input.name,
@@ -62,7 +60,7 @@ export class TeamsService {
 
       if (!newTeam) throw createError({ statusCode: 422, statusMessage: 'Failed to create team' })
 
-      await tx.insert(tables.members)
+      await tx.insert(schema.members)
         .values({
           userId: input.requester.id,
           teamId: newTeam.id,
@@ -75,7 +73,7 @@ export class TeamsService {
     await new EnvironmentsService().initializeBaseEnvironments(team.id)
 
     const createdTeam = await db.query.teams.findFirst({
-      where: eq(tables.teams.id, team.id),
+      where: eq(schema.teams.id, team.id),
       with: {
         members: {
           with: {
@@ -92,7 +90,6 @@ export class TeamsService {
 
   async updateTeam(input: UpdateTeamInput): Promise<Team> {
     const { teamId, ...data } = input
-    const db = useDrizzle()
     if (data.slug) {
       data.slug = data.slug.toLowerCase().replace(/\s/g, '-')
       const isSlugUnique = await this.isSlugUnique(data.slug, teamId)
@@ -103,12 +100,12 @@ export class TeamsService {
     }
 
     return await db.transaction(async (tx) => {
-      await tx.update(tables.teams)
+      await tx.update(schema.teams)
         .set(data)
-        .where(eq(tables.teams.id, teamId))
+        .where(eq(schema.teams.id, teamId))
 
       const updatedTeam = await tx.query.teams.findFirst({
-        where: eq(tables.teams.id, teamId),
+        where: eq(schema.teams.id, teamId),
         with: {
           members: {
             with: {
@@ -130,15 +127,15 @@ export class TeamsService {
     const { teamId, slug } = input
     await clearCache('Team', teamId)
     await clearCache('Team', slug)
-    const [team] = await useDrizzle().delete(tables.teams)
-      .where(eq(tables.teams.id, teamId))
-      .returning({ id: tables.teams.id, slug: tables.teams.slug })
+    const [team] = await db.delete(schema.teams)
+      .where(eq(schema.teams.id, teamId))
+      .returning({ id: schema.teams.id, slug: schema.teams.slug })
     if (!team) throw createError({ statusCode: 404, statusMessage: `Team not found with id ${teamId}` })
   }
 
   getTeams = withCache<Team[]>('Teams', async (userId: number) => {
-    const memberOf = await useDrizzle().query.members.findMany({
-      where: eq(tables.members.userId, userId),
+    const memberOf = await db.query.members.findMany({
+      where: eq(schema.members.userId, userId),
       with: {
         team: {
           with: {
@@ -157,8 +154,8 @@ export class TeamsService {
   })
 
   getTeam = withCache<Team>('Team', async (slug: string) => {
-    const team = await useDrizzle().query.teams.findFirst({
-      where: eq(tables.teams.slug, slug),
+    const team = await db.query.teams.findFirst({
+      where: eq(schema.teams.slug, slug),
       with: {
         members: {
           with: {
@@ -173,17 +170,17 @@ export class TeamsService {
 
   private isSlugUnique = async (slug: string, teamId?: number): Promise<boolean> => {
     const query = teamId
-      ? and(eq(tables.teams.slug, slug), not(eq(tables.teams.id, teamId)))
-      : eq(tables.teams.slug, slug)
-    const team = await useDrizzle().query.teams.findFirst({
+      ? and(eq(schema.teams.slug, slug), not(eq(schema.teams.id, teamId)))
+      : eq(schema.teams.slug, slug)
+    const team = await db.query.teams.findFirst({
       where: query
     })
     return !team
   }
 
   async getTeamBySlug(slug: string): Promise<Team> {
-    const team = await useDrizzle().query.teams.findFirst({
-      where: eq(tables.teams.slug, slug),
+    const team = await db.query.teams.findFirst({
+      where: eq(schema.teams.slug, slug),
       with: {
         members: {
           with: {
@@ -197,4 +194,3 @@ export class TeamsService {
   }
 
 }
-

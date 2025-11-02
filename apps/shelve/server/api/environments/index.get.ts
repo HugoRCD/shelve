@@ -2,7 +2,7 @@ import { z } from 'zod'
 
 const getEnvironmentsSchema = z.object({
   teamId: z.coerce.number({
-    required_error: 'Team ID is required',
+    error: 'Team ID is required',
   }),
 })
 

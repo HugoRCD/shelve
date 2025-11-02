@@ -4,11 +4,11 @@ import { variableIdParamsSchema } from '~~/server/database/zod'
 const schema = z.object({
   autoUppercase: z.boolean().optional(),
   key: z.string({
-    required_error: 'Variable key is required',
+    error: 'Variable key is required',
   }).min(1).trim(),
   values: z.array(z.object({
     environmentId: z.number({
-      required_error: 'Environment ID is required',
+      error: 'Environment ID is required',
     }),
     value: z.string().trim()
   })).min(1),

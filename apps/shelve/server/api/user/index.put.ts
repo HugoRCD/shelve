@@ -14,13 +14,13 @@ export default eventHandler(async (event) => {
 
   if (body.username) body.username = await validateUsername(body.username, body.authType)
 
-  const [updatedUser] = await useDrizzle()
-    .update(tables.users)
+  const [updatedUser] = await db
+    .update(schema.users)
     .set({
       username: body.username,
       avatar: body.avatar,
     })
-    .where(eq(tables.users.id, user.id))
+    .where(eq(schema.users.id, user.id))
     .returning()
   if (!updatedUser) throw createError({ statusCode: 404, statusMessage: 'User not found' })
 

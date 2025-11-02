@@ -35,8 +35,6 @@ const calculateStats = (data: {
 }
 
 export const getStats = async (): Promise<Stats> => {
-  const db = useDrizzle()
-
   const [users, variables, teams, projects, teamStats] = await Promise.all([
     db.query.users.findMany(),
     db.query.variables.findMany(),

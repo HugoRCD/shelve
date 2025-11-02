@@ -8,7 +8,7 @@ definePageMeta({
 })
 
 const schema = z.object({
-  teamName: z.string({ required_error: 'Team name is required' })
+  teamName: z.string({ error: 'Team name is required' })
     .min(3, 'Team name must be at least 3 characters long')
     .max(20, 'Team name must be at most 20 characters long')
 })

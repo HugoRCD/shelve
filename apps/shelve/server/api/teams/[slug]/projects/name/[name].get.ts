@@ -2,7 +2,7 @@ import { z } from 'zod'
 
 const getProjectSchema = z.object({
   name: z.string({
-    required_error: 'Project name is required',
+    error: 'Project name is required',
   })
     .min(1).max(255).trim()
     .transform((value) => decodeURIComponent(value)),
@@ -12,10 +12,10 @@ export default eventHandler(async (event) => {
   const team = useCurrentTeam(event)
   const { name } = await getValidatedRouterParams(event, getProjectSchema.parse)
 
-  const project = await useDrizzle().query.projects.findFirst({
+  const project = await db.query.projects.findFirst({
     where: and(
-      sql`lower(${tables.projects.name}) like lower(${name})`,
-      eq(tables.projects.teamId, team.id)
+      sql`lower(${schema.projects.name}) like lower(${name})`,
+      eq(schema.projects.teamId, team.id)
     ),
   })
 

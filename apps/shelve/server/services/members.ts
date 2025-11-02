@@ -15,7 +15,7 @@ export class MembersService {
     }
     const user = await this.getUserByEmail(email)
 
-    const [newMember] = await useDrizzle().insert(tables.members)
+    const [newMember] = await db.insert(schema.members)
       .values({
         userId: user.id,
         teamId,
@@ -31,11 +31,11 @@ export class MembersService {
   async updateMember(input: UpdateMemberInput): Promise<Member> {
     const { slug, memberId, role } = input
 
-    await useDrizzle().update(tables.members)
+    await db.update(schema.members)
       .set({
         role
       })
-      .where(eq(tables.members.id, memberId))
+      .where(eq(schema.members.id, memberId))
 
     const member = await this.findMemberById(memberId)
     await clearCache('Team', slug)
@@ -47,12 +47,12 @@ export class MembersService {
 
     const member = await this.findMemberById(memberId)
     await clearCache('Team', slug)
-    await useDrizzle().delete(tables.members).where(eq(tables.members.id, member.id))
+    await db.delete(schema.members).where(eq(schema.members.id, member.id))
   }
 
   async findMemberById(memberId: number): Promise<Member> {
-    const member = await useDrizzle().query.members.findFirst({
-      where: eq(tables.members.id, memberId),
+    const member = await db.query.members.findFirst({
+      where: eq(schema.members.id, memberId),
       with: {
         user: true
       }
@@ -64,8 +64,8 @@ export class MembersService {
   async isUserAlreadyMember(teamId: number, email: string): Promise<Member | undefined> {
     const user = await this.getUserByEmail(email)
     if (!user) throw createError({ statusCode: 404, message: `User not found with email ${email}` })
-    return useDrizzle().query.members.findFirst({
-      where: and(eq(tables.members.teamId, teamId), eq(tables.members.userId, user.id)),
+    return db.query.members.findFirst({
+      where: and(eq(schema.members.teamId, teamId), eq(schema.members.userId, user.id)),
       with: {
         user: true
       }
@@ -73,8 +73,8 @@ export class MembersService {
   }
 
   async getUserByEmail(email: string): Promise<User> {
-    const user = await useDrizzle().query.users.findFirst({
-      where: eq(tables.users.email, email)
+    const user = await db.query.users.findFirst({
+      where: eq(schema.users.email, email)
     })
     if (!user) throw createError({ statusCode: 404, message: `User not found with email ${email}` })
     return user

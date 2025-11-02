@@ -9,11 +9,11 @@ export default eventHandler(async (event) => {
     role: z.nativeEnum(Role),
   }).parse)
   if (user.id === id) throw createError({ statusCode: 403, statusMessage: 'You can\'t update your own role' })
-  await useDrizzle().update(tables.users)
+  await db.update(schema.users)
     .set({
       role
     })
-    .where(eq(tables.users.id, id))
+    .where(eq(schema.users.id, id))
   return {
     statusCode: 200,
     message: 'user updated',

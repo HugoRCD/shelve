@@ -15,8 +15,8 @@ function validateOAuthPair(
   if (hasId !== hasSecret) {
     const missingKey = hasId ? clientSecretKey : clientIdKey
     const existingKey = hasId ? clientIdKey : clientSecretKey
-    ctx.addIssue({
-      code: z.ZodIssueCode.custom,
+    ctx.issues.push({
+      code: 'custom',
       message: `${missingKey} is required when ${existingKey} is set for ${providerName} OAuth.`,
       path: [missingKey],
     })
@@ -34,9 +34,9 @@ const commaSeparatedStringToArray = z.preprocess(
 )
 
 const requiredCoreSchema = z.object({
-  DATABASE_URL: z.string().url().startsWith('postgres', 'Must be a valid PostgreSQL URL.'),
-  NUXT_SESSION_PASSWORD: z.string().min(32, 'Session password must be at least 32 characters long.'),
-  NUXT_PRIVATE_ENCRYPTION_KEY: z.string().min(32, 'Encryption key must be at least 32 characters long.'),
+  DATABASE_URL: z.url().startsWith('postgres', { error: 'Must be a valid PostgreSQL URL.' }).optional(),
+  NUXT_SESSION_PASSWORD: z.string().min(32, { error: 'Session password must be at least 32 characters long.' }),
+  NUXT_PRIVATE_ENCRYPTION_KEY: z.string().min(32, { error: 'Encryption key must be at least 32 characters long.' }),
 })
 
 const authProvidersSchema = z.object({
@@ -48,34 +48,33 @@ const authProvidersSchema = z.object({
 })
 
 const emailSchema = z.object({
-  NUXT_PRIVATE_RESEND_API_KEY: z.string().startsWith('re_', 'Resend API key must start with "re_"').optional().or(z.literal('')),
-  NUXT_PRIVATE_SENDER_EMAIL: z.string().email('Sender email must be a valid email address.').optional().or(z.literal('')),
+  NUXT_PRIVATE_RESEND_API_KEY: z.string().startsWith('re_', { error: 'Resend API key must start with "re_"' }).optional().or(z.literal('')),
+  NUXT_PRIVATE_SENDER_EMAIL: z.email({ error: 'Sender email must be a valid email address.' }).optional().or(z.literal('')),
 })
 
 const adminAndSecuritySchema = z.object({
-  NUXT_PRIVATE_ADMIN_EMAILS: commaSeparatedStringToArray.pipe(z.array(z.string().email('One of the admin emails is invalid.'))),
-  NUXT_PRIVATE_ALLOWED_ORIGINS: commaSeparatedStringToArray.pipe(z.array(z.string().url('One of the allowed origins is an invalid URL.'))),
+  NUXT_PRIVATE_ADMIN_EMAILS: commaSeparatedStringToArray.pipe(z.array(z.email({ error: 'One of the admin emails is invalid.' }))),
+  NUXT_PRIVATE_ALLOWED_ORIGINS: commaSeparatedStringToArray.pipe(z.array(z.url({ error: 'One of the allowed origins is an invalid URL.' }))),
 })
 
-export const envSchema = requiredCoreSchema
-  .merge(authProvidersSchema)
-  .merge(emailSchema)
-  .merge(adminAndSecuritySchema)
-  .superRefine((data, ctx) => {
-    validateOAuthPair(data, ctx, 'NUXT_OAUTH_GITHUB_CLIENT_ID', 'NUXT_OAUTH_GITHUB_CLIENT_SECRET', 'GitHub')
-    validateOAuthPair(data, ctx, 'NUXT_OAUTH_GOOGLE_CLIENT_ID', 'NUXT_OAUTH_GOOGLE_CLIENT_SECRET', 'Google')
-  })
+export const envSchema = z.object({
+  ...requiredCoreSchema.shape,
+  ...authProvidersSchema.shape,
+  ...emailSchema.shape,
+  ...adminAndSecuritySchema.shape,
+}).superRefine((data, ctx) => {
+  validateOAuthPair(data, ctx, 'NUXT_OAUTH_GITHUB_CLIENT_ID', 'NUXT_OAUTH_GITHUB_CLIENT_SECRET', 'GitHub')
+  validateOAuthPair(data, ctx, 'NUXT_OAUTH_GOOGLE_CLIENT_ID', 'NUXT_OAUTH_GOOGLE_CLIENT_SECRET', 'Google')
+})
 
 function handleValidationError(error: z.ZodError) {
   console.error('❌ Environment variables validation failed:')
-  const { fieldErrors } = error.flatten()
-  
-  for (const field in fieldErrors) {
-    const messages = fieldErrors[field as keyof typeof fieldErrors]
-    if (messages) {
-      console.error(`  - ${field}: ${messages.join(', ')}`)
-    }
+
+  for (const issue of error.issues) {
+    const fieldPath = issue.path.length > 0 ? issue.path.join('.') : 'root'
+    console.error(`  - ${fieldPath}: ${issue.message}`)
   }
+
   process.exit(1)
 }
 
@@ -92,17 +91,17 @@ export default defineNuxtModule({
         return
       }
       const env = envSchema.parse(process.env)
-      
+
       const isGithubEnabled = !!(env.NUXT_OAUTH_GITHUB_CLIENT_ID && env.NUXT_OAUTH_GITHUB_CLIENT_SECRET)
       const isGoogleEnabled = !!(env.NUXT_OAUTH_GOOGLE_CLIENT_ID && env.NUXT_OAUTH_GOOGLE_CLIENT_SECRET)
       const isEmailEnabled = !!env.NUXT_PRIVATE_RESEND_API_KEY
-      
+
       nuxt.options.appConfig.auth = {
         isGoogleEnabled,
         isGithubEnabled,
         isEmailEnabled
       }
-      
+
       console.log('🔐 Auth configuration validated:')
       console.log(`  GitHub OAuth: ${isGithubEnabled ? '✅' : '❌'}`)
       console.log(`  Google OAuth: ${isGoogleEnabled ? '✅' : '❌'}`)
@@ -115,4 +114,3 @@ export default defineNuxtModule({
     }
   },
 })
-

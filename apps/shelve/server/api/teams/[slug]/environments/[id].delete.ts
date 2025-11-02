@@ -5,8 +5,8 @@ export default defineEventHandler(async (event) => {
 
   const { id } = await getValidatedRouterParams(event, idParamsSchema.parse)
 
-  await useDrizzle().delete(tables.environments)
-    .where(eq(tables.environments.id, id))
+  await db.delete(schema.environments)
+    .where(eq(schema.environments.id, id))
 
   await clearCache('Environments', team.id)
 

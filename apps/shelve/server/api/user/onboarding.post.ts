@@ -4,15 +4,15 @@ export default defineEventHandler(async (event) => {
   const { user } = await requireUserSession(event)
   const { teamSlug } = await readValidatedBody(event, z.object({
     teamSlug: z.string({
-      required_error: 'Team Slug is required',
+      error: 'Team Slug is required',
     }),
   }).parse)
 
-  const [updatedUser] = await useDrizzle().update(tables.users)
+  const [updatedUser] = await db.update(schema.users)
     .set({
       onboarding: true,
     })
-    .where(eq(tables.users.id, user.id))
+    .where(eq(schema.users.id, user.id))
     .returning()
 
   await setUserSession(event, {

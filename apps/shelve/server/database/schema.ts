@@ -1,6 +1,5 @@
 import { boolean, pgEnum, pgTable, varchar, index, uniqueIndex, bigint, integer, timestamp } from 'drizzle-orm/pg-core'
 import { relations } from 'drizzle-orm'
-import { AuthType, Role, TeamRole } from '@types'
 
 const timestamps = {
   updatedAt: timestamp().notNull().$onUpdate(() => new Date()),
@@ -11,20 +10,20 @@ const DEFAULT_AVATAR = 'https://i.imgur.com/6VBx3io.png'
 const DEFAULT_LOGO = 'https://github.com/HugoRCD/shelve/blob/main/assets/default.webp?raw=true'
 
 export const teamRoleEnum = pgEnum('team_role', [
-  TeamRole.OWNER,
-  TeamRole.ADMIN,
-  TeamRole.MEMBER,
+  'owner',
+  'admin',
+  'member',
 ])
 
 export const rolesEnum = pgEnum('roles', [
-  Role.USER,
-  Role.ADMIN,
+  'user',
+  'admin',
 ])
 
 export const authTypesEnum = pgEnum('auth_types', [
-  AuthType.GITHUB,
-  AuthType.GOOGLE,
-  AuthType.EMAIL,
+  'github',
+  'google',
+  'email',
 ])
 
 export const users = pgTable('users', {
@@ -32,7 +31,7 @@ export const users = pgTable('users', {
   username: varchar({ length: 25 }).unique().notNull(),
   email: varchar({ length: 50 }).unique().notNull(),
   avatar: varchar({ length: 500 }).default(DEFAULT_AVATAR).notNull(),
-  role: rolesEnum().default(Role.USER).notNull(),
+  role: rolesEnum().default('user').notNull(),
   authType: authTypesEnum().notNull(),
   onboarding: boolean().default(false).notNull(),
   cliInstalled: boolean().default(false).notNull(),
@@ -61,7 +60,7 @@ export const members = pgTable('members', {
   id: bigint({ mode: 'number' }).primaryKey().generatedByDefaultAsIdentity(),
   userId: bigint({ mode: 'number' }).references(() => users.id, { onDelete: 'cascade' }).notNull(),
   teamId: bigint({ mode: 'number' }).references(() => teams.id, { onDelete: 'cascade' }).notNull(),
-  role: teamRoleEnum().default(TeamRole.MEMBER).notNull(),
+  role: teamRoleEnum().default('member').notNull(),
   ...timestamps,
 }, (table) => [
   uniqueIndex('members_user_team_idx').on(table.userId, table.teamId),

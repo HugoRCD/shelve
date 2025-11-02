@@ -2,7 +2,7 @@ import { z } from 'zod'
 
 const createTeamSchema = z.object({
   name: z.string({
-    required_error: 'Cannot create team without name'
+    error: 'Cannot create team without name'
   }).min(3).max(50).trim(),
   logo: z.string().optional(),
 })

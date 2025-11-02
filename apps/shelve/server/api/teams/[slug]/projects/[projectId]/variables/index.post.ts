@@ -4,14 +4,14 @@ import { projectIdParamsSchema } from '~~/server/database/zod'
 const schema = z.object({
   autoUppercase: z.boolean().optional(),
   environmentIds: z.array(z.number({
-    required_error: 'Environment ID is required',
+    error: 'Environment ID is required',
   })).min(1),
   variables: z.array(z.object({
     key: z.string({
-      required_error: 'Variable key is required',
+      error: 'Variable key is required',
     }).min(1).trim(),
     value: z.string({
-      required_error: 'Variable value is required',
+      error: 'Variable value is required',
     }).min(1).trim(),
   })).min(1).max(100),
   syncWithGitHub: z.boolean().optional(),

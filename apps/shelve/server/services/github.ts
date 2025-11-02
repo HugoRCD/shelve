@@ -128,8 +128,8 @@ export class GithubService {
   })
 
   getUserRepos = cachedFunction(async (event, userId: number): Promise<GitHubRepo[]> => {
-    const installation = await useDrizzle().query.githubApp.findFirst({
-      where: eq(tables.githubApp.userId, userId)
+    const installation = await db.query.githubApp.findFirst({
+      where: eq(schema.githubApp.userId, userId)
     })
 
     if (!installation) {
@@ -173,8 +173,8 @@ export class GithubService {
   ) {
     try {
       const sanitizedRepository = sanitizeGithubUrl(repository)
-      const installation = await useDrizzle().query.githubApp.findFirst({
-        where: eq(tables.githubApp.userId, userId)
+      const installation = await db.query.githubApp.findFirst({
+        where: eq(schema.githubApp.userId, userId)
       })
 
       if (!installation) {
@@ -241,18 +241,18 @@ export class GithubService {
   }
 
   getUserApps(userId: number) {
-    return useDrizzle().query.githubApp.findMany({
-      where: eq(tables.githubApp.userId, userId)
+    return db.query.githubApp.findMany({
+      where: eq(schema.githubApp.userId, userId)
     })
   }
 
   async deleteApp(userId: number, installationId: number) {
-    await useDrizzle()
-      .delete(tables.githubApp)
+    await db
+      .delete(schema.githubApp)
       .where(
         and(
-          eq(tables.githubApp.userId, userId),
-          eq(tables.githubApp.installationId, installationId)
+          eq(schema.githubApp.userId, userId),
+          eq(schema.githubApp.installationId, installationId)
         )
       )
     return {

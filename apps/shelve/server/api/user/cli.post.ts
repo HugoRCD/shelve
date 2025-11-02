@@ -1,11 +1,11 @@
 export default defineEventHandler(async (event) => {
   const { user } = await requireUserSession(event)
 
-  const [updatedUser] = await useDrizzle().update(tables.users)
+  const [updatedUser] = await db.update(schema.users)
     .set({
       cliInstalled: true,
     })
-    .where(eq(tables.users.id, user.id))
+    .where(eq(schema.users.id, user.id))
     .returning()
 
   await setUserSession(event, {

@@ -4,7 +4,6 @@ import { gt } from 'drizzle-orm'
 import { users } from '../database/schema'
 import { handleEmailUser } from './user'
 
-const db = useDrizzle()
 const OTP_EXPIRY_MINUTES = 10
 
 export function generateOTPCode(): string {
@@ -67,4 +66,4 @@ export async function clearExpiredOTPs(): Promise<void> {
     .where(
       gt(users.otpExpiresAt, new Date())
     )
-} 
+}
