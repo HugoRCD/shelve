@@ -34,7 +34,6 @@
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "release": "pnpm run test",
-    "release:edge": "pnpm run test && npm publish --tag edge",
     "start": "node ./dist/index.mjs",
     "test": "pnpm run build && pnpm run typecheck && pnpm run lint && vitest run",
     "typecheck": "tsc --noEmit",

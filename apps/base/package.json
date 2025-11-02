@@ -24,7 +24,7 @@
     "iron-webcrypto": "^1.2.1",
     "motion-plus-vue": "^1.4.0",
     "motion-v": "^1.7.3",
-    "nuxt": "^4.2.0",
+    "nuxt": "4.1.2",
     "nuxt-visitors": "^1.2.2",
     "vue": "^3.5.22",
     "vue-sonner": "^2.0.9",
