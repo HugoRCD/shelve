@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken'
 import type { H3Event } from 'h3'
-import type { GithubApp, GitHubRepo } from '@types'
+import type { GitHubRepo } from '@types'
 import nacl from 'tweetnacl'
 import { blake2b } from 'blakejs'
 import { sanitizeGithubUrl } from '@utils'

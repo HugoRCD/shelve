@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { projectIdParamsSchema } from '~~/server/database/zod'
 
-const schema = z.object({
+const createVariablesSchema = z.object({
   autoUppercase: z.boolean().optional(),
   environmentIds: z.array(z.number({
     error: 'Environment ID is required',
@@ -19,7 +19,7 @@ const schema = z.object({
 
 export default eventHandler(async (event) => {
   const team = useCurrentTeam(event)
-  const body = await readValidatedBody(event, schema.parse)
+  const body = await readValidatedBody(event, createVariablesSchema.parse)
   const { projectId } = await getValidatedRouterParams(event, projectIdParamsSchema.parse)
 
   const variablesService = new VariablesService(event)
