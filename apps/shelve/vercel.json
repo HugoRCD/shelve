@@ -1,0 +1,3 @@
+{
+  "ignoreCommand": "git diff HEAD~1 HEAD --quiet -- package.json pnpm-lock.yaml turbo.json pnpm-workspace.yaml eslint.config.js tsconfig.json renovate.json || git diff HEAD~1 HEAD --quiet -- apps/shelve/ apps/base/ packages/"
+}
