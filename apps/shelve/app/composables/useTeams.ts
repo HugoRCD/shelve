@@ -63,7 +63,7 @@ export function useTeamsService() {
     } catch (error: any) {
       console.error(error)
       if (error.statusCode === 409) // Team already exists
-        toast.error(error.statusMessage)
+        toast.error('A team with this name already exists. Please choose another name.')
       else
         toast.error('Failed to create team')
     } finally {
