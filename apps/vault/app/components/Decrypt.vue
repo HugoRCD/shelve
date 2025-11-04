@@ -28,7 +28,7 @@ async function decryptEnvFile() {
     toast.success('Your secret(s) has been decrypted')
   } catch (error: any) {
     if (error.statusCode === 400) {
-      toast.error(error.statusMessage)
+      toast.error(error.statusMessage || 'Invalid id, password or link has expired')
     } else {
       toast.error('Failed to decrypt your secret(s)')
     }
