@@ -18,7 +18,7 @@
     "db:migrate": "nuxt hub database migrate"
   },
   "dependencies": {
-    "@nuxthub/core": "npm:@nuxthub/core-nightly@1.0.0-20251102-095244-e559184",
+    "@nuxthub/core": "npm:@nuxthub/core-nightly@1.0.0-20251104-220347-b35e171",
     "@vue-email/components": "^0.0.21",
     "@vue-email/render": "^0.0.9",
     "blakejs": "^1.2.1",
