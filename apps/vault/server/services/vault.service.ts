@@ -32,6 +32,11 @@ export class VaultService {
 
   private calculateTimeLeft(createdAt: number, ttl: TTLFormat): number {
     const ttlInSeconds = this.TTL_MAP[ttl]
+
+    if (ttlInSeconds === -1) {
+      return -1
+    }
+
     const now = Date.now()
     const expiresAt = createdAt + (ttlInSeconds * 1000)
     return Math.max(0, Math.floor((expiresAt - now) / 1000))
@@ -80,7 +85,7 @@ export class VaultService {
     const { encryptedValue, reads, createdAt, ttl, passwordHash } = storedData
     const timeLeft = this.calculateTimeLeft(createdAt, ttl)
 
-    if (timeLeft <= 0) {
+    if (timeLeft === 0) {
       await this.storage.del(key)
       throw createError({
         statusCode: 400,
