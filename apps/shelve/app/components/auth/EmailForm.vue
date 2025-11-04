@@ -7,7 +7,7 @@ const emit = defineEmits<{
 }>()
 
 const schema = z.object({
-  email: z.string().email('Please enter a valid email address')
+  email: z.email('Please enter a valid email address')
 })
 
 type Schema = z.output<typeof schema>
@@ -25,7 +25,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       method: 'POST',
       body: { email: event.data.email }
     })
-    
+
     emit('emailSubmitted', event.data.email)
     toast.success('Check your email for the verification code')
   } catch (error: any) {
@@ -51,7 +51,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
         }"
       />
     </UFormField>
-    
+
     <UButton
       type="submit"
       :loading
@@ -62,4 +62,4 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       label="Send verification code"
     />
   </UForm>
-</template> 
+</template>

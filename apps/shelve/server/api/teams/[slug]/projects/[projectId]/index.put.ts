@@ -12,7 +12,7 @@ const updateProjectSchema = z.object({
 
 const projectIdParamsSchema = z.object({
   projectId: z.coerce.number({
-    required_error: 'Project ID is required',
+    error: 'Project ID is required',
   }).int().positive(),
 })
 

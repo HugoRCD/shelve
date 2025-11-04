@@ -1,14 +1,14 @@
 import { z } from 'zod'
 import { variableIdParamsSchema } from '~~/server/database/zod'
 
-const schema = z.object({
+const updateVariableSchema = z.object({
   autoUppercase: z.boolean().optional(),
   key: z.string({
-    required_error: 'Variable key is required',
+    error: 'Variable key is required',
   }).min(1).trim(),
   values: z.array(z.object({
     environmentId: z.number({
-      required_error: 'Environment ID is required',
+      error: 'Environment ID is required',
     }),
     value: z.string().trim()
   })).min(1),
@@ -16,7 +16,7 @@ const schema = z.object({
 
 export default eventHandler(async (event) => {
   const { variableId } = await getValidatedRouterParams(event, variableIdParamsSchema.parse)
-  const body = await readValidatedBody(event, schema.parse)
+  const body = await readValidatedBody(event, updateVariableSchema.parse)
   await new VariablesService(event).updateVariable({
     id: variableId,
     key: body.key,

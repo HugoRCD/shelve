@@ -21,7 +21,7 @@ export class EmailService {
       console.log('Development mode: OTP code is', otp)
       return
     }
-    
+
     const template = await this.generateOtpTemplate(otp, redirectUrl)
 
     try {
@@ -61,7 +61,7 @@ export class EmailService {
         subject: 'New user registered',
         html: `New user registered: ${username} - ${email}`,
       }).then((response) => {
-        console.log('New user email sent: ', response)
+        console.log('New user email sent: ', response.data)
       })
     } catch (error) {
       console.log('Error sending welcome email: ', error)

@@ -5,8 +5,8 @@ export default defineEventHandler(async (event) => {
 
   const { user } = await requireUserSession(event)
 
-  const tokens = await useDrizzle().query.tokens.findMany({
-    where: eq(tables.tokens.userId, user.id),
+  const tokens = await db.query.tokens.findMany({
+    where: eq(schema.tokens.userId, user.id),
     orderBy: (tokens, { desc }) => [desc(tokens.createdAt)]
   })
 

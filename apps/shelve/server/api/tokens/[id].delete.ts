@@ -3,11 +3,11 @@ import { idParamsSchema } from '~~/server/database/zod'
 export default defineEventHandler(async (event) => {
   const { id } = await getValidatedRouterParams(event, idParamsSchema.parse)
   const { user } = await requireUserSession(event)
-  const [deletedToken] = await useDrizzle().delete(tables.tokens)
+  const [deletedToken] = await db.delete(schema.tokens)
     .where(
       and(
-        eq(tables.tokens.id, id),
-        eq(tables.tokens.userId, user.id)
+        eq(schema.tokens.id, id),
+        eq(schema.tokens.userId, user.id)
       )
     )
     .returning()

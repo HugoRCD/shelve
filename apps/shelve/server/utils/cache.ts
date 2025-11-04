@@ -16,8 +16,8 @@ export const cacheEntities: Record<string, CacheEntity<string> | CacheEntity<num
     key: 'slug',
     ttl: CACHE_TTL,
     invalidateFor: async (id: number | string) => {
-      const query = typeof id === 'string' ? eq(tables.teams.slug, id) : eq(tables.teams.id, id)
-      const team = await useDrizzle().query.teams.findFirst({
+      const query = typeof id === 'string' ? eq(schema.teams.slug, id) : eq(schema.teams.id, id)
+      const team = await db.query.teams.findFirst({
         where: query,
         with: {
           members: {

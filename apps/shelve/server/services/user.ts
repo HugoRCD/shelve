@@ -5,8 +5,8 @@ import { AuthType, Role } from '@types'
 export async function createUser(input: CreateUserInput, event: H3Event): Promise<User> {
   const adminEmails = useRuntimeConfig(event).private.adminEmails?.split(',') || []
   input.username = await validateUsername(input.username, input.authType)
-  const [createdUser] = await useDrizzle()
-    .insert(tables.users)
+  const [createdUser] = await db
+    .insert(schema.users)
     .values({
       username: input.username,
       email: input.email,
@@ -21,20 +21,20 @@ export async function createUser(input: CreateUserInput, event: H3Event): Promis
 }
 
 export async function handleOAuthUser(input: CreateUserInput, event: H3Event): Promise<User> {
-  const [foundUser] = await useDrizzle()
+  const [foundUser] = await db
     .select()
-    .from(tables.users)
-    .where(eq(tables.users.email, input.email))
+    .from(schema.users)
+    .where(eq(schema.users.email, input.email))
 
   if (!foundUser) return await createUser(input, event)
   return foundUser
 }
 
 export async function handleEmailUser(email: string, event: H3Event): Promise<{ user: User; isNewUser: boolean }> {
-  const [foundUser] = await useDrizzle()
+  const [foundUser] = await db
     .select()
-    .from(tables.users)
-    .where(eq(tables.users.email, email))
+    .from(schema.users)
+    .where(eq(schema.users.email, email))
 
   if (foundUser) {
     return { user: foundUser, isNewUser: false }
@@ -54,12 +54,12 @@ export async function handleEmailUser(email: string, event: H3Event): Promise<{ 
 }
 
 export async function validateUsername(username: string, authType?: AuthType): Promise<string> {
-  const foundUser = await useDrizzle()
+  const foundUser = await db
     .select({
-      username: tables.users.username,
+      username: schema.users.username,
     })
-    .from(tables.users)
-    .where(eq(tables.users.username, username))
+    .from(schema.users)
+    .where(eq(schema.users.username, username))
 
   const usernameTaken = foundUser.length > 0
   const isOAuthUser = authType === AuthType.GITHUB || authType === AuthType.GOOGLE
@@ -75,8 +75,8 @@ function generateUniqueUsername(username: string): string {
 export async function getUserByAuthToken(authToken: string, event: H3Event): Promise<User> {
   const { encryptionKey } = useRuntimeConfig(event).private
   const userId = +authToken.split('_')[1] // Extract the user ID from the token
-  const userTokens = await useDrizzle().query.tokens.findMany({
-    where: eq(tables.tokens.userId, userId)
+  const userTokens = await db.query.tokens.findMany({
+    where: eq(schema.tokens.userId, userId)
   })
   if (!userTokens.length) throw createError({ statusCode: 401, statusMessage: 'User not found (invalid token)' })
 
@@ -89,15 +89,15 @@ export async function getUserByAuthToken(authToken: string, event: H3Event): Pro
 
   if (!foundToken) throw createError({ statusCode: 401, statusMessage: 'Invalid token' })
 
-  const user = await useDrizzle().query.users.findFirst({
-    where: eq(tables.users.id, userId)
+  const user = await db.query.users.findFirst({
+    where: eq(schema.users.id, userId)
   })
   if (!user) throw createError({ statusCode: 400, statusMessage: 'User not found (invalid token)' })
 
-  await useDrizzle().update(tables.tokens)
+  await db.update(schema.tokens)
     .set({
       updatedAt: new Date()
     })
-    .where(eq(tables.tokens.id, foundToken.id))
+    .where(eq(schema.tokens.id, foundToken.id))
   return user
 }

@@ -3,7 +3,7 @@ import { z } from 'zod'
 export default defineEventHandler(async (event) => {
   const { name } = await readValidatedBody(event, z.object({
     name: z.string({
-      required_error: 'Cannot create token without name',
+      error: 'Cannot create token without name',
     }).min(3).max(50).trim(),
   }).parse)
   const { user } = await requireUserSession(event)
@@ -12,7 +12,7 @@ export default defineEventHandler(async (event) => {
   const createdToken = generateUserToken(user.id)
   const encryptedToken = await seal(createdToken, encryptionKey)
 
-  const [token] = await useDrizzle().insert(tables.tokens)
+  const [token] = await db.insert(schema.tokens)
     .values({
       token: encryptedToken,
       userId: user.id,

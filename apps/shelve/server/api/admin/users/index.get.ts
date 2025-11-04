@@ -1,3 +1,3 @@
 export default eventHandler(() => {
-  return useDrizzle().query.users.findMany()
+  return db.query.users.findMany()
 })

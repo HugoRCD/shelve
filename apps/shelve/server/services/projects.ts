@@ -5,7 +5,7 @@ export class ProjectsService {
   async createProject(input: CreateProjectInput): Promise<Project> {
     await this.validateProjectName(input.name, input.teamId)
 
-    const [createdProject] = await useDrizzle().insert(tables.projects)
+    const [createdProject] = await db.insert(schema.projects)
       .values(input)
       .returning()
     if (!createdProject) throw createError({ statusCode: 422, message: 'Failed to create project' })
@@ -21,9 +21,9 @@ export class ProjectsService {
     if (existingProject.name !== input.name)
       await this.validateProjectName(input.name, existingProject.teamId, input.id)
 
-    const [updatedProject] = await useDrizzle().update(tables.projects)
+    const [updatedProject] = await db.update(schema.projects)
       .set(input)
-      .where(eq(tables.projects.id, input.id))
+      .where(eq(schema.projects.id, input.id))
       .returning()
     if (!updatedProject) throw createError({ statusCode: 422, message: 'Failed to update project' })
     await clearCache('Projects', updatedProject.teamId)
@@ -33,17 +33,17 @@ export class ProjectsService {
   }
 
   getProject = withCache('Project', async (projectId: number): Promise<Project> => {
-    const project = await useDrizzle().query.projects.findFirst({
-      where: eq(tables.projects.id, projectId)
+    const project = await db.query.projects.findFirst({
+      where: eq(schema.projects.id, projectId)
     })
     if (!project) throw createError({ statusCode: 404, message: `Project not found with id ${projectId}` })
     return project
   })
 
   getProjects = withCache<Project[]>('Projects', (teamId: number) => {
-    return useDrizzle().query.projects.findMany({
-      where: eq(tables.projects.teamId, teamId),
-      orderBy: [desc(tables.projects.updatedAt)]
+    return db.query.projects.findMany({
+      where: eq(schema.projects.teamId, teamId),
+      orderBy: [desc(schema.projects.updatedAt)]
     })
   })
 
@@ -51,10 +51,10 @@ export class ProjectsService {
     await clearCache('Projects', teamId)
     await clearCache('Project', projectId)
 
-    await useDrizzle().delete(tables.projects)
+    await db.delete(schema.projects)
       .where(and(
-        eq(tables.projects.id, projectId),
-        eq(tables.projects.teamId, teamId)
+        eq(schema.projects.id, projectId),
+        eq(schema.projects.teamId, teamId)
       ))
       .returning()
   }
@@ -68,13 +68,13 @@ export class ProjectsService {
 
   private async isProjectAlreadyExists(name: string, teamId: number, projectId?: number): Promise<boolean> {
     const conditions = [
-      eq(tables.projects.teamId, teamId),
-      ilike(tables.projects.name, name)
+      eq(schema.projects.teamId, teamId),
+      ilike(schema.projects.name, name)
     ]
 
-    if (projectId) conditions.push(not(eq(tables.projects.id, projectId)))
+    if (projectId) conditions.push(not(eq(schema.projects.id, projectId)))
 
-    const project = await useDrizzle().query.projects.findFirst({
+    const project = await db.query.projects.findFirst({
       where: and(...conditions)
     })
 

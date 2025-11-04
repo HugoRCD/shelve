@@ -14,11 +14,11 @@
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "typecheck": "tsc --noEmit",
-    "db:generate": "drizzle-kit generate",
-    "db:migrate": "drizzle-kit migrate",
-    "db:push": "drizzle-kit push"
+    "db:generate": "nuxt hub database generate",
+    "db:migrate": "nuxt hub database migrate"
   },
   "dependencies": {
+    "@nuxthub/core": "npm:@nuxthub/core-nightly@1.0.0-20251104-224431-b52a71f",
     "@vue-email/components": "^0.0.21",
     "@vue-email/render": "^0.0.9",
     "blakejs": "^1.2.1",
@@ -28,7 +28,8 @@
     "libsodium-wrappers": "^0.7.15",
     "nuxt-auth-utils": "^0.5.25",
     "nuxt-build-cache": "^0.1.1",
-    "pg": "^8.16.3",
+    "postgres": "^3.4.7",
+    "@electric-sql/pglite": "^0.3.11",
     "resend": "^6.4.0",
     "tweetnacl": "^1.0.3",
     "vue-router": "^4.6.3"

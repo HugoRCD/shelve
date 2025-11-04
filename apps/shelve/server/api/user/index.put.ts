@@ -3,9 +3,9 @@ import { AuthType } from '@types'
 
 const updateUserSchema = z.object({
   username: z.string().min(3).max(50).trim().optional(),
-  email: z.string().email().trim().optional(),
+  email: z.email().trim().optional(),
   avatar: z.string().trim().optional(),
-  authType: z.nativeEnum(AuthType).optional(),
+  authType: z.enum(AuthType).optional(),
 })
 
 export default eventHandler(async (event) => {
@@ -14,13 +14,13 @@ export default eventHandler(async (event) => {
 
   if (body.username) body.username = await validateUsername(body.username, body.authType)
 
-  const [updatedUser] = await useDrizzle()
-    .update(tables.users)
+  const [updatedUser] = await db
+    .update(schema.users)
     .set({
       username: body.username,
       avatar: body.avatar,
     })
-    .where(eq(tables.users.id, user.id))
+    .where(eq(schema.users.id, user.id))
     .returning()
   if (!updatedUser) throw createError({ statusCode: 404, statusMessage: 'User not found' })
 

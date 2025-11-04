@@ -3,9 +3,9 @@ import { TeamRole } from '@types'
 
 const createMemberSchema = z.object({
   email: z.string({
-    required_error: 'Missing new member email',
+    error: 'Missing new member email',
   }).email().trim(),
-  role: z.nativeEnum(TeamRole).default(TeamRole.MEMBER)
+  role: z.enum(TeamRole).default(TeamRole.MEMBER)
 })
 
 export default eventHandler(async (event) => {

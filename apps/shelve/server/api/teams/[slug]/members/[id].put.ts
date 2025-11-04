@@ -3,7 +3,7 @@ import { TeamRole } from '@types'
 import { idParamsSchema } from '~~/server/database/zod'
 
 const updateMemberSchema = z.object({
-  role: z.nativeEnum(TeamRole),
+  role: z.enum(TeamRole),
 })
 
 export default eventHandler(async (event) => {

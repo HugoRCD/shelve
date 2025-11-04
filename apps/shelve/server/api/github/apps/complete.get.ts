@@ -12,7 +12,7 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    await useDrizzle().insert(tables.githubApp).values({
+    await db.insert(schema.githubApp).values({
       installationId: +installation_id,
       userId: user.id
     })

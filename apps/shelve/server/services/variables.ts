@@ -23,16 +23,15 @@ export class VariablesService {
   incrementStatAsync(teamId: number, action: 'push' | 'pull') {
     Promise.resolve().then(async () => {
       try {
-        const db = useDrizzle()
-        await db.insert(tables.teamStats)
+        await db.insert(schema.teamStats)
           .values({
             teamId,
             [`${action}Count`]: 1
           })
           .onConflictDoUpdate({
-            target: [tables.teamStats.teamId],
+            target: [schema.teamStats.teamId],
             set: {
-              [`${action}Count`]: sql`${tables.teamStats[`${action}Count`]} + 1`,
+              [`${action}Count`]: sql`${schema.teamStats[`${action}Count`]} + 1`,
               updatedAt: new Date()
             }
           })
@@ -46,7 +45,7 @@ export class VariablesService {
 
   private async findVariableById(tx: any, id: number) {
     return await tx.query.variables.findFirst({
-      where: eq(tables.variables.id, id),
+      where: eq(schema.variables.id, id),
       with: {
         values: {
           with: {
@@ -72,7 +71,6 @@ export class VariablesService {
   // Public methods
   async createVariables(event: H3Event, input: CreateVariablesInput): Promise<void> {
     const { projectId, variables: varsToCreate, autoUppercase = true, environmentIds, syncWithGitHub } = input
-    const db = useDrizzle()
 
     await db.transaction(async (tx) => {
       const preparedVariables = await Promise.all(
@@ -86,14 +84,14 @@ export class VariablesService {
         preparedVariables.map(async ({ key }) => {
           const existing = await tx.query.variables.findFirst({
             where: and(
-              eq(tables.variables.projectId, projectId),
-              eq(tables.variables.key, key)
+              eq(schema.variables.projectId, projectId),
+              eq(schema.variables.key, key)
             )
           })
 
           if (existing) return existing
 
-          const [created] = await tx.insert(tables.variables)
+          const [created] = await tx.insert(schema.variables)
             .values({ projectId, key })
             .returning()
 
@@ -113,12 +111,12 @@ export class VariablesService {
       })
 
       if (variableValues.length > 0) {
-        await tx.insert(tables.variableValues)
+        await tx.insert(schema.variableValues)
           .values(variableValues)
           .onConflictDoUpdate({
             target: [
-              tables.variableValues.variableId,
-              tables.variableValues.environmentId
+              schema.variableValues.variableId,
+              schema.variableValues.environmentId
             ],
             set: {
               value: sql`EXCLUDED.value`,
@@ -141,7 +139,6 @@ export class VariablesService {
 
   async updateVariable(input: UpdateVariableInput): Promise<void> {
     const { id, key, values, autoUppercase = true } = input
-    const db = useDrizzle()
 
     await db.transaction(async (tx) => {
       const existingVariable = await this.findVariableById(tx, id)
@@ -162,9 +159,8 @@ export class VariablesService {
   }
 
   getVariables = withCache<Variable[]>('Variables', async (projectId: number, environmentId?: number) => {
-    const db = useDrizzle()
     const variables = await db.query.variables.findMany({
-      where: eq(tables.variables.projectId, projectId),
+      where: eq(schema.variables.projectId, projectId),
       with: {
         values: {
           with: {
@@ -180,8 +176,8 @@ export class VariablesService {
   })
 
   async deleteVariable(id: number): Promise<void> {
-    const [deleted] = await useDrizzle().delete(tables.variables)
-      .where(eq(tables.variables.id, id))
+    const [deleted] = await db.delete(schema.variables)
+      .where(eq(schema.variables.id, id))
       .returning()
 
     if (!deleted) throw createError({ statusCode: 404, statusMessage: `Variable not found with id ${id}` })
@@ -194,7 +190,7 @@ export class VariablesService {
   }
 
   private async upsertVariableValue(tx: any, variableId: number, environmentId: number, value: string) {
-    return await tx.insert(tables.variableValues)
+    return await tx.insert(schema.variableValues)
       .values({
         variableId,
         environmentId,
@@ -202,17 +198,17 @@ export class VariablesService {
       })
       .onConflictDoUpdate({
         target: [
-          tables.variableValues.variableId,
-          tables.variableValues.environmentId
+          schema.variableValues.variableId,
+          schema.variableValues.environmentId
         ],
         set: { value }
       })
   }
 
   private async updateVariableKey(tx: any, id: number, key: string) {
-    return await tx.update(tables.variables)
+    return await tx.update(schema.variables)
       .set({ key })
-      .where(eq(tables.variables.id, id))
+      .where(eq(schema.variables.id, id))
   }
 
 }
