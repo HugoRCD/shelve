@@ -34,6 +34,13 @@ importers:
         version: 5.9.3
 
   apps/base:
+    dependencies:
+      '@nuxtjs/mdc':
+        specifier: ^0.18.0
+        version: 0.18.0(magicast@0.5.1)
+      shaders:
+        specifier: ^2.1.3
+        version: 2.1.3
     devDependencies:
       '@iconify-json/heroicons':
         specifier: ^1.2.3
@@ -7238,6 +7245,9 @@ packages:
   setprototypeof@1.2.0:
     resolution: {integrity: sha512-E5LDX7Wrp85Kil5bhZv46j8jOeboKq5JMmYM3gVGdGH8xFpPWXUMsNrlODCrkoxMEeNi/XZIwuRvY4XNwYMJpw==}
 
+  shaders@2.1.3:
+    resolution: {integrity: sha512-oEoAlIKMLADy+3pmKhxh7vpOUFMzLL8MJluQCmr35EPbQVZeWF1rM2tcht5cJSrbvPv2up6zDzIO75Gi4C9a8A==}
+
   sharp@0.32.6:
     resolution: {integrity: sha512-KyLTWwgcR9Oe4d9HwCwNM2l7+J0dUQwn/yf7S0EnTtb0eVS4RxO0eUSvxPtzT4F3SY+C4K6fqdv/DO27sJ/v/w==}
     engines: {node: '>=14.15.0'}
@@ -11631,7 +11641,7 @@ snapshots:
     dependencies:
       '@rollup/pluginutils': 5.3.0(rollup@4.52.5)
       estree-walker: 3.0.3
-      magic-string: 0.30.19
+      magic-string: 0.30.21
       mlly: 1.8.0
       ufo: 1.6.1
       unplugin: 2.3.10
@@ -11675,7 +11685,7 @@ snapshots:
   '@unocss/rule-utils@66.5.1':
     dependencies:
       '@unocss/core': 66.5.1
-      magic-string: 0.30.19
+      magic-string: 0.30.21
 
   '@unrs/resolver-binding-darwin-arm64@1.7.0':
     optional: true
@@ -16263,7 +16273,7 @@ snapshots:
 
   pnpm-workspace-yaml@0.3.1:
     dependencies:
-      yaml: 2.8.0
+      yaml: 2.8.1
 
   postcss-calc@10.1.1(postcss@8.5.6):
     dependencies:
@@ -17022,6 +17032,8 @@ snapshots:
       - supports-color
 
   setprototypeof@1.2.0: {}
+
+  shaders@2.1.3: {}
 
   sharp@0.32.6:
     dependencies:
@@ -17929,7 +17941,7 @@ snapshots:
   unwasm@0.3.11:
     dependencies:
       knitwork: 1.2.0
-      magic-string: 0.30.19
+      magic-string: 0.30.21
       mlly: 1.8.0
       pathe: 2.0.3
       pkg-types: 2.3.0

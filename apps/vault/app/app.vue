@@ -1,6 +1,10 @@
 <script setup lang="ts">
+import { motion } from 'motion-v'
 import { Toaster } from 'vue-sonner'
 import 'vue-sonner/style.css'
+import InfoModal from '~/components/InfoModal.vue'
+
+const infoModal = ref<InstanceType<typeof InfoModal> | null>(null)
 
 useHead({
   title: 'Vault by Shelve - Secure Secret Sharing Platform',
@@ -9,40 +13,22 @@ useHead({
 
 useSeoMeta({
   title: 'Vault by Shelve - Secure Secret Sharing Platform',
-  description: 'Share sensitive data and environment variables securely without an account. Set expiration time, control number of reads, and ensure encrypted transmission.',
+  description: 'Share secrets securely. No account required. Set expiration. Control access. End-to-end encrypted.',
 
-  ogTitle: 'Vault by Shelve - Share Secrets Securely',
-  ogDescription: 'Securely share sensitive data with customizable expiration and read limits. No account needed.',
+  ogTitle: 'Vault - Share Secrets Securely',
+  ogDescription: 'Share secrets securely. No account required. Set expiration. Control access. End-to-end encrypted.',
   ogImage: 'https://shelve.cloud/vault-og.png',
   ogUrl: 'https://shelve.cloud/vault',
   ogType: 'website',
   ogSiteName: 'Shelve',
 
-  twitterTitle: 'Vault by Shelve - Secure Secret Sharing',
-  twitterDescription: 'Share sensitive data securely with expiration time and read limits.',
+  twitterTitle: 'Vault - Secure Secret Sharing',
+  twitterDescription: 'Share secrets securely. No account required. Set expiration. Control access. End-to-end encrypted.',
   twitterCard: 'summary_large_image',
   twitterImage: 'https://shelve.cloud/vault-og.png',
 
   author: 'Hugo Richard',
 })
-
-const items = [
-  {
-    label: 'What is Vault by Shelve?',
-    icon: 'lucide:shield-check',
-    content: 'Vault by Shelve allows you to securely send secrets to anyone, anywhere. Once you create a Vault, you\'ll receive a link to share with anyone you\'d like.',
-  },
-  {
-    label: 'Is Vault by Shelve is secure?',
-    icon: 'lucide:shield',
-    content: 'Yes, Vault by Shelve is secure. We use industry-standard encryption (AES-256) to protect your data. We never store your secrets in plain text, and we never share your data with third parties. You can also check the source code on GitHub to verify our security practices.',
-  },
-  {
-    label: 'How can I contact the Shelve team?',
-    icon: 'lucide:mail',
-    content: 'For the moment you can send me an email at contact@shelve.cloud',
-  }
-]
 </script>
 
 <template>
@@ -53,56 +39,72 @@ const items = [
         title="Vault by Shelve - Secure Secret Sharing Platform"
         title-template="Vault by Shelve - Secure Secret Sharing Platform"
       />
-      <UApp>
-        <div class="flex flex-col items-center justify-center py-4 sm:py-20">
-          <div class="w-full border-y border-neutral-500/20">
-            <div class="mx-auto flex max-w-4xl justify-center px-5 sm:px-0">
-              <EncryptDiv encrypted-text class="w-full border-x border-neutral-500/20">
-                <div>
-                  <h1 class="main-gradient font-medium text-3xl">
-                    <ScrambleText label="Vault" />
-                  </h1>
-                  <p class="text-muted max-w-lg text-xs sm:text-sm">
-                    Share secrets securely without an account. Set expiration time, control number of reads, and ensure encrypted transmission.
-                  </p>
+      <TechnicalPatterns />
+      <ShaderOverlay />
+      <UApp :tooltip="{ delayDuration: 300 }">
+        <div class="absolute inset-0 mx-6 flex flex-col items-center justify-center">
+          <div class="flex flex-col items-center gap-2 mb-6">
+            <motion.div
+              class="flex flex-col items-center"
+              :initial="{
+                scale: 1.1,
+                opacity: 0,
+                filter: 'blur(20px)'
+              }"
+              :animate="{
+                scale: 1,
+                opacity: 1,
+                filter: 'blur(0px)'
+              }"
+              :transition="{
+                duration: 0.6,
+                delay: 0.1
+              }"
+            >
+              <div class="flex items-center gap-4">
+                <div class="relative">
+                  <div class="blur-[15px] opacity-40">
+                    <UIcon name="custom:shelve" class="size-12" />
+                  </div>
+                  <UIcon name="custom:shelve" class="size-12 absolute inset-0" />
                 </div>
-              </EncryptDiv>
-            </div>
-          </div>
-          <div class="max-w-4xl w-full mx-auto">
-            <NuxtPage />
-            <div class="mt-32 flex flex-col gap-4 px-5">
-              <div class="flex flex-col font-mono items-center justify-center">
-                <h3 class="main-gradient text-2xl">
-                  <ScrambleText label="FAQ" />
-                </h3>
-                <p class="max-w-lg text-center text-sm text-muted sm:text-base">
-                  Frequently asked questions about Vault.
-                </p>
               </div>
-              <UAccordion
-                variant="ghost"
-                size="sm"
-                :items
+            </motion.div>
+            <motion.p
+              class="text-muted text-center max-w-lg text-sm"
+              :initial="{
+                scale: 1.1,
+                opacity: 0,
+                filter: 'blur(20px)'
+              }"
+              :animate="{
+                scale: 1,
+                opacity: 1,
+                filter: 'blur(0px)'
+              }"
+              :transition="{
+                duration: 0.6,
+                delay: 0.3
+              }"
+            >
+              Share secrets securely. No account required. Set expiration. Control access. End-to-end encrypted.
+              <UButton
+                variant="link"
+                size="xs"
+                icon="lucide:info"
+                class="inline-flex! p-1! h-auto! align-middle"
+                :ui="{
+                  leadingIcon: 'size-3'
+                }"
+                @click="infoModal?.open()"
               />
-            </div>
-            <footer class="mt-20 flex flex-col gap-4 px-5">
-              <Divider />
-              <div class="flex items-center justify-between">
-                <span class="text-xs font-mono italic tracking-tight text-muted">
-                  © {{ new Date().getFullYear() }} - Made by <NuxtLink to="https://hrcd.fr/" class="text-muted hover:text-neutral-200">
-                    HugoRCD
-                  </NuxtLink>
-                </span>
-                <span class="text-xs font-mono italic tracking-tight text-muted">
-                  <NuxtLink to="https://dub.sh/shelve" target="_blank" class="text-muted hover:text-neutral-200">
-                    Powered by Shelve <UIcon name="custom:shelve" />
-                  </NuxtLink>
-                </span>
-              </div>
-            </footer>
+            </motion.p>
+          </div>
+          <div class="max-w-3xl w-full mx-auto">
+            <NuxtPage />
           </div>
         </div>
+        <InfoModal ref="infoModal" />
         <Toaster close-button position="top-center" />
       </UApp>
     </Body>
