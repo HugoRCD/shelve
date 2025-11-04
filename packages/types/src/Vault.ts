@@ -1,4 +1,4 @@
-export type TTLFormat = '1d' | '7d' | '30d'
+export type TTLFormat = '1d' | '7d' | '30d' | 'Infinite'
 
 export type EncryptRequest = {
   value: string

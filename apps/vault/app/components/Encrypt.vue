@@ -9,7 +9,7 @@ const ttl = ref([
   '1d',
   '7d',
   '30d',
-  'Indefinitely',
+  'Infinite',
 ])
 const selectedTtl = ref(ttl.value[0])
 const password = ref('')
