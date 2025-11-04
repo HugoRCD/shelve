@@ -1,5 +1,5 @@
 import type { H3Event } from 'h3'
-import type { DecryptResponse, EncryptRequest, StoredData, TTLFormat } from '../../../../packages/types'
+import type { DecryptRequest, DecryptResponse, EncryptRequest, StoredData, TTLFormat } from '@types'
 
 export class VaultService {
 
@@ -32,6 +32,11 @@ export class VaultService {
 
   private calculateTimeLeft(createdAt: number, ttl: TTLFormat): number {
     const ttlInSeconds = this.TTL_MAP[ttl]
+
+    if (ttlInSeconds === -1) {
+      return -1
+    }
+
     const now = Date.now()
     const expiresAt = createdAt + (ttlInSeconds * 1000)
     return Math.max(0, Math.floor((expiresAt - now) / 1000))
@@ -66,7 +71,7 @@ export class VaultService {
     return parts.join(' ')
   }
 
-  async decrypt(id: string): Promise<DecryptResponse> {
+  async decrypt(id: string, decryptRequest?: DecryptRequest): Promise<DecryptResponse> {
     const key = this.generateKey(id)
     const storedData = await this.storage.get<StoredData>(key)
 
@@ -77,10 +82,10 @@ export class VaultService {
       })
     }
 
-    const { encryptedValue, reads, createdAt, ttl } = storedData
+    const { encryptedValue, reads, createdAt, ttl, passwordHash } = storedData
     const timeLeft = this.calculateTimeLeft(createdAt, ttl)
 
-    if (timeLeft <= 0) {
+    if (timeLeft === 0) {
       await this.storage.del(key)
       throw createError({
         statusCode: 400,
@@ -96,7 +101,24 @@ export class VaultService {
       })
     }
 
-    const decryptedValue = await unseal(encryptedValue, this.encryptionKey) as string
+    if (passwordHash) {
+      if (!decryptRequest?.password) {
+        throw createError({
+          statusCode: 400,
+          statusMessage: 'Password required'
+        })
+      }
+      const isValidPassword = await this.verifyPassword(decryptRequest.password, passwordHash)
+      if (!isValidPassword) {
+        throw createError({
+          statusCode: 400,
+          statusMessage: 'Invalid password'
+        })
+      }
+    }
+
+    const encryptionKey = await this.getEncryptionKey(decryptRequest?.password)
+    const decryptedValue = await unseal(encryptedValue, encryptionKey) as string
 
     const updatedReads = reads - 1
     await this.storage.set(key, {
@@ -116,7 +138,8 @@ export class VaultService {
   }
 
   async encrypt(data: EncryptRequest): Promise<string> {
-    const encryptedValue = await seal(data.value, this.encryptionKey)
+    const encryptionKey = await this.getEncryptionKey(data.password)
+    const encryptedValue = await seal(data.value, encryptionKey)
     const randomId = this.generateRandomId()
     const key = this.generateKey(randomId)
 
@@ -124,7 +147,8 @@ export class VaultService {
       encryptedValue,
       reads: data.reads,
       createdAt: Date.now(),
-      ttl: data.ttl
+      ttl: data.ttl,
+      ...(data.password && { passwordHash: await this.hashPassword(data.password) })
     }
 
     await this.storage.set(key, storedData)
@@ -132,7 +156,43 @@ export class VaultService {
   }
 
   private generateShareUrl(id: string): string {
-    return `${this.siteUrl}/decrypt?id=${id}`
+    return `${this.siteUrl}?id=${id}`
+  }
+
+  private async hashPassword(password: string): Promise<string> {
+    const encoder = new TextEncoder()
+    const data = encoder.encode(password)
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data)
+    const hashArray = Array.from(new Uint8Array(hashBuffer))
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('')
+  }
+
+  private async verifyPassword(password: string, hash: string): Promise<boolean> {
+    const passwordHash = await this.hashPassword(password)
+    return passwordHash === hash
+  }
+
+  private async generateSecureKey(): Promise<string> {
+    const salt = 'vault-encryption-secured-salt'
+    const combined = this.encryptionKey ? `${this.encryptionKey}:${salt}` : salt
+    const hash = await this.hashPassword(combined)
+    return hash
+  }
+
+  private async getEncryptionKey(password?: string): Promise<string> {
+    const baseKey = this.encryptionKey || ''
+
+    if (password && password.trim() !== '') {
+      const combined = baseKey ? `${baseKey}:${password}` : password
+      const hash = await this.hashPassword(combined)
+      return hash
+    }
+
+    if (baseKey && baseKey.length >= 32) {
+      return baseKey
+    }
+
+    return await this.generateSecureKey()
   }
 
 }
