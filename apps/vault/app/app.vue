@@ -1,10 +1,10 @@
 <script setup lang="ts">
+import { Analytics } from '@vercel/analytics/nuxt'
 import { motion } from 'motion-v'
 import { Toaster } from 'vue-sonner'
 import 'vue-sonner/style.css'
-import InfoModal from '~/components/InfoModal.vue'
 
-const infoModal = ref<InstanceType<typeof InfoModal> | null>(null)
+const infoModal = ref()
 
 useHead({
   title: 'Vault by Shelve - Secure Secret Sharing Platform',
@@ -34,6 +34,7 @@ useSeoMeta({
 <template>
   <Html lang="en">
     <Body class="flex h-full flex-col">
+      <Analytics />
       <ShelveMeta
         :default-og-image="false"
         title="Vault by Shelve - Secure Secret Sharing Platform"

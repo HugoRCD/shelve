@@ -10,6 +10,7 @@
   },
   "packageManager": "pnpm@10.20.0",
   "devDependencies": {
+    "@nuxthub/core": "npm:@nuxthub/core-nightly@1.0.0-20251104-224431-b52a71f",
     "@iconify-json/heroicons": "^1.2.3",
     "@iconify-json/lucide": "^1.2.71",
     "@iconify-json/simple-icons": "^1.2.56",

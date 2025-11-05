@@ -7,7 +7,7 @@ export default defineNuxtConfig({
     '/': { prerender: true }
   },
 
-  modules: ['@nuxt/ui', '@nuxt/scripts', '@nuxtjs/mdc'],
+  modules: ['@nuxt/ui', '@nuxt/scripts', '@nuxtjs/mdc', '@nuxthub/core'],
 
   runtimeConfig: {
     private: {
