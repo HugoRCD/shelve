@@ -9,23 +9,14 @@ export default defineNuxtConfig({
 
   modules: ['@nuxt/ui', '@nuxt/scripts', '@nuxtjs/mdc', '@nuxthub/core'],
 
-  runtimeConfig: {
-    private: {
-      redis: {
-        url: '',
-      },
-      encryptionKey: '',
-    },
+  hub: {
+    kv: true,
   },
 
-  $development: {
-    nitro: {
-      storage: {
-        vault: {
-          driver: 'memory'
-        }
-      }
-    }
+  runtimeConfig: {
+    private: {
+      encryptionKey: '',
+    },
   },
 
   devtools: { enabled: true },
