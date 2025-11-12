@@ -64,8 +64,8 @@ importers:
         specifier: ^4.1.0
         version: 4.1.0(@babel/parser@7.28.5)(@netlify/blobs@9.1.2)(@vercel/blob@2.0.0)(aws4fetch@1.0.20)(db0@0.3.4(@electric-sql/pglite@0.3.14)(better-sqlite3@11.9.1)(drizzle-orm@0.44.7(@cloudflare/workers-types@4.20251014.0)(@electric-sql/pglite@0.3.14)(@opentelemetry/api@1.9.0)(better-sqlite3@11.9.1)(bun-types@1.2.15)(pg@8.16.3)(postgres@3.4.7)))(embla-carousel@8.6.0)(encoding@0.1.13)(ioredis@5.8.2)(jwt-decode@4.0.0)(magicast@0.5.1)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(typescript@5.9.3)(valibot@1.1.0(typescript@5.9.3))(vite@6.3.5(@types/node@22.15.2)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.39.0)(yaml@2.8.1))(vue-router@4.6.3(vue@3.5.24(typescript@5.9.3)))(vue@3.5.24(typescript@5.9.3))(zod@4.1.12)
       '@nuxthub/core':
-        specifier: npm:@nuxthub/core-nightly@1.0.0-20251108-001035-570e621
-        version: '@nuxthub/core-nightly@1.0.0-20251108-001035-570e621(@electric-sql/pglite@0.3.14)(@netlify/blobs@9.1.2)(better-sqlite3@11.9.1)(drizzle-orm@0.44.7(@cloudflare/workers-types@4.20251014.0)(@electric-sql/pglite@0.3.14)(@opentelemetry/api@1.9.0)(better-sqlite3@11.9.1)(bun-types@1.2.15)(pg@8.16.3)(postgres@3.4.7))(ioredis@5.8.2)(magicast@0.5.1)(typescript@5.9.3)(vite@6.3.5(@types/node@22.15.2)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.39.0)(yaml@2.8.1))'
+        specifier: npm:@nuxthub/core-nightly@1.0.0-20251110-155642-7079e09
+        version: '@nuxthub/core-nightly@1.0.0-20251110-155642-7079e09(@electric-sql/pglite@0.3.14)(@netlify/blobs@9.1.2)(better-sqlite3@11.9.1)(drizzle-orm@0.44.7(@cloudflare/workers-types@4.20251014.0)(@electric-sql/pglite@0.3.14)(@opentelemetry/api@1.9.0)(better-sqlite3@11.9.1)(bun-types@1.2.15)(pg@8.16.3)(postgres@3.4.7))(ioredis@5.8.2)(magicast@0.5.1)(typescript@5.9.3)(vite@6.3.5(@types/node@22.15.2)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.39.0)(yaml@2.8.1))'
       '@vercel/analytics':
         specifier: ^1.5.0
         version: 1.5.0(react@19.1.0)(vue-router@4.6.3(vue@3.5.24(typescript@5.9.3)))(vue@3.5.24(typescript@5.9.3))
@@ -1770,8 +1770,8 @@ packages:
       rolldown:
         optional: true
 
-  '@nuxthub/core-nightly@1.0.0-20251108-001035-570e621':
-    resolution: {integrity: sha512-Kw1YyWEiyU5MB2aw5e/zesfIgOry1myz4got9vJG8YgwWhV2/hLAcJmef45V6RPDtxRcG6Z1u7wM0vStMMBRiQ==}
+  '@nuxthub/core-nightly@1.0.0-20251110-155642-7079e09':
+    resolution: {integrity: sha512-sYE3bjk9s+gr/QaTuXGoOlFXKn/egaTXS8vbGRJO5/YRiqLFN5qj4Td5VJBrQY4eu2T1M6/Lq4IkQOsvMCajeg==}
     hasBin: true
 
   '@nuxtjs/color-mode@3.5.2':
@@ -11076,7 +11076,7 @@ snapshots:
       - vue-tsc
       - yaml
 
-  '@nuxthub/core-nightly@1.0.0-20251108-001035-570e621(@electric-sql/pglite@0.3.14)(@netlify/blobs@9.1.2)(better-sqlite3@11.9.1)(drizzle-orm@0.44.7(@cloudflare/workers-types@4.20251014.0)(@electric-sql/pglite@0.3.14)(@opentelemetry/api@1.9.0)(better-sqlite3@11.9.1)(bun-types@1.2.15)(pg@8.16.3)(postgres@3.4.7))(ioredis@5.8.2)(magicast@0.5.1)(typescript@5.9.3)(vite@6.3.5(@types/node@22.15.2)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.39.0)(yaml@2.8.1))':
+  '@nuxthub/core-nightly@1.0.0-20251110-155642-7079e09(@electric-sql/pglite@0.3.14)(@netlify/blobs@9.1.2)(better-sqlite3@11.9.1)(drizzle-orm@0.44.7(@cloudflare/workers-types@4.20251014.0)(@electric-sql/pglite@0.3.14)(@opentelemetry/api@1.9.0)(better-sqlite3@11.9.1)(bun-types@1.2.15)(pg@8.16.3)(postgres@3.4.7))(ioredis@5.8.2)(magicast@0.5.1)(typescript@5.9.3)(vite@6.3.5(@types/node@22.15.2)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.39.0)(yaml@2.8.1))':
     dependencies:
       '@ai-sdk/provider': 2.0.0
       '@cloudflare/workers-types': 4.20251014.0
