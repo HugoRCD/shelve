@@ -8,12 +8,12 @@
     "lint": "eslint .",
     "lint:fix": "eslint --fix ."
   },
-  "packageManager": "pnpm@10.20.0",
+  "packageManager": "pnpm@10.22.0",
   "devDependencies": {
-    "@nuxthub/core": "npm:@nuxthub/core-nightly@1.0.0-20251108-001035-570e621",
+    "@nuxthub/core": "npm:@nuxthub/core-nightly@1.0.0-20251110-155642-7079e09",
     "@iconify-json/heroicons": "^1.2.3",
-    "@iconify-json/lucide": "^1.2.72",
-    "@iconify-json/simple-icons": "^1.2.57",
+    "@iconify-json/lucide": "^1.2.73",
+    "@iconify-json/simple-icons": "^1.2.58",
     "@nuxt/content": "^3.8.0",
     "@nuxt/image": "^1.11.0",
     "@nuxt/scripts": "^0.13.0",
@@ -34,6 +34,6 @@
   },
   "dependencies": {
     "@nuxtjs/mdc": "^0.18.2",
-    "shaders": "^2.1.4"
+    "shaders": "^2.1.9"
   }
 }
