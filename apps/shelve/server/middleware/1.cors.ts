@@ -11,9 +11,15 @@ export default defineEventHandler((event) => {
       ? runtimeConfig.private.allowedOrigins.split(',').map((d: string) => d.trim())
       : []
 
+    // Vercel preview deployments (accepts any *.vercel.app domain)
+    const vercelEnv = process.env.VERCEL_ENV
+    const isVercelEnvironment = vercelEnv && ['preview', 'production'].includes(vercelEnv)
+    const vercelPreviewPattern = /^https:\/\/.*\.vercel\.app$/
+
     const isAllowedOrigin =
       prodDomainPattern.test(origin) ||
-      (import.meta.env.NODE_ENV === 'development' && devDomainPattern.test(origin)) ||
+      (process.env.NODE_ENV === 'development' && devDomainPattern.test(origin)) ||
+      (isVercelEnvironment && vercelPreviewPattern.test(origin)) ||
       customAllowedDomains.includes(origin)
 
     if (!isAllowedOrigin) {
