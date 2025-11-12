@@ -2,8 +2,11 @@ import { z } from 'zod'
 import type { EnvVar } from '@types'
 import { projectIdParamsSchema } from '~~/server/database/zod'
 
+import { getTeamSlugFromEvent, requireUserTeam } from '~~/server/utils/auth'
+
 export default eventHandler(async (event) => {
-  const team = useCurrentTeam(event)
+  const slug = await getTeamSlugFromEvent(event)
+  const { team } = await requireUserTeam(event, slug)
   const { projectId } = await getValidatedRouterParams(event, projectIdParamsSchema.parse)
   const { envId } = await getValidatedRouterParams(event, z.object({
     envId: z.coerce.number({

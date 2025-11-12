@@ -1,13 +1,15 @@
 import { z } from 'zod'
 import { TeamRole } from '@types'
 import { idParamsSchema } from '~~/server/database/zod'
+import { getTeamSlugFromEvent, requireUserTeam } from '~~/server/utils/auth'
 
 const updateMemberSchema = z.object({
   role: z.enum(TeamRole),
 })
 
 export default eventHandler(async (event) => {
-  const team = useCurrentTeam(event)
+  const slug = await getTeamSlugFromEvent(event)
+  const { team } = await requireUserTeam(event, slug, { minRole: TeamRole.ADMIN })
 
   const { id } = await getValidatedRouterParams(event, idParamsSchema.parse)
   const { role } = await readValidatedBody(event, updateMemberSchema.parse)

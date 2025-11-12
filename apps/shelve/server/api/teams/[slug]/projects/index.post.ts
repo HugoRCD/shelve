@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { getTeamSlugFromEvent, requireUserTeam } from '~~/server/utils/auth'
 
 const createProjectSchema = z.object({
   name: z.string().min(1).max(255),
@@ -11,7 +12,8 @@ const createProjectSchema = z.object({
 })
 
 export default eventHandler(async (event) => {
-  const team = useCurrentTeam(event)
+  const slug = await getTeamSlugFromEvent(event)
+  const { team } = await requireUserTeam(event, slug)
 
   const body = await readValidatedBody(event, createProjectSchema.parse)
 

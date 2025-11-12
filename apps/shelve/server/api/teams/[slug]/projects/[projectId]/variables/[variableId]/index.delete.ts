@@ -1,6 +1,10 @@
 import { variableIdParamsSchema } from '~~/server/database/zod'
 
+import { getTeamSlugFromEvent, requireUserTeam } from '~~/server/utils/auth'
+
 export default eventHandler(async (event) => {
+  const slug = await getTeamSlugFromEvent(event)
+  await requireUserTeam(event, slug)
   const { variableId } = await getValidatedRouterParams(event, variableIdParamsSchema.parse)
 
   await new VariablesService(event).deleteVariable(variableId)

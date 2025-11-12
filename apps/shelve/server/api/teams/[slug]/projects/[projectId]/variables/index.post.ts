@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { projectIdParamsSchema } from '~~/server/database/zod'
+import { getTeamSlugFromEvent, requireUserTeam } from '~~/server/utils/auth'
 
 const createVariablesSchema = z.object({
   autoUppercase: z.boolean().optional(),
@@ -18,7 +19,8 @@ const createVariablesSchema = z.object({
 })
 
 export default eventHandler(async (event) => {
-  const team = useCurrentTeam(event)
+  const slug = await getTeamSlugFromEvent(event)
+  const { team } = await requireUserTeam(event, slug)
   const body = await readValidatedBody(event, createVariablesSchema.parse)
   const { projectId } = await getValidatedRouterParams(event, projectIdParamsSchema.parse)
 
