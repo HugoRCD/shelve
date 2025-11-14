@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { TeamRole } from '@types'
 import { variableIdParamsSchema } from '~~/server/database/zod'
 import { getTeamSlugFromEvent, requireUserTeam } from '~~/server/utils/auth'
 
@@ -17,7 +18,7 @@ const updateVariableSchema = z.object({
 
 export default eventHandler(async (event) => {
   const slug = await getTeamSlugFromEvent(event)
-  await requireUserTeam(event, slug)
+  await requireUserTeam(event, slug, { minRole: TeamRole.ADMIN })
   const { variableId } = await getValidatedRouterParams(event, variableIdParamsSchema.parse)
   const body = await readValidatedBody(event, updateVariableSchema.parse)
   await new VariablesService(event).updateVariable({
