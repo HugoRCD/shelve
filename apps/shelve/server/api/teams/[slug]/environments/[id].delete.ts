@@ -4,7 +4,7 @@ import { getTeamSlugFromEvent, requireUserTeam } from '~~/server/utils/auth'
 
 export default defineEventHandler(async (event) => {
   const slug = await getTeamSlugFromEvent(event)
-  const { team } = await requireUserTeam(event, slug, { minRole: TeamRole.ADMIN })
+  const { team } = await requireUserTeam(event, slug, { minRole: TeamRole.OWNER })
 
   const { id } = await getValidatedRouterParams(event, idParamsSchema.parse)
 
