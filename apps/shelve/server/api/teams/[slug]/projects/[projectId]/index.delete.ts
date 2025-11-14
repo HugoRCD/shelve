@@ -1,7 +1,9 @@
+import { TeamRole } from '@types'
 import { projectIdParamsSchema } from '~~/server/database/zod'
 
 export default eventHandler(async (event) => {
-  const team = useCurrentTeam(event)
+  const slug = await getTeamSlugFromEvent(event)
+  const { team } = await requireUserTeam(event, slug, { minRole: TeamRole.OWNER })
 
   const { projectId } = await getValidatedRouterParams(event, projectIdParamsSchema.parse)
 

@@ -1,6 +1,9 @@
 import { z } from 'zod'
+import { TeamRole } from '@types'
 
 export default eventHandler(async (event) => {
+  const slug = await getTeamSlugFromEvent(event)
+  await requireUserTeam(event, slug, { minRole: TeamRole.OWNER })
   const { variables } = await readValidatedBody(event, z.object({
     variables: z.array(z.number()).min(1).max(100),
   }).parse)

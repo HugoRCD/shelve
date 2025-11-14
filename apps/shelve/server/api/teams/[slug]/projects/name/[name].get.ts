@@ -9,7 +9,8 @@ const getProjectSchema = z.object({
 })
 
 export default eventHandler(async (event) => {
-  const team = useCurrentTeam(event)
+  const slug = await getTeamSlugFromEvent(event)
+  const { team } = await requireUserTeam(event, slug)
   const { name } = await getValidatedRouterParams(event, getProjectSchema.parse)
 
   const project = await db.query.projects.findFirst({

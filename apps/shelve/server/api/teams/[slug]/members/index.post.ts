@@ -9,9 +9,8 @@ const createMemberSchema = z.object({
 })
 
 export default eventHandler(async (event) => {
-  const team = useCurrentTeam(event)
-  const member = useCurrentMember(event)
-  validateTeamRole(member, TeamRole.ADMIN)
+  const slug = await getTeamSlugFromEvent(event)
+  const { team, member } = await requireUserTeam(event, slug, { minRole: TeamRole.ADMIN })
 
   const { email, role } = await readValidatedBody(event, createMemberSchema.parse)
 

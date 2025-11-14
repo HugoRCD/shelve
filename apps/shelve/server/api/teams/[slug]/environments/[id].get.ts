@@ -1,7 +1,8 @@
 import { z } from 'zod'
 
 export default eventHandler(async (event) => {
-  const team = useCurrentTeam(event)
+  const slug = await getTeamSlugFromEvent(event)
+  const { team } = await requireUserTeam(event, slug)
   const { id } = await getValidatedRouterParams(event, z.object({
     id: z.string({ error: 'name is required' }),
   }).parse)

@@ -1,7 +1,7 @@
 import { idParamsSchema } from '~~/server/database/zod'
 
 export default eventHandler(async (event) => {
-  const { user } = await requireUserSession(event)
+  const { user } = await requireAdmin(event)
   const { id } = await getValidatedRouterParams(event, idParamsSchema.parse)
   if (user.id === id) throw createError({ statusCode: 403, statusMessage: 'You can\'t delete your own account' })
   await db.delete(schema.users).where(eq(schema.users.id, id))

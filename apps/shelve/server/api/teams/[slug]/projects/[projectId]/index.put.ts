@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { TeamRole } from '@types'
 
 const updateProjectSchema = z.object({
   name: z.string().min(1).max(255).trim(),
@@ -17,7 +18,8 @@ const projectIdParamsSchema = z.object({
 })
 
 export default eventHandler(async (event) => {
-  const team = useCurrentTeam(event)
+  const slug = await getTeamSlugFromEvent(event)
+  const { team } = await requireUserTeam(event, slug, { minRole: TeamRole.ADMIN })
 
   const { projectId } = await getValidatedRouterParams(event, projectIdParamsSchema.parse)
 

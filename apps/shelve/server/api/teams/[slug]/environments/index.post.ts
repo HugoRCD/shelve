@@ -6,9 +6,8 @@ const createEnvironmentSchema = z.object({
 })
 
 export default defineEventHandler(async (event) => {
-  const team = useCurrentTeam(event)
-  const member = useCurrentMember(event)
-  validateTeamRole(member, TeamRole.ADMIN)
+  const slug = await getTeamSlugFromEvent(event)
+  const { team } = await requireUserTeam(event, slug, { minRole: TeamRole.ADMIN })
 
   const { name } = await readValidatedBody(event, createEnvironmentSchema.parse)
 

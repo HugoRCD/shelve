@@ -30,8 +30,8 @@ export class EmailService {
         to: [email],
         subject: 'Your Shelve Login Code',
         html: template,
-      }).then((response) => {
-        console.log('OTP email sent: ', response)
+      }).then(() => {
+        console.log('OTP email sent')
       })
     } catch (error) {
       console.log('Error sending OTP email: ', error)
@@ -52,16 +52,16 @@ export class EmailService {
         to: [email],
         subject: 'Welcome to Shelve!',
         html: template,
-      }).then((response) => {
-        console.log('Welcome email sent: ', response)
+      }).then(() => {
+        console.log('Welcome email sent')
       })
       await this.resend.emails.send({
         from: this.SENDER,
         to: ['contact@shelve.cloud'],
         subject: 'New user registered',
         html: `New user registered: ${username} - ${email}`,
-      }).then((response) => {
-        console.log('New user email sent: ', response.data)
+      }).then(() => {
+        console.log('New user email sent')
       })
     } catch (error) {
       console.log('Error sending welcome email: ', error)

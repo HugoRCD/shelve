@@ -18,7 +18,8 @@ const createVariablesSchema = z.object({
 })
 
 export default eventHandler(async (event) => {
-  const team = useCurrentTeam(event)
+  const slug = await getTeamSlugFromEvent(event)
+  const { team } = await requireUserTeam(event, slug)
   const body = await readValidatedBody(event, createVariablesSchema.parse)
   const { projectId } = await getValidatedRouterParams(event, projectIdParamsSchema.parse)
 
