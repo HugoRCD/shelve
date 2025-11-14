@@ -1,6 +1,5 @@
 import { z } from 'zod'
 import { TeamRole } from '@types'
-import { getTeamSlugFromEvent, requireUserTeam } from '~~/server/utils/auth'
 
 const updateTeamSchema = z.object({
   name: z.string().optional(),

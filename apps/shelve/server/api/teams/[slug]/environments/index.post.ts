@@ -1,6 +1,5 @@
 import { z } from 'zod'
 import { TeamRole } from '@types'
-import { getTeamSlugFromEvent, requireUserTeam } from '~~/server/utils/auth'
 
 const createEnvironmentSchema = z.object({
   name: z.string().min(3).max(50),

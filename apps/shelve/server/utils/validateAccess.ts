@@ -6,11 +6,11 @@ export async function validateTeamAccess(input: { user: User, teamSlug: string }
   const { user, teamSlug } = input
   const team = await new TeamsService().getTeam(teamSlug)
   if (!team)
-    throw createError({ statusCode: 401, statusMessage: 'Unauthorized: User does not belong to the team' })
+    throw createError({ statusCode: 404, statusMessage: 'Team not found' })
 
   const member = team.members.find((member) => member.userId === user.id)
   if (!member)
-    throw createError({ statusCode: 401, statusMessage: 'Unauthorized: User does not belong to the team' })
+    throw createError({ statusCode: 403, statusMessage: 'Unauthorized: User does not belong to the team' })
 
   return { team, member }
 }
@@ -22,6 +22,6 @@ export function validateTeamRole(member: Member, minRole: TeamRole = TeamRole.ME
     [TeamRole.MEMBER]: 2,
   }
   if (orderRole[member.role] > orderRole[minRole])
-    throw createError({ statusCode: 401, statusMessage: 'Unauthorized: User does not have the required role' })
+    throw createError({ statusCode: 403, statusMessage: 'Unauthorized: User does not have the required role' })
   return true
 }

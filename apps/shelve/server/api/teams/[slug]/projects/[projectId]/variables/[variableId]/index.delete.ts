@@ -1,6 +1,5 @@
+import { TeamRole } from '@types'
 import { variableIdParamsSchema } from '~~/server/database/zod'
-
-import { getTeamSlugFromEvent, requireUserTeam, TeamRole } from '~~/server/utils/auth'
 
 export default eventHandler(async (event) => {
   const slug = await getTeamSlugFromEvent(event)

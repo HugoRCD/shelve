@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { type Member, Role, TeamRole } from '@types'
-import { cleanString } from '~~/server/utils/string'
 
 type TeamMemberProps = { members: Member[] }
 
@@ -37,9 +36,16 @@ const newMember = ref({
 
 const loadingMembers = ref(false)
 
+function cleanEmail(email: string) {
+  return email
+    .replace(/[\t\r\n]/g, '') // Remove tabs, line breaks
+    .replace(/\s+/g, ' ') // Replace multiple spaces with a single space
+    .trim()
+}
+
 function addMemberFunction(email: string, role: TeamRole) {
   loadingMembers.value = true
-  toast.promise(addMember(cleanString(email), role), {
+  toast.promise(addMember(cleanEmail(email), role), {
     loading: 'Adding member...',
     success: 'Member added successfully',
     error: 'Error adding member',

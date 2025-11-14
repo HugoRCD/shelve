@@ -1,7 +1,6 @@
 import { z } from 'zod'
 import { TeamRole } from '@types'
 import { variableIdParamsSchema } from '~~/server/database/zod'
-import { getTeamSlugFromEvent, requireUserTeam } from '~~/server/utils/auth'
 
 const updateVariableSchema = z.object({
   autoUppercase: z.boolean().optional(),

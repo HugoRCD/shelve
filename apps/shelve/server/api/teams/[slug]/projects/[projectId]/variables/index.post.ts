@@ -1,6 +1,5 @@
 import { z } from 'zod'
 import { projectIdParamsSchema } from '~~/server/database/zod'
-import { getTeamSlugFromEvent, requireUserTeam } from '~~/server/utils/auth'
 
 const createVariablesSchema = z.object({
   autoUppercase: z.boolean().optional(),

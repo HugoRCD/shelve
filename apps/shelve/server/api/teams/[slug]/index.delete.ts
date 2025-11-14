@@ -1,5 +1,4 @@
 import { TeamRole } from '@types'
-import { getTeamSlugFromEvent, requireUserTeam } from '~~/server/utils/auth'
 
 export default eventHandler(async (event) => {
   const slug = await getTeamSlugFromEvent(event)

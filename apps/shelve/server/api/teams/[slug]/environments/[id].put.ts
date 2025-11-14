@@ -1,7 +1,6 @@
 import { z } from 'zod'
 import { TeamRole } from '@types'
 import { idParamsSchema } from '~~/server/database/zod'
-import { getTeamSlugFromEvent, requireUserTeam } from '~~/server/utils/auth'
 
 const updateEnvironmentSchema = z.object({
   name: z.string().min(3).max(50),

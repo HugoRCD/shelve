@@ -2,6 +2,7 @@ import type { H3Event } from 'h3'
 import type { Member, Team, User } from '@types'
 import { Role, TeamRole } from '@types'
 import { z } from 'zod'
+import { validateTeamAccess, validateTeamRole } from './validateAccess'
 
 const teamSlugSchema = z.object({
   slug: z.string({
@@ -18,7 +19,7 @@ export async function requireAdmin(event: H3Event): Promise<{ user: User }> {
 
   if (user.role !== Role.ADMIN) {
     throw createError({
-      statusCode: 401,
+      statusCode: 403,
       statusMessage: 'Insufficient permissions',
     })
   }

@@ -1,5 +1,4 @@
 import { z } from 'zod'
-import { getTeamSlugFromEvent, requireUserTeam } from '~~/server/utils/auth'
 
 const getProjectSchema = z.object({
   name: z.string({

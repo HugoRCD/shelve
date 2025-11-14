@@ -1,5 +1,4 @@
 import { idParamsSchema } from '~~/server/database/zod'
-import { requireAdmin } from '~~/server/utils/auth'
 
 export default eventHandler(async (event) => {
   const { user } = await requireAdmin(event)

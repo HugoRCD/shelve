@@ -1,6 +1,5 @@
 import { z } from 'zod'
 import { TeamRole } from '@types'
-import { getTeamSlugFromEvent, requireUserTeam } from '~~/server/utils/auth'
 
 const createMemberSchema = z.object({
   email: z.string({
