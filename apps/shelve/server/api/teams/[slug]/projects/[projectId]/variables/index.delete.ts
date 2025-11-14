@@ -1,9 +1,9 @@
 import { z } from 'zod'
-import { getTeamSlugFromEvent, requireUserTeam } from '~~/server/utils/auth'
+import { getTeamSlugFromEvent, requireUserTeam, TeamRole } from '~~/server/utils/auth'
 
 export default eventHandler(async (event) => {
   const slug = await getTeamSlugFromEvent(event)
-  await requireUserTeam(event, slug)
+  await requireUserTeam(event, slug, { minRole: TeamRole.OWNER })
   const { variables } = await readValidatedBody(event, z.object({
     variables: z.array(z.number()).min(1).max(100),
   }).parse)
