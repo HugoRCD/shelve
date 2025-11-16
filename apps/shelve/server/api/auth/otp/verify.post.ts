@@ -1,13 +1,22 @@
+import { checkBotId } from 'botid/server'
 import { z } from 'zod'
 import { userSchema } from '../../../database/zod'
 
 const bodySchema = z.object({
-  email: z.string().email('Please enter a valid email address'),
+  email: z.email('Please enter a valid email address'),
   code: z.string().min(6, 'OTP code must be 6 digits').max(6, 'OTP code must be 6 digits'),
 })
 
 export default defineEventHandler(async (event) => {
   try {
+    const verification = await checkBotId()
+
+    if (verification.isBot) {
+      throw createError({
+        statusCode: 403,
+        statusMessage: 'Access denied',
+      })
+    }
     const { email, code } = await readValidatedBody(event, bodySchema.parse)
 
     const result = await verifyOTPForUser(email, code)
@@ -44,4 +53,4 @@ export default defineEventHandler(async (event) => {
       statusMessage: 'Authentication failed',
     })
   }
-}) 
+})

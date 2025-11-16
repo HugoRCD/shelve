@@ -73,5 +73,5 @@ export default defineNuxtConfig({
     format: ['webp', 'jpeg', 'jpg', 'png', 'svg']
   },
 
-  modules: ['@nuxt/ui', 'nuxt-auth-utils', '@nuxthub/core'],
+  modules: ['@nuxt/ui', 'nuxt-auth-utils', '@nuxthub/core', 'botid/nuxt'],
 })
