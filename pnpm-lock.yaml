@@ -38,6 +38,9 @@ importers:
       '@nuxtjs/mdc':
         specifier: ^0.18.2
         version: 0.18.2(magicast@0.5.1)
+      botid:
+        specifier: ^1.5.10
+        version: 1.5.10(react@19.1.0)
       shaders:
         specifier: ^2.1.9
         version: 2.1.9
@@ -3933,6 +3936,17 @@ packages:
 
   boolbase@1.0.0:
     resolution: {integrity: sha512-JZOSA7Mo9sNGB8+UjSgzdLtokWAky1zbztM3WRLCbZ70/3cTANmQmOdR7y2g+J0e2WXywy1yS468tY+IruqEww==}
+
+  botid@1.5.10:
+    resolution: {integrity: sha512-hhgty1u0CxozqTqLbTQMtYBwmWdzWZTAsBCvN7/qhkN3fM7MlXacmmcMoyc0f+vV+U6RRoLYdlo32td+PhJyew==}
+    peerDependencies:
+      next: '*'
+      react: ^18.0.0 || ^19.0.0
+    peerDependenciesMeta:
+      next:
+        optional: true
+      react:
+        optional: true
 
   brace-expansion@1.1.11:
     resolution: {integrity: sha512-iCuPHDFgrHX7H2vEI/5xpz07zSHB00TpugqhmYtVmMO6518mCuRMoOYFldEBl0g187ufozdaHgWKcYFb61qGiA==}
@@ -13232,6 +13246,10 @@ snapshots:
   blob-to-buffer@1.2.9: {}
 
   boolbase@1.0.0: {}
+
+  botid@1.5.10(react@19.1.0):
+    optionalDependencies:
+      react: 19.1.0
 
   brace-expansion@1.1.11:
     dependencies:
