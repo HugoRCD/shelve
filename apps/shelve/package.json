@@ -29,7 +29,7 @@
     "nuxt-build-cache": "^0.1.1",
     "postgres": "^3.4.7",
     "@electric-sql/pglite": "^0.3.14",
-    "resend": "^6.4.2",
+    "resend": "^6.5.2",
     "tweetnacl": "^1.0.3",
     "vue-router": "^4.6.3"
   },

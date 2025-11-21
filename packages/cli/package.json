@@ -59,7 +59,7 @@
     "@types/npm-registry-fetch": "^8.0.9",
     "@types/semver": "^7.7.1",
     "unbuild": "^3.6.1",
-    "vitest": "^4.0.10"
+    "vitest": "^4.0.13"
   },
   "publishConfig": {
     "access": "public"
