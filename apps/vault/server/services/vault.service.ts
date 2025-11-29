@@ -5,7 +5,7 @@ export class VaultService {
 
   private readonly encryptionKey: string
   private readonly siteUrl: string
-  private readonly storage = hubKV()
+  private readonly storage = kv
   private readonly PREFIX = 'cache:'
 
   private readonly TTL_MAP = {

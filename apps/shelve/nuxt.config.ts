@@ -6,7 +6,7 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-01-24',
 
   hub: {
-    database: 'postgresql',
+    db: 'postgresql',
   },
 
   ssr: false,
