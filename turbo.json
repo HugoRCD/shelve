@@ -12,6 +12,7 @@
       ],
       "env": [
         "DATABASE_URL",
+        "REDIS_URL",
         "NUXT_SESSION_PASSWORD",
         "NUXT_PRIVATE_ENCRYPTION_KEY",
         "NUXT_OAUTH_GITHUB_CLIENT_ID",
