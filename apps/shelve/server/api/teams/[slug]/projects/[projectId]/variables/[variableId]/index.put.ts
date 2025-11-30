@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { TeamRole } from '@types'
-import { variableIdParamsSchema } from '~~/server/database/zod'
+import { variableIdParamsSchema } from '~~/server/db/zod'
 
 const updateVariableSchema = z.object({
   autoUppercase: z.boolean().optional(),

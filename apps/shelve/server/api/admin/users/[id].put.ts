@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { Role } from '@types'
-import { idParamsSchema } from '~~/server/database/zod'
+import { idParamsSchema } from '~~/server/db/zod'
 
 export default eventHandler(async (event) => {
   const { user } = await requireAdmin(event)

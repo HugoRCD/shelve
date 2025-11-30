@@ -1,6 +1,6 @@
 import { checkBotId } from 'botid/server'
 import { z } from 'zod'
-import { userSchema } from '../../../database/zod'
+import { userSchema } from '../../../db/zod'
 
 const bodySchema = z.object({
   email: z.email('Please enter a valid email address'),

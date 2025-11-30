@@ -14,8 +14,8 @@
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "typecheck": "tsc --noEmit",
-    "db:generate": "nuxt hub database generate",
-    "db:migrate": "nuxt hub database migrate"
+    "db:generate": "nuxt db generate",
+    "db:migrate": "nuxt db migrate"
   },
   "dependencies": {
     "@vue-email/components": "^0.0.21",

@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import type { EnvVar } from '@types'
-import { projectIdParamsSchema } from '~~/server/database/zod'
+import { projectIdParamsSchema } from '~~/server/db/zod'
 
 export default eventHandler(async (event) => {
   const slug = await getTeamSlugFromEvent(event)

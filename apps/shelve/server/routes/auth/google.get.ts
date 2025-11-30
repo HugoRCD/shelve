@@ -1,5 +1,5 @@
 import { AuthType } from '@types'
-import { userSchema } from '~~/server/database/zod'
+import { userSchema } from '~~/server/db/zod'
 
 export default defineOAuthGoogleEventHandler({
   config: {

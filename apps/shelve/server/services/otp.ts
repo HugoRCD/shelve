@@ -1,7 +1,7 @@
 import type { User } from '@types'
 import type { H3Event } from 'h3'
 import { gt } from 'drizzle-orm'
-import { users } from '../database/schema'
+import { users } from '../db/schema'
 import { handleEmailUser } from './user'
 
 const OTP_EXPIRY_MINUTES = 10

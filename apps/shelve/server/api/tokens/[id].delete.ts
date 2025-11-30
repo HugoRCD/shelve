@@ -1,4 +1,4 @@
-import { idParamsSchema } from '~~/server/database/zod'
+import { idParamsSchema } from '~~/server/db/zod'
 
 export default defineEventHandler(async (event) => {
   const { id } = await getValidatedRouterParams(event, idParamsSchema.parse)

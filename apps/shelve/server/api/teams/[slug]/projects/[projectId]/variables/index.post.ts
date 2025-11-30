@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { projectIdParamsSchema } from '~~/server/database/zod'
+import { projectIdParamsSchema } from '~~/server/db/zod'
 
 const createVariablesSchema = z.object({
   autoUppercase: z.boolean().optional(),

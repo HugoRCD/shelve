@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { TeamRole } from '@types'
-import { idParamsSchema } from '~~/server/database/zod'
+import { idParamsSchema } from '~~/server/db/zod'
 
 const updateMemberSchema = z.object({
   role: z.enum(TeamRole),

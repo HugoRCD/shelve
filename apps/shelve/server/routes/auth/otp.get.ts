@@ -1,4 +1,4 @@
-import { userSchema } from '../../database/zod'
+import { userSchema } from '../../db/zod'
 
 export default defineEventHandler(async (event) => {
   const query = getQuery(event)
