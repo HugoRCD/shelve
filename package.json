@@ -31,7 +31,8 @@
   },
   "pnpm": {
     "overrides": {
-      "vite": "npm:rolldown-vite@latest"
+      "vite": "npm:rolldown-vite@latest",
+      "@nuxt/vite-builder": "https://pkg.pr.new/@nuxt/vite-builder@33682"
     },
     "onlyBuiltDependencies": [
       "better-sqlite3",

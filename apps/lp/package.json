@@ -19,6 +19,7 @@
     "@number-flow/vue": "^0.4.8",
     "@nuxtjs/seo": "^3.2.2",
     "@vercel/speed-insights": "^1.2.0",
+    "better-sqlite3": "^12.5.0",
     "nuxt-build-cache": "^0.1.1",
     "nuxt-llms": "^0.1.3",
     "vue-router": "^4.6.3"
