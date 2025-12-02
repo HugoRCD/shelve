@@ -8,33 +8,33 @@
     "lint": "eslint .",
     "lint:fix": "eslint --fix ."
   },
-  "packageManager": "pnpm@10.23.0",
+  "packageManager": "pnpm@10.24.0",
   "devDependencies": {
     "@iconify-json/heroicons": "^1.2.3",
-    "@iconify-json/lucide": "^1.2.74",
-    "@iconify-json/simple-icons": "^1.2.59",
+    "@iconify-json/lucide": "^1.2.77",
+    "@iconify-json/simple-icons": "^1.2.61",
     "@nuxt/content": "^3.8.2",
     "@nuxt/image": "^1.11.0",
     "@nuxt/scripts": "^0.13.0",
     "@nuxt/ui": "^4.2.1",
-    "@nuxthub/core": "npm:@nuxthub/core-nightly@0.10.0-20251128-232930-0579c39",
-    "@vercel/analytics": "^1.5.0",
-    "@vercel/speed-insights": "^1.2.0",
-    "@vueuse/core": "^14.0.0",
-    "@vueuse/nuxt": "^14.0.0",
+    "@nuxthub/core": "npm:@nuxthub/core-nightly@0.10.0-20251202-162300-b2d4a1a",
+    "@vercel/analytics": "^1.6.1",
+    "@vercel/speed-insights": "^1.3.1",
+    "@vueuse/core": "^14.1.0",
+    "@vueuse/nuxt": "^14.1.0",
     "dotenv": "^17.2.3",
     "iron-webcrypto": "^1.2.1",
     "motion-plus-vue": "^1.4.0",
     "motion-v": "^1.7.3",
     "nuxt": "4.2.1",
     "nuxt-visitors": "^1.2.2",
-    "vue": "^3.5.24",
+    "vue": "^3.5.25",
     "vue-sonner": "^2.0.9",
-    "zod": "^4.1.12"
+    "zod": "^4.1.13"
   },
   "dependencies": {
-    "@nuxtjs/mdc": "^0.18.4",
+    "@nuxtjs/mdc": "^0.19.1",
     "botid": "^1.5.10",
-    "shaders": "^2.1.10"
+    "shaders": "^2.1.14"
   }
 }
