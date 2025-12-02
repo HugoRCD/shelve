@@ -6,7 +6,7 @@
         "^build"
       ],
       "outputs": [
-        "dist/**",
+        ".vercel/output/**",
         ".output/**",
         ".nuxt/**"
       ],
