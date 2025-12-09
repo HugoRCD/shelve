@@ -25,11 +25,11 @@
     "drizzle-orm": "^0.45.0",
     "jsonwebtoken": "^9.0.3",
     "libsodium-wrappers": "^0.7.15",
-    "nuxt-auth-utils": "^0.5.25",
+    "nuxt-auth-utils": "^0.5.26",
     "nuxt-build-cache": "^0.1.1",
     "postgres": "^3.4.7",
     "@electric-sql/pglite": "^0.3.14",
-    "resend": "^6.5.2",
+    "resend": "^6.6.0",
     "tweetnacl": "^1.0.3",
     "vue-router": "^4.6.3"
   },
