@@ -23,7 +23,7 @@
     "@vueuse/core": "^14.1.0",
     "@vueuse/nuxt": "^14.1.0",
     "dotenv": "^17.2.3",
-    "iron-webcrypto": "^1.2.1",
+    "iron-webcrypto": "^2.0.0",
     "motion-plus-vue": "^1.5.0",
     "motion-v": "^1.7.3",
     "nuxt": "4.2.2",
