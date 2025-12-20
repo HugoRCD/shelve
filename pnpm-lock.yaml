@@ -202,8 +202,8 @@ importers:
   packages/cli:
     dependencies:
       '@antfu/ni':
-        specifier: ^27.0.1
-        version: 27.0.1
+        specifier: ^28.0.0
+        version: 28.0.0
       '@clack/prompts':
         specifier: 0.11.0
         version: 0.11.0
@@ -281,8 +281,8 @@ packages:
   '@antfu/install-pkg@1.1.0':
     resolution: {integrity: sha512-MGQsmw10ZyI+EJo45CdSER4zEb+p31LpDAFp2Z3gkSd1yqVZGi0Ebx++YTEMonJy4oChEMLsxZ64j8FH6sSqtQ==}
 
-  '@antfu/ni@27.0.1':
-    resolution: {integrity: sha512-I6SOlwJ0MN73ECYcr7VJHpqSseyd7bpshx6JAaD0zNowS4kSWzFsqg8ikQT7DnCLiD4AZ+FaQJQ8WAk0Qi89Vw==}
+  '@antfu/ni@28.0.0':
+    resolution: {integrity: sha512-GhP4MRAitPXH4pCG+XMHUnAUb9H+Jg/tC4XjD/siB3qwDjgVilKj4uoJP92K2zj6Av6lzsEvZosxRXpLt4IYGA==}
     engines: {node: '>=20'}
     hasBin: true
 
@@ -7967,7 +7967,7 @@ snapshots:
       package-manager-detector: 1.6.0
       tinyexec: 1.0.2
 
-  '@antfu/ni@27.0.1':
+  '@antfu/ni@28.0.0':
     dependencies:
       ansis: 4.2.0
       fzf: 0.5.2
