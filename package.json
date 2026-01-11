@@ -25,8 +25,8 @@
     "@hrcd/eslint-config": "^3.0.3",
     "@shelve/cli": "workspace:*",
     "automd": "^0.4.2",
-    "eslint": "^9.39.1",
-    "turbo": "^2.6.3",
+    "eslint": "^9.39.2",
+    "turbo": "^2.7.3",
     "typescript": "^5.9.3"
   },
   "pnpm": {
@@ -44,7 +44,7 @@
       "vue-demi"
     ]
   },
-  "packageManager": "pnpm@10.25.0",
+  "packageManager": "pnpm@10.28.0",
   "workspaces": [
     "packages/*",
     "apps/*"
