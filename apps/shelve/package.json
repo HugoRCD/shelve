@@ -22,16 +22,16 @@
     "@vue-email/render": "^0.0.9",
     "blakejs": "^1.2.1",
     "drizzle-kit": "^0.31.8",
-    "drizzle-orm": "^0.45.0",
+    "drizzle-orm": "^0.45.1",
     "jsonwebtoken": "^9.0.3",
-    "libsodium-wrappers": "^0.7.15",
+    "libsodium-wrappers": "^0.8.0",
     "nuxt-auth-utils": "^0.5.26",
     "nuxt-build-cache": "^0.1.1",
-    "postgres": "^3.4.7",
+    "postgres": "^3.4.8",
     "@electric-sql/pglite": "^0.3.14",
-    "resend": "^6.6.0",
+    "resend": "^6.7.0",
     "tweetnacl": "^1.0.3",
-    "vue-router": "^4.6.3"
+    "vue-router": "^4.6.4"
   },
   "devDependencies": {
     "@nuxt/devtools": "^3.1.1",

@@ -40,9 +40,9 @@
     "vitest": "vitest run"
   },
   "dependencies": {
-    "@antfu/ni": "^28.0.0",
+    "@antfu/ni": "^28.1.0",
     "@clack/prompts": "0.11.0",
-    "c12": "3.3.2",
+    "c12": "3.3.3",
     "dotenv": "^17.2.3",
     "citty": "^0.1.6",
     "defu": "^6.1.4",
@@ -59,7 +59,7 @@
     "@types/npm-registry-fetch": "^8.0.9",
     "@types/semver": "^7.7.1",
     "unbuild": "^3.6.1",
-    "vitest": "^4.0.15"
+    "vitest": "^4.0.16"
   },
   "publishConfig": {
     "access": "public"
