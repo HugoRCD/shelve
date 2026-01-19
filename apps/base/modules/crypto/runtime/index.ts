@@ -1,11 +1,13 @@
 import * as Iron from 'iron-webcrypto'
 
+const options = { ...Iron.defaults, crypto: globalThis.crypto }
+
 export async function seal<T>(object: T, password: string): Promise<string> {
-  const _crypto = globalThis.crypto
-  return await Iron.seal(_crypto, object, password, Iron.defaults)
+  const payload = { data: JSON.stringify(object) }
+  return await Iron.seal(payload, password, options)
 }
 
 export async function unseal(sealed: string, password: string) {
-  const _crypto = globalThis.crypto
-  return await Iron.unseal(_crypto, sealed, password, Iron.defaults)
+  const payload = await Iron.unseal(sealed, password, options) as { data: string }
+  return JSON.parse(payload.data)
 }
