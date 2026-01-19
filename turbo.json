@@ -12,7 +12,9 @@
       ],
       "env": [
         "DATABASE_URL",
-        "REDIS_URL",
+        "KV_URL",
+        "KV_REST_API_TOKEN",
+        "KV_REST_API_URL",
         "NUXT_SESSION_PASSWORD",
         "NUXT_PRIVATE_ENCRYPTION_KEY",
         "NUXT_OAUTH_GITHUB_CLIENT_ID",
