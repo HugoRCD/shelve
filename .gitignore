@@ -144,3 +144,4 @@ dist
 .data
 
 apps/vault/.data
+apps/shelve/.data

@@ -8,6 +8,13 @@ export async function seal<T>(object: T, password: string): Promise<string> {
 }
 
 export async function unseal(sealed: string, password: string) {
-  const payload = await Iron.unseal(sealed, password, options) as { data: string }
-  return JSON.parse(payload.data)
+  const payload = await Iron.unseal(sealed, password, options)
+
+  // Handle legacy format (pre-JSON.stringify wrapper)
+  if (typeof payload === 'object' && payload !== null && 'data' in payload) {
+    return JSON.parse((payload as { data: string }).data)
+  }
+
+  // Legacy format: return directly
+  return payload
 }
