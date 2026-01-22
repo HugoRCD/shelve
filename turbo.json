@@ -45,21 +45,19 @@
       "persistent": true
     },
     "dev:prepare": {
-      "cache": false,
-      "outputs": [
-        "dist/**",
-        ".output/**",
-        ".nuxt/**"
-      ]
+      "cache": false
+    },
+    "transit": {
+      "dependsOn": ["^transit"]
     },
     "lint": {
-      "cache": true
+      "dependsOn": ["transit"]
     },
     "lint:fix": {},
     "test": {},
     "release": {},
     "typecheck": {
-      "cache": true
+      "dependsOn": ["transit"]
     }
   }
 }
