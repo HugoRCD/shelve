@@ -9,7 +9,7 @@
     "lint:fix": "eslint --fix ."
   },
   "packageManager": "pnpm@10.28.1",
-  "devDependencies": {
+  "dependencies": {
     "@iconify-json/heroicons": "^1.2.3",
     "@iconify-json/lucide": "^1.2.86",
     "@iconify-json/simple-icons": "^1.2.67",
@@ -30,11 +30,10 @@
     "nuxt-visitors": "^1.2.2",
     "vue": "^3.5.27",
     "vue-sonner": "^2.0.9",
-    "zod": "^4.3.6"
-  },
-  "dependencies": {
+    "zod": "^4.3.6",
     "@nuxtjs/mdc": "^0.20.0",
     "botid": "^1.5.10",
-    "shaders": "^2.2.46"
+    "shaders": "^2.2.46",
+    "tailwindcss": "^4.1.18"
   }
 }
