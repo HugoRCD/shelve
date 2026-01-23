@@ -26,14 +26,10 @@
     "@shelve/cli": "workspace:*",
     "automd": "^0.4.2",
     "eslint": "^9.39.2",
-    "turbo": "^2.7.3",
+    "turbo": "^2.7.5",
     "typescript": "^5.9.3"
   },
   "pnpm": {
-    "overrides": {
-      "vite": "npm:rolldown-vite@latest",
-      "@nuxt/vite-builder": "https://pkg.pr.new/@nuxt/vite-builder@33682"
-    },
     "onlyBuiltDependencies": [
       "better-sqlite3",
       "sharp"
@@ -44,7 +40,7 @@
       "vue-demi"
     ]
   },
-  "packageManager": "pnpm@10.28.0",
+  "packageManager": "pnpm@10.28.1",
   "workspaces": [
     "packages/*",
     "apps/*"
