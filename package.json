@@ -18,7 +18,8 @@
     "dev:app": "turbo run dev --filter=@shelve/app",
     "dev:lp": "turbo run dev --filter=@shelve/lp",
     "dev:vault": "turbo run dev --filter=@shelve/vault",
-    "dev:cli": "turbo run dev --filter=@shelve/cli"
+    "dev:cli": "turbo run dev --filter=@shelve/cli",
+    "cli": "pnpm build:cli && node packages/cli/dist/index.mjs"
   },
   "devDependencies": {
     "@changesets/cli": "^2.29.8",
