@@ -149,9 +149,9 @@ async function checkConfig(path: string | null, isRoot = false): Promise<ShelveC
 async function getDefaultConfig(): Promise<ShelveConfig> {
   // @ts-expect-error we don't want to specify 'cwd' option
   await setupDotenv({})
-  const { name } = await readPackageJSON()
+  const { name } = await readPackageJSON().catch(() => ({ name: undefined }))
   const conf = readUser('.shelve')
-  const workspaceDir = await findWorkspaceDir()
+  const workspaceDir = await findWorkspaceDir().catch(() => process.cwd())
   const pkgService = new PkgService()
   const isMonoRepo = await pkgService.isMonorepo()
   const allPkg = await pkgService.getAllPackageJsons()
