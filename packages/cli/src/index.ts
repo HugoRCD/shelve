@@ -14,7 +14,7 @@ import logout from './commands/logout'
 import upgrade from './commands/upgrade'
 import run from './commands/run'
 
-const pkg = await readPackageJSON()
+const pkg = await readPackageJSON().catch(() => ({ version: 'unknown' }))
 
 const main = defineCommand({
   meta: {
