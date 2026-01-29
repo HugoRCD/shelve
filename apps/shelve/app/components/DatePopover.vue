@@ -91,7 +91,7 @@ const additionalInfo = computed(() => {
     mode="hover"
     :ui="{
       content: 'min-w-80 p-0',
-      panel: 'rounded-lg border border-border bg-background shadow-lg'
+      panel: 'rounded-lg border border-default bg-background shadow-lg'
     }"
     :placement
   >
