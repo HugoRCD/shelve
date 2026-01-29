@@ -40,16 +40,18 @@ export const BLACKLIST_TEAM_SLUGS: string[] = [
 export class TeamsService {
 
   async createTeam(input: CreateTeamInput): Promise<Team> {
-    const team = await db.transaction(async (tx) => {
-      const slug = input.name.toLowerCase().replace(/\s/g, '-')
-      const isSlugUnique = await this.isSlugUnique(slug)
-      if (!isSlugUnique) {
-        throw createError({ statusCode: 409, statusMessage: 'Team name already in use' })
-      }
-      if (BLACKLIST_TEAM_SLUGS.includes(slug)) {
-        throw createError({ statusCode: 409, statusMessage: 'Team slug is blacklisted' })
-      }
+    const slug = input.name.toLowerCase().replace(/\s/g, '-')
 
+    // Check uniqueness BEFORE transaction to avoid PGlite deadlock
+    const isSlugUnique = await this.isSlugUnique(slug)
+    if (!isSlugUnique) {
+      throw createError({ statusCode: 409, statusMessage: 'Team name already in use' })
+    }
+    if (BLACKLIST_TEAM_SLUGS.includes(slug)) {
+      throw createError({ statusCode: 409, statusMessage: 'Team slug is blacklisted' })
+    }
+
+    const team = await db.transaction(async (tx) => {
       const [newTeam] = await tx.insert(schema.teams)
         .values({
           slug,
