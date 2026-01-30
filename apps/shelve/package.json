@@ -24,18 +24,18 @@
     "drizzle-kit": "^0.31.8",
     "drizzle-orm": "^0.45.1",
     "jsonwebtoken": "^9.0.3",
-    "libsodium-wrappers": "^0.8.1",
-    "nuxt-auth-utils": "^0.5.27",
+    "libsodium-wrappers": "^0.8.2",
+    "nuxt-auth-utils": "^0.5.28",
     "nuxt-build-cache": "^0.1.1",
     "postgres": "^3.4.8",
     "@electric-sql/pglite": "^0.3.15",
-    "resend": "^6.8.0",
+    "resend": "^6.9.1",
     "tweetnacl": "^1.0.3",
     "vue-router": "^4.6.4"
   },
   "devDependencies": {
     "@nuxt/devtools": "^3.1.1",
     "@types/jsonwebtoken": "^9.0.10",
-    "@types/libsodium-wrappers": "^0.7.14"
+    "@types/libsodium-wrappers": "^0.8.2"
   }
 }
