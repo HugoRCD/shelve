@@ -6,6 +6,7 @@ import CommandPalette from '~/components/CommandPalette.vue'
 const route = useRoute()
 const teamSlug = computed(() => route.params.teamSlug as string)
 const { user } = useUserSession()
+const currentTeam = useTeam()
 
 const defaultTeamSlug = useCookie<string>('defaultTeamSlug', {
   watch: true,
@@ -114,6 +115,24 @@ defineShortcuts({
             </Motion>
 
             <Motion v-else :layout="true" class="nav-items-scrollable">
+              <Motion
+                :layout="true"
+                :initial="{ scale: 0.9, opacity: 0 }"
+                :animate="{ scale: 1, opacity: 1 }"
+                :transition="{ type: 'spring', stiffness: 500, damping: 30 }"
+                class="flex-shrink-0"
+              >
+                <ULink to="/">
+                  <UTooltip text="Switch Team" :content="{ side: 'top' }">
+                    <div class="highlight-wrapper rounded-full">
+                      <div class="nav-item">
+                        <UAvatar :src="currentTeam?.logo" size="xs" />
+                      </div>
+                    </div>
+                  </UTooltip>
+                </ULink>
+              </Motion>
+
               <Motion
                 v-for="nav in allNavigations"
                 :key="nav.to"
