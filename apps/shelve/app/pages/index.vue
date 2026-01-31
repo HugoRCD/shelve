@@ -3,7 +3,7 @@ import type { Team } from '@types'
 import { useLogout } from '~/composables/useLogout'
 
 definePageMeta({
-  middleware: ['auth', 'onboarding'],
+  middleware: ['auth', 'onboarding', 'index-redirect'],
 })
 
 const teams = useTeams()
