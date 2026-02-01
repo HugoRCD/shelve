@@ -1,5 +1,4 @@
-import type { CommandGroup, CommandItem, SubMenuState } from '@types'
-import type { Project } from '@types'
+import type { CommandGroup, CommandItem, SubMenuState, Project } from '@types'
 
 export function useAppCommands() {
   const teams = useTeams()
