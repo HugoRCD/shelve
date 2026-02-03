@@ -28,6 +28,7 @@ Here are the available types and scopes:
 - utils (the utility functions)
 - deps (the dependencies)
 - docs (the documentation)
+- repo (the repository)
 -->
 
 ### 🔗 Linked issue
