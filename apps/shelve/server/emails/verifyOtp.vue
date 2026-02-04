@@ -11,7 +11,9 @@ import {
   Link,
   Section,
   Head,
-  Hr
+  Hr,
+  Img,
+  Font
 } from '@vue-email/components'
 
 defineProps({
@@ -29,40 +31,94 @@ defineProps({
 <template>
   <Tailwind>
     <Html>
-      <Head />
+      <Head>
+        <Font
+          font-family="Geist"
+          fallback-font-family="Helvetica"
+          :web-font="{
+            url: 'https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&display=swap',
+            format: 'woff2',
+          }"
+          font-weight="400 500 600"
+          font-style="normal"
+        />
+        <Font
+          font-family="Geist Mono"
+          fallback-font-family="monospace"
+          :web-font="{
+            url: 'https://fonts.googleapis.com/css2?family=Geist+Mono:wght@500&display=swap',
+            format: 'woff2',
+          }"
+          font-weight="500"
+          font-style="normal"
+        />
+      </Head>
       <Preview>
-        Here is your code to access Shelve
+        Your Shelve login code: {{ otp }}
       </Preview>
-      <Body class="m-auto bg-white font-sans">
-        <Container class="mx-auto my-[40px] max-w-[465px] rounded border border-solid border-[#eaeaea] p-[20px] md:p-7">
-          <Heading class="mb-4 text-center text-2xl font-bold text-[#000000] md:text-3xl">
-            Welcome to Shelve
-          </Heading>
-          <Text class="mb-4 text-center text-[#000000]">
-            Your code is:
-          </Text>
-          <Text class="mb-4 text-center text-[36px] font-bold text-[#000000]">
-            <span class="text-[#2C3BF5]">{{ otp }}</span>
-          </Text>
-          <Text class="mb-4 text-center text-[#000000]">
-            Use this code to login to Shelve
-          </Text>
-          <Section class="my-[32px] text-center">
-            <Button class="rounded bg-[#000000] px-8 py-3 text-center text-[12px] font-semibold text-white no-underline" :href="redirectUrl">
-              Go to Shelve
+      <Body class="m-0 p-0 font-sans" style="background-color: #010101;">
+        <Container class="mx-auto my-10 max-w-[480px] px-6">
+          <!-- Header with logo -->
+          <Section class="pt-10 pb-8">
+            <img
+              src="https://shelve.cloud/logo/icon-white.svg"
+              alt="Shelve"
+              width="48"
+              height="48"
+              style="width: 48px; height: 48px; min-width: 48px; min-height: 48px; display: block;"
+            >
+          </Section>
+
+          <!-- Main content -->
+          <Section>
+            <Heading
+              class="text-xl font-medium m-0 mb-3"
+              style="color: #ffffff; letter-spacing: -0.3px;"
+            >
+              Your login code
+            </Heading>
+
+            <Text
+              class="text-sm m-0 mb-6 leading-relaxed"
+              style="color: rgba(255, 255, 255, 0.6);"
+            >
+              Enter this code to sign in to Shelve:
+            </Text>
+
+            <!-- OTP Code -->
+            <Text
+              class="text-3xl font-medium m-0 mb-2"
+              style="color: #ffffff; font-family: 'Geist Mono', monospace; letter-spacing: 6px;"
+            >
+              {{ otp }}
+            </Text>
+
+            <Text
+              class="text-xs m-0 mb-8"
+              style="color: rgba(255, 255, 255, 0.4);"
+            >
+              Expires in 10 minutes
+            </Text>
+
+            <!-- CTA Button -->
+            <Button
+              :href="redirectUrl"
+              class="inline-block rounded-md px-5 py-2.5 text-sm font-medium no-underline"
+              style="background-color: #ffffff; color: #010101;"
+            >
+              Sign in with magic link
             </Button>
           </Section>
-          <Text class="text-[14px] leading-[24px] text-black">
-            or copy and paste this URL into your browser:
-            <Link :href="redirectUrl" class="text-[#2C3BF5]">
-              {{ redirectUrl }}
-            </Link>
-          </Text>
-          <Hr class="mx-0 my-[26px] w-full border border-solid border-[#eaeaea]" />
-          <Text class="text-[12px] leading-[24px] text-[#666666]">
-            If you were not expecting this invitation, you can safely ignore this email. If you are concerned about your account's safety,
-            please send an email to contact@hrcd.fr
-          </Text>
+
+          <!-- Footer -->
+          <Section class="pt-10 pb-8">
+            <Text
+              class="text-xs m-0"
+              style="color: rgba(255, 255, 255, 0.3);"
+            >
+              If you didn't request this code, you can ignore this email.
+            </Text>
+          </Section>
         </Container>
       </Body>
     </Html>

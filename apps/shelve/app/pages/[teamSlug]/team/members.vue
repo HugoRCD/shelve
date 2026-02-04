@@ -2,14 +2,51 @@
 import { h, resolveComponent } from 'vue'
 import { getPaginationRowModel } from '@tanstack/vue-table'
 import type { TableColumn } from '@nuxt/ui'
-import type { Member } from '@types'
+import type { Member, TeamInvitation } from '@types'
 import { TeamRole } from '@types'
 import { ConfirmModal } from '#components'
 
-const { updateMember, removeMember } = useTeamsService()
+const { updateMember, removeMember, fetchPendingInvitations, cancelInvitation } = useTeamsService()
 
 const currentTeam = useTeam()
 const teamRole = useTeamRole()
+
+const pendingInvitations = ref<TeamInvitation[]>([])
+const loadingInvitations = ref(false)
+const cancellingInvitation = ref<number | null>(null)
+
+async function loadPendingInvitations() {
+  if (!hasAccess(teamRole.value, TeamRole.ADMIN)) return
+  loadingInvitations.value = true
+  try {
+    pendingInvitations.value = await fetchPendingInvitations()
+  } catch (error) {
+    console.error('Failed to fetch pending invitations', error)
+  } finally {
+    loadingInvitations.value = false
+  }
+}
+
+async function handleCancelInvitation(invitation: TeamInvitation) {
+  cancellingInvitation.value = invitation.id
+  try {
+    await cancelInvitation(invitation.id)
+    pendingInvitations.value = pendingInvitations.value.filter(i => i.id !== invitation.id)
+    toast.success('Invitation cancelled')
+  } catch (error: any) {
+    toast.error(error.data?.message || 'Failed to cancel invitation')
+  } finally {
+    cancellingInvitation.value = null
+  }
+}
+
+function handleInvitationSent() {
+  loadPendingInvitations()
+}
+
+onMounted(() => {
+  loadPendingInvitations()
+})
 
 // Members logic
 const members = computed(() => currentTeam.value?.members.filter((member) => member.user.username.toLowerCase().includes(search.value.toLowerCase())))
@@ -182,7 +219,58 @@ definePageMeta({
 </script>
 
 <template>
-  <div>
+  <div class="space-y-6">
+    <div v-if="canUpdate && pendingInvitations.length > 0" class="space-y-3">
+      <div class="flex items-center gap-2">
+        <h3 class="text-sm font-medium text-highlighted">
+          Pending Invitations
+        </h3>
+        <UBadge :label="String(pendingInvitations.length)" size="xs" variant="subtle" />
+      </div>
+      <div class="grid gap-2">
+        <div
+          v-for="invitation in pendingInvitations"
+          :key="invitation.id"
+          class="flex items-center justify-between p-3 rounded-lg border border-default bg-elevated/50"
+        >
+          <div class="flex items-center gap-3">
+            <UIcon name="heroicons:envelope" class="size-5 text-muted" />
+            <div>
+              <p class="text-sm font-medium text-highlighted">
+                {{ invitation.email }}
+              </p>
+              <p class="text-xs text-muted">
+                Invited as
+                <UBadge
+                  :label="invitation.role.toUpperCase()"
+                  :color="invitation.role === TeamRole.OWNER ? 'primary' : invitation.role === TeamRole.ADMIN ? 'success' : 'neutral'"
+                  variant="subtle"
+                  size="xs"
+                  class="ml-1"
+                />
+                <span v-if="invitation.invitedBy" class="ml-1">
+                  by {{ invitation.invitedBy.username }}
+                </span>
+              </p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-xs text-muted">
+              Expires {{ new Date(invitation.expiresAt).toLocaleDateString() }}
+            </span>
+            <UButton
+              size="xs"
+              variant="ghost"
+              color="error"
+              icon="heroicons:x-mark"
+              :loading="cancellingInvitation === invitation.id"
+              @click="handleCancelInvitation(invitation)"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+
     <UTable
       ref="table"
       v-model:pagination="pagination"
@@ -216,10 +304,10 @@ definePageMeta({
         </span>
       </template>
       <template #role-cell="{ row }">
-        <UBadge 
-          :label="row.original.role.toUpperCase()" 
-          :color="row.original.role === TeamRole.OWNER ? 'primary' : row.original.role === TeamRole.ADMIN ? 'success' : 'neutral'" 
-          variant="subtle" 
+        <UBadge
+          :label="row.original.role.toUpperCase()"
+          :color="row.original.role === TeamRole.OWNER ? 'primary' : row.original.role === TeamRole.ADMIN ? 'success' : 'neutral'"
+          variant="subtle"
         />
       </template>
       <template #createdAt-cell="{ row }">
@@ -234,7 +322,7 @@ definePageMeta({
         </UDropdownMenu>
       </template>
     </UTable>
-      
+
     <div v-if="(table?.tableApi?.getFilteredRowModel().rows.length || 0) > pagination.pageSize" class="flex justify-center pt-4">
       <UPagination
         :default-page="(table?.tableApi?.getState().pagination.pageIndex || 0) + 1"
@@ -245,8 +333,8 @@ definePageMeta({
     </div>
 
     <Teleport defer to="#action-items">
-      <TeamAddMember v-if="members && canUpdate" :members />
+      <TeamAddMember v-if="members && canUpdate" :members @invitation-sent="handleInvitationSent" />
       <UInput v-model="search" size="sm" label="Search" placeholder="Search a user" icon="heroicons:magnifying-glass-20-solid" />
     </Teleport>
   </div>
-</template> 
+</template>

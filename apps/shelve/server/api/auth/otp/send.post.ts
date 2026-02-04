@@ -17,12 +17,20 @@ export default defineEventHandler(async (event) => {
     }
     const { email } = await readValidatedBody(event, bodySchema.parse)
 
-    const otpCode = await generateOTPForEmail(email, event)
+    const rateLimit = await checkOTPRateLimit(email)
+    if (!rateLimit.allowed) {
+      throw createError({
+        statusCode: 429,
+        statusMessage: `Too many requests. Please try again in ${rateLimit.retryAfterMinutes} minutes.`,
+      })
+    }
+
+    const { code, token } = await generateOTPForEmail(email, event)
 
     const emailService = new EmailService(event)
-    const redirectUrl = `${getRequestURL(event).origin}/auth/otp?email=${encodeURIComponent(email)}&otp=${otpCode}`
+    const redirectUrl = `${getRequestURL(event).origin}/auth/otp?token=${token}`
 
-    await emailService.sendOtp(email, otpCode, redirectUrl)
+    await emailService.sendOtp(email, code, redirectUrl)
 
     return {
       success: true,

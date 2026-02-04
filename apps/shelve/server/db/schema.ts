@@ -1,6 +1,6 @@
 import { boolean, pgEnum, pgTable, varchar, index, uniqueIndex, bigint, integer, timestamp } from 'drizzle-orm/pg-core'
 import { relations } from 'drizzle-orm'
-import { TeamRole, Role, AuthType } from '../../../../packages/types'
+import { TeamRole, Role, AuthType, InvitationStatus } from '../../../../packages/types'
 
 const timestamps = {
   updatedAt: timestamp().notNull().$onUpdate(() => new Date()),
@@ -27,6 +27,13 @@ export const authTypesEnum = pgEnum('auth_types', [
   AuthType.EMAIL,
 ])
 
+export const invitationStatusEnum = pgEnum('invitation_status', [
+  InvitationStatus.PENDING,
+  InvitationStatus.ACCEPTED,
+  InvitationStatus.DECLINED,
+  InvitationStatus.EXPIRED,
+])
+
 export const users = pgTable('users', {
   id: bigint({ mode: 'number' }).primaryKey().generatedByDefaultAsIdentity(),
   username: varchar({ length: 25 }).unique().notNull(),
@@ -37,7 +44,10 @@ export const users = pgTable('users', {
   onboarding: boolean().default(false).notNull(),
   cliInstalled: boolean().default(false).notNull(),
   otpCode: varchar({ length: 6 }),
+  otpToken: varchar({ length: 64 }),
   otpExpiresAt: timestamp(),
+  otpAttempts: integer().default(0),
+  otpLastRequestAt: timestamp(),
   ...timestamps,
 })
 
@@ -67,6 +77,23 @@ export const members = pgTable('members', {
   uniqueIndex('members_user_team_idx').on(table.userId, table.teamId),
   index('members_role_idx').on(table.role),
   index('members_team_role_idx').on(table.teamId, table.role)
+])
+
+export const invitations = pgTable('invitations', {
+  id: bigint({ mode: 'number' }).primaryKey().generatedByDefaultAsIdentity(),
+  email: varchar({ length: 50 }).notNull(),
+  teamId: bigint({ mode: 'number' }).references(() => teams.id, { onDelete: 'cascade' }).notNull(),
+  role: teamRoleEnum().default(TeamRole.MEMBER).notNull(),
+  token: varchar({ length: 64 }).unique().notNull(),
+  status: invitationStatusEnum().default(InvitationStatus.PENDING).notNull(),
+  invitedById: bigint({ mode: 'number' }).references(() => users.id, { onDelete: 'set null' }),
+  expiresAt: timestamp().notNull(),
+  ...timestamps,
+}, (table) => [
+  uniqueIndex('invitations_token_idx').on(table.token),
+  uniqueIndex('invitations_email_team_idx').on(table.email, table.teamId),
+  index('invitations_team_idx').on(table.teamId),
+  index('invitations_status_idx').on(table.status),
 ])
 
 export const projects = pgTable('projects', {
@@ -150,6 +177,7 @@ export const teamsRelations = relations(teams, ({ many }) => ({
   members: many(members),
   projects: many(projects),
   environments: many(environments),
+  invitations: many(invitations),
 }))
 
 export const membersRelations = relations(members, ({ one }) => ({
@@ -159,6 +187,17 @@ export const membersRelations = relations(members, ({ one }) => ({
   }),
   user: one(users, {
     fields: [members.userId],
+    references: [users.id],
+  })
+}))
+
+export const invitationsRelations = relations(invitations, ({ one }) => ({
+  team: one(teams, {
+    fields: [invitations.teamId],
+    references: [teams.id],
+  }),
+  invitedBy: one(users, {
+    fields: [invitations.invitedById],
     references: [users.id],
   })
 }))

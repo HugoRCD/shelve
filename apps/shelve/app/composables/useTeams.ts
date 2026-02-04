@@ -1,4 +1,4 @@
-import type { Member, Team } from '@types'
+import type { Member, Team, TeamInvitation } from '@types'
 import { Role, TeamRole } from '@types'
 
 /**
@@ -175,6 +175,29 @@ export function useTeamsService() {
     }
   }
 
+  async function sendInvitation(email: string, role: TeamRole): Promise<TeamInvitation> {
+    const invitation = await $fetch<TeamInvitation>(`/api/teams/${team.value.slug}/invitations`, {
+      method: 'POST',
+      body: {
+        email,
+        role,
+      },
+    })
+    return invitation
+  }
+
+  async function fetchPendingInvitations(): Promise<TeamInvitation[]> {
+    return await $fetch<TeamInvitation[]>(`/api/teams/${team.value.slug}/invitations`, {
+      method: 'GET',
+    })
+  }
+
+  async function cancelInvitation(invitationId: number): Promise<void> {
+    await $fetch(`/api/teams/${team.value.slug}/invitations/${invitationId}`, {
+      method: 'DELETE',
+    })
+  }
+
   return {
     teams,
     loading,
@@ -188,5 +211,8 @@ export function useTeamsService() {
     addMember,
     updateMember,
     removeMember,
+    sendInvitation,
+    fetchPendingInvitations,
+    cancelInvitation,
   }
 }
