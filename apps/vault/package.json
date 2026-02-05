@@ -14,6 +14,6 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@upstash/redis": "^1.36.1"
+    "@upstash/redis": "^1.36.2"
   }
 }
