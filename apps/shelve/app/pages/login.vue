@@ -110,8 +110,8 @@ useSeoMeta({
             :exit="{ opacity: 0, y: -20 }"
             :transition="{ duration: 0.3 }"
           >
-            <AuthButton v-if="isGithubEnabled" icon="simple-icons:github" label="Sign in with GitHub" provider="github" :redirect-url="redirectUrl" />
-            <AuthButton v-if="isGoogleEnabled" icon="simple-icons:google" label="Sign in with Google" provider="google" :redirect-url="redirectUrl" />
+            <AuthButton v-if="isGithubEnabled" icon="simple-icons:github" label="Sign in with GitHub" provider="github" :redirect-url />
+            <AuthButton v-if="isGoogleEnabled" icon="simple-icons:google" label="Sign in with Google" provider="google" :redirect-url />
             
             <motion.div 
               v-if="isEmailEnabled && (isGithubEnabled || isGoogleEnabled)" 
@@ -174,7 +174,7 @@ useSeoMeta({
               <AuthOtpForm 
                 :email 
                 :prefilled-otp
-                :redirect-url="redirectUrl"
+                :redirect-url
                 @back-to-email="handleBackToEmail"
                 @otp-verified="handleOtpVerified"
               />

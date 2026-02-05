@@ -27,7 +27,7 @@
     "@shelve/cli": "workspace:*",
     "automd": "^0.4.3",
     "eslint": "^9.39.2",
-    "turbo": "^2.8.0",
+    "turbo": "^2.8.3",
     "typescript": "^5.9.3"
   },
   "pnpm": {
