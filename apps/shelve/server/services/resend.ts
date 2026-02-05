@@ -99,7 +99,7 @@ export class EmailService {
     inviteUrl: string
   }): Promise<void> {
     const { email, teamName, inviterName, role, inviteUrl } = options
-    
+
     if (!this.resend) {
       console.warn('Resend API key not found, set NUXT_PRIVATE_RESEND_API_KEY in your environment variables to enable email sending')
       console.log('Development mode: Invitation URL is', inviteUrl)
