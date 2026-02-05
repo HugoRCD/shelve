@@ -1,13 +1,13 @@
-import { boolean, pgEnum, pgTable, varchar, index, uniqueIndex, bigint, integer, timestamp } from 'drizzle-orm/pg-core'
+import { boolean, pgEnum, pgTable, varchar, index, uniqueIndex, bigint, integer, timestamp, uuid } from 'drizzle-orm/pg-core'
 import { relations } from 'drizzle-orm'
-import { TeamRole, Role, AuthType, InvitationStatus } from '../../../../packages/types'
+import { schema as authSchema } from 'hub:db'
+import { TeamRole, InvitationStatus } from '../../../../packages/types'
 
 const timestamps = {
   updatedAt: timestamp().notNull().$onUpdate(() => new Date()),
   createdAt: timestamp().defaultNow().notNull(),
 }
 
-const DEFAULT_AVATAR = 'https://i.imgur.com/6VBx3io.png'
 const DEFAULT_LOGO = 'https://github.com/HugoRCD/shelve/blob/main/assets/default.webp?raw=true'
 
 export const teamRoleEnum = pgEnum('team_role', [
@@ -16,46 +16,17 @@ export const teamRoleEnum = pgEnum('team_role', [
   TeamRole.MEMBER,
 ])
 
-export const rolesEnum = pgEnum('roles', [
-  Role.USER,
-  Role.ADMIN,
-])
-
-export const authTypesEnum = pgEnum('auth_types', [
-  AuthType.GITHUB,
-  AuthType.GOOGLE,
-  AuthType.EMAIL,
-])
-
 export const invitationStatusEnum = pgEnum('invitation_status', [
   InvitationStatus.PENDING,
   InvitationStatus.ACCEPTED,
   InvitationStatus.DECLINED,
   InvitationStatus.EXPIRED,
 ])
-
-export const users = pgTable('users', {
-  id: bigint({ mode: 'number' }).primaryKey().generatedByDefaultAsIdentity(),
-  username: varchar({ length: 25 }).unique().notNull(),
-  email: varchar({ length: 50 }).unique().notNull(),
-  avatar: varchar({ length: 500 }).default(DEFAULT_AVATAR).notNull(),
-  role: rolesEnum().default(Role.USER).notNull(),
-  authType: authTypesEnum().notNull(),
-  onboarding: boolean().default(false).notNull(),
-  cliInstalled: boolean().default(false).notNull(),
-  otpCode: varchar({ length: 6 }),
-  otpToken: varchar({ length: 64 }),
-  otpExpiresAt: timestamp(),
-  otpAttempts: integer().default(0),
-  otpLastRequestAt: timestamp(),
-  ...timestamps,
-})
-
 export const githubApp = pgTable('github_app', {
   id: bigint({ mode: 'number' }).primaryKey().generatedByDefaultAsIdentity(),
   installationId: bigint({ mode: 'number' }).notNull(),
   isOrganisation: boolean().default(false).notNull(),
-  userId: bigint({ mode: 'number' }).references(() => users.id, { onDelete: 'cascade' }).notNull(),
+  userId: uuid().references(() => authSchema.user.id, { onDelete: 'cascade' }).notNull(),
   ...timestamps,
 })
 
@@ -69,7 +40,7 @@ export const teams = pgTable('teams', {
 
 export const members = pgTable('members', {
   id: bigint({ mode: 'number' }).primaryKey().generatedByDefaultAsIdentity(),
-  userId: bigint({ mode: 'number' }).references(() => users.id, { onDelete: 'cascade' }).notNull(),
+  userId: uuid().references(() => authSchema.user.id, { onDelete: 'cascade' }).notNull(),
   teamId: bigint({ mode: 'number' }).references(() => teams.id, { onDelete: 'cascade' }).notNull(),
   role: teamRoleEnum().default(TeamRole.MEMBER).notNull(),
   ...timestamps,
@@ -86,7 +57,7 @@ export const invitations = pgTable('invitations', {
   role: teamRoleEnum().default(TeamRole.MEMBER).notNull(),
   token: varchar({ length: 64 }).unique().notNull(),
   status: invitationStatusEnum().default(InvitationStatus.PENDING).notNull(),
-  invitedById: bigint({ mode: 'number' }).references(() => users.id, { onDelete: 'set null' }),
+  invitedById: uuid().references(() => authSchema.user.id, { onDelete: 'set null' }),
   expiresAt: timestamp().notNull(),
   ...timestamps,
 }, (table) => [
@@ -141,7 +112,7 @@ export const tokens = pgTable('tokens', {
   id: bigint({ mode: 'number' }).primaryKey().generatedByDefaultAsIdentity(),
   token: varchar({ length: 800 }).unique().notNull(),
   name: varchar({ length: 25 }).notNull(),
-  userId: bigint({ mode: 'number' }).references(() => users.id, { onDelete: 'cascade' }).notNull(),
+  userId: uuid().references(() => authSchema.user.id, { onDelete: 'cascade' }).notNull(),
   ...timestamps,
 }, (table) => [
   uniqueIndex('tokens_token_idx').on(table.token),
@@ -167,9 +138,9 @@ export const teamStats = pgTable('team_stats', {
 }, (table) => [uniqueIndex('team_stats_id_idx').on(table.id)])
 
 export const githubAppRelations = relations(githubApp, ({ one }) => ({
-  users: one(users, {
+  users: one(authSchema.user, {
     fields: [githubApp.userId],
-    references: [users.id],
+    references: [authSchema.user.id],
   })
 }))
 
@@ -185,9 +156,9 @@ export const membersRelations = relations(members, ({ one }) => ({
     fields: [members.teamId],
     references: [teams.id],
   }),
-  user: one(users, {
+  user: one(authSchema.user, {
     fields: [members.userId],
-    references: [users.id],
+    references: [authSchema.user.id],
   })
 }))
 
@@ -196,9 +167,9 @@ export const invitationsRelations = relations(invitations, ({ one }) => ({
     fields: [invitations.teamId],
     references: [teams.id],
   }),
-  invitedBy: one(users, {
+  invitedBy: one(authSchema.user, {
     fields: [invitations.invitedById],
-    references: [users.id],
+    references: [authSchema.user.id],
   })
 }))
 
@@ -218,9 +189,9 @@ export const variablesRelations = relations(variables, ({ one, many }) => ({
 }))
 
 export const tokensRelations = relations(tokens, ({ one }) => ({
-  user: one(users, {
+  user: one(authSchema.user, {
     fields: [tokens.userId],
-    references: [users.id],
+    references: [authSchema.user.id],
   })
 }))
 

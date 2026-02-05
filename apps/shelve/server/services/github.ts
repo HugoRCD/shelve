@@ -127,7 +127,7 @@ export class GithubService {
     }
   })
 
-  getUserRepos = cachedFunction(async (event, userId: number): Promise<GitHubRepo[]> => {
+  getUserRepos = cachedFunction(async (event, userId: string): Promise<GitHubRepo[]> => {
     const installation = await db.query.githubApp.findFirst({
       where: eq(schema.githubApp.userId, userId)
     })
@@ -162,12 +162,12 @@ export class GithubService {
   }, {
     maxAge: 60 * 5,
     name: 'getUserRepos',
-    getKey: (event: H3Event, userId: number, query?: string) => `user-repos-${userId}-${query || ''}`,
+    getKey: (event: H3Event, userId: string, query?: string) => `user-repos-${userId}-${query || ''}`,
     swr: true
   })
 
   async sendSecrets(
-    userId: number,
+    userId: string,
     repository: string,
     variables: { key: string; value: string }[]
   ) {
@@ -240,13 +240,13 @@ export class GithubService {
     }
   }
 
-  getUserApps(userId: number) {
+  getUserApps(userId: string) {
     return db.query.githubApp.findMany({
       where: eq(schema.githubApp.userId, userId)
     })
   }
 
-  async deleteApp(userId: number, installationId: number) {
+  async deleteApp(userId: string, installationId: number) {
     await db
       .delete(schema.githubApp)
       .where(

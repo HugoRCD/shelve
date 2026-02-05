@@ -1,112 +1,48 @@
 import type { H3Event } from 'h3'
-import type { CreateUserInput, Token, User } from '@types'
-import { AuthType, Role } from '@types'
+import type { AuthType, Token, User } from '../../../packages/types'
 
-async function syncUserRole(user: User, event: H3Event): Promise<User> {
-  const adminEmails = useRuntimeConfig(event).private.adminEmails?.split(',').map(e => e.trim()) || []
-  const shouldBeAdmin = adminEmails.includes(user.email)
-  const currentlyAdmin = user.role === Role.ADMIN
+const LEGACY_ID_REGEX = /^\d+$/
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
 
-  if (shouldBeAdmin && !currentlyAdmin) {
-    const [updatedUser] = await db
-      .update(schema.users)
-      .set({ role: Role.ADMIN })
-      .where(eq(schema.users.id, user.id))
-      .returning()
-    console.log(`[Auth] Promoted ${user.email} to admin`)
-    return updatedUser
-  }
-
-  if (!shouldBeAdmin && currentlyAdmin) {
-    const [updatedUser] = await db
-      .update(schema.users)
-      .set({ role: Role.USER })
-      .where(eq(schema.users.id, user.id))
-      .returning()
-    console.log(`[Auth] Demoted ${user.email} from admin`)
-    return updatedUser
-  }
-
-  return user
+export async function validateUsername(username: string, _authType?: AuthType): Promise<string> {
+  const trimmed = username.trim()
+  if (!trimmed) throw createError({ statusCode: 400, statusMessage: 'Invalid username' })
+  return trimmed
 }
 
-export async function createUser(input: CreateUserInput, event: H3Event): Promise<User> {
-  const adminEmails = useRuntimeConfig(event).private.adminEmails?.split(',') || []
-  input.username = await validateUsername(input.username, input.authType)
-  const [createdUser] = await db
-    .insert(schema.users)
-    .values({
-      username: input.username,
-      email: input.email,
-      avatar: input.avatar,
-      authType: input.authType,
-      role: adminEmails.includes(input.email) ? Role.ADMIN : undefined,
-    })
-    .returning()
-  if (!createdUser) throw createError({ statusCode: 422, statusMessage: 'Failed to create user' })
-  await new EmailService(event).sendWelcomeEmail(input.email, input.username, input.appUrl)
-  return createdUser
-}
+function parseTokenId(authToken: string): { userId?: string; legacyId?: number } {
+  if (!authToken.startsWith(TOKEN_PREFIX)) return {}
+  const parts = authToken.split('_')
+  if (parts.length < 3) return {}
+  const idPart = parts[1]
 
-export async function handleOAuthUser(input: CreateUserInput, event: H3Event): Promise<User> {
-  const [foundUser] = await db
-    .select()
-    .from(schema.users)
-    .where(eq(schema.users.email, input.email))
-
-  if (!foundUser) return await createUser(input, event)
-  return await syncUserRole(foundUser, event)
-}
-
-export async function handleEmailUser(email: string, event: H3Event): Promise<{ user: User; isNewUser: boolean }> {
-  const [foundUser] = await db
-    .select()
-    .from(schema.users)
-    .where(eq(schema.users.email, email))
-
-  if (foundUser) {
-    const syncedUser = await syncUserRole(foundUser, event)
-    return { user: syncedUser, isNewUser: false }
-  }
-
-  const username = await validateUsername(email.split('@')[0], AuthType.EMAIL)
-  const userInput: CreateUserInput = {
-    email,
-    username,
-    authType: AuthType.EMAIL,
-    avatar: 'https://i.imgur.com/6VBx3io.png',
-    appUrl: getRequestHost(event),
-  }
-
-  const newUser = await createUser(userInput, event)
-  return { user: newUser, isNewUser: true }
-}
-
-export async function validateUsername(username: string, authType?: AuthType): Promise<string> {
-  const foundUser = await db
-    .select({
-      username: schema.users.username,
-    })
-    .from(schema.users)
-    .where(eq(schema.users.username, username))
-
-  const usernameTaken = foundUser.length > 0
-  const isOAuthUser = authType === AuthType.GITHUB || authType === AuthType.GOOGLE
-  if (isOAuthUser && usernameTaken) return generateUniqueUsername(username)
-  if (usernameTaken) throw createError({ statusCode: 400, statusMessage: 'Username already taken' })
-  return username
-}
-
-function generateUniqueUsername(username: string): string {
-  return `${username}_#${Math.floor(Math.random() * 1000)}`
+  if (UUID_REGEX.test(idPart)) return { userId: idPart }
+  if (LEGACY_ID_REGEX.test(idPart)) return { legacyId: Number(idPart) }
+  return {}
 }
 
 export async function getUserByAuthToken(authToken: string, event: H3Event): Promise<User> {
   const { encryptionKey } = useRuntimeConfig(event).private
-  const userId = +authToken.split('_')[1] // Extract the user ID from the token
+  const { userId, legacyId } = parseTokenId(authToken)
+
+  let user: User | undefined
+
+  if (userId) {
+    user = await db.query.user.findFirst({
+      where: eq(schema.user.id, userId)
+    })
+  } else if (legacyId !== undefined) {
+    user = await db.query.user.findFirst({
+      where: eq(schema.user.legacyId, legacyId)
+    })
+  }
+
+  if (!user) throw createError({ statusCode: 401, statusMessage: 'User not found (invalid token)' })
+
   const userTokens = await db.query.tokens.findMany({
-    where: eq(schema.tokens.userId, userId)
+    where: eq(schema.tokens.userId, user.id)
   })
+
   if (!userTokens.length) throw createError({ statusCode: 401, statusMessage: 'User not found (invalid token)' })
 
   let foundToken: Token | undefined
@@ -118,15 +54,11 @@ export async function getUserByAuthToken(authToken: string, event: H3Event): Pro
 
   if (!foundToken) throw createError({ statusCode: 401, statusMessage: 'Invalid token' })
 
-  const user = await db.query.users.findFirst({
-    where: eq(schema.users.id, userId)
-  })
-  if (!user) throw createError({ statusCode: 400, statusMessage: 'User not found (invalid token)' })
-
   await db.update(schema.tokens)
     .set({
       updatedAt: new Date()
     })
     .where(eq(schema.tokens.id, foundToken.id))
+
   return user
 }

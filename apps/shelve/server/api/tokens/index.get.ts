@@ -3,7 +3,7 @@ import type { Token } from '@types'
 export default defineEventHandler(async (event) => {
   const { encryptionKey } = useRuntimeConfig(event).private
 
-  const { user } = await requireUserSession(event)
+  const { user } = await requireAppSession(event)
 
   const tokens = await db.query.tokens.findMany({
     where: eq(schema.tokens.userId, user.id),

@@ -20,13 +20,16 @@ export default defineNuxtConfig({
       plugins: [vue()]
     },
     imports: {
-      dirs: ['./server/services']
+      dirs: ['./server/services', './server/utils']
     }
   },
 
   css: ['~/assets/css/index.css'],
 
   runtimeConfig: {
+    public: {
+      siteUrl: '',
+    },
     private: {
       resendApiKey: '',
       resendWebhookSecret: '',
@@ -53,6 +56,7 @@ export default defineNuxtConfig({
   $development: {
     runtimeConfig: {
       public: {
+        siteUrl: 'http://localhost:3000',
         github: {
           appName: 'shelve-local',
         },
@@ -63,6 +67,7 @@ export default defineNuxtConfig({
   $production: {
     runtimeConfig: {
       public: {
+        siteUrl: 'https://app.shelve.cloud',
         github: {
           appName: 'shelve-cloud',
         },
@@ -74,5 +79,5 @@ export default defineNuxtConfig({
     format: ['webp', 'jpeg', 'jpg', 'png', 'svg']
   },
 
-  modules: ['@nuxt/ui', 'nuxt-auth-utils', '@nuxthub/core', 'botid/nuxt'],
+  modules: ['@nuxt/ui', '@nuxthub/core', '@onmax/nuxt-better-auth', 'botid/nuxt'],
 })

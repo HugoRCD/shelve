@@ -135,7 +135,7 @@ export class TeamsService {
     if (!team) throw createError({ statusCode: 404, statusMessage: `Team not found with id ${teamId}` })
   }
 
-  getTeams = withCache<Team[]>('Teams', async (userId: number) => {
+  getTeams = withCache<Team[]>('Teams', async (userId: string) => {
     const memberOf = await db.query.members.findMany({
       where: eq(schema.members.userId, userId),
       with: {

@@ -27,7 +27,7 @@ export type GithubApp = {
   id: number
   installationId: string
   isOrganisation: boolean
-  userId: number
+  userId: string
   createdAt: string
   updatedAt: string
 }

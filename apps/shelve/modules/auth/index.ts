@@ -35,7 +35,8 @@ const commaSeparatedStringToArray = z.preprocess(
 
 const requiredCoreSchema = z.object({
   DATABASE_URL: z.url().startsWith('postgres', { error: 'Must be a valid PostgreSQL URL.' }).optional(),
-  NUXT_SESSION_PASSWORD: z.string().min(32, { error: 'Session password must be at least 32 characters long.' }),
+  BETTER_AUTH_SECRET: z.string().min(32, { error: 'Better Auth secret must be at least 32 characters long.' }).optional(),
+  NUXT_BETTER_AUTH_SECRET: z.string().min(32, { error: 'Better Auth secret must be at least 32 characters long.' }).optional(),
   NUXT_PRIVATE_ENCRYPTION_KEY: z.string().min(32, { error: 'Encryption key must be at least 32 characters long.' }),
 })
 
@@ -65,6 +66,13 @@ export const envSchema = z.object({
 }).superRefine((data, ctx) => {
   validateOAuthPair(data, ctx, 'NUXT_OAUTH_GITHUB_CLIENT_ID', 'NUXT_OAUTH_GITHUB_CLIENT_SECRET', 'GitHub')
   validateOAuthPair(data, ctx, 'NUXT_OAUTH_GOOGLE_CLIENT_ID', 'NUXT_OAUTH_GOOGLE_CLIENT_SECRET', 'Google')
+  if (!data.BETTER_AUTH_SECRET && !data.NUXT_BETTER_AUTH_SECRET) {
+    ctx.issues.push({
+      code: 'custom',
+      message: 'BETTER_AUTH_SECRET is required for Better Auth.',
+      path: ['BETTER_AUTH_SECRET'],
+    })
+  }
 })
 
 function handleValidationError(error: z.ZodError) {

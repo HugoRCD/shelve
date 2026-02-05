@@ -7,9 +7,9 @@ const colorMode = useColorMode()
 const items = computed<DropdownMenuItem[][]>(() => [
   [
     {
-      label: user.value?.username || '',
+      label: user.value?.name || '',
       avatar: {
-        src: user.value?.avatar || ''
+        src: user.value?.image || ''
       },
       type: 'label'
     }
@@ -63,6 +63,6 @@ const items = computed<DropdownMenuItem[][]>(() => [
       content: 'w-48'
     }"
   >
-    <UAvatar :src="user.avatar" :alt="user.username" size="sm" />
+    <UAvatar :src="user.image" :alt="user.name" size="sm" />
   </UDropdownMenu>
 </template>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 const loading = ref(false)
+const { signIn } = useUserSession()
 const props = defineProps({
   label: {
     type: String,
@@ -13,18 +14,14 @@ const props = defineProps({
     type: String,
     required: true,
   },
-  redirectUrl: {
-    type: String,
-    default: '',
-  },
 })
 
 function open() {
   loading.value = true
-  const url = props.redirectUrl
-    ? `/auth/${props.provider}?redirect=${encodeURIComponent(props.redirectUrl)}`
-    : `/auth/${props.provider}`
-  window.location.href = url
+  signIn.social({ provider: props.provider })
+    .catch(() => {
+      loading.value = false
+    })
 }
 </script>
 
@@ -32,7 +29,6 @@ function open() {
   <UButton
     :loading
     :disabled="loading"
-    external
     :icon
     block
     class="rounded-none"

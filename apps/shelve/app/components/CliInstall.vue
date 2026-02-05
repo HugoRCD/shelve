@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { user, fetch } = useUserSession()
+const { user, fetchSession } = useUserSession()
 
 const closed = ref(false)
 const loading = ref(false)
@@ -8,7 +8,7 @@ async function installCli() {
   await $fetch('/api/user/cli', {
     method: 'POST',
   })
-  await fetch()
+  await fetchSession()
   toast.success('Thank you for installing the Shelve CLI')
   loading.value = false
 }

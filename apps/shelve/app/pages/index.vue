@@ -47,7 +47,7 @@ async function navigateToTeam(team: Team) {
 }
 
 useSeoMeta({
-  title: () => `Home - ${user.value?.username}`,
+  title: () => `Home - ${user.value?.name}`,
   titleTemplate: '%s - Shelve'
 })
 </script>
@@ -72,10 +72,10 @@ useSeoMeta({
       <CrossedDiv line>
         <div class="bg-muted p-8 dark:shadow-lg border border-default w-full backdrop-blur-md">
           <div class="flex flex-col items-center gap-2">
-            <UAvatar :src="user?.avatar" class="size-18 avatar" />
+            <UAvatar :src="user?.image" class="size-18 avatar" />
             <div class="flex flex-col items-center">
               <h1 class="text-lg font-semibold">
-                Welcome back, {{ user?.username }}
+                Welcome back, {{ user?.name }}
               </h1>
               <p class="text-muted italic">
                 Select a team to get started

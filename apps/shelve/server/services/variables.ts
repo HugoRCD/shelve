@@ -129,7 +129,7 @@ export class VariablesService {
     await clearCache('Variables', projectId)
 
     if (syncWithGitHub) {
-      const { user } = await requireUserSession(event)
+      const { user } = await requireAppSession(event)
       const project = await new ProjectsService().getProject(projectId)
       if (!project || !project.repository) throw createError({ statusCode: 400, statusMessage: 'No GitHub repository linked to this project.' })
       const variablesToSend = varsToCreate.map(v => ({ key: autoUppercase ? v.key.toUpperCase() : v.key, value: v.value }))

@@ -8,7 +8,7 @@ export enum TeamRole {
 
 export type Member = {
   id: number;
-  userId: number;
+  userId: string;
   teamId: number;
   role: TeamRole;
   user: User;

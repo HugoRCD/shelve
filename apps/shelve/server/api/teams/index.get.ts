@@ -1,7 +1,7 @@
 import { z } from 'zod'
 
 export default eventHandler(async (event) => {
-  const { user } = await requireUserSession(event)
+  const { user } = await requireAppSession(event)
   const { slug } = await getValidatedQuery(event, z.object({
     slug: z.string().optional()
   }).parse)

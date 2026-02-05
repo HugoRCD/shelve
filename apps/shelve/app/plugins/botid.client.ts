@@ -5,8 +5,7 @@ export default defineNuxtPlugin({
   setup() {
     initBotId({
       protect: [
-        { path: '/api/auth/otp/send', method: 'POST' },
-        { path: '/api/auth/otp/verify', method: 'POST' },
+        { path: '/api/auth/*', method: 'POST' },
       ],
     })
   },

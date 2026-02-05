@@ -30,7 +30,7 @@ const deleteLoading = ref(false)
 const UButton = resolveComponent('UButton')
 
 
-async function changeUserRole(id: number, role: string) {
+async function changeUserRole(id: string, role: string) {
   try {
     updateLoading.value = true
     await $fetch(`/api/admin/users/${id}`, {
@@ -47,7 +47,7 @@ async function changeUserRole(id: number, role: string) {
   updateLoading.value = false
 }
 
-async function deleteUser(id: number) {
+async function deleteUser(id: string) {
   deleteLoading.value = true
   try {
     await $fetch(`/api/admin/users/${id}`, {
@@ -60,12 +60,12 @@ async function deleteUser(id: number) {
 
 const columns: TableColumn<User>[] = [
   {
-    accessorKey: 'avatar',
+    accessorKey: 'image',
     header: 'Avatar',
   },
   {
-    accessorKey: 'username',
-    header: 'Username',
+    accessorKey: 'name',
+    header: 'Name',
   },
   {
     accessorKey: 'email',
@@ -167,7 +167,7 @@ const items = (row: User) => [
         }
         modal.open({
           title: 'Are you sure?',
-          description: `You are about to delete ${row.username ? row.username : row.email}, this action cannot be undone.`,
+          description: `You are about to delete ${row.name ? row.name : row.email}, this action cannot be undone.`,
           danger: true,
           onSuccess() {
             toast.promise(deleteUser(row.id), {
@@ -234,16 +234,16 @@ useSeoMeta({
         td: 'border-b border-default'
       }"
     >
-      <template #avatar-cell="{ row }">
-        <UAvatar :src="row.original.avatar" :alt="row.original.username" size="sm" img-class="object-cover" />
+      <template #image-cell="{ row }">
+        <UAvatar :src="row.original.image" :alt="row.original.name" size="sm" img-class="object-cover" />
       </template>
-      <template #username-cell="{ row }">
-        <ULink v-if="row.original.authType === AuthType.GITHUB" :to="`https://github.com/${row.original.username}`" target="_blank">
+      <template #name-cell="{ row }">
+        <ULink v-if="row.original.authType === AuthType.GITHUB" :to="`https://github.com/${row.original.name}`" target="_blank">
           <span class="text-highlighted">
-            {{ row.original.username }}
+            {{ row.original.name }}
           </span>
         </ULink>
-        <span v-else>{{ row.original.username }}</span>
+        <span v-else>{{ row.original.name }}</span>
       </template>
       <template #role-cell="{ row }">
         <UBadge :label="row.original.role.toUpperCase()" :color="row.original.role === Role.ADMIN ? 'primary' : 'neutral'" variant="subtle" />
