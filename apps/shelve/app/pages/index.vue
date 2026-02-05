@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import type { Team } from '@types'
-import { useLogout } from '~/composables/useLogout'
 
 definePageMeta({
-  middleware: ['auth', 'onboarding', 'index-redirect'],
+  middleware: ['auth', 'onboarding'],
 })
 
 const teams = useTeams()
@@ -11,13 +10,31 @@ const navLoading = ref(false)
 const { user } = useUserSession()
 const defaultTeamSlug = useCookie<string>('defaultTeamSlug')
 
+const router = useRouter()
+
 const {
   loading,
   fetchTeams,
   selectTeam,
 } = useTeamsService()
 
-fetchTeams()
+const fetchError = ref(false)
+
+onMounted(async () => {
+  try {
+    await fetchTeams()
+    if (teams.value && teams.value.length === 1) {
+      const [team] = teams.value
+      if (team) {
+        defaultTeamSlug.value = team.slug
+        await router.push(`/${team.slug}`)
+      }
+    }
+  } catch (error) {
+    console.error('Failed to fetch teams:', error)
+    fetchError.value = true
+  }
+})
 
 const active = ref()
 
@@ -65,7 +82,7 @@ useSeoMeta({
               </p>
             </div>
           </div>
-          <div v-if="!loading" class="flex flex-col gap-4 mt-6">
+          <div v-if="!loading && teams && teams.length > 0" class="flex flex-col gap-4 mt-6">
             <div
               v-for="team in teams"
               :key="team.id"
@@ -83,6 +100,18 @@ useSeoMeta({
                 Select
               </UButton>
             </div>
+          </div>
+          <div v-else-if="fetchError" class="flex flex-col items-center gap-4 mt-6">
+            <p class="text-muted text-center">
+              Failed to load teams. Please try again.
+            </p>
+            <UButton variant="soft" label="Retry" @click="fetchTeams()" />
+          </div>
+          <div v-else-if="!loading && (!teams || teams.length === 0)" class="flex flex-col items-center gap-4 mt-6">
+            <p class="text-muted text-center">
+              You don't have any teams yet.
+            </p>
+            <UButton to="/onboarding" variant="soft" label="Create your first team" />
           </div>
           <div v-else class="flex flex-col gap-4 mt-6">
             <div v-for="i in 2" :key="i" class="flex items-center justify-between gap-4 bg-default p-4 rounded-lg dark:shadow-md">

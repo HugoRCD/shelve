@@ -17,7 +17,19 @@ import {
 } from '@vue-email/components'
 
 defineProps({
-  name: {
+  teamName: {
+    type: String,
+    required: true
+  },
+  inviterName: {
+    type: String,
+    required: true
+  },
+  role: {
+    type: String,
+    required: true
+  },
+  inviteUrl: {
     type: String,
     required: true
   }
@@ -40,7 +52,7 @@ defineProps({
         />
       </Head>
       <Preview>
-        Welcome to Shelve, {{ name }}
+        {{ inviterName }} invited you to join {{ teamName }} on Shelve
       </Preview>
       <Body class="m-0 p-0 font-sans" style="background-color: #010101;">
         <Container class="mx-auto my-10 max-w-[480px] px-6">
@@ -61,80 +73,59 @@ defineProps({
               class="text-xl font-medium m-0 mb-3"
               style="color: #ffffff; letter-spacing: -0.3px;"
             >
-              Welcome to Shelve
+              Join {{ teamName }}
             </Heading>
-
-            <Text
-              class="text-sm m-0 mb-2 leading-relaxed"
-              style="color: rgba(255, 255, 255, 0.6);"
-            >
-              Hi <span style="color: #ffffff;">{{ name }}</span>,
-            </Text>
 
             <Text
               class="text-sm m-0 mb-6 leading-relaxed"
               style="color: rgba(255, 255, 255, 0.6);"
             >
-              Your account has been created. You can now start managing your secrets securely with Shelve.
+              <span style="color: #ffffff;">{{ inviterName }}</span> has invited you to collaborate on <span style="color: #ffffff;">{{ teamName }}</span> as a <span style="color: #ffffff;">{{ role }}</span>.
             </Text>
 
             <!-- CTA Button -->
             <Button
-              href="https://app.shelve.cloud"
+              :href="inviteUrl"
               class="inline-block rounded-md px-5 py-2.5 text-sm font-medium no-underline"
               style="background-color: #ffffff; color: #010101;"
             >
-              Open Shelve
+              Accept invitation
             </Button>
           </Section>
 
           <!-- Divider -->
           <Hr style="border: none; border-top: 1px solid rgba(255, 255, 255, 0.1); margin: 32px 0;" />
 
-          <!-- Quick links -->
+          <!-- Link fallback -->
           <Section>
             <Text
-              class="text-xs m-0 mb-3"
+              class="text-xs m-0 mb-2"
               style="color: rgba(255, 255, 255, 0.4);"
             >
-              Get started:
+              Or copy this link:
             </Text>
-            <Text class="text-sm m-0 mb-1">
-              <Link
-                href="https://shelve.cloud/docs/getting-started"
-                class="no-underline"
-                style="color: rgba(255, 255, 255, 0.7);"
-              >
-                Documentation →
-              </Link>
-            </Text>
-            <Text class="text-sm m-0 mb-1">
-              <Link
-                href="https://shelve.cloud/docs/cli"
-                class="no-underline"
-                style="color: rgba(255, 255, 255, 0.7);"
-              >
-                CLI Guide →
-              </Link>
-            </Text>
-            <Text class="text-sm m-0">
-              <Link
-                href="https://github.com/HugoRCD/shelve"
-                class="no-underline"
-                style="color: rgba(255, 255, 255, 0.7);"
-              >
-                GitHub →
-              </Link>
-            </Text>
+            <Link
+              :href="inviteUrl"
+              class="text-xs break-all no-underline"
+              style="color: rgba(255, 255, 255, 0.5);"
+            >
+              {{ inviteUrl }}
+            </Link>
           </Section>
 
           <!-- Footer -->
           <Section class="pt-10 pb-8">
             <Text
+              class="text-xs m-0 mb-1"
+              style="color: rgba(255, 255, 255, 0.3);"
+            >
+              This invitation expires in 7 days.
+            </Text>
+            <Text
               class="text-xs m-0"
               style="color: rgba(255, 255, 255, 0.3);"
             >
-              If you didn't create this account, please ignore this email.
+              If you didn't expect this, you can ignore this email.
             </Text>
           </Section>
         </Container>

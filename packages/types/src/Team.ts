@@ -64,3 +64,38 @@ export type RemoveMemberInput = {
   slug: string;
   memberId: number;
 }
+
+export enum InvitationStatus {
+  PENDING = 'pending',
+  ACCEPTED = 'accepted',
+  DECLINED = 'declined',
+  EXPIRED = 'expired',
+}
+
+export type TeamInvitation = {
+  id: number;
+  email: string;
+  teamId: number;
+  role: TeamRole;
+  token: string;
+  status: InvitationStatus;
+  invitedById: number | null;
+  expiresAt: Date;
+  createdAt: Date;
+  updatedAt: Date;
+  team?: Team;
+  invitedBy?: User;
+}
+
+export type CreateInvitationInput = {
+  teamId: number;
+  slug: string;
+  email: string;
+  role: TeamRole;
+  invitedById: number;
+}
+
+export type CancelInvitationInput = {
+  invitationId: number;
+  slug: string;
+}

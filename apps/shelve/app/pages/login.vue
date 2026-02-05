@@ -13,6 +13,7 @@ const showOtp = ref(false)
 const focus = ref(false)
 const email = ref(route.query.email as string || '')
 const prefilledOtp = ref(route.query.otp as string || '')
+const redirectUrl = computed(() => route.query.redirect as string || '')
 const authMode = ref<'oauth' | 'email'>('oauth')
 
 if (email.value && prefilledOtp.value) {
@@ -109,8 +110,8 @@ useSeoMeta({
             :exit="{ opacity: 0, y: -20 }"
             :transition="{ duration: 0.3 }"
           >
-            <AuthButton v-if="isGithubEnabled" icon="simple-icons:github" label="Sign in with GitHub" provider="github" />
-            <AuthButton v-if="isGoogleEnabled" icon="simple-icons:google" label="Sign in with Google" provider="google" />
+            <AuthButton v-if="isGithubEnabled" icon="simple-icons:github" label="Sign in with GitHub" provider="github" :redirect-url="redirectUrl" />
+            <AuthButton v-if="isGoogleEnabled" icon="simple-icons:google" label="Sign in with Google" provider="google" :redirect-url="redirectUrl" />
             
             <motion.div 
               v-if="isEmailEnabled && (isGithubEnabled || isGoogleEnabled)" 
@@ -173,6 +174,7 @@ useSeoMeta({
               <AuthOtpForm 
                 :email 
                 :prefilled-otp
+                :redirect-url="redirectUrl"
                 @back-to-email="handleBackToEmail"
                 @otp-verified="handleOtpVerified"
               />

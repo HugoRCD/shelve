@@ -3,6 +3,7 @@ import { render } from '@vue-email/render'
 import type { H3Event } from 'h3'
 import welcomeEmail from '~~/server/emails/welcomeEmail.vue'
 import verifyOtp from '~~/server/emails/verifyOtp.vue'
+import teamInvitation from '~~/server/emails/teamInvitation.vue'
 
 export class EmailService {
 
@@ -87,6 +88,54 @@ export class EmailService {
       })
     } catch (error) {
       return `<h1>Welcome to Shelve, ${username}!</h1>`
+    }
+  }
+
+  async sendInvitationEmail(
+    email: string,
+    teamName: string,
+    inviterName: string,
+    role: string,
+    inviteUrl: string
+  ): Promise<void> {
+    if (!this.resend) {
+      console.warn('Resend API key not found, set NUXT_PRIVATE_RESEND_API_KEY in your environment variables to enable email sending')
+      console.log('Development mode: Invitation URL is', inviteUrl)
+      return
+    }
+
+    const template = await this.generateInvitationTemplate(teamName, inviterName, role, inviteUrl)
+
+    try {
+      await this.resend.emails.send({
+        from: this.SENDER,
+        to: [email],
+        subject: `You've been invited to join ${teamName} on Shelve`,
+        html: template,
+      }).then(() => {
+        console.log('Invitation email sent to', email)
+      })
+    } catch (error) {
+      console.log('Error sending invitation email: ', error)
+      throw error
+    }
+  }
+
+  private async generateInvitationTemplate(
+    teamName: string,
+    inviterName: string,
+    role: string,
+    inviteUrl: string
+  ): Promise<string> {
+    try {
+      return await render(teamInvitation, {
+        teamName,
+        inviterName,
+        role,
+        inviteUrl,
+      })
+    } catch (error) {
+      return `<h1>You've been invited to join ${teamName} on Shelve</h1><p><a href="${inviteUrl}">Accept Invitation</a></p>`
     }
   }
 

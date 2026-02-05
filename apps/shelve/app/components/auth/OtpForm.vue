@@ -2,6 +2,7 @@
 const props = defineProps<{
   email: string
   prefilledOtp?: string
+  redirectUrl?: string
 }>()
 
 const emit = defineEmits<{
@@ -9,6 +10,7 @@ const emit = defineEmits<{
   otpVerified: []
 }>()
 
+const router = useRouter()
 const otp = ref<string[]>(props.prefilledOtp ? props.prefilledOtp.split('') : [])
 const loading = ref(false)
 
@@ -20,7 +22,7 @@ onMounted(async () => {
 
 async function handleOtpComplete(value: string[]) {
   if (value.length !== 6) return
-  
+
   loading.value = true
   try {
     await $fetch('/api/auth/otp/verify', {
@@ -30,11 +32,15 @@ async function handleOtpComplete(value: string[]) {
         code: value.join('')
       }
     })
-    
+
     emit('otpVerified')
     toast.success('Login successful!')
-    
-    await reloadNuxtApp()
+
+    if (props.redirectUrl) {
+      await router.push(props.redirectUrl)
+    } else {
+      reloadNuxtApp()
+    }
   } catch (error: any) {
     toast.error(error.data?.message || 'Invalid verification code')
     otp.value = []
@@ -90,7 +96,7 @@ async function resendCode() {
           Didn't receive the code? Resend
         </UButton>
       </div>
-      
+
       <UButton
         variant="outline"
         size="lg"
@@ -103,4 +109,4 @@ async function resendCode() {
       </UButton>
     </div>
   </div>
-</template> 
+</template>

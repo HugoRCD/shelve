@@ -8,7 +8,7 @@ export default defineOAuthGitHubEventHandler({
   },
   async onSuccess(event, { user, tokens }) {
     try {
-      const appUrl= getRequestHost(event)
+      const appUrl = getRequestHost(event)
       const _user = await handleOAuthUser({
         email: user.email,
         avatar: user.avatar_url,
@@ -23,7 +23,23 @@ export default defineOAuthGitHubEventHandler({
         user: userSchema.parse(_user),
         loggedInAt: new Date(),
       })
-      return sendRedirect(event, _user.onboarding ? '/' : '/onboarding')
+
+      const redirectUrl = getCookie(event, 'auth_redirect')
+      if (redirectUrl) {
+        deleteCookie(event, 'auth_redirect')
+        return sendRedirect(event, redirectUrl)
+      }
+
+      if (!_user.onboarding) {
+        return sendRedirect(event, '/onboarding')
+      }
+
+      const defaultTeamSlug = getCookie(event, 'defaultTeamSlug')
+      if (defaultTeamSlug) {
+        return sendRedirect(event, `/${defaultTeamSlug}`)
+      }
+
+      return sendRedirect(event, '/')
     } catch (error) {
       console.error('GitHub OAuth error:', error)
       return sendRedirect(event, '/login?error=github')

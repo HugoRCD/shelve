@@ -13,11 +13,18 @@ const props = defineProps({
     type: String,
     required: true,
   },
+  redirectUrl: {
+    type: String,
+    default: '',
+  },
 })
 
 function open() {
   loading.value = true
-  window.location.href = `/auth/${props.provider}`
+  const url = props.redirectUrl
+    ? `/auth/${props.provider}?redirect=${encodeURIComponent(props.redirectUrl)}`
+    : `/auth/${props.provider}`
+  window.location.href = url
 }
 </script>
 

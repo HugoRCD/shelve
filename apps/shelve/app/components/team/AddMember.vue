@@ -7,7 +7,11 @@ const open = ref(false)
 
 const { members } = defineProps<TeamMemberProps>()
 
-const { addMember } = useTeamsService()
+const emit = defineEmits<{
+  invitationSent: []
+}>()
+
+const { sendInvitation } = useTeamsService()
 
 const { user } = useUserSession()
 const isOwner = computed(() => members.find(member => member.user.id === user.value?.id)?.role === TeamRole.OWNER)
@@ -34,7 +38,7 @@ const newMember = ref({
   role: TeamRole.MEMBER,
 })
 
-const loadingMembers = ref(false)
+const loading = ref(false)
 
 function cleanEmail(email: string) {
   return email
@@ -43,27 +47,35 @@ function cleanEmail(email: string) {
     .trim()
 }
 
-function addMemberFunction(email: string, role: TeamRole) {
-  loadingMembers.value = true
-  toast.promise(addMember(cleanEmail(email), role), {
-    loading: 'Adding member...',
-    success: 'Member added successfully',
-    error: 'Error adding member',
-  })
-  loadingMembers.value = false
-  newMember.value.email = ''
-  newMember.value.role = TeamRole.MEMBER
+async function sendInvitationHandler(email: string, role: TeamRole) {
+  loading.value = true
+  try {
+    await sendInvitation(cleanEmail(email), role)
+    toast.success('Invitation sent successfully')
+    newMember.value.email = ''
+    newMember.value.role = TeamRole.MEMBER
+    open.value = false
+    emit('invitationSent')
+  } catch (error: any) {
+    if (error.data?.message) {
+      toast.error(error.data.message)
+    } else {
+      toast.error('Failed to send invitation')
+    }
+  } finally {
+    loading.value = false
+  }
 }
 </script>
 
 <template>
   <UPopover v-if="isOwner" v-model:open="open" arrow>
-    <CustomButton label="Add member" size="sm" />
+    <CustomButton label="Invite member" size="sm" icon="heroicons:user-plus" />
     <template #content>
       <UCard>
-        <form @submit.prevent="addMemberFunction(newMember.email, newMember.role)">
+        <form @submit.prevent="sendInvitationHandler(newMember.email, newMember.role)">
           <div class="flex flex-col gap-2">
-            <UInput v-model="newMember.email" label="Email" placeholder="Email" />
+            <UInput v-model="newMember.email" type="email" label="Email" placeholder="member@example.com" required />
             <div class="flex gap-2">
               <USelect
                 v-model="newMember.role"
@@ -72,7 +84,7 @@ function addMemberFunction(email: string, role: TeamRole) {
                 value-attribute="value"
                 option-attribute="label"
               />
-              <UButton class="flex-1 justify-center" label="Add member" :loading="loadingMembers" type="submit" />
+              <UButton class="flex-1 justify-center" label="Send invite" :loading icon="heroicons:paper-airplane" type="submit" />
             </div>
           </div>
         </form>

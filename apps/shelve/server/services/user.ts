@@ -2,6 +2,34 @@ import type { H3Event } from 'h3'
 import type { CreateUserInput, Token, User } from '@types'
 import { AuthType, Role } from '@types'
 
+async function syncUserRole(user: User, event: H3Event): Promise<User> {
+  const adminEmails = useRuntimeConfig(event).private.adminEmails?.split(',').map(e => e.trim()) || []
+  const shouldBeAdmin = adminEmails.includes(user.email)
+  const currentlyAdmin = user.role === Role.ADMIN
+
+  if (shouldBeAdmin && !currentlyAdmin) {
+    const [updatedUser] = await db
+      .update(schema.users)
+      .set({ role: Role.ADMIN })
+      .where(eq(schema.users.id, user.id))
+      .returning()
+    console.log(`[Auth] Promoted ${user.email} to admin`)
+    return updatedUser
+  }
+
+  if (!shouldBeAdmin && currentlyAdmin) {
+    const [updatedUser] = await db
+      .update(schema.users)
+      .set({ role: Role.USER })
+      .where(eq(schema.users.id, user.id))
+      .returning()
+    console.log(`[Auth] Demoted ${user.email} from admin`)
+    return updatedUser
+  }
+
+  return user
+}
+
 export async function createUser(input: CreateUserInput, event: H3Event): Promise<User> {
   const adminEmails = useRuntimeConfig(event).private.adminEmails?.split(',') || []
   input.username = await validateUsername(input.username, input.authType)
@@ -27,7 +55,7 @@ export async function handleOAuthUser(input: CreateUserInput, event: H3Event): P
     .where(eq(schema.users.email, input.email))
 
   if (!foundUser) return await createUser(input, event)
-  return foundUser
+  return await syncUserRole(foundUser, event)
 }
 
 export async function handleEmailUser(email: string, event: H3Event): Promise<{ user: User; isNewUser: boolean }> {
@@ -37,7 +65,8 @@ export async function handleEmailUser(email: string, event: H3Event): Promise<{ 
     .where(eq(schema.users.email, email))
 
   if (foundUser) {
-    return { user: foundUser, isNewUser: false }
+    const syncedUser = await syncUserRole(foundUser, event)
+    return { user: syncedUser, isNewUser: false }
   }
 
   const username = await validateUsername(email.split('@')[0], AuthType.EMAIL)

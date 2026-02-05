@@ -29,6 +29,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     private: {
       resendApiKey: '',
+      resendWebhookSecret: '',
       encryptionKey: '',
       adminEmails: '',
       senderEmail: '',

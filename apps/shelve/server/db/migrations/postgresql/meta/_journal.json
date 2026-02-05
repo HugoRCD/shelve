@@ -8,6 +8,20 @@
       "when": 1762098993525,
       "tag": "0000_black_arachne",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1770248855523,
+      "tag": "0001_public_guardsmen",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1770250130977,
+      "tag": "0002_nasty_terrax",
+      "breakpoints": true
     }
   ]
 }
