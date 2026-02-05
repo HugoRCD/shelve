@@ -32,7 +32,7 @@ export async function checkOTPRateLimit(email: string): Promise<{ allowed: boole
     return { allowed: true }
   }
 
-  const { otpAttempts, otpLastRequestAt } = user[0]
+  const [{ otpAttempts, otpLastRequestAt }] = user
 
   if (!otpLastRequestAt || !otpAttempts) {
     return { allowed: true }
