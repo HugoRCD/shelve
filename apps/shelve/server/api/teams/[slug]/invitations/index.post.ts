@@ -26,13 +26,13 @@ export default eventHandler(async (event: H3Event) => {
   const appUrl = config.public.appUrl || 'http://localhost:3000'
   const inviteUrl = `${appUrl}/invite/${invitation.token}`
 
-  await new EmailService(event).sendInvitationEmail(
+  await new EmailService(event).sendInvitationEmail({
     email,
-    team.name,
-    user.username,
+    teamName: team.name,
+    inviterName: user.username,
     role,
-    inviteUrl
-  )
+    inviteUrl,
+  })
 
   return invitation
 })
