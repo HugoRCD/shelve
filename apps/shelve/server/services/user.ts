@@ -48,8 +48,12 @@ export async function getUserByAuthToken(authToken: string, event: H3Event): Pro
   let foundToken: Token | undefined
 
   for (const token of userTokens) {
-    const decryptedToken = await unseal(token.token, encryptionKey)
-    if (decryptedToken === authToken) foundToken = token
+    try {
+      const decryptedToken = await unseal(token.token, encryptionKey)
+      if (decryptedToken === authToken) foundToken = token
+    } catch {
+      // Ignore tokens that can't be decrypted with the current key.
+    }
   }
 
   if (!foundToken) throw createError({ statusCode: 401, statusMessage: 'Invalid token' })

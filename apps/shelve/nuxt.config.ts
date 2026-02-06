@@ -6,7 +6,10 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-01-24',
 
   hub: {
-    db: 'postgresql',
+    db: {
+      dialect: 'postgresql',
+      applyMigrationsDuringBuild: process.env.HUB_APPLY_MIGRATIONS_DURING_BUILD !== 'false',
+    },
   },
 
   ssr: false,
@@ -79,5 +82,5 @@ export default defineNuxtConfig({
     format: ['webp', 'jpeg', 'jpg', 'png', 'svg']
   },
 
-  modules: ['@nuxt/ui', '@nuxthub/core', '@onmax/nuxt-better-auth', 'botid/nuxt'],
+  modules: ['@nuxt/ui', '@nuxthub/core', '@onmax/nuxt-better-auth', './modules/hub-schema-fix', 'botid/nuxt'],
 })

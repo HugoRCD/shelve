@@ -187,6 +187,9 @@ importers:
       '@nuxt/devtools':
         specifier: ^3.1.1
         version: 3.1.1(vite@7.3.1(@types/node@25.0.10)(jiti@2.6.1)(lightningcss@1.31.1)(terser@5.46.0)(yaml@2.8.2))(vue@3.5.27(typescript@5.9.3))
+      '@playwright/test':
+        specifier: ^1.50.0
+        version: 1.58.1
       '@types/jsonwebtoken':
         specifier: ^9.0.10
         version: 9.0.10
@@ -2194,6 +2197,11 @@ packages:
   '@pkgjs/parseargs@0.11.0':
     resolution: {integrity: sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==}
     engines: {node: '>=14'}
+
+  '@playwright/test@1.58.1':
+    resolution: {integrity: sha512-6LdVIUERWxQMmUSSQi0I53GgCBYgM2RpGngCPY7hSeju+VrKjq3lvs7HpJoPbDiY5QM5EYRtRX5fvrinnMAz3w==}
+    engines: {node: '>=18'}
+    hasBin: true
 
   '@polka/url@1.0.0-next.29':
     resolution: {integrity: sha512-wwQAWhWSuHaag8c4q/KN/vCoeOJYshAIvMQwD4GpSb3OiZklFfvAgmj0VCBBImRpuF/aFgIRzllXlVX93Jevww==}
@@ -5478,6 +5486,11 @@ packages:
     resolution: {integrity: sha512-XUBA9XClHbnJWSfBzjkm6RvPsyg3sryZt06BEQoXcF7EK/xpGaQYJgQKDJSUH5SGZ76Y7pFx1QBnXz09rU5Fbw==}
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
 
+  fsevents@2.3.2:
+    resolution: {integrity: sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA==}
+    engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
+    os: [darwin]
+
   fsevents@2.3.3:
     resolution: {integrity: sha512-5xoDfX+fL7faATnagmWPpbFtwh/R77WmMMqqHGS65C3vvB0YHrgF+B1YmZ3441tMj5n63k0212XNoJwzlhffQw==}
     engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
@@ -7233,6 +7246,16 @@ packages:
 
   playwright-core@1.58.0:
     resolution: {integrity: sha512-aaoB1RWrdNi3//rOeKuMiS65UCcgOVljU46At6eFcOFPFHWtd2weHRRow6z/n+Lec0Lvu0k9ZPKJSjPugikirw==}
+    engines: {node: '>=18'}
+    hasBin: true
+
+  playwright-core@1.58.1:
+    resolution: {integrity: sha512-bcWzOaTxcW+VOOGBCQgnaKToLJ65d6AqfLVKEWvexyS3AS6rbXl+xdpYRMGSRBClPvyj44njOWoxjNdL/H9UNg==}
+    engines: {node: '>=18'}
+    hasBin: true
+
+  playwright@1.58.1:
+    resolution: {integrity: sha512-+2uTZHxSCcxjvGc5C891LrS1/NlxglGxzrC4seZiVjcYVQfUa87wBL6rTDqzGjuoWNjnBzRqKmF6zRYGMvQUaQ==}
     engines: {node: '>=18'}
     hasBin: true
 
@@ -10872,7 +10895,7 @@ snapshots:
       '@tiptap/extension-code': 3.17.0(@tiptap/core@3.17.0(@tiptap/pm@3.17.0))
       '@tiptap/extension-collaboration': 3.17.0(@tiptap/core@3.17.0(@tiptap/pm@3.17.0))(@tiptap/pm@3.17.0)(@tiptap/y-tiptap@3.0.1(prosemirror-model@1.25.4)(prosemirror-state@1.4.4)(prosemirror-view@1.41.5)(y-protocols@1.0.7(yjs@13.6.29))(yjs@13.6.29))(yjs@13.6.29)
       '@tiptap/extension-drag-handle': 3.17.0(@tiptap/core@3.17.0(@tiptap/pm@3.17.0))(@tiptap/extension-collaboration@3.17.0(@tiptap/core@3.17.0(@tiptap/pm@3.17.0))(@tiptap/pm@3.17.0)(@tiptap/y-tiptap@3.0.1(prosemirror-model@1.25.4)(prosemirror-state@1.4.4)(prosemirror-view@1.41.5)(y-protocols@1.0.7(yjs@13.6.29))(yjs@13.6.29))(yjs@13.6.29))(@tiptap/extension-node-range@3.17.0(@tiptap/core@3.17.0(@tiptap/pm@3.17.0))(@tiptap/pm@3.17.0))(@tiptap/pm@3.17.0)(@tiptap/y-tiptap@3.0.1(prosemirror-model@1.25.4)(prosemirror-state@1.4.4)(prosemirror-view@1.41.5)(y-protocols@1.0.7(yjs@13.6.29))(yjs@13.6.29))
-      '@tiptap/extension-drag-handle-vue-3': 3.17.0(@tiptap/extension-drag-handle@3.17.0(@tiptap/core@3.17.0(@tiptap/pm@3.17.0))(@tiptap/extension-collaboration@3.17.0(@tiptap/core@3.17.0(@tiptap/pm@3.17.0))(@tiptap/pm@3.17.0))(@tiptap/extension-node-range@3.17.0(@tiptap/core@3.17.0(@tiptap/pm@3.17.0))(@tiptap/pm@3.17.0))(@tiptap/pm@3.17.0))(@tiptap/pm@3.17.0)(@tiptap/vue-3@3.17.0(@floating-ui/dom@1.7.4)(@tiptap/core@3.17.0(@tiptap/pm@3.17.0))(@tiptap/pm@3.17.0)(vue@3.5.27(typescript@5.9.3)))(vue@3.5.27(typescript@5.9.3))
+      '@tiptap/extension-drag-handle-vue-3': 3.17.0(@tiptap/extension-drag-handle@3.17.0(@tiptap/core@3.17.0(@tiptap/pm@3.17.0))(@tiptap/extension-collaboration@3.17.0(@tiptap/core@3.17.0(@tiptap/pm@3.17.0))(@tiptap/pm@3.17.0)(@tiptap/y-tiptap@3.0.1(prosemirror-model@1.25.4)(prosemirror-state@1.4.4)(prosemirror-view@1.41.5)(y-protocols@1.0.7(yjs@13.6.29))(yjs@13.6.29))(yjs@13.6.29))(@tiptap/extension-node-range@3.17.0(@tiptap/core@3.17.0(@tiptap/pm@3.17.0))(@tiptap/pm@3.17.0))(@tiptap/pm@3.17.0)(@tiptap/y-tiptap@3.0.1(prosemirror-model@1.25.4)(prosemirror-state@1.4.4)(prosemirror-view@1.41.5)(y-protocols@1.0.7(yjs@13.6.29))(yjs@13.6.29)))(@tiptap/pm@3.17.0)(@tiptap/vue-3@3.17.0(@floating-ui/dom@1.7.4)(@tiptap/core@3.17.0(@tiptap/pm@3.17.0))(@tiptap/pm@3.17.0)(vue@3.5.27(typescript@5.9.3)))(vue@3.5.27(typescript@5.9.3))
       '@tiptap/extension-floating-menu': 3.17.0(@floating-ui/dom@1.7.4)(@tiptap/core@3.17.0(@tiptap/pm@3.17.0))(@tiptap/pm@3.17.0)
       '@tiptap/extension-horizontal-rule': 3.17.0(@tiptap/core@3.17.0(@tiptap/pm@3.17.0))(@tiptap/pm@3.17.0)
       '@tiptap/extension-image': 3.17.0(@tiptap/core@3.17.0(@tiptap/pm@3.17.0))
@@ -11596,6 +11619,10 @@ snapshots:
   '@pkgjs/parseargs@0.11.0':
     optional: true
 
+  '@playwright/test@1.58.1':
+    dependencies:
+      playwright: 1.58.1
+
   '@polka/url@1.0.0-next.29': {}
 
   '@poppinss/colors@4.1.6':
@@ -12240,7 +12267,7 @@ snapshots:
     dependencies:
       '@tiptap/core': 3.17.0(@tiptap/pm@3.17.0)
 
-  '@tiptap/extension-drag-handle-vue-3@3.17.0(@tiptap/extension-drag-handle@3.17.0(@tiptap/core@3.17.0(@tiptap/pm@3.17.0))(@tiptap/extension-collaboration@3.17.0(@tiptap/core@3.17.0(@tiptap/pm@3.17.0))(@tiptap/pm@3.17.0))(@tiptap/extension-node-range@3.17.0(@tiptap/core@3.17.0(@tiptap/pm@3.17.0))(@tiptap/pm@3.17.0))(@tiptap/pm@3.17.0))(@tiptap/pm@3.17.0)(@tiptap/vue-3@3.17.0(@floating-ui/dom@1.7.4)(@tiptap/core@3.17.0(@tiptap/pm@3.17.0))(@tiptap/pm@3.17.0)(vue@3.5.27(typescript@5.9.3)))(vue@3.5.27(typescript@5.9.3))':
+  '@tiptap/extension-drag-handle-vue-3@3.17.0(@tiptap/extension-drag-handle@3.17.0(@tiptap/core@3.17.0(@tiptap/pm@3.17.0))(@tiptap/extension-collaboration@3.17.0(@tiptap/core@3.17.0(@tiptap/pm@3.17.0))(@tiptap/pm@3.17.0)(@tiptap/y-tiptap@3.0.1(prosemirror-model@1.25.4)(prosemirror-state@1.4.4)(prosemirror-view@1.41.5)(y-protocols@1.0.7(yjs@13.6.29))(yjs@13.6.29))(yjs@13.6.29))(@tiptap/extension-node-range@3.17.0(@tiptap/core@3.17.0(@tiptap/pm@3.17.0))(@tiptap/pm@3.17.0))(@tiptap/pm@3.17.0)(@tiptap/y-tiptap@3.0.1(prosemirror-model@1.25.4)(prosemirror-state@1.4.4)(prosemirror-view@1.41.5)(y-protocols@1.0.7(yjs@13.6.29))(yjs@13.6.29)))(@tiptap/pm@3.17.0)(@tiptap/vue-3@3.17.0(@floating-ui/dom@1.7.4)(@tiptap/core@3.17.0(@tiptap/pm@3.17.0))(@tiptap/pm@3.17.0)(vue@3.5.27(typescript@5.9.3)))(vue@3.5.27(typescript@5.9.3))':
     dependencies:
       '@tiptap/extension-drag-handle': 3.17.0(@tiptap/core@3.17.0(@tiptap/pm@3.17.0))(@tiptap/extension-collaboration@3.17.0(@tiptap/core@3.17.0(@tiptap/pm@3.17.0))(@tiptap/pm@3.17.0)(@tiptap/y-tiptap@3.0.1(prosemirror-model@1.25.4)(prosemirror-state@1.4.4)(prosemirror-view@1.41.5)(y-protocols@1.0.7(yjs@13.6.29))(yjs@13.6.29))(yjs@13.6.29))(@tiptap/extension-node-range@3.17.0(@tiptap/core@3.17.0(@tiptap/pm@3.17.0))(@tiptap/pm@3.17.0))(@tiptap/pm@3.17.0)(@tiptap/y-tiptap@3.0.1(prosemirror-model@1.25.4)(prosemirror-state@1.4.4)(prosemirror-view@1.41.5)(y-protocols@1.0.7(yjs@13.6.29))(yjs@13.6.29))
       '@tiptap/pm': 3.17.0
@@ -14684,6 +14711,9 @@ snapshots:
     dependencies:
       minipass: 7.1.2
 
+  fsevents@2.3.2:
+    optional: true
+
   fsevents@2.3.3:
     optional: true
 
@@ -17089,6 +17119,14 @@ snapshots:
       pathe: 2.0.3
 
   playwright-core@1.58.0: {}
+
+  playwright-core@1.58.1: {}
+
+  playwright@1.58.1:
+    dependencies:
+      playwright-core: 1.58.1
+    optionalDependencies:
+      fsevents: 2.3.2
 
   pnpm-workspace-yaml@0.3.1:
     dependencies:

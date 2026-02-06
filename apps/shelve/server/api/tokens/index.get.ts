@@ -10,8 +10,17 @@ export default defineEventHandler(async (event) => {
     orderBy: (tokens, { desc }) => [desc(tokens.createdAt)]
   })
 
-  return Promise.all(tokens.map(async (token): Promise<Token> => ({
-    ...token,
-    token: await unseal(token.token, encryptionKey) as string
-  })))
+  return Promise.all(tokens.map(async (token): Promise<Token> => {
+    try {
+      return {
+        ...token,
+        token: await unseal(token.token, encryptionKey) as string
+      }
+    } catch {
+      return {
+        ...token,
+        token: ''
+      }
+    }
+  }))
 })

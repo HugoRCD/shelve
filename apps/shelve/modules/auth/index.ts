@@ -102,7 +102,7 @@ export default defineNuxtModule({
 
       const isGithubEnabled = !!(env.NUXT_OAUTH_GITHUB_CLIENT_ID && env.NUXT_OAUTH_GITHUB_CLIENT_SECRET)
       const isGoogleEnabled = !!(env.NUXT_OAUTH_GOOGLE_CLIENT_ID && env.NUXT_OAUTH_GOOGLE_CLIENT_SECRET)
-      const isEmailEnabled = !!env.NUXT_PRIVATE_RESEND_API_KEY
+      const isEmailEnabled = !!env.NUXT_PRIVATE_RESEND_API_KEY || process.env.NUXT_ENABLE_EMAIL_AUTH === 'true'
 
       nuxt.options.appConfig.auth = {
         isGoogleEnabled,
