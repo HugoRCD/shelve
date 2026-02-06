@@ -15,3 +15,4 @@ More details (progressive disclosure):
 - [Build env and outputs](docs/agents/build-env.md)
 - [Reference docs](docs/agents/docs-links.md)
 - [AI collaboration rules](docs/agents/ai-workflow.md)
+- [Reusable AI skills](docs/skills/README.md)
