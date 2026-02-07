@@ -1,4 +1,5 @@
 import { z } from 'zod'
+
 const updateUserSchema = z.object({
   name: z.string().min(1).max(50).trim().optional(),
   image: z.string().trim().optional(),

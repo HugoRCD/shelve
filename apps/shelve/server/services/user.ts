@@ -7,6 +7,8 @@ const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-
 export async function validateUsername(username: string, _authType?: AuthType): Promise<string> {
   const trimmed = username.trim()
   if (!trimmed) throw createError({ statusCode: 400, statusMessage: 'Invalid username' })
+  // Keep this async so it can later include uniqueness checks without changing call sites.
+  await Promise.resolve()
   return trimmed
 }
 
@@ -14,7 +16,7 @@ function parseTokenId(authToken: string): { userId?: string; legacyId?: number }
   if (!authToken.startsWith(TOKEN_PREFIX)) return {}
   const parts = authToken.split('_')
   if (parts.length < 3) return {}
-  const idPart = parts[1]
+  const [, idPart] = parts
   if (!idPart) return {}
 
   if (UUID_REGEX.test(idPart)) return { userId: idPart }

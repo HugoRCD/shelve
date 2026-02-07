@@ -22,8 +22,8 @@ export default defineConfig({
     viewport: { width: 1280, height: 720 },
     extraHTTPHeaders: vercelBypass
       ? {
-          'x-vercel-protection-bypass': vercelBypass,
-        }
+        'x-vercel-protection-bypass': vercelBypass,
+      }
       : undefined,
     trace: 'retain-on-failure',
     screenshot: 'only-on-failure',

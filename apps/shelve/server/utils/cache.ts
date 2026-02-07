@@ -24,7 +24,7 @@ export const cacheEntities = {
             columns: { userId: true }
           }
         },
-          columns: { id: true, slug: true }
+        columns: { id: true, slug: true }
       })
       if (!team) return []
       return team.members.map((member: { userId: string }) => ({

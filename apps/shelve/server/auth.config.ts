@@ -1,6 +1,6 @@
 import { defineServerAuth } from '@onmax/nuxt-better-auth/config'
 import { admin, emailOTP } from 'better-auth/plugins'
-import { AuthType, Role } from '../../../packages/types'
+import { AuthType, Role } from '@types'
 import { validateUsername } from './services/user'
 
 const DEFAULT_AVATAR = 'https://i.imgur.com/6VBx3io.png'
@@ -48,10 +48,10 @@ export default defineServerAuth(({ runtimeConfig, db }) => ({
   plugins: [
     emailOTP({
       sendVerificationOTP: async ({ email, otp }, ctx) => {
-        const { EmailService } = await import('./services/resend')
+        const { EmailService: emailServiceCtor } = await import('./services/resend')
         const baseUrl = ctx?.context?.baseURL || runtimeConfig.public?.siteUrl || ''
         const redirectUrl = buildLoginOtpUrl(baseUrl, email, otp)
-        await new EmailService().sendOtp(email, otp, redirectUrl)
+        await new emailServiceCtor().sendOtp(email, otp, redirectUrl)
       },
     }),
     admin(),
@@ -85,9 +85,9 @@ export default defineServerAuth(({ runtimeConfig, db }) => ({
           }
         },
         after: async (user) => {
-          const { EmailService } = await import('./services/resend')
+          const { EmailService: emailServiceCtor } = await import('./services/resend')
           const appUrl = runtimeConfig.public?.siteUrl || ''
-          await new EmailService().sendWelcomeEmail(user.email, user.name || user.email, appUrl)
+          await new emailServiceCtor().sendWelcomeEmail(user.email, user.name || user.email, appUrl)
         },
       },
       update: {

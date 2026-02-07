@@ -242,7 +242,7 @@ async function resolveTeamSlug(page: Page): Promise<string> {
   }
 
   const teams = await response.json()
-  const team = teams[0]
+  const [team] = teams as Array<{ slug?: string }>
   if (!team?.slug) {
     throw new Error('No teams found; set E2E_TEAM_SLUG or complete onboarding')
   }

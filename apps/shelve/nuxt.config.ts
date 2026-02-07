@@ -1,5 +1,5 @@
-import vue from '@vitejs/plugin-vue'
 import { randomBytes } from 'node:crypto'
+import vue from '@vitejs/plugin-vue'
 
 const fallbackBetterAuthSecret =
   (process.env.GITHUB_ACTIONS || process.env.VERCEL_ENV === 'preview')

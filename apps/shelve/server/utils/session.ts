@@ -1,6 +1,6 @@
 import type { H3Event } from 'h3'
-import type { AuthSession } from '#nuxt-better-auth'
 import type { User } from '@types'
+import type { AuthSession } from '#nuxt-better-auth'
 
 export type AppSession = {
   user: User

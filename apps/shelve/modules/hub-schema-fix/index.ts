@@ -13,7 +13,7 @@ export default defineNuxtModule({
     const { resolve } = createResolver(import.meta.url)
 
     nuxt.hook('hub:db:schema:extend' as any, (ctx: HubSchemaExtendContext) => {
-      const dialect = ctx.dialect
+      const { dialect } = ctx
       if (dialect !== 'postgresql') return
 
       // NuxtHub's production schema generator may emit `export * from "<abs>.ts"`,

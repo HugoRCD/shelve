@@ -4,9 +4,7 @@ export default defineNuxtPlugin({
   enforce: 'pre',
   setup() {
     initBotId({
-      protect: [
-        { path: '/api/auth/*', method: 'POST' },
-      ],
+      protect: [{ path: '/api/auth/*', method: 'POST' },],
     })
   },
 })
