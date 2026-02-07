@@ -1,5 +1,5 @@
 import type { H3Event } from 'h3'
-import type { AuthType, Token, User } from '../../../packages/types'
+import type { AuthType, Token, User } from '@types'
 
 const LEGACY_ID_REGEX = /^\d+$/
 const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
@@ -15,6 +15,7 @@ function parseTokenId(authToken: string): { userId?: string; legacyId?: number }
   const parts = authToken.split('_')
   if (parts.length < 3) return {}
   const idPart = parts[1]
+  if (!idPart) return {}
 
   if (UUID_REGEX.test(idPart)) return { userId: idPart }
   if (LEGACY_ID_REGEX.test(idPart)) return { legacyId: Number(idPart) }

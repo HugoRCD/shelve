@@ -147,7 +147,6 @@ async function checkConfig(path: string | null, isRoot = false): Promise<ShelveC
  * @returns Promise<ShelveConfig> - The base configuration object
  */
 async function getDefaultConfig(): Promise<ShelveConfig> {
-  // @ts-expect-error we don't want to specify 'cwd' option
   await setupDotenv({})
   const { name } = await readPackageJSON().catch(() => ({ name: undefined }))
   const conf = readUser('.shelve')

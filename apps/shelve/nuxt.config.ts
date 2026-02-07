@@ -1,4 +1,10 @@
 import vue from '@vitejs/plugin-vue'
+import { randomBytes } from 'node:crypto'
+
+const fallbackBetterAuthSecret =
+  (process.env.GITHUB_ACTIONS || process.env.VERCEL_ENV === 'preview')
+    ? randomBytes(32).toString('hex')
+    : ''
 
 export default defineNuxtConfig({
   extends: '../base',
@@ -8,7 +14,7 @@ export default defineNuxtConfig({
   hub: {
     db: {
       dialect: 'postgresql',
-      applyMigrationsDuringBuild: process.env.HUB_APPLY_MIGRATIONS_DURING_BUILD !== 'false',
+      applyMigrationsDuringBuild: process.env.HUB_APPLY_MIGRATIONS_DURING_BUILD === 'true',
     },
   },
 
@@ -19,7 +25,6 @@ export default defineNuxtConfig({
       openAPI: true
     },
     rollupConfig: {
-      // @ts-expect-error - this is not typed
       plugins: [vue()]
     },
     imports: {
@@ -30,6 +35,7 @@ export default defineNuxtConfig({
   css: ['~/assets/css/index.css'],
 
   runtimeConfig: {
+    betterAuthSecret: process.env.BETTER_AUTH_SECRET || process.env.NUXT_BETTER_AUTH_SECRET || fallbackBetterAuthSecret,
     public: {
       siteUrl: '',
     },

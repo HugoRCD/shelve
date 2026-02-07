@@ -10,7 +10,14 @@ export type AppSession = {
 
 export async function getAppSession(event: H3Event): Promise<AppSession | null> {
   const session = await getUserSession(event)
-  if (session) return { ...session, source: 'session' }
+  if (session) {
+    // Better Auth session types don't include Shelve-specific user fields (role, onboarding, ...).
+    const user = await db.query.user.findFirst({
+      where: eq(schema.user.id, session.user.id),
+    })
+    if (!user) return null
+    return { user: user as unknown as User, session: session.session, source: 'session' }
+  }
 
   const authToken = getCookie(event, 'authToken')
   if (!authToken) return null

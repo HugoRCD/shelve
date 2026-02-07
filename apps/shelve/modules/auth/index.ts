@@ -4,7 +4,7 @@ import { z } from 'zod'
 // eslint-disable-next-line
 function validateOAuthPair(
   data: Record<string, any>,
-  ctx: any,
+  ctx: z.RefinementCtx,
   clientIdKey: string,
   clientSecretKey: string,
   providerName: string,
@@ -15,7 +15,7 @@ function validateOAuthPair(
   if (hasId !== hasSecret) {
     const missingKey = hasId ? clientSecretKey : clientIdKey
     const existingKey = hasId ? clientIdKey : clientSecretKey
-    ctx.issues.push({
+    ctx.addIssue({
       code: 'custom',
       message: `${missingKey} is required when ${existingKey} is set for ${providerName} OAuth.`,
       path: [missingKey],
@@ -67,7 +67,7 @@ export const envSchema = z.object({
   validateOAuthPair(data, ctx, 'NUXT_OAUTH_GITHUB_CLIENT_ID', 'NUXT_OAUTH_GITHUB_CLIENT_SECRET', 'GitHub')
   validateOAuthPair(data, ctx, 'NUXT_OAUTH_GOOGLE_CLIENT_ID', 'NUXT_OAUTH_GOOGLE_CLIENT_SECRET', 'Google')
   if (!data.BETTER_AUTH_SECRET && !data.NUXT_BETTER_AUTH_SECRET) {
-    ctx.issues.push({
+    ctx.addIssue({
       code: 'custom',
       message: 'BETTER_AUTH_SECRET is required for Better Auth.',
       path: ['BETTER_AUTH_SECRET'],
@@ -96,8 +96,9 @@ export default defineNuxtModule({
       const isPrepare = !!(nuxt.options as any)._prepare || process.env.npm_lifecycle_event === 'postinstall'
       const skipValidation = process.env.SKIP_ENV_VALIDATION
       const isNonVercelCI = process.env.CI && !process.env.VERCEL
-      if (isPrepare || isNonVercelCI || skipValidation) {
-        console.log('Skipping environment variable validation (prepare/postinstall, CI, or SKIP_ENV_VALIDATION).')
+      const isVercelPreview = !!process.env.VERCEL && process.env.VERCEL_ENV === 'preview'
+      if (isPrepare || isNonVercelCI || skipValidation || isVercelPreview) {
+        console.log('Skipping environment variable validation (prepare/postinstall, CI, Vercel preview, or SKIP_ENV_VALIDATION).')
         return
       }
       const env = envSchema.parse(process.env)

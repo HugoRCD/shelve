@@ -79,7 +79,7 @@ export type TeamInvitation = {
   role: TeamRole;
   token: string;
   status: InvitationStatus;
-  invitedById: number | null;
+  invitedById: string | null;
   expiresAt: Date;
   createdAt: Date;
   updatedAt: Date;
@@ -92,7 +92,7 @@ export type CreateInvitationInput = {
   slug: string;
   email: string;
   role: TeamRole;
-  invitedById: number;
+  invitedById: string;
 }
 
 export type CancelInvitationInput = {

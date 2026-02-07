@@ -1,5 +1,10 @@
 import { defineNuxtModule, createResolver } from 'nuxt/kit'
 
+type HubSchemaExtendContext = {
+  dialect: string
+  paths: string[]
+}
+
 export default defineNuxtModule({
   meta: {
     name: '@shelve/hub-schema-fix',
@@ -7,7 +12,7 @@ export default defineNuxtModule({
   setup(_options, nuxt) {
     const { resolve } = createResolver(import.meta.url)
 
-    nuxt.hook('hub:db:schema:extend', (ctx) => {
+    nuxt.hook('hub:db:schema:extend' as any, (ctx: HubSchemaExtendContext) => {
       const dialect = ctx.dialect
       if (dialect !== 'postgresql') return
 
