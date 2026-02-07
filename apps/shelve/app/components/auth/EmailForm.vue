@@ -17,13 +17,14 @@ const state = reactive<Partial<Schema>>({
 })
 
 const loading = ref(false)
+const { client } = useUserSession()
 
 async function onSubmit(event: FormSubmitEvent<Schema>) {
   loading.value = true
   try {
-    await $fetch('/api/auth/otp/send', {
-      method: 'POST',
-      body: { email: event.data.email }
+    await client.emailOtp.sendVerificationOtp({
+      email: event.data.email,
+      type: 'sign-in'
     })
 
     emit('emailSubmitted', event.data.email)

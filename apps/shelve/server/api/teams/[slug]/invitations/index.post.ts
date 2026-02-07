@@ -29,7 +29,7 @@ export default eventHandler(async (event: H3Event) => {
   await new EmailService(event).sendInvitationEmail({
     email,
     teamName: team.name,
-    inviterName: user.username,
+    inviterName: user.name,
     role,
     inviteUrl,
   })

@@ -14,8 +14,11 @@
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "typecheck": "tsc --noEmit",
-    "db:generate": "nuxt db generate",
-    "db:migrate": "nuxt db migrate"
+    "test:e2e": "playwright test",
+    "db:check:pre": "node scripts/migration-checks.mjs --mode=pre",
+    "db:check:post": "node scripts/migration-checks.mjs --mode=post",
+    "db:generate": "SKIP_ENV_VALIDATION=1 nuxt db generate",
+    "db:migrate": "SKIP_ENV_VALIDATION=1 nuxt db migrate"
   },
   "dependencies": {
     "@vue-email/components": "^0.0.21",
@@ -25,7 +28,8 @@
     "drizzle-orm": "^0.45.1",
     "jsonwebtoken": "^9.0.3",
     "libsodium-wrappers": "^0.8.2",
-    "nuxt-auth-utils": "^0.5.28",
+    "@onmax/nuxt-better-auth": "0.0.2-alpha.19",
+    "better-auth": "^1.4.7",
     "nuxt-build-cache": "^0.1.1",
     "postgres": "^3.4.8",
     "@electric-sql/pglite": "^0.3.15",
@@ -36,6 +40,7 @@
   "devDependencies": {
     "@nuxt/devtools": "^3.1.1",
     "@types/jsonwebtoken": "^9.0.10",
-    "@types/libsodium-wrappers": "^0.8.2"
+    "@types/libsodium-wrappers": "^0.8.2",
+    "@playwright/test": "^1.50.0"
   }
 }

@@ -1,17 +1,11 @@
 export default defineEventHandler(async (event) => {
-  const { user } = await requireUserSession(event)
+  const { user } = await requireAppSession(event)
 
-  const [updatedUser] = await db.update(schema.users)
+  await db.update(schema.user)
     .set({
       cliInstalled: true,
     })
-    .where(eq(schema.users.id, user.id))
-    .returning()
-
-  await setUserSession(event, {
-    user: updatedUser,
-    loggedInAt: new Date(),
-  })
+    .where(eq(schema.user.id, user.id))
 
   return {
     status: 200,

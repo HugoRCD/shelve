@@ -4,7 +4,7 @@ import { z } from 'zod'
 // eslint-disable-next-line
 function validateOAuthPair(
   data: Record<string, any>,
-  ctx: any,
+  ctx: z.RefinementCtx,
   clientIdKey: string,
   clientSecretKey: string,
   providerName: string,
@@ -15,7 +15,7 @@ function validateOAuthPair(
   if (hasId !== hasSecret) {
     const missingKey = hasId ? clientSecretKey : clientIdKey
     const existingKey = hasId ? clientIdKey : clientSecretKey
-    ctx.issues.push({
+    ctx.addIssue({
       code: 'custom',
       message: `${missingKey} is required when ${existingKey} is set for ${providerName} OAuth.`,
       path: [missingKey],
@@ -35,7 +35,8 @@ const commaSeparatedStringToArray = z.preprocess(
 
 const requiredCoreSchema = z.object({
   DATABASE_URL: z.url().startsWith('postgres', { error: 'Must be a valid PostgreSQL URL.' }).optional(),
-  NUXT_SESSION_PASSWORD: z.string().min(32, { error: 'Session password must be at least 32 characters long.' }),
+  BETTER_AUTH_SECRET: z.string().min(32, { error: 'Better Auth secret must be at least 32 characters long.' }).optional(),
+  NUXT_BETTER_AUTH_SECRET: z.string().min(32, { error: 'Better Auth secret must be at least 32 characters long.' }).optional(),
   NUXT_PRIVATE_ENCRYPTION_KEY: z.string().min(32, { error: 'Encryption key must be at least 32 characters long.' }),
 })
 
@@ -65,6 +66,13 @@ export const envSchema = z.object({
 }).superRefine((data, ctx) => {
   validateOAuthPair(data, ctx, 'NUXT_OAUTH_GITHUB_CLIENT_ID', 'NUXT_OAUTH_GITHUB_CLIENT_SECRET', 'GitHub')
   validateOAuthPair(data, ctx, 'NUXT_OAUTH_GOOGLE_CLIENT_ID', 'NUXT_OAUTH_GOOGLE_CLIENT_SECRET', 'Google')
+  if (!data.BETTER_AUTH_SECRET && !data.NUXT_BETTER_AUTH_SECRET) {
+    ctx.addIssue({
+      code: 'custom',
+      message: 'BETTER_AUTH_SECRET is required for Better Auth.',
+      path: ['BETTER_AUTH_SECRET'],
+    })
+  }
 })
 
 function handleValidationError(error: z.ZodError) {
@@ -75,7 +83,7 @@ function handleValidationError(error: z.ZodError) {
     console.error(`  - ${fieldPath}: ${issue.message}`)
   }
 
-  process.exit(1)
+  throw new Error('Invalid environment variables.')
 }
 
 export default defineNuxtModule({
@@ -84,17 +92,20 @@ export default defineNuxtModule({
   },
   setup(options, nuxt) {
     try {
+      // `nuxt prepare` runs during `postinstall`; don't block installs on missing runtime env.
+      const isPrepare = !!(nuxt.options as any)._prepare || process.env.npm_lifecycle_event === 'postinstall'
       const skipValidation = process.env.SKIP_ENV_VALIDATION
       const isNonVercelCI = process.env.CI && !process.env.VERCEL
-      if (isNonVercelCI || skipValidation) {
-        console.log('Non-Vercel CI environment detected or SKIP_ENV_VALIDATION is set. Skipping environment variable validation.')
+      const isVercelPreview = !!process.env.VERCEL && process.env.VERCEL_ENV === 'preview'
+      if (isPrepare || isNonVercelCI || skipValidation || isVercelPreview) {
+        console.log('Skipping environment variable validation (prepare/postinstall, CI, Vercel preview, or SKIP_ENV_VALIDATION).')
         return
       }
       const env = envSchema.parse(process.env)
 
       const isGithubEnabled = !!(env.NUXT_OAUTH_GITHUB_CLIENT_ID && env.NUXT_OAUTH_GITHUB_CLIENT_SECRET)
       const isGoogleEnabled = !!(env.NUXT_OAUTH_GOOGLE_CLIENT_ID && env.NUXT_OAUTH_GOOGLE_CLIENT_SECRET)
-      const isEmailEnabled = !!env.NUXT_PRIVATE_RESEND_API_KEY
+      const isEmailEnabled = !!env.NUXT_PRIVATE_RESEND_API_KEY || process.env.NUXT_ENABLE_EMAIL_AUTH === 'true'
 
       nuxt.options.appConfig.auth = {
         isGoogleEnabled,

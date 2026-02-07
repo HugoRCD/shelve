@@ -1,10 +1,10 @@
-import { idParamsSchema } from '~~/server/db/zod'
+import { userIdParamsSchema } from '~~/server/db/zod'
 
 export default eventHandler(async (event) => {
   const { user } = await requireAdmin(event)
-  const { id } = await getValidatedRouterParams(event, idParamsSchema.parse)
+  const { id } = await getValidatedRouterParams(event, userIdParamsSchema.parse)
   if (user.id === id) throw createError({ statusCode: 403, statusMessage: 'You can\'t delete your own account' })
-  await db.delete(schema.users).where(eq(schema.users.id, id))
+  await db.delete(schema.user).where(eq(schema.user.id, id))
   const teams = await new TeamsService().getTeams(user.id)
   if (teams?.length) {
     for (const { id, slug } of teams) {

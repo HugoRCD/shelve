@@ -120,7 +120,7 @@ export class InvitationsService {
     })
   }
 
-  async acceptInvitation(token: string, userId: number, userEmail: string): Promise<Member> {
+  async acceptInvitation(token: string, userId: string, userEmail: string): Promise<Member> {
     const invitation = await this.getInvitationByToken(token)
 
     if (invitation.status !== InvitationStatus.PENDING) {
@@ -223,8 +223,8 @@ export class InvitationsService {
   }
 
   private async isUserAlreadyMember(teamId: number, email: string): Promise<Member | undefined> {
-    const user = await db.query.users.findFirst({
-      where: eq(schema.users.email, email)
+    const user = await db.query.user.findFirst({
+      where: eq(schema.user.email, email)
     })
 
     if (!user) return undefined

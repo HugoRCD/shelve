@@ -36,7 +36,7 @@ const calculateStats = (data: {
 
 export const getStats = async (): Promise<Stats> => {
   const [users, variables, teams, projects, teamStats] = await Promise.all([
-    db.query.users.findMany(),
+    db.query.user.findMany(),
     db.query.variables.findMany(),
     db.query.teams.findMany(),
     db.query.projects.findMany(),

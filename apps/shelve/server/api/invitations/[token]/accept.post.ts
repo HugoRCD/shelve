@@ -6,7 +6,7 @@ export default eventHandler(async (event: H3Event) => {
     throw createError({ statusCode: 400, message: 'Token is required' })
   }
 
-  const { user } = await requireUserSession(event)
+  const { user } = await requireAppSession(event)
 
   const invitation = await new InvitationsService().getInvitationByToken(token)
 
@@ -14,15 +14,9 @@ export default eventHandler(async (event: H3Event) => {
 
   // Mark onboarding as complete if not already done
   if (!user.onboarding) {
-    const [updatedUser] = await db.update(schema.users)
+    await db.update(schema.user)
       .set({ onboarding: true })
-      .where(eq(schema.users.id, user.id))
-      .returning()
-
-    await setUserSession(event, {
-      user: updatedUser,
-      loggedInAt: new Date(),
-    })
+      .where(eq(schema.user.id, user.id))
   }
 
   if (invitation.team?.slug) {

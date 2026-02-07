@@ -51,7 +51,7 @@ export class TeamsService {
       throw createError({ statusCode: 409, statusMessage: 'Team slug is blacklisted' })
     }
 
-    const team = await db.transaction(async (tx) => {
+    const team = await db.transaction(async (tx: any) => {
       const [newTeam] = await tx.insert(schema.teams)
         .values({
           slug,
@@ -101,7 +101,7 @@ export class TeamsService {
       }
     }
 
-    return await db.transaction(async (tx) => {
+    return await db.transaction(async (tx: any) => {
       await tx.update(schema.teams)
         .set(data)
         .where(eq(schema.teams.id, teamId))
@@ -135,7 +135,7 @@ export class TeamsService {
     if (!team) throw createError({ statusCode: 404, statusMessage: `Team not found with id ${teamId}` })
   }
 
-  getTeams = withCache<Team[]>('Teams', async (userId: number) => {
+  getTeams = withCache<Team[]>('Teams', async (userId: string) => {
     const memberOf = await db.query.members.findMany({
       where: eq(schema.members.userId, userId),
       with: {
@@ -150,7 +150,7 @@ export class TeamsService {
         }
       }
     })
-    const teams = memberOf.map(member => member.team)
+    const teams = memberOf.map((member: { team: Team }) => member.team)
     if (!teams) throw createError({ statusCode: 404, statusMessage: `No teams found for user with id ${userId}` })
     return teams
   })

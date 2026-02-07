@@ -12,6 +12,9 @@
       ],
       "env": [
         "DATABASE_URL",
+        "BETTER_AUTH_SECRET",
+        "NUXT_BETTER_AUTH_SECRET",
+        "REDIS_URL",
         "KV_URL",
         "KV_REST_API_TOKEN",
         "KV_REST_API_URL",
@@ -27,6 +30,13 @@
         "NUXT_PRIVATE_SENDER_EMAIL",
         "NUXT_PRIVATE_ADMIN_EMAILS",
         "NUXT_PRIVATE_ALLOWED_ORIGINS",
+        "NUXT_PUBLIC_SITE_URL",
+        "NUXT_PUBLIC_APP_URL",
+        "NUXT_PUBLIC_API_URL",
+        "NUXT_AUTH_EMAIL_ENABLED",
+        "BOTID_BYPASS",
+        "NUXT_DISABLE_BUILD_CACHE",
+        "HUB_APPLY_MIGRATIONS_DURING_BUILD",
         "SKIP_ENV_VALIDATION"
       ]
 

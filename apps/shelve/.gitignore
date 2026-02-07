@@ -149,3 +149,8 @@ dist
 
 .data
 .wrangler
+.vercel
+.env*.local
+.nuxtrc
+playwright-report/
+test-results/

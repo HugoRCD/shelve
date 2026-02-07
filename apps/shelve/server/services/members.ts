@@ -73,8 +73,8 @@ export class MembersService {
   }
 
   async getUserByEmail(email: string): Promise<User> {
-    const user = await db.query.users.findFirst({
-      where: eq(schema.users.email, email)
+    const user = await db.query.user.findFirst({
+      where: eq(schema.user.email, email)
     })
     if (!user) throw createError({ statusCode: 404, message: `User not found with email ${email}` })
     return user

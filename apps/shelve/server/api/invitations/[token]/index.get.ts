@@ -24,8 +24,8 @@ export default eventHandler(async (event: H3Event) => {
     } : undefined,
     invitedBy: invitation.invitedBy ? {
       id: invitation.invitedBy.id,
-      username: invitation.invitedBy.username,
-      avatar: invitation.invitedBy.avatar,
+      username: invitation.invitedBy.name,
+      avatar: invitation.invitedBy.image,
     } : undefined,
   }
 })

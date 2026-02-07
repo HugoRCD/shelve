@@ -1,30 +1,38 @@
-import { boolean, pgEnum, pgTable, varchar, index, uniqueIndex, bigint, integer, timestamp } from 'drizzle-orm/pg-core'
+import { boolean, pgEnum, pgTable, varchar, index, uniqueIndex, bigint, integer, timestamp, uuid, text } from 'drizzle-orm/pg-core'
 import { relations } from 'drizzle-orm'
-import { TeamRole, Role, AuthType, InvitationStatus } from '../../../../packages/types'
+import { TeamRole, InvitationStatus } from '../../../../packages/types'
 
 const timestamps = {
   updatedAt: timestamp().notNull().$onUpdate(() => new Date()),
   createdAt: timestamp().defaultNow().notNull(),
 }
 
-const DEFAULT_AVATAR = 'https://i.imgur.com/6VBx3io.png'
 const DEFAULT_LOGO = 'https://github.com/HugoRCD/shelve/blob/main/assets/default.webp?raw=true'
+
+// Local reference to the Better Auth `user` table for relations/FKs.
+// Not exported to avoid name conflicts with the auto-generated Better Auth schema.
+const authUser = pgTable('user', {
+  id: uuid('id').primaryKey(),
+  email: varchar('email', { length: 255 }).notNull(),
+  emailVerified: boolean('emailVerified').notNull(),
+  name: varchar('name', { length: 255 }),
+  image: text('image'),
+  createdAt: timestamp('createdAt').notNull(),
+  updatedAt: timestamp('updatedAt').notNull(),
+  role: text('role').notNull(),
+  banned: boolean('banned'),
+  banReason: text('banReason'),
+  banExpires: timestamp('banExpires'),
+  authType: text('authType').notNull(),
+  onboarding: boolean('onboarding').notNull(),
+  cliInstalled: boolean('cliInstalled').notNull(),
+  legacyId: bigint('legacyId', { mode: 'number' }),
+})
 
 export const teamRoleEnum = pgEnum('team_role', [
   TeamRole.OWNER,
   TeamRole.ADMIN,
   TeamRole.MEMBER,
-])
-
-export const rolesEnum = pgEnum('roles', [
-  Role.USER,
-  Role.ADMIN,
-])
-
-export const authTypesEnum = pgEnum('auth_types', [
-  AuthType.GITHUB,
-  AuthType.GOOGLE,
-  AuthType.EMAIL,
 ])
 
 export const invitationStatusEnum = pgEnum('invitation_status', [
@@ -33,29 +41,11 @@ export const invitationStatusEnum = pgEnum('invitation_status', [
   InvitationStatus.DECLINED,
   InvitationStatus.EXPIRED,
 ])
-
-export const users = pgTable('users', {
-  id: bigint({ mode: 'number' }).primaryKey().generatedByDefaultAsIdentity(),
-  username: varchar({ length: 25 }).unique().notNull(),
-  email: varchar({ length: 50 }).unique().notNull(),
-  avatar: varchar({ length: 500 }).default(DEFAULT_AVATAR).notNull(),
-  role: rolesEnum().default(Role.USER).notNull(),
-  authType: authTypesEnum().notNull(),
-  onboarding: boolean().default(false).notNull(),
-  cliInstalled: boolean().default(false).notNull(),
-  otpCode: varchar({ length: 6 }),
-  otpToken: varchar({ length: 64 }),
-  otpExpiresAt: timestamp(),
-  otpAttempts: integer().default(0),
-  otpLastRequestAt: timestamp(),
-  ...timestamps,
-})
-
 export const githubApp = pgTable('github_app', {
   id: bigint({ mode: 'number' }).primaryKey().generatedByDefaultAsIdentity(),
   installationId: bigint({ mode: 'number' }).notNull(),
   isOrganisation: boolean().default(false).notNull(),
-  userId: bigint({ mode: 'number' }).references(() => users.id, { onDelete: 'cascade' }).notNull(),
+  userId: uuid().references(() => authUser.id, { onDelete: 'cascade' }).notNull(),
   ...timestamps,
 })
 
@@ -69,7 +59,7 @@ export const teams = pgTable('teams', {
 
 export const members = pgTable('members', {
   id: bigint({ mode: 'number' }).primaryKey().generatedByDefaultAsIdentity(),
-  userId: bigint({ mode: 'number' }).references(() => users.id, { onDelete: 'cascade' }).notNull(),
+  userId: uuid().references(() => authUser.id, { onDelete: 'cascade' }).notNull(),
   teamId: bigint({ mode: 'number' }).references(() => teams.id, { onDelete: 'cascade' }).notNull(),
   role: teamRoleEnum().default(TeamRole.MEMBER).notNull(),
   ...timestamps,
@@ -81,12 +71,12 @@ export const members = pgTable('members', {
 
 export const invitations = pgTable('invitations', {
   id: bigint({ mode: 'number' }).primaryKey().generatedByDefaultAsIdentity(),
-  email: varchar({ length: 50 }).notNull(),
+  email: varchar({ length: 255 }).notNull(),
   teamId: bigint({ mode: 'number' }).references(() => teams.id, { onDelete: 'cascade' }).notNull(),
   role: teamRoleEnum().default(TeamRole.MEMBER).notNull(),
   token: varchar({ length: 64 }).unique().notNull(),
   status: invitationStatusEnum().default(InvitationStatus.PENDING).notNull(),
-  invitedById: bigint({ mode: 'number' }).references(() => users.id, { onDelete: 'set null' }),
+  invitedById: uuid().references(() => authUser.id, { onDelete: 'set null' }),
   expiresAt: timestamp().notNull(),
   ...timestamps,
 }, (table) => [
@@ -141,7 +131,7 @@ export const tokens = pgTable('tokens', {
   id: bigint({ mode: 'number' }).primaryKey().generatedByDefaultAsIdentity(),
   token: varchar({ length: 800 }).unique().notNull(),
   name: varchar({ length: 25 }).notNull(),
-  userId: bigint({ mode: 'number' }).references(() => users.id, { onDelete: 'cascade' }).notNull(),
+  userId: uuid().references(() => authUser.id, { onDelete: 'cascade' }).notNull(),
   ...timestamps,
 }, (table) => [
   uniqueIndex('tokens_token_idx').on(table.token),
@@ -167,9 +157,9 @@ export const teamStats = pgTable('team_stats', {
 }, (table) => [uniqueIndex('team_stats_id_idx').on(table.id)])
 
 export const githubAppRelations = relations(githubApp, ({ one }) => ({
-  users: one(users, {
+  users: one(authUser, {
     fields: [githubApp.userId],
-    references: [users.id],
+    references: [authUser.id],
   })
 }))
 
@@ -185,9 +175,9 @@ export const membersRelations = relations(members, ({ one }) => ({
     fields: [members.teamId],
     references: [teams.id],
   }),
-  user: one(users, {
+  user: one(authUser, {
     fields: [members.userId],
-    references: [users.id],
+    references: [authUser.id],
   })
 }))
 
@@ -196,9 +186,9 @@ export const invitationsRelations = relations(invitations, ({ one }) => ({
     fields: [invitations.teamId],
     references: [teams.id],
   }),
-  invitedBy: one(users, {
+  invitedBy: one(authUser, {
     fields: [invitations.invitedById],
-    references: [users.id],
+    references: [authUser.id],
   })
 }))
 
@@ -218,9 +208,9 @@ export const variablesRelations = relations(variables, ({ one, many }) => ({
 }))
 
 export const tokensRelations = relations(tokens, ({ one }) => ({
-  user: one(users, {
+  user: one(authUser, {
     fields: [tokens.userId],
-    references: [users.id],
+    references: [authUser.id],
   })
 }))
 

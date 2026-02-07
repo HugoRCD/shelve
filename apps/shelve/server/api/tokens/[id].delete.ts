@@ -2,7 +2,7 @@ import { idParamsSchema } from '~~/server/db/zod'
 
 export default defineEventHandler(async (event) => {
   const { id } = await getValidatedRouterParams(event, idParamsSchema.parse)
-  const { user } = await requireUserSession(event)
+  const { user } = await requireAppSession(event)
   const [deletedToken] = await db.delete(schema.tokens)
     .where(
       and(

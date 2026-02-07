@@ -49,7 +49,7 @@ onMounted(() => {
 })
 
 // Members logic
-const members = computed(() => currentTeam.value?.members.filter((member) => member.user.username.toLowerCase().includes(search.value.toLowerCase())))
+const members = computed(() => currentTeam.value?.members.filter((member) => member.user.name.toLowerCase().includes(search.value.toLowerCase())))
 const canDelete = computed(() => hasAccess(teamRole.value, TeamRole.OWNER))
 const canUpdate = computed(() => hasAccess(teamRole.value, TeamRole.ADMIN))
 
@@ -75,12 +75,12 @@ const modal = overlay.create(ConfirmModal)
 
 const columns: TableColumn<Member>[] = [
   {
-    accessorKey: 'avatar',
+    accessorKey: 'image',
     header: 'Avatar',
   },
   {
-    accessorKey: 'username',
-    header: 'Username',
+    accessorKey: 'name',
+    header: 'Name',
   },
   {
     accessorKey: 'email',
@@ -182,7 +182,7 @@ const items = (row: Member) => [
         }
         modal.open({
           title: 'Are you sure?',
-          description: `You are about to remove ${row.user.username} from the team.`,
+          description: `You are about to remove ${row.user.name} from the team.`,
           danger: true,
           onSuccess() {
             toast.promise(removeMember(row.id), {
@@ -290,12 +290,12 @@ definePageMeta({
         td: 'border-b border-default'
       }"
     >
-      <template #avatar-cell="{ row }">
-        <UAvatar :src="row.original.user.avatar" :alt="row.original.user.username" size="sm" img-class="object-cover" />
+      <template #image-cell="{ row }">
+        <UAvatar :src="row.original.user.image" :alt="row.original.user.name" size="sm" img-class="object-cover" />
       </template>
-      <template #username-cell="{ row }">
+      <template #name-cell="{ row }">
         <span class="font-semibold">
-          {{ row.original.user.username }}
+          {{ row.original.user.name }}
         </span>
       </template>
       <template #email-cell="{ row }">

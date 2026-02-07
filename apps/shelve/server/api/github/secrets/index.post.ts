@@ -1,7 +1,7 @@
 import { z } from 'zod'
 
 export default defineEventHandler(async (event) => {
-  const { user } = await requireUserSession(event)
+  const { user } = await requireAppSession(event)
   const { variables, repository } = await readValidatedBody(event, z.object({
     variables: z.array(z.object({
       key: z.string({

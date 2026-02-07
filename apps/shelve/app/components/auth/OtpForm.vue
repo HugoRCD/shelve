@@ -13,6 +13,7 @@ const emit = defineEmits<{
 const router = useRouter()
 const otp = ref<string[]>(props.prefilledOtp ? props.prefilledOtp.split('') : [])
 const loading = ref(false)
+const { signIn, client } = useUserSession()
 
 onMounted(async () => {
   if (props.prefilledOtp && props.prefilledOtp.length === 6) {
@@ -25,22 +26,20 @@ async function handleOtpComplete(value: string[]) {
 
   loading.value = true
   try {
-    await $fetch('/api/auth/otp/verify', {
-      method: 'POST',
-      body: {
-        email: props.email,
-        code: value.join('')
+    await signIn.emailOtp({
+      email: props.email,
+      otp: value.join('')
+    }, {
+      onSuccess: async () => {
+        emit('otpVerified')
+        toast.success('Login successful!')
+        if (props.redirectUrl) {
+          await router.push(props.redirectUrl)
+        } else {
+          await reloadNuxtApp()
+        }
       }
     })
-
-    emit('otpVerified')
-    toast.success('Login successful!')
-
-    if (props.redirectUrl) {
-      await router.push(props.redirectUrl)
-    } else {
-      reloadNuxtApp()
-    }
   } catch (error: any) {
     toast.error(error.data?.message || 'Invalid verification code')
     otp.value = []
@@ -51,9 +50,9 @@ async function handleOtpComplete(value: string[]) {
 
 async function resendCode() {
   try {
-    await $fetch('/api/auth/otp/send', {
-      method: 'POST',
-      body: { email: props.email }
+    await client.emailOtp.sendVerificationOtp({
+      email: props.email,
+      type: 'sign-in'
     })
     toast.success('New verification code sent')
   } catch (error: any) {

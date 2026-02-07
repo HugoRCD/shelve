@@ -6,6 +6,6 @@ export type Token = {
   token: string;
   createdAt: Date;
   updatedAt: Date;
-  userId: number;
+  userId: string;
   user?: User;
 };

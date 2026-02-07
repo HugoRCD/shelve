@@ -61,7 +61,7 @@ export function getRandomGithubAppName(): string {
 
   const getUniqueRandom = (arr: string[]): string => {
     const randomIndex = Math.floor(Math.random() * arr.length)
-    return arr[randomIndex]
+    return arr[randomIndex]!
   }
 
   const adj = getUniqueRandom(adjectives)

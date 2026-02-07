@@ -2,7 +2,7 @@ export default defineEventHandler(async (event) => {
   const query = getQuery(event)
   // eslint-disable-next-line @typescript-eslint/naming-convention
   const { installation_id } = query
-  const { user } = await requireUserSession(event)
+  const { user } = await requireAppSession(event)
 
   if (!installation_id) {
     throw createError({

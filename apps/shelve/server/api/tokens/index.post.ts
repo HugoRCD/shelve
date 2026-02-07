@@ -1,3 +1,4 @@
+import { randomBytes } from 'node:crypto'
 import { z } from 'zod'
 
 export default defineEventHandler(async (event) => {
@@ -6,7 +7,7 @@ export default defineEventHandler(async (event) => {
       error: 'Cannot create token without name',
     }).min(3).max(50).trim(),
   }).parse)
-  const { user } = await requireUserSession(event)
+  const { user } = await requireAppSession(event)
   const { encryptionKey } = useRuntimeConfig(event).private
 
   const createdToken = generateUserToken(user.id)
@@ -23,19 +24,14 @@ export default defineEventHandler(async (event) => {
   return token
 })
 
-function generateUserToken(userId: number): string {
+function generateUserToken(userId: string): string {
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+  const bytes = randomBytes(TOKEN_LENGTH)
   let token = ''
-  const userIdHash = calculateUserIdHash(userId)
 
-  for (let i = 0; i < TOKEN_LENGTH; i++) {
-    const randomIndex = (Math.floor(Math.random() * characters.length) + userIdHash) % characters.length
-    token += characters.charAt(randomIndex)
+  for (const value of bytes) {
+    token += characters[value % characters.length]
   }
 
   return `${TOKEN_PREFIX}${userId}_${token}`
-}
-
-function calculateUserIdHash(userId: number): number {
-  return Array.from(String(userId)).reduce((acc, char) => acc + char.charCodeAt(0), 0)
 }

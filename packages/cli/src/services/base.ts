@@ -42,7 +42,7 @@ export abstract class BaseService {
     const token = await askPassword(`Please provide a valid token (you can generate one on ${sanitizedUrl}/user/tokens)`)
     const user = await this.whoAmI(url, token)
 
-    writeUser({ token, email: user.email, username: user.username }, '.shelve')
+    writeUser({ token, email: user.email, username: user.name }, '.shelve')
 
     if (returnUser) return {
       user,
