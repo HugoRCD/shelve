@@ -1,6 +1,6 @@
 import { defineServerAuth } from '@onmax/nuxt-better-auth/config'
 import { admin, emailOTP } from 'better-auth/plugins'
-import { AuthType, Role } from '@types'
+import { AuthType, Role } from '../../../packages/types'
 import { validateUsername } from './services/user'
 
 const DEFAULT_AVATAR = 'https://i.imgur.com/6VBx3io.png'
