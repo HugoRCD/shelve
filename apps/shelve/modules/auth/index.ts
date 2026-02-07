@@ -83,7 +83,7 @@ function handleValidationError(error: z.ZodError) {
     console.error(`  - ${fieldPath}: ${issue.message}`)
   }
 
-  process.exit(1)
+  throw new Error('Invalid environment variables.')
 }
 
 export default defineNuxtModule({
@@ -92,10 +92,12 @@ export default defineNuxtModule({
   },
   setup(options, nuxt) {
     try {
+      // `nuxt prepare` runs during `postinstall`; don't block installs on missing runtime env.
+      const isPrepare = !!(nuxt.options as any)._prepare || process.env.npm_lifecycle_event === 'postinstall'
       const skipValidation = process.env.SKIP_ENV_VALIDATION
       const isNonVercelCI = process.env.CI && !process.env.VERCEL
-      if (isNonVercelCI || skipValidation) {
-        console.log('Non-Vercel CI environment detected or SKIP_ENV_VALIDATION is set. Skipping environment variable validation.')
+      if (isPrepare || isNonVercelCI || skipValidation) {
+        console.log('Skipping environment variable validation (prepare/postinstall, CI, or SKIP_ENV_VALIDATION).')
         return
       }
       const env = envSchema.parse(process.env)
