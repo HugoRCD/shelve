@@ -14,11 +14,19 @@ const props = defineProps({
     type: String,
     required: true,
   },
+  redirectUrl: {
+    type: String,
+    required: false,
+    default: undefined,
+  },
 })
 
 function open() {
   loading.value = true
-  signIn.social({ provider: props.provider })
+  signIn.social({
+    provider: props.provider,
+    callbackURL: props.redirectUrl || undefined,
+  })
     .catch(() => {
       loading.value = false
     })

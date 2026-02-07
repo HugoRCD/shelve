@@ -10,7 +10,7 @@ const route = useRoute()
 const router = useRouter()
 const token = route.params.token as string
 
-const { loggedIn, user } = useUserSession()
+const { loggedIn, user, signIn } = useUserSession()
 const { title, auth: { isGithubEnabled, isGoogleEnabled, isEmailEnabled } } = useAppConfig()
 
 const { data: invitation, status, error } = await useFetch(`/api/invitations/${token}`, {
@@ -87,9 +87,16 @@ async function declineInvitation() {
   }
 }
 
-function loginWithRedirect(provider: string) {
+async function loginWithRedirect(provider: string) {
   const redirect = `/invite/${token}`
-  window.location.href = `/auth/${provider}?redirect=${encodeURIComponent(redirect)}`
+  try {
+    await signIn.social({
+      provider,
+      callbackURL: redirect,
+    })
+  } catch (err: any) {
+    toast.error(err.data?.message || `Failed to sign in with ${provider}`)
+  }
 }
 
 async function logoutAndRedirect() {
