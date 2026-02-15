@@ -1,6 +1,7 @@
 import { z } from 'zod'
 import { Role } from '@types'
 import { userIdParamsSchema } from '~~/server/db/zod'
+import { user as authUser } from '../../../db/schema/better-auth.postgresql'
 
 export default eventHandler(async (event) => {
   const { user } = await requireAdmin(event)
@@ -9,11 +10,11 @@ export default eventHandler(async (event) => {
     role: z.enum(Role),
   }).parse)
   if (user.id === id) throw createError({ statusCode: 403, statusMessage: 'You can\'t update your own role' })
-  await db.update(schema.user)
+  await db.update(authUser)
     .set({
       role
     })
-    .where(eq(schema.user.id, id))
+    .where(eq(authUser.id, id))
   return {
     statusCode: 200,
     message: 'user updated',

@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { user as authUser } from '../../db/schema/better-auth.postgresql'
 
 export default defineEventHandler(async (event) => {
   const { user } = await requireAppSession(event)
@@ -8,11 +9,11 @@ export default defineEventHandler(async (event) => {
     }),
   }).parse)
 
-  await db.update(schema.user)
+  await db.update(authUser)
     .set({
       onboarding: true,
     })
-    .where(eq(schema.user.id, user.id))
+    .where(eq(authUser.id, user.id))
 
   setCookie(event, 'defaultTeamSlug', teamSlug.toString())
 

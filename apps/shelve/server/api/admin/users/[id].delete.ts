@@ -1,10 +1,11 @@
 import { userIdParamsSchema } from '~~/server/db/zod'
+import { user as authUser } from '../../../db/schema/better-auth.postgresql'
 
 export default eventHandler(async (event) => {
   const { user } = await requireAdmin(event)
   const { id } = await getValidatedRouterParams(event, userIdParamsSchema.parse)
   if (user.id === id) throw createError({ statusCode: 403, statusMessage: 'You can\'t delete your own account' })
-  await db.delete(schema.user).where(eq(schema.user.id, id))
+  await db.delete(authUser).where(eq(authUser.id, id))
   const teams = await new TeamsService().getTeams(user.id)
   if (teams?.length) {
     for (const { id, slug } of teams) {

@@ -1,6 +1,8 @@
+import { user as authUser } from '../../db/schema/better-auth.postgresql'
+
 export default eventHandler(async (event) => {
   const { user } = await requireAppSession(event)
-  await db.delete(schema.user).where(eq(schema.user.id, user.id))
+  await db.delete(authUser).where(eq(authUser.id, user.id))
   const teams = await new TeamsService().getTeams(user.id)
   if (teams?.length) {
     for (const { id, slug } of teams) {

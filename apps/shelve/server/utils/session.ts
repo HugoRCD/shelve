@@ -2,7 +2,9 @@ import type { H3Event } from 'h3'
 import type { User } from '@types'
 import type { AuthSession } from '#nuxt-better-auth'
 
-type DbUser = typeof schema.user.$inferSelect
+import { user as authUser } from '../db/schema/better-auth.postgresql'
+
+type DbUser = typeof authUser.$inferSelect
 
 function toAppUser(user: DbUser | null): User | null {
   if (!user) return null
@@ -60,9 +62,11 @@ async function resolveSessionAuth(event: H3Event): Promise<AppSession | null> {
   }
 
   // Better Auth session types don't include Shelve-specific user fields (role, onboarding, ...).
-  const user = await db.query.user.findFirst({
-    where: eq(schema.user.id, session.user.id),
-  })
+  const rows = await db.select()
+    .from(authUser)
+    .where(eq(authUser.id, session.user.id))
+    .limit(1)
+  const user = rows[0] ?? null
   const appUser = toAppUser(user)
   if (!appUser) return null
 
