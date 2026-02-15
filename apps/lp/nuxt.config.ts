@@ -82,6 +82,10 @@ export default defineNuxtConfig({
     }
   },
 
+  mcp: {
+    name: 'Shelve documentation',
+  },
+
   site: {
     url: 'https://shelve.cloud',
     defaultLocale: 'en',
