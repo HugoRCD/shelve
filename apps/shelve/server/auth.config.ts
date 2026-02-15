@@ -18,8 +18,9 @@ function buildLoginOtpUrl(baseUrl: string, email: string, otp: string): string {
   return url.toString()
 }
 
-export default defineServerAuth(({ runtimeConfig, db }) => ({
-  database: db,
+export default defineServerAuth(({ runtimeConfig }) => ({
+  // The DB adapter is provided by `@onmax/nuxt-better-auth` via `#auth/database`
+  // (NuxtHub provider), and injected at runtime.
   advanced: {
     database: {
       generateId: 'uuid',
