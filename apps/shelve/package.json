@@ -17,6 +17,9 @@
     "test:e2e": "playwright test",
     "db:check:pre": "node scripts/migration-checks.mjs --mode=pre",
     "db:check:post": "node scripts/migration-checks.mjs --mode=post",
+    "migration:seed": "node scripts/migration-seed.mjs",
+    "migration:snapshot": "node scripts/migration-snapshot.mjs",
+    "migration:compare": "node scripts/migration-compare.mjs",
     "db:generate": "SKIP_ENV_VALIDATION=1 nuxt db generate",
     "db:migrate": "SKIP_ENV_VALIDATION=1 nuxt db migrate"
   },
