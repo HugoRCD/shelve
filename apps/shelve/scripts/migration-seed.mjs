@@ -1,4 +1,4 @@
-import { request } from '@playwright/test'
+import { chromium, request } from '@playwright/test'
 import { mkdir, writeFile } from 'node:fs/promises'
 import { dirname } from 'node:path'
 import postgres from 'postgres'
@@ -30,9 +30,17 @@ const summary = {
   checks: {},
 }
 
+let browser
+const contexts = []
+
 try {
-  const adminApi = await createApiContext(baseUrl, bypassHeaders)
-  summary.authMode = await loginWithOtp(adminApi, adminEmail, sql)
+  browser = await chromium.launch()
+
+  const adminSession = await createBrowserSession(browser, baseUrl, bypassHeaders)
+  contexts.push(adminSession.context)
+  const adminApi = adminSession.api
+
+  summary.authMode = await loginWithPrefilledOtp(adminSession.page, adminEmail, sql)
   await ensureOnboardingComplete(adminApi, runId)
 
   const adminTeams = await getTeams(adminApi)
@@ -61,8 +69,11 @@ try {
   const acceptedInvitation = await createInvitation(adminApi, primaryTeam.slug, acceptedInviteEmail, sql, adminEmail)
   await ensureInvitation(primaryTeam.slug, pendingInviteEmail, adminApi, sql, adminEmail)
 
-  const memberApi = await createApiContext(baseUrl, bypassHeaders)
-  await loginWithOtp(memberApi, acceptedInviteEmail, sql)
+  const memberSession = await createBrowserSession(browser, baseUrl, bypassHeaders)
+  contexts.push(memberSession.context)
+  const memberApi = memberSession.api
+
+  await loginWithPrefilledOtp(memberSession.page, acceptedInviteEmail, sql)
   await acceptInvitation(memberApi, acceptedInvitation.token, { expectTeamSlug: primaryTeam.slug })
 
   const memberTeams = await getTeams(memberApi)
@@ -76,8 +87,11 @@ try {
     throw new Error(`Expected non-admin to be blocked from /api/admin/users, got ${blockedResponse.status()}`)
   }
 
-  const onboardingApi = await createApiContext(baseUrl, bypassHeaders)
-  await loginWithOtp(onboardingApi, onboardingUserEmail, sql)
+  const onboardingSession = await createBrowserSession(browser, baseUrl, bypassHeaders)
+  contexts.push(onboardingSession.context)
+  const onboardingApi = onboardingSession.api
+
+  await loginWithPrefilledOtp(onboardingSession.page, onboardingUserEmail, sql)
   await ensureOnboardingComplete(onboardingApi, runId)
 
   const primaryEnvIds = await ensureTeamEnvironments(adminApi, primaryTeam.slug, runId)
@@ -125,6 +139,20 @@ try {
   }
   process.exitCode = 1
 } finally {
+  for (const ctx of contexts) {
+    try {
+      await ctx.close()
+    } catch {
+      // ignore
+    }
+  }
+  if (browser) {
+    try {
+      await browser.close()
+    } catch {
+      // ignore
+    }
+  }
   await sql.end({ timeout: 5 })
 }
 
@@ -133,6 +161,15 @@ async function createApiContext(baseURL, headers) {
     baseURL,
     extraHTTPHeaders: headers,
   })
+}
+
+async function createBrowserSession(browser, baseURL, headers) {
+  const context = await browser.newContext({
+    baseURL,
+    extraHTTPHeaders: headers,
+  })
+  const page = await context.newPage()
+  return { context, page, api: context.request }
 }
 
 function parseArgs(argv) {
@@ -198,6 +235,66 @@ function createDbClient(url) {
     max: 1,
     ssl: useSsl ? 'require' : false,
   })
+}
+
+async function tableExists(sql, name) {
+  const rows = await sql`select to_regclass(${`public.${name}`}) as name`
+  return rows[0]?.name !== null
+}
+
+async function loginWithPrefilledOtp(page, email, sql) {
+  const isBetter = await tableExists(sql, 'verification')
+  const otp = isBetter
+    ? await primeBetterOtp(sql, email)
+    : await primeLegacyOtpAndRead(sql, email)
+
+  const url = new URL('/login', baseUrl)
+  url.searchParams.set('email', email)
+  url.searchParams.set('otp', otp)
+
+  const verifyPath = isBetter
+    ? '/api/auth/sign-in/email-otp'
+    : '/api/auth/otp/verify'
+
+  const [verifyResponse] = await Promise.all([
+    page.waitForResponse((res) => (
+      res.url().includes(verifyPath)
+      && res.request().method() === 'POST'
+    ), { timeout: 30_000 }),
+    page.goto(url.toString()),
+  ])
+
+  if (!verifyResponse.ok()) {
+    const body = await verifyResponse.text().catch(() => '')
+    throw new Error(`OTP verify failed (${verifyResponse.status()}): ${body.slice(0, 400)}`)
+  }
+
+  // Ensure the session is active (guest middleware should stop redirecting to /login).
+  await page.goto('/')
+  await page.waitForURL((u) => !u.pathname.startsWith('/login'), { timeout: 30_000 })
+
+  return isBetter ? 'better-auth' : 'legacy'
+}
+
+async function primeBetterOtp(sql, email) {
+  const otp = String(Math.floor(100000 + Math.random() * 900000))
+  const identifier = `sign-in-otp-${email.toLowerCase()}`
+  const nonce = typeof crypto.randomUUID === 'function'
+    ? crypto.randomUUID()
+    : Array.from(crypto.getRandomValues(new Uint8Array(16))).map(b => b.toString(16).padStart(2, '0')).join('')
+  const value = `${otp}:${nonce}`
+
+  await sql`
+    insert into verification (identifier, value, "expiresAt", "createdAt", "updatedAt")
+    values (${identifier}, ${value}, now() + interval '10 minutes', now(), now())
+  `
+  return otp
+}
+
+async function primeLegacyOtpAndRead(sql, email) {
+  const requestedAt = new Date()
+  await primeLegacyOtp(sql, email)
+  return waitForOtp(sql, email, requestedAt, 'legacy', { timeoutMs: 3_000 })
 }
 
 async function loginWithOtp(api, email, sql) {
