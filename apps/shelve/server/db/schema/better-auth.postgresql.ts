@@ -12,8 +12,9 @@ import {
 } from 'drizzle-orm/pg-core'
 
 // Keep this schema aligned with:
-// - migrations: 0003_better_auth.sql + 0004_better_auth_admin.sql
+// - migrations: 0003_better_auth.sql + canonical compatibility baseline 0004_puzzling_darkhawk.sql
 // - Better Auth adapter options: usePlural=false, camelCase=true
+// This schema assumes the single-drift baseline after migration consolidation.
 export const user = pgTable(
   'user',
   {
@@ -105,4 +106,3 @@ export const accountRelations = relations(account, ({ one }) => ({
     references: [user.id],
   }),
 }))
-

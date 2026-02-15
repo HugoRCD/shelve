@@ -95,10 +95,15 @@ export default defineNuxtModule({
       // `nuxt prepare` runs during `postinstall`; don't block installs on missing runtime env.
       const isPrepare = !!(nuxt.options as any)._prepare || process.env.npm_lifecycle_event === 'postinstall'
       const skipValidation = process.env.SKIP_ENV_VALIDATION
-      const isNonVercelCI = process.env.CI && !process.env.VERCEL
       const isVercelPreview = !!process.env.VERCEL && process.env.VERCEL_ENV === 'preview'
-      if (isPrepare || isNonVercelCI || skipValidation || isVercelPreview) {
-        console.log('Skipping environment variable validation (prepare/postinstall, CI, Vercel preview, or SKIP_ENV_VALIDATION).')
+
+      const skipReasons = []
+      if (isPrepare) skipReasons.push('prepare/postinstall')
+      if (skipValidation) skipReasons.push('SKIP_ENV_VALIDATION')
+      if (isVercelPreview) skipReasons.push('Vercel preview')
+
+      if (skipReasons.length > 0) {
+        console.log(`Skipping environment variable validation (${skipReasons.join(', ')}).`)
         return
       }
       const env = envSchema.parse(process.env)

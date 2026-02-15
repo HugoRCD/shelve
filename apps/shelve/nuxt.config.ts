@@ -1,10 +1,4 @@
-import { randomBytes } from 'node:crypto'
 import vue from '@vitejs/plugin-vue'
-
-const fallbackBetterAuthSecret =
-  (process.env.GITHUB_ACTIONS || process.env.VERCEL_ENV === 'preview')
-    ? randomBytes(32).toString('hex')
-    : ''
 
 export default defineNuxtConfig({
   extends: '../base',
@@ -35,7 +29,7 @@ export default defineNuxtConfig({
   css: ['~/assets/css/index.css'],
 
   runtimeConfig: {
-    betterAuthSecret: process.env.BETTER_AUTH_SECRET || process.env.NUXT_BETTER_AUTH_SECRET || fallbackBetterAuthSecret,
+    betterAuthSecret: process.env.BETTER_AUTH_SECRET || process.env.NUXT_BETTER_AUTH_SECRET,
     public: {
       siteUrl: '',
     },
@@ -88,5 +82,5 @@ export default defineNuxtConfig({
     format: ['webp', 'jpeg', 'jpg', 'png', 'svg']
   },
 
-  modules: ['@nuxt/ui', '@nuxthub/core', '@onmax/nuxt-better-auth', './modules/hub-schema-fix', 'botid/nuxt'],
+  modules: ['@nuxt/ui', '@nuxthub/core', '@onmax/nuxt-better-auth', 'botid/nuxt'],
 })
