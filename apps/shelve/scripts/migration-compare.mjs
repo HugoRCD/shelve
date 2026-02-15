@@ -22,14 +22,20 @@ compareCount('invitations')
 compareCount('github_app')
 compareCount('session')
 
+assertHasFk('session', 'userId', 'user', 'id')
+assertHasFk('members', 'userId', 'user', 'id')
+assertHasFk('tokens', 'userId', 'user', 'id')
+assertHasFk('invitations', 'invitedById', 'user', 'id')
+assertHasFk('github_app', 'userId', 'user', 'id')
+
 if (isNumber(pre.counts.users) && isNumber(post.counts.user)) {
   if (post.counts.user < pre.counts.users) {
     errors.push(`User rows decreased after migration (${pre.counts.users} -> ${post.counts.user})`)
   }
 }
 
-if (isNumber(post.counts.users) && post.counts.users > 0) {
-  errors.push(`Legacy table "users" still has rows post migration (${post.counts.users})`)
+if (isNumber(post.counts.users)) {
+  errors.push(`Legacy table "users" still exists post migration (count=${post.counts.users})`)
 }
 
 if (pre.runScopedCounts && post.runScopedCounts) {
@@ -123,5 +129,24 @@ function compareRunScoped(key) {
     errors.push(`Run-scoped count decreased for ${key} (${before} -> ${after})`)
   } else if (after > before) {
     warnings.push(`Run-scoped count increased for ${key} (${before} -> ${after})`)
+  }
+}
+
+function assertHasFk(table, column, refTable, refColumn) {
+  const constraints = post.constraints
+  if (!Array.isArray(constraints)) {
+    errors.push('Post snapshot missing constraints array (cannot validate foreign keys)')
+    return
+  }
+
+  const ok = constraints.some((row) => (
+    row
+    && row.table_name === table
+    && row.column_name === column
+    && row.ref_table === refTable
+    && row.ref_column === refColumn
+  ))
+  if (!ok) {
+    errors.push(`Missing required FK: ${table}.${column} -> ${refTable}.${refColumn}`)
   }
 }
