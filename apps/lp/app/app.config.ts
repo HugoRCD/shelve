@@ -19,5 +19,9 @@ export default defineAppConfig({
         container: 'py-10 sm:py-10 lg:py-16',
       }
     }
-  }
+  },
+  socials: {
+    github: 'https://github.com/HugoRCD',
+    twitter: 'https://x.com/hugorcd',
+  },
 })

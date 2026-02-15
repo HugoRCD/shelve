@@ -1,4 +1,8 @@
 export default defineNuxtConfig({
+  docus: {
+    basePath: '/docs',
+  },
+
   routeRules: {
     '/': { prerender: true },
     '/docs': { redirect: { statusCode: 301, to: '/docs/getting-started' } },
@@ -86,5 +90,5 @@ export default defineNuxtConfig({
 
   css: ['~/assets/css/index.css'],
 
-  extends: '../base',
+  extends: ['docus', '../base'],
 })
