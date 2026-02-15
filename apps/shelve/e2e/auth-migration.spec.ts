@@ -137,7 +137,9 @@ async function loginWithEmail(
     data: { email, type: 'sign-in' },
   })
   if (!sendResponse.ok() && sendResponse.status() !== 429) {
-    throw new Error(`Failed to send OTP (${sendResponse.status()})`)
+    const body = await sendResponse.text().catch(() => '')
+    const snippet = body ? `: ${body.slice(0, 600)}` : ''
+    throw new Error(`Failed to send OTP (${sendResponse.status()})${snippet}`)
   }
 
   const otp = await waitForOtp(email, requestedAt)
