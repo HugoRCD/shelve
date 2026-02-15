@@ -2,6 +2,7 @@ import { randomBytes } from 'node:crypto'
 import type { CreateInvitationInput, CancelInvitationInput, TeamInvitation, Member } from '@types'
 import { InvitationStatus } from '@types'
 import { and, eq, lt, desc } from 'drizzle-orm'
+import { user as authUser } from '../db/schema/better-auth.postgresql'
 
 const INVITATION_EXPIRY_DAYS = 7
 
@@ -10,6 +11,27 @@ function generateInvitationToken(): string {
 }
 
 export class InvitationsService {
+
+  private async hydrateInvitedBy<T extends TeamInvitation | TeamInvitation[]>(input: T): Promise<T> {
+    const hydrateOne = async (invitation: TeamInvitation) => {
+      const invitedById = (invitation as any).invitedById as string | null | undefined
+      if (!invitedById) {
+        ;(invitation as any).invitedBy = null
+        return invitation
+      }
+      const rows = await db.select().from(authUser).where(eq(authUser.id, invitedById)).limit(1)
+      ;(invitation as any).invitedBy = rows[0] || null
+      return invitation
+    }
+
+    if (Array.isArray(input)) {
+      await Promise.all(input.map(hydrateOne))
+      return input
+    }
+
+    await hydrateOne(input)
+    return input
+  }
 
   async createInvitation(input: CreateInvitationInput): Promise<TeamInvitation> {
     const { teamId, slug, email, role, invitedById } = input
@@ -60,7 +82,6 @@ export class InvitationsService {
       where: eq(schema.invitations.token, token),
       with: {
         team: true,
-        invitedBy: true,
       }
     })
 
@@ -73,7 +94,7 @@ export class InvitationsService {
       throw createError({ statusCode: 410, message: 'Invitation has expired' })
     }
 
-    return invitation
+    return this.hydrateInvitedBy(invitation)
   }
 
   async getInvitationById(invitationId: number): Promise<TeamInvitation> {
@@ -81,7 +102,6 @@ export class InvitationsService {
       where: eq(schema.invitations.id, invitationId),
       with: {
         team: true,
-        invitedBy: true,
       }
     })
 
@@ -89,11 +109,11 @@ export class InvitationsService {
       throw createError({ statusCode: 404, message: 'Invitation not found' })
     }
 
-    return invitation
+    return this.hydrateInvitedBy(invitation)
   }
 
   async getPendingInvitationByEmail(teamId: number, email: string): Promise<TeamInvitation | undefined> {
-    return await db.query.invitations.findFirst({
+    const invitation = await db.query.invitations.findFirst({
       where: and(
         eq(schema.invitations.teamId, teamId),
         eq(schema.invitations.email, email),
@@ -101,23 +121,24 @@ export class InvitationsService {
       ),
       with: {
         team: true,
-        invitedBy: true,
       }
     })
+    if (!invitation) return undefined
+    return this.hydrateInvitedBy(invitation)
   }
 
   async getTeamPendingInvitations(teamId: number): Promise<TeamInvitation[]> {
-    return await db.query.invitations.findMany({
+    const invitations = await db.query.invitations.findMany({
       where: and(
         eq(schema.invitations.teamId, teamId),
         eq(schema.invitations.status, InvitationStatus.PENDING)
       ),
       with: {
         team: true,
-        invitedBy: true,
       },
       orderBy: [desc(schema.invitations.createdAt)]
     })
+    return this.hydrateInvitedBy(invitations)
   }
 
   async acceptInvitation(token: string, userId: string, userEmail: string): Promise<Member> {
@@ -140,7 +161,6 @@ export class InvitationsService {
         eq(schema.members.teamId, invitation.teamId),
         eq(schema.members.userId, userId)
       ),
-      with: { user: true }
     })
 
     if (existingMember) {
@@ -168,13 +188,14 @@ export class InvitationsService {
 
     const member = await db.query.members.findFirst({
       where: eq(schema.members.id, newMember.id),
-      with: { user: true }
     })
 
     if (!member) {
       throw createError({ statusCode: 422, message: 'Failed to retrieve member' })
     }
 
+    const rows = await db.select().from(authUser).where(eq(authUser.id, userId)).limit(1)
+    ;(member as any).user = rows[0] || null
     return member
   }
 
@@ -223,9 +244,8 @@ export class InvitationsService {
   }
 
   private async isUserAlreadyMember(teamId: number, email: string): Promise<Member | undefined> {
-    const user = await db.query.user.findFirst({
-      where: eq(schema.user.email, email)
-    })
+    const rows = await db.select().from(authUser).where(eq(authUser.email, email)).limit(1)
+    const user = rows[0] as { id: string } | undefined
 
     if (!user) return undefined
 
@@ -234,7 +254,6 @@ export class InvitationsService {
         eq(schema.members.teamId, teamId),
         eq(schema.members.userId, user.id)
       ),
-      with: { user: true }
     })
   }
 

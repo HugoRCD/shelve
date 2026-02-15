@@ -1,5 +1,7 @@
 import type { CreateTeamInput, DeleteTeamInput, Team, UpdateTeamInput } from '@types'
 import { TeamRole } from '@types'
+import { inArray } from 'drizzle-orm'
+import { user as authUser } from '../db/schema/better-auth.postgresql'
 
 export const BLACKLIST_TEAM_SLUGS: string[] = [
   'user',
@@ -39,6 +41,39 @@ export const BLACKLIST_TEAM_SLUGS: string[] = [
 
 export class TeamsService {
 
+  private async hydrateTeamUsers(team: Team): Promise<Team> {
+    const memberUserIds = [...new Set(team.members.map((member) => member.userId))]
+    if (!memberUserIds.length) return team
+
+    const users = await db.select().from(authUser).where(inArray(authUser.id, memberUserIds))
+    const usersById = new Map(users.map((user) => [user.id, user]))
+
+    for (const member of team.members) {
+      // Keep response shape stable for the UI: `member.user` is optional/null if missing.
+      ;(member as any).user = usersById.get(member.userId) || null
+    }
+
+    return team
+  }
+
+  private async hydrateTeamsUsers(teams: Team[]): Promise<Team[]> {
+    if (!teams.length) return teams
+
+    const userIds = [...new Set(teams.flatMap((team) => team.members.map((member) => member.userId)))]
+    if (!userIds.length) return teams
+
+    const users = await db.select().from(authUser).where(inArray(authUser.id, userIds))
+    const usersById = new Map(users.map((user) => [user.id, user]))
+
+    for (const team of teams) {
+      for (const member of team.members) {
+        ;(member as any).user = usersById.get(member.userId) || null
+      }
+    }
+
+    return teams
+  }
+
   async createTeam(input: CreateTeamInput): Promise<Team> {
     const slug = input.name.toLowerCase().replace(/\s/g, '-')
 
@@ -77,17 +112,13 @@ export class TeamsService {
     const createdTeam = await db.query.teams.findFirst({
       where: eq(schema.teams.id, team.id),
       with: {
-        members: {
-          with: {
-            user: true
-          }
-        }
+        members: true
       }
     })
 
     if (!createdTeam) throw createError({ statusCode: 404, statusMessage: `Team not found with id ${team.id}` })
     await clearCache('Teams', input.requester.id)
-    return createdTeam
+    return this.hydrateTeamUsers(createdTeam)
   }
 
   async updateTeam(input: UpdateTeamInput): Promise<Team> {
@@ -109,11 +140,7 @@ export class TeamsService {
       const updatedTeam = await tx.query.teams.findFirst({
         where: eq(schema.teams.id, teamId),
         with: {
-          members: {
-            with: {
-              user: true
-            }
-          },
+          members: true,
         }
       })
       if (!updatedTeam) throw createError({ statusCode: 404, statusMessage: `Team not found with id ${teamId}` })
@@ -141,33 +168,25 @@ export class TeamsService {
       with: {
         team: {
           with: {
-            members: {
-              with: {
-                user: true
-              }
-            }
+            members: true
           }
         }
       }
     })
     const teams = memberOf.map((member: { team: Team }) => member.team)
     if (!teams) throw createError({ statusCode: 404, statusMessage: `No teams found for user with id ${userId}` })
-    return teams
+    return this.hydrateTeamsUsers(teams)
   })
 
   getTeam = withCache<Team>('Team', async (slug: string) => {
     const team = await db.query.teams.findFirst({
       where: eq(schema.teams.slug, slug),
       with: {
-        members: {
-          with: {
-            user: true
-          }
-        }
+        members: true
       }
     })
     if (!team) throw createError({ statusCode: 404, statusMessage: `Team not found with slug ${slug}` })
-    return team
+    return this.hydrateTeamUsers(team)
   })
 
   private isSlugUnique = async (slug: string, teamId?: number): Promise<boolean> => {
@@ -184,15 +203,11 @@ export class TeamsService {
     const team = await db.query.teams.findFirst({
       where: eq(schema.teams.slug, slug),
       with: {
-        members: {
-          with: {
-            user: true
-          }
-        }
+        members: true
       }
     })
     if (!team) throw createError({ statusCode: 404, statusMessage: `Team not found with slug ${slug}` })
-    return team
+    return this.hydrateTeamUsers(team)
   }
 
 }

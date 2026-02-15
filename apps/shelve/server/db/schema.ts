@@ -1,6 +1,80 @@
 import { boolean, pgEnum, pgTable, varchar, index, uniqueIndex, bigint, integer, timestamp, uuid, text } from 'drizzle-orm/pg-core'
-import { relations } from 'drizzle-orm'
+import { relations, sql } from 'drizzle-orm'
 import { TeamRole, InvitationStatus } from '../../../../packages/types'
+
+// Better Auth core tables must be part of the NuxtHub schema (`@nuxthub/db`) because
+// the NuxtHub provider wires Better Auth's Drizzle adapter with `schema` from `@nuxthub/db`.
+// Defining them directly here avoids relying on re-exports/imported tables that NuxtHub may not include.
+export const user = pgTable(
+  'user',
+  {
+    id: uuid('id').default(sql`pg_catalog.gen_random_uuid()`).primaryKey(),
+    email: varchar('email', { length: 255 }).notNull().unique(),
+    emailVerified: boolean('emailVerified').default(false).notNull(),
+    name: varchar('name', { length: 255 }),
+    image: text('image'),
+    createdAt: timestamp('createdAt').defaultNow().notNull(),
+    updatedAt: timestamp('updatedAt').defaultNow().$onUpdate(() => /* @__PURE__ */ new Date()).notNull(),
+    role: text('role').default('user').notNull(),
+    banned: boolean('banned').default(false),
+    banReason: text('banReason'),
+    banExpires: timestamp('banExpires'),
+    authType: text('authType').default('email').notNull(),
+    onboarding: boolean('onboarding').default(false).notNull(),
+    cliInstalled: boolean('cliInstalled').default(false).notNull(),
+    legacyId: bigint('legacyId', { mode: 'number' }).unique(),
+  },
+  (table) => [uniqueIndex('user_legacyId_uidx').on(table.legacyId)],
+)
+
+export const session = pgTable(
+  'session',
+  {
+    id: uuid('id').default(sql`pg_catalog.gen_random_uuid()`).primaryKey(),
+    expiresAt: timestamp('expiresAt').notNull(),
+    token: varchar('token', { length: 255 }).notNull().unique(),
+    createdAt: timestamp('createdAt').defaultNow().notNull(),
+    updatedAt: timestamp('updatedAt').$onUpdate(() => /* @__PURE__ */ new Date()).notNull(),
+    ipAddress: text('ipAddress'),
+    userAgent: text('userAgent'),
+    userId: uuid('userId').notNull().references(() => user.id, { onDelete: 'cascade' }),
+    impersonatedBy: text('impersonatedBy'),
+  },
+  (table) => [index('session_userId_idx').on(table.userId)],
+)
+
+export const account = pgTable(
+  'account',
+  {
+    id: uuid('id').default(sql`pg_catalog.gen_random_uuid()`).primaryKey(),
+    accountId: text('accountId').notNull(),
+    providerId: text('providerId').notNull(),
+    userId: uuid('userId').notNull().references(() => user.id, { onDelete: 'cascade' }),
+    accessToken: text('accessToken'),
+    refreshToken: text('refreshToken'),
+    idToken: text('idToken'),
+    accessTokenExpiresAt: timestamp('accessTokenExpiresAt'),
+    refreshTokenExpiresAt: timestamp('refreshTokenExpiresAt'),
+    scope: text('scope'),
+    password: text('password'),
+    createdAt: timestamp('createdAt').defaultNow().notNull(),
+    updatedAt: timestamp('updatedAt').$onUpdate(() => /* @__PURE__ */ new Date()).notNull(),
+  },
+  (table) => [index('account_userId_idx').on(table.userId)],
+)
+
+export const verification = pgTable(
+  'verification',
+  {
+    id: uuid('id').default(sql`pg_catalog.gen_random_uuid()`).primaryKey(),
+    identifier: varchar('identifier', { length: 255 }).notNull(),
+    value: text('value').notNull(),
+    expiresAt: timestamp('expiresAt').notNull(),
+    createdAt: timestamp('createdAt').defaultNow().notNull(),
+    updatedAt: timestamp('updatedAt').defaultNow().$onUpdate(() => /* @__PURE__ */ new Date()).notNull(),
+  },
+  (table) => [index('verification_identifier_idx').on(table.identifier)],
+)
 
 const timestamps = {
   updatedAt: timestamp().notNull().$onUpdate(() => new Date()),
@@ -8,26 +82,6 @@ const timestamps = {
 }
 
 const DEFAULT_LOGO = 'https://github.com/HugoRCD/shelve/blob/main/assets/default.webp?raw=true'
-
-// Local reference to the Better Auth `user` table for relations/FKs.
-// Not exported to avoid name conflicts with the auto-generated Better Auth schema.
-const authUser = pgTable('user', {
-  id: uuid('id').primaryKey(),
-  email: varchar('email', { length: 255 }).notNull(),
-  emailVerified: boolean('emailVerified').notNull(),
-  name: varchar('name', { length: 255 }),
-  image: text('image'),
-  createdAt: timestamp('createdAt').notNull(),
-  updatedAt: timestamp('updatedAt').notNull(),
-  role: text('role').notNull(),
-  banned: boolean('banned'),
-  banReason: text('banReason'),
-  banExpires: timestamp('banExpires'),
-  authType: text('authType').notNull(),
-  onboarding: boolean('onboarding').notNull(),
-  cliInstalled: boolean('cliInstalled').notNull(),
-  legacyId: bigint('legacyId', { mode: 'number' }),
-})
 
 export const teamRoleEnum = pgEnum('team_role', [
   TeamRole.OWNER,
@@ -45,7 +99,7 @@ export const githubApp = pgTable('github_app', {
   id: bigint({ mode: 'number' }).primaryKey().generatedByDefaultAsIdentity(),
   installationId: bigint({ mode: 'number' }).notNull(),
   isOrganisation: boolean().default(false).notNull(),
-  userId: uuid().references(() => authUser.id, { onDelete: 'cascade' }).notNull(),
+  userId: uuid().references(() => user.id, { onDelete: 'cascade' }).notNull(),
   ...timestamps,
 })
 
@@ -59,7 +113,7 @@ export const teams = pgTable('teams', {
 
 export const members = pgTable('members', {
   id: bigint({ mode: 'number' }).primaryKey().generatedByDefaultAsIdentity(),
-  userId: uuid().references(() => authUser.id, { onDelete: 'cascade' }).notNull(),
+  userId: uuid().references(() => user.id, { onDelete: 'cascade' }).notNull(),
   teamId: bigint({ mode: 'number' }).references(() => teams.id, { onDelete: 'cascade' }).notNull(),
   role: teamRoleEnum().default(TeamRole.MEMBER).notNull(),
   ...timestamps,
@@ -76,7 +130,7 @@ export const invitations = pgTable('invitations', {
   role: teamRoleEnum().default(TeamRole.MEMBER).notNull(),
   token: varchar({ length: 64 }).unique().notNull(),
   status: invitationStatusEnum().default(InvitationStatus.PENDING).notNull(),
-  invitedById: uuid().references(() => authUser.id, { onDelete: 'set null' }),
+  invitedById: uuid().references(() => user.id, { onDelete: 'set null' }),
   expiresAt: timestamp().notNull(),
   ...timestamps,
 }, (table) => [
@@ -131,7 +185,7 @@ export const tokens = pgTable('tokens', {
   id: bigint({ mode: 'number' }).primaryKey().generatedByDefaultAsIdentity(),
   token: varchar({ length: 800 }).unique().notNull(),
   name: varchar({ length: 25 }).notNull(),
-  userId: uuid().references(() => authUser.id, { onDelete: 'cascade' }).notNull(),
+  userId: uuid().references(() => user.id, { onDelete: 'cascade' }).notNull(),
   ...timestamps,
 }, (table) => [
   uniqueIndex('tokens_token_idx').on(table.token),
@@ -157,9 +211,9 @@ export const teamStats = pgTable('team_stats', {
 }, (table) => [uniqueIndex('team_stats_id_idx').on(table.id)])
 
 export const githubAppRelations = relations(githubApp, ({ one }) => ({
-  users: one(authUser, {
+  users: one(user, {
     fields: [githubApp.userId],
-    references: [authUser.id],
+    references: [user.id],
   })
 }))
 
@@ -175,9 +229,9 @@ export const membersRelations = relations(members, ({ one }) => ({
     fields: [members.teamId],
     references: [teams.id],
   }),
-  user: one(authUser, {
+  user: one(user, {
     fields: [members.userId],
-    references: [authUser.id],
+    references: [user.id],
   })
 }))
 
@@ -186,9 +240,9 @@ export const invitationsRelations = relations(invitations, ({ one }) => ({
     fields: [invitations.teamId],
     references: [teams.id],
   }),
-  invitedBy: one(authUser, {
+  invitedBy: one(user, {
     fields: [invitations.invitedById],
-    references: [authUser.id],
+    references: [user.id],
   })
 }))
 
@@ -208,9 +262,9 @@ export const variablesRelations = relations(variables, ({ one, many }) => ({
 }))
 
 export const tokensRelations = relations(tokens, ({ one }) => ({
-  user: one(authUser, {
+  user: one(user, {
     fields: [tokens.userId],
-    references: [authUser.id],
+    references: [user.id],
   })
 }))
 

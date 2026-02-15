@@ -1,4 +1,5 @@
 import type { AddMemberInput, Member, RemoveMemberInput, UpdateMemberInput, User } from '@types'
+import { user as authUser } from '../db/schema/better-auth.postgresql'
 
 export class MembersService {
 
@@ -53,29 +54,27 @@ export class MembersService {
   async findMemberById(memberId: number): Promise<Member> {
     const member = await db.query.members.findFirst({
       where: eq(schema.members.id, memberId),
-      with: {
-        user: true
-      }
     })
     if (!member) throw createError({ statusCode: 404, message: `Member not found with id ${memberId}` })
+    const rows = await db.select().from(authUser).where(eq(authUser.id, member.userId)).limit(1)
+    ;(member as any).user = (rows[0] as unknown as User | undefined) || null
     return member
   }
 
   async isUserAlreadyMember(teamId: number, email: string): Promise<Member | undefined> {
     const user = await this.getUserByEmail(email)
     if (!user) throw createError({ statusCode: 404, message: `User not found with email ${email}` })
-    return db.query.members.findFirst({
+    const member = await db.query.members.findFirst({
       where: and(eq(schema.members.teamId, teamId), eq(schema.members.userId, user.id)),
-      with: {
-        user: true
-      }
     })
+    if (!member) return undefined
+    ;(member as any).user = user
+    return member
   }
 
   async getUserByEmail(email: string): Promise<User> {
-    const user = await db.query.user.findFirst({
-      where: eq(schema.user.email, email)
-    })
+    const rows = await db.select().from(authUser).where(eq(authUser.email, email)).limit(1)
+    const user = rows[0] as unknown as User | undefined
     if (!user) throw createError({ statusCode: 404, message: `User not found with email ${email}` })
     return user
   }
