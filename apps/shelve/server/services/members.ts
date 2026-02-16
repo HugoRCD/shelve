@@ -1,5 +1,4 @@
 import type { AddMemberInput, Member, RemoveMemberInput, UpdateMemberInput, User } from '@types'
-import { user as authUser } from '../db/schema/better-auth.postgresql'
 
 export class MembersService {
 
@@ -56,7 +55,7 @@ export class MembersService {
       where: eq(schema.members.id, memberId),
     })
     if (!member) throw createError({ statusCode: 404, message: `Member not found with id ${memberId}` })
-    const rows = await db.select().from(authUser).where(eq(authUser.id, member.userId)).limit(1)
+    const rows = await db.select().from(schema.user).where(eq(schema.user.id, member.userId)).limit(1)
     ;(member as any).user = (rows[0] as unknown as User | undefined) || null
     return member
   }
@@ -73,7 +72,7 @@ export class MembersService {
   }
 
   async getUserByEmail(email: string): Promise<User> {
-    const rows = await db.select().from(authUser).where(eq(authUser.email, email)).limit(1)
+    const rows = await db.select().from(schema.user).where(eq(schema.user.email, email)).limit(1)
     const user = rows[0] as unknown as User | undefined
     if (!user) throw createError({ statusCode: 404, message: `User not found with email ${email}` })
     return user

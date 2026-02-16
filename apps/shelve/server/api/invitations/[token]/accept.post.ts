@@ -1,5 +1,4 @@
 import type { H3Event } from 'h3'
-import { user as authUser } from '../../../db/schema/better-auth.postgresql'
 
 export default eventHandler(async (event: H3Event) => {
   const token = getRouterParam(event, 'token')
@@ -15,9 +14,9 @@ export default eventHandler(async (event: H3Event) => {
 
   // Mark onboarding as complete if not already done
   if (!user.onboarding) {
-    await db.update(authUser)
+    await db.update(schema.user)
       .set({ onboarding: true })
-      .where(eq(authUser.id, user.id))
+      .where(eq(schema.user.id, user.id))
   }
 
   if (invitation.team?.slug) {

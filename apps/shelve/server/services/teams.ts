@@ -1,7 +1,6 @@
 import type { CreateTeamInput, DeleteTeamInput, Team, UpdateTeamInput } from '@types'
 import { TeamRole } from '@types'
 import { inArray } from 'drizzle-orm'
-import { user as authUser } from '../db/schema/better-auth.postgresql'
 
 export const BLACKLIST_TEAM_SLUGS: string[] = [
   'user',
@@ -45,8 +44,8 @@ export class TeamsService {
     const memberUserIds = [...new Set(team.members.map((member) => member.userId))]
     if (!memberUserIds.length) return team
 
-    const users = await db.select().from(authUser).where(inArray(authUser.id, memberUserIds))
-    const usersById = new Map<string, typeof authUser.$inferSelect>()
+    const users = await db.select().from(schema.user).where(inArray(schema.user.id, memberUserIds))
+    const usersById = new Map<string, typeof schema.user.$inferSelect>()
     for (const user of users) {
       usersById.set(user.id, user)
     }
@@ -65,8 +64,8 @@ export class TeamsService {
     const userIds = [...new Set(teams.flatMap((team) => team.members.map((member) => member.userId)))]
     if (!userIds.length) return teams
 
-    const users = await db.select().from(authUser).where(inArray(authUser.id, userIds))
-    const usersById = new Map<string, typeof authUser.$inferSelect>()
+    const users = await db.select().from(schema.user).where(inArray(schema.user.id, userIds))
+    const usersById = new Map<string, typeof schema.user.$inferSelect>()
     for (const user of users) {
       usersById.set(user.id, user)
     }

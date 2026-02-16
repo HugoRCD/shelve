@@ -1,6 +1,5 @@
 import type { H3Event } from 'h3'
 import type { AuthType, Token, User } from '../../../../packages/types'
-import { user as authUser } from '../db/schema/better-auth.postgresql'
 
 const LEGACY_ID_REGEX = /^\d+$/
 const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
@@ -32,10 +31,10 @@ export async function getUserByAuthToken(authToken: string, event: H3Event): Pro
   let user: User | undefined
 
   if (userId) {
-    const rows = await db.select().from(authUser).where(eq(authUser.id, userId)).limit(1)
+    const rows = await db.select().from(schema.user).where(eq(schema.user.id, userId)).limit(1)
     user = rows[0] as unknown as User | undefined
   } else if (legacyId !== undefined) {
-    const rows = await db.select().from(authUser).where(eq(authUser.legacyId, legacyId)).limit(1)
+    const rows = await db.select().from(schema.user).where(eq(schema.user.legacyId, legacyId)).limit(1)
     user = rows[0] as unknown as User | undefined
   }
 

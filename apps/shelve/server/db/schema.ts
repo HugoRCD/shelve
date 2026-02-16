@@ -3,7 +3,6 @@ import { relations, sql } from 'drizzle-orm'
 import { TeamRole, InvitationStatus } from '../../../../packages/types'
 
 // Better Auth core tables are defined here so app tables and app services share one source of truth.
-// `server/db/schema/better-auth.postgresql.ts` re-exports these symbols for backward-compatible imports.
 export const user = pgTable(
   'user',
   {

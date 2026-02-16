@@ -2,7 +2,6 @@ import { randomBytes } from 'node:crypto'
 import type { CreateInvitationInput, CancelInvitationInput, TeamInvitation, Member } from '@types'
 import { InvitationStatus } from '@types'
 import { and, eq, lt, desc } from 'drizzle-orm'
-import { user as authUser } from '../db/schema/better-auth.postgresql'
 
 const INVITATION_EXPIRY_DAYS = 7
 
@@ -19,7 +18,7 @@ export class InvitationsService {
         ;(invitation as any).invitedBy = null
         return invitation
       }
-      const rows = await db.select().from(authUser).where(eq(authUser.id, invitedById)).limit(1)
+      const rows = await db.select().from(schema.user).where(eq(schema.user.id, invitedById)).limit(1)
       ;(invitation as any).invitedBy = rows[0] || null
       return invitation
     }
@@ -194,7 +193,7 @@ export class InvitationsService {
       throw createError({ statusCode: 422, message: 'Failed to retrieve member' })
     }
 
-    const rows = await db.select().from(authUser).where(eq(authUser.id, userId)).limit(1)
+    const rows = await db.select().from(schema.user).where(eq(schema.user.id, userId)).limit(1)
     ;(member as any).user = rows[0] || null
     return member
   }
@@ -244,7 +243,7 @@ export class InvitationsService {
   }
 
   private async isUserAlreadyMember(teamId: number, email: string): Promise<Member | undefined> {
-    const rows = await db.select().from(authUser).where(eq(authUser.email, email)).limit(1)
+    const rows = await db.select().from(schema.user).where(eq(schema.user.email, email)).limit(1)
     const user = rows[0] as { id: string } | undefined
 
     if (!user) return undefined
