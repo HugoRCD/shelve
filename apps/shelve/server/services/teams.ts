@@ -46,7 +46,10 @@ export class TeamsService {
     if (!memberUserIds.length) return team
 
     const users = await db.select().from(authUser).where(inArray(authUser.id, memberUserIds))
-    const usersById = new Map(users.map((user) => [user.id, user]))
+    const usersById = new Map<string, typeof authUser.$inferSelect>()
+    for (const user of users) {
+      usersById.set(user.id, user)
+    }
 
     for (const member of team.members) {
       // Keep response shape stable for the UI: `member.user` is optional/null if missing.
@@ -63,7 +66,10 @@ export class TeamsService {
     if (!userIds.length) return teams
 
     const users = await db.select().from(authUser).where(inArray(authUser.id, userIds))
-    const usersById = new Map(users.map((user) => [user.id, user]))
+    const usersById = new Map<string, typeof authUser.$inferSelect>()
+    for (const user of users) {
+      usersById.set(user.id, user)
+    }
 
     for (const team of teams) {
       for (const member of team.members) {

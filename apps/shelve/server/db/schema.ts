@@ -2,9 +2,8 @@ import { boolean, pgEnum, pgTable, varchar, index, uniqueIndex, bigint, integer,
 import { relations, sql } from 'drizzle-orm'
 import { TeamRole, InvitationStatus } from '../../../../packages/types'
 
-// Better Auth core tables must be part of the NuxtHub schema (`@nuxthub/db`) because
-// the NuxtHub provider wires Better Auth's Drizzle adapter with `schema` from `@nuxthub/db`.
-// Defining them directly here avoids relying on re-exports/imported tables that NuxtHub may not include.
+// Better Auth core tables are defined here so app tables and app services share one source of truth.
+// `server/db/schema/better-auth.postgresql.ts` re-exports these symbols for backward-compatible imports.
 export const user = pgTable(
   'user',
   {
