@@ -2,6 +2,9 @@ import type { CreateTeamInput, DeleteTeamInput, Team, UpdateTeamInput } from '@t
 import { TeamRole } from '@types'
 import { inArray } from 'drizzle-orm'
 
+type TeamMember = Team['members'][number]
+type TeamMemberWithUser = TeamMember & { user?: typeof schema.user.$inferSelect | null }
+
 export const BLACKLIST_TEAM_SLUGS: string[] = [
   'user',
   'settings',
@@ -37,6 +40,9 @@ export const BLACKLIST_TEAM_SLUGS: string[] = [
 ]
 
 export class TeamsService {
+  private setMemberUser(member: TeamMember, user: typeof schema.user.$inferSelect | null): void {
+    (member as TeamMemberWithUser).user = user
+  }
 
   private async hydrateTeamUsers(team: Team): Promise<Team> {
     const memberUserIds = [...new Set(team.members.map((member) => member.userId))]
@@ -50,7 +56,7 @@ export class TeamsService {
 
     for (const member of team.members) {
       // Keep response shape stable for the UI: `member.user` is optional/null if missing.
-      ;(member as any).user = usersById.get(member.userId) || null
+      this.setMemberUser(member, usersById.get(member.userId) || null)
     }
 
     return team
@@ -70,7 +76,7 @@ export class TeamsService {
 
     for (const team of teams) {
       for (const member of team.members) {
-        ;(member as any).user = usersById.get(member.userId) || null
+        this.setMemberUser(member, usersById.get(member.userId) || null)
       }
     }
 

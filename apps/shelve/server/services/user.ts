@@ -29,11 +29,11 @@ export async function getUserByAuthToken(authToken: string, event: H3Event): Pro
   let user: User | undefined
 
   if (userId) {
-    const rows = await db.select().from(schema.user).where(eq(schema.user.id, userId)).limit(1)
-    user = rows[0] as unknown as User | undefined
+    const [row] = await db.select().from(schema.user).where(eq(schema.user.id, userId)).limit(1)
+    user = row as User | undefined
   } else if (legacyId !== undefined) {
-    const rows = await db.select().from(schema.user).where(eq(schema.user.legacyId, legacyId)).limit(1)
-    user = rows[0] as unknown as User | undefined
+    const [row] = await db.select().from(schema.user).where(eq(schema.user.legacyId, legacyId)).limit(1)
+    user = row as User | undefined
   }
 
   if (!user) throw createError({ statusCode: 401, statusMessage: 'User not found (invalid token)' })

@@ -1,6 +1,12 @@
 import type { AddMemberInput, Member, RemoveMemberInput, UpdateMemberInput, User } from '@types'
 
+type MemberWithUser = Member & { user?: User | null }
+
 export class MembersService {
+  private setMemberUser(member: Member, user: User | null): Member {
+    (member as MemberWithUser).user = user
+    return member
+  }
 
   async addMember(input: AddMemberInput): Promise<Member> {
     const { teamId, email, role, slug } = input
@@ -55,9 +61,8 @@ export class MembersService {
       where: eq(schema.members.id, memberId),
     })
     if (!member) throw createError({ statusCode: 404, message: `Member not found with id ${memberId}` })
-    const rows = await db.select().from(schema.user).where(eq(schema.user.id, member.userId)).limit(1)
-    ;(member as any).user = (rows[0] as unknown as User | undefined) || null
-    return member
+    const [user] = await db.select().from(schema.user).where(eq(schema.user.id, member.userId)).limit(1)
+    return this.setMemberUser(member, (user as User | undefined) ?? null)
   }
 
   async isUserAlreadyMember(teamId: number, email: string): Promise<Member | undefined> {
@@ -67,15 +72,13 @@ export class MembersService {
       where: and(eq(schema.members.teamId, teamId), eq(schema.members.userId, user.id)),
     })
     if (!member) return undefined
-    ;(member as any).user = user
-    return member
+    return this.setMemberUser(member, user)
   }
 
   async getUserByEmail(email: string): Promise<User> {
-    const rows = await db.select().from(schema.user).where(eq(schema.user.email, email)).limit(1)
-    const user = rows[0] as unknown as User | undefined
+    const [user] = await db.select().from(schema.user).where(eq(schema.user.email, email)).limit(1)
     if (!user) throw createError({ statusCode: 404, message: `User not found with email ${email}` })
-    return user
+    return user as User
   }
 
 }

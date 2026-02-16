@@ -4,23 +4,33 @@ import { InvitationStatus } from '@types'
 import { and, eq, lt, desc } from 'drizzle-orm'
 
 const INVITATION_EXPIRY_DAYS = 7
+type DbUser = typeof schema.user.$inferSelect
+type TeamInvitationWithInvitedBy = TeamInvitation & { invitedBy?: DbUser | null }
+type MemberWithUser = Member & { user?: DbUser | null }
 
 function generateInvitationToken(): string {
   return randomBytes(32).toString('hex')
 }
 
 export class InvitationsService {
+  private setInvitationInvitedBy(invitation: TeamInvitation, invitedBy: DbUser | null): TeamInvitation {
+    ;(invitation as TeamInvitationWithInvitedBy).invitedBy = invitedBy
+    return invitation
+  }
+
+  private setMemberUser(member: Member, user: DbUser | null): Member {
+    ;(member as MemberWithUser).user = user
+    return member
+  }
 
   private async hydrateInvitedBy<T extends TeamInvitation | TeamInvitation[]>(input: T): Promise<T> {
     const hydrateOne = async (invitation: TeamInvitation) => {
-      const invitedById = (invitation as any).invitedById as string | null | undefined
+      const invitedById = invitation.invitedById
       if (!invitedById) {
-        ;(invitation as any).invitedBy = null
-        return invitation
+        return this.setInvitationInvitedBy(invitation, null)
       }
-      const rows = await db.select().from(schema.user).where(eq(schema.user.id, invitedById)).limit(1)
-      ;(invitation as any).invitedBy = rows[0] || null
-      return invitation
+      const [invitedBy] = await db.select().from(schema.user).where(eq(schema.user.id, invitedById)).limit(1)
+      return this.setInvitationInvitedBy(invitation, invitedBy || null)
     }
 
     if (Array.isArray(input)) {
@@ -192,9 +202,8 @@ export class InvitationsService {
       throw createError({ statusCode: 422, message: 'Failed to retrieve member' })
     }
 
-    const rows = await db.select().from(schema.user).where(eq(schema.user.id, userId)).limit(1)
-    ;(member as any).user = rows[0] || null
-    return member
+    const [user] = await db.select().from(schema.user).where(eq(schema.user.id, userId)).limit(1)
+    return this.setMemberUser(member, user || null)
   }
 
   async declineInvitation(token: string): Promise<void> {
@@ -242,8 +251,7 @@ export class InvitationsService {
   }
 
   private async isUserAlreadyMember(teamId: number, email: string): Promise<Member | undefined> {
-    const rows = await db.select().from(schema.user).where(eq(schema.user.email, email)).limit(1)
-    const user = rows[0] as { id: string } | undefined
+    const [user] = await db.select().from(schema.user).where(eq(schema.user.email, email)).limit(1)
 
     if (!user) return undefined
 
