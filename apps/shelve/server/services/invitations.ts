@@ -5,8 +5,8 @@ import { and, eq, lt, desc } from 'drizzle-orm'
 
 const INVITATION_EXPIRY_DAYS = 7
 type DbUser = typeof schema.user.$inferSelect
-type TeamInvitationWithInvitedBy = TeamInvitation & { invitedBy?: DbUser | null }
-type MemberWithUser = Member & { user?: DbUser | null }
+type TeamInvitationWithInvitedBy = Omit<TeamInvitation, 'invitedBy'> & { invitedBy: DbUser | null }
+type MemberWithUser = Omit<Member, 'user'> & { user: DbUser | null }
 
 function generateInvitationToken(): string {
   return randomBytes(32).toString('hex')

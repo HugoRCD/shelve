@@ -3,7 +3,7 @@ import { TeamRole } from '@types'
 import { inArray } from 'drizzle-orm'
 
 type TeamMember = Team['members'][number]
-type TeamMemberWithUser = TeamMember & { user?: typeof schema.user.$inferSelect | null }
+type TeamMemberWithUser = Omit<TeamMember, 'user'> & { user: typeof schema.user.$inferSelect | null }
 
 export const BLACKLIST_TEAM_SLUGS: string[] = [
   'user',

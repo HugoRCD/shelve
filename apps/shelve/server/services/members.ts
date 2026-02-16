@@ -1,6 +1,6 @@
 import type { AddMemberInput, Member, RemoveMemberInput, UpdateMemberInput, User } from '@types'
 
-type MemberWithUser = Member & { user?: User | null }
+type MemberWithUser = Omit<Member, 'user'> & { user: User | null }
 
 export class MembersService {
   private setMemberUser(member: Member, user: User | null): Member {
