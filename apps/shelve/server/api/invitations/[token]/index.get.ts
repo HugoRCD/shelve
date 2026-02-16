@@ -8,7 +8,6 @@ export default eventHandler(async (event: H3Event) => {
 
   const invitation = await new InvitationsService().getInvitationByToken(token)
 
-  // Return invitation info without exposing the full token
   return {
     id: invitation.id,
     email: invitation.email,

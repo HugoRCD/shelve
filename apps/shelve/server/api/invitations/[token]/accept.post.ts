@@ -12,7 +12,6 @@ export default eventHandler(async (event: H3Event) => {
 
   const member = await new InvitationsService().acceptInvitation(token, user.id, user.email)
 
-  // Mark onboarding as complete if not already done
   if (!user.onboarding) {
     await db.update(schema.user)
       .set({ onboarding: true })

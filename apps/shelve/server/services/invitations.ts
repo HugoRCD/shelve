@@ -147,7 +147,6 @@ export class InvitationsService {
       throw createError({ statusCode: 400, message: `Invitation has already been ${invitation.status}` })
     }
 
-    // Verify email matches
     if (invitation.email.toLowerCase() !== userEmail.toLowerCase()) {
       throw createError({
         statusCode: 403,
