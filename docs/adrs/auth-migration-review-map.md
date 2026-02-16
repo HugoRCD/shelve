@@ -48,3 +48,12 @@ Review last, not part of auth acceptance:
 - `packages/cli/**`
 - `docs/agents/**`
 - unrelated monorepo workflow/config updates
+
+## Validation Status
+
+Executed on branch `feat/better-auth-migration`:
+
+- ✅ `pnpm --filter @shelve/app postinstall`
+- ✅ `pnpm --filter @shelve/app typecheck`
+- ⚠️ `pnpm --filter @shelve/app db:check:pre` requires `DATABASE_URL`
+- ⚠️ `pnpm --filter @shelve/app db:check:post` requires `DATABASE_URL`
