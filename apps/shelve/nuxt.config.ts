@@ -82,23 +82,5 @@ export default defineNuxtConfig({
     format: ['webp', 'jpeg', 'jpg', 'png', 'svg']
   },
 
-  hooks: {
-    // Ensure Better Auth's Drizzle adapter receives a schema that includes Better Auth tables.
-    // The default NuxtHub provider template uses `schema` from `@nuxthub/db`, which only contains app tables.
-    // `@onmax/nuxt-better-auth` already generates a Better Auth schema at `.nuxt/better-auth/schema.<dialect>.mjs`.
-    'better-auth:database:providers': (providers: any) => {
-      const provider = providers?.nuxthub
-      if (!provider) return
-
-      provider.buildDatabaseCode = ({ hubDialect, usePlural, camelCase }: any) => `import { db } from '@nuxthub/db'
-import * as schema from './schema.${hubDialect}.mjs'
-import { drizzleAdapter } from 'better-auth/adapters/drizzle'
-const rawDialect = '${hubDialect}'
-const dialect = rawDialect === 'postgresql' ? 'pg' : rawDialect
-export function createDatabase() { return drizzleAdapter(db, { provider: dialect, schema, usePlural: ${usePlural}, camelCase: ${camelCase} }) }
-export { db }`
-    },
-  },
-
   modules: ['@nuxt/ui', '@nuxthub/core', '@onmax/nuxt-better-auth', 'botid/nuxt'],
 })

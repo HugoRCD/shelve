@@ -9,5 +9,5 @@ export default defineEventHandler(async (event) => {
     return
   }
 
-  await getAppSession(event)
+  await getShelveSession(event)
 })

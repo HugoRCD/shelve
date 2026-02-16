@@ -32,18 +32,14 @@ export type AppSession = {
   source: 'session' | 'token'
 }
 
-export async function getAppSession(event: H3Event): Promise<AppSession | null> {
-  if (typeof event.context.appSession !== 'undefined') {
-    return event.context.appSession
+export async function getShelveSession(event: H3Event): Promise<AppSession | null> {
+  if (typeof event.context.shelveSession !== 'undefined') {
+    return event.context.shelveSession
   }
 
   const session = await resolveAppSession(event)
-  event.context.appSession = session
+  event.context.shelveSession = session
   return session
-}
-
-export async function getCurrentAppSession(event: H3Event): Promise<AppSession | null> {
-  return getAppSession(event)
 }
 
 async function resolveAppSession(event: H3Event): Promise<AppSession | null> {
@@ -82,7 +78,7 @@ async function resolveTokenAuth(event: H3Event): Promise<AppSession | null> {
 }
 
 export async function requireAppSession(event: H3Event): Promise<AppSession> {
-  const session = await getAppSession(event)
+  const session = await getShelveSession(event)
   if (!session) {
     throw createError({ statusCode: 401, statusMessage: 'Authentication required' })
   }

@@ -21,6 +21,6 @@ A follow-up spike may evaluate KV-backed session/cache behavior when module/runt
 
 Evaluation checklist:
 - Confirm Better Auth and `@onmax/nuxt-better-auth` support a safe KV store/session adapter path.
-- Validate SSR auth consistency and no regression in `event.context.appSession` hydration.
+- Validate SSR auth consistency and no regression in `event.context.shelveSession` hydration.
 - Verify CLI token fallback behavior remains unchanged.
 - Measure migration and rollback complexity before adopting KV in production.
