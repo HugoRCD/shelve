@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { getAuthErrorMessage } from '~/utils/auth-error'
+
 const props = defineProps<{
   email: string
   prefilledOtp?: string
@@ -40,8 +42,8 @@ async function handleOtpComplete(value: string[]) {
         }
       }
     })
-  } catch (error: any) {
-    toast.error(error.data?.message || 'Invalid verification code')
+  } catch (error: unknown) {
+    toast.error(getAuthErrorMessage(error, 'Invalid verification code'))
     otp.value = []
   } finally {
     loading.value = false
@@ -50,13 +52,14 @@ async function handleOtpComplete(value: string[]) {
 
 async function resendCode() {
   try {
+    if (!client) throw new Error('Authentication client not available')
     await client.emailOtp.sendVerificationOtp({
       email: props.email,
       type: 'sign-in'
     })
     toast.success('New verification code sent')
-  } catch (error: any) {
-    toast.error('Failed to resend code')
+  } catch (error: unknown) {
+    toast.error(getAuthErrorMessage(error, 'Failed to resend code'))
   }
 }
 </script>

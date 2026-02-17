@@ -30,7 +30,7 @@ export abstract class BaseService {
       return ofetch(`${url}/api/user/me`, {
         method: 'GET',
         headers: {
-          Cookie: `authToken=${token}`
+          Authorization: `Bearer ${token}`
         }
       })
     })
@@ -64,7 +64,7 @@ export abstract class BaseService {
       this.api = ofetch.create({
         baseURL,
         headers: {
-          Cookie: `authToken=${config.token}`
+          Authorization: `Bearer ${config.token}`
         },
         onResponseError: ErrorService.handleApiError
       })

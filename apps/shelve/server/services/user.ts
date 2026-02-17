@@ -1,7 +1,6 @@
 import type { H3Event } from 'h3'
 import type { AuthType, Token, User } from '../../../../packages/types'
 
-const LEGACY_ID_REGEX = /^\d+$/
 const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
 
 export async function validateUsername(username: string, _authType?: AuthType): Promise<string> {
@@ -10,29 +9,24 @@ export async function validateUsername(username: string, _authType?: AuthType): 
   return trimmed
 }
 
-function parseTokenId(authToken: string): { userId?: string; legacyId?: number } {
-  if (!authToken.startsWith(TOKEN_PREFIX)) return {}
-  const parts = authToken.split('_')
-  if (parts.length < 3) return {}
+function parseApiTokenId(apiToken: string): string | null {
+  if (!apiToken.startsWith(TOKEN_PREFIX)) return null
+  const parts = apiToken.split('_')
+  if (parts.length < 3) return null
   const [, idPart] = parts
-  if (!idPart) return {}
+  if (!idPart) return null
 
-  if (UUID_REGEX.test(idPart)) return { userId: idPart }
-  if (LEGACY_ID_REGEX.test(idPart)) return { legacyId: Number(idPart) }
-  return {}
+  if (UUID_REGEX.test(idPart)) return idPart
+  return null
 }
 
-export async function getUserByAuthToken(authToken: string, event: H3Event): Promise<User> {
+export async function getUserByApiToken(apiToken: string, event: H3Event): Promise<User> {
   const { encryptionKey } = useRuntimeConfig(event).private
-  const { userId, legacyId } = parseTokenId(authToken)
+  const userId = parseApiTokenId(apiToken)
 
   let user: User | undefined
-
   if (userId) {
     const [row] = await db.select().from(schema.user).where(eq(schema.user.id, userId)).limit(1)
-    user = row as User | undefined
-  } else if (legacyId !== undefined) {
-    const [row] = await db.select().from(schema.user).where(eq(schema.user.legacyId, legacyId)).limit(1)
     user = row as User | undefined
   }
 
@@ -49,7 +43,7 @@ export async function getUserByAuthToken(authToken: string, event: H3Event): Pro
   for (const token of userTokens) {
     try {
       const decryptedToken = await unseal(token.token, encryptionKey)
-      if (decryptedToken === authToken) foundToken = token
+      if (decryptedToken === apiToken) foundToken = token
     } catch {
       // Ignore tokens that can't be decrypted with the current key.
     }

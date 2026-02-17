@@ -1,6 +1,5 @@
-export default defineNuxtRouteMiddleware(async () => {
-  const { loggedIn, waitForSession } = useUserSession()
-  await waitForSession()
+export default defineNuxtRouteMiddleware(() => {
+  const { loggedIn } = useUserSession()
 
   if (!loggedIn.value) {
     toast.error('You need to be logged in to access this page.')

@@ -31,7 +31,7 @@ test.describe.serial('better-auth migration e2e', () => {
     await expect(page.getByText('Manage users and their roles')).toBeVisible()
   })
 
-  test('cli token works via authToken cookie', async ({ page }) => {
+  test('cli token works via bearer authorization', async ({ page }) => {
     await loginWithEmail(page, env.adminEmail)
 
     await page.goto('/user/tokens')
@@ -53,7 +53,7 @@ test.describe.serial('better-auth migration e2e', () => {
     const api = await request.newContext({ baseURL: env.baseUrl, extraHTTPHeaders: bypassHeaders })
     const cliResponse = await api.post('/api/user/cli', {
       headers: {
-        Cookie: `authToken=${created.token}`,
+        Authorization: `Bearer ${created.token}`,
       },
     })
     expect(cliResponse.ok()).toBeTruthy()

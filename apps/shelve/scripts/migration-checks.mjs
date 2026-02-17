@@ -1,6 +1,6 @@
 import postgres from 'postgres'
 
-const { mode, strictPre } = getCliOptions(process.argv.slice(2))
+const { mode } = getCliOptions(process.argv.slice(2))
 const databaseUrl = process.env.DATABASE_URL
 
 if (!databaseUrl) {
@@ -14,7 +14,7 @@ const warnings = []
 
 try {
   if (mode === 'pre') {
-    await runPreChecks({ strictPre })
+    await runPreChecks()
   } else {
     await runPostChecks()
   }
@@ -35,17 +35,16 @@ if (errors.length) {
   process.exit(1)
 }
 
-console.log(`\n${mode} checks passed${mode === 'pre' && strictPre ? ' (strict-pre mode)' : ''}.`)
+console.log(`\n${mode} checks passed.`)
 
 function getCliOptions(args) {
   const modeFlag = args.find((arg) => arg.startsWith('--mode='))
   const mode = modeFlag?.split('=')[1] || 'pre'
-  const strictPre = args.includes('--strict-pre')
   if (!['pre', 'post'].includes(mode)) {
-    console.error('Usage: node scripts/migration-checks.mjs --mode=pre|post [--strict-pre]')
+    console.error('Usage: node scripts/migration-checks.mjs --mode=pre|post')
     process.exit(1)
   }
-  return { mode, strictPre }
+  return { mode }
 }
 
 function createDbClient(url) {
@@ -175,24 +174,10 @@ async function runStructuralCompatibilityChecks() {
   }
 }
 
-async function runPreChecks({ strictPre }) {
+async function runPreChecks() {
   const hasLegacyUsers = await tableExists('users')
-  const hasUser = await tableExists('user')
-
   if (!hasLegacyUsers) {
-    if (strictPre) {
-      errors.push('Legacy table "users" not found (strict-pre mode)')
-      return
-    }
-
-    if (!hasUser) {
-      errors.push('Neither "users" (legacy) nor "user" (migrated) table exists')
-      return
-    }
-
-    warnings.push('Compatibility no-op: legacy table "users" is absent; validating migrated structure instead')
-    await runStructuralCompatibilityChecks()
-    await logCounts({ usersTable: 'user' })
+    errors.push('Legacy table "users" not found in pre-check mode. Use --mode=post for migrated schemas.')
     return
   }
 

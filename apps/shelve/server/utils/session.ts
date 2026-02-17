@@ -1,6 +1,7 @@
 import type { H3Event } from 'h3'
 import type { User } from '@types'
 import type { AuthSession } from '#nuxt-better-auth'
+import { getUserByApiToken } from '../services/user'
 
 type DbUser = typeof schema.user.$inferSelect
 
@@ -26,51 +27,45 @@ function toAppUser(user: DbUser | null): User | null {
 export type AppSession = {
   user: User
   session: AuthSession | null
-  // session: Better Auth session flow, token: CLI authToken fallback flow.
+  // session: Better Auth session flow, token: API token flow.
   source: 'session' | 'token'
 }
 
-export async function getShelveSession(event: H3Event): Promise<AppSession | null> {
-  if (typeof event.context.shelveSession !== 'undefined') {
-    return event.context.shelveSession
-  }
+function getApiTokenFromAuthorizationHeader(event: H3Event): string | null {
+  const header = getHeader(event, 'authorization')
+  if (!header) return null
 
-  const session = await getUserSession(event)
-  if (session) {
-    // Better Auth session types don't include Shelve-specific user fields (role, onboarding, ...).
-    const rows = await db.select()
-      .from(schema.user)
-      .where(eq(schema.user.id, session.user.id))
-      .limit(1)
-    const user = rows[0] ?? null
-    const appUser = toAppUser(user)
+  const [scheme, token] = header.split(' ')
+  if (scheme?.toLowerCase() !== 'bearer' || !token) return null
 
-    if (appUser) {
-      const appSession: AppSession = { user: appUser, session: session.session, source: 'session' }
-      event.context.shelveSession = appSession
-      return appSession
-    }
-  }
+  return token
+}
 
-  const authToken = getCookie(event, 'authToken')
-  if (!authToken) {
-    event.context.shelveSession = null
-    return null
-  }
-
-  const appSession: AppSession = {
-    user: await getUserByAuthToken(authToken, event),
-    session: null,
-    source: 'token',
-  }
-  event.context.shelveSession = appSession
-  return appSession
+async function getAppUserById(id: string): Promise<User | null> {
+  const rows = await db.select().from(schema.user).where(eq(schema.user.id, id)).limit(1)
+  return toAppUser(rows[0] ?? null)
 }
 
 export async function requireAppSession(event: H3Event): Promise<AppSession> {
-  const session = await getShelveSession(event)
-  if (!session) {
+  const apiToken = getApiTokenFromAuthorizationHeader(event)
+  if (apiToken?.startsWith(TOKEN_PREFIX)) {
+    return {
+      user: await getUserByApiToken(apiToken, event),
+      session: null,
+      source: 'token',
+    }
+  }
+
+  const { user, session } = await requireUserSession(event)
+  const appUser = await getAppUserById(user.id)
+
+  if (!appUser) {
     throw createError({ statusCode: 401, statusMessage: 'Authentication required' })
   }
-  return session
+
+  return {
+    user: appUser,
+    session,
+    source: 'session',
+  }
 }

@@ -24,26 +24,26 @@
     "db:migrate": "SKIP_ENV_VALIDATION=1 nuxt db migrate"
   },
   "dependencies": {
+    "@electric-sql/pglite": "^0.3.15",
+    "@onmax/nuxt-better-auth": "https://pkg.pr.new/nuxt-modules/better-auth/@onmax/nuxt-better-auth@165",
     "@vue-email/components": "^0.0.21",
     "@vue-email/render": "^0.0.9",
+    "better-auth": "^1.5.0-beta.15",
     "blakejs": "^1.2.1",
     "drizzle-kit": "^0.31.8",
     "drizzle-orm": "^0.45.1",
     "jsonwebtoken": "^9.0.3",
     "libsodium-wrappers": "^0.8.2",
-    "@onmax/nuxt-better-auth": "0.0.2-alpha.24",
-    "better-auth": "^1.5.0-beta.13",
     "nuxt-build-cache": "^0.1.1",
     "postgres": "^3.4.8",
-    "@electric-sql/pglite": "^0.3.15",
     "resend": "^6.9.1",
     "tweetnacl": "^1.0.3",
     "vue-router": "^4.6.4"
   },
   "devDependencies": {
     "@nuxt/devtools": "^3.1.1",
+    "@playwright/test": "^1.50.0",
     "@types/jsonwebtoken": "^9.0.10",
-    "@types/libsodium-wrappers": "^0.8.2",
-    "@playwright/test": "^1.50.0"
+    "@types/libsodium-wrappers": "^0.8.2"
   }
 }

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { motion } from 'motion-v'
 import { InvitationStatus, TeamRole } from '@types'
+import { getAuthErrorMessage } from '~/utils/auth-error'
 
 definePageMeta({
   layout: 'auth',
@@ -10,7 +11,7 @@ const route = useRoute()
 const router = useRouter()
 const token = route.params.token as string
 
-const { loggedIn, user, signIn } = useUserSession()
+const { loggedIn, user, signIn, signOut, fetchSession } = useUserSession()
 const { title, auth: { isGithubEnabled, isGoogleEnabled, isEmailEnabled } } = useAppConfig()
 
 const { data: invitation, status, error } = await useFetch(`/api/invitations/${token}`, {
@@ -57,7 +58,7 @@ async function acceptInvitation() {
       method: 'POST',
     })
 
-    await useUserSession().fetch()
+    await fetchSession()
 
     toast.success('Invitation accepted! Welcome to the team.')
     if (result.teamSlug) {
@@ -65,8 +66,8 @@ async function acceptInvitation() {
     } else {
       await router.push('/')
     }
-  } catch (err: any) {
-    toast.error(err.data?.message || 'Failed to accept invitation')
+  } catch (error: unknown) {
+    toast.error(getAuthErrorMessage(error, 'Failed to accept invitation'))
   } finally {
     accepting.value = false
   }
@@ -80,8 +81,8 @@ async function declineInvitation() {
     })
     toast.success('Invitation declined')
     await router.push('/login')
-  } catch (err: any) {
-    toast.error(err.data?.message || 'Failed to decline invitation')
+  } catch (error: unknown) {
+    toast.error(getAuthErrorMessage(error, 'Failed to decline invitation'))
   } finally {
     declining.value = false
   }
@@ -94,13 +95,13 @@ async function loginWithRedirect(provider: string) {
       provider,
       callbackURL: redirect,
     })
-  } catch (err: any) {
-    toast.error(err.data?.message || `Failed to sign in with ${provider}`)
+  } catch (error: unknown) {
+    toast.error(getAuthErrorMessage(error, `Failed to sign in with ${provider}`))
   }
 }
 
 async function logoutAndRedirect() {
-  await useUserSession().clear()
+  await signOut()
   const redirect = `/invite/${token}`
   await navigateTo(`/login?redirect=${encodeURIComponent(redirect)}`)
 }

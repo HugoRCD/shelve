@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { getAuthErrorMessage } from '~/utils/auth-error'
+
 const loading = ref(false)
 const { signIn } = useUserSession()
 const props = defineProps({
@@ -27,7 +29,8 @@ function open() {
     provider: props.provider,
     callbackURL: props.redirectUrl || undefined,
   })
-    .catch(() => {
+    .catch((error: unknown) => {
+      toast.error(getAuthErrorMessage(error, `Failed to sign in with ${props.provider}`))
       loading.value = false
     })
 }

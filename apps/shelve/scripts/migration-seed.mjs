@@ -237,24 +237,14 @@ function createDbClient(url) {
   })
 }
 
-async function tableExists(sql, name) {
-  const rows = await sql`select to_regclass(${`public.${name}`}) as name`
-  return rows[0]?.name !== null
-}
-
 async function loginWithPrefilledOtp(page, email, sql) {
-  const isBetter = await tableExists(sql, 'verification')
-  const otp = isBetter
-    ? await primeBetterOtp(sql, email)
-    : await primeLegacyOtpAndRead(sql, email)
+  const otp = await primeBetterOtp(sql, email)
 
   const url = new URL('/login', baseUrl)
   url.searchParams.set('email', email)
   url.searchParams.set('otp', otp)
 
-  const verifyPath = isBetter
-    ? '/api/auth/sign-in/email-otp'
-    : '/api/auth/otp/verify'
+  const verifyPath = '/api/auth/sign-in/email-otp'
 
   const [verifyResponse] = await Promise.all([
     page.waitForResponse((res) => (
@@ -273,7 +263,7 @@ async function loginWithPrefilledOtp(page, email, sql) {
   await page.goto('/')
   await page.waitForURL((u) => !u.pathname.startsWith('/login'), { timeout: 30_000 })
 
-  return isBetter ? 'better-auth' : 'legacy'
+  return 'better-auth'
 }
 
 async function primeBetterOtp(sql, email) {
@@ -289,228 +279,6 @@ async function primeBetterOtp(sql, email) {
     values (${identifier}, ${value}, now() + interval '10 minutes', now(), now())
   `
   return otp
-}
-
-async function primeLegacyOtpAndRead(sql, email) {
-  const requestedAt = new Date()
-  await primeLegacyOtp(sql, email)
-  return waitForOtp(sql, email, requestedAt, 'legacy', { timeoutMs: 3_000 })
-}
-
-async function loginWithOtp(api, email, sql) {
-  const requestedAt = new Date()
-
-  const betterSend = await api.post('/api/auth/email-otp/send-verification-otp', {
-    data: { email, type: 'sign-in' },
-  })
-
-  if (betterSend.ok() || betterSend.status() === 429) {
-    try {
-      const otp = await waitForOtp(sql, email, requestedAt, 'better', { timeoutMs: 6_000 })
-      const betterVerify = await api.post('/api/auth/sign-in/email-otp', {
-        data: { email, otp },
-      })
-      if (betterVerify.ok()) return 'better-auth'
-    } catch {
-      // Fall back to legacy OTP if Better Auth isn't actually writing codes in this environment.
-    }
-  }
-
-  const legacySend = await api.post('/api/auth/otp/send', {
-    data: { email },
-  })
-  if (legacySend.status() === 429) {
-    // For rehearsal runs (email service often disabled), bypass the rate-limit by
-    // directly priming an OTP in the DB.
-    await primeLegacyOtp(sql, email)
-  } else if (!legacySend.ok()) {
-    if (legacySend.status() >= 500) {
-      await primeLegacyOtp(sql, email)
-    } else {
-      throw new Error(`Legacy OTP send failed (${legacySend.status()}) for ${email}`)
-    }
-  }
-
-  const otp = await waitForOtp(sql, email, requestedAt, 'legacy')
-  const legacyVerify = await api.post('/api/auth/otp/verify', {
-    data: { email, code: otp },
-  })
-  if (!legacyVerify.ok()) {
-    const body = await legacyVerify.text().catch(() => '')
-    throw new Error(`Legacy OTP verify failed (${legacyVerify.status()}) for ${email}: ${body.slice(0, 240)}`)
-  }
-
-  return 'legacy'
-}
-
-async function waitForOtp(sql, email, requestedAt, mode, { timeoutMs = 20_000 } = {}) {
-  const deadline = Date.now() + timeoutMs
-  while (Date.now() < deadline) {
-    try {
-      const otp = mode === 'better'
-        ? await fetchBetterOtp(sql, email, requestedAt)
-        : await fetchLegacyOtp(sql, email, requestedAt)
-      if (otp) return otp
-    } catch {
-      // Keep polling.
-    }
-    await sleep(500)
-  }
-  throw new Error(`OTP not found for ${email} (${mode})`)
-}
-
-async function fetchBetterOtp(sql, email, requestedAt) {
-  const identifier = `sign-in-otp-${email.toLowerCase()}`
-  const rows = await sql`
-    select value
-    from verification
-    where identifier = ${identifier}
-      and "createdAt" >= now() - interval '15 minutes'
-    order by "createdAt" desc
-    limit 1
-  `
-  if (!rows.length) return null
-  const [otp] = String(rows[0].value).split(':')
-  return otp || null
-}
-
-async function fetchLegacyOtp(sql, email, requestedAt) {
-  const rows = await sql`
-    select "otpCode"
-    from users
-    where lower(email) = lower(${email})
-      and "otpCode" is not null
-      and "otpExpiresAt" > now()
-    order by "otpLastRequestAt" desc
-    limit 1
-  `
-  if (!rows.length) return null
-  return rows[0].otpCode ? String(rows[0].otpCode) : null
-}
-
-async function primeLegacyOtp(sql, email) {
-  const username = email.split('@')[0].slice(0, 20)
-  const otpCode = String(Math.floor(100000 + Math.random() * 900000))
-  const otpToken = Array.from(crypto.getRandomValues(new Uint8Array(32)))
-    .map(byte => byte.toString(16).padStart(2, '0'))
-    .join('')
-
-  const existing = await sql`
-    select id
-    from users
-    where lower(email) = lower(${email})
-    limit 1
-  `
-
-  if (!existing.length) {
-    const nextIdRows = await sql`select coalesce(max(id), 0)::bigint + 1 as id from users`
-    const nextId = Number(nextIdRows[0]?.id || 1)
-    const hasUsername = await columnExists(sql, 'users', 'username')
-    const hasAuthType = await columnExists(sql, 'users', 'authType')
-    const hasRole = await columnExists(sql, 'users', 'role')
-    const hasOnboarding = await columnExists(sql, 'users', 'onboarding')
-    const hasCliInstalled = await columnExists(sql, 'users', 'cliInstalled')
-    const hasCreatedAt = await columnExists(sql, 'users', 'createdAt')
-    const hasUpdatedAt = await columnExists(sql, 'users', 'updatedAt')
-
-    const columns = ['"id"', '"email"']
-    const values = ['$1', '$2']
-    const params = [nextId, email]
-
-    if (hasUsername) {
-      columns.push('"username"')
-      values.push(`$${params.length + 1}`)
-      params.push(username)
-    }
-    if (hasAuthType) {
-      columns.push('"authType"')
-      values.push(`$${params.length + 1}`)
-      params.push('email')
-    }
-    if (hasRole) {
-      columns.push('"role"')
-      values.push(`$${params.length + 1}`)
-      params.push('user')
-    }
-    if (hasOnboarding) {
-      columns.push('"onboarding"')
-      values.push(`$${params.length + 1}`)
-      params.push(false)
-    }
-    if (hasCliInstalled) {
-      columns.push('"cliInstalled"')
-      values.push(`$${params.length + 1}`)
-      params.push(false)
-    }
-    if (hasCreatedAt) {
-      columns.push('"createdAt"')
-      values.push(`$${params.length + 1}`)
-      params.push(new Date())
-    }
-    if (hasUpdatedAt) {
-      columns.push('"updatedAt"')
-      values.push(`$${params.length + 1}`)
-      params.push(new Date())
-    }
-
-    await sql.unsafe(
-      `insert into users (${columns.join(', ')}) values (${values.join(', ')})`,
-      params,
-    )
-  }
-
-  if (await columnExists(sql, 'users', 'username')) {
-    await sql`
-      update users
-      set "username" = coalesce(nullif("username", ''), ${username})
-      where lower(email) = lower(${email})
-    `
-  }
-  if (await columnExists(sql, 'users', 'authType')) {
-    await sql`
-      update users
-      set "authType" = coalesce("authType", 'email')
-      where lower(email) = lower(${email})
-    `
-  }
-  if (await columnExists(sql, 'users', 'onboarding')) {
-    await sql`
-      update users
-      set "onboarding" = coalesce("onboarding", false)
-      where lower(email) = lower(${email})
-    `
-  }
-  if (await columnExists(sql, 'users', 'cliInstalled')) {
-    await sql`
-      update users
-      set "cliInstalled" = coalesce("cliInstalled", false)
-      where lower(email) = lower(${email})
-    `
-  }
-
-  await sql`
-    update users
-    set
-      "otpCode" = ${otpCode},
-      "otpToken" = ${otpToken},
-      "otpExpiresAt" = now() + interval '10 minutes',
-      "otpLastRequestAt" = now(),
-      "otpAttempts" = coalesce("otpAttempts", 0) + 1,
-      "updatedAt" = now()
-    where lower(email) = lower(${email})
-  `
-}
-
-async function columnExists(sql, table, column) {
-  const rows = await sql`
-    select 1
-    from information_schema.columns
-    where table_schema = 'public'
-      and table_name = ${table}
-      and column_name = ${column}
-    limit 1
-  `
-  return rows.length > 0
 }
 
 async function ensureOnboardingComplete(api, runId) {
@@ -782,7 +550,7 @@ async function verifyCliToken(baseURL, token, headers) {
   const api = await request.newContext({ baseURL, extraHTTPHeaders: headers })
   const response = await api.post('/api/user/cli', {
     headers: {
-      Cookie: `authToken=${token}`,
+      Authorization: `Bearer ${token}`,
     },
   })
   await api.dispose()
@@ -792,8 +560,4 @@ async function verifyCliToken(baseURL, token, headers) {
 async function writeJson(path, payload) {
   await mkdir(dirname(path), { recursive: true })
   await writeFile(path, JSON.stringify(payload, null, 2))
-}
-
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms))
 }

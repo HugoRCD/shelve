@@ -1,12 +1,7 @@
 import { Role } from '@types'
 
-export default defineNuxtRouteMiddleware(async () => {
-  const { user, loggedIn, waitForSession } = useUserSession()
-  await waitForSession()
-
-  if (!loggedIn.value) {
-    return navigateTo('/login')
-  }
+export default defineNuxtRouteMiddleware(() => {
+  const { user } = useUserSession()
 
   if (user.value && user.value.role !== Role.ADMIN) {
     toast.error('You are not authorized to access this page')
