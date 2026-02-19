@@ -8,11 +8,11 @@
     "lint": "eslint .",
     "lint:fix": "eslint --fix ."
   },
-  "packageManager": "pnpm@10.29.3",
+  "packageManager": "pnpm@10.30.0",
   "dependencies": {
     "@iconify-json/heroicons": "^1.2.3",
-    "@iconify-json/lucide": "^1.2.90",
-    "@iconify-json/simple-icons": "^1.2.70",
+    "@iconify-json/lucide": "^1.2.92",
+    "@iconify-json/simple-icons": "^1.2.71",
     "@nuxt/content": "^3.11.2",
     "@nuxt/image": "^2.0.0",
     "@nuxt/scripts": "^0.13.2",
@@ -33,7 +33,7 @@
     "zod": "^4.3.6",
     "@nuxtjs/mdc": "^0.20.1",
     "botid": "^1.5.10",
-    "shaders": "^2.3.59",
-    "tailwindcss": "^4.1.18"
+    "shaders": "^2.3.68",
+    "tailwindcss": "^4.2.0"
   }
 }
