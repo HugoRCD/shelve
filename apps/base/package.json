@@ -8,7 +8,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint --fix ."
   },
-  "packageManager": "pnpm@10.30.0",
+  "packageManager": "pnpm@10.30.1",
   "dependencies": {
     "@iconify-json/heroicons": "^1.2.3",
     "@iconify-json/lucide": "^1.2.92",
@@ -33,7 +33,7 @@
     "zod": "^4.3.6",
     "@nuxtjs/mdc": "^0.20.1",
     "botid": "^1.5.10",
-    "shaders": "^2.3.68",
+    "shaders": "^2.3.72",
     "tailwindcss": "^4.2.0"
   }
 }
