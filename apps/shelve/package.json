@@ -37,7 +37,7 @@
   },
   "dependencies": {
     "@electric-sql/pglite": "^0.3.15",
-    "@onmax/nuxt-better-auth": "https://pkg.pr.new/nuxt-modules/better-auth/@onmax/nuxt-better-auth@165",
+    "@onmax/nuxt-better-auth": "https://pkg.pr.new/nuxt-modules/better-auth/@onmax/nuxt-better-auth@185",
     "@vue-email/components": "^0.0.21",
     "@vue-email/render": "^0.0.9",
     "better-auth": "^1.5.0-beta.15",
