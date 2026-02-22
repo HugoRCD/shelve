@@ -77,6 +77,7 @@ function createDbClient(url) {
   return postgres(url, {
     max: 1,
     ssl: useSsl ? 'require' : false,
+    prepare: false,
   })
 }
 
