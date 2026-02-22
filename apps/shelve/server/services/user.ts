@@ -1,7 +1,13 @@
 import type { H3Event } from 'h3'
 import type { AuthType, Token, User } from '../../../../packages/types'
+import { user as userTable } from '../db/schema'
 
 const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
+const NUMERIC_ID_REGEX = /^\d+$/
+
+type ParsedApiTokenId =
+  | { kind: 'uuid', value: string }
+  | { kind: 'legacyId', value: number }
 
 export async function validateUsername(username: string, _authType?: AuthType): Promise<string> {
   const trimmed = username.trim()
@@ -9,25 +15,39 @@ export async function validateUsername(username: string, _authType?: AuthType): 
   return trimmed
 }
 
-function parseApiTokenId(apiToken: string): string | null {
+function parseApiTokenId(apiToken: string): ParsedApiTokenId | null {
   if (!apiToken.startsWith(TOKEN_PREFIX)) return null
   const parts = apiToken.split('_')
   if (parts.length < 3) return null
   const [, idPart] = parts
   if (!idPart) return null
 
-  if (UUID_REGEX.test(idPart)) return idPart
+  if (UUID_REGEX.test(idPart)) return { kind: 'uuid', value: idPart }
+
+  if (NUMERIC_ID_REGEX.test(idPart)) {
+    const legacyId = Number(idPart)
+    if (Number.isSafeInteger(legacyId)) {
+      return { kind: 'legacyId', value: legacyId }
+    }
+  }
+
   return null
 }
 
 export async function getUserByApiToken(apiToken: string, event: H3Event): Promise<User> {
   const { encryptionKey } = useRuntimeConfig(event).private
-  const userId = parseApiTokenId(apiToken)
+  const parsedId = parseApiTokenId(apiToken)
 
   let user: User | undefined
-  if (userId) {
-    const [row] = await db.select().from(schema.user).where(eq(schema.user.id, userId)).limit(1)
+  if (parsedId?.kind === 'uuid') {
+    const [row] = await db.select().from(userTable).where(eq(userTable.id, parsedId.value)).limit(1)
     user = row as User | undefined
+  } else if (parsedId?.kind === 'legacyId') {
+    const [row] = await db.select().from(userTable).where(eq(userTable.legacyId, parsedId.value)).limit(1)
+    user = row as User | undefined
+    if (user) {
+      console.info('[auth-compat] accepted legacy numeric token id', { legacyId: parsedId.value })
+    }
   }
 
   if (!user) throw createError({ statusCode: 401, statusMessage: 'User not found (invalid token)' })

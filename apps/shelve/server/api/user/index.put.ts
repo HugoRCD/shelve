@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { user as userTable } from '../../db/schema'
 
 const updateUserSchema = z.object({
   name: z.string().min(1).max(50).trim().optional(),
@@ -12,12 +13,12 @@ export default eventHandler(async (event) => {
   if (body.name) body.name = await validateUsername(body.name)
 
   const [updatedUser] = await db
-    .update(schema.user)
+    .update(userTable)
     .set({
       name: body.name,
       image: body.image,
     })
-    .where(eq(schema.user.id, user.id))
+    .where(eq(userTable.id, user.id))
     .returning()
   if (!updatedUser) throw createError({ statusCode: 404, statusMessage: 'User not found' })
 

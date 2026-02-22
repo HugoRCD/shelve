@@ -1,12 +1,14 @@
+import { user as userTable } from '../../db/schema'
+
 
 export default defineEventHandler(async (event) => {
   const { user } = await requireAppSession(event)
 
-  await db.update(schema.user)
+  await db.update(userTable)
     .set({
       cliInstalled: true,
     })
-    .where(eq(schema.user.id, user.id))
+    .where(eq(userTable.id, user.id))
 
   return {
     status: 200,

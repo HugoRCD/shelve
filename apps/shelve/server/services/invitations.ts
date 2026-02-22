@@ -2,9 +2,10 @@ import { randomBytes } from 'node:crypto'
 import type { CreateInvitationInput, CancelInvitationInput, TeamInvitation, Member } from '@types'
 import { InvitationStatus } from '@types'
 import { and, eq, lt, desc } from 'drizzle-orm'
+import { user as userTable } from '../db/schema'
 
 const INVITATION_EXPIRY_DAYS = 7
-type DbUser = typeof schema.user.$inferSelect
+type DbUser = typeof userTable.$inferSelect
 type TeamInvitationWithInvitedBy = Omit<TeamInvitation, 'invitedBy'> & { invitedBy: DbUser | null }
 type MemberWithUser = Omit<Member, 'user'> & { user: DbUser | null }
 
@@ -29,7 +30,7 @@ export class InvitationsService {
       if (!invitedById) {
         return this.setInvitationInvitedBy(invitation, null)
       }
-      const [invitedBy] = await db.select().from(schema.user).where(eq(schema.user.id, invitedById)).limit(1)
+      const [invitedBy] = await db.select().from(userTable).where(eq(userTable.id, invitedById)).limit(1)
       return this.setInvitationInvitedBy(invitation, invitedBy || null)
     }
 
@@ -202,7 +203,7 @@ export class InvitationsService {
       throw createError({ statusCode: 422, message: 'Failed to retrieve member' })
     }
 
-    const [user] = await db.select().from(schema.user).where(eq(schema.user.id, userId)).limit(1)
+    const [user] = await db.select().from(userTable).where(eq(userTable.id, userId)).limit(1)
     return this.setMemberUser(member, user || null)
   }
 
@@ -251,7 +252,7 @@ export class InvitationsService {
   }
 
   private async isUserAlreadyMember(teamId: number, email: string): Promise<Member | undefined> {
-    const [user] = await db.select().from(schema.user).where(eq(schema.user.email, email)).limit(1)
+    const [user] = await db.select().from(userTable).where(eq(userTable.email, email)).limit(1)
 
     if (!user) return undefined
 
@@ -262,5 +263,4 @@ export class InvitationsService {
       ),
     })
   }
-
 }

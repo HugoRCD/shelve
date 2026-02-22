@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { user as userTable } from '../../db/schema'
 
 export default defineEventHandler(async (event) => {
   const { user } = await requireAppSession(event)
@@ -8,11 +9,11 @@ export default defineEventHandler(async (event) => {
     }),
   }).parse)
 
-  await db.update(schema.user)
+  await db.update(userTable)
     .set({
       onboarding: true,
     })
-    .where(eq(schema.user.id, user.id))
+    .where(eq(userTable.id, user.id))
 
   setCookie(event, 'defaultTeamSlug', teamSlug.toString())
 

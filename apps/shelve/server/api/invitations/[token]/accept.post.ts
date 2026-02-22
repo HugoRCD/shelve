@@ -1,4 +1,5 @@
 import type { H3Event } from 'h3'
+import { user as userTable } from '../../../db/schema'
 
 export default eventHandler(async (event: H3Event) => {
   const token = getRouterParam(event, 'token')
@@ -13,9 +14,9 @@ export default eventHandler(async (event: H3Event) => {
   const member = await new InvitationsService().acceptInvitation(token, user.id, user.email)
 
   if (!user.onboarding) {
-    await db.update(schema.user)
+    await db.update(userTable)
       .set({ onboarding: true })
-      .where(eq(schema.user.id, user.id))
+      .where(eq(userTable.id, user.id))
   }
 
   if (invitation.team?.slug) {

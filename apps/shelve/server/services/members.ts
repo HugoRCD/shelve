@@ -1,4 +1,5 @@
 import type { AddMemberInput, Member, RemoveMemberInput, UpdateMemberInput, User } from '@types'
+import { user as userTable } from '../db/schema'
 
 type MemberWithUser = Omit<Member, 'user'> & { user: User | null }
 
@@ -61,7 +62,7 @@ export class MembersService {
       where: eq(schema.members.id, memberId),
     })
     if (!member) throw createError({ statusCode: 404, message: `Member not found with id ${memberId}` })
-    const [user] = await db.select().from(schema.user).where(eq(schema.user.id, member.userId)).limit(1)
+    const [user] = await db.select().from(userTable).where(eq(userTable.id, member.userId)).limit(1)
     return this.setMemberUser(member, (user as User | undefined) ?? null)
   }
 
@@ -76,9 +77,8 @@ export class MembersService {
   }
 
   async getUserByEmail(email: string): Promise<User> {
-    const [user] = await db.select().from(schema.user).where(eq(schema.user.email, email)).limit(1)
+    const [user] = await db.select().from(userTable).where(eq(userTable.email, email)).limit(1)
     if (!user) throw createError({ statusCode: 404, message: `User not found with email ${email}` })
     return user as User
   }
-
 }

@@ -1,9 +1,10 @@
 import type { CreateTeamInput, DeleteTeamInput, Team, UpdateTeamInput } from '@types'
 import { TeamRole } from '@types'
 import { inArray } from 'drizzle-orm'
+import { user as userTable } from '../db/schema'
 
 type TeamMember = Team['members'][number]
-type TeamMemberWithUser = Omit<TeamMember, 'user'> & { user: typeof schema.user.$inferSelect | null }
+type TeamMemberWithUser = Omit<TeamMember, 'user'> & { user: typeof userTable.$inferSelect | null }
 
 export const BLACKLIST_TEAM_SLUGS: string[] = [
   'user',
@@ -40,7 +41,7 @@ export const BLACKLIST_TEAM_SLUGS: string[] = [
 ]
 
 export class TeamsService {
-  private setMemberUser(member: TeamMember, user: typeof schema.user.$inferSelect | null): void {
+  private setMemberUser(member: TeamMember, user: typeof userTable.$inferSelect | null): void {
     (member as TeamMemberWithUser).user = user
   }
 
@@ -48,8 +49,8 @@ export class TeamsService {
     const memberUserIds = [...new Set(team.members.map((member) => member.userId))]
     if (!memberUserIds.length) return team
 
-    const users = await db.select().from(schema.user).where(inArray(schema.user.id, memberUserIds))
-    const usersById = new Map<string, typeof schema.user.$inferSelect>()
+    const users = await db.select().from(userTable).where(inArray(userTable.id, memberUserIds))
+    const usersById = new Map<string, typeof userTable.$inferSelect>()
     for (const user of users) {
       usersById.set(user.id, user)
     }
@@ -68,8 +69,8 @@ export class TeamsService {
     const userIds = [...new Set(teams.flatMap((team) => team.members.map((member) => member.userId)))]
     if (!userIds.length) return teams
 
-    const users = await db.select().from(schema.user).where(inArray(schema.user.id, userIds))
-    const usersById = new Map<string, typeof schema.user.$inferSelect>()
+    const users = await db.select().from(userTable).where(inArray(userTable.id, userIds))
+    const usersById = new Map<string, typeof userTable.$inferSelect>()
     for (const user of users) {
       usersById.set(user.id, user)
     }
@@ -218,5 +219,4 @@ export class TeamsService {
     if (!team) throw createError({ statusCode: 404, statusMessage: `Team not found with slug ${slug}` })
     return this.hydrateTeamUsers(team)
   }
-
 }
