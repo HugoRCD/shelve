@@ -21,7 +21,7 @@ const routeTitle = computed(() => {
 })
 
 const title = computed(() => {
-  return route.path === `/${teamSlug.value}` ? `Welcome, ${user.value?.username}` : navigation.value?.title || routeTitle.value
+  return route.path === `/${teamSlug.value}` ? `Welcome, ${user.value?.name}` : navigation.value?.title || routeTitle.value
 })
 </script>
 

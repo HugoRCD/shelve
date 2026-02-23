@@ -6,7 +6,10 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-01-24',
 
   hub: {
-    db: 'postgresql',
+    db: {
+      dialect: 'postgresql',
+      applyMigrationsDuringBuild: process.env.HUB_APPLY_MIGRATIONS_DURING_BUILD === 'true',
+    },
   },
 
   ssr: false,
@@ -16,17 +19,20 @@ export default defineNuxtConfig({
       openAPI: true
     },
     rollupConfig: {
-      // @ts-expect-error - this is not typed
       plugins: [vue()]
     },
     imports: {
-      dirs: ['./server/services']
+      dirs: ['./server/services', './server/utils']
     }
   },
 
   css: ['~/assets/css/index.css'],
 
   runtimeConfig: {
+    betterAuthSecret: process.env.BETTER_AUTH_SECRET || process.env.NUXT_BETTER_AUTH_SECRET,
+    public: {
+      siteUrl: '',
+    },
     private: {
       resendApiKey: '',
       resendWebhookSecret: '',
@@ -53,6 +59,7 @@ export default defineNuxtConfig({
   $development: {
     runtimeConfig: {
       public: {
+        siteUrl: 'http://localhost:3000',
         github: {
           appName: 'shelve-local',
         },
@@ -63,6 +70,7 @@ export default defineNuxtConfig({
   $production: {
     runtimeConfig: {
       public: {
+        siteUrl: 'https://app.shelve.cloud',
         github: {
           appName: 'shelve-cloud',
         },
@@ -74,5 +82,14 @@ export default defineNuxtConfig({
     format: ['webp', 'jpeg', 'jpg', 'png', 'svg']
   },
 
-  modules: ['@nuxt/ui', 'nuxt-auth-utils', '@nuxthub/core', 'botid/nuxt'],
+  auth: {
+    redirects: {
+      login: '/login',
+      guest: '/',
+    },
+    preserveRedirect: true,
+    redirectQueryKey: 'redirect',
+  },
+
+  modules: ['@nuxt/ui', '@nuxthub/core', '@onmax/nuxt-better-auth', 'botid/nuxt'],
 })

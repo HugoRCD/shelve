@@ -10,22 +10,24 @@ export enum AuthType {
 }
 
 export type User = {
-  id: number;
-  username: string;
+  id: string;
+  name: string;
   email: string;
-  avatar: string;
+  image?: string | null;
+  emailVerified: boolean;
   role: 'admin' | 'user';
   authType: 'github' | 'google' | 'email';
   onboarding: boolean;
   cliInstalled: boolean;
+  legacyId?: number | null;
   createdAt: Date;
   updatedAt: Date;
 };
 
 export type CreateUserInput = {
   email: string;
-  username: string;
-  avatar?: string;
+  name: string;
+  image?: string;
   authType: AuthType;
   appUrl: string;
 };

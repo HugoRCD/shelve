@@ -1,132 +1,81 @@
 import type { H3Event } from 'h3'
-import type { CreateUserInput, Token, User } from '@types'
-import { AuthType, Role } from '@types'
+import type { AuthType, Token, User } from '../../../../packages/types'
+import { user as userTable } from '../db/schema'
 
-async function syncUserRole(user: User, event: H3Event): Promise<User> {
-  const adminEmails = useRuntimeConfig(event).private.adminEmails?.split(',').map(e => e.trim()) || []
-  const shouldBeAdmin = adminEmails.includes(user.email)
-  const currentlyAdmin = user.role === Role.ADMIN
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
+const NUMERIC_ID_REGEX = /^\d+$/
 
-  if (shouldBeAdmin && !currentlyAdmin) {
-    const [updatedUser] = await db
-      .update(schema.users)
-      .set({ role: Role.ADMIN })
-      .where(eq(schema.users.id, user.id))
-      .returning()
-    console.log(`[Auth] Promoted ${user.email} to admin`)
-    return updatedUser
+type ParsedApiTokenId =
+  | { kind: 'uuid', value: string }
+  | { kind: 'legacyId', value: number }
+
+export function validateUsername(username: string, _authType?: AuthType): string {
+  const trimmed = username.trim()
+  if (!trimmed) throw createError({ statusCode: 400, statusMessage: 'Invalid username' })
+  return trimmed
+}
+
+function parseApiTokenId(apiToken: string): ParsedApiTokenId | null {
+  if (!apiToken.startsWith(TOKEN_PREFIX)) return null
+  const parts = apiToken.split('_')
+  if (parts.length < 3) return null
+  const [, idPart] = parts
+  if (!idPart) return null
+
+  if (UUID_REGEX.test(idPart)) return { kind: 'uuid', value: idPart }
+
+  if (NUMERIC_ID_REGEX.test(idPart)) {
+    const legacyId = Number(idPart)
+    if (Number.isSafeInteger(legacyId)) {
+      return { kind: 'legacyId', value: legacyId }
+    }
   }
 
-  if (!shouldBeAdmin && currentlyAdmin) {
-    const [updatedUser] = await db
-      .update(schema.users)
-      .set({ role: Role.USER })
-      .where(eq(schema.users.id, user.id))
-      .returning()
-    console.log(`[Auth] Demoted ${user.email} from admin`)
-    return updatedUser
-  }
-
-  return user
+  return null
 }
 
-export async function createUser(input: CreateUserInput, event: H3Event): Promise<User> {
-  const adminEmails = useRuntimeConfig(event).private.adminEmails?.split(',') || []
-  input.username = await validateUsername(input.username, input.authType)
-  const [createdUser] = await db
-    .insert(schema.users)
-    .values({
-      username: input.username,
-      email: input.email,
-      avatar: input.avatar,
-      authType: input.authType,
-      role: adminEmails.includes(input.email) ? Role.ADMIN : undefined,
-    })
-    .returning()
-  if (!createdUser) throw createError({ statusCode: 422, statusMessage: 'Failed to create user' })
-  await new EmailService(event).sendWelcomeEmail(input.email, input.username, input.appUrl)
-  return createdUser
-}
-
-export async function handleOAuthUser(input: CreateUserInput, event: H3Event): Promise<User> {
-  const [foundUser] = await db
-    .select()
-    .from(schema.users)
-    .where(eq(schema.users.email, input.email))
-
-  if (!foundUser) return await createUser(input, event)
-  return await syncUserRole(foundUser, event)
-}
-
-export async function handleEmailUser(email: string, event: H3Event): Promise<{ user: User; isNewUser: boolean }> {
-  const [foundUser] = await db
-    .select()
-    .from(schema.users)
-    .where(eq(schema.users.email, email))
-
-  if (foundUser) {
-    const syncedUser = await syncUserRole(foundUser, event)
-    return { user: syncedUser, isNewUser: false }
-  }
-
-  const username = await validateUsername(email.split('@')[0], AuthType.EMAIL)
-  const userInput: CreateUserInput = {
-    email,
-    username,
-    authType: AuthType.EMAIL,
-    avatar: 'https://i.imgur.com/6VBx3io.png',
-    appUrl: getRequestHost(event),
-  }
-
-  const newUser = await createUser(userInput, event)
-  return { user: newUser, isNewUser: true }
-}
-
-export async function validateUsername(username: string, authType?: AuthType): Promise<string> {
-  const foundUser = await db
-    .select({
-      username: schema.users.username,
-    })
-    .from(schema.users)
-    .where(eq(schema.users.username, username))
-
-  const usernameTaken = foundUser.length > 0
-  const isOAuthUser = authType === AuthType.GITHUB || authType === AuthType.GOOGLE
-  if (isOAuthUser && usernameTaken) return generateUniqueUsername(username)
-  if (usernameTaken) throw createError({ statusCode: 400, statusMessage: 'Username already taken' })
-  return username
-}
-
-function generateUniqueUsername(username: string): string {
-  return `${username}_#${Math.floor(Math.random() * 1000)}`
-}
-
-export async function getUserByAuthToken(authToken: string, event: H3Event): Promise<User> {
+export async function getUserByApiToken(apiToken: string, event: H3Event): Promise<User> {
   const { encryptionKey } = useRuntimeConfig(event).private
-  const userId = +authToken.split('_')[1] // Extract the user ID from the token
+  const parsedId = parseApiTokenId(apiToken)
+
+  let user: User | undefined
+  if (parsedId?.kind === 'uuid') {
+    const [row] = await db.select().from(userTable).where(eq(userTable.id, parsedId.value)).limit(1)
+    user = row as User | undefined
+  } else if (parsedId?.kind === 'legacyId') {
+    const [row] = await db.select().from(userTable).where(eq(userTable.legacyId, parsedId.value)).limit(1)
+    user = row as User | undefined
+    if (user) {
+      console.info('[auth-compat] accepted legacy numeric token id', { legacyId: parsedId.value })
+    }
+  }
+
+  if (!user) throw createError({ statusCode: 401, statusMessage: 'User not found (invalid token)' })
+
   const userTokens = await db.query.tokens.findMany({
-    where: eq(schema.tokens.userId, userId)
+    where: eq(schema.tokens.userId, user.id)
   })
+
   if (!userTokens.length) throw createError({ statusCode: 401, statusMessage: 'User not found (invalid token)' })
 
   let foundToken: Token | undefined
 
   for (const token of userTokens) {
-    const decryptedToken = await unseal(token.token, encryptionKey)
-    if (decryptedToken === authToken) foundToken = token
+    try {
+      const decryptedToken = await unseal(token.token, encryptionKey)
+      if (decryptedToken === apiToken) foundToken = token
+    } catch {
+      // Ignore tokens that can't be decrypted with the current key.
+    }
   }
 
   if (!foundToken) throw createError({ statusCode: 401, statusMessage: 'Invalid token' })
-
-  const user = await db.query.users.findFirst({
-    where: eq(schema.users.id, userId)
-  })
-  if (!user) throw createError({ statusCode: 400, statusMessage: 'User not found (invalid token)' })
 
   await db.update(schema.tokens)
     .set({
       updatedAt: new Date()
     })
     .where(eq(schema.tokens.id, foundToken.id))
+
   return user
 }

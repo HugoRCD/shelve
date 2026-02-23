@@ -145,3 +145,8 @@ dist
 
 apps/vault/.data
 apps/shelve/.data
+.vercel
+.env*.local
+.tmp/
+.worktrees/
+.nuxtrc

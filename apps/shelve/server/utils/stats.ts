@@ -1,4 +1,5 @@
 import type { Stats } from '@types'
+import { user as userTable } from '../db/schema'
 
 export const STATS_CACHE_KEY = 'nitro:functions:stats:latest.json'
 export const STATS_CACHE_REVALIDATE_AFTER = 1000 * 60 * 5 // 5 minutes
@@ -36,7 +37,7 @@ const calculateStats = (data: {
 
 export const getStats = async (): Promise<Stats> => {
   const [users, variables, teams, projects, teamStats] = await Promise.all([
-    db.query.users.findMany(),
+    db.select().from(userTable),
     db.query.variables.findMany(),
     db.query.teams.findMany(),
     db.query.projects.findMany(),

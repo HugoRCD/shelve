@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const loading = ref(false)
+const signInSocial = useSignIn('social')
 const props = defineProps({
   label: {
     type: String,
@@ -15,16 +15,22 @@ const props = defineProps({
   },
   redirectUrl: {
     type: String,
-    default: '',
+    required: false,
+    default: undefined,
   },
 })
 
-function open() {
-  loading.value = true
-  const url = props.redirectUrl
-    ? `/auth/${props.provider}?redirect=${encodeURIComponent(props.redirectUrl)}`
-    : `/auth/${props.provider}`
-  window.location.href = url
+const loading = computed(() => signInSocial.status.value === 'pending')
+
+async function open() {
+  await signInSocial.execute({
+    provider: props.provider,
+    callbackURL: props.redirectUrl || undefined,
+  })
+
+  if (signInSocial.status.value === 'error') {
+    toast.error(getAuthErrorMessage(signInSocial.error.value, `Failed to sign in with ${props.provider}`))
+  }
 }
 </script>
 
@@ -32,7 +38,6 @@ function open() {
   <UButton
     :loading
     :disabled="loading"
-    external
     :icon
     block
     class="rounded-none"

@@ -16,22 +16,20 @@ const state = reactive<Partial<Schema>>({
   email: undefined
 })
 
-const loading = ref(false)
+const sendVerificationOtp = useAuthClientAction((authClient) => authClient.emailOtp.sendVerificationOtp)
+const loading = computed(() => sendVerificationOtp.status.value === 'pending')
 
 async function onSubmit(event: FormSubmitEvent<Schema>) {
-  loading.value = true
-  try {
-    await $fetch('/api/auth/otp/send', {
-      method: 'POST',
-      body: { email: event.data.email }
-    })
+  await sendVerificationOtp.execute({
+    email: event.data.email,
+    type: 'sign-in'
+  })
 
+  if (sendVerificationOtp.status.value === 'error') {
+    toast.error(getAuthErrorMessage(sendVerificationOtp.error.value, 'Failed to send verification code'))
+  } else {
     emit('emailSubmitted', event.data.email)
     toast.success('Check your email for the verification code')
-  } catch (error: any) {
-    toast.error(error.data?.message || 'Failed to send verification code')
-  } finally {
-    loading.value = false
   }
 }
 </script>

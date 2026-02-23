@@ -2,7 +2,7 @@ import type { H3Event } from 'h3'
 import { z } from 'zod'
 
 export default defineEventHandler(async (event: H3Event) => {
-  const { user } = await requireUserSession(event)
+  const { user } = await requireAppSession(event)
   const { installationId } = await getValidatedRouterParams(event, z.object({
     installationId: z.coerce.number({
       error: 'installationId is required',

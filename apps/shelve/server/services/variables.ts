@@ -35,7 +35,7 @@ export class VariablesService {
               updatedAt: new Date()
             }
           })
-          .catch((error) => {
+          .catch((error: unknown) => {
             console.error('Failed to increment stat', error)
           })
       } catch { /* empty */ }
@@ -60,7 +60,7 @@ export class VariablesService {
     return {
       ...variable,
       values: await Promise.all(
-        variable.values.map(async v => ({
+        variable.values.map(async (v) => ({
           ...v,
           value: await this.decryptValue(v.value)
         }))
@@ -72,7 +72,7 @@ export class VariablesService {
   async createVariables(event: H3Event, input: CreateVariablesInput): Promise<void> {
     const { projectId, variables: varsToCreate, autoUppercase = true, environmentIds, syncWithGitHub } = input
 
-    await db.transaction(async (tx) => {
+    await db.transaction(async (tx: any) => {
       const preparedVariables = await Promise.all(
         varsToCreate.map(async (variable) => ({
           key: autoUppercase ? variable.key.toUpperCase() : variable.key,
@@ -99,7 +99,7 @@ export class VariablesService {
         })
       )
 
-      const variableValues = variableRecords.flatMap(variable => {
+      const variableValues = variableRecords.flatMap((variable: { id: number; key: string }) => {
         const preparedVar = preparedVariables.find(v => v.key === variable.key)
         if (!preparedVar) return []
 
@@ -129,7 +129,7 @@ export class VariablesService {
     await clearCache('Variables', projectId)
 
     if (syncWithGitHub) {
-      const { user } = await requireUserSession(event)
+      const { user } = await requireAppSession(event)
       const project = await new ProjectsService().getProject(projectId)
       if (!project || !project.repository) throw createError({ statusCode: 400, statusMessage: 'No GitHub repository linked to this project.' })
       const variablesToSend = varsToCreate.map(v => ({ key: autoUppercase ? v.key.toUpperCase() : v.key, value: v.value }))
@@ -140,7 +140,7 @@ export class VariablesService {
   async updateVariable(input: UpdateVariableInput): Promise<void> {
     const { id, key, values, autoUppercase = true } = input
 
-    await db.transaction(async (tx) => {
+    await db.transaction(async (tx: any) => {
       const existingVariable = await this.findVariableById(tx, id)
       if (!existingVariable) throw createError({ statusCode: 404, statusMessage: `Variable not found with id ${id}` })
 
@@ -171,7 +171,7 @@ export class VariablesService {
     })
 
     return environmentId
-      ? variables.filter(v => v.values.some(val => val.environmentId === environmentId))
+      ? variables.filter((v: Variable) => v.values.some(val => val.environmentId === environmentId))
       : variables
   })
 

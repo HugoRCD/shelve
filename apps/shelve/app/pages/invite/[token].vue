@@ -10,7 +10,8 @@ const route = useRoute()
 const router = useRouter()
 const token = route.params.token as string
 
-const { loggedIn, user } = useUserSession()
+const { loggedIn, user, signOut, fetchSession } = useUserSession()
+const signInSocial = useSignIn('social')
 const { title, auth: { isGithubEnabled, isGoogleEnabled, isEmailEnabled } } = useAppConfig()
 
 const { data: invitation, status, error } = await useFetch(`/api/invitations/${token}`, {
@@ -57,7 +58,7 @@ async function acceptInvitation() {
       method: 'POST',
     })
 
-    await useUserSession().fetch()
+    await fetchSession()
 
     toast.success('Invitation accepted! Welcome to the team.')
     if (result.teamSlug) {
@@ -65,8 +66,8 @@ async function acceptInvitation() {
     } else {
       await router.push('/')
     }
-  } catch (err: any) {
-    toast.error(err.data?.message || 'Failed to accept invitation')
+  } catch (error: unknown) {
+    toast.error(getAuthErrorMessage(error, 'Failed to accept invitation'))
   } finally {
     accepting.value = false
   }
@@ -80,22 +81,29 @@ async function declineInvitation() {
     })
     toast.success('Invitation declined')
     await router.push('/login')
-  } catch (err: any) {
-    toast.error(err.data?.message || 'Failed to decline invitation')
+  } catch (error: unknown) {
+    toast.error(getAuthErrorMessage(error, 'Failed to decline invitation'))
   } finally {
     declining.value = false
   }
 }
 
-function loginWithRedirect(provider: string) {
+async function loginWithRedirect(provider: string) {
   const redirect = `/invite/${token}`
-  window.location.href = `/auth/${provider}?redirect=${encodeURIComponent(redirect)}`
+  await signInSocial.execute({
+    provider,
+    callbackURL: redirect,
+  })
+
+  if (signInSocial.status.value === 'error') {
+    toast.error(getAuthErrorMessage(signInSocial.error.value, `Failed to sign in with ${provider}`))
+  }
 }
 
 async function logoutAndRedirect() {
-  await useUserSession().clear()
+  await signOut()
   const redirect = `/invite/${token}`
-  await navigateTo(`/login?redirect=${encodeURIComponent(redirect)}`)
+  await navigateTo(`/login?redirect=${encodeURIComponent(redirect)}&source=invite`)
 }
 
 useSeoMeta({
@@ -254,7 +262,7 @@ useSeoMeta({
                 variant="outline"
                 icon="heroicons:envelope"
                 label="Continue with Email"
-                :to="`/login?redirect=${encodeURIComponent(`/invite/${token}`)}`"
+                :to="`/login?redirect=${encodeURIComponent(`/invite/${token}`)}&source=invite`"
               />
             </div>
           </template>

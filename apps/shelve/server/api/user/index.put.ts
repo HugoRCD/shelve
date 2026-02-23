@@ -1,32 +1,26 @@
 import { z } from 'zod'
-import { AuthType } from '@types'
+import { user as userTable } from '../../db/schema'
 
 const updateUserSchema = z.object({
-  username: z.string().min(3).max(50).trim().optional(),
-  email: z.email().trim().optional(),
-  avatar: z.string().trim().optional(),
-  authType: z.enum(AuthType).optional(),
+  name: z.string().min(1).max(50).trim().optional(),
+  image: z.string().trim().optional(),
 })
 
 export default eventHandler(async (event) => {
   const body = await readValidatedBody(event, updateUserSchema.parse)
-  const { user } = await requireUserSession(event)
+  const { user } = await requireAppSession(event)
 
-  if (body.username) body.username = await validateUsername(body.username, body.authType)
+  if (body.name) body.name = await validateUsername(body.name)
 
   const [updatedUser] = await db
-    .update(schema.users)
+    .update(userTable)
     .set({
-      username: body.username,
-      avatar: body.avatar,
+      name: body.name,
+      image: body.image,
     })
-    .where(eq(schema.users.id, user.id))
+    .where(eq(userTable.id, user.id))
     .returning()
   if (!updatedUser) throw createError({ statusCode: 404, statusMessage: 'User not found' })
 
-  await setUserSession(event, {
-    user: updatedUser,
-    loggedInAt: new Date(),
-  })
   return updatedUser
 })

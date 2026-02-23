@@ -5,15 +5,17 @@ const { title, auth: { isGithubEnabled, isGoogleEnabled, isEmailEnabled } } = us
 
 definePageMeta({
   layout: 'auth',
-  middleware: 'guest'
+  auth: 'guest',
 })
 
 const route = useRoute()
+const router = useRouter()
 const showOtp = ref(false)
 const focus = ref(false)
 const email = ref(route.query.email as string || '')
 const prefilledOtp = ref(route.query.otp as string || '')
-const redirectUrl = computed(() => route.query.redirect as string || '')
+const redirectUrl = computed(() => typeof route.query.redirect === 'string' ? route.query.redirect : '')
+const redirectSource = computed(() => typeof route.query.source === 'string' ? route.query.source : '')
 const authMode = ref<'oauth' | 'email'>('oauth')
 
 if (email.value && prefilledOtp.value) {
@@ -27,7 +29,7 @@ if (route.query.error === 'github' || route.query.error === 'google') {
     closeButton: false,
     action: {
       label: 'Dismiss',
-      onClick: () => useRouter().push('/login')
+      onClick: () => router.push('/login')
     }
   })
 }
@@ -38,7 +40,7 @@ if (route.query.error === 'invalid-otp') {
     closeButton: false,
     action: {
       label: 'Dismiss',
-      onClick: () => useRouter().push('/login')
+      onClick: () => router.push('/login')
     }
   })
   authMode.value = 'email'
@@ -51,10 +53,14 @@ if (route.query.error === 'otp-verification') {
     closeButton: false,
     action: {
       label: 'Dismiss',
-      onClick: () => useRouter().push('/login')
+      onClick: () => router.push('/login')
     }
   })
   authMode.value = 'email'
+}
+
+if (redirectUrl.value && !route.query.error && redirectSource.value !== 'invite') {
+  toast.error('You need to be logged in to access this page.')
 }
 
 function handleEmailSubmitted(submittedEmail: string) {
@@ -66,12 +72,10 @@ function handleBackToEmail() {
   showOtp.value = false
   email.value = ''
   prefilledOtp.value = ''
-  const router = useRouter()
   router.replace({ query: {} })
 }
 
 function handleOtpVerified() {
-  const router = useRouter()
   router.replace({ query: {} })
 }
 
@@ -101,9 +105,8 @@ useSeoMeta({
           class="flex flex-col items-center justify-center gap-4 overflow-hidden p-6 sm:p-10 min-w-xs sm:min-w-md"
           style="will-change: transform"
         >
-          <!-- OAuth Buttons -->
-          <motion.div 
-            v-if="authMode === 'oauth'" 
+          <motion.div
+            v-if="authMode === 'oauth'"
             class="flex flex-col gap-3 w-full"
             :initial="{ opacity: 0, y: 20 }"
             :animate="{ opacity: 1, y: 0 }"
@@ -112,9 +115,9 @@ useSeoMeta({
           >
             <AuthButton v-if="isGithubEnabled" icon="simple-icons:github" label="Sign in with GitHub" provider="github" :redirect-url />
             <AuthButton v-if="isGoogleEnabled" icon="simple-icons:google" label="Sign in with Google" provider="google" :redirect-url />
-            
-            <motion.div 
-              v-if="isEmailEnabled && (isGithubEnabled || isGoogleEnabled)" 
+
+            <motion.div
+              v-if="isEmailEnabled && (isGithubEnabled || isGoogleEnabled)"
               class="flex items-center gap-3 my-2"
               :initial="{ opacity: 0, scaleX: 0 }"
               :animate="{ opacity: 1, scaleX: 1 }"
@@ -124,7 +127,7 @@ useSeoMeta({
               <span class="text-xs text-muted">or</span>
               <div class="flex-1 h-px bg-accented" />
             </motion.div>
-            
+
             <UButton
               v-if="isEmailEnabled"
               variant="outline"
@@ -137,16 +140,15 @@ useSeoMeta({
             />
           </motion.div>
 
-          <!-- Email/OTP Form -->
-          <motion.div 
-            v-else-if="authMode === 'email'" 
+          <motion.div
+            v-else-if="authMode === 'email'"
             class="w-full space-y-4"
             :initial="{ opacity: 0, x: 20 }"
             :animate="{ opacity: 1, x: 0 }"
             :exit="{ opacity: 0, x: -20 }"
             :transition="{ duration: 0.3 }"
           >
-            <motion.div 
+            <motion.div
               v-if="!showOtp"
               :initial="{ opacity: 0, y: 10 }"
               :animate="{ opacity: 1, y: 0 }"
@@ -164,15 +166,15 @@ useSeoMeta({
                 />
               </div>
             </motion.div>
-            
-            <motion.div 
+
+            <motion.div
               v-else
               :initial="{ opacity: 0, y: 10 }"
               :animate="{ opacity: 1, y: 0 }"
               :transition="{ duration: 0.3, delay: 0.1 }"
             >
-              <AuthOtpForm 
-                :email 
+              <AuthOtpForm
+                :email
                 :prefilled-otp
                 :redirect-url
                 @back-to-email="handleBackToEmail"

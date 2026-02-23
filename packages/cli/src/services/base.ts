@@ -30,7 +30,7 @@ export abstract class BaseService {
       return ofetch(`${url}/api/user/me`, {
         method: 'GET',
         headers: {
-          Cookie: `authToken=${token}`
+          Authorization: `Bearer ${token}`
         }
       })
     })
@@ -42,7 +42,7 @@ export abstract class BaseService {
     const token = await askPassword(`Please provide a valid token (you can generate one on ${sanitizedUrl}/user/tokens)`)
     const user = await this.whoAmI(url, token)
 
-    writeUser({ token, email: user.email, username: user.username }, '.shelve')
+    writeUser({ token, email: user.email, username: user.name }, '.shelve')
 
     if (returnUser) return {
       user,
@@ -64,7 +64,7 @@ export abstract class BaseService {
       this.api = ofetch.create({
         baseURL,
         headers: {
-          Cookie: `authToken=${config.token}`
+          Authorization: `Bearer ${config.token}`
         },
         onResponseError: ErrorService.handleApiError
       })

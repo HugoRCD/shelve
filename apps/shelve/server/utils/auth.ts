@@ -15,7 +15,7 @@ const teamSlugSchema = z.object({
  * @throws {Error} If user is not authenticated or not an admin
  */
 export async function requireAdmin(event: H3Event): Promise<{ user: User }> {
-  const { user } = await requireUserSession(event)
+  const { user } = await requireAppSession(event)
 
   if (user.role !== Role.ADMIN) {
     throw createError({
@@ -42,7 +42,7 @@ export async function requireUserTeam(
   teamSlug: string,
   options?: { minRole?: TeamRole }
 ): Promise<{ user: User; team: Team; member: Member }> {
-  const { user } = await requireUserSession(event)
+  const { user } = await requireAppSession(event)
 
   const { team, member } = await validateTeamAccess({ user, teamSlug })
 

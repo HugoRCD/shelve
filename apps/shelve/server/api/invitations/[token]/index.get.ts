@@ -8,7 +8,6 @@ export default eventHandler(async (event: H3Event) => {
 
   const invitation = await new InvitationsService().getInvitationByToken(token)
 
-  // Return invitation info without exposing the full token
   return {
     id: invitation.id,
     email: invitation.email,
@@ -24,8 +23,8 @@ export default eventHandler(async (event: H3Event) => {
     } : undefined,
     invitedBy: invitation.invitedBy ? {
       id: invitation.invitedBy.id,
-      username: invitation.invitedBy.username,
-      avatar: invitation.invitedBy.avatar,
+      username: invitation.invitedBy.name,
+      avatar: invitation.invitedBy.image,
     } : undefined,
   }
 })

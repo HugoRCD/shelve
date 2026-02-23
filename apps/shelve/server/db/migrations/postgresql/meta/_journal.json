@@ -22,6 +22,20 @@
       "when": 1770250130977,
       "tag": "0002_nasty_terrax",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1770294002106,
+      "tag": "0003_better_auth",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1771141316714,
+      "tag": "0004_puzzling_darkhawk",
+      "breakpoints": true
     }
   ]
 }

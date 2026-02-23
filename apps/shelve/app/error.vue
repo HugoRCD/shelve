@@ -9,7 +9,7 @@ const { error } = defineProps<ErrorProps>()
 console.error(error)
 
 const router = useRouter()
-const { clear } = useUserSession()
+const { signOut } = useUserSession()
 
 const handleError = () => clearError({ redirect: '/' })
 const goBack = () => {
@@ -34,7 +34,7 @@ const clearCookies = async () => {
     const [name] = cookie.split('=')
     document.cookie = `${name?.trim()}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`
   })
-  await clear()
+  await signOut()
   navigateTo('/login')
 }
 

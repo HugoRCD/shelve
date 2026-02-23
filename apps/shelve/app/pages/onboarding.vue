@@ -4,7 +4,7 @@ import type { FormSubmitEvent } from '@nuxt/ui'
 
 definePageMeta({
   layout: 'auth',
-  middleware: 'auth'
+  auth: 'user',
 })
 
 const schema = z.object({

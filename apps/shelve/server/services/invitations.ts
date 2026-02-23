@@ -2,14 +2,47 @@ import { randomBytes } from 'node:crypto'
 import type { CreateInvitationInput, CancelInvitationInput, TeamInvitation, Member } from '@types'
 import { InvitationStatus } from '@types'
 import { and, eq, lt, desc } from 'drizzle-orm'
+import { user as userTable } from '../db/schema'
 
 const INVITATION_EXPIRY_DAYS = 7
+type DbUser = typeof userTable.$inferSelect
+type TeamInvitationWithInvitedBy = Omit<TeamInvitation, 'invitedBy'> & { invitedBy: DbUser | null }
+type MemberWithUser = Omit<Member, 'user'> & { user: DbUser | null }
 
 function generateInvitationToken(): string {
   return randomBytes(32).toString('hex')
 }
 
 export class InvitationsService {
+
+  private setInvitationInvitedBy(invitation: TeamInvitation, invitedBy: DbUser | null): TeamInvitation {
+    (invitation as TeamInvitationWithInvitedBy).invitedBy = invitedBy
+    return invitation
+  }
+
+  private setMemberUser(member: Member, user: DbUser | null): Member {
+    (member as MemberWithUser).user = user
+    return member
+  }
+
+  private async hydrateInvitedBy<T extends TeamInvitation | TeamInvitation[]>(input: T): Promise<T> {
+    const hydrateOne = async (invitation: TeamInvitation) => {
+      const { invitedById } = invitation
+      if (!invitedById) {
+        return this.setInvitationInvitedBy(invitation, null)
+      }
+      const [invitedBy] = await db.select().from(userTable).where(eq(userTable.id, invitedById)).limit(1)
+      return this.setInvitationInvitedBy(invitation, invitedBy || null)
+    }
+
+    if (Array.isArray(input)) {
+      await Promise.all(input.map(hydrateOne))
+      return input
+    }
+
+    await hydrateOne(input)
+    return input
+  }
 
   async createInvitation(input: CreateInvitationInput): Promise<TeamInvitation> {
     const { teamId, slug, email, role, invitedById } = input
@@ -60,7 +93,6 @@ export class InvitationsService {
       where: eq(schema.invitations.token, token),
       with: {
         team: true,
-        invitedBy: true,
       }
     })
 
@@ -73,7 +105,7 @@ export class InvitationsService {
       throw createError({ statusCode: 410, message: 'Invitation has expired' })
     }
 
-    return invitation
+    return this.hydrateInvitedBy(invitation)
   }
 
   async getInvitationById(invitationId: number): Promise<TeamInvitation> {
@@ -81,7 +113,6 @@ export class InvitationsService {
       where: eq(schema.invitations.id, invitationId),
       with: {
         team: true,
-        invitedBy: true,
       }
     })
 
@@ -89,11 +120,11 @@ export class InvitationsService {
       throw createError({ statusCode: 404, message: 'Invitation not found' })
     }
 
-    return invitation
+    return this.hydrateInvitedBy(invitation)
   }
 
   async getPendingInvitationByEmail(teamId: number, email: string): Promise<TeamInvitation | undefined> {
-    return await db.query.invitations.findFirst({
+    const invitation = await db.query.invitations.findFirst({
       where: and(
         eq(schema.invitations.teamId, teamId),
         eq(schema.invitations.email, email),
@@ -101,33 +132,33 @@ export class InvitationsService {
       ),
       with: {
         team: true,
-        invitedBy: true,
       }
     })
+    if (!invitation) return undefined
+    return this.hydrateInvitedBy(invitation)
   }
 
   async getTeamPendingInvitations(teamId: number): Promise<TeamInvitation[]> {
-    return await db.query.invitations.findMany({
+    const invitations = await db.query.invitations.findMany({
       where: and(
         eq(schema.invitations.teamId, teamId),
         eq(schema.invitations.status, InvitationStatus.PENDING)
       ),
       with: {
         team: true,
-        invitedBy: true,
       },
       orderBy: [desc(schema.invitations.createdAt)]
     })
+    return this.hydrateInvitedBy(invitations)
   }
 
-  async acceptInvitation(token: string, userId: number, userEmail: string): Promise<Member> {
+  async acceptInvitation(token: string, userId: string, userEmail: string): Promise<Member> {
     const invitation = await this.getInvitationByToken(token)
 
     if (invitation.status !== InvitationStatus.PENDING) {
       throw createError({ statusCode: 400, message: `Invitation has already been ${invitation.status}` })
     }
 
-    // Verify email matches
     if (invitation.email.toLowerCase() !== userEmail.toLowerCase()) {
       throw createError({
         statusCode: 403,
@@ -140,7 +171,6 @@ export class InvitationsService {
         eq(schema.members.teamId, invitation.teamId),
         eq(schema.members.userId, userId)
       ),
-      with: { user: true }
     })
 
     if (existingMember) {
@@ -168,14 +198,14 @@ export class InvitationsService {
 
     const member = await db.query.members.findFirst({
       where: eq(schema.members.id, newMember.id),
-      with: { user: true }
     })
 
     if (!member) {
       throw createError({ statusCode: 422, message: 'Failed to retrieve member' })
     }
 
-    return member
+    const [user] = await db.select().from(userTable).where(eq(userTable.id, userId)).limit(1)
+    return this.setMemberUser(member, user || null)
   }
 
   async declineInvitation(token: string): Promise<void> {
@@ -223,9 +253,7 @@ export class InvitationsService {
   }
 
   private async isUserAlreadyMember(teamId: number, email: string): Promise<Member | undefined> {
-    const user = await db.query.users.findFirst({
-      where: eq(schema.users.email, email)
-    })
+    const [user] = await db.select().from(userTable).where(eq(userTable.email, email)).limit(1)
 
     if (!user) return undefined
 
@@ -234,7 +262,6 @@ export class InvitationsService {
         eq(schema.members.teamId, teamId),
         eq(schema.members.userId, user.id)
       ),
-      with: { user: true }
     })
   }
 

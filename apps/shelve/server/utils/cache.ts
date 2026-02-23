@@ -10,7 +10,7 @@ type CacheEntity<T = string | number> = {
 
 export const CACHE_TTL = 60 * 60 * 8 // 8 hours
 
-export const cacheEntities: Record<string, CacheEntity<string> | CacheEntity<number>> = {
+export const cacheEntities = {
   Team: {
     prefix: 'team',
     key: 'slug',
@@ -27,7 +27,7 @@ export const cacheEntities: Record<string, CacheEntity<string> | CacheEntity<num
         columns: { id: true, slug: true }
       })
       if (!team) return []
-      return team.members.map(member => ({
+      return team.members.map((member: { userId: string }) => ({
         entity: 'Teams' as const,
         param: member.userId
       }))
@@ -58,16 +58,18 @@ export const cacheEntities: Record<string, CacheEntity<string> | CacheEntity<num
     key: 'projectId',
     ttl: CACHE_TTL,
   }
-} as const
+} satisfies Record<string, CacheEntity<any>>
 
 export function withCache<T>(
   entity: keyof typeof cacheEntities,
   fn: (...args: any[]) => Promise<T>
 ) {
+  const config = cacheEntities[entity]
+  if (!config) throw createError({ statusCode: 404, message: `Cache entity ${String(entity)} not found` })
   return cachedFunction(fn, {
-    maxAge: cacheEntities[entity].ttl,
-    name: cacheEntities[entity].prefix,
-    getKey: (arg) => `${cacheEntities[entity].key}:${arg}`
+    maxAge: config.ttl,
+    name: config.prefix,
+    getKey: (arg) => `${config.key}:${arg}`
   })
 }
 
@@ -76,7 +78,7 @@ export async function clearCache<T extends string | number>(
   id: T
 ) {
   const storage = useStorage('cache')
-  const config = cacheEntities[entity]
+  const config = cacheEntities[entity] as CacheEntity<any> | undefined
   if (!config) throw createError({ statusCode: 404, message: `Cache entity ${entity} not found` })
   const cacheString = `nitro:functions:${config.prefix}:${config.key}:${id}.json`
 

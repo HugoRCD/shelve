@@ -1,5 +1,10 @@
 import type { CreateTeamInput, DeleteTeamInput, Team, UpdateTeamInput } from '@types'
 import { TeamRole } from '@types'
+import { inArray } from 'drizzle-orm'
+import { user as userTable } from '../db/schema'
+
+type TeamMember = Team['members'][number]
+type TeamMemberWithUser = Omit<TeamMember, 'user'> & { user: typeof userTable.$inferSelect | null }
 
 export const BLACKLIST_TEAM_SLUGS: string[] = [
   'user',
@@ -23,9 +28,7 @@ export const BLACKLIST_TEAM_SLUGS: string[] = [
   'dashboard',
   'account',
   'profile',
-  'settings',
   'billing',
-  'user',
   'download',
   'login',
   'logout',
@@ -39,6 +42,49 @@ export const BLACKLIST_TEAM_SLUGS: string[] = [
 
 export class TeamsService {
 
+  private setMemberUser(member: TeamMember, user: typeof userTable.$inferSelect | null): void {
+    (member as TeamMemberWithUser).user = user
+  }
+
+  private async hydrateTeamUsers(team: Team): Promise<Team> {
+    const memberUserIds = [...new Set(team.members.map((member) => member.userId))]
+    if (!memberUserIds.length) return team
+
+    const users = await db.select().from(userTable).where(inArray(userTable.id, memberUserIds))
+    const usersById = new Map<string, typeof userTable.$inferSelect>()
+    for (const user of users) {
+      usersById.set(user.id, user)
+    }
+
+    for (const member of team.members) {
+      // Keep response shape stable for the UI: `member.user` is optional/null if missing.
+      this.setMemberUser(member, usersById.get(member.userId) || null)
+    }
+
+    return team
+  }
+
+  private async hydrateTeamsUsers(teams: Team[]): Promise<Team[]> {
+    if (!teams.length) return teams
+
+    const userIds = [...new Set(teams.flatMap((team) => team.members.map((member) => member.userId)))]
+    if (!userIds.length) return teams
+
+    const users = await db.select().from(userTable).where(inArray(userTable.id, userIds))
+    const usersById = new Map<string, typeof userTable.$inferSelect>()
+    for (const user of users) {
+      usersById.set(user.id, user)
+    }
+
+    for (const team of teams) {
+      for (const member of team.members) {
+        this.setMemberUser(member, usersById.get(member.userId) || null)
+      }
+    }
+
+    return teams
+  }
+
   async createTeam(input: CreateTeamInput): Promise<Team> {
     const slug = input.name.toLowerCase().replace(/\s/g, '-')
 
@@ -51,7 +97,7 @@ export class TeamsService {
       throw createError({ statusCode: 409, statusMessage: 'Team slug is blacklisted' })
     }
 
-    const team = await db.transaction(async (tx) => {
+    const team = await db.transaction(async (tx: any) => {
       const [newTeam] = await tx.insert(schema.teams)
         .values({
           slug,
@@ -77,17 +123,13 @@ export class TeamsService {
     const createdTeam = await db.query.teams.findFirst({
       where: eq(schema.teams.id, team.id),
       with: {
-        members: {
-          with: {
-            user: true
-          }
-        }
+        members: true
       }
     })
 
     if (!createdTeam) throw createError({ statusCode: 404, statusMessage: `Team not found with id ${team.id}` })
     await clearCache('Teams', input.requester.id)
-    return createdTeam
+    return this.hydrateTeamUsers(createdTeam)
   }
 
   async updateTeam(input: UpdateTeamInput): Promise<Team> {
@@ -101,7 +143,7 @@ export class TeamsService {
       }
     }
 
-    return await db.transaction(async (tx) => {
+    return await db.transaction(async (tx: any) => {
       await tx.update(schema.teams)
         .set(data)
         .where(eq(schema.teams.id, teamId))
@@ -109,11 +151,7 @@ export class TeamsService {
       const updatedTeam = await tx.query.teams.findFirst({
         where: eq(schema.teams.id, teamId),
         with: {
-          members: {
-            with: {
-              user: true
-            }
-          },
+          members: true,
         }
       })
       if (!updatedTeam) throw createError({ statusCode: 404, statusMessage: `Team not found with id ${teamId}` })
@@ -135,39 +173,31 @@ export class TeamsService {
     if (!team) throw createError({ statusCode: 404, statusMessage: `Team not found with id ${teamId}` })
   }
 
-  getTeams = withCache<Team[]>('Teams', async (userId: number) => {
+  getTeams = withCache<Team[]>('Teams', async (userId: string) => {
     const memberOf = await db.query.members.findMany({
       where: eq(schema.members.userId, userId),
       with: {
         team: {
           with: {
-            members: {
-              with: {
-                user: true
-              }
-            }
+            members: true
           }
         }
       }
     })
-    const teams = memberOf.map(member => member.team)
+    const teams = memberOf.map((member: { team: Team }) => member.team)
     if (!teams) throw createError({ statusCode: 404, statusMessage: `No teams found for user with id ${userId}` })
-    return teams
+    return this.hydrateTeamsUsers(teams)
   })
 
   getTeam = withCache<Team>('Team', async (slug: string) => {
     const team = await db.query.teams.findFirst({
       where: eq(schema.teams.slug, slug),
       with: {
-        members: {
-          with: {
-            user: true
-          }
-        }
+        members: true
       }
     })
     if (!team) throw createError({ statusCode: 404, statusMessage: `Team not found with slug ${slug}` })
-    return team
+    return this.hydrateTeamUsers(team)
   })
 
   private isSlugUnique = async (slug: string, teamId?: number): Promise<boolean> => {
@@ -184,15 +214,11 @@ export class TeamsService {
     const team = await db.query.teams.findFirst({
       where: eq(schema.teams.slug, slug),
       with: {
-        members: {
-          with: {
-            user: true
-          }
-        }
+        members: true
       }
     })
     if (!team) throw createError({ statusCode: 404, statusMessage: `Team not found with slug ${slug}` })
-    return team
+    return this.hydrateTeamUsers(team)
   }
 
 }

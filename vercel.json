@@ -1,0 +1,3 @@
+{
+  "buildCommand": "pnpm build:app && rm -rf .vercel/output && mkdir -p .vercel && mv apps/shelve/.vercel/output .vercel/output"
+}

@@ -16,6 +16,6 @@ export default defineCommand({
 
     const { user } = await BaseService.getToken(true) as { user: User }
 
-    outro(`Successfully logged in as ${user.username}`)
+    outro(`Successfully logged in as ${user.name || user.email}`)
   }
 })
