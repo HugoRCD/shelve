@@ -1,8 +1,5 @@
 <script setup lang="ts">
-import { getAuthErrorMessage } from '~/utils/auth-error'
-
-const loading = ref(false)
-const { signIn } = useUserSession()
+const signInSocial = useSignIn('social')
 const props = defineProps({
   label: {
     type: String,
@@ -23,16 +20,17 @@ const props = defineProps({
   },
 })
 
-function open() {
-  loading.value = true
-  signIn.social({
+const loading = computed(() => signInSocial.status.value === 'pending')
+
+async function open() {
+  await signInSocial.execute({
     provider: props.provider,
     callbackURL: props.redirectUrl || undefined,
   })
-    .catch((error: unknown) => {
-      toast.error(getAuthErrorMessage(error, `Failed to sign in with ${props.provider}`))
-      loading.value = false
-    })
+
+  if (signInSocial.status.value === 'error') {
+    toast.error(getAuthErrorMessage(signInSocial.error.value, `Failed to sign in with ${props.provider}`))
+  }
 }
 </script>
 

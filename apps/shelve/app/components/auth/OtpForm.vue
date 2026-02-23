@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { getAuthErrorMessage } from '~/utils/auth-error'
-
 const props = defineProps<{
   email: string
   prefilledOtp?: string
@@ -14,8 +12,9 @@ const emit = defineEmits<{
 
 const router = useRouter()
 const otp = ref<string[]>(props.prefilledOtp ? props.prefilledOtp.split('') : [])
-const loading = ref(false)
-const { signIn, client } = useUserSession()
+const signInEmailOtp = useSignIn('emailOtp')
+const sendVerificationOtp = useAuthClientAction((authClient) => authClient.emailOtp.sendVerificationOtp)
+const loading = computed(() => signInEmailOtp.status.value === 'pending' || sendVerificationOtp.status.value === 'pending')
 
 onMounted(async () => {
   if (props.prefilledOtp && props.prefilledOtp.length === 6) {
@@ -26,40 +25,37 @@ onMounted(async () => {
 async function handleOtpComplete(value: string[]) {
   if (value.length !== 6) return
 
-  loading.value = true
-  try {
-    await signIn.emailOtp({
-      email: props.email,
-      otp: value.join('')
-    }, {
-      onSuccess: async () => {
-        emit('otpVerified')
-        toast.success('Login successful!')
-        if (props.redirectUrl) {
-          await router.push(props.redirectUrl)
-        } else {
-          await reloadNuxtApp()
-        }
+  await signInEmailOtp.execute({
+    email: props.email,
+    otp: value.join('')
+  }, {
+    onSuccess: async () => {
+      emit('otpVerified')
+      toast.success('Login successful!')
+      if (props.redirectUrl) {
+        await router.push(props.redirectUrl)
+      } else {
+        await reloadNuxtApp()
       }
-    })
-  } catch (error: unknown) {
-    toast.error(getAuthErrorMessage(error, 'Invalid verification code'))
+    }
+  })
+
+  if (signInEmailOtp.status.value === 'error') {
+    toast.error(getAuthErrorMessage(signInEmailOtp.error.value, 'Invalid verification code'))
     otp.value = []
-  } finally {
-    loading.value = false
   }
 }
 
 async function resendCode() {
-  try {
-    if (!client) throw new Error('Authentication client not available')
-    await client.emailOtp.sendVerificationOtp({
-      email: props.email,
-      type: 'sign-in'
-    })
+  await sendVerificationOtp.execute({
+    email: props.email,
+    type: 'sign-in'
+  })
+
+  if (sendVerificationOtp.status.value === 'error') {
+    toast.error(getAuthErrorMessage(sendVerificationOtp.error.value, 'Failed to resend code'))
+  } else {
     toast.success('New verification code sent')
-  } catch (error: unknown) {
-    toast.error(getAuthErrorMessage(error, 'Failed to resend code'))
   }
 }
 </script>

@@ -9,6 +9,7 @@ definePageMeta({
 })
 
 const route = useRoute()
+const router = useRouter()
 const showOtp = ref(false)
 const focus = ref(false)
 const email = ref(route.query.email as string || '')
@@ -28,7 +29,7 @@ if (route.query.error === 'github' || route.query.error === 'google') {
     closeButton: false,
     action: {
       label: 'Dismiss',
-      onClick: () => useRouter().push('/login')
+      onClick: () => router.push('/login')
     }
   })
 }
@@ -39,7 +40,7 @@ if (route.query.error === 'invalid-otp') {
     closeButton: false,
     action: {
       label: 'Dismiss',
-      onClick: () => useRouter().push('/login')
+      onClick: () => router.push('/login')
     }
   })
   authMode.value = 'email'
@@ -52,7 +53,7 @@ if (route.query.error === 'otp-verification') {
     closeButton: false,
     action: {
       label: 'Dismiss',
-      onClick: () => useRouter().push('/login')
+      onClick: () => router.push('/login')
     }
   })
   authMode.value = 'email'

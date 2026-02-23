@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { motion } from 'motion-v'
 import { InvitationStatus, TeamRole } from '@types'
-import { getAuthErrorMessage } from '~/utils/auth-error'
 
 definePageMeta({
   layout: 'auth',
@@ -11,7 +10,8 @@ const route = useRoute()
 const router = useRouter()
 const token = route.params.token as string
 
-const { loggedIn, user, signIn, signOut, fetchSession } = useUserSession()
+const { loggedIn, user, signOut, fetchSession } = useUserSession()
+const signInSocial = useSignIn('social')
 const { title, auth: { isGithubEnabled, isGoogleEnabled, isEmailEnabled } } = useAppConfig()
 
 const { data: invitation, status, error } = await useFetch(`/api/invitations/${token}`, {
@@ -90,13 +90,13 @@ async function declineInvitation() {
 
 async function loginWithRedirect(provider: string) {
   const redirect = `/invite/${token}`
-  try {
-    await signIn.social({
-      provider,
-      callbackURL: redirect,
-    })
-  } catch (error: unknown) {
-    toast.error(getAuthErrorMessage(error, `Failed to sign in with ${provider}`))
+  await signInSocial.execute({
+    provider,
+    callbackURL: redirect,
+  })
+
+  if (signInSocial.status.value === 'error') {
+    toast.error(getAuthErrorMessage(signInSocial.error.value, `Failed to sign in with ${provider}`))
   }
 }
 

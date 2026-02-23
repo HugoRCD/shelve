@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import * as z from 'zod'
 import type { FormSubmitEvent } from '@nuxt/ui'
-import { getAuthErrorMessage } from '~/utils/auth-error'
 
 const emit = defineEmits<{
   emailSubmitted: [email: string]
@@ -17,24 +16,20 @@ const state = reactive<Partial<Schema>>({
   email: undefined
 })
 
-const loading = ref(false)
-const { client } = useUserSession()
+const sendVerificationOtp = useAuthClientAction((authClient) => authClient.emailOtp.sendVerificationOtp)
+const loading = computed(() => sendVerificationOtp.status.value === 'pending')
 
 async function onSubmit(event: FormSubmitEvent<Schema>) {
-  loading.value = true
-  try {
-    if (!client) throw new Error('Authentication client not available')
-    await client.emailOtp.sendVerificationOtp({
-      email: event.data.email,
-      type: 'sign-in'
-    })
+  await sendVerificationOtp.execute({
+    email: event.data.email,
+    type: 'sign-in'
+  })
 
+  if (sendVerificationOtp.status.value === 'error') {
+    toast.error(getAuthErrorMessage(sendVerificationOtp.error.value, 'Failed to send verification code'))
+  } else {
     emit('emailSubmitted', event.data.email)
     toast.success('Check your email for the verification code')
-  } catch (error: unknown) {
-    toast.error(getAuthErrorMessage(error, 'Failed to send verification code'))
-  } finally {
-    loading.value = false
   }
 }
 </script>
