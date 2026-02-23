@@ -72,12 +72,10 @@ function handleBackToEmail() {
   showOtp.value = false
   email.value = ''
   prefilledOtp.value = ''
-  const router = useRouter()
   router.replace({ query: {} })
 }
 
 function handleOtpVerified() {
-  const router = useRouter()
   router.replace({ query: {} })
 }
 
