@@ -1,6 +1,6 @@
-import { chromium, request } from '@playwright/test'
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { dirname } from 'node:path'
+import { chromium, request } from '@playwright/test'
 import postgres from 'postgres'
 
 const args = parseArgs(process.argv.slice(2))

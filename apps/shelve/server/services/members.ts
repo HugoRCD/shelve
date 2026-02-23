@@ -4,6 +4,7 @@ import { user as userTable } from '../db/schema'
 type MemberWithUser = Omit<Member, 'user'> & { user: User | null }
 
 export class MembersService {
+
   private setMemberUser(member: Member, user: User | null): Member {
     (member as MemberWithUser).user = user
     return member
@@ -81,4 +82,5 @@ export class MembersService {
     if (!user) throw createError({ statusCode: 404, message: `User not found with email ${email}` })
     return user as User
   }
+
 }

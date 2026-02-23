@@ -14,19 +14,20 @@ function generateInvitationToken(): string {
 }
 
 export class InvitationsService {
+
   private setInvitationInvitedBy(invitation: TeamInvitation, invitedBy: DbUser | null): TeamInvitation {
-    ;(invitation as TeamInvitationWithInvitedBy).invitedBy = invitedBy
+    (invitation as TeamInvitationWithInvitedBy).invitedBy = invitedBy
     return invitation
   }
 
   private setMemberUser(member: Member, user: DbUser | null): Member {
-    ;(member as MemberWithUser).user = user
+    (member as MemberWithUser).user = user
     return member
   }
 
   private async hydrateInvitedBy<T extends TeamInvitation | TeamInvitation[]>(input: T): Promise<T> {
     const hydrateOne = async (invitation: TeamInvitation) => {
-      const invitedById = invitation.invitedById
+      const { invitedById } = invitation
       if (!invitedById) {
         return this.setInvitationInvitedBy(invitation, null)
       }
@@ -263,4 +264,5 @@ export class InvitationsService {
       ),
     })
   }
+
 }

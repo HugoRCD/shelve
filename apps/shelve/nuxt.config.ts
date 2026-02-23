@@ -82,5 +82,14 @@ export default defineNuxtConfig({
     format: ['webp', 'jpeg', 'jpg', 'png', 'svg']
   },
 
+  auth: {
+    redirects: {
+      login: '/login',
+      guest: '/',
+    },
+    preserveRedirect: true,
+    redirectQueryKey: 'redirect',
+  },
+
   modules: ['@nuxt/ui', '@nuxthub/core', '@onmax/nuxt-better-auth', 'botid/nuxt'],
 })

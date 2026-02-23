@@ -9,7 +9,7 @@ type ParsedApiTokenId =
   | { kind: 'uuid', value: string }
   | { kind: 'legacyId', value: number }
 
-export async function validateUsername(username: string, _authType?: AuthType): Promise<string> {
+export function validateUsername(username: string, _authType?: AuthType): string {
   const trimmed = username.trim()
   if (!trimmed) throw createError({ statusCode: 400, statusMessage: 'Invalid username' })
   return trimmed

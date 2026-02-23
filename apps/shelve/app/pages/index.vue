@@ -2,7 +2,8 @@
 import type { Team } from '@types'
 
 definePageMeta({
-  middleware: ['auth', 'onboarding'],
+  auth: 'user',
+  middleware: ['onboarding'],
 })
 
 const teams = useTeams()

@@ -103,7 +103,7 @@ async function loginWithRedirect(provider: string) {
 async function logoutAndRedirect() {
   await signOut()
   const redirect = `/invite/${token}`
-  await navigateTo(`/login?redirect=${encodeURIComponent(redirect)}`)
+  await navigateTo(`/login?redirect=${encodeURIComponent(redirect)}&source=invite`)
 }
 
 useSeoMeta({
@@ -262,7 +262,7 @@ useSeoMeta({
                 variant="outline"
                 icon="heroicons:envelope"
                 label="Continue with Email"
-                :to="`/login?redirect=${encodeURIComponent(`/invite/${token}`)}`"
+                :to="`/login?redirect=${encodeURIComponent(`/invite/${token}`)}&source=invite`"
               />
             </div>
           </template>

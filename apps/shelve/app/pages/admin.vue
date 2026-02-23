@@ -1,7 +1,8 @@
 <script setup lang="ts">
 definePageMeta({
   layout: 'app',
-  middleware: ['auth', 'admin']
+  auth: 'user',
+  middleware: ['admin']
 })
 
 useSeoMeta({
@@ -12,4 +13,3 @@ useSeoMeta({
 <template>
   <NuxtPage />
 </template>
-

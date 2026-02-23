@@ -38,6 +38,7 @@ const requiredCoreSchema = z.object({
   BETTER_AUTH_SECRET: z.string().min(32, { error: 'Better Auth secret must be at least 32 characters long.' }).optional(),
   NUXT_BETTER_AUTH_SECRET: z.string().min(32, { error: 'Better Auth secret must be at least 32 characters long.' }).optional(),
   NUXT_PRIVATE_ENCRYPTION_KEY: z.string().min(32, { error: 'Encryption key must be at least 32 characters long.' }),
+  NUXT_AUTH_ALLOW_LEGACY_CLI: z.enum(['true', 'false']).optional(),
 })
 
 const authProvidersSchema = z.object({
@@ -92,6 +93,14 @@ export default defineNuxtModule({
   },
   setup(options, nuxt) {
     try {
+      const baseAuthConfig = {
+        isGoogleEnabled: !!(process.env.NUXT_OAUTH_GOOGLE_CLIENT_ID && process.env.NUXT_OAUTH_GOOGLE_CLIENT_SECRET),
+        isGithubEnabled: !!(process.env.NUXT_OAUTH_GITHUB_CLIENT_ID && process.env.NUXT_OAUTH_GITHUB_CLIENT_SECRET),
+        isEmailEnabled: !!process.env.NUXT_PRIVATE_RESEND_API_KEY || process.env.NUXT_ENABLE_EMAIL_AUTH === 'true',
+      }
+
+      nuxt.options.appConfig.auth = baseAuthConfig
+
       // `nuxt prepare` runs during `postinstall`; don't block installs on missing runtime env.
       const isPrepare = !!(nuxt.options as any)._prepare || process.env.npm_lifecycle_event === 'postinstall'
       const skipValidation = process.env.SKIP_ENV_VALIDATION

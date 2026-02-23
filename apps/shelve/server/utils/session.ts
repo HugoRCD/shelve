@@ -1,8 +1,8 @@
 import type { H3Event } from 'h3'
 import type { User } from '@types'
-import type { AuthSession } from '#nuxt-better-auth'
 import { getUserByApiToken } from '../services/user'
 import { user as userTable } from '../db/schema'
+import type { AuthSession } from '#nuxt-better-auth'
 
 type DbUser = typeof userTable.$inferSelect
 

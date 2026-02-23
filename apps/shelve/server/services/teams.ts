@@ -41,6 +41,7 @@ export const BLACKLIST_TEAM_SLUGS: string[] = [
 ]
 
 export class TeamsService {
+
   private setMemberUser(member: TeamMember, user: typeof userTable.$inferSelect | null): void {
     (member as TeamMemberWithUser).user = user
   }
@@ -219,4 +220,5 @@ export class TeamsService {
     if (!team) throw createError({ statusCode: 404, statusMessage: `Team not found with slug ${slug}` })
     return this.hydrateTeamUsers(team)
   }
+
 }
