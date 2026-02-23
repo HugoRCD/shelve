@@ -19,7 +19,7 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--ui-bg-inverted);
+  background: var(--ui-bg-elevated);
   border-radius: 5px;
 }
 

@@ -17,13 +17,6 @@ useHead({
   ]
 })
 
-useScriptPlausibleAnalytics({
-  domain: 'shelve.cloud',
-  scriptInput: {
-    src: 'https://analytics.hrcd.fr/js/script.js',
-  }
-})
-
 const [{ data: navigation }, { data: files }] = await Promise.all([
   useAsyncData('navigation', () => {
     return Promise.all([
