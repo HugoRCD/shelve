@@ -27,7 +27,7 @@
     "@shelve/cli": "workspace:*",
     "automd": "^0.4.3",
     "eslint": "^9.39.3",
-    "turbo": "^2.8.10",
+    "turbo": "^2.8.12",
     "typescript": "^5.9.3"
   },
   "pnpm": {
@@ -41,7 +41,7 @@
       "vue-demi"
     ]
   },
-  "packageManager": "pnpm@10.30.1",
+  "packageManager": "pnpm@10.30.3",
   "workspaces": [
     "packages/*",
     "apps/*"
