@@ -22,12 +22,12 @@
     "cli": "pnpm build:cli && node packages/cli/dist/index.mjs"
   },
   "devDependencies": {
-    "@changesets/cli": "^2.29.8",
+    "@changesets/cli": "^2.30.0",
     "@hrcd/eslint-config": "^3.0.3",
     "@shelve/cli": "workspace:*",
     "automd": "^0.4.3",
-    "eslint": "^9.39.3",
-    "turbo": "^2.8.12",
+    "eslint": "^9.39.4",
+    "turbo": "^2.8.14",
     "typescript": "^5.9.3"
   },
   "pnpm": {
