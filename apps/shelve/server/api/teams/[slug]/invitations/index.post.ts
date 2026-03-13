@@ -23,7 +23,7 @@ export default eventHandler(async (event: H3Event) => {
 
   // Send invitation email
   const config = useRuntimeConfig(event)
-  const appUrl = config.public.appUrl || 'http://localhost:3000'
+  const appUrl = getRequestURL(event).origin || 'http://localhost:3000'
   const inviteUrl = `${appUrl}/invite/${invitation.token}`
 
   await new EmailService(event).sendInvitationEmail({
