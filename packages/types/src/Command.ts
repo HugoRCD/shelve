@@ -4,6 +4,7 @@ export interface CommandItem {
   icon: string
   isAvatar?: boolean
   description?: string
+  suffix?: string
   action?: () => void | Promise<void>
   keywords?: string[]
   active?: boolean
