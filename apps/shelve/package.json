@@ -18,6 +18,7 @@
     "db:migrate": "nuxt db migrate"
   },
   "dependencies": {
+    "@shelve/base": "workspace:*",
     "@vue-email/components": "^0.0.21",
     "@vue-email/render": "^0.0.9",
     "blakejs": "^1.2.1",

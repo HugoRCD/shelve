@@ -28,16 +28,11 @@ export default defineNuxtConfig({
   modules: [
     '@nuxt/image',
     'nuxt-build-cache',
-    'nuxt-visitors',
+    '@vercel/analytics',
+    '@vercel/speed-insights',
     '@vueuse/nuxt',
     'motion-v/nuxt',
   ],
-
-  nitro: {
-    experimental: {
-      websocket: true
-    }
-  },
 
   experimental: {
     viewTransition: true,

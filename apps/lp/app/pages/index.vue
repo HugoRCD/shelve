@@ -20,7 +20,6 @@ defineOgImage({ url: ogImage })
 
 <template>
   <div v-if="page" class="relative flex flex-col gap-4 overflow-hidden">
-    <div id="visitors" class="absolute" />
     <LandingHero :title="page.hero.title" :description="page.hero.description" :links="page.hero.links" />
 
     <div class="relative">
