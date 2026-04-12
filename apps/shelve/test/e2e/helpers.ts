@@ -36,7 +36,7 @@ export function authedFetch(cookie: string) {
       error.statusMessage = response.statusText
       try {
         error.data = await response.json()
-      } catch {}
+      } catch { /* response body not JSON */ }
       throw error
     }
 
