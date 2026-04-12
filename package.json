@@ -19,6 +19,7 @@
     "dev:lp": "turbo run dev --filter=@shelve/lp",
     "dev:vault": "turbo run dev --filter=@shelve/vault",
     "dev:cli": "turbo run dev --filter=@shelve/cli",
+    "test": "turbo run test",
     "cli": "pnpm build:cli && node packages/cli/dist/index.mjs"
   },
   "devDependencies": {

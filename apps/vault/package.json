@@ -11,11 +11,16 @@
     "postinstall": "nuxt prepare",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
   },
   "dependencies": {
     "@shelve/base": "workspace:*",
     "@upstash/redis": "^1.37.0",
     "tailwindcss": "^4.2.2"
+  },
+  "devDependencies": {
+    "@nuxt/test-utils": "^4.0.2",
+    "vitest": "^4.1.4"
   }
 }

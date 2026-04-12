@@ -14,10 +14,12 @@
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "typecheck": "tsc --noEmit",
+    "test": "vitest run",
     "db:generate": "nuxt db generate",
     "db:migrate": "nuxt db migrate"
   },
   "dependencies": {
+    "@electric-sql/pglite": "^0.3.16",
     "@shelve/base": "workspace:*",
     "@vue-email/components": "^0.0.21",
     "@vue-email/render": "^0.0.9",
@@ -29,7 +31,6 @@
     "nuxt-auth-utils": "^0.5.29",
     "nuxt-build-cache": "^0.1.1",
     "postgres": "^3.4.9",
-    "@electric-sql/pglite": "^0.3.16",
     "resend": "^6.10.0",
     "tailwindcss": "^4.2.2",
     "tweetnacl": "^1.0.3",
@@ -37,7 +38,9 @@
   },
   "devDependencies": {
     "@nuxt/devtools": "^3.2.4",
+    "@nuxt/test-utils": "^4.0.2",
     "@types/jsonwebtoken": "^9.0.10",
-    "@types/libsodium-wrappers": "^0.8.2"
+    "@types/libsodium-wrappers": "^0.8.2",
+    "vitest": "^4.1.4"
   }
 }

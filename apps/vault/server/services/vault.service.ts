@@ -1,5 +1,6 @@
 import type { H3Event } from 'h3'
-import type { DecryptRequest, DecryptResponse, EncryptRequest, StoredData, TTLFormat } from '@types'
+import type { DecryptRequest, DecryptResponse, EncryptRequest, StoredData } from '@types'
+import { calculateTimeLeft, formatTimeLeft, getEncryptionKey, hashPassword, verifyPassword } from '../utils/vault'
 
 export class VaultService {
 
@@ -7,13 +8,6 @@ export class VaultService {
   private readonly siteUrl: string
   private readonly storage = kv
   private readonly PREFIX = 'cache:'
-
-  private readonly TTL_MAP = {
-    '1d': 24 * 60 * 60, // 1 day in seconds
-    '7d': 7 * 24 * 60 * 60, // 7 days in seconds
-    '30d': 30 * 24 * 60 * 60, // 30 days in seconds
-    'Infinite': -1 // Infinite TTL
-  }
 
   constructor(event: H3Event) {
     const config = useRuntimeConfig(event)
@@ -30,47 +24,6 @@ export class VaultService {
     return Math.random().toString(36).slice(2)
   }
 
-  private calculateTimeLeft(createdAt: number, ttl: TTLFormat): number {
-    const ttlInSeconds = this.TTL_MAP[ttl]
-
-    if (ttlInSeconds === -1) {
-      return -1
-    }
-
-    const now = Date.now()
-    const expiresAt = createdAt + (ttlInSeconds * 1000)
-    return Math.max(0, Math.floor((expiresAt - now) / 1000))
-  }
-
-  private formatTimeLeft(seconds: number): string {
-    if (seconds === -1) return 'Infinite'
-
-    if (seconds <= 0) return 'Expired'
-
-    const days = Math.floor(seconds / (24 * 60 * 60))
-    const hours = Math.floor((seconds % (24 * 60 * 60)) / (60 * 60))
-    const minutes = Math.floor((seconds % (60 * 60)) / 60)
-
-    const parts = []
-
-    if (days > 0) {
-      parts.push(`${days}d`)
-    }
-    if (hours > 0) {
-      parts.push(`${hours}h`)
-    }
-    if (minutes > 0) {
-      parts.push(`${minutes}m`)
-    }
-
-    // If less than a minute left
-    if (parts.length === 0) {
-      return 'Less than 1 minute'
-    }
-
-    return parts.join(' ')
-  }
-
   async decrypt(id: string, decryptRequest?: DecryptRequest): Promise<DecryptResponse> {
     const key = this.generateKey(id)
     const storedData = await this.storage.get<StoredData>(key)
@@ -83,7 +36,7 @@ export class VaultService {
     }
 
     const { encryptedValue, reads, createdAt, ttl, passwordHash } = storedData
-    const timeLeft = this.calculateTimeLeft(createdAt, ttl)
+    const timeLeft = calculateTimeLeft(createdAt, ttl)
 
     if (timeLeft === 0) {
       await this.storage.del(key)
@@ -108,7 +61,7 @@ export class VaultService {
           statusMessage: 'Password required'
         })
       }
-      const isValidPassword = await this.verifyPassword(decryptRequest.password, passwordHash)
+      const isValidPassword = await verifyPassword(decryptRequest.password, passwordHash)
       if (!isValidPassword) {
         throw createError({
           statusCode: 400,
@@ -117,8 +70,8 @@ export class VaultService {
       }
     }
 
-    const encryptionKey = await this.getEncryptionKey(decryptRequest?.password)
-    const decryptedValue = await unseal(encryptedValue, encryptionKey) as string
+    const derivedKey = await getEncryptionKey(this.encryptionKey, decryptRequest?.password)
+    const decryptedValue = await unseal(encryptedValue, derivedKey) as string
 
     const updatedReads = reads - 1
     await this.storage.set(key, {
@@ -133,13 +86,13 @@ export class VaultService {
     return {
       decryptedValue,
       reads: updatedReads,
-      ttl: this.formatTimeLeft(timeLeft)
+      ttl: formatTimeLeft(timeLeft)
     }
   }
 
   async encrypt(data: EncryptRequest): Promise<string> {
-    const encryptionKey = await this.getEncryptionKey(data.password)
-    const encryptedValue = await seal(data.value, encryptionKey)
+    const derivedKey = await getEncryptionKey(this.encryptionKey, data.password)
+    const encryptedValue = await seal(data.value, derivedKey)
     const randomId = this.generateRandomId()
     const key = this.generateKey(randomId)
 
@@ -148,7 +101,7 @@ export class VaultService {
       reads: data.reads,
       createdAt: Date.now(),
       ttl: data.ttl,
-      ...(data.password && { passwordHash: await this.hashPassword(data.password) })
+      ...(data.password && { passwordHash: await hashPassword(data.password) })
     }
 
     await this.storage.set(key, storedData)
@@ -157,42 +110,6 @@ export class VaultService {
 
   private generateShareUrl(id: string): string {
     return `${this.siteUrl}?id=${id}`
-  }
-
-  private async hashPassword(password: string): Promise<string> {
-    const encoder = new TextEncoder()
-    const data = encoder.encode(password)
-    const hashBuffer = await crypto.subtle.digest('SHA-256', data)
-    const hashArray = Array.from(new Uint8Array(hashBuffer))
-    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('')
-  }
-
-  private async verifyPassword(password: string, hash: string): Promise<boolean> {
-    const passwordHash = await this.hashPassword(password)
-    return passwordHash === hash
-  }
-
-  private async generateSecureKey(): Promise<string> {
-    const salt = 'vault-encryption-secured-salt'
-    const combined = this.encryptionKey ? `${this.encryptionKey}:${salt}` : salt
-    const hash = await this.hashPassword(combined)
-    return hash
-  }
-
-  private async getEncryptionKey(password?: string): Promise<string> {
-    const baseKey = this.encryptionKey || ''
-
-    if (password && password.trim() !== '') {
-      const combined = baseKey ? `${baseKey}:${password}` : password
-      const hash = await this.hashPassword(combined)
-      return hash
-    }
-
-    if (baseKey && baseKey.length >= 32) {
-      return baseKey
-    }
-
-    return await this.generateSecureKey()
   }
 
 }

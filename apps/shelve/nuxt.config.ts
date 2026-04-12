@@ -75,4 +75,14 @@ export default defineNuxtConfig({
   },
 
   modules: ['@nuxt/ui', 'nuxt-auth-utils', '@nuxthub/core', 'botid/nuxt'],
+
+  $test: {
+    modules: ['nuxt-auth-utils', '@nuxthub/core'],
+    hub: {
+      db: {
+        dialect: 'postgresql',
+        driver: 'pglite',
+      },
+    },
+  },
 })
