@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { Analytics } from '@vercel/analytics/nuxt'
 import { motion } from 'motion-v'
 import { Toaster } from 'vue-sonner'
 import 'vue-sonner/style.css'
@@ -34,7 +33,6 @@ useSeoMeta({
 <template>
   <Html lang="en">
     <Body class="flex h-full flex-col">
-      <Analytics />
       <ShelveMeta
         :default-og-image="false"
         title="Vault by Shelve - Secure Secret Sharing Platform"

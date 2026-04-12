@@ -92,6 +92,9 @@ out
 .nuxt
 dist
 
+# Vercel CLI (linked project metadata + local prebuilt output, e.g. Nuxt nitro preset)
+.vercel/
+
 # Gatsby files
 .cache/
 # Comment in the public line in if your project uses Gatsby and not Next.js
