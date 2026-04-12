@@ -39,7 +39,10 @@
       "@parcel/watcher",
       "esbuild",
       "vue-demi"
-    ]
+    ],
+    "patchedDependencies": {
+      "docus@5.5.1": "patches/docus@5.5.1.patch"
+    }
   },
   "packageManager": "pnpm@10.33.0",
   "workspaces": [

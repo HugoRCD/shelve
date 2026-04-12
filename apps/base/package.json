@@ -25,7 +25,7 @@
     "dotenv": "^17.4.1",
     "iron-webcrypto": "^2.0.0",
     "motion-plus-vue": "^1.8.1",
-    "motion-v": "^1.10.3",
+    "motion-v": "^2.2.1",
     "nuxt": "4.4.2",
     "vue": "^3.5.32",
     "vue-sonner": "^2.0.9",

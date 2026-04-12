@@ -11,7 +11,7 @@ if (!page.value) {
 const { title, description } = page.value
 const titleTemplate = ref('%s')
 
-defineOgImage({ url: ogImage })
+useSeoMeta({ ogImage: ogImage })
 
 useSeoMeta({
   title,

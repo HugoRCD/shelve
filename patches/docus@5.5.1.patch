@@ -1,0 +1,8 @@
+diff --git a/app/components/OgImage/OgImageDocs.vue b/app/components/OgImage/OgImageDocs.satori.vue
+similarity index 100%
+rename from app/components/OgImage/OgImageDocs.vue
+rename to app/components/OgImage/OgImageDocs.satori.vue
+diff --git a/app/components/OgImage/OgImageLanding.vue b/app/components/OgImage/OgImageLanding.satori.vue
+similarity index 100%
+rename from app/components/OgImage/OgImageLanding.vue
+rename to app/components/OgImage/OgImageLanding.satori.vue

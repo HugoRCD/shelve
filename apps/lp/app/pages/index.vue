@@ -15,7 +15,7 @@ useSeoMeta({
   ogTitle: titleTemplate.value?.includes('%s') ? titleTemplate.value.replace('%s', title) : title
 })
 
-defineOgImage({ url: ogImage })
+useSeoMeta({ ogImage: ogImage })
 </script>
 
 <template>
