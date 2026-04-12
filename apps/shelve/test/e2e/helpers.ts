@@ -18,6 +18,23 @@ export async function seedUser(data?: { username?: string; email?: string }) {
   return { user, cookie }
 }
 
+/**
+ * Creates an API token usable by the CLI (`Cookie: authToken=…`) after a browser session exists.
+ */
+export async function getCliAuthToken(cookie: string): Promise<string> {
+  const api = authedFetch(cookie)
+  await api('/api/tokens', {
+    method: 'POST',
+    body: { name: 'e2e-cli' },
+  })
+  const tokens = await api('/api/tokens')
+  const latest = tokens[0] as { token?: string } | undefined
+  if (!latest?.token || typeof latest.token !== 'string')
+    throw new Error('Failed to obtain CLI auth token')
+
+  return latest.token
+}
+
 export function authedFetch(cookie: string) {
   return async <T = any>(path: string, options: { method?: string; body?: Record<string, unknown>; headers?: Record<string, string> } = {}): Promise<T> => {
     const response = await fetch(url(path), {
