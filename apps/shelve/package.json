@@ -30,6 +30,7 @@
     "postgres": "^3.4.9",
     "@electric-sql/pglite": "^0.4.4",
     "resend": "^6.10.0",
+    "tailwindcss": "^4.2.2",
     "tweetnacl": "^1.0.3",
     "vue-router": "^4.6.4"
   },
