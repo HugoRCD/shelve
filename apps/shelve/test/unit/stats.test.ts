@@ -28,9 +28,7 @@ describe('calculateStats', () => {
       variables: [],
       teams: [],
       projects: [],
-      teamStats: [
-        { pushCount: 100, pullCount: 200 },
-      ],
+      teamStats: [{ pushCount: 100, pullCount: 200 },],
     })
 
     const totalActions = 300
