@@ -12,7 +12,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run"
+    "test": "rm -rf .nuxt/test && vitest run"
   },
   "dependencies": {
     "@shelve/base": "workspace:*",
