@@ -40,8 +40,8 @@
     "vitest": "vitest run"
   },
   "dependencies": {
-    "@antfu/ni": "^28.3.0",
-    "@clack/prompts": "0.11.0",
+    "@antfu/ni": "^30.0.0",
+    "@clack/prompts": "^1.2.0",
     "c12": "3.3.4",
     "dotenv": "^17.4.1",
     "citty": "^0.2.2",
@@ -50,7 +50,7 @@
     "nypm": "0.6.5",
     "ofetch": "1.5.1",
     "pkg-types": "2.3.0",
-    "rc9": "^2.1.2",
+    "rc9": "^3.0.1",
     "semver": "7.7.4",
     "tinyglobby": "0.2.16",
     "tree-kill": "^1.2.2"

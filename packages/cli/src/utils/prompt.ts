@@ -25,7 +25,7 @@ export async function askText(message: string, placeholder?: string, initialValu
     placeholder,
     initialValue,
     validate(value) {
-      if (value.length === 0) return 'Value is required!'
+      if (!value?.length) return 'Value is required!'
     },
   })
   if (isCancel(response)) handleCancel('Operation cancelled.')
@@ -36,7 +36,7 @@ export async function askPassword(message: string): Promise<string> {
   const response = await password({
     message,
     validate(value) {
-      if (value.length === 0) return 'Value is required!'
+      if (!value?.length) return 'Value is required!'
     },
   })
   if (isCancel(response)) handleCancel('Operation cancelled.')

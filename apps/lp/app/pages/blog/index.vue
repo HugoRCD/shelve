@@ -18,7 +18,7 @@ if (!posts.value) {
 const { title, description } = page.value
 const titleTemplate = ref('%s - Updates, Insights & Building in Public')
 
-defineOgImage({ url: ogImage })
+useSeoMeta({ ogImage: ogImage })
 
 useSeoMeta({
   title,

@@ -11,7 +11,7 @@ const title = 'About Shelve'
 const description = 'Learn about Shelve\'s origins, the mission to simplify secrets management, and the vision for a unified, open-source developer workspace.'
 const titleTemplate = ref('%s - Our Story, Mission & Vision')
 
-defineOgImage({ url: ogImage })
+useSeoMeta({ ogImage: ogImage })
 
 useSeoMeta({
   title,
