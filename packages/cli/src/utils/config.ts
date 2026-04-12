@@ -128,7 +128,8 @@ async function selectProject(slug: string): Promise<string> {
  */
 async function checkConfig(path: string | null, isRoot = false): Promise<ShelveConfig> {
   const defaultConfig = await getDefaultConfig()
-  const config = path ? JSON.parse(FileService.read(path)) : null
+  const raw = path ? FileService.read(path).trim() : ''
+  const config = raw ? JSON.parse(raw) : null
   return isRoot ? config : defu(config, defaultConfig)
 }
 

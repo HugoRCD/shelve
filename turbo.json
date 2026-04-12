@@ -56,7 +56,9 @@
       "dependsOn": ["transit"]
     },
     "lint:fix": {},
-    "test": {},
+    "test": {
+      "dependsOn": ["^build"]
+    },
     "release": {},
     "typecheck": {
       "dependsOn": ["transit"]

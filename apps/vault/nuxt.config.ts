@@ -22,4 +22,8 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
 
   css: ['~/assets/css/index.css'],
+
+  $test: {
+    modules: ['@nuxthub/core'],
+  },
 })
