@@ -28,7 +28,7 @@
     "nuxt-auth-utils": "^0.5.29",
     "nuxt-build-cache": "^0.1.1",
     "postgres": "^3.4.9",
-    "@electric-sql/pglite": "^0.4.4",
+    "@electric-sql/pglite": "^0.3.16",
     "resend": "^6.10.0",
     "tailwindcss": "^4.2.2",
     "tweetnacl": "^1.0.3",

@@ -145,8 +145,8 @@ importers:
   apps/shelve:
     dependencies:
       '@electric-sql/pglite':
-        specifier: ^0.4.4
-        version: 0.4.4
+        specifier: ^0.3.16
+        version: 0.3.16
       '@vue-email/components':
         specifier: ^0.0.21
         version: 0.0.21(typescript@5.9.3)(vue@3.5.32(typescript@5.9.3))
@@ -161,7 +161,7 @@ importers:
         version: 0.31.10
       drizzle-orm:
         specifier: ^0.45.2
-        version: 0.45.2(@cloudflare/workers-types@4.20260401.1)(@electric-sql/pglite@0.4.4)(@opentelemetry/api@1.9.0)(@upstash/redis@1.37.0)(better-sqlite3@12.8.0)(postgres@3.4.9)
+        version: 0.45.2(@cloudflare/workers-types@4.20260401.1)(@electric-sql/pglite@0.3.16)(@opentelemetry/api@1.9.0)(@upstash/redis@1.37.0)(better-sqlite3@12.8.0)(postgres@3.4.9)
       jsonwebtoken:
         specifier: ^9.0.3
         version: 9.0.3
@@ -590,6 +590,9 @@ packages:
 
   '@dxup/unimport@0.1.2':
     resolution: {integrity: sha512-/B8YJGPzaYq1NbsQmwgP8EZqg40NpTw4ZB3suuI0TplbxKHeK94jeaawLmVhCv+YwUnOpiWEz9U6SeThku/8JQ==}
+
+  '@electric-sql/pglite@0.3.16':
+    resolution: {integrity: sha512-mZkZfOd9OqTMHsK+1cje8OSzfAQcpD7JmILXTl5ahdempjUDdmg4euf1biDex5/LfQIDJ3gvCu6qDgdnDxfJmA==}
 
   '@electric-sql/pglite@0.4.4':
     resolution: {integrity: sha512-g/6CWAJ4XOkObWCWAQ2IReZD8VvsDy3poRHSKvpRR2F96F8WJ3HVbjpso3gN7l0q6QPPgvxSSpl/qo5k8a7mkQ==}
@@ -9659,7 +9662,10 @@ snapshots:
 
   '@dxup/unimport@0.1.2': {}
 
-  '@electric-sql/pglite@0.4.4': {}
+  '@electric-sql/pglite@0.3.16': {}
+
+  '@electric-sql/pglite@0.4.4':
+    optional: true
 
   '@emnapi/core@1.9.1':
     dependencies:
@@ -14411,6 +14417,15 @@ snapshots:
       esbuild: 0.25.12
       tsx: 4.21.0
 
+  drizzle-orm@0.45.2(@cloudflare/workers-types@4.20260401.1)(@electric-sql/pglite@0.3.16)(@opentelemetry/api@1.9.0)(@upstash/redis@1.37.0)(better-sqlite3@12.8.0)(postgres@3.4.9):
+    optionalDependencies:
+      '@cloudflare/workers-types': 4.20260401.1
+      '@electric-sql/pglite': 0.3.16
+      '@opentelemetry/api': 1.9.0
+      '@upstash/redis': 1.37.0
+      better-sqlite3: 12.8.0
+      postgres: 3.4.9
+
   drizzle-orm@0.45.2(@cloudflare/workers-types@4.20260401.1)(@electric-sql/pglite@0.4.4)(@opentelemetry/api@1.9.0)(@upstash/redis@1.37.0)(better-sqlite3@12.8.0)(postgres@3.4.9):
     optionalDependencies:
       '@cloudflare/workers-types': 4.20260401.1
@@ -14419,6 +14434,7 @@ snapshots:
       '@upstash/redis': 1.37.0
       better-sqlite3: 12.8.0
       postgres: 3.4.9
+    optional: true
 
   dts-resolver@2.1.3: {}
 
