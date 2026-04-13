@@ -11,7 +11,9 @@
     "lint": "turbo run lint",
     "lint:fix": "turbo run lint:fix",
     "typecheck": "turbo run typecheck",
-    "release": "turbo run release && changeset",
+    "changeset": "changeset",
+    "version": "changeset version",
+    "release": "pnpm run build:cli && changeset publish",
     "build:app": "turbo run build --filter=@shelve/app",
     "build:lp": "turbo run build --filter=@shelve/lp",
     "build:vault": "turbo run build --filter=@shelve/vault",
@@ -26,6 +28,7 @@
     "db:migrate": "pnpm --filter @shelve/app db:migrate"
   },
   "devDependencies": {
+    "@changesets/changelog-github": "^0.6.0",
     "@changesets/cli": "^2.30.0",
     "@hrcd/eslint-config": "^3.0.3",
     "@shelve/cli": "workspace:*",

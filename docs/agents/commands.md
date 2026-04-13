@@ -27,4 +27,11 @@
 - `pnpm lint:fix` runs `turbo run lint:fix`.
 - `pnpm typecheck` runs `turbo run typecheck`.
 - `pnpm test` runs `turbo run test`.
-- `pnpm release` runs `turbo run release` then `changeset`.
+
+## Release
+
+- `pnpm changeset` creates a new changeset (required for every feature/fix).
+- `pnpm version` applies pending changesets (bumps versions, updates changelogs). Used by CI.
+- `pnpm release` builds the CLI and publishes to npm. Used by CI.
+
+See [Changesets](changesets.md) for the full workflow.
