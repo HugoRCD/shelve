@@ -1,14 +1,9 @@
 import { parseEnvFile } from '@utils'
+import { useDropZone } from '@vueuse/core'
 
 export function useFileHandling(updateVariables: (vars: Array<{ index: number, key: string, value: string }>) => void) {
-  const dragOver = ref(false)
-  const fileInputRef = ref<HTMLInputElement | null>(null)
-
-  const border = computed(() => {
-    return dragOver.value
-      ? 'border border-primary border-dashed'
-      : 'border border-default'
-  })
+  const dropZoneRef = ref<HTMLElement>()
+  const fileInputRef = ref<HTMLInputElement>()
 
   function processEnvContent(content: string) {
     try {
@@ -23,14 +18,6 @@ export function useFileHandling(updateVariables: (vars: Array<{ index: number, k
     }
   }
 
-  function handleFileUpload(event: Event) {
-    const target = event.target as HTMLInputElement
-    const file = target.files ? target.files[0] : null
-    if (file) {
-      handleFileContent(file)
-    }
-  }
-
   function handleFileContent(file: File) {
     const reader = new FileReader()
     reader.onload = (e) => {
@@ -41,30 +28,23 @@ export function useFileHandling(updateVariables: (vars: Array<{ index: number, k
     reader.readAsText(file)
   }
 
-  const dragHandlers = {
-    handleDragEnter: (event: DragEvent) => {
-      event.preventDefault()
-      dragOver.value = true
-    },
-    handleDragOver: (event: DragEvent) => {
-      event.preventDefault()
-    },
-    handleDragLeave: (event: DragEvent): void => {
-      const currentTarget = event.currentTarget as Node
-      const relatedTarget = event.relatedTarget as Node | null
-      if (!currentTarget?.contains(relatedTarget)) {
-        dragOver.value = false
-      }
-    },
-    handleDrop: (event: DragEvent): void => {
-      event.preventDefault()
-      dragOver.value = false
-      const files = event.dataTransfer?.files
-      if (files?.length && files[0]) {
-        handleFileContent(files[0])
-      }
-    }
+  function handleFileUpload(event: Event) {
+    const target = event.target as HTMLInputElement
+    const file = target.files?.[0]
+    if (file) handleFileContent(file)
   }
+
+  function onDrop(files: File[] | null) {
+    if (files?.[0]) handleFileContent(files[0])
+  }
+
+  const { isOverDropZone } = useDropZone(dropZoneRef, { onDrop })
+
+  const border = computed(() =>
+    isOverDropZone.value
+      ? 'border border-primary border-dashed'
+      : 'border border-default'
+  )
 
   onMounted(() => {
     document.addEventListener('paste', (e) => {
@@ -81,12 +61,11 @@ export function useFileHandling(updateVariables: (vars: Array<{ index: number, k
   const triggerFileInput = () => fileInputRef.value?.click()
 
   return {
-    dragOver,
+    dropZoneRef,
+    isOverDropZone,
     fileInputRef,
     border,
-    handleFileContent,
     handleFileUpload,
-    dragHandlers,
     triggerFileInput,
   }
 }

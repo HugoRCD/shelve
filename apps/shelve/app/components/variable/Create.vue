@@ -24,10 +24,10 @@ const {
 } = useVariableForm(+projectId, environments)
 
 const {
-  dragOver,
+  dropZoneRef,
+  isOverDropZone,
   fileInputRef,
   border,
-  dragHandlers,
   handleFileUpload,
   triggerFileInput,
 } = useFileHandling((vars) => {
@@ -78,16 +78,13 @@ const handlePasswordGenerated = (password: string, index: number) => variablesIn
 
 <template>
   <form id="varCreation" class="relative duration-500" @submit.prevent="handleCreateVariables">
-    <UCard
-      variant="subtle"
-      :ui="{ root: border }"
-      class="duration-500"
-      @dragenter.prevent="dragHandlers.handleDragEnter($event)"
-      @dragover.prevent="dragHandlers.handleDragOver($event)"
-      @dragleave.prevent="dragHandlers.handleDragLeave($event)"
-      @drop.prevent="dragHandlers.handleDrop($event)"
-    >
-      <div :class="{ 'absolute': dragOver, 'hidden': !dragOver }" class="overlay left-0 top-0 z-40 size-full content-center items-center justify-center">
+    <div ref="dropZoneRef">
+      <UCard
+        variant="subtle"
+        :ui="{ root: border }"
+        class="duration-500"
+      >
+      <div :class="{ 'absolute': isOverDropZone, 'hidden': !isOverDropZone }" class="pointer-events-none left-0 top-0 z-40 size-full content-center items-center justify-center">
         <div class="icon-container flex flex-col items-center gap-2">
           <UIcon name="lucide:file-up" class="text-primary size-10" />
           <p class="text-lg font-semibold">
@@ -96,7 +93,7 @@ const handlePasswordGenerated = (password: string, index: number) => variablesIn
         </div>
       </div>
       <template #header>
-        <div :class="{ 'opacity-30': dragOver }" class="flex items-center justify-between">
+        <div :class="{ 'opacity-30': isOverDropZone }" class="flex items-center justify-between">
           <div class="flex flex-col">
             <h2 class="text-lg font-semibold">
               Environment Variables
@@ -110,7 +107,7 @@ const handlePasswordGenerated = (password: string, index: number) => variablesIn
           </UDropdownMenu>
         </div>
       </template>
-      <div :class="{ 'opacity-30': dragOver }" class="flex flex-col gap-3">
+      <div :class="{ 'opacity-30': isOverDropZone }" class="flex flex-col gap-3">
         <div class="flex w-full flex-col gap-4 md:w-1/3">
           <h4 class="text-sm font-semibold">
             Environments
@@ -194,7 +191,7 @@ const handlePasswordGenerated = (password: string, index: number) => variablesIn
         </div>
       </div>
       <template #footer>
-        <div :class="{ 'opacity-30': dragOver }" class="flex justify-between gap-4">
+        <div :class="{ 'opacity-30': isOverDropZone }" class="flex justify-between gap-4">
           <div class="flex gap-2">
             <UButton
               label="Add variable"
@@ -216,5 +213,6 @@ const handlePasswordGenerated = (password: string, index: number) => variablesIn
         </div>
       </template>
     </UCard>
+    </div>
   </form>
 </template>

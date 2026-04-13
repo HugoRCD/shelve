@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useDropZone } from '@vueuse/core'
 import { motion } from 'motion-v'
 
 const state = ref({
@@ -35,55 +36,30 @@ async function saveEnvFile() {
   loading.value = false
 }
 
-function parseEnvFile(file: File) {
+const dropZoneRef = ref<HTMLElement>()
+
+function readFileAsText(file: File) {
   const reader = new FileReader()
-
   reader.onload = (e) => state.value.value = e.target?.result as string
-
   reader.onerror = (e) => console.error('Error reading file:', e)
-
   reader.readAsText(file)
 }
 
-const dragOver = ref(false)
-
-const border = computed(() => {
-  if (dragOver.value) {
-    return 'border border-primary border-dashed'
-  }
-  return 'border border-muted/20 ring-0'
-})
-
-const handleFileUpload = (event: Event) => {
-  const target = event.target as HTMLInputElement
-  const file = target.files ? target.files[0] : null
-  if (file) {
-    parseEnvFile(file)
-  }
+function onDrop(files: File[] | null) {
+  if (files?.[0]) readFileAsText(files[0])
 }
 
-function handleDragEnter(event: DragEvent) {
-  event.preventDefault()
-  dragOver.value = true
-}
+const { isOverDropZone } = useDropZone(dropZoneRef, { onDrop })
 
-function handleDragOver(event: DragEvent) {
-  event.preventDefault()
-}
+const border = computed(() =>
+  isOverDropZone.value
+    ? 'border border-primary border-dashed'
+    : 'border border-muted/20 ring-0'
+)
 
-function handleDragLeave(event: DragEvent) {
-  if (!(event.currentTarget as Node).contains(event.relatedTarget as Node)) {
-    dragOver.value = false
-  }
-}
-
-function handleDrop(event: DragEvent) {
-  event.preventDefault()
-  dragOver.value = false
-  const files = event.dataTransfer?.files
-  if (files && files.length > 0) {
-    parseEnvFile(files[0]!)
-  }
+function handleFileUpload(event: Event) {
+  const file = (event.target as HTMLInputElement).files?.[0]
+  if (file) readFileAsText(file)
 }
 
 function copyToClipboard(text: string) {
@@ -106,19 +82,17 @@ function copyToClipboard(text: string) {
           :transition="{ duration: 0.3, delay: 0.3 }"
         >
           <UFormField class="relative w-full" name="value">
-            <UTextarea
-              v-model="state.value"
-              autoresize
-              required
-              :rows="5"
-              class="w-full rounded-xl border-none"
-              placeholder="DATABASE_URL=your_value ..."
-              :ui="{ base: ['bg-default rounded-xl', border] }"
-              @dragenter.prevent="handleDragEnter"
-              @dragover.prevent="handleDragOver"
-              @dragleave.prevent="handleDragLeave"
-              @drop.prevent="handleDrop"
-            />
+            <div ref="dropZoneRef">
+              <UTextarea
+                v-model="state.value"
+                autoresize
+                required
+                :rows="5"
+                class="w-full rounded-xl border-none"
+                placeholder="DATABASE_URL=your_value ..."
+                :ui="{ base: ['bg-default rounded-xl', border] }"
+              />
+            </div>
             <input type="file" accept="text" style="display: none;" @change="handleFileUpload">
           </UFormField>
         </motion.div>
