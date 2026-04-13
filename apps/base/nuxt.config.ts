@@ -1,5 +1,5 @@
 import { createResolver } from 'nuxt/kit'
-import pkg from '../../package.json'
+import pkg from '../shelve/package.json'
 
 const { resolve } = createResolver(import.meta.url)
 
