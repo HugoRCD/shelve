@@ -12,6 +12,7 @@ MotionGlobalConfig.skipAnimations = reduceMotion.value
 watch(reduceMotion, (value) => {
   MotionGlobalConfig.skipAnimations = value
 })
+
 </script>
 
 <template>

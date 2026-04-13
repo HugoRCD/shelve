@@ -46,13 +46,6 @@ export class VariablesService {
   private async findVariableById(tx: any, id: number) {
     return await tx.query.variables.findFirst({
       where: eq(schema.variables.id, id),
-      with: {
-        values: {
-          with: {
-            environment: true
-          }
-        }
-      }
     })
   }
 
@@ -76,12 +69,13 @@ export class VariablesService {
       const preparedVariables = await Promise.all(
         varsToCreate.map(async (variable) => ({
           key: autoUppercase ? variable.key.toUpperCase() : variable.key,
+          description: variable.description,
           encryptedValue: await this.encryptValue(variable.value)
         }))
       )
 
       const variableRecords = await Promise.all(
-        preparedVariables.map(async ({ key }) => {
+        preparedVariables.map(async ({ key, description }) => {
           const existing = await tx.query.variables.findFirst({
             where: and(
               eq(schema.variables.projectId, projectId),
@@ -89,10 +83,17 @@ export class VariablesService {
             )
           })
 
-          if (existing) return existing
+          if (existing) {
+            if (description !== undefined) {
+              await tx.update(schema.variables)
+                .set({ description })
+                .where(eq(schema.variables.id, existing.id))
+            }
+            return existing
+          }
 
           const [created] = await tx.insert(schema.variables)
-            .values({ projectId, key })
+            .values({ projectId, key, description: description || null })
             .returning()
 
           return created
@@ -138,15 +139,23 @@ export class VariablesService {
   }
 
   async updateVariable(input: UpdateVariableInput): Promise<void> {
-    const { id, key, values, autoUppercase = true } = input
+    const { id, key, values, autoUppercase = true, description, groupId } = input
 
     await db.transaction(async (tx) => {
       const existingVariable = await this.findVariableById(tx, id)
       if (!existingVariable) throw createError({ statusCode: 404, statusMessage: `Variable not found with id ${id}` })
 
       const updatedKey = autoUppercase ? key.toUpperCase() : key
-      if (updatedKey !== existingVariable.key) {
-        await this.updateVariableKey(tx, id, updatedKey)
+      const updates: Record<string, unknown> = {}
+
+      if (updatedKey !== existingVariable.key) updates.key = updatedKey
+      if (description !== undefined) updates.description = description
+      if (groupId !== undefined) updates.groupId = groupId
+
+      if (Object.keys(updates).length > 0) {
+        await tx.update(schema.variables)
+          .set(updates)
+          .where(eq(schema.variables.id, id))
       }
 
       await Promise.all(values.map(async valueInput => {
@@ -162,6 +171,7 @@ export class VariablesService {
     const variables = await db.query.variables.findMany({
       where: eq(schema.variables.projectId, projectId),
       with: {
+        group: true,
         values: {
           with: {
             environment: true
@@ -174,6 +184,19 @@ export class VariablesService {
       ? variables.filter(v => v.values.some(val => val.environmentId === environmentId))
       : variables
   })
+
+  async bulkAssignGroup(variableIds: number[], groupId: number | null): Promise<void> {
+    if (!variableIds.length) return
+
+    await db.update(schema.variables)
+      .set({ groupId })
+      .where(inArray(schema.variables.id, variableIds))
+
+    const first = await db.query.variables.findFirst({
+      where: eq(schema.variables.id, variableIds[0]!),
+    })
+    if (first) await clearCache('Variables', first.projectId)
+  }
 
   async deleteVariable(id: number): Promise<void> {
     const [deleted] = await db.delete(schema.variables)
@@ -205,10 +228,5 @@ export class VariablesService {
       })
   }
 
-  private async updateVariableKey(tx: any, id: number, key: string) {
-    return await tx.update(schema.variables)
-      .set({ key })
-      .where(eq(schema.variables.id, id))
-  }
 
 }

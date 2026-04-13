@@ -1,5 +1,17 @@
 import { fetch, url } from '@nuxt/test-utils/e2e'
 
+export interface E2EContext {
+  api: ReturnType<typeof authedFetch>
+  sessionCookie: string
+  teamSlug: string
+  projectId: number
+  environmentIds: number[]
+  variableId: number
+  groupId: number
+  cliToken: string
+  cliTmpDir: string | undefined
+}
+
 export async function seedUser(data?: { username?: string; email?: string }) {
   const response = await fetch(url('/api/_test/seed'), {
     method: 'POST',

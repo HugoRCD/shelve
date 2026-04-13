@@ -2,7 +2,7 @@ import { resolve } from 'path'
 import { x } from 'tinyexec'
 import { defineCommand } from 'citty'
 import { intro } from '@clack/prompts'
-import type { EnvVar } from '@types'
+import type { EnvVarExport } from '@types'
 import consola from 'consola'
 import treeKill from 'tree-kill'
 import { handleCancel, loadShelveConfig } from '../utils'
@@ -36,7 +36,7 @@ export default defineCommand({
 
     const environment = await EnvironmentService.getEnvironment(slug, env)
 
-    const variables: EnvVar[] = await EnvService.getEnvVariables({
+    const variables: EnvVarExport[] = await EnvService.getEnvVariables({
       project: projectData,
       environmentId: environment.id,
       slug
@@ -120,7 +120,7 @@ export default defineCommand({
   }
 })
 
-function formatEnvVars(variables: EnvVar[]): NodeJS.ProcessEnv {
+function formatEnvVars(variables: EnvVarExport[]): NodeJS.ProcessEnv {
   return variables.reduce<NodeJS.ProcessEnv>((acc, { key, value }) => ({
     ...acc,
     [key]: value

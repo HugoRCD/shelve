@@ -100,6 +100,19 @@ export function useVariablesService() {
     }
   }
 
+  async function bulkAssignGroup(variableIds: number[], groupId: number | null) {
+    try {
+      await $fetch(`/api/teams/${teamSlug}/projects/${projectId}/variables/group`, {
+        method: 'PATCH',
+        body: { variableIds, groupId }
+      })
+      toast.success(groupId ? 'Variables assigned to group' : 'Variables removed from group')
+      await fetchVariables()
+    } catch {
+      toast.error('Failed to update group assignment')
+    }
+  }
+
   return {
     loading,
     createLoading,
@@ -110,5 +123,6 @@ export function useVariablesService() {
     updateVariable,
     deleteVariable,
     deleteVariables,
+    bulkAssignGroup,
   }
 }

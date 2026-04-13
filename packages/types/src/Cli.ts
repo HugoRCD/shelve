@@ -1,4 +1,4 @@
-import type { EnvVar } from './Variables'
+import type { EnvVar, EnvVarExport } from './Variables'
 import type { Environment } from './Environment'
 import type { Project } from './Project'
 
@@ -89,7 +89,7 @@ export type CreateEnvFileInput = {
   /**
    * The variables to create in the .env file
    * */
-  variables: EnvVar[]
+  variables: EnvVarExport[]
   /**
    * Whether to confirm changes before updating the .env file
    *

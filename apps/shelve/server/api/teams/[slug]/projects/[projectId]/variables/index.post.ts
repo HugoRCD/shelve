@@ -13,6 +13,7 @@ const createVariablesSchema = z.object({
     value: z.string({
       error: 'Variable value is required',
     }).min(1).trim(),
+    description: z.string().max(500).trim().optional(),
   })).min(1).max(100),
   syncWithGitHub: z.boolean().optional(),
 })
@@ -31,6 +32,7 @@ export default eventHandler(async (event) => {
     variables: body.variables.map(variable => ({
       key: variable.key,
       value: variable.value,
+      description: variable.description,
     })),
     syncWithGitHub: body.syncWithGitHub,
   })

@@ -112,15 +112,30 @@ export const projects = pgTable('projects', {
   index('projects_team_idx').on(table.teamId),
 ])
 
+export const variableGroups = pgTable('variable_groups', {
+  id: bigint({ mode: 'number' }).primaryKey().generatedByDefaultAsIdentity(),
+  name: varchar({ length: 50 }).notNull(),
+  description: varchar({ length: 500 }).default('').notNull(),
+  position: integer().default(0).notNull(),
+  projectId: bigint({ mode: 'number' }).references(() => projects.id, { onDelete: 'cascade' }).notNull(),
+  ...timestamps,
+}, (table) => [
+  uniqueIndex('variable_groups_project_name_idx').on(table.projectId, table.name),
+  index('variable_groups_project_idx').on(table.projectId),
+])
+
 export const variables = pgTable('variables', {
   id: bigint({ mode: 'number' }).primaryKey().generatedByDefaultAsIdentity(),
   projectId: bigint({ mode: 'number' }).references(() => projects.id, { onDelete: 'cascade' }).notNull(),
   key: varchar({ length: 50 }).notNull(),
+  description: varchar({ length: 500 }),
+  groupId: bigint({ mode: 'number' }).references(() => variableGroups.id, { onDelete: 'set null' }),
   ...timestamps,
 }, (table) => [
   uniqueIndex('variables_project_key_idx').on(table.projectId, table.key),
   index('variables_key_idx').on(table.key),
   index('variables_project_idx').on(table.projectId),
+  index('variables_group_idx').on(table.groupId),
 ])
 
 export const variableValues = pgTable('variable_values', {
@@ -202,17 +217,30 @@ export const invitationsRelations = relations(invitations, ({ one }) => ({
   })
 }))
 
-export const projectsRelations = relations(projects, ({ one }) => ({
+export const projectsRelations = relations(projects, ({ one, many }) => ({
   team: one(teams, {
     fields: [projects.teamId],
     references: [teams.id],
-  })
+  }),
+  variableGroups: many(variableGroups),
+}))
+
+export const variableGroupsRelations = relations(variableGroups, ({ one, many }) => ({
+  project: one(projects, {
+    fields: [variableGroups.projectId],
+    references: [projects.id],
+  }),
+  variables: many(variables),
 }))
 
 export const variablesRelations = relations(variables, ({ one, many }) => ({
   project: one(projects, {
     fields: [variables.projectId],
     references: [projects.id],
+  }),
+  group: one(variableGroups, {
+    fields: [variables.groupId],
+    references: [variableGroups.id],
   }),
   values: many(variableValues)
 }))

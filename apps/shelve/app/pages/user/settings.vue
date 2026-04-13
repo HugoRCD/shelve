@@ -14,6 +14,11 @@ const syncWithGitHub = useCookie<boolean>('syncWithGitHub', {
   default: () => false,
 })
 
+const collapseGroups = useCookie<boolean>('collapseGroups', {
+  watch: true,
+  default: () => false,
+})
+
 function setPrefersReducedMotion() {
   if (reduceMotion.value) {
     document.documentElement.setAttribute('data-reduce-motion', 'reduce')
@@ -53,11 +58,18 @@ const settingsOptions = ref([
     stagger: 2
   },
   {
+    id: 'collapseGroups',
+    title: 'Collapse groups by default',
+    description: 'Variable groups are collapsed when you open a project.',
+    modelValue: collapseGroups,
+    stagger: 3
+  },
+  {
     id: 'reduceMotion',
     title: 'Reduce Motion',
     description: 'Remove all transitions and animations from the site.',
     modelValue: reduceMotion,
-    stagger: 3
+    stagger: 4
   }
 ])
 

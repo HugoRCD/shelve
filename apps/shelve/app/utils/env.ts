@@ -1,5 +1,49 @@
 import type { Environment, Variable } from '@types'
 
+export function formatEnvString(variables: Variable[], envId: number): string {
+  const grouped = new Map<string, { description: string; vars: Variable[] }>()
+  const ungrouped: Variable[] = []
+
+  for (const variable of variables) {
+    if (variable.group) {
+      const existing = grouped.get(variable.group.name)
+      if (existing) {
+        existing.vars.push(variable)
+      } else {
+        grouped.set(variable.group.name, {
+          description: variable.group.description,
+          vars: [variable],
+        })
+      }
+    } else {
+      ungrouped.push(variable)
+    }
+  }
+
+  const lines: string[] = []
+  const getValue = (v: Variable) => v.values.find((val) => val.environmentId === envId)?.value ?? ''
+
+  for (const [name, { description, vars }] of grouped) {
+    if (lines.length > 0) lines.push('')
+    lines.push(`# ---- ${name} ----`)
+    if (description) lines.push(`# ${description}`)
+    for (const v of vars) {
+      if (v.description) lines.push(`# ${v.description}`)
+      lines.push(`${v.key}=${getValue(v)}`)
+    }
+  }
+
+  if (ungrouped.length > 0) {
+    if (grouped.size > 0) lines.push('')
+    for (const v of ungrouped) {
+      if (v.description) lines.push(`# ${v.description}`)
+      lines.push(`${v.key}=${getValue(v)}`)
+    }
+  }
+
+  return lines.join('\n')
+}
+
 export function copyEnv(variables: Variable[], envId?: number) {
   if (variables.length === 0) {
     toast.error('No variables found')
@@ -12,19 +56,19 @@ export function copyEnv(variables: Variable[], envId?: number) {
       toast.error('Environment not found')
       return
     }
-    const envString = variables.map((variable) => `${ variable.key }=${ variable.values.find((value) => value.environmentId === envId)?.value }`).join('\n')
-    copyToClipboard(envString, `Copied to clipboard for ${ env.name }`)
+    copyToClipboard(formatEnvString(variables, envId), `Copied to clipboard for ${env.name}`)
     return
   }
   const devId = teamEnv.value.find((env) => env.name === 'development')?.id
-  const envString = variables.map((variable) => `${ variable.key }=${ variable.values.find((value) => value.environmentId === devId)?.value }`).join('\n')
-  copyToClipboard(envString, 'Copied to clipboard')
+  if (devId) {
+    copyToClipboard(formatEnvString(variables, devId), 'Copied to clipboard')
+  }
 }
 
 export function downloadEnv(variables: Variable[], env: Environment) {
   if (variables.length === 0) return
   const envVariables = variables.filter((variable) => variable.values.some((value) => value.environmentId === env.id))
-  const envString = envVariables.map((variable) => `${variable.key}=${variable.values.find((value) => value.environmentId === env.id)?.value}`).join('\n')
+  const envString = formatEnvString(envVariables, env.id)
   const blob = new Blob([envString], { type: 'text/plain' })
   const url = URL.createObjectURL(blob)
   const a = document.createElement('a')

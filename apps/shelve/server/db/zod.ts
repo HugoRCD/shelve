@@ -31,3 +31,9 @@ export const projectIdParamsSchema = z.object({
     error: 'Project ID is required',
   }).int().positive(),
 })
+
+export const groupIdParamsSchema = z.object({
+  groupId: z.coerce.number({
+    error: 'Group ID is required',
+  }).int().positive(),
+})

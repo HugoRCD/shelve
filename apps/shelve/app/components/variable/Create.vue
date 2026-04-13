@@ -184,6 +184,11 @@ const handlePasswordGenerated = (password: string, index: number) => variablesIn
                   <UButton icon="lucide:x" variant="soft" color="error" @click="removeVariable(variable - 1)" />
                 </UTooltip>
               </div>
+              <UInput
+                v-model="variablesInput.variables[variable - 1]!.description"
+                placeholder="Description (optional)"
+                class="w-full"
+              />
             </div>
           </div>
         </div>

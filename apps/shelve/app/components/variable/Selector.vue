@@ -9,8 +9,9 @@ const props = defineProps<{
 const route = useRoute()
 const projectId = route.params.projectId as string
 const selectedVariables = useSelectedVariables(projectId)
+const groups = useVariableGroups(projectId)
 
-const { deleteVariables } = useVariablesService()
+const { deleteVariables, bulkAssignGroup } = useVariablesService()
 
 const loading = ref(false)
 
@@ -45,6 +46,27 @@ function openDeleteModal() {
     },
   })
 }
+
+async function assignGroupToSelected(groupId: number | null) {
+  const ids = selectedVariables.value.map((v: Variable) => v.id)
+  await bulkAssignGroup(ids, groupId)
+  selectedVariables.value = []
+}
+
+const groupMenuItems = computed(() => [
+  [
+    {
+      label: 'None',
+      icon: 'lucide:x',
+      onSelect: () => assignGroupToSelected(null),
+    },
+    ...groups.value.map((g) => ({
+      label: g.name,
+      icon: 'lucide:folder',
+      onSelect: () => assignGroupToSelected(g.id),
+    })),
+  ],
+])
 </script>
 
 <template>
@@ -62,6 +84,11 @@ function openDeleteModal() {
         </UCard>
       </template>
     </UPopover>
+    <UDropdownMenu v-if="groups.length" :items="groupMenuItems">
+      <UTooltip text="Assign selected to group">
+        <UButton variant="ghost" icon="lucide:folder-plus" />
+      </UTooltip>
+    </UDropdownMenu>
     <UTooltip text="Select all visible variables">
       <UButton variant="ghost" icon="lucide:text-select" @click="selectAllVisible" />
     </UTooltip>
