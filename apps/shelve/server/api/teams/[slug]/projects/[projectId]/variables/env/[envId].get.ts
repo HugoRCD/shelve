@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import type { EnvVar } from '@types'
+import type { EnvVarExport } from '@types'
 import { projectIdParamsSchema } from '~~/server/db/zod'
 
 export default eventHandler(async (event) => {
@@ -21,11 +21,15 @@ export default eventHandler(async (event) => {
 
   const decryptedVariables = await variablesService.decryptVariables(result)
 
-  const variables: EnvVar[] = decryptedVariables.map((variable) => {
+  const variables: EnvVarExport[] = decryptedVariables.map((variable) => {
     const value = variable.values.find((value) => value.environmentId === envId)
     return {
       key: variable.key,
       value: value!.value,
+      description: variable.description || undefined,
+      group: variable.group
+        ? { name: variable.group.name, description: variable.group.description }
+        : undefined,
     }
   })
 

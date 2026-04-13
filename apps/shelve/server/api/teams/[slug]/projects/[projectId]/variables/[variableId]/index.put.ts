@@ -7,6 +7,8 @@ const updateVariableSchema = z.object({
   key: z.string({
     error: 'Variable key is required',
   }).min(1).trim(),
+  description: z.string().max(500).trim().nullish(),
+  groupId: z.number().int().positive().nullish(),
   values: z.array(z.object({
     environmentId: z.number({
       error: 'Environment ID is required',
@@ -23,6 +25,8 @@ export default eventHandler(async (event) => {
   await new VariablesService(event).updateVariable({
     id: variableId,
     key: body.key,
+    description: body.description,
+    groupId: body.groupId,
     values: body.values,
     autoUppercase: body.autoUppercase,
   })

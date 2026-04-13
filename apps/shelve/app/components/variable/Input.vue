@@ -29,6 +29,9 @@ function copy() {
     :required="type === 'key'"
     :type="type === 'key' ? 'text' : show ? 'text' : 'password'"
     :variant="type === 'key' ? 'ghost' : 'soft'"
+    autocomplete="off"
+    data-1p-ignore
+    data-lpignore="true"
     :ui="{ trailing: 'pe-1', base: 'pe-16' }"
   >
     <template v-if="model?.length" #trailing>

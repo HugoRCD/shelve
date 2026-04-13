@@ -20,7 +20,9 @@
     "dev:vault": "turbo run dev --filter=@shelve/vault",
     "dev:cli": "turbo run dev --filter=@shelve/cli",
     "test": "turbo run test",
-    "cli": "pnpm build:cli && node packages/cli/dist/index.mjs"
+    "cli": "pnpm build:cli && node packages/cli/dist/index.mjs",
+    "db:generate": "pnpm --filter @shelve/app db:generate",
+    "db:migrate": "pnpm --filter @shelve/app db:migrate"
   },
   "devDependencies": {
     "@changesets/cli": "^2.30.0",

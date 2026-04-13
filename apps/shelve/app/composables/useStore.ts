@@ -1,4 +1,4 @@
-import type { Environment, Project, Team, Variable } from '@types'
+import type { Environment, Project, Team, Variable, VariableGroup } from '@types'
 
 /**
  * All user teams (always load on app start/refresh)
@@ -41,6 +41,13 @@ export function useEnvironments(): Ref<Environment[]> {
  */
 export function useVariables(projectId: string): Ref<Variable[]> {
   return useState<Variable[]>(`variables-${projectId}`)
+}
+
+/**
+ * Current project variable groups
+ */
+export function useVariableGroups(projectId: string): Ref<VariableGroup[]> {
+  return useState<VariableGroup[]>(`variable-groups-${projectId}`, () => [])
 }
 
 export function useNavbarLoading(): Ref<boolean> {

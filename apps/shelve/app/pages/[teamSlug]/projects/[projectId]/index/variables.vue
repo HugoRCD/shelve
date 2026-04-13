@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Variable } from '@types'
+import type { Variable, VariableGroup } from '@types'
 
 definePageMeta({
   title: 'Project',
@@ -8,10 +8,13 @@ definePageMeta({
 const route = useRoute()
 const projectId = route.params.projectId as string
 const variables = useVariables(projectId)
+const groups = useVariableGroups(projectId)
 
 const { loading, fetchVariables } = useVariablesService()
+const { fetchGroups } = useVariableGroupsService()
 
 if (!variables.value) fetchVariables()
+if (!groups.value.length) fetchGroups()
 
 const project = useProject(projectId)
 const teamEnv = useEnvironments()
@@ -20,6 +23,8 @@ const lastSelectedIndex = ref<number | null>(null)
 const searchTerm = ref('')
 const selectedEnvironment = ref([])
 const order = ref('desc')
+const collapseGroups = useCookie<boolean>('collapseGroups')
+const openGroups = ref<Record<number, boolean>>({})
 
 const environments = useEnvironments()
 
@@ -28,14 +33,12 @@ const items = ref(environments.value?.map((env) => ({ label: capitalize(env.name
 const filteredVariables = computed(() => {
   let filtered = variables.value || []
 
-  // Search functionality
   if (searchTerm.value) {
     filtered = filtered.filter(variable =>
       variable.key.toLowerCase().includes(searchTerm.value.toLowerCase())
     )
   }
 
-  // Filter by environment
   if (selectedEnvironment.value.length) {
     filtered = filtered.filter(variable => {
       return variable.values.some(value => {
@@ -46,7 +49,6 @@ const filteredVariables = computed(() => {
     })
   }
 
-  // Sort by updated date
   filtered = filtered.sort((a, b) => {
     if (order.value === 'asc') {
       return new Date(a.updatedAt).getTime() - new Date(b.updatedAt).getTime()
@@ -56,6 +58,63 @@ const filteredVariables = computed(() => {
 
   return filtered
 })
+
+type GroupedVariables = {
+  group: VariableGroup | null
+  variables: Variable[]
+}
+
+const groupedVariables = computed<GroupedVariables[]>(() => {
+  const vars = filteredVariables.value
+  const result: GroupedVariables[] = []
+  const groupMap = new Map<number, Variable[]>()
+  const ungrouped: Variable[] = []
+
+  for (const v of vars) {
+    if (v.groupId && v.group) {
+      const list = groupMap.get(v.groupId)
+      if (list) list.push(v)
+      else groupMap.set(v.groupId, [v])
+    } else {
+      ungrouped.push(v)
+    }
+  }
+
+  const sortedGroups = [...groups.value].sort((a, b) => a.position - b.position)
+  for (const group of sortedGroups) {
+    const groupVars = groupMap.get(group.id)
+    if (groupVars?.length) {
+      result.push({ group, variables: groupVars })
+    }
+  }
+
+  if (ungrouped.length) {
+    result.push({ group: null, variables: ungrouped })
+  }
+
+  return result
+})
+
+const allCollapsed = computed(() => {
+  const groupIds = groups.value.map(g => g.id)
+  return groupIds.length > 0 && groupIds.every(id => !isGroupOpen(id))
+})
+
+function isGroupOpen(groupId: number) {
+  if (openGroups.value[groupId] !== undefined) return openGroups.value[groupId]
+  return !collapseGroups.value
+}
+
+function setGroupOpen(groupId: number, value: boolean) {
+  openGroups.value[groupId] = value
+}
+
+function toggleAllGroups() {
+  const newState = allCollapsed.value
+  for (const group of groups.value) {
+    openGroups.value[group.id] = newState
+  }
+}
 
 const toggleVariable = (variable: Variable, event?: MouseEvent) => {
   const filteredIndex = filteredVariables.value.findIndex(v => v.id === variable.id)
@@ -100,6 +159,14 @@ const isVariableSelected = (variable: Variable) => {
         </template>
       </div>
       <div class="flex gap-1">
+        <VariableGroupManager />
+        <UTooltip v-if="groups.length" :text="allCollapsed ? 'Expand all groups' : 'Collapse all groups'">
+          <UButton
+            :icon="allCollapsed ? 'lucide:chevrons-down-up' : 'lucide:chevrons-up-down'"
+            variant="soft"
+            @click="toggleAllGroups"
+          />
+        </UTooltip>
         <UTooltip :text="order === 'asc' ? 'Oldest first' : 'Newest first'">
           <UButton
             icon="lucide:arrow-down"
@@ -111,14 +178,58 @@ const isVariableSelected = (variable: Variable) => {
         <USelectMenu v-model="selectedEnvironment" multiple :items class="w-full" placeholder="Select environment" />
       </div>
     </div>
-    <div v-if="!loading" class="flex flex-col gap-4">
-      <div v-for="variable in filteredVariables" :key="variable.id">
-        <VariableItem
-          :variable
-          :environments
-          :is-selected="isVariableSelected(variable)"
-          @toggle-selected="(e) => toggleVariable(variable, e)"
-        />
+    <div v-if="!loading" class="flex flex-col gap-6">
+      <div v-for="{ group, variables: groupVars } in groupedVariables" :key="group?.id ?? 'ungrouped'">
+        <template v-if="group">
+          <UCollapsible
+            :open="isGroupOpen(group.id)"
+            :unmount-on-hide="false"
+            @update:open="(val) => setGroupOpen(group.id, val)"
+          >
+            <button class="mb-2 flex w-full items-center gap-2 select-none" type="button">
+              <UIcon
+                name="lucide:chevron-right"
+                class="size-4 text-muted transition-transform duration-200"
+                :class="{ 'rotate-90': isGroupOpen(group.id) }"
+              />
+              <h3 class="text-sm font-semibold">
+                {{ group.name }}
+              </h3>
+              <UBadge variant="subtle" size="sm">
+                {{ groupVars.length }}
+              </UBadge>
+              <p v-if="group.description" class="text-xs text-muted">
+                {{ group.description }}
+              </p>
+            </button>
+
+            <template #content>
+              <div class="flex flex-col gap-4 border-l-2 border-muted/30 pl-3 pr-1 ml-1.5 py-2">
+                <div v-for="variable in groupVars" :key="variable.id">
+                  <VariableItem
+                    :variable
+                    :environments
+                    :is-selected="isVariableSelected(variable)"
+                    @toggle-selected="(e) => toggleVariable(variable, e)"
+                  />
+                </div>
+              </div>
+            </template>
+          </UCollapsible>
+        </template>
+
+        <template v-else>
+          <div class="flex flex-col gap-4">
+            <div v-for="variable in groupVars" :key="variable.id">
+              <VariableItem
+                :variable
+                :environments
+                :is-selected="isVariableSelected(variable)"
+                @toggle-selected="(e) => toggleVariable(variable, e)"
+              />
+            </div>
+          </div>
+        </template>
       </div>
     </div>
     <div v-else class="flex flex-col gap-4">
@@ -131,8 +242,5 @@ const isVariableSelected = (variable: Variable) => {
         </UCard>
       </div>
     </div>
-    <!--    <Teleport defer to="#command-items">
-      <VariableActionsToggleSelection />
-    </Teleport>-->
   </div>
 </template>
