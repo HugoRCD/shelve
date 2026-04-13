@@ -108,9 +108,7 @@ describe('EnvService.formatEnvContent', () => {
   })
 
   test('omits group description comment when empty', () => {
-    const result = EnvService.formatEnvContent([
-      { key: 'KEY', value: 'val', group: { name: 'NoDesc', description: '' } },
-    ])
+    const result = EnvService.formatEnvContent([{ key: 'KEY', value: 'val', group: { name: 'NoDesc', description: '' } }])
 
     expect(result).not.toContain('# \n')
     expect(result).toContain('# ---- NoDesc ----')
