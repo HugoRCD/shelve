@@ -148,44 +148,47 @@ const handlePasswordGenerated = (password: string, index: number) => variablesIn
         <p class="text-xs font-normal text-muted">
           You can also paste all your environment variables (.env) as key value pairs to prefilled the form
         </p>
-        <div class="mb-4 flex flex-col gap-2">
-          <div class="hidden items-center sm:flex">
-            <span class="w-full text-sm font-normal text-muted">Key</span>
-            <span class="w-full text-sm font-normal text-muted">Value</span>
-            <div class="w-[100px]" />
-          </div>
-          <div v-for="variable in variablesToCreate" :key="variable" class="flex flex-col gap-4">
-            <div class="flex flex-col gap-1">
-              <div class="flex flex-col items-start gap-1 sm:flex-row">
-                <div class="w-full flex items-start gap-1">
-                  <UInput
-                    v-model="variablesInput.variables[variable - 1]!.key"
-                    required
-                    class="w-full"
-                    placeholder="e.g. API_KEY"
-                  />
-                  <VariablePrefix v-model="variablesInput.variables[variable - 1]!.key" />
+        <div class="mb-4 flex flex-col gap-3">
+          <div
+            v-for="variable in variablesToCreate"
+            :key="variable"
+            class="relative rounded-lg border border-default p-3"
+          >
+            <div class="flex items-start gap-3">
+              <span class="text-xs text-muted tabular-nums pt-2 select-none">{{ variable }}</span>
+              <div class="flex flex-1 flex-col gap-2">
+                <div class="flex flex-col gap-2 sm:flex-row">
+                  <div class="w-full flex items-start gap-1">
+                    <UInput
+                      v-model="variablesInput.variables[variable - 1]!.key"
+                      required
+                      class="w-full"
+                      placeholder="e.g. API_KEY"
+                    />
+                    <VariablePrefix v-model="variablesInput.variables[variable - 1]!.key" />
+                  </div>
+                  <div class="w-full flex items-start gap-1">
+                    <UTextarea
+                      v-model="variablesInput.variables[variable - 1]!.value"
+                      required
+                      :rows="1"
+                      :maxrows="4"
+                      class="w-full"
+                      autoresize
+                      placeholder="e.g. 123456"
+                    />
+                    <VariableGenerator @password-generated="handlePasswordGenerated($event, variable - 1)" />
+                  </div>
                 </div>
-                <div class="w-full flex items-start gap-1">
-                  <UTextarea
-                    v-model="variablesInput.variables[variable - 1]!.value"
-                    required
-                    :rows="1"
-                    class="w-full"
-                    autoresize
-                    placeholder="e.g. 123456"
-                  />
-                  <VariableGenerator @password-generated="handlePasswordGenerated($event, variable - 1)" />
-                </div>
-                <UTooltip text="Remove variable" :content="{ side: 'top' }">
-                  <UButton icon="lucide:x" variant="soft" color="error" @click="removeVariable(variable - 1)" />
-                </UTooltip>
+                <UInput
+                  v-model="variablesInput.variables[variable - 1]!.description"
+                  placeholder="Description (optional)"
+                  class="w-full"
+                />
               </div>
-              <UInput
-                v-model="variablesInput.variables[variable - 1]!.description"
-                placeholder="Description (optional)"
-                class="w-full"
-              />
+              <UTooltip text="Remove variable" :content="{ side: 'top' }">
+                <UButton icon="lucide:x" variant="ghost" color="error" size="xs" @click="removeVariable(variable - 1)" />
+              </UTooltip>
             </div>
           </div>
         </div>
