@@ -1,6 +1,6 @@
 import { describe, test, expect } from 'vitest'
-import { formatEnvString } from '../../app/utils/env'
 import type { Variable } from '@types'
+import { formatEnvString } from '../../app/utils/env'
 
 function makeVariable(overrides: Partial<Variable> & { key: string }): Variable {
   return {
@@ -93,9 +93,7 @@ describe('formatEnvString', () => {
   })
 
   test('uses empty string for missing environment value', () => {
-    const vars = [
-      makeVariable({ key: 'MISSING', values: [{ value: 'val', environmentId: 999 }] }),
-    ]
+    const vars = [makeVariable({ key: 'MISSING', values: [{ value: 'val', environmentId: 999 }] }),]
 
     const result = formatEnvString(vars, ENV_ID)
 
@@ -104,9 +102,7 @@ describe('formatEnvString', () => {
 
   test('omits group description line when empty', () => {
     const group = { id: 1, name: 'NoDesc', description: '', position: 0, projectId: 1, createdAt: new Date(), updatedAt: new Date() }
-    const vars = [
-      makeVariable({ key: 'KEY', groupId: 1, group, values: [{ value: 'val', environmentId: ENV_ID }] }),
-    ]
+    const vars = [makeVariable({ key: 'KEY', groupId: 1, group, values: [{ value: 'val', environmentId: ENV_ID }] }),]
 
     const result = formatEnvString(vars, ENV_ID)
     const lines = result.split('\n')
@@ -118,9 +114,7 @@ describe('formatEnvString', () => {
 
   test('includes variable description inside group', () => {
     const group = { id: 1, name: 'DB', description: 'Config', position: 0, projectId: 1, createdAt: new Date(), updatedAt: new Date() }
-    const vars = [
-      makeVariable({ key: 'DB_HOST', description: 'The hostname', groupId: 1, group, values: [{ value: 'localhost', environmentId: ENV_ID }] }),
-    ]
+    const vars = [makeVariable({ key: 'DB_HOST', description: 'The hostname', groupId: 1, group, values: [{ value: 'localhost', environmentId: ENV_ID }] }),]
 
     const result = formatEnvString(vars, ENV_ID)
 
