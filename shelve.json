@@ -1,6 +1,6 @@
 {
   "url": "http://localhost:3000",
-  "slug": "shelve",
+  "slug": "vercel",
   "project": "shelve",
   "defaultEnv": "development"
 }

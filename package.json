@@ -5,7 +5,8 @@
   "type": "module",
   "repository": "https://github.com/HugoRCD/shelve",
   "scripts": {
-    "dev": "turbo run dev --filter=@shelve/{app,lp}",
+    "dev": "pnpm -C packages/cli stub && turbo run dev --filter=@shelve/app",
+    "dev:all": "pnpm -C packages/cli stub && turbo run dev --filter=@shelve/{app,lp}",
     "build": "turbo run build",
     "lint": "turbo run lint",
     "lint:fix": "turbo run lint:fix",
@@ -20,7 +21,7 @@
     "dev:vault": "turbo run dev --filter=@shelve/vault",
     "dev:cli": "turbo run dev --filter=@shelve/cli",
     "test": "turbo run test",
-    "cli": "pnpm build:cli && node packages/cli/dist/index.mjs",
+    "cli": "pnpm -C packages/cli stub && node packages/cli/dist/index.mjs",
     "db:generate": "pnpm --filter @shelve/app db:generate",
     "db:migrate": "pnpm --filter @shelve/app db:migrate"
   },
