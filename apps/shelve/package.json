@@ -1,6 +1,6 @@
 {
   "name": "@shelve/app",
-  "version": "2.3.3",
+  "version": "2.3.4",
   "description": "Shelve is a project management tool for developers teams",
   "private": true,
   "type": "module",
