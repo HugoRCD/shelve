@@ -46,6 +46,8 @@ export class VariableGroupsService {
       .returning()
 
     if (!deleted) throw createError({ statusCode: 404, statusMessage: 'Variable group not found' })
+
+    await clearCache('Variables', deleted.projectId)
   }
 
 }
