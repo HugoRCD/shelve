@@ -12,17 +12,17 @@
   "dependencies": {
     "@iconify-json/heroicons": "^1.2.3",
     "@iconify-json/lucide": "^1.2.102",
-    "@iconify-json/simple-icons": "^1.2.77",
-    "@nuxt/content": "3.11.2",
+    "@iconify-json/simple-icons": "^1.2.78",
+    "@nuxt/content": "3.13.0",
     "@nuxt/image": "^2.0.0",
-    "@nuxt/scripts": "^0.13.2",
+    "@nuxt/scripts": "^0.13.4",
     "@nuxt/ui": "^4.6.1",
     "@nuxthub/core": "^0.10.7",
-    "@vercel/analytics": "^2.0.0",
+    "@vercel/analytics": "^2.0.1",
     "@vercel/speed-insights": "^2.0.0",
     "@vueuse/core": "^14.2.1",
     "@vueuse/nuxt": "^14.2.1",
-    "dotenv": "^17.4.1",
+    "dotenv": "^17.4.2",
     "iron-webcrypto": "^2.0.0",
     "motion-plus-vue": "^1.8.1",
     "motion-v": "^2.2.1",
@@ -32,7 +32,7 @@
     "zod": "^4.3.6",
     "@nuxtjs/mdc": "^0.21.1",
     "botid": "^1.5.11",
-    "shaders": "^2.5.93",
+    "shaders": "^2.5.102",
     "tailwindcss": "^4.2.2"
   }
 }
