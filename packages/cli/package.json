@@ -44,7 +44,7 @@
     "@antfu/ni": "^30.0.0",
     "@clack/prompts": "^1.2.0",
     "c12": "3.3.4",
-    "dotenv": "^17.4.1",
+    "dotenv": "^17.4.2",
     "citty": "^0.2.2",
     "defu": "^6.1.7",
     "npm-registry-fetch": "19.1.1",
