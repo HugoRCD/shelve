@@ -44,7 +44,7 @@ function upsertBlock(existing: string): string {
     return existing + sep + (existing.length === 0 ? '' : '\n') + block
   }
   const footerIdx = existing.indexOf(FOOTER_TAG, headerIdx)
-  if (footerIdx === -1) return existing + '\n' + block
+  if (footerIdx === -1) return `${existing }\n${ block}`
   const before = existing.slice(0, headerIdx)
   const after = existing.slice(footerIdx + FOOTER_TAG.length).replace(/^\n/, '')
   return before + block + after

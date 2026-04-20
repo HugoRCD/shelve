@@ -98,6 +98,7 @@ export default defineCommand({
     let projectData: Project | null = null
     let environment: Environment | null = null
     const envName = runArgs.env || defaultEnv
+    if (!envName) handleCancel('No environment specified. Pass --env or set `defaultEnv` in shelve.json.')
     const cacheInput = (env: string): CacheKeyInput => ({
       url,
       teamSlug: slug,
@@ -297,7 +298,7 @@ type WatchOpts = {
   template: ParsedTemplate | null
   restartOnChange: boolean
   getChild: () => ChildProcess
-  spawnNew: (env: NodeJS.ProcessEnv) => Promise<ChildProcess>
+  spawnNew: (env: NodeJS.ProcessEnv) => ChildProcess
 }
 
 function fingerprint(variables: EnvVarExport[]): string {
@@ -330,11 +331,13 @@ function startWatch(opts: WatchOpts): void {
         if (opts.restartOnChange) {
           const child = opts.getChild()
           if (child.pid && process.platform !== 'win32') {
-            try { process.kill(-child.pid, 'SIGTERM') } catch { /* ignore */ }
+            try {
+              process.kill(-child.pid, 'SIGTERM') 
+            } catch { /* ignore */ }
           } else {
             child.kill('SIGTERM')
           }
-          await opts.spawnNew(env)
+          opts.spawnNew(env)
         } else {
           const child = opts.getChild()
           try {

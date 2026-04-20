@@ -30,7 +30,7 @@ async function loadKeyring(): Promise<((service: string, account: string) => Key
 
   try {
     const mod = await import('@napi-rs/keyring')
-    keyringFactory = (service, account) => new mod.Entry(service, account) as unknown as KeyringEntry
+    keyringFactory = (service: string, account: string): KeyringEntry => new mod.Entry(service, account) as unknown as KeyringEntry
   } catch (err) {
     if (DEBUG) consola.warn(`Keyring unavailable, falling back to file storage: ${err}`)
     keyringFactory = null
