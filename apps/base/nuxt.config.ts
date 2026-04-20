@@ -38,6 +38,15 @@ export default defineNuxtConfig({
     viewTransition: true,
   },
 
+  // Workaround: @nuxt/fonts -> fontless spawns an esbuild service that is not
+  // disposed of when the build completes, causing `nuxi build` to hang and Vercel
+  // to kill the process with exit code 99. See https://github.com/nuxt/nuxt/issues/33987
+  hooks: {
+    close: () => {
+      process.exit(0)
+    },
+  },
+
   imports: {
     presets: [
       {
