@@ -49,15 +49,51 @@ jobs:
         if: steps.changesets.outputs.published == 'true'
         run: git push --tags
 
-      - name: Create GitHub releases (CLI)
+      # Extract the section of a package's CHANGELOG.md for a given version.
+      # Renovate/dep-update PRs never land in these files (they don't ship a
+      # changeset), so this also filters them out for free.
+      - name: Create GitHub releases (CLI packages)
         if: steps.changesets.outputs.published == 'true'
         run: |
-          for pkg in $(echo '${{ steps.changesets.outputs.publishedPackages }}' | jq -r '.[] | .name + "@" + .version'); do
-            tag="$pkg"
+          set -euo pipefail
+
+          extract_changelog() {
+            local file="$1"
+            local version="$2"
+            awk -v v="$version" '
+              $0 == "## " v { found = 1; next }
+              found && /^## / { exit }
+              found { print }
+            ' "$file" | awk 'NF {p=1} p'
+          }
+
+          echo '${{ steps.changesets.outputs.publishedPackages }}' | jq -c '.[]' | while read -r pkg; do
+            name=$(echo "$pkg" | jq -r '.name')
+            version=$(echo "$pkg" | jq -r '.version')
+            tag="${name}@${version}"
+
+            case "$name" in
+              "@shelve/cli") changelog_path="packages/cli/CHANGELOG.md" ;;
+              *)
+                echo "Unknown package $name, skipping release notes"
+                changelog_path=""
+                ;;
+            esac
+
+            if [ -n "$changelog_path" ] && [ -f "$changelog_path" ]; then
+              notes=$(extract_changelog "$changelog_path" "$version")
+            else
+              notes=""
+            fi
+
+            if [ -z "${notes// }" ]; then
+              notes="See the [CHANGELOG](https://github.com/HugoRCD/shelve/blob/main/${changelog_path}) for details."
+            fi
+
             if gh release view "$tag" > /dev/null 2>&1; then
               echo "Release $tag already exists, skipping"
             else
-              gh release create "$tag" --draft --generate-notes --title "$tag"
+              gh release create "$tag" --draft --title "$tag" --notes "$notes"
             fi
           done
         env:
@@ -66,12 +102,25 @@ jobs:
       - name: Create GitHub release (App)
         if: steps.changesets.outputs.hasChangesets == 'false'
         run: |
+          set -euo pipefail
+
           APP_VERSION=$(node -p "require('./apps/shelve/package.json').version")
           TAG="v${APP_VERSION}"
+
+          notes=$(awk -v v="$APP_VERSION" '
+            $0 == "## " v { found = 1; next }
+            found && /^## / { exit }
+            found { print }
+          ' apps/shelve/CHANGELOG.md | awk 'NF {p=1} p')
+
+          if [ -z "${notes// }" ]; then
+            notes="See the [CHANGELOG](https://github.com/HugoRCD/shelve/blob/main/apps/shelve/CHANGELOG.md) for details."
+          fi
+
           if gh release view "$TAG" > /dev/null 2>&1; then
             echo "Release $TAG already exists, skipping"
           else
-            gh release create "$TAG" --draft --generate-notes --title "Shelve $TAG"
+            gh release create "$TAG" --draft --title "Shelve $TAG" --notes "$notes"
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
