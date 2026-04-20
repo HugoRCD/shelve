@@ -4,8 +4,8 @@ import { dirname, join } from 'node:path'
 import { ofetch, type $Fetch, type FetchOptions } from 'ofetch'
 import { spinner } from '@clack/prompts'
 import type { User } from '@types'
+import { writeUser } from 'rc9'
 import { askPassword, loadShelveConfig } from '../utils'
-import { CredentialsService } from './credentials'
 import { ErrorService } from './error'
 
 export abstract class BaseService {
@@ -45,7 +45,7 @@ export abstract class BaseService {
     const token = await askPassword(`Please provide a valid token (you can generate one on ${sanitizedUrl}/user/tokens)`)
     const user = await this.whoAmI(url, token)
 
-    await CredentialsService.writeToken(url, token, { email: user.email, username: user.username })
+    writeUser({ token, email: user.email, username: user.username }, '.shelve')
 
     if (returnUser) return {
       user,
