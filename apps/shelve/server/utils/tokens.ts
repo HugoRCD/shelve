@@ -1,7 +1,10 @@
 import { createHash, randomBytes, timingSafeEqual } from 'node:crypto'
 import { TOKEN_PREFIX, TOKEN_PREFIX_DISPLAY_LENGTH } from './constants'
 
-const CROCKFORD_ALPHABET = 'ABCDEFGHJKMNPQRSTVWXYZ23456789'
+// Standard Crockford base32: 32 chars = 0-9 + A-Z minus I, L, O, U.
+// Must contain exactly 32 symbols, otherwise indices 30/31 return undefined
+// and the token ends up with the literal string "undefined" inside it.
+const CROCKFORD_ALPHABET = '0123456789ABCDEFGHJKMNPQRSTVWXYZ'
 
 function base32Encode(buf: Buffer): string {
   let bits = 0
