@@ -1,10 +1,11 @@
-import { resolve } from 'path'
-import { x } from 'tinyexec'
+import { spawn, type ChildProcess } from 'node:child_process'
+import { existsSync } from 'node:fs'
+import { resolve } from 'node:path'
+import * as os from 'node:os'
 import { defineCommand } from 'citty'
 import { intro } from '@clack/prompts'
 import type { EnvVarExport } from '@types'
 import consola from 'consola'
-import treeKill from 'tree-kill'
 import { handleCancel, loadShelveConfig } from '../utils'
 import { EnvironmentService, EnvService, ProjectService } from '../services'
 import { DEBUG } from '../constants'
@@ -15,122 +16,124 @@ export default defineCommand({
     description: '[experimental] Inject secrets from Shelve into your application process',
   },
   args: {
-    command: {
-      type: 'string',
-      description: 'your application start command',
-      required: false
-    },
     env: {
       type: 'string',
       description: 'environment to use',
-      required: false
-    }
+      required: false,
+    },
   },
   async run({ args, rawArgs }) {
+    const argv = parseRawArgs(rawArgs)
+    if (argv.length === 0) {
+      handleCancel('You must provide a command to run, e.g. `shelve run -- pnpm dev`')
+    }
+
     const { project, slug, autoCreateProject, defaultEnv } = await loadShelveConfig(true)
-    intro(`Pulling variables from ${project} project`)
+    const envName = (typeof args.env === 'string' ? args.env : undefined) || defaultEnv
+
+    intro(`Loading secrets for ${project} (${envName})`)
 
     const projectData = await ProjectService.getProjectByName(project, slug, autoCreateProject)
-
-    const env = args.env || defaultEnv
-
-    const environment = await EnvironmentService.getEnvironment(slug, env)
-
+    const environment = await EnvironmentService.getEnvironment(slug, envName)
     const variables: EnvVarExport[] = await EnvService.getEnvVariables({
       project: projectData,
       environmentId: environment.id,
-      slug
+      slug,
     })
 
-    const processEnv = {
-      ...process.env,
-      ...formatEnvVars(variables)
-    }
+    const secretEnv: NodeJS.ProcessEnv = { ...process.env }
+    for (const { key, value } of variables) secretEnv[key] = value
 
-    const command = args.command || rawArgs[0]
-    if (!command) handleCancel('You must provide a command to run')
-
-    try {
-      const isNpx = getNrBinPath() === 'npx'
-
-      let hasExited = false
-      let exitTimeout: NodeJS.Timeout | null = null
-      const childPid: number | null = null
-
-      const cleanupAndExit = (code: number = 0): void => {
-        if (hasExited) return
-        hasExited = true
-
-        if (exitTimeout) {
-          clearTimeout(exitTimeout)
-        }
-
-        process.exit(code)
-      }
-
-      const handleSignal = (signal: string): void => {
-        consola.info(`Received ${signal}, terminating process...`)
-
-        if (childPid) {
-          treeKill(childPid, signal, (err) => {
-            if (err && DEBUG) consola.error(`Failed to kill process: ${err}`)
-          })
-
-          exitTimeout = setTimeout(() => {
-            consola.warn('Process did not exit gracefully, forcing termination...')
-            if (childPid) {
-              treeKill(childPid, 'SIGKILL', () => {
-                cleanupAndExit(1)
-              })
-            } else {
-              cleanupAndExit(1)
-            }
-          }, 3000)
-        } else {
-          cleanupAndExit(0)
-        }
-      }
-
-      ['SIGINT', 'SIGTERM', 'SIGHUP'].forEach(signal => {
-        process.on(signal, () => handleSignal(signal))
-      })
-
-      const proc = x(
-        getNrBinPath(),
-        isNpx ? ['nr', command] : [command],
-        {
-          nodeOptions: {
-            env: processEnv,
-            stdio: 'inherit'
-          }
-        }
-      )
-
-      try {
-        await proc
-        cleanupAndExit(0)
-      } catch (err) {
-        if (DEBUG) consola.error(err)
-        cleanupAndExit(1)
-      }
-    } catch (error) {
-      if (DEBUG) consola.error(error)
-      process.exit(1)
-    }
-  }
+    await spawnChild(argv, secretEnv)
+  },
 })
 
-function formatEnvVars(variables: EnvVarExport[]): NodeJS.ProcessEnv {
-  return variables.reduce<NodeJS.ProcessEnv>((acc, { key, value }) => ({
-    ...acc,
-    [key]: value
-  }), {})
+function parseRawArgs(rawArgs: string[]): string[] {
+  const sepIdx = rawArgs.indexOf('--')
+  if (sepIdx >= 0) return rawArgs.slice(sepIdx + 1)
+  return rawArgs.filter((arg) => !arg.startsWith('-'))
 }
 
-function getNrBinPath(): string {
-  try {
-    return resolve(process.cwd(), 'node_modules/.bin/nr')
-  } catch (error) {
-    return 'npx'
+function resolveCommand(argv: string[]): { bin: string; argv: string[] } {
+  if (argv.length === 0) throw new Error('Empty command')
+
+  // Local `nr` (from @antfu/ni) is preferred for `pnpm dev`-style shorthand
+  // but we never go through `npx` anymore — that adds ~200ms cold start
+  // and breaks proper signal forwarding.
+  const localNr = resolve(process.cwd(), 'node_modules/.bin/nr')
+  if (existsSync(localNr) && argv.length === 1 && !argv[0]!.includes(' ')) {
+    return { bin: localNr, argv }
   }
+
+  return { bin: argv[0]!, argv: argv.slice(1) }
+}
+
+async function spawnChild(rawArgv: string[], env: NodeJS.ProcessEnv): Promise<ChildProcess> {
+  const { bin, argv } = resolveCommand(rawArgv)
+  const isWindows = process.platform === 'win32'
+
+  const child = spawn(bin, argv, {
+    env,
+    stdio: 'inherit',
+    // Detach so we can signal the entire process group: `npm start` style
+    // commands often spawn their own children that the previous tree-kill
+    // approach left as zombies.
+    detached: !isWindows,
+    shell: false,
+  })
+
+  if (typeof child.pid !== 'number') {
+    consola.error('Failed to start child process')
+    process.exit(1)
+  }
+
+  attachLifecycle(child, isWindows)
+  return child
+}
+
+function attachLifecycle(child: ChildProcess, isWindows: boolean): void {
+  let shuttingDown = false
+  let killTimer: NodeJS.Timeout | null = null
+
+  const killGroup = (signal: NodeJS.Signals): void => {
+    try {
+      if (isWindows) child.kill(signal)
+      else if (typeof child.pid === 'number') process.kill(-child.pid, signal)
+    } catch (err) {
+      if (DEBUG) consola.warn(`kill(${signal}) failed: ${err}`)
+    }
+  }
+
+  const onSignal = (signal: NodeJS.Signals): void => {
+    if (shuttingDown) {
+      killGroup('SIGKILL')
+      process.exit(130)
+    }
+    shuttingDown = true
+    if (DEBUG) consola.info(`Received ${signal}, forwarding to child...`)
+    killGroup(signal)
+    killTimer = setTimeout(() => {
+      consola.warn('Child did not exit after 5s, sending SIGKILL')
+      killGroup('SIGKILL')
+    }, 5000)
+  }
+
+  const signals: NodeJS.Signals[] = ['SIGINT', 'SIGTERM', 'SIGHUP']
+  for (const sig of signals) process.on(sig, () => onSignal(sig))
+
+  child.on('exit', (code, signal) => {
+    if (killTimer) clearTimeout(killTimer)
+    if (code !== null) process.exit(code)
+    if (signal) {
+      const num = (os.constants.signals as Record<string, number>)[signal] ?? 0
+      process.exit(128 + num)
+    }
+    process.exit(0)
+  })
+
+  child.on('error', (err) => {
+    if (killTimer) clearTimeout(killTimer)
+    consola.error(`Failed to spawn process: ${err.message}`)
+    process.exit(1)
+  })
 }
