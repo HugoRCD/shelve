@@ -1,7 +1,6 @@
 ---
 "@shelve/app": major
 "@shelve/cli": major
-"@shelve/types": major
 ---
 
 Harden API token storage, switch CLI auth to `Authorization: Bearer`, and add scoped tokens.

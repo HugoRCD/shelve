@@ -1,6 +1,5 @@
 ---
 "@shelve/app": minor
-"@shelve/types": minor
 ---
 
 Add audit logs and per-project envelope encryption.
