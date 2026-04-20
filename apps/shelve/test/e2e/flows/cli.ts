@@ -61,7 +61,10 @@ export function registerCliTests(ctx: E2EContext) {
   test('CLI pull writes .env from remote', () => {
     unlinkSync(join(ctx.cliTmpDir!, '.env'))
 
-    runCli(ctx, ['pull'])
+    // `--yes` bypasses the AI-agent confirmation prompt so the test runs
+    // non-interactively even when executed from inside an editor whose
+    // environment std-env identifies as an AI agent.
+    runCli(ctx, ['pull', '--yes'])
 
     const content = readFileSync(join(ctx.cliTmpDir!, '.env'), 'utf-8')
 
