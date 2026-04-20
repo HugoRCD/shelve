@@ -1,6 +1,6 @@
-import { chmodSync, existsSync, readFileSync, unlinkSync } from 'node:fs'
+import { chmodSync, existsSync, mkdirSync, readFileSync, unlinkSync } from 'node:fs'
 import { homedir } from 'node:os'
-import { join } from 'node:path'
+import { dirname, join } from 'node:path'
 import { readUserConfig, writeUserConfig } from 'rc9'
 import consola from 'consola'
 import { DEBUG } from '../constants'
@@ -60,6 +60,16 @@ function chmod600(path: string): void {
 }
 
 /**
+ * rc9 does not mkdir the target directory, so `writeUserConfig` would fail on
+ * a freshly provisioned machine where `$XDG_CONFIG_HOME` (or `~/.config`)
+ * does not yet exist. Make sure the parent exists before handing off to rc9.
+ */
+function ensureConfigDir(): void {
+  const dir = dirname(configPath())
+  if (!existsSync(dir)) mkdirSync(dir, { recursive: true, mode: 0o700 })
+}
+
+/**
  * Older versions of the CLI stored credentials at `~/.shelve`. rc9 has since
  * deprecated `readUser`/`writeUser` in favor of XDG-compliant
  * `readUserConfig`/`writeUserConfig` which writes to `~/.config/.shelve`.
@@ -76,6 +86,7 @@ function migrateLegacyConfig(): void {
     const legacy = parseLegacyRc(readFileSync(LEGACY_RC_PATH, 'utf-8'))
     if (Object.keys(legacy).length === 0) return
 
+    ensureConfigDir()
     writeUserConfig(legacy, RC_FILENAME)
     chmod600(configPath())
     unlinkSync(LEGACY_RC_PATH)
@@ -103,6 +114,8 @@ export class CredentialsService {
 
     const factory = await loadKeyring()
     const account = accountFor(url)
+
+    ensureConfigDir()
 
     if (factory) {
       try {
@@ -152,6 +165,7 @@ export class CredentialsService {
         entry.deletePassword()
       } catch { /* ignore */ }
     }
+    ensureConfigDir()
     writeUserConfig({}, RC_FILENAME)
   }
 
