@@ -144,8 +144,8 @@ importers:
         version: 5.0.4(@vue/compiler-sfc@3.5.32)(vue@3.5.32(typescript@5.9.3))
     devDependencies:
       '@shelve/cli':
-        specifier: ^4.2.0
-        version: 4.2.0(magicast@0.5.2)
+        specifier: workspace:*
+        version: link:../../packages/cli
 
   apps/shelve:
     dependencies:
@@ -3358,10 +3358,6 @@ packages:
 
   '@selderee/plugin-htmlparser2@0.11.0':
     resolution: {integrity: sha512-P33hHGdldxGabLFjPPpaTxVolMrzrcegejx+0GxjrIb9Zv48D8yAIA/QTDR2dFl7Uz7urX8aX6+5bCZslr+gWQ==}
-
-  '@shelve/cli@4.2.0':
-    resolution: {integrity: sha512-CAq7CDVKdH+Q/ll2oY6DgIZrlgLF/bEJQQTLHs1Jf8K+BUSZiI9AAbe9oG/+LlmrpRGs70BO0eYkQopf0hXj6Q==}
-    hasBin: true
 
   '@shikijs/core@1.29.2':
     resolution: {integrity: sha512-vju0lY9r27jJfOY4Z7+Rt/nIOjzJpZ3y+nYpqtUZInVoXQ/TJZcfGnNOGnKjFdVZb8qexiCuSlZRKcGfhhTTZQ==}
@@ -13003,26 +12999,6 @@ snapshots:
     dependencies:
       domhandler: 5.0.3
       selderee: 0.11.0
-
-  '@shelve/cli@4.2.0(magicast@0.5.2)':
-    dependencies:
-      '@antfu/ni': 30.0.0
-      '@clack/prompts': 1.2.0
-      c12: 3.3.4(magicast@0.5.2)
-      citty: 0.2.2
-      defu: 6.1.7
-      dotenv: 17.4.2
-      npm-registry-fetch: 19.1.1
-      nypm: 0.6.5
-      ofetch: 1.5.1
-      pkg-types: 2.3.0
-      rc9: 3.0.1
-      semver: 7.7.4
-      tinyglobby: 0.2.16
-      tree-kill: 1.2.2
-    transitivePeerDependencies:
-      - magicast
-      - supports-color
 
   '@shikijs/core@1.29.2':
     dependencies:

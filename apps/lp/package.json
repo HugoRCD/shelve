@@ -27,6 +27,6 @@
     "vue-router": "^5.0.4"
   },
   "devDependencies": {
-    "@shelve/cli": "^5.0.0"
+    "@shelve/cli": "workspace:*"
   }
 }
