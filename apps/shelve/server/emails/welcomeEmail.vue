@@ -17,7 +17,11 @@ import {
 } from '@vue-email/components'
 
 defineProps({
-  name: {
+  username: {
+    type: String,
+    required: true
+  },
+  redirectUrl: {
     type: String,
     required: true
   }
@@ -40,7 +44,7 @@ defineProps({
         />
       </Head>
       <Preview>
-        Welcome to Shelve, {{ name }}
+        Welcome to Shelve, {{ username }}
       </Preview>
       <Body class="m-0 p-0 font-sans" style="background-color: #010101;">
         <Container class="mx-auto my-10 max-w-[480px] px-6">
@@ -68,7 +72,7 @@ defineProps({
               class="text-sm m-0 mb-2 leading-relaxed"
               style="color: rgba(255, 255, 255, 0.6);"
             >
-              Hi <span style="color: #ffffff;">{{ name }}</span>,
+              Hi <span style="color: #ffffff;">{{ username }}</span>,
             </Text>
 
             <Text
@@ -80,7 +84,7 @@ defineProps({
 
             <!-- CTA Button -->
             <Button
-              href="https://app.shelve.cloud"
+              :href="redirectUrl"
               class="inline-block rounded-md px-5 py-2.5 text-sm font-medium no-underline"
               style="background-color: #ffffff; color: #010101;"
             >
