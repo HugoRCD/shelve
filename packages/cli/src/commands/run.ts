@@ -44,7 +44,7 @@ export default defineCommand({
     const secretEnv: NodeJS.ProcessEnv = { ...process.env }
     for (const { key, value } of variables) secretEnv[key] = value
 
-    await spawnChild(argv, secretEnv)
+    spawnChild(argv, secretEnv)
   },
 })
 
@@ -68,7 +68,7 @@ function resolveCommand(argv: string[]): { bin: string; argv: string[] } {
   return { bin: argv[0]!, argv: argv.slice(1) }
 }
 
-async function spawnChild(rawArgv: string[], env: NodeJS.ProcessEnv): Promise<ChildProcess> {
+function spawnChild(rawArgv: string[], env: NodeJS.ProcessEnv): ChildProcess {
   const { bin, argv } = resolveCommand(rawArgv)
   const isWindows = process.platform === 'win32'
 
