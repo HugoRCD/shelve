@@ -24,6 +24,15 @@ export default eventHandler(async (event) => {
   const body = await readValidatedBody(event, createVariablesSchema.parse)
   const { projectId } = await getValidatedRouterParams(event, projectIdParamsSchema.parse)
 
+  for (const environmentId of body.environmentIds) {
+    await requireTokenScope(event, {
+      teamId: team.id,
+      projectId,
+      environmentId,
+      permission: 'write',
+    })
+  }
+
   const variablesService = new VariablesService(event)
   await variablesService.createVariables(event, {
     projectId,
@@ -38,6 +47,19 @@ export default eventHandler(async (event) => {
   })
 
   variablesService.incrementStatAsync(team.id, 'push')
+
+  await logAudit(event, {
+    teamId: team.id,
+    action: 'variables.create',
+    resourceType: 'project',
+    resourceId: projectId,
+    metadata: {
+      keys: body.variables.map(v => v.key),
+      environmentIds: body.environmentIds,
+      syncWithGitHub: body.syncWithGitHub === true,
+    },
+  })
+
   return {
     statusCode: 201,
     message: 'Variables created successfully',

@@ -1,5 +1,6 @@
 // auth.d.ts
 import { Role } from '@types'
+import type { TokenScopes } from '@types'
 
 declare module '#auth-utils' {
 
@@ -24,6 +25,7 @@ declare module '#auth-utils' {
     }
     defaultTeamSlug?: string
     loggedInAt: Date
+    tokenScopes?: TokenScopes
   }
 
   interface SecureSessionData {

@@ -1,41 +1,60 @@
 import { z } from 'zod'
+import type { TokenWithSecret } from '@types'
 
-export default defineEventHandler(async (event) => {
-  const { name } = await readValidatedBody(event, z.object({
-    name: z.string({
-      error: 'Cannot create token without name',
-    }).min(3).max(50).trim(),
-  }).parse)
+const cidrSchema = z.string().regex(
+  /^(?:(?:25[0-5]|2[0-4]\d|1?\d?\d)(?:\.(?:25[0-5]|2[0-4]\d|1?\d?\d)){3}\/(?:3[0-2]|[12]?\d))$|^(?:[A-Fa-f0-9:]+)\/(?:12[0-8]|1[01]\d|[1-9]?\d)$/,
+  'Invalid CIDR notation'
+)
+
+const scopesSchema = z.object({
+  teamIds: z.array(z.number().int().positive()).optional(),
+  projectIds: z.array(z.number().int().positive()).optional(),
+  environmentIds: z.array(z.number().int().positive()).optional(),
+  permissions: z.array(z.enum(['read', 'write'])).min(1),
+}).optional()
+
+const bodySchema = z.object({
+  name: z.string({ error: 'Cannot create token without name' }).min(3).max(25).trim(),
+  scopes: scopesSchema,
+  expiresIn: z.number().int().positive().nullable().optional(),
+  allowedCidrs: z.array(cidrSchema).optional(),
+})
+
+export default defineEventHandler(async (event): Promise<TokenWithSecret> => {
+  const { name, scopes, expiresIn, allowedCidrs } = await readValidatedBody(event, bodySchema.parse)
   const { user } = await requireUserSession(event)
-  const { encryptionKey } = useRuntimeConfig(event).private
 
-  const createdToken = generateUserToken(user.id)
-  const encryptedToken = await seal(createdToken, encryptionKey)
+  const { token, prefix, hash } = generateToken()
+  const expiresAt = expiresIn ? new Date(Date.now() + expiresIn * 1000) : null
 
-  const [token] = await db.insert(schema.tokens)
+  const [created] = await db.insert(schema.tokens)
     .values({
-      token: encryptedToken,
+      hash,
+      prefix,
+      name,
       userId: user.id,
-      name
+      scopes: scopes ?? { permissions: ['read', 'write'] },
+      allowedCidrs: allowedCidrs ?? [],
+      expiresAt,
     })
     .returning()
 
-  return token
-})
+  if (!created) throw createError({ statusCode: 500, statusMessage: 'Failed to create token' })
 
-function generateUserToken(userId: number): string {
-  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
-  let token = ''
-  const userIdHash = calculateUserIdHash(userId)
+  await logAudit(event, {
+    action: 'token.create',
+    resourceType: 'token',
+    resourceId: created.id,
+    metadata: {
+      name: created.name,
+      prefix: created.prefix,
+      expiresAt: created.expiresAt,
+      scopes: created.scopes,
+    },
+  })
 
-  for (let i = 0; i < TOKEN_LENGTH; i++) {
-    const randomIndex = (Math.floor(Math.random() * characters.length) + userIdHash) % characters.length
-    token += characters.charAt(randomIndex)
+  return {
+    ...created,
+    token,
   }
-
-  return `${TOKEN_PREFIX}${userId}_${token}`
-}
-
-function calculateUserIdHash(userId: number): number {
-  return Array.from(String(userId)).reduce((acc, char) => acc + char.charCodeAt(0), 0)
-}
+})

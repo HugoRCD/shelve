@@ -2,22 +2,14 @@ import type { UpdateVariableInput, CreateVariablesInput, Variable } from '@types
 import type { H3Event } from 'h3'
 import { GithubService } from './github'
 import { ProjectsService } from './projects'
+import { EncryptionService } from './encryption'
 
 export class VariablesService {
 
-  private readonly encryptionKey: string
+  private readonly encryption: EncryptionService
 
   constructor(event: H3Event) {
-    this.encryptionKey = useRuntimeConfig(event).private.encryptionKey
-  }
-
-  // Private utility methods
-  private async encryptValue(value: string): Promise<string> {
-    return await seal(value, this.encryptionKey)
-  }
-
-  private async decryptValue(value: string): Promise<string> {
-    return await unseal(value, this.encryptionKey) as string
+    this.encryption = new EncryptionService(event)
   }
 
   incrementStatAsync(teamId: number, action: 'push' | 'pull') {
@@ -55,7 +47,7 @@ export class VariablesService {
       values: await Promise.all(
         variable.values.map(async v => ({
           ...v,
-          value: await this.decryptValue(v.value)
+          value: await this.encryption.decrypt(variable.projectId, v.value)
         }))
       )
     }
@@ -65,15 +57,22 @@ export class VariablesService {
   async createVariables(event: H3Event, input: CreateVariablesInput): Promise<void> {
     const { projectId, variables: varsToCreate, autoUppercase = true, environmentIds, syncWithGitHub } = input
 
-    await db.transaction(async (tx) => {
-      const preparedVariables = await Promise.all(
-        varsToCreate.map(async (variable) => ({
-          key: autoUppercase ? variable.key.toUpperCase() : variable.key,
-          description: variable.description,
-          encryptedValue: await this.encryptValue(variable.value)
-        }))
-      )
+    // Encrypt outside the transaction: this.encryption uses the global `db`
+    // pool, and several drivers (pglite, libSQL) only expose a single
+    // connection — calling another query while a tx holds it deadlocks.
+    // Also serialize the encrypt calls so we provision the project DEK once
+    // (concurrent first-writes would each generate a different DEK and
+    // race on `projects.encryptedDek`, leaving some values unreadable).
+    const preparedVariables = []
+    for (const variable of varsToCreate) {
+      preparedVariables.push({
+        key: autoUppercase ? variable.key.toUpperCase() : variable.key,
+        description: variable.description,
+        encryptedValue: await this.encryption.encrypt(projectId, variable.value),
+      })
+    }
 
+    await db.transaction(async (tx) => {
       const variableRecords = await Promise.all(
         preparedVariables.map(async ({ key, description }) => {
           const existing = await tx.query.variables.findFirst({
@@ -141,10 +140,21 @@ export class VariablesService {
   async updateVariable(input: UpdateVariableInput): Promise<void> {
     const { id, key, values, autoUppercase = true, description, groupId } = input
 
-    await db.transaction(async (tx) => {
-      const existingVariable = await this.findVariableById(tx, id)
-      if (!existingVariable) throw createError({ statusCode: 404, statusMessage: `Variable not found with id ${id}` })
+    const existingVariable = await db.query.variables.findFirst({
+      where: eq(schema.variables.id, id),
+    })
+    if (!existingVariable) throw createError({ statusCode: 404, statusMessage: `Variable not found with id ${id}` })
 
+    // Encrypt before the transaction (see createVariables).
+    const encryptedValues = []
+    for (const valueInput of values) {
+      encryptedValues.push({
+        environmentId: valueInput.environmentId,
+        value: await this.encryption.encrypt(existingVariable.projectId, valueInput.value),
+      })
+    }
+
+    await db.transaction(async (tx) => {
       const updatedKey = autoUppercase ? key.toUpperCase() : key
       const updates: Record<string, unknown> = {}
 
@@ -158,10 +168,9 @@ export class VariablesService {
           .where(eq(schema.variables.id, id))
       }
 
-      await Promise.all(values.map(async valueInput => {
-        const encryptedValue = await this.encryptValue(valueInput.value)
-        return this.upsertVariableValue(tx, id, valueInput.environmentId, encryptedValue)
-      }))
+      for (const ev of encryptedValues) {
+        await this.upsertVariableValue(tx, id, ev.environmentId, ev.value)
+      }
 
       await clearCache('Variables', existingVariable.projectId)
     })

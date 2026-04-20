@@ -25,6 +25,11 @@ const items = [
     icon: 'nucleo:gear-2',
     value: 'settings'
   },
+  {
+    label: 'Audit logs',
+    icon: 'nucleo:list-checkbox',
+    value: 'audit-logs'
+  },
 ]
 
 const activeTab = computed({

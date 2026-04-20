@@ -35,16 +35,14 @@ export async function seedUser(data?: { username?: string; email?: string }) {
  */
 export async function getCliAuthToken(cookie: string): Promise<string> {
   const api = authedFetch(cookie)
-  await api('/api/tokens', {
+  const created = await api<{ token?: string }>('/api/tokens', {
     method: 'POST',
     body: { name: 'e2e-cli' },
   })
-  const tokens = await api('/api/tokens')
-  const latest = tokens[0] as { token?: string } | undefined
-  if (!latest?.token || typeof latest.token !== 'string')
-    throw new Error('Failed to obtain CLI auth token')
+  if (!created?.token || typeof created.token !== 'string')
+    throw new Error('Failed to obtain CLI auth token (POST /api/tokens did not return a token)')
 
-  return latest.token
+  return created.token
 }
 
 export function authedFetch(cookie: string) {

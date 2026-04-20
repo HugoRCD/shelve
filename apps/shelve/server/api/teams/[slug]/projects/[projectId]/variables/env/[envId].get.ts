@@ -12,7 +12,22 @@ export default eventHandler(async (event) => {
     }).int().positive(),
   }).parse)
 
+  await requireTokenScope(event, {
+    teamId: team.id,
+    projectId,
+    environmentId: envId,
+    permission: 'read',
+  })
+
   const variablesService = new VariablesService(event)
+
+  void logAudit(event, {
+    teamId: team.id,
+    action: 'variables.read',
+    resourceType: 'environment',
+    resourceId: envId,
+    metadata: { projectId },
+  })
 
   variablesService.incrementStatAsync(team.id, 'pull')
   const result = await variablesService.getVariables(projectId, envId)

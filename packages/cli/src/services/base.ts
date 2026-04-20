@@ -1,7 +1,10 @@
+import { readFileSync } from 'node:fs'
+import { fileURLToPath } from 'node:url'
+import { dirname, join } from 'node:path'
 import { ofetch, type $Fetch, type FetchOptions } from 'ofetch'
 import { spinner } from '@clack/prompts'
-import { writeUser } from 'rc9'
 import type { User } from '@types'
+import { writeUser } from 'rc9'
 import { askPassword, loadShelveConfig } from '../utils'
 import { ErrorService } from './error'
 
@@ -30,8 +33,8 @@ export abstract class BaseService {
       return ofetch(`${url}/api/user/me`, {
         method: 'GET',
         headers: {
-          Cookie: `authToken=${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
       })
     })
   }
@@ -64,9 +67,10 @@ export abstract class BaseService {
       this.api = ofetch.create({
         baseURL,
         headers: {
-          Cookie: `authToken=${config.token}`
+          Authorization: `Bearer ${config.token}`,
+          'User-Agent': `shelve-cli/${getCliVersion()} (${process.platform}; node-${process.versions.node})`,
         },
-        onResponseError: ErrorService.handleApiError
+        onResponseError: ErrorService.handleApiError,
       })
     }
     return this.api
@@ -78,4 +82,18 @@ export abstract class BaseService {
     return api<T>(endpoint, options)
   }
 
+}
+
+let _cliVersion = ''
+function getCliVersion(): string {
+  if (_cliVersion) return _cliVersion
+  try {
+    const here = dirname(fileURLToPath(import.meta.url))
+    const pkgPath = join(here, '..', '..', 'package.json')
+    const { version } = JSON.parse(readFileSync(pkgPath, 'utf-8'))
+    _cliVersion = version || 'unknown'
+  } catch {
+    _cliVersion = 'unknown'
+  }
+  return _cliVersion
 }

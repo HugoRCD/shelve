@@ -1,6 +1,7 @@
-import { boolean, pgEnum, pgTable, varchar, index, uniqueIndex, bigint, integer, timestamp } from 'drizzle-orm/pg-core'
+import { boolean, pgEnum, pgTable, varchar, index, uniqueIndex, bigint, integer, timestamp, jsonb } from 'drizzle-orm/pg-core'
 import { relations } from 'drizzle-orm'
 import { TeamRole, Role, AuthType, InvitationStatus } from '../../../../packages/types'
+import type { TokenScopes } from '../../../../packages/types'
 
 const timestamps = {
   updatedAt: timestamp().notNull().$onUpdate(() => new Date()),
@@ -106,6 +107,7 @@ export const projects = pgTable('projects', {
   homepage: varchar({ length: 200 }).default('').notNull(),
   variablePrefix: varchar({ length: 500 }).default('').notNull(),
   logo: varchar({ length: 500 }).default(DEFAULT_LOGO).notNull(),
+  encryptedDek: varchar({ length: 1024 }),
   ...timestamps,
 }, (table) => [
   uniqueIndex('projects_team_name_idx').on(table.teamId, table.name),
@@ -154,13 +156,20 @@ export const variableValues = pgTable('variable_values', {
 
 export const tokens = pgTable('tokens', {
   id: bigint({ mode: 'number' }).primaryKey().generatedByDefaultAsIdentity(),
-  token: varchar({ length: 800 }).unique().notNull(),
+  hash: varchar({ length: 64 }).unique().notNull(),
+  prefix: varchar({ length: 16 }).notNull(),
   name: varchar({ length: 25 }).notNull(),
   userId: bigint({ mode: 'number' }).references(() => users.id, { onDelete: 'cascade' }).notNull(),
+  scopes: jsonb().$type<TokenScopes>().notNull(),
+  allowedCidrs: jsonb().$type<string[]>().default([]).notNull(),
+  expiresAt: timestamp(),
+  lastUsedAt: timestamp(),
+  lastUsedIp: varchar({ length: 45 }),
   ...timestamps,
 }, (table) => [
-  uniqueIndex('tokens_token_idx').on(table.token),
-  index('tokens_user_idx').on(table.userId)
+  uniqueIndex('tokens_hash_idx').on(table.hash),
+  index('tokens_user_idx').on(table.userId),
+  index('tokens_prefix_idx').on(table.prefix),
 ])
 
 export const environments = pgTable('environments', {
@@ -171,6 +180,25 @@ export const environments = pgTable('environments', {
 }, (table) => [
   uniqueIndex('environments_team_name_idx').on(table.teamId, table.name),
   index('environments_team_idx').on(table.teamId),
+])
+
+export const auditLogs = pgTable('audit_logs', {
+  id: bigint({ mode: 'number' }).primaryKey().generatedByDefaultAsIdentity(),
+  teamId: bigint({ mode: 'number' }).references(() => teams.id, { onDelete: 'cascade' }),
+  actorType: varchar({ length: 16 }).notNull(),
+  actorId: bigint({ mode: 'number' }),
+  action: varchar({ length: 64 }).notNull(),
+  resourceType: varchar({ length: 32 }),
+  resourceId: varchar({ length: 64 }),
+  ip: varchar({ length: 45 }),
+  userAgent: varchar({ length: 256 }),
+  metadata: jsonb().$type<Record<string, unknown>>(),
+  createdAt: timestamp().defaultNow().notNull(),
+}, (table) => [
+  index('audit_logs_team_idx').on(table.teamId),
+  index('audit_logs_created_idx').on(table.createdAt),
+  index('audit_logs_team_created_idx').on(table.teamId, table.createdAt),
+  index('audit_logs_action_idx').on(table.action),
 ])
 
 export const teamStats = pgTable('team_stats', {
@@ -193,6 +221,14 @@ export const teamsRelations = relations(teams, ({ many }) => ({
   projects: many(projects),
   environments: many(environments),
   invitations: many(invitations),
+  auditLogs: many(auditLogs),
+}))
+
+export const auditLogsRelations = relations(auditLogs, ({ one }) => ({
+  team: one(teams, {
+    fields: [auditLogs.teamId],
+    references: [teams.id],
+  }),
 }))
 
 export const membersRelations = relations(members, ({ one }) => ({
