@@ -1,5 +1,11 @@
 # @shelve/cli
 
+## 5.0.1
+
+### Patch Changes
+
+- [#734](https://github.com/HugoRCD/shelve/pull/734) [`d63f766`](https://github.com/HugoRCD/shelve/commit/d63f76639df8b635f1b58e4def4e2be4e3aef7b9) Thanks [@HugoRCD](https://github.com/HugoRCD)! - Add test coverage for the v5 additions — encrypted offline cache (roundtrip / TTL / token rotation / tampering), OS-keychain credentials with XDG file fallback and legacy `~/.shelve` migration, agent-ignore files, `shelve://` secret references, and `parseDuration`. Along the way, `CredentialsService` now creates `$XDG_CONFIG_HOME` on demand so writes no longer fail on freshly provisioned machines.
+
 ## 5.0.0
 
 ### Major Changes
