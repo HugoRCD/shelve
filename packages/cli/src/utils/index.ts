@@ -7,6 +7,10 @@ import { version } from '../../package.json'
 export * from './templates'
 export * from './prompt'
 export * from './config'
+export * from './agent'
+export * from './duration'
+export * from './secret-refs'
+export * from './ignore-files'
 
 const s = spinner()
 

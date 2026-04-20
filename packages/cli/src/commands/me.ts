@@ -1,6 +1,6 @@
 import { note } from '@clack/prompts'
-import { readUser } from 'rc9'
 import { defineCommand } from 'citty'
+import { CredentialsService } from '../services/credentials'
 
 export default defineCommand({
   meta: {
@@ -8,9 +8,9 @@ export default defineCommand({
     description: 'Show the currently logged-in user'
   },
   run() {
-    const config = readUser('.shelve')
+    const config = CredentialsService.readMeta()
 
-    if (!config.token) {
+    if (!config.email && !config.username) {
       note('You are not logged in')
       return
     }

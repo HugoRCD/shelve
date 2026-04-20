@@ -43,6 +43,7 @@
   "dependencies": {
     "@antfu/ni": "^30.0.0",
     "@clack/prompts": "^1.2.0",
+    "@napi-rs/keyring": "^1.1.7",
     "c12": "3.3.4",
     "consola": "^3.4.2",
     "dotenv": "^17.4.2",

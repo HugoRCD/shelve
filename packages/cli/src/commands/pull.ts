@@ -1,17 +1,22 @@
-import { intro, outro, log } from '@clack/prompts'
+import { intro, outro, log, confirm, isCancel } from '@clack/prompts'
 import { defineCommand } from 'citty'
-import { loadShelveConfig } from '../utils'
+import { detectAgent, handleCancel, loadShelveConfig } from '../utils'
 import { EnvService, ProjectService, EnvironmentService } from '../services'
 
 export default defineCommand({
   meta: {
     name: 'pull',
-    description: 'Pull variables for specified environment to Shelve'
+    description: 'Pull variables for specified environment to Shelve',
   },
   args: {
     env: {
       type: 'string',
       description: 'Specify the environment to which you want to pull the variables',
+      required: false,
+    },
+    yes: {
+      type: 'boolean',
+      description: 'Skip the AI-agent disk-write confirmation prompt',
       required: false,
     },
   },
@@ -22,8 +27,17 @@ export default defineCommand({
       envFileName,
       confirmChanges,
       autoCreateProject,
-      defaultEnv
+      defaultEnv,
     } = await loadShelveConfig(true)
+
+    const agent = detectAgent()
+    if (agent && !args.yes) {
+      log.warn(
+        `${agent} appears to be running in this shell. \`shelve pull\` writes plaintext secrets to ${envFileName} where AI agents can read them. Prefer \`shelve run -- <cmd>\` so secrets stay in memory.`
+      )
+      const proceed = await confirm({ message: 'Write secrets to disk anyway?', initialValue: false })
+      if (isCancel(proceed) || !proceed) handleCancel('Aborted by user')
+    }
 
     intro(`Pulling variable from ${project} project`)
 
@@ -41,5 +55,5 @@ export default defineCommand({
       await EnvService.createEnvFile({ envFileName, variables, confirmChanges })
 
     outro(`Successfully pulled variable from ${environment.name} environment`)
-  }
+  },
 })
