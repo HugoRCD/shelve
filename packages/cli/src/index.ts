@@ -13,6 +13,7 @@ import me from './commands/me'
 import logout from './commands/logout'
 import upgrade from './commands/upgrade'
 import run from './commands/run'
+import init from './commands/init'
 
 const pkg = await readPackageJSON().catch(() => ({ version: 'unknown' }))
 
@@ -29,10 +30,11 @@ const main = defineCommand({
     login,
     logout,
     me,
+    init,
     create,
     config,
     generate,
-    upgrade
+    upgrade,
   },
 })
 

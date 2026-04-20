@@ -21,11 +21,10 @@ import { join } from 'path'
 import { intro, outro } from '@clack/prompts'
 import { setupDotenv } from 'c12'
 import { findWorkspaceDir, readPackageJSON } from 'pkg-types'
-import { readUser } from 'rc9'
 import defu from 'defu'
 import type { CreateShelveConfigInput, ShelveConfig } from '@types'
 import { DEFAULT_URL, SHELVE_JSON_SCHEMA } from '@types'
-import { FileService, PkgService, ProjectService } from '../services'
+import { CredentialsService, FileService, PkgService, ProjectService } from '../services'
 import { DEFAULT_ENV_FILENAME } from '../constants'
 import { BaseService } from '../services/base'
 import { askSelect, askText } from './prompt'
@@ -150,19 +149,23 @@ async function checkConfig(path: string | null, isRoot = false): Promise<ShelveC
 async function getDefaultConfig(): Promise<ShelveConfig> {
   await setupDotenv({})
   const { name } = await readPackageJSON().catch(() => ({ name: undefined }))
-  const conf = readUser('.shelve')
+  const conf = CredentialsService.readMeta()
   const workspaceDir = await findWorkspaceDir().catch(() => process.cwd())
   const pkgService = new PkgService()
   const isMonoRepo = await pkgService.isMonorepo()
   const allPkg = await pkgService.getAllPackageJsons()
+  const url = process.env.SHELVE_URL || conf.url || 'https://app.shelve.cloud'
+  const token = process.env.SHELVE_TOKEN
+    || (await CredentialsService.readToken(url).catch(() => undefined))
 
   return {
     // @ts-expect-error to provide error message we let project be undefined
     project: process.env.SHELVE_PROJECT || name,
     // @ts-expect-error to provide error message we let slug be undefined
     slug: process.env.SHELVE_TEAM_SLUG,
-    token: process.env.SHELVE_TOKEN || conf.token,
-    url: process.env.SHELVE_URL || 'https://app.shelve.cloud',
+    // @ts-expect-error checked downstream when an authenticated request is made
+    token,
+    url,
     defaultEnv: process.env.SHELVE_DEFAULT_ENV,
     username: conf.username,
     email: conf.email,
