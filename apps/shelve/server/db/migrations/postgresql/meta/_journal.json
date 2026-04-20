@@ -36,6 +36,20 @@
       "when": 1782700000000,
       "tag": "0004_tokens_hash",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1782700000001,
+      "tag": "0005_audit_logs",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1782700000002,
+      "tag": "0006_project_dek",
+      "breakpoints": true
     }
   ]
 }

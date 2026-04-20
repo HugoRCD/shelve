@@ -9,4 +9,8 @@ export {
   inArray,
   asc,
   desc,
+  lt,
+  gt,
+  lte,
+  gte,
 } from 'drizzle-orm'

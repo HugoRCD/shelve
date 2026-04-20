@@ -107,6 +107,7 @@ export const projects = pgTable('projects', {
   homepage: varchar({ length: 200 }).default('').notNull(),
   variablePrefix: varchar({ length: 500 }).default('').notNull(),
   logo: varchar({ length: 500 }).default(DEFAULT_LOGO).notNull(),
+  encryptedDek: varchar({ length: 1024 }),
   ...timestamps,
 }, (table) => [
   uniqueIndex('projects_team_name_idx').on(table.teamId, table.name),
@@ -181,6 +182,25 @@ export const environments = pgTable('environments', {
   index('environments_team_idx').on(table.teamId),
 ])
 
+export const auditLogs = pgTable('audit_logs', {
+  id: bigint({ mode: 'number' }).primaryKey().generatedByDefaultAsIdentity(),
+  teamId: bigint({ mode: 'number' }).references(() => teams.id, { onDelete: 'cascade' }),
+  actorType: varchar({ length: 16 }).notNull(),
+  actorId: bigint({ mode: 'number' }),
+  action: varchar({ length: 64 }).notNull(),
+  resourceType: varchar({ length: 32 }),
+  resourceId: varchar({ length: 64 }),
+  ip: varchar({ length: 45 }),
+  userAgent: varchar({ length: 256 }),
+  metadata: jsonb().$type<Record<string, unknown>>(),
+  createdAt: timestamp().defaultNow().notNull(),
+}, (table) => [
+  index('audit_logs_team_idx').on(table.teamId),
+  index('audit_logs_created_idx').on(table.createdAt),
+  index('audit_logs_team_created_idx').on(table.teamId, table.createdAt),
+  index('audit_logs_action_idx').on(table.action),
+])
+
 export const teamStats = pgTable('team_stats', {
   id: bigint({ mode: 'number' }).primaryKey().generatedByDefaultAsIdentity(),
   teamId: bigint({ mode: 'number' }).unique().references(() => teams.id, { onDelete: 'set null' }),
@@ -201,6 +221,14 @@ export const teamsRelations = relations(teams, ({ many }) => ({
   projects: many(projects),
   environments: many(environments),
   invitations: many(invitations),
+  auditLogs: many(auditLogs),
+}))
+
+export const auditLogsRelations = relations(auditLogs, ({ one }) => ({
+  team: one(teams, {
+    fields: [auditLogs.teamId],
+    references: [teams.id],
+  }),
 }))
 
 export const membersRelations = relations(members, ({ one }) => ({

@@ -2,22 +2,14 @@ import type { UpdateVariableInput, CreateVariablesInput, Variable } from '@types
 import type { H3Event } from 'h3'
 import { GithubService } from './github'
 import { ProjectsService } from './projects'
+import { EncryptionService } from './encryption'
 
 export class VariablesService {
 
-  private readonly encryptionKey: string
+  private readonly encryption: EncryptionService
 
   constructor(event: H3Event) {
-    this.encryptionKey = useRuntimeConfig(event).private.encryptionKey
-  }
-
-  // Private utility methods
-  private async encryptValue(value: string): Promise<string> {
-    return await seal(value, this.encryptionKey)
-  }
-
-  private async decryptValue(value: string): Promise<string> {
-    return await unseal(value, this.encryptionKey) as string
+    this.encryption = new EncryptionService(event)
   }
 
   incrementStatAsync(teamId: number, action: 'push' | 'pull') {
@@ -55,7 +47,7 @@ export class VariablesService {
       values: await Promise.all(
         variable.values.map(async v => ({
           ...v,
-          value: await this.decryptValue(v.value)
+          value: await this.encryption.decrypt(variable.projectId, v.value)
         }))
       )
     }
@@ -70,7 +62,7 @@ export class VariablesService {
         varsToCreate.map(async (variable) => ({
           key: autoUppercase ? variable.key.toUpperCase() : variable.key,
           description: variable.description,
-          encryptedValue: await this.encryptValue(variable.value)
+          encryptedValue: await this.encryption.encrypt(projectId, variable.value)
         }))
       )
 
@@ -159,7 +151,7 @@ export class VariablesService {
       }
 
       await Promise.all(values.map(async valueInput => {
-        const encryptedValue = await this.encryptValue(valueInput.value)
+        const encryptedValue = await this.encryption.encrypt(existingVariable.projectId, valueInput.value)
         return this.upsertVariableValue(tx, id, valueInput.environmentId, encryptedValue)
       }))
 
