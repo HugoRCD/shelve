@@ -57,6 +57,10 @@ useSeoMeta({ ogImage: ogImage })
         </template>
         <div class="min-h-[300px] flex items-center justify-center">
           <LandingInstall v-if="section.id === 'secrets'" />
+          <LandingEncryption v-if="section.id === 'encryption'" />
+          <LandingTokens v-if="section.id === 'tokens'" />
+          <LandingAuditLogs v-if="section.id === 'audit'" />
+          <LandingAgentSafety v-if="section.id === 'agent'" />
           <LandingEnvCheck v-if="section.id === 'env'" />
           <LandingGithubSync v-if="section.id === 'github'" />
           <LandingTeams v-if="section.id === 'team'" />
