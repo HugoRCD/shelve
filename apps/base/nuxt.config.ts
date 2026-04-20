@@ -41,9 +41,13 @@ export default defineNuxtConfig({
   // Workaround: @nuxt/fonts -> fontless spawns an esbuild service that is not
   // disposed of when the build completes, causing `nuxi build` to hang and Vercel
   // to kill the process with exit code 99. See https://github.com/nuxt/nuxt/issues/33987
+  // Guarded so it only fires for `build`; `prepare`/`dev`/`postinstall` need the
+  // close hook to flush types (.nuxt/tsconfig.json) cleanly.
   hooks: {
     close: () => {
-      process.exit(0)
+      if (process.env.npm_lifecycle_event === 'build') {
+        process.exit(0)
+      }
     },
   },
 
