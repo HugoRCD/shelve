@@ -1,6 +1,7 @@
 import { intro, outro, log, confirm, isCancel } from '@clack/prompts'
 import { defineCommand } from 'citty'
-import { detectAgent, handleCancel, loadShelveConfig } from '../utils'
+import { agent as detectedAgent } from 'std-env'
+import { handleCancel, loadShelveConfig } from '../utils'
 import { EnvService, ProjectService, EnvironmentService } from '../services'
 
 export default defineCommand({
@@ -30,10 +31,9 @@ export default defineCommand({
       defaultEnv,
     } = await loadShelveConfig(true)
 
-    const agent = detectAgent()
-    if (agent && !args.yes) {
+    if (detectedAgent && !args.yes) {
       log.warn(
-        `${agent} appears to be running in this shell. \`shelve pull\` writes plaintext secrets to ${envFileName} where AI agents can read them. Prefer \`shelve run -- <cmd>\` so secrets stay in memory.`
+        `${detectedAgent} appears to be running in this shell. \`shelve pull\` writes plaintext secrets to ${envFileName} where AI agents can read them. Prefer \`shelve run -- <cmd>\` so secrets stay in memory.`
       )
       const proceed = await confirm({ message: 'Write secrets to disk anyway?', initialValue: false })
       if (isCancel(proceed) || !proceed) handleCancel('Aborted by user')

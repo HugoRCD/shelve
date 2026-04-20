@@ -27,4 +27,4 @@ Make `shelve run` the default secret-injection path with offline support, secret
 **AI-agent guards**
 
 - New `shelve init` writes `.cursorignore`, `.aiderignore`, `.codeiumignore`, `.continueignore`, and a `# shelve-managed-block` in `.gitignore` to keep `.env` out of model contexts.
-- `shelve pull` now detects AI-agent environments (`CURSOR_TRACE_ID`, `AIDER_VERSION`, `CLAUDECODE`, …) and prompts before writing plaintext secrets to disk (skip with `--yes`).
+- `shelve pull` now detects AI-agent environments via [`std-env`](https://github.com/unjs/std-env) (`cursor`, `claude`, `devin`, `replit`, `gemini`, `codex`, `auggie`, `opencode`, `kiro`, `goose`, `pi`) and prompts before writing plaintext secrets to disk (skip with `--yes`). Set `AI_AGENT=<name>` to force-detect.
