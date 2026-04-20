@@ -1,5 +1,5 @@
 import type { H3Event } from 'h3'
-import type { CreateUserInput, Token, User } from '@types'
+import type { CreateUserInput, TokenScopes, User } from '@types'
 import { AuthType, Role } from '@types'
 
 async function syncUserRole(user: User, event: H3Event): Promise<User> {
@@ -101,32 +101,68 @@ function generateUniqueUsername(username: string): string {
   return `${username}_#${Math.floor(Math.random() * 1000)}`
 }
 
-export async function getUserByAuthToken(authToken: string, event: H3Event): Promise<User> {
-  const { encryptionKey } = useRuntimeConfig(event).private
-  const userId = +authToken.split('_')[1] // Extract the user ID from the token
-  const userTokens = await db.query.tokens.findMany({
-    where: eq(schema.tokens.userId, userId)
-  })
-  if (!userTokens.length) throw createError({ statusCode: 401, statusMessage: 'User not found (invalid token)' })
-
-  let foundToken: Token | undefined
-
-  for (const token of userTokens) {
-    const decryptedToken = await unseal(token.token, encryptionKey)
-    if (decryptedToken === authToken) foundToken = token
+export async function authenticateToken(
+  rawToken: string,
+  event: H3Event
+): Promise<{ user: User; scopes: TokenScopes }> {
+  if (!rawToken || !rawToken.startsWith('she_')) {
+    throw createError({ statusCode: 401, statusMessage: 'Invalid token' })
   }
 
-  if (!foundToken) throw createError({ statusCode: 401, statusMessage: 'Invalid token' })
+  const hash = hashToken(rawToken)
+  const token = await db.query.tokens.findFirst({
+    where: eq(schema.tokens.hash, hash),
+  })
+  if (!token) throw createError({ statusCode: 401, statusMessage: 'Invalid token' })
+
+  if (token.expiresAt && token.expiresAt.getTime() < Date.now()) {
+    throw createError({ statusCode: 401, statusMessage: 'Token expired' })
+  }
+
+  const ip = getRequestIP(event, { xForwardedFor: true }) ?? null
+  if (token.allowedCidrs.length > 0) {
+    if (!ip || !ip.length) {
+      throw createError({ statusCode: 401, statusMessage: 'Token IP allowlist enforced' })
+    }
+    if (!token.allowedCidrs.some((cidr) => isIpInCidr(ip, cidr))) {
+      throw createError({ statusCode: 403, statusMessage: 'IP not allowed for this token' })
+    }
+  }
 
   const user = await db.query.users.findFirst({
-    where: eq(schema.users.id, userId)
+    where: eq(schema.users.id, token.userId),
   })
-  if (!user) throw createError({ statusCode: 400, statusMessage: 'User not found (invalid token)' })
+  if (!user) throw createError({ statusCode: 401, statusMessage: 'User not found' })
 
   await db.update(schema.tokens)
-    .set({
-      updatedAt: new Date()
-    })
-    .where(eq(schema.tokens.id, foundToken.id))
-  return user
+    .set({ lastUsedAt: new Date(), lastUsedIp: ip })
+    .where(eq(schema.tokens.id, token.id))
+
+  return { user, scopes: token.scopes }
+}
+
+function isIpInCidr(ip: string, cidr: string): boolean {
+  const [range, bitsRaw] = cidr.split('/')
+  if (!range || !bitsRaw) return false
+  const bits = parseInt(bitsRaw, 10)
+  if (Number.isNaN(bits)) return false
+
+  if (ip.includes(':') !== range.includes(':')) return false
+
+  if (!ip.includes(':')) {
+    const ipNum = ipv4ToNumber(ip)
+    const rangeNum = ipv4ToNumber(range)
+    if (ipNum === null || rangeNum === null) return false
+    if (bits === 0) return true
+    const mask = (~0 << (32 - bits)) >>> 0
+    return (ipNum & mask) === (rangeNum & mask)
+  }
+
+  return false
+}
+
+function ipv4ToNumber(ip: string): number | null {
+  const parts = ip.split('.').map(Number)
+  if (parts.length !== 4 || parts.some((p) => Number.isNaN(p) || p < 0 || p > 255)) return null
+  return ((parts[0]! << 24) | (parts[1]! << 16) | (parts[2]! << 8) | parts[3]!) >>> 0
 }

@@ -1,35 +1,26 @@
 <script setup lang="ts">
-const { token } = defineProps<{
-  token: string
+const { prefix } = defineProps<{
+  prefix: string
 }>()
 
-const visible = ref(false)
-
 const copy = () => {
-  navigator.clipboard.writeText(token)
-  toast.success('Token copied to clipboard')
+  navigator.clipboard.writeText(prefix)
+  toast.info('Only the prefix is shown for security. Full token is only revealed at creation.')
 }
 </script>
 
 <template>
   <div class="flex select-none items-center gap-2">
-    <div class="cursor-pointer text-sm text-muted" @click="copy">
-      **********
-    </div>
-    <UPopover>
+    <span class="text-sm font-mono text-muted">
+      {{ prefix }}…
+    </span>
+    <UTooltip text="Copy prefix">
       <UButton
-        icon="lucide:eye"
+        icon="lucide:copy"
         size="sm"
         variant="ghost"
-        @click="visible = !visible"
+        @click="copy"
       />
-      <template #content>
-        <UCard :ui="{ body: 'px-2 sm:px-2 py-1 sm:py-1' }" class="cursor-pointer hover:bg-muted" @click="copy">
-          <span class="text-sm font-mono">
-            {{ token.slice(0, 4) }}...{{ token.slice(-4) }}
-          </span>
-        </UCard>
-      </template>
-    </UPopover>
+    </UTooltip>
   </div>
 </template>

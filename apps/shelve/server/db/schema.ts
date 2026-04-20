@@ -1,6 +1,7 @@
-import { boolean, pgEnum, pgTable, varchar, index, uniqueIndex, bigint, integer, timestamp } from 'drizzle-orm/pg-core'
+import { boolean, pgEnum, pgTable, varchar, index, uniqueIndex, bigint, integer, timestamp, jsonb } from 'drizzle-orm/pg-core'
 import { relations } from 'drizzle-orm'
 import { TeamRole, Role, AuthType, InvitationStatus } from '../../../../packages/types'
+import type { TokenScopes } from '../../../../packages/types'
 
 const timestamps = {
   updatedAt: timestamp().notNull().$onUpdate(() => new Date()),
@@ -154,13 +155,20 @@ export const variableValues = pgTable('variable_values', {
 
 export const tokens = pgTable('tokens', {
   id: bigint({ mode: 'number' }).primaryKey().generatedByDefaultAsIdentity(),
-  token: varchar({ length: 800 }).unique().notNull(),
+  hash: varchar({ length: 64 }).unique().notNull(),
+  prefix: varchar({ length: 16 }).notNull(),
   name: varchar({ length: 25 }).notNull(),
   userId: bigint({ mode: 'number' }).references(() => users.id, { onDelete: 'cascade' }).notNull(),
+  scopes: jsonb().$type<TokenScopes>().notNull(),
+  allowedCidrs: jsonb().$type<string[]>().default([]).notNull(),
+  expiresAt: timestamp(),
+  lastUsedAt: timestamp(),
+  lastUsedIp: varchar({ length: 45 }),
   ...timestamps,
 }, (table) => [
-  uniqueIndex('tokens_token_idx').on(table.token),
-  index('tokens_user_idx').on(table.userId)
+  uniqueIndex('tokens_hash_idx').on(table.hash),
+  index('tokens_user_idx').on(table.userId),
+  index('tokens_prefix_idx').on(table.prefix),
 ])
 
 export const environments = pgTable('environments', {

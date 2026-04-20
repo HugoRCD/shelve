@@ -9,16 +9,24 @@ const columns: TableColumn<Token>[] = [
     header: 'Name',
   },
   {
-    accessorKey: 'token',
-    header: 'Token',
+    accessorKey: 'prefix',
+    header: 'Prefix',
+  },
+  {
+    accessorKey: 'scopes',
+    header: 'Scopes',
   },
   {
     accessorKey: 'createdAt',
     header: 'Created',
   },
   {
-    accessorKey: 'updatedAt',
+    accessorKey: 'lastUsedAt',
     header: 'Last Used',
+  },
+  {
+    accessorKey: 'expiresAt',
+    header: 'Expires',
   },
   {
     accessorKey: 'actions',
@@ -29,21 +37,12 @@ const columns: TableColumn<Token>[] = [
 const items = (row: Token) => [
   [
     {
-      label: 'Copy Token',
-      icon: 'lucide:copy',
-      onSelect: () => {
-        copyToClipboard(row.token, 'Token copied to clipboard')
-      },
-    }
-  ],
-  [
-    {
       label: 'Delete',
       icon: 'lucide:trash',
       onSelect: () => {
         modal.open({
           title: 'Are you sure?',
-          description: `You are about to delete ${row.name} token which is currently ${isTokenActive(row.updatedAt) ? 'active' : 'inactive'}, this action cannot be undone.`,
+          description: `You are about to delete ${row.name} token which is currently ${isTokenActive(row.lastUsedAt) ? 'active' : 'inactive'}, this action cannot be undone.`,
           danger: true,
           onSuccess() {
             toast.promise(deleteToken(row), {
@@ -89,10 +88,11 @@ async function deleteToken(token: Token) {
   await fetchTokens()
 }
 
-function isTokenActive(value: string) {
-  const updatedAt = new Date(value)
+function isTokenActive(value: string | Date | null) {
+  if (!value) return false
+  const lastUsedAt = new Date(value)
   const oneWeekAgo = new Date(Date.now() - 1000 * 60 * 60 * 24 * 7)
-  return updatedAt > oneWeekAgo
+  return lastUsedAt > oneWeekAgo
 }
 
 fetchTokens()
@@ -119,22 +119,48 @@ useSeoMeta({
         td: 'border-b border-default'
       }"
     >
-      <template #token-cell="{ row }">
-        <TokenToggle :token="row.original.token" />
+      <template #prefix-cell="{ row }">
+        <TokenToggle :prefix="row.original.prefix" />
+      </template>
+      <template #scopes-cell="{ row }">
+        <div class="flex flex-wrap gap-1">
+          <UBadge
+            v-for="permission in row.original.scopes.permissions"
+            :key="permission"
+            size="sm"
+            :color="permission === 'write' ? 'warning' : 'neutral'"
+            variant="subtle"
+          >
+            {{ permission }}
+          </UBadge>
+          <UBadge
+            v-if="row.original.scopes.teamIds?.length || row.original.scopes.projectIds?.length || row.original.scopes.environmentIds?.length"
+            size="sm"
+            color="info"
+            variant="subtle"
+          >
+            scoped
+          </UBadge>
+        </div>
       </template>
       <template #createdAt-cell="{ row }">
         <DatePopover :date="row.original.createdAt" label="Created At" />
       </template>
-      <template #updatedAt-cell="{ row }">
+      <template #lastUsedAt-cell="{ row }">
         <span class="flex items-center gap-1">
-          <DatePopover :date="row.original.updatedAt" label="Last Used" />
-          <UTooltip v-if="!isTokenActive( row.original.updatedAt)" text="Token seems to be inactive">
+          <DatePopover v-if="row.original.lastUsedAt" :date="row.original.lastUsedAt" label="Last Used" />
+          <span v-else class="text-sm text-muted">never</span>
+          <UTooltip v-if="!isTokenActive(row.original.lastUsedAt)" text="Token seems to be inactive">
             <UIcon name="heroicons-outline:clock" class="size-4 text-red-600" />
           </UTooltip>
           <UTooltip v-else text="Token is active">
             <UIcon name="heroicons-outline:clock" class="size-4 text-muted" />
           </UTooltip>
         </span>
+      </template>
+      <template #expiresAt-cell="{ row }">
+        <DatePopover v-if="row.original.expiresAt" :date="row.original.expiresAt" label="Expires" />
+        <span v-else class="text-sm text-muted">never</span>
       </template>
       <template #actions-cell="{ row }">
         <UDropdownMenu :items="items(row.original)">

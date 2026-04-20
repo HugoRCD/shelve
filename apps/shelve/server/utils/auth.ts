@@ -1,5 +1,5 @@
 import type { H3Event } from 'h3'
-import type { Member, Team, User } from '@types'
+import type { Member, Team, TokenPermission, TokenScopes, User } from '@types'
 import { Role, TeamRole } from '@types'
 import { z } from 'zod'
 import { validateTeamAccess, validateTeamRole } from './validateAccess'
@@ -60,4 +60,45 @@ export async function requireUserTeam(
 export async function getTeamSlugFromEvent(event: H3Event): Promise<string> {
   const { slug } = await getValidatedRouterParams(event, teamSlugSchema.parse)
   return slug
+}
+
+/**
+ * Returns the token scopes attached to the current session, or null when
+ * authenticated via web (browser cookie session = full access for the user).
+ */
+export async function getTokenScopes(event: H3Event): Promise<TokenScopes | null> {
+  const session = await getUserSession(event)
+  return (session as { tokenScopes?: TokenScopes }).tokenScopes ?? null
+}
+
+/**
+ * Enforce a token's scopes against the resource being accessed.
+ * No-op when the request is authenticated via web session.
+ *
+ * Throws 403 if:
+ * - The required permission (`read`/`write`) is not granted.
+ * - The token is restricted to specific teams/projects/envs and the resource is not in scope.
+ */
+export async function requireTokenScope(
+  event: H3Event,
+  resource: { teamId?: number; projectId?: number; environmentId?: number; permission: TokenPermission }
+): Promise<void> {
+  const scopes = await getTokenScopes(event)
+  if (!scopes) return
+
+  if (!scopes.permissions.includes(resource.permission)) {
+    throw createError({ statusCode: 403, statusMessage: `Token missing '${resource.permission}' permission` })
+  }
+
+  if (scopes.teamIds?.length && resource.teamId !== undefined && !scopes.teamIds.includes(resource.teamId)) {
+    throw createError({ statusCode: 403, statusMessage: 'Token not authorized for this team' })
+  }
+
+  if (scopes.projectIds?.length && resource.projectId !== undefined && !scopes.projectIds.includes(resource.projectId)) {
+    throw createError({ statusCode: 403, statusMessage: 'Token not authorized for this project' })
+  }
+
+  if (scopes.environmentIds?.length && resource.environmentId !== undefined && !scopes.environmentIds.includes(resource.environmentId)) {
+    throw createError({ statusCode: 403, statusMessage: 'Token not authorized for this environment' })
+  }
 }

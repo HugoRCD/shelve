@@ -29,6 +29,13 @@
       "when": 1776109866917,
       "tag": "0003_polite_madripoor",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1782700000000,
+      "tag": "0004_tokens_hash",
+      "breakpoints": true
     }
   ]
 }

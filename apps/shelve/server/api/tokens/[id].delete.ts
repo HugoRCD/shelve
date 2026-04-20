@@ -13,5 +13,6 @@ export default defineEventHandler(async (event) => {
     .returning()
 
   if (!deletedToken) throw createError({ statusCode: 404, message: `Token not found with id ${id}` })
+
   return deletedToken
 })

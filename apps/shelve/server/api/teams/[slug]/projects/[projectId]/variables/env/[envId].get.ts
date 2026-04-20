@@ -12,6 +12,13 @@ export default eventHandler(async (event) => {
     }).int().positive(),
   }).parse)
 
+  await requireTokenScope(event, {
+    teamId: team.id,
+    projectId,
+    environmentId: envId,
+    permission: 'read',
+  })
+
   const variablesService = new VariablesService(event)
 
   variablesService.incrementStatAsync(team.id, 'pull')
