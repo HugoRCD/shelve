@@ -1,6 +1,6 @@
 ---
 "@shelve/cli": patch
-"app": patch
+"@shelve/app": patch
 ---
 
 Fix `she_…undefined…` tokens: the Crockford base32 alphabet was missing two

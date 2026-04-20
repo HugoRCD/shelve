@@ -1,5 +1,5 @@
 ---
-"app": patch
+"@shelve/app": patch
 ---
 
 Fix the Vue warning `[Vue warn]: Missing required prop: "name"` when sending
