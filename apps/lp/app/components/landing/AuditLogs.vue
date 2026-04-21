@@ -1,10 +1,10 @@
 <script setup lang="ts">
 const entries = [
-  { action: 'variable.update', actor: 'hugo', resource: 'production/STRIPE_SECRET_KEY', ago: '12s', icon: 'lucide:pencil', color: 'text-warning' },
-  { action: 'token.create', actor: 'hugo', resource: 'ci-deploy', ago: '2m', icon: 'lucide:key-round', color: 'text-primary' },
-  { action: 'variable.delete', actor: 'paul', resource: 'preview/LEGACY_FLAG', ago: '14m', icon: 'lucide:trash-2', color: 'text-error' },
-  { action: 'team.member.invite', actor: 'hugo', resource: 'amy@shelve.cloud', ago: '1h', icon: 'lucide:user-plus', color: 'text-success' },
-  { action: 'project.create', actor: 'paul', resource: '@shelve/docs', ago: '3h', icon: 'lucide:folder-plus', color: 'text-muted' }
+  { action: 'variable.update', actor: 'owner', resource: 'production/STRIPE_SECRET_KEY', ago: '12s', icon: 'lucide:pencil', color: 'text-warning' },
+  { action: 'token.create', actor: 'owner', resource: 'ci-deploy', ago: '2m', icon: 'lucide:key-round', color: 'text-primary' },
+  { action: 'variable.delete', actor: 'admin', resource: 'preview/LEGACY_FLAG', ago: '14m', icon: 'lucide:trash-2', color: 'text-error' },
+  { action: 'team.member.invite', actor: 'owner', resource: 'teammate@example.com', ago: '1h', icon: 'lucide:user-plus', color: 'text-success' },
+  { action: 'project.create', actor: 'admin', resource: 'web-platform', ago: '3h', icon: 'lucide:folder-plus', color: 'text-muted' }
 ]
 </script>
 

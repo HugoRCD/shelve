@@ -1,4 +1,16 @@
 <script setup lang="ts">
+import {
+  LandingInstall,
+  LandingEncryption,
+  LandingTokens,
+  LandingAuditLogs,
+  LandingAgentSafety,
+  LandingEnvCheck,
+  LandingGithubSync,
+  LandingTeams,
+  LandingConsole,
+} from '#components'
+
 const { title, description, ogImage } = useAppConfig()
 
 const { data: page } = await useAsyncData('index', () => queryCollection('index').first())
@@ -16,6 +28,25 @@ useSeoMeta({
 })
 
 useSeoMeta({ ogImage: ogImage })
+
+type SectionVisual = Component | null
+
+const sectionVisuals: Record<string, SectionVisual> = {
+  secrets: LandingInstall,
+  encryption: LandingEncryption,
+  tokens: LandingTokens,
+  audit: LandingAuditLogs,
+  agent: LandingAgentSafety,
+  env: LandingEnvCheck,
+  github: LandingGithubSync,
+  team: LandingTeams,
+  console: LandingConsole,
+}
+
+function visualFor(id: string | undefined): SectionVisual {
+  if (!id) return null
+  return sectionVisuals[id] ?? null
+}
 </script>
 
 <template>
@@ -26,7 +57,7 @@ useSeoMeta({ ogImage: ogImage })
       <BgGradient />
       <UPageSection
         v-for="(section, index) in page.sections"
-        :key="index"
+        :key="section.id ?? index"
         :description="section.description"
         :links="section.links"
         orientation="horizontal"
@@ -56,15 +87,7 @@ useSeoMeta({ ogImage: ogImage })
           </Motion>
         </template>
         <div class="min-h-[300px] flex items-center justify-center">
-          <LandingInstall v-if="section.id === 'secrets'" />
-          <LandingEncryption v-if="section.id === 'encryption'" />
-          <LandingTokens v-if="section.id === 'tokens'" />
-          <LandingAuditLogs v-if="section.id === 'audit'" />
-          <LandingAgentSafety v-if="section.id === 'agent'" />
-          <LandingEnvCheck v-if="section.id === 'env'" />
-          <LandingGithubSync v-if="section.id === 'github'" />
-          <LandingTeams v-if="section.id === 'team'" />
-          <LandingConsole v-if="section.id === 'console'" />
+          <component :is="visualFor(section.id)" v-if="visualFor(section.id)" />
         </div>
       </UPageSection>
     </div>

@@ -37,7 +37,7 @@ sections:
         size: xs
         icon: lucide:key-round
         variant: ghost
-      - label: BYOK ready
+      - label: Tamper-evident
         size: xs
         icon: lucide:shield
         variant: ghost
@@ -69,7 +69,7 @@ sections:
         size: xs
         icon: lucide:code
         variant: ghost
-      - label: 90-day retention
+      - label: Append-only
         size: xs
         icon: lucide:archive
         variant: ghost
@@ -154,7 +154,7 @@ faq:
   items:
     - label: Is Shelve free?
       defaultOpen: true
-      content: Yes. Shelve is **open-source** and **free** to use, including every security feature on this page — envelope encryption, scoped tokens, audit logs, and agent-safe ignore files. No paywalled tier for the core experience.
+      content: Shelve is **open source** and free to self-host. The hosted instance at `app.shelve.cloud` is currently free to use, and every security feature on this page — envelope encryption, scoped tokens, audit logs, and agent-safe ignore files — ships in the open-source core.
     - label: How does Shelve encrypt my secrets?
       content: Shelve uses a two-tier **envelope encryption** scheme. Each variable is sealed with a per-project **Data Encryption Key (DEK)** using AES-256-GCM, and the DEK itself is sealed with a platform-wide **Key Encryption Key (KEK)**. A leaked DEK compromises one project, not the whole instance. Plaintext never lands in the database. Read the full model on the [Encryption page](/docs/core-features/encryption).
     - label: How are API tokens stored?
