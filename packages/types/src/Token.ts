@@ -14,6 +14,7 @@ export type Token = {
   name: string;
   prefix: string;
   scopes: TokenScopes;
+  allowedCidrs: string[];
   expiresAt: Date | null;
   lastUsedAt: Date | null;
   lastUsedIp: string | null;

@@ -123,25 +123,7 @@ useSeoMeta({
         <TokenToggle :prefix="row.original.prefix" />
       </template>
       <template #scopes-cell="{ row }">
-        <div class="flex flex-wrap gap-1">
-          <UBadge
-            v-for="permission in row.original.scopes.permissions"
-            :key="permission"
-            size="sm"
-            :color="permission === 'write' ? 'warning' : 'neutral'"
-            variant="subtle"
-          >
-            {{ permission }}
-          </UBadge>
-          <UBadge
-            v-if="row.original.scopes.teamIds?.length || row.original.scopes.projectIds?.length || row.original.scopes.environmentIds?.length"
-            size="sm"
-            color="info"
-            variant="subtle"
-          >
-            scoped
-          </UBadge>
-        </div>
+        <TokenScopes :token="row.original" />
       </template>
       <template #createdAt-cell="{ row }">
         <DatePopover :date="row.original.createdAt" label="Created At" />
@@ -173,7 +155,7 @@ useSeoMeta({
     </UTable>
 
     <template #actions>
-      <TokenCreate v-model:search="search" @create="fetchTokens" />
+      <TokenCreate @create="fetchTokens" />
       <UInput v-model="search" size="sm" placeholder="Search tokens" />
     </template>
   </PageSection>
