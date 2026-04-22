@@ -84,6 +84,7 @@ const filteredPosts = computed(() => {
           :key="index"
           :post
           :to="post.path"
+          :eager="index === 0"
         />
       </div>
       <div v-else class="flex h-64 flex-col items-center justify-center gap-2">

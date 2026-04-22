@@ -37,6 +37,7 @@ const updateBottomOpacity = () => {
 }
 
 onMounted(() => {
+  updateBottomOpacity()
   window.addEventListener('scroll', updateBottomOpacity)
 })
 
@@ -50,7 +51,7 @@ onUnmounted(() => {
     <template v-for="pos in ['top', 'bottom']" :key="pos">
       <div
         v-if="position === pos || position === 'both'"
-        :class="`fixed inset-x-0 ${positions[pos].class} isolate h-24`"
+        :class="`fixed inset-x-0 ${positions[pos].class} isolate z-40`"
         :style="{ height: `${size}px` }"
       >
         <div
@@ -62,9 +63,8 @@ onUnmounted(() => {
             opacity: pos === 'bottom' ? bottomOpacity : 1
           }"
           :class="[
-            'absolute inset-0',
+            'absolute inset-0 bg-black/3',
             positions[pos].gradient,
-            `blur-[${blur}px]`
           ]"
         />
       </div>

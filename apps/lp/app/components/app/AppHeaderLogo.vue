@@ -4,7 +4,8 @@ const { version } = useRuntimeConfig().public
 
 <template>
   <div class="flex items-center gap-2">
-    <Logo lp />
+    <Logo lp :text="false" />
+    <span class="max-sm:hidden font-semibold text-base text-highlighted">Shelve</span>
     <span v-if="version" class="text-xs font-mono text-muted">| v{{ version }}</span>
   </div>
 </template>

@@ -1,5 +1,4 @@
 import { defineCollection, defineContentConfig, z } from '@nuxt/content'
-import { defineDocusCollections } from 'docus/collections'
 
 const buttonSchema = z.object({
   label: z.string(),
@@ -55,7 +54,6 @@ const pageHeroSchema = z.object({
 
 export default defineContentConfig({
   collections: {
-    ...defineDocusCollections({ basePath: '/docs', contentDir: 'docs', landing: false }),
     blog: defineCollection({
       type: 'page',
       source: 'blog/**/*.md',

@@ -24,9 +24,7 @@ const breadcrumb = computed(() => mapContentNavigation(findPageBreadcrumb(naviga
   to: link.to
 })))
 
-if (page.value.image) {
-  defineOgImage({ url: page.value.image })
-} else {
+if (!page.value.image) {
   defineOgImageComponent('Docs', {
     headline: breadcrumb.value.map(item => item.label).join(' > ')
   }, {
@@ -43,7 +41,8 @@ useSeoMeta({
   titleTemplate,
   description,
   ogDescription: description,
-  ogTitle: titleTemplate.value?.includes('%s') ? titleTemplate.value.replace('%s', title) : title
+  ogTitle: titleTemplate.value?.includes('%s') ? titleTemplate.value.replace('%s', title) : title,
+  ogImage: page.value.image || undefined,
 })
 
 const editThisPage = computed(() => ({
@@ -78,7 +77,13 @@ const formatDate = (dateString: string) => {
       <NuxtImg
         :src="page.image"
         :alt="page.title"
-        class="rounded-lg w-full h-[250px] object-cover object-center"
+        loading="eager"
+        fetchpriority="high"
+        format="webp"
+        width="1200"
+        height="250"
+        sizes="100vw md:768px lg:896px"
+        class="rounded-lg w-full h-[250px] object-cover object-center bg-elevated"
       />
       <div class="flex text-xs text-muted items-center justify-center gap-2">
         <span>

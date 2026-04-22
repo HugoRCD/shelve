@@ -2,11 +2,21 @@ export default defineAppConfig({
   ui: {
     icons: {
       external: 'lucide:arrow-up-right',
+    },
+    contentToc: {
+      defaultVariants: {
+        highlightVariant: 'circuit',
+      }
     }
   },
-  socials: {
-    github: 'https://github.com/HugoRCD',
-    twitter: 'https://x.com/hugorcd',
+  seo: {
+    titleTemplate: '%s - Shelve',
+    title: 'Shelve',
+    description: 'Open-source secrets management for modern dev teams. Sync, share and audit your environment variables across projects, environments and teammates.',
+  },
+  github: {
+    url: 'https://github.com/hugorcd/shelve',
+    rootDir: 'apps/lp',
   },
   toc: {
     bottom: {
@@ -28,7 +38,7 @@ export default defineAppConfig({
           label: 'MCP Server',
           to: '/mcp/deeplink',
           external: true,
-        }
+        },
       ],
     },
   },

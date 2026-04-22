@@ -440,8 +440,8 @@ For questions about these Terms of Service:
 
 **Email**: [contact@shelve.cloud](mailto:contact@shelve.cloud)  
 **Subject Line**: "Terms of Service Inquiry"  
-**Website**: [https://shelve.cloud](https://shelve.cloud)  
-**Documentation**: [https://shelve.cloud/docs](https://shelve.cloud/docs)
+**Website**: [shelve.cloud](/)  
+**Documentation**: [shelve.cloud/docs](/docs)
 
 **Service Provider**: Hugo Richard  
 **Legal Jurisdiction**: France

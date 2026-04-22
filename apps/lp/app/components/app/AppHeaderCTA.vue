@@ -1,11 +1,6 @@
-<script setup lang="ts">
-defineShortcuts({
-  meta_g: () => {
-    window.open('https://github.com/hugorcd/shelve', '_blank')
-  },
-})
-</script>
-
 <template>
-  <CustomButton label="Get Started" size="xs" to="https://app.shelve.cloud" />
+  <CustomButton to="https://app.shelve.cloud/login" size="xs">
+    Open App
+    <UKbd value="S" />
+  </CustomButton>
 </template>

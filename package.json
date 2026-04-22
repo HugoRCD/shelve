@@ -47,8 +47,8 @@
       "esbuild",
       "vue-demi"
     ],
-    "patchedDependencies": {
-      "docus@5.5.1": "patches/docus@5.5.1.patch"
+    "overrides": {
+      "nuxt-og-image": "6.3.2"
     }
   },
   "packageManager": "pnpm@10.33.0",
