@@ -1,5 +1,27 @@
 # @shelve/app
 
+## 3.1.0
+
+### Minor Changes
+
+- [#739](https://github.com/HugoRCD/shelve/pull/739) [`1a0fd9d`](https://github.com/HugoRCD/shelve/commit/1a0fd9db936e6376d095b30ccd96e48f161fc1ba) Thanks [@HugoRCD](https://github.com/HugoRCD)! - Two related UI improvements around the v5 security surface.
+
+  **Tokens**
+
+  - Token creation now exposes the full scope surface that the backend already supports: restrict a token to specific **teams**, **projects**, and **environments** via cascading multi-select pickers, and add an **IP allowlist** (CIDR ranges) with inline validation.
+  - A clear "unscoped token" warning when no restriction is applied.
+  - The tokens table shows what each token is actually scoped to (teams / projects / envs / CIDRs counts) instead of a generic "scoped" badge.
+  - The popover form was replaced with a roomier modal so the new options have space to breathe. `Token.allowedCidrs` is now part of the public `Token` type.
+
+  **Audit logs**
+
+  - Color-coded action badges (create=success, delete=error, update / token._ = warning, auth._ = info) and resource icons (variable / environment / project / token / …).
+  - Actor badges include a matching icon (`user`, `key-round`, `cpu`).
+  - IP rendered as a monospace pill.
+  - The very long raw `User-Agent` string is parsed to a friendly client label (e.g. `Shelve CLI 5.0.0`, `Chrome 147 · macOS`, `Node.js`, `curl 8.6.0`) with the full UA available on hover.
+  - New per-row metadata popover (`{}` icon) showing the full JSON payload for that event, instead of having no way to inspect it.
+  - Empty state and centered "Load more" button.
+
 ## 3.0.1
 
 ### Patch Changes
