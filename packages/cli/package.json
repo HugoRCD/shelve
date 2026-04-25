@@ -41,16 +41,16 @@
     "vitest": "vitest run"
   },
   "dependencies": {
-    "@antfu/ni": "^30.0.0",
+    "@antfu/ni": "^30.1.0",
     "@clack/prompts": "^1.2.0",
-    "@napi-rs/keyring": "^1.1.7",
+    "@napi-rs/keyring": "^1.2.0",
     "c12": "3.3.4",
     "citty": "^0.2.2",
     "consola": "^3.4.2",
     "defu": "^6.1.7",
     "dotenv": "^17.4.2",
     "npm-registry-fetch": "19.1.1",
-    "nypm": "0.6.5",
+    "nypm": "0.6.6",
     "ofetch": "1.5.1",
     "pkg-types": "2.3.0",
     "rc9": "^3.0.1",
@@ -64,7 +64,7 @@
     "@types/npm-registry-fetch": "^8.0.9",
     "@types/semver": "^7.7.1",
     "unbuild": "^3.6.1",
-    "vitest": "^4.1.4"
+    "vitest": "^4.1.5"
   },
   "publishConfig": {
     "access": "public"

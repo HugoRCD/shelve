@@ -28,14 +28,14 @@
     "drizzle-kit": "^0.31.10",
     "drizzle-orm": "^0.45.2",
     "jsonwebtoken": "^9.0.3",
-    "libsodium-wrappers": "^0.8.3",
+    "libsodium-wrappers": "^0.8.4",
     "nuxt-auth-utils": "^0.5.29",
     "nuxt-build-cache": "^0.1.1",
     "postgres": "^3.4.9",
-    "resend": "^6.12.0",
-    "tailwindcss": "^4.2.2",
+    "resend": "^6.12.2",
+    "tailwindcss": "^4.2.4",
     "tweetnacl": "^1.0.3",
-    "vue-router": "^5.0.4"
+    "vue-router": "^5.0.6"
   },
   "devDependencies": {
     "@shelve/cli": "workspace:*",
@@ -43,6 +43,6 @@
     "@nuxt/test-utils": "^4.0.2",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/libsodium-wrappers": "^0.8.2",
-    "vitest": "^4.1.4"
+    "vitest": "^4.1.5"
   }
 }
