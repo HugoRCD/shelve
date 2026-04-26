@@ -8,15 +8,15 @@
     "lint": "eslint .",
     "lint:fix": "eslint --fix ."
   },
-  "packageManager": "pnpm@10.33.0",
+  "packageManager": "pnpm@10.33.2",
   "dependencies": {
     "@iconify-json/heroicons": "^1.2.3",
-    "@iconify-json/lucide": "^1.2.102",
-    "@iconify-json/simple-icons": "^1.2.78",
+    "@iconify-json/lucide": "^1.2.103",
+    "@iconify-json/simple-icons": "^1.2.79",
     "@nuxt/content": "3.13.0",
     "@nuxt/image": "^2.0.0",
     "@nuxt/scripts": "^0.13.4",
-    "@nuxt/ui": "^4.6.1",
+    "@nuxt/ui": "^4.7.0",
     "@nuxthub/core": "^0.10.7",
     "@vercel/analytics": "^2.0.1",
     "@vercel/speed-insights": "^2.0.0",
@@ -27,12 +27,12 @@
     "motion-plus-vue": "^1.8.1",
     "motion-v": "^2.2.1",
     "nuxt": "4.4.2",
-    "vue": "^3.5.32",
+    "vue": "^3.5.33",
     "vue-sonner": "^2.0.9",
     "zod": "^4.3.6",
     "@nuxtjs/mdc": "^0.21.1",
     "botid": "^1.5.11",
-    "shaders": "^2.5.102",
-    "tailwindcss": "^4.2.2"
+    "shaders": "^2.5.109",
+    "tailwindcss": "^4.2.4"
   }
 }

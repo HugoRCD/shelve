@@ -17,10 +17,10 @@
   "dependencies": {
     "@shelve/base": "workspace:*",
     "@upstash/redis": "^1.37.0",
-    "tailwindcss": "^4.2.2"
+    "tailwindcss": "^4.2.4"
   },
   "devDependencies": {
     "@nuxt/test-utils": "^4.0.2",
-    "vitest": "^4.1.4"
+    "vitest": "^4.1.5"
   }
 }
