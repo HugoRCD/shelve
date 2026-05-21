@@ -37,21 +37,7 @@
     "turbo": "^2.9.6",
     "typescript": "^5.9.3"
   },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "better-sqlite3",
-      "sharp"
-    ],
-    "ignoredBuiltDependencies": [
-      "@parcel/watcher",
-      "esbuild",
-      "vue-demi"
-    ],
-    "overrides": {
-      "nuxt-og-image": "6.4.8"
-    }
-  },
-  "packageManager": "pnpm@10.33.2",
+  "packageManager": "pnpm@11.1.3",
   "workspaces": [
     "packages/*",
     "apps/*"
