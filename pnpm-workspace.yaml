@@ -15,3 +15,16 @@ allowBuilds:
 
 overrides:
   nuxt-og-image: 6.4.8
+
+minimumReleaseAge: 2880
+
+minimumReleaseAgeExclude:
+  # Nuxt
+  - '@nuxt/*'
+  - '@nuxtjs/*'
+  - 'nuxt'
+  - 'nuxt-*'
+  # Vercel
+  - '@vercel/*'
+  - '@ai-sdk/*'
+  - 'ai'
