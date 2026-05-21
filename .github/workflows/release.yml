@@ -25,9 +25,7 @@ jobs:
           node-version: "22.22.2"
           registry-url: "https://registry.npmjs.org"
 
-      - uses: pnpm/action-setup@v2
-        with:
-          version: latest
+      - uses: pnpm/action-setup@v6
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
