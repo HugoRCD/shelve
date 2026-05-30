@@ -34,3 +34,61 @@ jobs:
 
       - name: Run tests
         run: pnpm run test
+
+  cli-playground:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v6
+        with:
+          run_install: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.15.0
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Playground — JSON config
+        run: pnpm play:json
+
+      - name: Playground — run start
+        run: pnpm play:start
+
+      - name: Playground — failing exit code
+        run: |
+          set +e
+          pnpm play:fail
+          code=$?
+          set -e
+          test "$code" -eq 1
+
+  lp-agent-skills:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v6
+        with:
+          run_install: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.15.0
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build landing (prerender skills)
+        run: pnpm build:lp
+
+      - name: Verify /.well-known/skills manifest
+        run: test -f apps/lp/.output/public/.well-known/skills/index.json

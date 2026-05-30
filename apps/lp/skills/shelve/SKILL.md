@@ -20,6 +20,8 @@ Install skill updates: `npx skills add https://shelve.cloud`
 
 ## Non-interactive setup
 
+Run **`shelve doctor --json`** first in automation to fail fast.
+
 Set these environment variables so the CLI never prompts:
 
 | Variable | Purpose |
@@ -62,7 +64,8 @@ shelve logout
 shelve push --env development --yes
 shelve pull --env development --yes   # dangerous in agent shells without --yes
 
-# Inspect config
+# Inspect / validate
+shelve doctor --json
 shelve --json config                # token shown as ***
 
 # Scaffold

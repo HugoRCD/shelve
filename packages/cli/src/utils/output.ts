@@ -63,6 +63,11 @@ export function cliOutro(message: string): void {
   outro(message)
 }
 
+export function cliJsonEvent(event: string, data?: Record<string, unknown>): void {
+  if (!isJson()) return
+  console.error(JSON.stringify({ ok: true, event, ...data }))
+}
+
 export function cliSuccess(data?: unknown, message?: string, command?: string): void {
   if (isJson()) {
     writeJsonSuccess(data, command || getCommandFromArgv())

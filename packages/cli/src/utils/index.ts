@@ -14,6 +14,7 @@ export * from './secret-refs'
 export * from './ignore-files'
 export * from './cli-context'
 export * from './output'
+export * from './error-codes'
 
 const s = spinner()
 

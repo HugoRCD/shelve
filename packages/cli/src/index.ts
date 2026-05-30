@@ -19,6 +19,8 @@ import logout from './commands/logout'
 import upgrade from './commands/upgrade'
 import run from './commands/run'
 import init from './commands/init'
+import doctor from './commands/doctor'
+import { formatErrorCodesHelp } from './utils/error-codes'
 
 initDebugFromArgv()
 initCliContextFromArgv()
@@ -42,7 +44,9 @@ function getCliPackageVersion(): string {
 const main = defineCommand({
   meta: {
     name: 'shelve',
-    description: 'Shelve CLI',
+    description: `Shelve CLI — manage team secrets from the terminal.
+
+${formatErrorCodesHelp()}`,
     version: getCliPackageVersion(),
   },
   args: GLOBAL_CLI_ARGS,
@@ -58,6 +62,7 @@ const main = defineCommand({
     logout,
     me,
     init,
+    doctor,
     create,
     config,
     generate,

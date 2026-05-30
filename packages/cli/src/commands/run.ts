@@ -11,6 +11,7 @@ import {
   cliError,
   cliInfo,
   cliIntro,
+  cliJsonEvent,
   cliWarn,
   handleCancel,
   loadShelveConfig,
@@ -156,6 +157,14 @@ export default defineCommand({
     const secretEnv = buildEnv(variables, template, envName)
 
     let child = await spawnChild(argv, secretEnv)
+
+    cliJsonEvent('child_spawned', {
+      env: envName,
+      variableCount: variables.length,
+      keys: variables.map(v => v.key),
+      command: argv.join(' '),
+      pid: child.pid,
+    })
 
     watchParentLiveness((sig) => {
       debugLog(`Parent process gone — tearing down child tree`)

@@ -14,7 +14,8 @@ Catalog: `https://shelve.cloud/.well-known/skills/index.json`
 
 ## Recommended workflow
 
-1. Set credentials and project context with environment variables (no prompts):
+1. Run **`shelve doctor --json`** to validate config, auth, API, and cache.
+2. Set credentials and project context with environment variables (no prompts):
    - `SHELVE_TOKEN`
    - `SHELVE_TEAM_SLUG`
    - `SHELVE_PROJECT`
@@ -58,6 +59,7 @@ Auto non-interactive when:
 
 | Command | `data` shape |
 |---------|----------------|
+| `doctor` | `{ healthy, checks[], exitCodes, errorCodes }` |
 | `config` | merged config, token redacted as `***` |
 | `me` | `{ loggedIn, username?, email? }` |
 | `push` / `pull` | `{ env, variableCount, pushed?, file?, keys? }` — never includes values |
@@ -68,7 +70,7 @@ Auto non-interactive when:
 | `generate` | `{ type, path }` |
 | `upgrade` | `{ previous, current, updated }` |
 
-`run` keeps the child process stdio inherited; only startup errors are structured.
+`run` keeps the child process stdio inherited. Startup errors are structured on stderr; with `--json`, a spawn event is also emitted on stderr: `{ ok: true, event: "child_spawned", env, variableCount, keys, command, pid }`.
 
 ## Exit codes
 
