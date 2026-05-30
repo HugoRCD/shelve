@@ -159,14 +159,20 @@ export default defineCommand({
           restartOnChange: runArgs.restartOnChange === true,
           getChild: () => child,
           spawnNew: async (env) => {
+            const old = child as ChildWithFlag
+            old.__restarting = true
             child = await spawnChild(argv, env)
             return child
           },
         })
       }
     }
+
+    await new Promise<never>(() => {})
   },
 })
+
+type ChildWithFlag = ChildProcess & { __restarting?: boolean }
 
 function loadTemplateOrExit(path: string): ParsedTemplate {
   const tpl = loadTemplate(path)
@@ -307,6 +313,7 @@ function attachLifecycle(child: ChildProcess, isWindows: boolean): void {
 
   child.on('exit', (code, signal) => {
     if (killTimer) clearTimeout(killTimer)
+    if ((child as ChildWithFlag).__restarting) return
     const elapsed = Date.now() - spawnedAt
     if (!shuttingDown && code === 0 && elapsed < QUICK_EXIT_THRESHOLD_MS) {
       consola.warn(

@@ -1,11 +1,16 @@
 #!/usr/bin/env node
 const keepAlive = process.argv.includes('--keep-alive')
 
+const SHOW = process.env.PLAYGROUND_SHOW_ENV_PATTERN
+  ? new RegExp(process.env.PLAYGROUND_SHOW_ENV_PATTERN)
+  : /^(SHELVE_|PLAYGROUND_|API_|DATABASE_|STRIPE_|FRESH_|HELLO|FOO|BAR|BAZ|NEW_)/
 const interesting = Object.entries(process.env)
-  .filter(([key]) => key.startsWith('SHELVE_') || key.startsWith('PLAYGROUND_') || /^(API_|DATABASE_|STRIPE_|HELLO|FOO|BAR|BAZ)/.test(key))
+  .filter(([key]) => SHOW.test(key))
   .sort(([a], [b]) => a.localeCompare(b))
 
-console.log('--- shelve playground/run ---')
+const ts = new Date().toISOString().replace('T', ' ').slice(0, 19)
+
+console.log(`──────── shelve playground/run @ ${ts} ────────`)
 console.log(`pid:       ${process.pid}`)
 console.log(`cwd:       ${process.cwd()}`)
 console.log(`argv:      ${JSON.stringify(process.argv.slice(2))}`)
@@ -15,12 +20,22 @@ for (const [key, value] of interesting) {
   const masked = value && value.length > 6 ? `${value.slice(0, 2)}…${value.slice(-2)} (${value.length} chars)` : value
   console.log(`  ${key} = ${masked}`)
 }
-console.log('---')
+console.log('──────────────────────────────────────────────────')
 
 if (!keepAlive) process.exit(0)
 
-console.log('keep-alive mode — Ctrl-C to stop. SIGHUP also handled.')
-process.on('SIGHUP', () => console.log('[playground] received SIGHUP'))
-process.on('SIGINT', () => { console.log('[playground] received SIGINT'); process.exit(130) })
-process.on('SIGTERM', () => { console.log('[playground] received SIGTERM'); process.exit(143) })
+console.log('keep-alive — Ctrl-C to stop. SIGHUP re-prints the env without restarting.')
+
+function rePrint(why) {
+  const now = new Date().toISOString().replace('T', ' ').slice(0, 19)
+  console.log(`\n[${now}] ${why} — current env:`)
+  for (const [key, value] of interesting) {
+    const masked = value && value.length > 6 ? `${value.slice(0, 2)}…${value.slice(-2)} (${value.length} chars)` : value
+    console.log(`  ${key} = ${masked}`)
+  }
+}
+
+process.on('SIGHUP', () => rePrint('SIGHUP'))
+process.on('SIGINT', () => { console.log(`[${new Date().toISOString().slice(11, 19)}] SIGINT — bye`); process.exit(130) })
+process.on('SIGTERM', () => { console.log(`[${new Date().toISOString().slice(11, 19)}] SIGTERM — bye`); process.exit(143) })
 setInterval(() => {}, 1 << 30)

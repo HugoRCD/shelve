@@ -10,4 +10,9 @@ Add a self-contained `playground/run/` fixture and root `pnpm play` scripts so t
 - Two admin endpoints (`POST /__playground/variables`, `POST /__playground/reset`) let you trigger watch-mode reloads from another terminal with a single curl.
 - Not part of the pnpm workspace — `pnpm install` ignores it, no host-project lockfile drift can swallow output.
 
-Also surfaces a clearer signal when `shelve run <script>` exits suspiciously fast (code 0, < 250ms): the CLI now prints a warning pointing at `--debug` and `shelve run -- <pm> <script>` to bypass script resolution. Script-resolution errors are debug-logged instead of being swallowed.
+Also fixes two long-standing `shelve run` bugs that the playground surfaced:
+
+- **`shelve run` exited as soon as it had spawned the child, orphaning it.** `runMain(main).then(() => process.exit(0))` in `index.ts` resolved as soon as the `run` command function returned (right after spawn), killing the CLI before the child had done anything. With `stdio: 'inherit'` the orphaned child kept writing to the terminal so things *looked* fine, but signal forwarding, watch mode, exit-code propagation were all broken. Fix: the `run` command now awaits a never-resolving promise; `attachLifecycle`'s `child.on('exit')` is now the only path to `process.exit`, so the CLI lives exactly as long as its child.
+- **`--watch --restart-on-change` killed the CLI on the first reload.** Killing the old child fired `child.on('exit')` which called `process.exit(143)` before the new child could spawn. Fix: mark the outgoing child with an `__restarting` flag so its exit handler becomes a no-op while watch is swapping in a replacement.
+
+And a clearer signal when `shelve run <script>` exits suspiciously fast (code 0, < 250ms): the CLI prints a warning pointing at `--debug` and `shelve run -- <pm> <script>` to bypass script resolution. Script-resolution errors are debug-logged instead of being swallowed.

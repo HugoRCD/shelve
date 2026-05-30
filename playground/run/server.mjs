@@ -137,10 +137,15 @@ server.listen(PORT, HOST, () => {
   console.log(`[playground-api] envs:   ${seed.environments.map((e) => e.name).join(', ')}`)
 })
 
+let shuttingDown = false
 const shutdown = (sig) => {
+  if (shuttingDown) return
+  shuttingDown = true
   console.log(`[playground-api] ${sig} — shutting down`)
+  server.closeAllConnections?.()
   server.close(() => process.exit(0))
-  setTimeout(() => process.exit(0), 500).unref()
+  setTimeout(() => process.exit(0), 200).unref()
 }
 process.on('SIGINT', () => shutdown('SIGINT'))
 process.on('SIGTERM', () => shutdown('SIGTERM'))
+process.on('SIGHUP', () => shutdown('SIGHUP'))

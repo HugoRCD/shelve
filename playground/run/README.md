@@ -67,15 +67,24 @@ Useful for exercising `--watch`:
 curl -s -X POST http://127.0.0.1:7777/__playground/variables \
   -H 'content-type: application/json' \
   -d '{"env":"development","variables":[{"key":"HELLO","value":"changed"}]}'
-# CLI should print "Variables changed — reloading child process." within ~5s
+# Within ~5s the CLI logs "Variables changed — reloading child process.",
+# kills the running child, respawns it with the new env, and print-env.mjs
+# prints a fresh banner with the updated HELLO value.
 ```
+
+`pnpm play:watch` runs `shelve run dev --watch --restart-on-change` (full respawn so new env vars are actually visible to the child). Plain `--watch` alone only sends SIGHUP and the existing process keeps its old `process.env` — useful for daemons that re-read env on SIGHUP, but not what you want for fast iteration.
 
 ## Customizing
 
 - Add / change variables in `seed.json` → re-run.
 - Change the port: `PLAYGROUND_PORT=8888 pnpm play`.
 - Verbose API logs: `PLAYGROUND_VERBOSE=1 pnpm play:server`.
+- Show extra env vars in `print-env.mjs`: `PLAYGROUND_SHOW_ENV_PATTERN='^MY_|HELLO|API_' pnpm play`.
 - Test against the **real** Shelve cloud: just run the CLI normally (`pnpm cli run dev …`) — the playground is opt-in.
+
+## Harmless noise
+
+You'll see `[WARN] Local package.json exists, but node_modules missing, did you mean to install?` once per spawn. That's `pnpm run` complaining because `playground/run/` has a `package.json` but no `node_modules` — intentional, since the playground has zero deps. Safe to ignore.
 
 ## Why this exists
 
