@@ -13,6 +13,6 @@ export default defineCommand({
       cliSuccess(config, undefined, 'config')
       return
     }
-    console.log(config)
+    console.log(JSON.stringify(config, null, 2))
   },
 })

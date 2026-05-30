@@ -1,5 +1,5 @@
 import { defineCommand } from 'citty'
-import { getEslintConfig, cliCancel, cliIntro, cliSuccess, handleCancel } from '../utils'
+import { getEslintConfig, cliIntro, cliSuccess, handleCancel } from '../utils'
 import { EnvService } from '../services'
 import { CliError } from '../services/api-error'
 import { isNonInteractive } from '../utils/cli-context'
@@ -77,7 +77,5 @@ async function runGenerate(internal: 'example' | 'eslint', publicType?: string):
       cliSuccess({ type: publicType || 'eslint', path }, 'Done', 'generate')
       break
     }
-    default:
-      cliCancel('Invalid option')
   }
 }

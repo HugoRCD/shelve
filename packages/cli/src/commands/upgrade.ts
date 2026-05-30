@@ -18,8 +18,8 @@ export default defineCommand({
         return
       }
 
-      await installLatest()
-      cliSuccess({ previous: version, current: 'latest', updated: true }, 'Shelve CLI has been successfully updated', 'upgrade')
+      const latestVersion = await installLatest()
+      cliSuccess({ previous: version, current: latestVersion, updated: true }, 'Shelve CLI has been successfully updated', 'upgrade')
     } catch (error) {
       throw toCliError(error, 'UPGRADE_FAILED')
     }

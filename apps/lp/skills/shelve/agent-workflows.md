@@ -12,7 +12,7 @@ shelve run -- pnpm test
 shelve run -- pnpm dev
 ```
 
-Do **not** run `shelve pull` unless the user explicitly needs a on-disk `.env` file.
+Do **not** run `shelve pull` unless the user explicitly needs an on-disk `.env` file.
 
 ## GitHub Actions
 

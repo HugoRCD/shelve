@@ -15,9 +15,13 @@ export default defineCommand({
       return
     }
 
+    const displayParts: string[] = []
+    if (config.username) displayParts.push(config.username)
+    if (config.email) displayParts.push(`<${config.email}>`)
+
     cliSuccess(
       { loggedIn: true, username: config.username, email: config.email },
-      `You are logged in as ${config.username} <${config.email}>`,
+      displayParts.length ? `You are logged in as ${displayParts.join(' ')}` : 'You are logged in',
       'me',
     )
   },

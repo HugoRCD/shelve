@@ -1,6 +1,8 @@
 import { defineCommand } from 'citty'
 import { loadShelveConfig, shouldSkipConfirm } from '../utils'
+import { isNonInteractive } from '../utils/cli-context'
 import { cliIntro, cliSuccess } from '../utils/output'
+import { CliError } from '../services/api-error'
 import { EnvService, ProjectService, EnvironmentService } from '../services'
 
 export default defineCommand({
@@ -30,8 +32,16 @@ export default defineCommand({
       defaultEnv,
     } = await loadShelveConfig(true)
 
-    const skipConfirm = args.yes || shouldSkipConfirm()
-    const effectiveConfirmChanges = skipConfirm ? false : confirmChanges
+    const confirmed = args.yes || shouldSkipConfirm()
+    if (confirmChanges && !confirmed && isNonInteractive()) {
+      throw new CliError(
+        'Push confirmation is required.',
+        'CONFIRMATION_REQUIRED',
+        undefined,
+        'Pass --yes to confirm pushing variables in non-interactive mode.',
+      )
+    }
+    const effectiveConfirmChanges = confirmed ? false : confirmChanges
 
     cliIntro(`Pushing variable to ${project} project`)
 

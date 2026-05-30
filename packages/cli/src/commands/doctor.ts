@@ -103,7 +103,6 @@ export default defineCommand({
       await pushApiChecks(config, envName, checks)
     }
 
-    pushAgentChecks(checks)
     finishDoctor(checks)
   },
 })
@@ -241,6 +240,8 @@ function pushAgentChecks(checks: DoctorCheck[]): void {
 }
 
 function finishDoctor(checks: DoctorCheck[]): never | void {
+  pushAgentChecks(checks)
+
   const healthy = !checks.some(c => c.status === 'error')
   const warnCount = checks.filter(c => c.status === 'warn').length
 
@@ -254,7 +255,11 @@ function finishDoctor(checks: DoctorCheck[]): never | void {
   }
 
   if (isJson()) {
-    cliSuccess(data, undefined, 'doctor')
+    if (healthy) {
+      cliSuccess(data, undefined, 'doctor')
+    } else {
+      console.error(JSON.stringify({ ok: false, command: 'doctor', data }))
+    }
   } else {
     for (const check of checks) {
       if (check.status === 'ok') cliSuccessLog(`✓ ${check.message}`)

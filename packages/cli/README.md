@@ -56,7 +56,7 @@ See [CLI agents & automation](https://shelve.cloud/docs/cli/agents-automation) o
 ```bash
 Shelve CLI (shelve v5)
 
-USAGE shelve run|push|pull|login|logout|me|init|create|config|generate|upgrade
+USAGE shelve run|push|pull|login|logout|me|init|create|config|generate|upgrade|doctor
 
 COMMANDS
 
@@ -67,6 +67,7 @@ COMMANDS
     logout    Logout from Shelve locally
         me    Show the currently logged-in user
       init    Add agent ignore files and shelve-managed .gitignore block
+    doctor    Validate CLI setup (config, auth, API, cache)
     create    Create a new project and its config
     config    Show the current configuration
   generate    Generate resources for a project

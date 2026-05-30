@@ -44,10 +44,10 @@ export function writeJsonError(error: CliErrorInput): void {
 }
 
 export function cliError(input: CliErrorInput): never {
-  const message = input.hint ? `${input.message} ${input.hint}` : input.message
   if (isJson()) {
-    writeJsonError({ ...input, message })
+    writeJsonError(input)
   } else {
+    const message = input.hint ? `${input.message} ${input.hint}` : input.message
     console.error(message)
   }
   process.exit(1)
@@ -137,7 +137,7 @@ export async function withSpinner<T>(
       s.stop(message)
       throw error
     }
-    s.cancel(formatCliError(error, message))
+    s.cancel()
     handleThrownError(error, message)
   }
 }

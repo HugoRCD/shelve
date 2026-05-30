@@ -21,10 +21,10 @@ Catalog: `https://shelve.cloud/.well-known/skills/index.json`
    - `SHELVE_PROJECT`
    - `SHELVE_DEFAULT_ENV` (optional)
    - `SHELVE_URL` (optional, defaults to `https://app.shelve.cloud`)
-2. Run **`shelve init`** once per workspace (writes agent ignore files).
-3. Prefer **`shelve run -- <cmd>`** so secrets stay in memory — avoid **`shelve pull`** in agent shells.
-4. Use **`--json`** when you need machine-readable output.
-5. Use **`--non-interactive`** (or rely on agent/CI auto-detection) so missing flags fail fast instead of hanging on prompts.
+3. Run **`shelve init`** once per workspace (writes agent ignore files).
+4. Prefer **`shelve run -- <cmd>`** so secrets stay in memory — avoid **`shelve pull`** in agent shells.
+5. Use **`--json`** when you need machine-readable output.
+6. Use **`--non-interactive`** (or rely on agent/CI auto-detection) so missing flags fail fast instead of hanging on prompts.
 
 ## Global flags
 

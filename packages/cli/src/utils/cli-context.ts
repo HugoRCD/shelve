@@ -86,6 +86,7 @@ export function isNonInteractiveExplicit(): boolean {
 
 export function getCommandFromArgv(argv: string[] = process.argv): string | undefined {
   for (const arg of argv.slice(2)) {
+    if (arg === '--') break
     if (GLOBAL_FLAG_NAMES.has(arg)) continue
     if (arg.startsWith('-')) continue
     return arg
@@ -94,5 +95,17 @@ export function getCommandFromArgv(argv: string[] = process.argv): string | unde
 }
 
 export function stripGlobalFlags(argv: string[]): string[] {
-  return argv.filter(arg => !GLOBAL_FLAG_NAMES.has(arg))
+  const result: string[] = []
+  for (let i = 0; i < argv.length; i++) {
+    const arg = argv[i]
+    if (arg === undefined) continue
+    if (arg === '--') {
+      result.push(...argv.slice(i))
+      break
+    }
+    if (!GLOBAL_FLAG_NAMES.has(arg)) {
+      result.push(arg)
+    }
+  }
+  return result
 }

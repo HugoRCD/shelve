@@ -30,7 +30,7 @@ jobs:
 | `project` | yes | — | Project name |
 | `env` | no | `''` | Environment (or set repo variable `SHELVE_DEFAULT_ENV`) |
 | `url` | no | `https://app.shelve.cloud` | Shelve instance URL |
-| `cli-version` | no | `latest` | `@shelve/cli` npm version |
+| `cli-version` | no | `5` | `@shelve/cli` npm version (major pin) |
 
 ## Notes
 

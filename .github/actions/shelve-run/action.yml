@@ -22,9 +22,9 @@ inputs:
     required: false
     default: 'https://app.shelve.cloud'
   cli-version:
-    description: npm version of @shelve/cli to run (default latest)
+    description: npm version of @shelve/cli to run (default major 5)
     required: false
-    default: 'latest'
+    default: '5'
 runs:
   using: composite
   steps:

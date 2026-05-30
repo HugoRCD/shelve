@@ -26,18 +26,21 @@ export function capitalize(str: string): string {
   return str.charAt(0).toUpperCase() + str.slice(1)
 }
 
-export async function isLatestVersion(): Promise<boolean> {
-  if (!isQuiet() && !isJson()) s.start('Checking for updates')
-
+async function fetchLatestCliVersion(): Promise<string> {
   const packageInfo = await npmFetch.json('/@shelve/cli') as {
     'dist-tags': {
       latest: string
     }
   }
+  return packageInfo['dist-tags'].latest
+}
+
+export async function isLatestVersion(): Promise<boolean> {
+  if (!isQuiet() && !isJson()) s.start('Checking for updates')
+
+  const latestVersion = await fetchLatestCliVersion()
 
   if (!isQuiet() && !isJson()) s.stop('Checking for updates')
-
-  const latestVersion = packageInfo['dist-tags'].latest
   const isUpdated = semver.gte(version, latestVersion)
 
   if (!isUpdated && !isQuiet() && !isJson())
@@ -46,10 +49,12 @@ export async function isLatestVersion(): Promise<boolean> {
   return isUpdated
 }
 
-export async function installLatest(): Promise<void> {
+export async function installLatest(): Promise<string> {
+  const latestVersion = await fetchLatestCliVersion()
   if (!isQuiet() && !isJson()) s.start('Updating Shelve CLI')
   await addDependency('@shelve/cli@latest', {
     silent: true,
   })
   if (!isQuiet() && !isJson()) s.stop('Updating Shelve CLI')
+  return latestVersion
 }

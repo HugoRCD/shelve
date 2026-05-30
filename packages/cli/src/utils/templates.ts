@@ -21,6 +21,9 @@ export async function getEslintConfig(): Promise<string> {
 
   try {
     const response = await fetch(templates.eslint)
+    if (!response.ok) {
+      throw new Error(`Failed to fetch ESLint config: ${response.status} ${response.statusText}`)
+    }
     const text = await response.text()
 
     FileService.write(path, text)
@@ -30,10 +33,10 @@ export async function getEslintConfig(): Promise<string> {
       note('ESLint config has been generated', 'ESLint config')
     }
 
-    const shouldInstall = shouldSkipConfirm()
+    const shouldInstall = isNonInteractive()
       ? false
-      : isNonInteractive()
-        ? false
+      : shouldSkipConfirm()
+        ? true
         : await askBoolean('Do you want to install ESLint and @hrcd/eslint-config?')
 
     if (shouldInstall) {

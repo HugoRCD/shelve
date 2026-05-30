@@ -13,8 +13,10 @@ const ORIGINAL_AI_AGENT = process.env.AI_AGENT
 const ORIGINAL_CI = process.env.CI
 
 afterEach(() => {
-  process.env.AI_AGENT = ORIGINAL_AI_AGENT
-  process.env.CI = ORIGINAL_CI
+  if (ORIGINAL_AI_AGENT === undefined) delete process.env.AI_AGENT
+  else process.env.AI_AGENT = ORIGINAL_AI_AGENT
+  if (ORIGINAL_CI === undefined) delete process.env.CI
+  else process.env.CI = ORIGINAL_CI
   initCliContextFromArgv(['node', 'shelve'])
 })
 
@@ -50,5 +52,15 @@ describe('getCommandFromArgv', () => {
 describe('stripGlobalFlags', () => {
   it('removes known global flags', () => {
     expect(stripGlobalFlags(['shelve', '--json', 'config', '--quiet'])).toEqual(['shelve', 'config'])
+  })
+
+  it('preserves args after --', () => {
+    expect(stripGlobalFlags(['shelve', '--json', 'run', '--', '--watch', 'dev'])).toEqual(['shelve', 'run', '--', '--watch', 'dev'])
+  })
+})
+
+describe('getCommandFromArgv with -- separator', () => {
+  it('ignores args after --', () => {
+    expect(getCommandFromArgv(['node', 'shelve', 'run', '--', '--json', 'config'])).toBe('run')
   })
 })
