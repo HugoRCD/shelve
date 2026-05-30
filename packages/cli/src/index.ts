@@ -5,6 +5,7 @@ import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { defineCommand, runMain } from 'citty'
 import consola from 'consola'
+import { initDebugFromArgv, setDebug } from './constants'
 import push from './commands/push'
 import pull from './commands/pull'
 import config from './commands/config'
@@ -16,6 +17,8 @@ import logout from './commands/logout'
 import upgrade from './commands/upgrade'
 import run from './commands/run'
 import init from './commands/init'
+
+initDebugFromArgv()
 
 function getCliPackageVersion(): string {
   try {
@@ -32,6 +35,16 @@ const main = defineCommand({
     name: 'shelve',
     description: 'Shelve CLI',
     version: getCliPackageVersion(),
+  },
+  args: {
+    debug: {
+      type: 'boolean',
+      description: 'Enable verbose debug logging (or set SHELVE_DEBUG=1)',
+      default: false,
+    },
+  },
+  setup({ args }) {
+    if (args.debug) setDebug(true)
   },
   subCommands: {
     run,

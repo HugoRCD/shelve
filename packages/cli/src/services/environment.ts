@@ -6,7 +6,7 @@ import { BaseService } from './base'
 export class EnvironmentService extends BaseService {
 
   static async promptEnvironment(slug: string): Promise<Environment> {
-    const environments = await this.withLoading('Fetching environments', async () => {
+    const environments = await this.withLoading('Fetch environments', async () => {
       return await this.request<Environment[]>(`/teams/${slug}/environments`)
     })
 
@@ -25,7 +25,7 @@ export class EnvironmentService extends BaseService {
 
   static async getEnvironment(slug: string, name?: string): Promise<Environment> {
     if (name) {
-      return await this.withLoading('Fetching environment', async () => {
+      return await this.withLoading(`Fetch environment ${name}`, async () => {
         return await this.request<Environment>(`/teams/${ slug }/environments/${ name }`)
       })
     }

@@ -3,8 +3,7 @@ import { mkdirSync, readFileSync, renameSync, writeFileSync, statSync, chmodSync
 import { homedir } from 'node:os'
 import { join } from 'node:path'
 import type { EnvVarExport } from '@types'
-import consola from 'consola'
-import { DEBUG } from '../constants'
+import { isDebug, debugLog } from '../constants'
 
 const CACHE_DIR = join(homedir(), '.shelve', 'cache')
 const CACHE_VERSION = 1
@@ -37,7 +36,7 @@ function chmod600(path: string): void {
   try {
     chmodSync(path, 0o600)
   } catch (err) {
-    if (DEBUG) consola.warn(`Failed to chmod 600 ${path}: ${err}`)
+    if (isDebug()) debugLog(`Failed to chmod 600 ${path}`, err)
   }
 }
 
@@ -79,7 +78,7 @@ export class CacheService {
       renameSync(tmp, file)
       chmod600(file)
     } catch (err) {
-      if (DEBUG) consola.warn(`Failed to write cache: ${err}`)
+      if (isDebug()) debugLog('Failed to write cache', err)
     }
   }
 
@@ -111,7 +110,7 @@ export class CacheService {
       if (payload.v !== CACHE_VERSION) return null
       return payload.variables
     } catch (err) {
-      if (DEBUG) consola.warn(`Cache read failed (will refetch): ${err}`)
+      if (isDebug()) debugLog('Cache read failed (will refetch)', err)
       return null
     }
   }

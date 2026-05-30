@@ -6,6 +6,8 @@ import { defineCommand } from 'citty'
 import { intro, log } from '@clack/prompts'
 import type { EnvVarExport, Project, Environment } from '@types'
 import consola from 'consola'
+import { readPackageJSON } from 'pkg-types'
+import { runScript } from 'nypm'
 import {
   handleCancel,
   loadShelveConfig,
@@ -21,7 +23,7 @@ import {
   ProjectService,
   type CacheKeyInput,
 } from '../services'
-import { DEBUG } from '../constants'
+import { debugLog } from '../constants'
 
 const DEFAULT_CACHE_TTL_MS = 24 * 60 * 60 * 1000
 const WATCH_POLL_MS = 5_000
@@ -124,9 +126,13 @@ export default defineCommand({
         })
         if (!noCache && token) CacheService.write(cacheInput(envName), token, variables)
       } catch (err) {
-        if (noCache) throw err
+        if (noCache) {
+          process.exit(1)
+        }
         const cached = token ? CacheService.read(cacheInput(envName), token, cacheTtl) : null
-        if (!cached) throw err
+        if (!cached) {
+          process.exit(1)
+        }
         log.warn('Failed to fetch from Shelve; falling back to encrypted cache.')
         variables = cached
       }
@@ -134,7 +140,7 @@ export default defineCommand({
 
     const secretEnv = buildEnv(variables, template, envName)
 
-    let child = spawnChild(argv, secretEnv)
+    let child = await spawnChild(argv, secretEnv)
 
     if (runArgs.watch) {
       if (!projectData || !environment) {
@@ -152,8 +158,8 @@ export default defineCommand({
           template,
           restartOnChange: runArgs.restartOnChange === true,
           getChild: () => child,
-          spawnNew: (env) => {
-            child = spawnChild(argv, env)
+          spawnNew: async (env) => {
+            child = await spawnChild(argv, env)
             return child
           },
         })
@@ -219,8 +225,25 @@ function resolveCommand(argv: string[]): { bin: string; argv: string[] } {
   return { bin: argv[0]!, argv: argv.slice(1) }
 }
 
-function spawnChild(rawArgv: string[], env: NodeJS.ProcessEnv): ChildProcess {
-  const { bin, argv } = resolveCommand(rawArgv)
+async function resolveCommandWithScripts(argv: string[]): Promise<{ bin: string; argv: string[] }> {
+  if (argv.length === 1 && !argv[0]!.includes('/') && !argv[0]!.includes(' ')) {
+    const script = argv[0]!
+    const pkg = await readPackageJSON().catch(() => null)
+    if (pkg?.scripts?.[script]) {
+      const result = await runScript(script, { cwd: process.cwd(), dry: true })
+      if (result.exec) {
+        debugLog(`Resolved script "${script}" → ${result.exec.command} ${result.exec.args.join(' ')}`)
+        return { bin: result.exec.command, argv: result.exec.args }
+      }
+    }
+  }
+
+  return resolveCommand(argv)
+}
+
+async function spawnChild(rawArgv: string[], env: NodeJS.ProcessEnv): Promise<ChildProcess> {
+  const { bin, argv } = await resolveCommandWithScripts(rawArgv)
+  debugLog(`Spawning: ${bin} ${argv.join(' ')}`)
   const isWindows = process.platform === 'win32'
 
   const child = spawn(bin, argv, {
@@ -231,7 +254,10 @@ function spawnChild(rawArgv: string[], env: NodeJS.ProcessEnv): ChildProcess {
   })
 
   if (typeof child.pid !== 'number') {
-    consola.error('Failed to start child process')
+    const hint = rawArgv.length === 1
+      ? `Try \`shelve run -- pnpm ${rawArgv[0]}\` or ensure the command is on your PATH.`
+      : `Try \`shelve run -- ${rawArgv.join(' ')}\`.`
+    consola.error(`Failed to start child process "${bin}". ${hint}`)
     process.exit(1)
   }
 
@@ -241,14 +267,14 @@ function spawnChild(rawArgv: string[], env: NodeJS.ProcessEnv): ChildProcess {
 
 function attachLifecycle(child: ChildProcess, isWindows: boolean): void {
   let shuttingDown = false
-  let killTimer: NodeJS.Timeout | null = null
+  let killTimer: ReturnType<typeof setTimeout> | null = null
 
   const killGroup = (signal: NodeJS.Signals): void => {
     try {
       if (isWindows) child.kill(signal)
       else if (typeof child.pid === 'number') process.kill(-child.pid, signal)
     } catch (err) {
-      if (DEBUG) consola.warn(`kill(${signal}) failed: ${err}`)
+      debugLog(`kill(${signal}) failed`, err)
     }
   }
 
@@ -258,7 +284,7 @@ function attachLifecycle(child: ChildProcess, isWindows: boolean): void {
       process.exit(130)
     }
     shuttingDown = true
-    if (DEBUG) consola.info(`Received ${signal}, forwarding to child...`)
+    debugLog(`Received ${signal}, forwarding to child`)
     killGroup(signal)
     killTimer = setTimeout(() => {
       consola.warn('Child did not exit after 5s, sending SIGKILL')
@@ -298,7 +324,7 @@ type WatchOpts = {
   template: ParsedTemplate | null
   restartOnChange: boolean
   getChild: () => ChildProcess
-  spawnNew: (env: NodeJS.ProcessEnv) => ChildProcess
+  spawnNew: (env: NodeJS.ProcessEnv) => ChildProcess | Promise<ChildProcess>
 }
 
 function fingerprint(variables: EnvVarExport[]): string {
@@ -337,20 +363,20 @@ function startWatch(opts: WatchOpts): void {
           } else {
             child.kill('SIGTERM')
           }
-          opts.spawnNew(env)
+          await opts.spawnNew(env)
         } else {
           const child = opts.getChild()
           try {
             if (child.pid && process.platform !== 'win32') process.kill(-child.pid, 'SIGHUP')
             else child.kill('SIGHUP')
           } catch (err) {
-            if (DEBUG) consola.warn(`Failed to send SIGHUP: ${err}`)
+            debugLog('Failed to send SIGHUP', err)
           }
         }
       }
       lastPrint = fp
     } catch (err) {
-      if (DEBUG) consola.warn(`Watch poll failed: ${err}`)
+      debugLog('Watch poll failed', err)
     } finally {
       inFlight = false
     }
