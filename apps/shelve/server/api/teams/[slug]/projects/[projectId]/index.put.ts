@@ -1,5 +1,8 @@
 import { z } from 'zod'
 import { TeamRole } from '@types'
+import { shelveSyncConfigSchema } from '~/utils/zod/sync-policy'
+
+const syncPolicySchema = shelveSyncConfigSchema.nullable().optional()
 
 const updateProjectSchema = z.object({
   name: z.string().min(1).max(255).trim(),
@@ -9,6 +12,7 @@ const updateProjectSchema = z.object({
   variablePrefix: z.string().trim().optional(),
   repository: z.string().trim().optional(),
   logo: z.string().trim().optional(),
+  syncPolicy: syncPolicySchema,
 })
 
 const projectIdParamsSchema = z.object({

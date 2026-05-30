@@ -10,7 +10,7 @@ Use this guide when driving `@shelve/cli` from scripts, CI, or AI agents inside 
 npx skills add https://shelve.cloud
 ```
 
-Catalog: `https://shelve.cloud/.well-known/skills/index.json`
+Catalog: `https://shelve.cloud/.well-known/skills/index.json` (single skill: `shelve` — CLI + platform)
 
 ## Recommended workflow
 
@@ -101,4 +101,4 @@ See [`playground/run/README.md`](../../playground/run/README.md).
 
 ## Skill source in this repo
 
-The published skill lives at [`apps/lp/skills/shelve/`](../../apps/lp/skills/shelve/) and is served by Docus at build time.
+The published skill lives at [`apps/lp/skills/shelve/`](../../apps/lp/skills/shelve/) (`SKILL.md` + reference files) and is served by Docus at build time. There is only one skill (`shelve`), not separate CLI/app skills.

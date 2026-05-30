@@ -16,8 +16,8 @@ export async function askBoolean(message: string): Promise<symbol | boolean> {
   }
 
   const response = await confirm({ message })
-  if (!response) return cliCancel('Operation cancelled.')
-  return response
+  if (isCancel(response) || response === false) cliCancel('Operation cancelled.')
+  return true
 }
 
 export async function askSelect<T>(

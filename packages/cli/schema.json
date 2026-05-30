@@ -39,6 +39,49 @@
       "type": "boolean",
       "description": "Whether to automatically create a project if it doesn't exist",
       "default": true
+    },
+    "sync": {
+      "type": "object",
+      "description": "Sync policies for push, pull, and conflict resolution",
+      "properties": {
+        "default": { "$ref": "#/definitions/syncPolicy" },
+        "environments": {
+          "type": "object",
+          "additionalProperties": { "$ref": "#/definitions/syncPolicy" }
+        },
+        "protectedEnvironments": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Environment names where push is blocked"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "definitions": {
+    "syncPolicy": {
+      "type": "object",
+      "properties": {
+        "sourceOfTruth": {
+          "type": "string",
+          "enum": ["remote", "local"],
+          "description": "Whether Shelve (remote) or the local env file is authoritative for shelve sync"
+        },
+        "onPushConflict": {
+          "type": "string",
+          "enum": ["overwrite", "skip", "fail", "prompt"],
+          "description": "How to handle keys that differ between local file and Shelve on push"
+        },
+        "pullMode": {
+          "type": "string",
+          "enum": ["replace", "merge"],
+          "description": "Replace the env file on pull, or merge remote keys into the existing file"
+        },
+        "allowPush": { "type": "boolean", "description": "Allow pushing variables to this environment" },
+        "allowPull": { "type": "boolean", "description": "Allow pulling variables from this environment" },
+        "requireConfirmation": { "type": "boolean", "description": "Require confirmation before push or pull writes" }
+      },
+      "additionalProperties": false
     }
   }
 }

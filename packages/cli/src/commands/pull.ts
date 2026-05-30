@@ -1,8 +1,10 @@
 import { confirm, isCancel } from '@clack/prompts'
 import { defineCommand } from 'citty'
 import { isAgentShell, loadShelveConfig, shouldSkipConfirm } from '../utils'
+import { assertPullAllowed, getResolvedSyncPolicy } from '../utils/sync-policy'
 import { cliCancel, cliError, cliIntro, cliSuccess, cliWarn } from '../utils/output'
-import { EnvService, ProjectService, EnvironmentService } from '../services'
+import { CliError } from '../services/api-error'
+import { EnvService, ProjectService, EnvironmentService, SyncService } from '../services'
 
 export default defineCommand({
   meta: {
@@ -29,9 +31,20 @@ export default defineCommand({
       confirmChanges,
       autoCreateProject,
       defaultEnv,
+      autoUppercase,
+      sync,
     } = await loadShelveConfig(true)
 
     const skipConfirm = args.yes || shouldSkipConfirm()
+    const env = args.env || defaultEnv
+    if (!env) {
+      throw new CliError(
+        'Environment name is required.',
+        'MISSING_ENV',
+        undefined,
+        'Pass --env or set defaultEnv in shelve.json / SHELVE_DEFAULT_ENV.',
+      )
+    }
 
     if (isAgentShell() && !skipConfirm) {
       cliError({
@@ -53,19 +66,30 @@ export default defineCommand({
     cliIntro(`Pulling variable from ${project} project`)
 
     const projectData = await ProjectService.getProjectByName(project, slug, autoCreateProject)
-
-    const env = args.env || defaultEnv
-
     const environment = await EnvironmentService.getEnvironment(slug, env)
+    const policy = getResolvedSyncPolicy(environment.name, sync, projectData.syncPolicy)
+    assertPullAllowed(policy, environment.name)
 
-    const variables = await EnvService.getEnvVariables({ project: projectData, environmentId: environment.id, slug })
+    const syncContext = await SyncService.loadSyncContext({
+      project: projectData,
+      environmentId: environment.id,
+      environmentName: environment.name,
+      slug,
+      autoUppercase,
+    })
 
-    const effectiveConfirmChanges = skipConfirm ? false : confirmChanges
+    const variables = SyncService.mergeForPull(syncContext, autoUppercase)
+    const effectiveConfirmChanges = skipConfirm ? false : (confirmChanges || policy.requireConfirmation)
 
     if (variables.length === 0) {
       cliWarn('No variables found in the specified environment')
     } else {
-      await EnvService.createEnvFile({ envFileName, variables, confirmChanges: effectiveConfirmChanges })
+      await EnvService.createEnvFile({
+        envFileName,
+        variables,
+        confirmChanges: effectiveConfirmChanges,
+        pullMode: policy.pullMode,
+      })
     }
 
     cliSuccess(
@@ -74,6 +98,8 @@ export default defineCommand({
         variableCount: variables.length,
         file: envFileName,
         keys: variables.map(v => v.key),
+        pullMode: policy.pullMode,
+        preservedLocalKeys: policy.pullMode === 'merge' ? syncContext.diff.onlyLocal : [],
       },
       `Successfully pulled variable from ${environment.name} environment`,
       'pull',

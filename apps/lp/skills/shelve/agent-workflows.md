@@ -92,4 +92,4 @@ shelve run --watch --restart-on-change -- pnpm dev
 npx skills add https://shelve.cloud
 ```
 
-Catalog: `https://shelve.cloud/.well-known/skills/index.json`
+Catalog: `https://shelve.cloud/.well-known/skills/index.json` (single skill: `shelve`)

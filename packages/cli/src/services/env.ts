@@ -4,6 +4,7 @@ import type {
   EnvVarExport,
   CreateEnvFileInput,
   PushEnvFileInput,
+  PushEnvFileResult,
   CreateVariablesInput,
   GetEnvVariables
 } from '@types'
@@ -69,7 +70,7 @@ export class EnvService extends BaseService {
   }
 
   static async createEnvFile(input: CreateEnvFileInput): Promise<void> {
-    const { envFileName, variables, confirmChanges } = input
+    const { envFileName, variables, confirmChanges, pullMode = 'replace' } = input
 
     if (confirmChanges)
       await askBoolean(`Are you sure you want to update ${envFileName} file?`)
@@ -77,7 +78,7 @@ export class EnvService extends BaseService {
     await this.withLoading(`Creating ${envFileName} and ${envFileName}.example files`, async () => {
       const content = this.formatEnvContent(variables)
 
-      if (FileService.exists(envFileName)) FileService.delete(envFileName)
+      if (pullMode === 'replace' && FileService.exists(envFileName)) FileService.delete(envFileName)
       FileService.write(envFileName, content)
 
       const exampleVars: EnvVarExport[] = variables.map((v) => ({
@@ -100,12 +101,12 @@ export class EnvService extends BaseService {
     return this.withLoading('Fetch variables', () => this.request<EnvVarExport[]>(endpoint))
   }
 
-  static async pushEnvFile(input: PushEnvFileInput): Promise<boolean> {
+  static async pushEnvFile(input: PushEnvFileInput): Promise<PushEnvFileResult> {
     const { variables, project, slug, environment, confirmChanges, autoUppercase } = input
 
     if (variables.length === 0) {
-      cliWarn('No variables found in the .env file')
-      return false
+      cliWarn('No variables to push')
+      return { pushed: false, variableCount: 0, skippedKeys: [], conflictKeys: [] }
     }
 
     if (confirmChanges)
@@ -127,7 +128,7 @@ export class EnvService extends BaseService {
       })
     })
 
-    return true
+    return { pushed: true, variableCount: variables.length, skippedKeys: [], conflictKeys: [] }
   }
 
   static async generateEnvExampleFile(): Promise<void> {

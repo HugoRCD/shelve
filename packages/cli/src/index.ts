@@ -10,6 +10,8 @@ import { CliError } from './services/api-error'
 import { cliError } from './utils/output'
 import push from './commands/push'
 import pull from './commands/pull'
+import diff from './commands/diff'
+import sync from './commands/sync'
 import config from './commands/config'
 import generate from './commands/generate'
 import create from './commands/create'
@@ -58,6 +60,8 @@ ${formatErrorCodesHelp()}`,
     run,
     push,
     pull,
+    diff,
+    sync,
     login,
     logout,
     me,

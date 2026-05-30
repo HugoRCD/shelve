@@ -23,6 +23,9 @@ export default eventHandler(async (event) => {
   const { team } = await requireUserTeam(event, slug)
   const body = await readValidatedBody(event, createVariablesSchema.parse)
   const { projectId } = await getValidatedRouterParams(event, projectIdParamsSchema.parse)
+  const project = await new ProjectsService().getProject(projectId)
+
+  await assertPushAllowedForEnvironmentIds(body.environmentIds, team.id, project.syncPolicy)
 
   for (const environmentId of body.environmentIds) {
     await requireTokenScope(event, {

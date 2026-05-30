@@ -1,9 +1,9 @@
 import { defineCommand } from 'citty'
-import { loadShelveConfig } from '../utils'
-import { isNonInteractive } from '../utils/cli-context'
-import { cliIntro, cliSuccess } from '../utils/output'
+import { loadShelveConfig, assertSyncConfirmationAllowed } from '../utils'
+import { assertPushAllowed, getResolvedSyncPolicy } from '../utils/sync-policy'
+import { cliIntro, cliSuccess, cliWarn } from '../utils/output'
 import { CliError } from '../services/api-error'
-import { EnvService, ProjectService, EnvironmentService } from '../services'
+import { EnvService, ProjectService, EnvironmentService, SyncService } from '../services'
 
 export default defineCommand({
   meta: {
@@ -30,47 +30,87 @@ export default defineCommand({
       autoUppercase,
       autoCreateProject,
       defaultEnv,
+      sync,
     } = await loadShelveConfig(true)
 
     const confirmed = Boolean(args.yes)
-    if (confirmChanges && !confirmed && isNonInteractive()) {
+    const env = args.env || defaultEnv
+    if (!env) {
       throw new CliError(
-        'Push confirmation is required.',
-        'CONFIRMATION_REQUIRED',
+        'Environment name is required.',
+        'MISSING_ENV',
         undefined,
-        'Pass --yes to confirm pushing variables in non-interactive mode.',
+        'Pass --env or set defaultEnv in shelve.json / SHELVE_DEFAULT_ENV.',
       )
     }
-    const effectiveConfirmChanges = confirmed ? false : confirmChanges
 
     cliIntro(`Pushing variable to ${project} project`)
 
     const projectData = await ProjectService.getProjectByName(project, slug, autoCreateProject)
-
-    const env = args.env || defaultEnv
-
     const environment = await EnvironmentService.getEnvironment(slug, env)
-    const variables = await EnvService.getEnvFile()
+    const policy = getResolvedSyncPolicy(environment.name, sync, projectData.syncPolicy)
+    assertPushAllowed(policy, environment.name)
 
-    const pushed = await EnvService.pushEnvFile({
+    assertSyncConfirmationAllowed(
+      confirmChanges,
+      policy.requireConfirmation,
+      confirmed,
+      'Push confirmation is required.',
+    )
+    const effectiveConfirmChanges = confirmed ? false : (confirmChanges || policy.requireConfirmation)
+
+    const syncContext = await SyncService.loadSyncContext({
+      project: projectData,
+      environmentId: environment.id,
+      environmentName: environment.name,
+      slug,
+      autoUppercase,
+    })
+
+    const { variables, skippedKeys, conflictKeys } = await SyncService.preparePushVariables(
+      syncContext,
+      autoUppercase,
+      confirmed,
+    )
+
+    const pushResult = await EnvService.pushEnvFile({
       variables,
       project: projectData,
       environment,
       confirmChanges: effectiveConfirmChanges,
       autoUppercase,
       slug,
+      syncPolicy: policy,
     })
 
-    if (pushed) {
+    const result = { ...pushResult, skippedKeys, conflictKeys }
+
+    if (skippedKeys.length > 0) {
+      cliWarn(`Skipped ${skippedKeys.length} key(s): ${skippedKeys.join(', ')}`)
+    }
+
+    if (result.pushed) {
       cliSuccess(
-        { env: environment.name, variableCount: variables.length, pushed: true },
+        {
+          env: environment.name,
+          variableCount: result.variableCount,
+          pushed: true,
+          skippedKeys,
+          conflictKeys,
+        },
         `Successfully pushed variable to ${environment.name} environment`,
         'push',
       )
     } else {
       cliSuccess(
-        { env: environment.name, variableCount: variables.length, pushed: false },
-        'Variable push was cancelled',
+        {
+          env: environment.name,
+          variableCount: 0,
+          pushed: false,
+          skippedKeys,
+          conflictKeys,
+        },
+        'Nothing to push',
         'push',
       )
     }

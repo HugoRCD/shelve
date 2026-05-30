@@ -60,6 +60,22 @@ export const CLI_ERROR_CODES: Record<string, { meaning: string, hint?: string }>
   USER_CANCELLED: {
     meaning: 'User aborted an interactive prompt',
   },
+  PUSH_BLOCKED: {
+    meaning: 'Push is disabled for this environment by sync policy',
+    hint: 'Check sync.protectedEnvironments or sync.environments.<env>.allowPush.',
+  },
+  PULL_BLOCKED: {
+    meaning: 'Pull is disabled for this environment by sync policy',
+    hint: 'Set sync.environments.<env>.allowPull to true.',
+  },
+  SYNC_CONFLICT: {
+    meaning: 'Local and remote values differ and onPushConflict prevented the push',
+    hint: 'Run `shelve diff` or use onPushConflict overwrite/skip/prompt with --yes.',
+  },
+  ENV_PROTECTED: {
+    meaning: 'Server rejected a write to a protected environment',
+    hint: 'Update project sync policy in Shelve settings or use a different environment.',
+  },
 }
 
 export function formatErrorCodesHelp(): string {

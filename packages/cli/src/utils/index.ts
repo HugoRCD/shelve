@@ -15,6 +15,8 @@ export * from './ignore-files'
 export * from './cli-context'
 export * from './output'
 export * from './error-codes'
+export * from './sync-policy'
+export * from './confirmation'
 
 const s = spinner()
 
