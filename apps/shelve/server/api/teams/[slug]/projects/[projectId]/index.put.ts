@@ -1,11 +1,8 @@
 import { z } from 'zod'
 import { TeamRole } from '@types'
+import { shelveSyncConfigSchema } from '~/utils/zod/sync-policy'
 
-const syncPolicySchema = z.object({
-  default: z.record(z.string(), z.unknown()).optional(),
-  environments: z.record(z.string(), z.record(z.string(), z.unknown())).optional(),
-  protectedEnvironments: z.array(z.string().min(1)).optional(),
-}).nullable().optional()
+const syncPolicySchema = shelveSyncConfigSchema.nullable().optional()
 
 const updateProjectSchema = z.object({
   name: z.string().min(1).max(255).trim(),

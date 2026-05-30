@@ -1,7 +1,6 @@
 import { defineCommand } from 'citty'
-import { loadShelveConfig } from '../utils'
+import { loadShelveConfig, assertSyncConfirmationAllowed } from '../utils'
 import { assertPushAllowed, getResolvedSyncPolicy } from '../utils/sync-policy'
-import { isNonInteractive } from '../utils/cli-context'
 import { cliIntro, cliSuccess, cliWarn } from '../utils/output'
 import { CliError } from '../services/api-error'
 import { EnvService, ProjectService, EnvironmentService, SyncService } from '../services'
@@ -52,23 +51,21 @@ export default defineCommand({
     const policy = getResolvedSyncPolicy(environment.name, sync, projectData.syncPolicy)
     assertPushAllowed(policy, environment.name)
 
-    if ((confirmChanges || policy.requireConfirmation) && !confirmed && isNonInteractive()) {
-      throw new CliError(
-        'Push confirmation is required.',
-        'CONFIRMATION_REQUIRED',
-        undefined,
-        'Pass --yes to confirm pushing variables in non-interactive mode.',
-      )
-    }
+    assertSyncConfirmationAllowed(
+      confirmChanges,
+      policy.requireConfirmation,
+      confirmed,
+      'Push confirmation is required.',
+    )
     const effectiveConfirmChanges = confirmed ? false : (confirmChanges || policy.requireConfirmation)
 
-    const syncContext = await SyncService.loadSyncContext(
-      projectData,
-      environment.id,
-      environment.name,
+    const syncContext = await SyncService.loadSyncContext({
+      project: projectData,
+      environmentId: environment.id,
+      environmentName: environment.name,
       slug,
       autoUppercase,
-    )
+    })
 
     const { variables, skippedKeys, conflictKeys } = await SyncService.preparePushVariables(
       syncContext,
@@ -76,7 +73,7 @@ export default defineCommand({
       confirmed,
     )
 
-    const result = await EnvService.pushEnvFile({
+    const pushResult = await EnvService.pushEnvFile({
       variables,
       project: projectData,
       environment,
@@ -86,8 +83,7 @@ export default defineCommand({
       syncPolicy: policy,
     })
 
-    result.skippedKeys = skippedKeys
-    result.conflictKeys = conflictKeys
+    const result = { ...pushResult, skippedKeys, conflictKeys }
 
     if (skippedKeys.length > 0) {
       cliWarn(`Skipped ${skippedKeys.length} key(s): ${skippedKeys.join(', ')}`)

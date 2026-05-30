@@ -1,4 +1,5 @@
 import * as z from 'zod'
+import { shelveSyncConfigSchema } from './sync-policy'
 
 const baseProjectSchema = z.object({
   name: z.string().min(3, 'Name must be at least 3 characters long'),
@@ -16,9 +17,7 @@ const baseProjectSchema = z.object({
     message: 'Homepage must be a valid URL',
   }).optional(),
   variablePrefix: z.string().optional(),
-  syncPolicy: z.object({
-    protectedEnvironments: z.array(z.string().min(1)).optional(),
-  }).nullable().optional(),
+  syncPolicy: shelveSyncConfigSchema.nullable().optional(),
 })
 
 export const createProjectSchema = baseProjectSchema

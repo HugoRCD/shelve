@@ -1,4 +1,5 @@
 import { resolveSyncPolicy, type ShelveSyncConfig } from '@types'
+import { and, eq, inArray } from 'drizzle-orm'
 
 export async function getEnvironmentName(environmentId: number, teamId: number): Promise<string> {
   const environment = await db.query.environments.findFirst({
@@ -32,8 +33,21 @@ export async function assertPushAllowedForEnvironmentIds(
   teamId: number,
   syncPolicy: ShelveSyncConfig | null | undefined,
 ): Promise<void> {
-  for (const environmentId of environmentIds) {
-    const name = await getEnvironmentName(environmentId, teamId)
-    assertPushAllowedForEnvironment(name, syncPolicy)
+  const uniqueIds = [...new Set(environmentIds)]
+  if (uniqueIds.length === 0) return
+
+  const environments = await db.query.environments.findMany({
+    where: and(
+      eq(schema.environments.teamId, teamId),
+      inArray(schema.environments.id, uniqueIds),
+    ),
+  })
+
+  if (environments.length !== uniqueIds.length) {
+    throw createError({ statusCode: 404, statusMessage: 'Environment not found' })
+  }
+
+  for (const environment of environments) {
+    assertPushAllowedForEnvironment(environment.name, syncPolicy)
   }
 }

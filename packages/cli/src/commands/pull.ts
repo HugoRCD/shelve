@@ -70,13 +70,13 @@ export default defineCommand({
     const policy = getResolvedSyncPolicy(environment.name, sync, projectData.syncPolicy)
     assertPullAllowed(policy, environment.name)
 
-    const syncContext = await SyncService.loadSyncContext(
-      projectData,
-      environment.id,
-      environment.name,
+    const syncContext = await SyncService.loadSyncContext({
+      project: projectData,
+      environmentId: environment.id,
+      environmentName: environment.name,
       slug,
       autoUppercase,
-    )
+    })
 
     const variables = SyncService.mergeForPull(syncContext, autoUppercase)
     const effectiveConfirmChanges = skipConfirm ? false : (confirmChanges || policy.requireConfirmation)

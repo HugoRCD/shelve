@@ -138,7 +138,7 @@ Types: `env-example`, `eslint` (via `--type`).
 ### `sync`
 
 ```json
-{ "env": "development", "action": "pull", "variableCount": 12, "pushed": true }
+{ "env": "development", "action": "pull", "variableCount": 12, "file": ".env" }
 ```
 
 ## Error codes (automation)

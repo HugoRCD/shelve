@@ -13,14 +13,19 @@ const currentLoading = useCurrentLoading()
 const teamRole = useTeamRole()
 const canUpdate = computed(() => hasAccess(teamRole.value, TeamRole.ADMIN))
 
-const protectedEnvironmentsText = computed({
-  get: () => (project.value?.syncPolicy?.protectedEnvironments ?? []).join(', '),
-  set: () => {},
-})
+const protectedEnvironmentsTextInput = ref('')
 
-function onProtectedEnvironmentsInput(value: string) {
+watch(
+  () => project.value?.syncPolicy?.protectedEnvironments,
+  (names) => {
+    protectedEnvironmentsTextInput.value = (names ?? []).join(', ')
+  },
+  { immediate: true },
+)
+
+function applyProtectedEnvironmentsFromInput() {
   if (!project.value) return
-  const names = value.split(',').map(s => s.trim()).filter(Boolean)
+  const names = protectedEnvironmentsTextInput.value.split(',').map(s => s.trim()).filter(Boolean)
   project.value.syncPolicy = {
     ...project.value.syncPolicy,
     protectedEnvironments: names.length ? names : undefined,
@@ -113,11 +118,11 @@ definePageMeta({
             :ui="{ help: 'text-xs' }"
           >
             <UInput
-              :model-value="protectedEnvironmentsText"
+              v-model="protectedEnvironmentsTextInput"
               class="md:w-2/3"
               :disabled="!canUpdate"
               placeholder="production, preview"
-              @update:model-value="onProtectedEnvironmentsInput"
+              @blur="applyProtectedEnvironmentsFromInput"
             />
           </UFormField>
         </div>

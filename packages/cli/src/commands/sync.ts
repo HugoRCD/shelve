@@ -1,7 +1,6 @@
 import { defineCommand } from 'citty'
-import { loadShelveConfig } from '../utils'
+import { assertSyncConfirmationAllowed, loadShelveConfig } from '../utils'
 import { assertPullAllowed, assertPushAllowed, getResolvedSyncPolicy } from '../utils/sync-policy'
-import { isNonInteractive } from '../utils/cli-context'
 import { cliIntro, cliSuccess, cliWarn } from '../utils/output'
 import { CliError } from '../services/api-error'
 import { EnvService, EnvironmentService, ProjectService, SyncService } from '../services'
@@ -55,13 +54,13 @@ export default defineCommand({
     const environment = await EnvironmentService.getEnvironment(slug, env)
     const policy = getResolvedSyncPolicy(environment.name, sync, projectData.syncPolicy)
 
-    const syncContext = await SyncService.loadSyncContext(
-      projectData,
-      environment.id,
-      environment.name,
+    const syncContext = await SyncService.loadSyncContext({
+      project: projectData,
+      environmentId: environment.id,
+      environmentName: environment.name,
       slug,
       autoUppercase,
-    )
+    })
 
     const action = policy.sourceOfTruth === 'local' ? 'push' : 'pull'
     const dryRun = Boolean(args['dry-run'])
@@ -86,14 +85,12 @@ export default defineCommand({
 
     if (action === 'push') {
       assertPushAllowed(policy, environment.name)
-      if ((confirmChanges || policy.requireConfirmation) && !skipConfirm && isNonInteractive()) {
-        throw new CliError(
-          'Sync push confirmation is required.',
-          'CONFIRMATION_REQUIRED',
-          undefined,
-          'Pass --yes in non-interactive mode.',
-        )
-      }
+      assertSyncConfirmationAllowed(
+        confirmChanges,
+        policy.requireConfirmation,
+        skipConfirm,
+        'Sync push confirmation is required.',
+      )
 
       const { variables, skippedKeys, conflictKeys } = await SyncService.preparePushVariables(
         syncContext,
@@ -101,7 +98,7 @@ export default defineCommand({
         skipConfirm,
       )
 
-      const result = await EnvService.pushEnvFile({
+      const pushResult = await EnvService.pushEnvFile({
         variables,
         project: projectData,
         environment,
@@ -110,12 +107,10 @@ export default defineCommand({
         slug,
         syncPolicy: policy,
       })
-      result.skippedKeys = skippedKeys
-      result.conflictKeys = conflictKeys
 
       cliSuccess(
-        { env: environment.name, action: 'push', ...result, skippedKeys, conflictKeys },
-        result.pushed ? 'Sync push complete' : 'Nothing to push',
+        { env: environment.name, action: 'push', ...pushResult, skippedKeys, conflictKeys },
+        pushResult.pushed ? 'Sync push complete' : 'Nothing to push',
         'sync',
       )
       return

@@ -22,6 +22,20 @@ describe('resolveSyncPolicy', () => {
     expect(policy.allowPush).toBe(false)
   })
 
+  it('respects allowPull false', () => {
+    const policy = resolveSyncPolicy('staging', {
+      environments: { staging: { allowPull: false } },
+    })
+    expect(policy.allowPull).toBe(false)
+  })
+
+  it('uses pullMode merge from config', () => {
+    const policy = resolveSyncPolicy('development', {
+      default: { pullMode: 'merge' },
+    })
+    expect(policy.pullMode).toBe('merge')
+  })
+
   it('merges per-environment overrides', () => {
     const policy = resolveSyncPolicy('staging', {
       default: { onPushConflict: 'skip' },

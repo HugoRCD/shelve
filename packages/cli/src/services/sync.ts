@@ -24,6 +24,14 @@ export type SyncContext = {
   remote: EnvVarExport[]
 }
 
+export type LoadSyncContextInput = {
+  project: Project
+  environmentId: number
+  environmentName: string
+  slug: string
+  autoUppercase: boolean
+}
+
 export class SyncService {
 
   static resolvePolicy(
@@ -35,23 +43,17 @@ export class SyncService {
     return getResolvedSyncPolicy(environmentName, configSync, project?.syncPolicy)
   }
 
-  static async loadSyncContext(
-    project: Project,
-    environmentId: number,
-    environmentName: string,
-    slug: string,
-    autoUppercase: boolean,
-  ): Promise<SyncContext> {
+  static async loadSyncContext(input: LoadSyncContextInput): Promise<SyncContext> {
     const config = await loadShelveConfig()
-    const policy = this.resolvePolicy(environmentName, project, config.sync)
+    const policy = this.resolvePolicy(input.environmentName, input.project, config.sync)
     const local = await EnvService.getEnvFile()
     const remote = await EnvService.getEnvVariables({
-      project,
-      environmentId,
-      slug,
+      project: input.project,
+      environmentId: input.environmentId,
+      slug: input.slug,
       quiet: true,
     })
-    const diff = diffEnvVars(local, remote, autoUppercase)
+    const diff = diffEnvVars(local, remote, input.autoUppercase)
     return { policy, diff, local, remote }
   }
 
@@ -65,8 +67,12 @@ export class SyncService {
     let variables = [...local]
     const skippedKeys: string[] = []
 
-    if (conflictKeys.length === 0 || policy.onPushConflict === 'overwrite') {
+    if (conflictKeys.length === 0) {
       return { variables, skippedKeys, conflictKeys: [] }
+    }
+
+    if (policy.onPushConflict === 'overwrite') {
+      return { variables, skippedKeys, conflictKeys }
     }
 
     const conflictSet = new Set(conflictKeys)
@@ -86,7 +92,6 @@ export class SyncService {
       return { variables, skippedKeys, conflictKeys }
     }
 
-    // prompt
     if (skipConfirm || shouldSkipConfirm()) {
       variables = excludeVarsByKeys(variables, conflictSet, autoUppercase)
       skippedKeys.push(...conflictKeys)

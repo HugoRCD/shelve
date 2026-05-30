@@ -62,12 +62,24 @@
     "syncPolicy": {
       "type": "object",
       "properties": {
-        "sourceOfTruth": { "type": "string", "enum": ["remote", "local"] },
-        "onPushConflict": { "type": "string", "enum": ["overwrite", "skip", "fail", "prompt"] },
-        "pullMode": { "type": "string", "enum": ["replace", "merge"] },
-        "allowPush": { "type": "boolean" },
-        "allowPull": { "type": "boolean" },
-        "requireConfirmation": { "type": "boolean" }
+        "sourceOfTruth": {
+          "type": "string",
+          "enum": ["remote", "local"],
+          "description": "Whether Shelve (remote) or the local env file is authoritative for shelve sync"
+        },
+        "onPushConflict": {
+          "type": "string",
+          "enum": ["overwrite", "skip", "fail", "prompt"],
+          "description": "How to handle keys that differ between local file and Shelve on push"
+        },
+        "pullMode": {
+          "type": "string",
+          "enum": ["replace", "merge"],
+          "description": "Replace the env file on pull, or merge remote keys into the existing file"
+        },
+        "allowPush": { "type": "boolean", "description": "Allow pushing variables to this environment" },
+        "allowPull": { "type": "boolean", "description": "Allow pulling variables from this environment" },
+        "requireConfirmation": { "type": "boolean", "description": "Require confirmation before push or pull writes" }
       },
       "additionalProperties": false
     }

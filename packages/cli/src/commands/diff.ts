@@ -5,6 +5,10 @@ import { cliIntro, cliSuccess } from '../utils/output'
 import { CliError } from '../services/api-error'
 import { EnvironmentService, ProjectService, SyncService } from '../services'
 
+function normalizeKey(key: string, autoUppercase: boolean): string {
+  return autoUppercase ? key.toUpperCase() : key
+}
+
 export default defineCommand({
   meta: {
     name: 'diff',
@@ -49,13 +53,13 @@ export default defineCommand({
     const environment = await EnvironmentService.getEnvironment(slug, env)
     const policy = getResolvedSyncPolicy(environment.name, sync, projectData.syncPolicy)
 
-    const syncContext = await SyncService.loadSyncContext(
-      projectData,
-      environment.id,
-      environment.name,
+    const syncContext = await SyncService.loadSyncContext({
+      project: projectData,
+      environmentId: environment.id,
+      environmentName: environment.name,
       slug,
       autoUppercase,
-    )
+    })
 
     const { diff } = syncContext
     const data = {
@@ -87,14 +91,19 @@ export default defineCommand({
 
     if (args['show-values'] && diff.changed.length > 0) {
       lines.push('', 'Changed values (local → remote):')
-      const localMap = new Map(syncContext.local.map(v => [v.key.toUpperCase(), v.value]))
-      const remoteMap = new Map(syncContext.remote.map(v => [v.key.toUpperCase(), v.value]))
+      const localMap = new Map(
+        syncContext.local.map(v => [normalizeKey(v.key, autoUppercase), v.value]),
+      )
+      const remoteMap = new Map(
+        syncContext.remote.map(v => [normalizeKey(v.key, autoUppercase), v.value]),
+      )
       for (const key of diff.changed) {
-        lines.push(`  ${key}: ${localMap.get(key) ?? '?'} → ${remoteMap.get(key) ?? '?'}`)
+        const lookup = normalizeKey(key, autoUppercase)
+        lines.push(`  ${key}: ${localMap.get(lookup) ?? '?'} → ${remoteMap.get(lookup) ?? '?'}`)
       }
     }
 
     console.log(lines.join('\n'))
-    if (!isJson()) cliSuccess(undefined, 'Diff complete')
+    cliSuccess(undefined, 'Diff complete')
   },
 })
