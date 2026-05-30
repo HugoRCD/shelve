@@ -30,7 +30,7 @@
   "scripts": {
     "build": "unbuild",
     "stub": "unbuild --stub",
-    "dev": "DEBUG=true bun src/index.ts",
+    "dev": "SHELVE_DEBUG=1 bun src/index.ts",
     "dev:prod": "NODE_ENV=production bun src/index.ts",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
@@ -61,6 +61,7 @@
     "tree-kill": "^1.2.2"
   },
   "devDependencies": {
+    "@types/node": "^22.15.0",
     "@types/npm-registry-fetch": "^8.0.9",
     "@types/semver": "^7.7.1",
     "unbuild": "^3.6.1",

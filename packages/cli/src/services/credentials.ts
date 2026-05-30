@@ -3,7 +3,7 @@ import { homedir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { readUserConfig, writeUserConfig } from 'rc9'
 import consola from 'consola'
-import { DEBUG } from '../constants'
+import { isDebug, debugLog } from '../constants'
 
 const KEYRING_SERVICE = 'shelve-cli'
 const RC_FILENAME = '.shelve'
@@ -32,7 +32,7 @@ async function loadKeyring(): Promise<((service: string, account: string) => Key
     const mod = await import('@napi-rs/keyring')
     keyringFactory = (service: string, account: string): KeyringEntry => new mod.Entry(service, account) as unknown as KeyringEntry
   } catch (err) {
-    if (DEBUG) consola.warn(`Keyring unavailable, falling back to file storage: ${err}`)
+    if (isDebug()) debugLog('Keyring unavailable, falling back to file storage', err)
     keyringFactory = null
   }
   return keyringFactory
@@ -55,7 +55,7 @@ function chmod600(path: string): void {
   try {
     chmodSync(path, 0o600)
   } catch (err) {
-    if (DEBUG) consola.warn(`Failed to chmod 600 ${path}: ${err}`)
+    if (isDebug()) debugLog(`Failed to chmod 600 ${path}`, err)
   }
 }
 
@@ -91,7 +91,7 @@ function migrateLegacyConfig(): void {
     chmod600(configPath())
     unlinkSync(LEGACY_RC_PATH)
   } catch (err) {
-    if (DEBUG) consola.warn(`Legacy ~/.shelve migration skipped: ${err}`)
+    if (isDebug()) debugLog('Legacy ~/.shelve migration skipped', err)
   }
 }
 
@@ -125,7 +125,7 @@ export class CredentialsService {
         chmod600(configPath())
         return
       } catch (err) {
-        if (DEBUG) consola.warn(`Keyring write failed, falling back to file: ${err}`)
+        if (isDebug()) debugLog('Keyring write failed, falling back to file', err)
       }
     }
 
@@ -147,7 +147,7 @@ export class CredentialsService {
           const pwd = entry.getPassword()
           if (pwd) return pwd
         } catch (err) {
-          if (DEBUG) consola.warn(`Keyring read failed: ${err}`)
+          if (isDebug()) debugLog('Keyring read failed', err)
         }
       }
     }

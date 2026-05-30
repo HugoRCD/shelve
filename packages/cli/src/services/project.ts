@@ -1,14 +1,15 @@
 import { type PackageJson, readPackageJSON } from 'pkg-types'
 import { log } from '@clack/prompts'
 import type { Project } from '@types'
-import { DEBUG } from '../constants'
+import { isDebug, debugLog } from '../constants'
 import { askBoolean, capitalize, handleCancel } from '../utils'
+import { isRecoverableHttpError } from './api-error'
 import { BaseService } from './base'
 
 export class ProjectService extends BaseService {
 
   static getProjects(slug: string): Promise<Project[]> {
-    return this.withLoading('Loading projects', () =>
+    return this.withLoading('Load projects', () =>
       this.request<Project[]>(`/teams/${slug}/projects`)
     )
   }
@@ -17,13 +18,15 @@ export class ProjectService extends BaseService {
     const encodedName = encodeURIComponent(name)
 
     try {
-      return await this.withLoading(`Fetching '${name}' project${DEBUG ? ' - Debug mode' : ''}`, () => {
+      return await this.withLoading(`Fetch project ${name}`, () => {
         return this.request<Project>(`/teams/${slug}/projects/name/${encodedName}`)
+      }, {
+        recoverable: error => isRecoverableHttpError(error, [400]),
       })
-    } catch (error: any) {
-      if (DEBUG) console.log(error)
+    } catch (error: unknown) {
+      if (isDebug()) debugLog(`Failed to fetch project '${name}'`, error)
 
-      if (error.statusCode === 400) {
+      if (isRecoverableHttpError(error, [400])) {
         if (autoCreate) {
           if (!name || !slug)
             return handleCancel(`Project '${name}' does not exist, and could not be auto-created without a name and slug`)
@@ -35,7 +38,7 @@ export class ProjectService extends BaseService {
         return this.createProject(name, slug, autoCreate)
       }
 
-      return handleCancel('Failed to fetch project')
+      process.exit(1)
     }
   }
 
@@ -55,7 +58,7 @@ export class ProjectService extends BaseService {
       homepage: pkg.homepage,
       repository: this.getRepositoryURL(pkg)
     }
-    return this.withLoading(`Creating '${ name }' project`, () => {
+    return this.withLoading(`Create project ${name}`, () => {
       return this.request<Project>(`/teams/${ slug }/projects`, {
         method: 'POST',
         body: input

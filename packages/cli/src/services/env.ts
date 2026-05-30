@@ -95,7 +95,7 @@ export class EnvService extends BaseService {
 
   static getEnvVariables(input: GetEnvVariables): Promise<EnvVarExport[]> {
     const { project, environmentId, slug } = input
-    return this.withLoading('Fetching variables', () => {
+    return this.withLoading('Fetch variables', () => {
       return this.request<EnvVarExport[]>(`/teams/${slug}/projects/${project.id}/variables/env/${environmentId}`)
     })
   }

@@ -5,8 +5,13 @@ import { ofetch, type $Fetch, type FetchOptions } from 'ofetch'
 import { spinner } from '@clack/prompts'
 import type { User } from '@types'
 import { askPassword, loadShelveConfig } from '../utils'
+import { formatCliError } from './api-error'
 import { ErrorService } from './error'
 import { CredentialsService } from './credentials'
+
+type LoadingOptions = {
+  recoverable?: (error: unknown) => boolean
+}
 
 export abstract class BaseService {
 
@@ -14,7 +19,8 @@ export abstract class BaseService {
 
   protected static async withLoading<T>(
     message: string,
-    callback: () => Promise<T>
+    callback: () => Promise<T>,
+    options?: LoadingOptions,
   ): Promise<T> {
     const s = spinner()
     try {
@@ -23,13 +29,18 @@ export abstract class BaseService {
       s.stop(message)
       return result
     } catch (error) {
-      s.stop(`Failed: ${message.toLowerCase()}.`)
+      if (options?.recoverable?.(error)) {
+        s.stop(message)
+        throw error
+      }
+
+      s.cancel(formatCliError(error, message))
       throw error
     }
   }
 
   static whoAmI(url: string, token: string): Promise<User> {
-    return this.withLoading('Fetching user data', () => {
+    return this.withLoading('Fetch user profile', () => {
       return ofetch(`${url}/api/user/me`, {
         method: 'GET',
         headers: {
