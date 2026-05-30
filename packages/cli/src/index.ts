@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 
+import { readFileSync } from 'node:fs'
+import { dirname, join } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { defineCommand, runMain } from 'citty'
-import { readPackageJSON } from 'pkg-types'
 import consola from 'consola'
 import push from './commands/push'
 import pull from './commands/pull'
@@ -15,13 +17,21 @@ import upgrade from './commands/upgrade'
 import run from './commands/run'
 import init from './commands/init'
 
-const pkg = await readPackageJSON().catch(() => ({ version: 'unknown' }))
+function getCliPackageVersion(): string {
+  try {
+    const here = dirname(fileURLToPath(import.meta.url))
+    const { version } = JSON.parse(readFileSync(join(here, '..', 'package.json'), 'utf-8'))
+    return version || 'unknown'
+  } catch {
+    return 'unknown'
+  }
+}
 
 const main = defineCommand({
   meta: {
     name: 'shelve',
     description: 'Shelve CLI',
-    version: pkg.version,
+    version: getCliPackageVersion(),
   },
   subCommands: {
     run,
