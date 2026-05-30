@@ -9,13 +9,13 @@ import {
   type ResolvedSyncPolicy,
   type ShelveSyncConfig,
 } from '@types'
-import { CliError } from './api-error'
-import { EnvService } from './env'
+import { multiselect, isCancel } from '@clack/prompts'
 import { getResolvedSyncPolicy } from '../utils/sync-policy'
 import { loadShelveConfig } from '../utils/config'
 import { askBoolean, isNonInteractive, shouldSkipConfirm } from '../utils'
-import { multiselect, isCancel } from '@clack/prompts'
 import { cliCancel } from '../utils/output'
+import { EnvService } from './env'
+import { CliError } from './api-error'
 
 export type SyncContext = {
   policy: ResolvedSyncPolicy
