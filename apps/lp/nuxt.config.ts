@@ -43,6 +43,42 @@ export default defineNuxtConfig({
         contentFilters: [{ field: 'extension', operator: '=', value: 'md' }]
       },
       {
+        title: 'Agent Skills',
+        description: 'Installable AI agent skills (Agent Skills Discovery RFC)',
+        links: [
+          {
+            title: 'Skills catalog',
+            description: 'JSON index of all published skills',
+            href: '/.well-known/skills/index.json',
+          },
+          {
+            title: 'Install all skills',
+            description: 'Run: npx skills add https://shelve.cloud',
+            href: 'https://shelve.cloud/.well-known/skills/index.json',
+          },
+          {
+            title: 'CLI skill (shelve)',
+            description: 'Shelve CLI workflows, flags, and security rules',
+            href: '/.well-known/skills/shelve/SKILL.md',
+          },
+          {
+            title: 'App skill (shelve-app)',
+            description: 'Shelve platform, tokens, teams, and audit logs',
+            href: '/.well-known/skills/shelve-app/SKILL.md',
+          },
+          {
+            title: 'CLI agents & automation',
+            description: 'Global flags, JSON output, CI patterns',
+            href: '/docs/cli/agents-automation',
+          },
+          {
+            title: 'CLI troubleshooting',
+            description: 'Error codes, exit codes, common fixes',
+            href: '/docs/cli/troubleshooting',
+          },
+        ],
+      },
+      {
         title: 'Blog',
         description: 'Latest posts and insights',
         contentCollection: 'blog',

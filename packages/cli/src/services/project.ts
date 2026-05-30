@@ -1,9 +1,9 @@
 import { type PackageJson, readPackageJSON } from 'pkg-types'
-import { log } from '@clack/prompts'
 import type { Project } from '@types'
+import { cliInfo } from '../utils/output'
+import { askBoolean, capitalize, handleCancel, isNonInteractive, shouldSkipConfirm } from '../utils'
 import { isDebug, debugLog } from '../constants'
-import { askBoolean, capitalize, handleCancel } from '../utils'
-import { isRecoverableHttpError } from './api-error'
+import { CliError, isRecoverableHttpError, toCliError } from './api-error'
 import { BaseService } from './base'
 
 export class ProjectService extends BaseService {
@@ -28,9 +28,19 @@ export class ProjectService extends BaseService {
 
       if (isRecoverableHttpError(error, [400])) {
         if (autoCreate) {
-          if (!name || !slug)
+          if (!name || !slug) {
             return handleCancel(`Project '${name}' does not exist, and could not be auto-created without a name and slug`)
+          }
           return this.createProject(name, slug, autoCreate)
+        }
+
+        if (isNonInteractive() && !shouldSkipConfirm()) {
+          throw new CliError(
+            `Project '${name}' does not exist.`,
+            'PROJECT_NOT_FOUND',
+            400,
+            'Enable autoCreateProject in shelve.json or pass --yes after creating the project manually.',
+          )
         }
 
         await askBoolean(`Project '${name}' does not exist. Would you like to create it?`)
@@ -38,7 +48,7 @@ export class ProjectService extends BaseService {
         return this.createProject(name, slug, autoCreate)
       }
 
-      process.exit(1)
+      throw toCliError(error)
     }
   }
 
@@ -50,7 +60,7 @@ export class ProjectService extends BaseService {
   }
 
   static async createProject(name: string, slug: string, autoCreate?: boolean): Promise<Project> {
-    if (autoCreate) log.info(`Auto-creating project '${name}'`)
+    if (autoCreate) cliInfo(`Auto-creating project '${name}'`)
     const pkg = await readPackageJSON()
     const input = {
       name: capitalize(name),

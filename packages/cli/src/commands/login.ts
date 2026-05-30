@@ -1,21 +1,32 @@
-import { intro, outro } from '@clack/prompts'
-import type { User } from '@types'
 import { defineCommand } from 'citty'
+import type { User } from '@types'
 import { loadShelveConfig } from '../utils'
 import { BaseService } from '../services/base'
+import { cliIntro, cliSuccess } from '../utils/output'
 
 export default defineCommand({
   meta: {
     name: 'login',
-    description: 'Login to Shelve'
+    description: 'Login to Shelve',
   },
-  async run() {
+  args: {
+    token: {
+      type: 'string',
+      description: 'API token (or set SHELVE_TOKEN)',
+      required: false,
+    },
+  },
+  async run({ args }) {
     const { url } = await loadShelveConfig()
 
-    intro(`Login to Shelve on ${url}`)
+    cliIntro(`Login to Shelve on ${url}`)
 
-    const { user } = await BaseService.getToken(true) as { user: User }
+    const { user } = await BaseService.getToken(true, args.token) as { user: User, token: string }
 
-    outro(`Successfully logged in as ${user.username}`)
-  }
+    cliSuccess(
+      { username: user.username, email: user.email },
+      `Successfully logged in as ${user.username}`,
+      'login',
+    )
+  },
 })

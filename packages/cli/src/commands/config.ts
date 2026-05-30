@@ -1,5 +1,6 @@
 import { defineCommand } from 'citty'
-import { loadShelveConfig } from '../utils'
+import { isJson, loadShelveConfig, redactConfig } from '../utils'
+import { cliSuccess } from '../utils/output'
 
 export default defineCommand({
   meta: {
@@ -7,6 +8,11 @@ export default defineCommand({
     description: 'Show the current configuration',
   },
   async run() {
-    console.log(await loadShelveConfig(true))
-  }
+    const config = redactConfig(await loadShelveConfig(true))
+    if (isJson()) {
+      cliSuccess(config, undefined, 'config')
+      return
+    }
+    console.log(JSON.stringify(config, null, 2))
+  },
 })

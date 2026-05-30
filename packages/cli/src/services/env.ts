@@ -1,5 +1,4 @@
 import { parseEnvFile } from '@utils'
-import { log } from '@clack/prompts'
 import type {
   EnvVar,
   EnvVarExport,
@@ -8,6 +7,7 @@ import type {
   CreateVariablesInput,
   GetEnvVariables
 } from '@types'
+import { cliWarn } from '../utils/output'
 import { loadShelveConfig, askBoolean } from '../utils'
 import { FileService } from './file'
 import { BaseService } from './base'
@@ -104,7 +104,7 @@ export class EnvService extends BaseService {
     const { variables, project, slug, environment, confirmChanges, autoUppercase } = input
 
     if (variables.length === 0) {
-      log.warn('No variables found in the .env file')
+      cliWarn('No variables found in the .env file')
       return false
     }
 

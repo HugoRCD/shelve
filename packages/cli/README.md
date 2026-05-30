@@ -43,29 +43,52 @@ If you are using a monorepo, Shelve will automatically detect the root of the mo
 
 ## Usage
 
-```bash
-Shelve CLI (shelve v4.0.0)
+Global flags (usable before or after the subcommand):
 
-USAGE shelve push|pull|login|logout|me|create|config|generate|upgrade
+- `--json` — machine-readable stdout / structured stderr errors
+- `--quiet` / `-q` — minimal output (no spinners)
+- `--yes` / `-y` — skip confirmations
+- `--non-interactive` — fail instead of prompting (also auto-enabled in CI / AI agent shells)
+- `--debug` — verbose logging (`SHELVE_DEBUG=1`)
+
+See [CLI agents & automation](https://shelve.cloud/docs/cli/agents-automation) on shelve.cloud for the full contract (JSON shapes, exit codes, env vars). Install the agent skill: `npx skills add https://shelve.cloud`.
+
+```bash
+Shelve CLI (shelve v5)
+
+USAGE shelve run|push|pull|login|logout|me|init|create|config|generate|upgrade|doctor
 
 COMMANDS
 
+       run    Inject secrets into a child process (no .env on disk)
       push    Push variables for specified environment to Shelve
-      pull    Pull variables for specified environment to Shelve
-     login    Login to Shelve                                   
-    logout    Logout from Shelve locally                        
-        me    Show the currently logged-in user                 
-    create    Create a new project and its config               
-    config    Show the current configuration                    
-  generate    Generate resources for a project                  
-   upgrade    Upgrade the Shelve CLI to the latest version      
+      pull    Pull variables for specified environment from Shelve
+     login    Login to Shelve
+    logout    Logout from Shelve locally
+        me    Show the currently logged-in user
+      init    Add agent ignore files and shelve-managed .gitignore block
+    doctor    Validate CLI setup (config, auth, API, cache)
+    create    Create a new project and its config
+    config    Show the current configuration
+  generate    Generate resources for a project
+   upgrade    Upgrade the Shelve CLI to the latest version
 
 Use shelve <command> --help for more information about a command.
 ```
 
+### Agents & automation
+
+Prefer `shelve run -- <cmd>` over `shelve pull`. Set `SHELVE_TOKEN`, `SHELVE_TEAM_SLUG`, and `SHELVE_PROJECT` for non-interactive use. Example:
+
+```bash
+shelve --json config
+shelve --non-interactive --yes push --env staging
+shelve run -- pnpm dev
+```
+
 ### Monorepo usage
 
-If you are using a monorepo, running a command at the root level will execute the command for all the projects in the monorepo that have a `shelve.json` file.
+In a monorepo, local `shelve.json` is merged with the root config (shared team slug, etc.). Commands run in the current package directory; they do not automatically iterate all packages.
 
 <!-- automd:fetch url="gh:hugorcd/markdown/main/src/local_development.md" -->
 

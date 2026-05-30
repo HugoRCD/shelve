@@ -5,7 +5,9 @@ import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { defineCommand, runMain } from 'citty'
 import consola from 'consola'
-import { initDebugFromArgv, setDebug } from './constants'
+import { GLOBAL_CLI_ARGS, initCliContextFromArgv, initDebugFromArgv, setDebug } from './constants'
+import { CliError } from './services/api-error'
+import { cliError } from './utils/output'
 import push from './commands/push'
 import pull from './commands/pull'
 import config from './commands/config'
@@ -17,8 +19,11 @@ import logout from './commands/logout'
 import upgrade from './commands/upgrade'
 import run from './commands/run'
 import init from './commands/init'
+import doctor from './commands/doctor'
+import { formatErrorCodesHelp } from './utils/error-codes'
 
 initDebugFromArgv()
+initCliContextFromArgv()
 
 process.stdin.on?.('error', (err: NodeJS.ErrnoException) => {
   if (err && err.code === 'EIO') {
@@ -39,18 +44,15 @@ function getCliPackageVersion(): string {
 const main = defineCommand({
   meta: {
     name: 'shelve',
-    description: 'Shelve CLI',
+    description: `Shelve CLI — manage team secrets from the terminal.
+
+${formatErrorCodesHelp()}`,
     version: getCliPackageVersion(),
   },
-  args: {
-    debug: {
-      type: 'boolean',
-      description: 'Enable verbose debug logging (or set SHELVE_DEBUG=1)',
-      default: false,
-    },
-  },
+  args: GLOBAL_CLI_ARGS,
   setup({ args }) {
     if (args.debug) setDebug(true)
+    initCliContextFromArgv()
   },
   subCommands: {
     run,
@@ -60,6 +62,7 @@ const main = defineCommand({
     logout,
     me,
     init,
+    doctor,
     create,
     config,
     generate,
@@ -70,6 +73,14 @@ const main = defineCommand({
 runMain(main).then((_) => {
   process.exit(0)
 }).catch((err) => {
+  if (err instanceof CliError) {
+    cliError({
+      code: err.code,
+      message: err.message,
+      status: err.status,
+      hint: err.hint,
+    })
+  }
   consola.error(err)
   process.exit(1)
 })

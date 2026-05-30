@@ -1,0 +1,45 @@
+name: Shelve Run
+description: Inject secrets from Shelve and run a command (wraps `shelve run -- …`)
+inputs:
+  command:
+    description: Command to run after `--` (e.g. `pnpm test` or `npm run build`)
+    required: true
+  token:
+    description: Shelve API token (use `${{ secrets.SHELVE_TOKEN }}`)
+    required: true
+  team-slug:
+    description: Shelve team slug
+    required: true
+  project:
+    description: Shelve project name
+    required: true
+  env:
+    description: Shelve environment name (optional; uses SHELVE_DEFAULT_ENV if omitted)
+    required: false
+    default: ''
+  url:
+    description: Shelve instance URL
+    required: false
+    default: 'https://app.shelve.cloud'
+  cli-version:
+    description: npm version of @shelve/cli to run (default major 5)
+    required: false
+    default: '5'
+runs:
+  using: composite
+  steps:
+    - name: Run with Shelve
+      shell: bash
+      env:
+        SHELVE_TOKEN: ${{ inputs.token }}
+        SHELVE_TEAM_SLUG: ${{ inputs.team-slug }}
+        SHELVE_PROJECT: ${{ inputs.project }}
+        SHELVE_URL: ${{ inputs.url }}
+        SHELVE_DEFAULT_ENV: ${{ inputs.env }}
+      run: |
+        set -euo pipefail
+        ENV_FLAG=""
+        if [ -n "${{ inputs.env }}" ]; then
+          ENV_FLAG="--env ${{ inputs.env }}"
+        fi
+        npx --yes "@shelve/cli@${{ inputs.cli-version }}" run ${ENV_FLAG} --non-interactive -- ${{ inputs.command }}

@@ -1,43 +1,56 @@
 import { addDevDependency } from 'nypm'
-import { spinner, note, intro } from '@clack/prompts'
+import { note, spinner } from '@clack/prompts'
 import { FileService } from '../services'
 import { askBoolean } from './prompt'
-import { handleCancel } from '.'
+import { cliCancel, cliIntro } from './output'
+import { isJson, isNonInteractive, isQuiet, shouldSkipConfirm } from './cli-context'
 
 const s = spinner()
 
 const templates = {
-  eslint: 'https://raw.githubusercontent.com/HugoRCD/templates/main/eslint.config.js'
+  eslint: 'https://raw.githubusercontent.com/HugoRCD/templates/main/eslint.config.js',
 }
 
-export async function getEslintConfig(): Promise<void> {
-  intro('Generate ESLint config')
+export async function getEslintConfig(): Promise<string> {
+  const path = 'eslint.config.js'
+  cliIntro('Generate ESLint config')
 
-  s.start('Fetching ESLint config')
+  const showFetchSpinner = !isQuiet() && !isJson()
+  if (showFetchSpinner) s.start('Fetching ESLint config')
 
+  let text: string
   try {
     const response = await fetch(templates.eslint)
-    const text = await response.text()
-
-    FileService.write('eslint.config.js', text)
-
-    s.stop('Fetching ESLint config')
-
-    note('ESLint config has been generated', 'ESLint config')
-
-    const install = await askBoolean('Do you want to install ESLint and @hrcd/eslint-config?')
-
-    if (install) {
-      s.start('Installing eslint and @hrcd/eslint-config')
-      await addDevDependency('eslint', {
-        silent: true
-      })
-      await addDevDependency('@hrcd/eslint-config', {
-        silent: true
-      })
-      s.stop('Installing ESLint and @hrcd/eslint-config')
+    if (!response.ok) {
+      throw new Error(`Failed to fetch ESLint config: ${response.status} ${response.statusText}`)
     }
-  } catch (error) {
-    handleCancel('Failed to fetch ESLint config')
+    text = await response.text()
+  } catch (err) {
+    if (showFetchSpinner) s.stop('Fetching ESLint config')
+    const message = err instanceof Error ? err.message : 'Failed to fetch ESLint config'
+    cliCancel(message)
+  } finally {
+    if (showFetchSpinner) s.stop('Fetching ESLint config')
   }
+
+  FileService.write(path, text)
+
+  if (!isQuiet() && !isJson()) {
+    note('ESLint config has been generated', 'ESLint config')
+  }
+
+  const shouldInstall = isNonInteractive()
+    ? false
+    : shouldSkipConfirm()
+      ? true
+      : await askBoolean('Do you want to install ESLint and @hrcd/eslint-config?')
+
+  if (shouldInstall) {
+    if (!isQuiet() && !isJson()) s.start('Installing eslint and @hrcd/eslint-config')
+    await addDevDependency('eslint', { silent: true })
+    await addDevDependency('@hrcd/eslint-config', { silent: true })
+    if (!isQuiet() && !isJson()) s.stop('Installing ESLint and @hrcd/eslint-config')
+  }
+
+  return path
 }

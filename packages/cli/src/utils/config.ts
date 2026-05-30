@@ -18,7 +18,6 @@
  */
 
 import { join } from 'path'
-import { intro, outro } from '@clack/prompts'
 import { setupDotenv } from 'c12'
 import { findWorkspaceDir, readPackageJSON } from 'pkg-types'
 import defu from 'defu'
@@ -27,8 +26,8 @@ import { DEFAULT_URL, SHELVE_JSON_SCHEMA } from '@types'
 import { CredentialsService, FileService, PkgService, ProjectService } from '../services'
 import { DEFAULT_ENV_FILENAME } from '../constants'
 import { BaseService } from '../services/base'
-import { askSelect, askText } from './prompt'
-import { handleCancel } from '.'
+import { CliError } from '../services/api-error'
+import { askSelect, askText, cliIntro, cliOutro, handleCancel, isNonInteractive } from '.'
 
 export const CONFIG_FILENAMES = [
   'shelve.json',
@@ -81,25 +80,36 @@ function createConfigFile(config: string, preferredFilename: ConfigFileName = CO
  * 4. Create shelve.json file with the configuration
  */
 export async function createShelveConfig(input: CreateShelveConfigInput = {}): Promise<ShelveConfig> {
-  intro(input.projectName ? `Create configuration for ${ input.projectName }` : 'No configuration file found, create a new one')
+  if (isNonInteractive() && !input.slug && !input.projectName) {
+    throw new CliError(
+      'No shelve.json found in this directory.',
+      'CONFIG_MISSING',
+      undefined,
+      'Create shelve.json or set SHELVE_TEAM_SLUG, SHELVE_PROJECT, and SHELVE_TOKEN.',
+    )
+  }
+
+  cliIntro(input.projectName ? `Create configuration for ${ input.projectName }` : 'No configuration file found, create a new one')
 
   const defaultConfig = await getDefaultConfig()
 
-  const slug = input.slug || defaultConfig.slug || await askText('Enter the team slug:', 'my-team-slug')
+  const slug = input.slug || defaultConfig.slug || await askText(
+    'Enter the team slug:',
+    'my-team-slug',
+    undefined,
+    'Set SHELVE_TEAM_SLUG or pass --slug.',
+  )
   const projectName = input.projectName || defaultConfig.project || await selectProject(slug)
 
   if (!projectName) handleCancel('Error: no project selected')
 
-  const config = JSON.stringify({
+  createConfigFile(JSON.stringify({
     $schema: SHELVE_JSON_SCHEMA,
     project: projectName.toLowerCase(),
-    slug
-  }, null, 2)
+    slug,
+  }, null, 2))
 
-  createConfigFile(config)
-
-  outro('Configuration file created successfully')
-
+  cliOutro('Configuration file created successfully')
 
   return defu({ project: projectName, slug }, defaultConfig)
 }
@@ -231,8 +241,28 @@ export async function loadShelveConfig(check = false): Promise<ShelveConfig> {
  */
 async function validateConfig(config: ShelveConfig): Promise<void> {
   if (!config.token) await BaseService.getToken()
-  if (!config.slug) handleCancel('You need to provide your team slug')
-  if (!config.project) handleCancel('Please provide a project name')
+  if (!config.slug) {
+    if (isNonInteractive()) {
+      throw new CliError(
+        'Team slug is required.',
+        'MISSING_SLUG',
+        undefined,
+        'Set slug in shelve.json or SHELVE_TEAM_SLUG.',
+      )
+    }
+    handleCancel('You need to provide your team slug')
+  }
+  if (!config.project) {
+    if (isNonInteractive()) {
+      throw new CliError(
+        'Project name is required.',
+        'MISSING_PROJECT',
+        undefined,
+        'Set project in shelve.json or SHELVE_PROJECT.',
+      )
+    }
+    handleCancel('Please provide a project name')
+  }
   if (config.url !== DEFAULT_URL && !/^(http|https):\/\/[^ "]+$/.test(config.url)) {
     handleCancel('Please provide a valid url')
   }

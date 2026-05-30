@@ -2,10 +2,11 @@ import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { dirname, join } from 'node:path'
 import { ofetch, type $Fetch, type FetchOptions } from 'ofetch'
-import { spinner } from '@clack/prompts'
 import type { User } from '@types'
+import { debugLog, isDebug } from '../constants'
 import { askPassword, loadShelveConfig } from '../utils'
-import { formatCliError } from './api-error'
+import { withSpinner } from '../utils/output'
+import { toCliError } from './api-error'
 import { ErrorService } from './error'
 import { CredentialsService } from './credentials'
 
@@ -17,26 +18,12 @@ export abstract class BaseService {
 
   protected static api: $Fetch
 
-  protected static async withLoading<T>(
+  protected static withLoading<T>(
     message: string,
     callback: () => Promise<T>,
     options?: LoadingOptions,
   ): Promise<T> {
-    const s = spinner()
-    try {
-      s.start(message)
-      const result = await callback()
-      s.stop(message)
-      return result
-    } catch (error) {
-      if (options?.recoverable?.(error)) {
-        s.stop(message)
-        throw error
-      }
-
-      s.cancel(formatCliError(error, message))
-      throw error
-    }
+    return withSpinner(message, callback, options)
   }
 
   static whoAmI(url: string, token: string): Promise<User> {
@@ -46,21 +33,30 @@ export abstract class BaseService {
         headers: {
           Authorization: `Bearer ${token}`,
         },
+        onRequest({ request, options: reqOptions }) {
+          logHttpRequest(reqOptions.method || 'GET', request.toString())
+        },
+        onResponse({ request, response, options: reqOptions }) {
+          logHttpResponse(reqOptions.method || 'GET', request.toString(), response.status)
+        },
       })
     })
   }
 
-  static async getToken(returnUser: boolean = false): Promise<string | { user: User, token: string }> {
+  static async getToken(returnUser: boolean = false, tokenFromFlag?: string): Promise<string | { user: User, token: string }> {
     const { url } = await loadShelveConfig()
     const sanitizedUrl = url.replace(/\/+$/, '')
-    const token = await askPassword(`Please provide a valid token (you can generate one on ${sanitizedUrl}/user/tokens)`)
+    const token = await askPassword(
+      `Please provide a valid token (you can generate one on ${sanitizedUrl}/user/tokens)`,
+      tokenFromFlag,
+    )
     const user = await this.whoAmI(url, token)
 
     await CredentialsService.writeToken(url, token, { email: user.email, username: user.username })
 
     if (returnUser) return {
       user,
-      token
+      token,
     }
 
     return token
@@ -81,6 +77,12 @@ export abstract class BaseService {
           Authorization: `Bearer ${config.token}`,
           'User-Agent': `shelve-cli/${getCliVersion()} (${process.platform}; node-${process.versions.node})`,
         },
+        onRequest({ request, options: reqOptions }) {
+          logHttpRequest(reqOptions.method || 'GET', request.toString())
+        },
+        onResponse({ request, response, options: reqOptions }) {
+          logHttpResponse(reqOptions.method || 'GET', request.toString(), response.status)
+        },
         onResponseError: ErrorService.handleApiError,
       })
     }
@@ -90,9 +92,27 @@ export abstract class BaseService {
   protected static async request<T>(endpoint: string, options?: FetchOptions<'json'>): Promise<T> {
     const api = await this.getApi()
 
-    return api<T>(endpoint, options)
+    try {
+      return await api<T>(endpoint, options)
+    } catch (error) {
+      throw toCliError(error)
+    }
   }
 
+}
+
+function logHttpRequest(method: string, url: string): void {
+  if (!isDebug()) return
+  debugLog(`HTTP ${method} ${sanitizeUrl(url)}`)
+}
+
+function logHttpResponse(method: string, url: string, status: number): void {
+  if (!isDebug()) return
+  debugLog(`HTTP ${method} ${sanitizeUrl(url)} → ${status}`)
+}
+
+function sanitizeUrl(url: string): string {
+  return url.replace(/Bearer\s+[^\s]+/gi, 'Bearer ***')
 }
 
 let _cliVersion = ''

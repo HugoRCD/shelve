@@ -1,17 +1,24 @@
-import { intro, outro } from '@clack/prompts'
 import { defineCommand } from 'citty'
 import { loadShelveConfig } from '../utils'
-import { EnvironmentService, EnvService, ProjectService } from '../services'
+import { isNonInteractive } from '../utils/cli-context'
+import { cliIntro, cliSuccess } from '../utils/output'
+import { CliError } from '../services/api-error'
+import { EnvService, ProjectService, EnvironmentService } from '../services'
 
 export default defineCommand({
   meta: {
     name: 'push',
-    description: 'Push variables for specified environment to Shelve'
+    description: 'Push variables for specified environment to Shelve',
   },
   args: {
     env: {
       type: 'string',
       description: 'Specify the environment to which you want to push the variables',
+      required: false,
+    },
+    yes: {
+      type: 'boolean',
+      description: 'Skip confirmation prompts',
       required: false,
     },
   },
@@ -22,10 +29,21 @@ export default defineCommand({
       confirmChanges,
       autoUppercase,
       autoCreateProject,
-      defaultEnv
+      defaultEnv,
     } = await loadShelveConfig(true)
 
-    intro(`Pushing variable to ${project} project`)
+    const confirmed = Boolean(args.yes)
+    if (confirmChanges && !confirmed && isNonInteractive()) {
+      throw new CliError(
+        'Push confirmation is required.',
+        'CONFIRMATION_REQUIRED',
+        undefined,
+        'Pass --yes to confirm pushing variables in non-interactive mode.',
+      )
+    }
+    const effectiveConfirmChanges = confirmed ? false : confirmChanges
+
+    cliIntro(`Pushing variable to ${project} project`)
 
     const projectData = await ProjectService.getProjectByName(project, slug, autoCreateProject)
 
@@ -34,11 +52,27 @@ export default defineCommand({
     const environment = await EnvironmentService.getEnvironment(slug, env)
     const variables = await EnvService.getEnvFile()
 
-    const pushed = await EnvService.pushEnvFile({ variables, project: projectData, environment, confirmChanges, autoUppercase, slug })
+    const pushed = await EnvService.pushEnvFile({
+      variables,
+      project: projectData,
+      environment,
+      confirmChanges: effectiveConfirmChanges,
+      autoUppercase,
+      slug,
+    })
 
-    if (pushed)
-      outro(`Successfully pushed variable to ${environment.name} environment`)
-    else
-      outro('Variable push was cancelled')
-  }
+    if (pushed) {
+      cliSuccess(
+        { env: environment.name, variableCount: variables.length, pushed: true },
+        `Successfully pushed variable to ${environment.name} environment`,
+        'push',
+      )
+    } else {
+      cliSuccess(
+        { env: environment.name, variableCount: variables.length, pushed: false },
+        'Variable push was cancelled',
+        'push',
+      )
+    }
+  },
 })
