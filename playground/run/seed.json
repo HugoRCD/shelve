@@ -1,0 +1,45 @@
+{
+  "user": {
+    "id": 1,
+    "username": "playground",
+    "email": "playground@shelve.local",
+    "role": "user"
+  },
+  "team": {
+    "id": 1,
+    "name": "Playground Team",
+    "slug": "playground-team"
+  },
+  "project": {
+    "id": 1,
+    "name": "playground-app",
+    "description": "Local playground project",
+    "homepage": "https://shelve.local",
+    "repository": "https://github.com/HugoRCD/shelve",
+    "teamId": 1
+  },
+  "environments": [
+    { "id": 10, "name": "development", "teamId": 1 },
+    { "id": 11, "name": "preview",     "teamId": 1 },
+    { "id": 12, "name": "production",  "teamId": 1 }
+  ],
+  "variables": {
+    "development": [
+      { "key": "API_URL",          "value": "http://localhost:3000/api" },
+      { "key": "DATABASE_URL",     "value": "postgres://dev:dev@localhost:5432/playground" },
+      { "key": "STRIPE_SECRET_KEY","value": "sk_test_dev_FAKE_FAKE_FAKE_FAKE" },
+      { "key": "HELLO",            "value": "from-playground-development" }
+    ],
+    "preview": [
+      { "key": "API_URL",          "value": "https://preview.shelve.local/api" },
+      { "key": "HELLO",            "value": "from-playground-preview" }
+    ],
+    "production": [
+      { "key": "API_URL",          "value": "https://shelve.local/api" },
+      { "key": "DATABASE_URL",     "value": "postgres://prod:prod@db/playground" },
+      { "key": "STRIPE_SECRET_KEY","value": "sk_live_prod_FAKE_FAKE_FAKE_FAKE" },
+      { "key": "HELLO",            "value": "from-playground-production" }
+    ]
+  },
+  "token": "shlv_playground_TOKEN_NEVER_USE_IN_PROD"
+}

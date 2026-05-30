@@ -1,61 +1,82 @@
 # `playground/run`
 
-Local fixture for testing `shelve run` end-to-end without leaving the repo.
+Self-contained, zero-network fixture for testing `shelve run` end-to-end.
 
-It is **not** part of the pnpm workspace — `pnpm install` ignores it. That's
-intentional: we don't want lockfile checks or `node_modules` prompts from the
-host project polluting `shelve run` while we're trying to debug it.
+Boots a **fake Shelve API** on `127.0.0.1:7777` (vanilla `node:http`, no deps), seeded with a team / project / environments / variables / token, then runs the locally-stubbed CLI against it. No app, no database, no auth flow — just the CLI's actual request/response loop.
 
 ## What's here
 
-- `package.json` — tiny project with four scripts:
-  - `dev` — prints the injected secrets, then stays alive (handles SIGHUP / SIGINT / SIGTERM, useful for testing `--watch`).
-  - `start` — prints the injected secrets and exits.
-  - `echo` — alias for `start`.
-  - `fail` — exits with code 7. Useful for testing exit-code propagation.
-- `scripts/print-env.mjs` — the actual node script the above call into.
-- `shelve.json` — points the CLI at a Shelve project. **Edit `slug` and `project`** to match a project you own.
+```
+playground/run/
+├── package.json              # 4 scripts (dev / start / echo / fail)
+├── shelve.json               # url + slug + project + defaultEnv (matches seed)
+├── seed.json                 # team, project, environments, variables, token
+├── server.mjs                # fake Shelve API (port 7777)
+├── start.mjs                 # orchestrator: server → wait health → CLI → kill server
+├── scripts/print-env.mjs     # what `dev` / `start` actually run
+└── README.md
+```
 
-## One-time setup
-
-1. Edit `playground/run/shelve.json`:
-   - `project` → name of a project you own on Shelve.
-   - `slug` → your team slug.
-   - `defaultEnv` → an environment you have variables in.
-2. Authenticate the local CLI once:
-   ```sh
-   pnpm cli login
-   ```
+Not part of the pnpm workspace, no deps, nothing to install.
 
 ## Run
 
 From the repo root:
 
 ```sh
-pnpm play                # equivalent to `shelve run dev` inside playground/run
-pnpm play:start          # one-shot: prints env and exits
-pnpm play:fail           # propagate non-zero exit codes
-pnpm play -- --debug     # forward flags to the CLI
+pnpm play              # = shelve run dev  (keep-alive, masks values, handles signals)
+pnpm play:start        # = shelve run start  (one-shot)
+pnpm play:fail         # = shelve run fail   (verifies exit-code propagation)
+pnpm play:watch        # = shelve run dev --watch  (poll-based reload via SIGHUP)
+
+pnpm play -- --debug   # forward flags to the CLI
+pnpm play:server       # only the fake API (handy when iterating on the server itself)
 ```
 
-Under the hood:
+Each `play*` script does three things:
 
-1. `pnpm -C packages/cli stub` rebuilds a tiny `dist/index.mjs` that re-exports
-   from `src/` — so edits to `packages/cli/src/**` are picked up **without a
-   rebuild**.
-2. `cd playground/run && node ../../packages/cli/dist/index.mjs run dev`.
+1. `pnpm -C packages/cli stub` — rebuilds the CLI in stub mode. `dist/index.mjs` becomes a thin re-export of `src/`, so edits in `packages/cli/src/**` are picked up **without a rebuild**.
+2. Boots `server.mjs` and probes `/health` for up to 5s.
+3. Spawns the local CLI with `SHELVE_URL`, `SHELVE_TOKEN`, `SHELVE_TEAM_SLUG`, `SHELVE_PROJECT`, `SHELVE_DEFAULT_ENV` injected from `seed.json`. Server is killed when the CLI exits or you Ctrl-C.
 
-## Iterating on `packages/cli/src/commands/run.ts`
+## What the fake API serves
 
-- Edit the source.
-- Re-run `pnpm play`. No rebuild step.
-- The `--debug` flag prints the resolved command, spawn args, cache key, etc.
+All endpoints require `Authorization: Bearer <anything>` (the orchestrator sends the seed token):
 
-## Notes
+| Method | Path                                                            | Returns                          |
+|--------|-----------------------------------------------------------------|----------------------------------|
+| GET    | `/health`                                                       | `{ ok: true, ts }`               |
+| GET    | `/api/user/me`                                                  | seeded user                      |
+| GET    | `/api/teams/:slug/projects/name/:name`                          | seeded project                   |
+| GET    | `/api/teams/:slug/environments`                                 | seeded environments              |
+| GET    | `/api/teams/:slug/environments/:envName`                        | the matching environment         |
+| GET    | `/api/teams/:slug/projects/:projectId/variables/env/:envId`     | seeded variables for that env    |
+| POST   | `/api/teams/:slug/projects`                                     | echoes the seeded project        |
 
-- `pnpm play` always runs `shelve run dev`. The `dev` script here just calls
-  `node scripts/print-env.mjs --keep-alive`, so no `pnpm install` is ever
-  triggered. If your host project (e.g. a Nuxt app) prompts to reinstall
-  `node_modules` when you run `shelve run dev` there, that's a `pnpm` /
-  `nypm` behavior in your own project — not something `shelve run` itself
-  triggers in this fixture.
+Plus two debug helpers, no auth:
+
+| Method | Path                              | Effect                                                                 |
+|--------|-----------------------------------|------------------------------------------------------------------------|
+| POST   | `/__playground/variables`         | Swap the in-memory variables for one env. Body: `{ env, variables }`.  |
+| POST   | `/__playground/reset`             | Restore the seeded variables.                                          |
+
+Useful for exercising `--watch`:
+
+```sh
+# in another terminal, while `pnpm play:watch` is running:
+curl -s -X POST http://127.0.0.1:7777/__playground/variables \
+  -H 'content-type: application/json' \
+  -d '{"env":"development","variables":[{"key":"HELLO","value":"changed"}]}'
+# CLI should print "Variables changed — reloading child process." within ~5s
+```
+
+## Customizing
+
+- Add / change variables in `seed.json` → re-run.
+- Change the port: `PLAYGROUND_PORT=8888 pnpm play`.
+- Verbose API logs: `PLAYGROUND_VERBOSE=1 pnpm play:server`.
+- Test against the **real** Shelve cloud: just run the CLI normally (`pnpm cli run dev …`) — the playground is opt-in.
+
+## Why this exists
+
+Earlier I had no fast loop on `shelve run` and one silent failure took an hour to reproduce. Now I can edit `packages/cli/src/commands/run.ts` and have the full real-world request flow exercised in 2 seconds with no network, no auth dance, no `app.shelve.cloud` round-trip.
