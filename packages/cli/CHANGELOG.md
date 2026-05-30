@@ -1,5 +1,11 @@
 # @shelve/cli
 
+## 5.0.2
+
+### Patch Changes
+
+- [#745](https://github.com/HugoRCD/shelve/pull/745) [`8e6b0ee`](https://github.com/HugoRCD/shelve/commit/8e6b0eea9533d028db08bbebc9dfff2e51f9e069) Thanks [@HugoRCD](https://github.com/HugoRCD)! - Fix `shelve -v` reporting the cwd project version instead of the CLI version. Fix `shelve login` storing credentials in the legacy `~/.shelve` path while API calls read from XDG/keyring storage.
+
 ## 5.0.1
 
 ### Patch Changes
