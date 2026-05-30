@@ -239,8 +239,9 @@ async function resolveCommandWithScripts(argv: string[]): Promise<{ bin: string;
       try {
         const result = await runScript(script, { cwd: process.cwd(), dry: true })
         if (result.exec) {
-          debugLog(`Resolved script "${script}" → ${result.exec.command} ${result.exec.args.join(' ')}`)
-          return { bin: result.exec.command, argv: result.exec.args }
+          const resolved = quietPackageManagerArgs(result.exec.command, result.exec.args)
+          debugLog(`Resolved script "${script}" → ${resolved.command} ${resolved.args.join(' ')}`)
+          return { bin: resolved.command, argv: resolved.args }
         }
         debugLog(`runScript("${script}", { dry: true }) returned no exec; falling back to direct invocation`)
       } catch (err) {
@@ -252,6 +253,14 @@ async function resolveCommandWithScripts(argv: string[]): Promise<{ bin: string;
   }
 
   return resolveCommand(argv)
+}
+
+function quietPackageManagerArgs(command: string, args: string[]): { command: string; args: string[] } {
+  const basename = command.replace(/\\/g, '/').split('/').pop() || command
+  if ((basename === 'pnpm' || basename === 'npm') && args[0] === 'run' && !args.includes('--silent') && !args.includes('-s')) {
+    return { command, args: ['--silent', ...args] }
+  }
+  return { command, args }
 }
 
 async function spawnChild(rawArgv: string[], env: NodeJS.ProcessEnv): Promise<ChildProcess> {
@@ -371,6 +380,7 @@ function startWatch(opts: WatchOpts): void {
         project: opts.projectData,
         environmentId: opts.environment.id,
         slug: opts.slug,
+        quiet: true,
       })
       const fp = fingerprint(next)
       if (lastPrint && fp !== lastPrint) {
