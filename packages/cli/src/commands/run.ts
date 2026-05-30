@@ -7,7 +7,7 @@ import { intro, log } from '@clack/prompts'
 import type { EnvVarExport, Project, Environment } from '@types'
 import consola from 'consola'
 import { readPackageJSON } from 'pkg-types'
-import { runScript } from 'nypm'
+import treeKill from 'tree-kill'
 import {
   handleCancel,
   loadShelveConfig,
@@ -142,6 +142,12 @@ export default defineCommand({
 
     let child = await spawnChild(argv, secretEnv)
 
+    watchParentLiveness((sig) => {
+      debugLog(`Parent process gone — tearing down child tree`)
+      if (typeof child.pid === 'number') killTree(child.pid, sig)
+      setTimeout(() => process.exit(129), 1500).unref()
+    })
+
     if (runArgs.watch) {
       if (!projectData || !environment) {
         log.warn('Watch mode requires a successful API connection on startup; ignoring --watch.')
@@ -165,8 +171,12 @@ export default defineCommand({
         })
       }
     }
+
+    await new Promise<never>(() => {})
   },
 })
+
+type ChildWithFlag = ChildProcess & { __restarting?: boolean }
 
 function loadTemplateOrExit(path: string): ParsedTemplate {
   const tpl = loadTemplate(path)
@@ -225,32 +235,115 @@ function resolveCommand(argv: string[]): { bin: string; argv: string[] } {
   return { bin: argv[0]!, argv: argv.slice(1) }
 }
 
-async function resolveCommandWithScripts(argv: string[]): Promise<{ bin: string; argv: string[] }> {
+type SpawnTarget = { bin: string; argv: string[] }
+
+/** Run the package.json script body via the system shell (same as npm/pnpm would, without the PM wrapper that prints ELIFECYCLE on SIGINT). */
+function resolveDirectScriptSpawn(scriptBody: string): SpawnTarget {
+  if (IS_WINDOWS) {
+    return { bin: 'cmd.exe', argv: ['/d', '/s', '/c', scriptBody] }
+  }
+  return { bin: 'sh', argv: ['-c', scriptBody] }
+}
+
+async function resolveCommandWithScripts(argv: string[]): Promise<SpawnTarget> {
   if (argv.length === 1 && !argv[0]!.includes('/') && !argv[0]!.includes(' ')) {
     const script = argv[0]!
     const pkg = await readPackageJSON().catch(() => null)
-    if (pkg?.scripts?.[script]) {
-      const result = await runScript(script, { cwd: process.cwd(), dry: true })
-      if (result.exec) {
-        debugLog(`Resolved script "${script}" → ${result.exec.command} ${result.exec.args.join(' ')}`)
-        return { bin: result.exec.command, argv: result.exec.args }
-      }
+    const scriptBody = pkg?.scripts?.[script]
+    if (scriptBody) {
+      debugLog(`Resolved script "${script}" → ${scriptBody} (direct)`)
+      return resolveDirectScriptSpawn(scriptBody)
+    }
+    if (pkg) {
+      debugLog(`No script "${script}" in package.json; treating as a literal binary`)
     }
   }
 
   return resolveCommand(argv)
 }
 
+const IS_WINDOWS = process.platform === 'win32'
+
+/** Exit codes produced when the user interrupts (SIGINT=130, SIGTERM=143, SIGHUP=129). */
+function isSignalExitCode(code: number | null): boolean {
+  return code === 130 || code === 143 || code === 129
+}
+
+function exitFromChild(code: number | null, signal: NodeJS.Signals | null): void {
+  if (parentSignalShuttingDown || isSignalExitCode(code)) {
+    process.exit(0)
+  }
+  if (code !== null) process.exit(code)
+  if (signal) {
+    const num = (os.constants.signals as Record<string, number>)[signal] ?? 0
+    process.exit(128 + num)
+  }
+  process.exit(0)
+}
+const PARENT_WATCH_INTERVAL_MS = 2_000
+
+function killTree(pid: number, signal: NodeJS.Signals = 'SIGTERM'): void {
+  treeKill(pid, signal, (err) => {
+    if (err) debugLog(`tree-kill ${signal} pid=${pid} failed`, err)
+  })
+}
+
+let currentChild: ChildProcess | null = null
+let signalHandlersInstalled = false
+let parentSignalShuttingDown = false
+let parentSignalKillTimer: ReturnType<typeof setTimeout> | null = null
+
+function ensureSignalHandlers(): void {
+  if (signalHandlersInstalled) return
+  signalHandlersInstalled = true
+  const onSignal = (sig: NodeJS.Signals, exitCode: number): void => {
+    if (parentSignalShuttingDown) {
+      if (currentChild?.pid) killTree(currentChild.pid, 'SIGKILL')
+      process.exit(exitCode)
+    }
+    parentSignalShuttingDown = true
+    debugLog(`Received ${sig}, forwarding to child tree`)
+    if (currentChild?.pid) killTree(currentChild.pid, sig)
+    parentSignalKillTimer = setTimeout(() => {
+      consola.warn('Child did not exit after 5s, sending SIGKILL')
+      if (currentChild?.pid) killTree(currentChild.pid, 'SIGKILL')
+      setTimeout(() => process.exit(exitCode), 500).unref()
+    }, 5000)
+  }
+  process.on('SIGINT', () => onSignal('SIGINT', 130))
+  process.on('SIGTERM', () => onSignal('SIGTERM', 143))
+  process.on('SIGHUP', () => onSignal('SIGHUP', 129))
+}
+
+function watchParentLiveness(onParentGone: (sig: NodeJS.Signals) => void): void {
+  const parentPid = process.ppid
+  if (!parentPid || parentPid === 1) return
+  const initial = parentPid
+  const timer = setInterval(() => {
+    try {
+      process.kill(initial, 0)
+      if (!IS_WINDOWS && process.ppid !== initial) {
+        debugLog(`Parent pid changed (${initial} → ${process.ppid}); treating as parent death`)
+        clearInterval(timer)
+        onParentGone('SIGTERM')
+      }
+    } catch {
+      clearInterval(timer)
+      onParentGone('SIGTERM')
+    }
+  }, PARENT_WATCH_INTERVAL_MS)
+  timer.unref()
+}
+
 async function spawnChild(rawArgv: string[], env: NodeJS.ProcessEnv): Promise<ChildProcess> {
   const { bin, argv } = await resolveCommandWithScripts(rawArgv)
   debugLog(`Spawning: ${bin} ${argv.join(' ')}`)
-  const isWindows = process.platform === 'win32'
 
   const child = spawn(bin, argv, {
     env,
     stdio: 'inherit',
-    detached: !isWindows,
     shell: false,
+    windowsHide: true,
   })
 
   if (typeof child.pid !== 'number') {
@@ -261,52 +354,39 @@ async function spawnChild(rawArgv: string[], env: NodeJS.ProcessEnv): Promise<Ch
     process.exit(1)
   }
 
-  attachLifecycle(child, isWindows)
+  attachLifecycle(child)
   return child
 }
 
-function attachLifecycle(child: ChildProcess, isWindows: boolean): void {
-  let shuttingDown = false
-  let killTimer: ReturnType<typeof setTimeout> | null = null
+const QUICK_EXIT_THRESHOLD_MS = 250
 
-  const killGroup = (signal: NodeJS.Signals): void => {
-    try {
-      if (isWindows) child.kill(signal)
-      else if (typeof child.pid === 'number') process.kill(-child.pid, signal)
-    } catch (err) {
-      debugLog(`kill(${signal}) failed`, err)
-    }
-  }
-
-  const onSignal = (signal: NodeJS.Signals): void => {
-    if (shuttingDown) {
-      killGroup('SIGKILL')
-      process.exit(130)
-    }
-    shuttingDown = true
-    debugLog(`Received ${signal}, forwarding to child`)
-    killGroup(signal)
-    killTimer = setTimeout(() => {
-      consola.warn('Child did not exit after 5s, sending SIGKILL')
-      killGroup('SIGKILL')
-    }, 5000)
-  }
-
-  const signals: NodeJS.Signals[] = ['SIGINT', 'SIGTERM', 'SIGHUP']
-  for (const sig of signals) process.on(sig, () => onSignal(sig))
+function attachLifecycle(child: ChildProcess): void {
+  ensureSignalHandlers()
+  currentChild = child
+  const spawnedAt = Date.now()
 
   child.on('exit', (code, signal) => {
-    if (killTimer) clearTimeout(killTimer)
-    if (code !== null) process.exit(code)
-    if (signal) {
-      const num = (os.constants.signals as Record<string, number>)[signal] ?? 0
-      process.exit(128 + num)
+    if (parentSignalKillTimer) {
+      clearTimeout(parentSignalKillTimer)
+      parentSignalKillTimer = null
     }
-    process.exit(0)
+    if ((child as ChildWithFlag).__restarting) return
+    const elapsed = Date.now() - spawnedAt
+    if (!parentSignalShuttingDown && code === 0 && elapsed < QUICK_EXIT_THRESHOLD_MS) {
+      consola.warn(
+        `Child exited cleanly after ${elapsed}ms — that's suspiciously fast. `
+        + `Run \`shelve run … --debug\` to see the resolved command. `
+        + `If you're invoking a script name (e.g. \`shelve run dev\`), try \`shelve run -- pnpm dev\` to bypass script resolution.`
+      )
+    }
+    exitFromChild(code, signal)
   })
 
   child.on('error', (err) => {
-    if (killTimer) clearTimeout(killTimer)
+    if (parentSignalKillTimer) {
+      clearTimeout(parentSignalKillTimer)
+      parentSignalKillTimer = null
+    }
     consola.error(`Failed to spawn process: ${err.message}`)
     process.exit(1)
   })
@@ -346,6 +426,7 @@ function startWatch(opts: WatchOpts): void {
         project: opts.projectData,
         environmentId: opts.environment.id,
         slug: opts.slug,
+        quiet: true,
       })
       const fp = fingerprint(next)
       if (lastPrint && fp !== lastPrint) {
@@ -355,23 +436,13 @@ function startWatch(opts: WatchOpts): void {
         }
         const env = buildEnv(next, opts.template, opts.envName)
         if (opts.restartOnChange) {
-          const child = opts.getChild()
-          if (child.pid && process.platform !== 'win32') {
-            try {
-              process.kill(-child.pid, 'SIGTERM') 
-            } catch { /* ignore */ }
-          } else {
-            child.kill('SIGTERM')
-          }
+          const old = opts.getChild() as ChildWithFlag
+          old.__restarting = true
+          if (typeof old.pid === 'number') killTree(old.pid, 'SIGTERM')
           await opts.spawnNew(env)
         } else {
           const child = opts.getChild()
-          try {
-            if (child.pid && process.platform !== 'win32') process.kill(-child.pid, 'SIGHUP')
-            else child.kill('SIGHUP')
-          } catch (err) {
-            debugLog('Failed to send SIGHUP', err)
-          }
+          if (typeof child.pid === 'number') killTree(child.pid, 'SIGHUP')
         }
       }
       lastPrint = fp

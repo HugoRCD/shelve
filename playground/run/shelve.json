@@ -1,0 +1,7 @@
+{
+  "$schema": "https://shelve.cloud/schema.json",
+  "url": "http://127.0.0.1:7777",
+  "slug": "playground-team",
+  "project": "playground-app",
+  "defaultEnv": "development"
+}

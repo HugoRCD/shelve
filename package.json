@@ -24,6 +24,11 @@
     "dev:cli": "turbo run dev --filter=@shelve/cli",
     "test": "turbo run test",
     "cli": "pnpm -C packages/cli stub && node packages/cli/dist/index.mjs",
+    "play": "pnpm -C packages/cli stub && node playground/run/start.mjs run dev",
+    "play:start": "pnpm -C packages/cli stub && node playground/run/start.mjs run start",
+    "play:fail": "pnpm -C packages/cli stub && node playground/run/start.mjs run fail",
+    "play:watch": "pnpm -C packages/cli stub && node playground/run/start.mjs run dev --watch --restart-on-change",
+    "play:server": "node playground/run/server.mjs",
     "db:generate": "pnpm --filter @shelve/app db:generate",
     "db:migrate": "pnpm --filter @shelve/app db:migrate"
   },

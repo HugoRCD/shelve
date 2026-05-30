@@ -93,11 +93,11 @@ export class EnvService extends BaseService {
     })
   }
 
-  static getEnvVariables(input: GetEnvVariables): Promise<EnvVarExport[]> {
-    const { project, environmentId, slug } = input
-    return this.withLoading('Fetch variables', () => {
-      return this.request<EnvVarExport[]>(`/teams/${slug}/projects/${project.id}/variables/env/${environmentId}`)
-    })
+  static getEnvVariables(input: GetEnvVariables & { quiet?: boolean }): Promise<EnvVarExport[]> {
+    const { project, environmentId, slug, quiet } = input
+    const endpoint = `/teams/${slug}/projects/${project.id}/variables/env/${environmentId}`
+    if (quiet) return this.request<EnvVarExport[]>(endpoint)
+    return this.withLoading('Fetch variables', () => this.request<EnvVarExport[]>(endpoint))
   }
 
   static async pushEnvFile(input: PushEnvFileInput): Promise<boolean> {

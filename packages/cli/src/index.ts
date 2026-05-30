@@ -20,6 +20,12 @@ import init from './commands/init'
 
 initDebugFromArgv()
 
+process.stdin.on?.('error', (err: NodeJS.ErrnoException) => {
+  if (err && err.code === 'EIO') {
+    process.exit(129)
+  }
+})
+
 function getCliPackageVersion(): string {
   try {
     const here = dirname(fileURLToPath(import.meta.url))
