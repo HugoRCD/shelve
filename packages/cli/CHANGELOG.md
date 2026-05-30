@@ -1,5 +1,11 @@
 # @shelve/cli
 
+## 5.0.3
+
+### Patch Changes
+
+- [#747](https://github.com/HugoRCD/shelve/pull/747) [`11b0a93`](https://github.com/HugoRCD/shelve/commit/11b0a9323d0291a7305b524559ea7947492b144e) Thanks [@HugoRCD](https://github.com/HugoRCD)! - Fix `shelve run dev` script resolution, add `--debug` / `SHELVE_DEBUG`, and clean up CLI error output so spinner failures no longer overlap with error messages.
+
 ## 5.0.2
 
 ### Patch Changes
