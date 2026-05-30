@@ -1,5 +1,11 @@
 # @shelve/app
 
+## 3.2.0
+
+### Minor Changes
+
+- [#752](https://github.com/HugoRCD/shelve/pull/752) [`787cf07`](https://github.com/HugoRCD/shelve/commit/787cf07edc88d16c9cb7037078f52bb00162aba3) Thanks [@HugoRCD](https://github.com/HugoRCD)! - Add sync policies for push/pull conflict handling, `shelve diff` and `shelve sync`, server-side protected environments on projects, and consolidate published agent skills into a single comprehensive `shelve` skill (remove `shelve-app`).
+
 ## 3.1.0
 
 ### Minor Changes
