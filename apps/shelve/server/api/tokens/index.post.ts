@@ -41,7 +41,9 @@ export default defineEventHandler(async (event): Promise<TokenWithSecret> => {
 
   if (!created) throw createError({ statusCode: 500, statusMessage: 'Failed to create token' })
 
-  await logAudit(event, {
+  const teamIds = await resolveTeamIdsFromTokenScopes(created.scopes, user.id)
+
+  await logAuditForTeams(event, teamIds, {
     action: 'token.create',
     resourceType: 'token',
     resourceId: created.id,

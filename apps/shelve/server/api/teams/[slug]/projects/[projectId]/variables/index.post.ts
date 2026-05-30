@@ -59,6 +59,7 @@ export default eventHandler(async (event) => {
     metadata: {
       keys: body.variables.map(v => v.key),
       environmentIds: body.environmentIds,
+      projectName: project.name,
       syncWithGitHub: body.syncWithGitHub === true,
     },
   })

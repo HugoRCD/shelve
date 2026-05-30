@@ -26,6 +26,9 @@ declare module '#auth-utils' {
     defaultTeamSlug?: string
     loggedInAt: Date
     tokenScopes?: TokenScopes
+    tokenId?: number
+    tokenPrefix?: string
+    tokenName?: string
   }
 
   interface SecureSessionData {

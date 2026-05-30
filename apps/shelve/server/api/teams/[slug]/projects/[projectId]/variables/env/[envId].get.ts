@@ -21,12 +21,19 @@ export default eventHandler(async (event) => {
 
   const variablesService = new VariablesService(event)
 
+  const project = await new ProjectsService().getProject(projectId)
+  const environmentName = await getEnvironmentName(envId, team.id)
+
   void logAudit(event, {
     teamId: team.id,
     action: 'variables.read',
     resourceType: 'environment',
     resourceId: envId,
-    metadata: { projectId },
+    metadata: {
+      projectId,
+      projectName: project.name,
+      environmentName,
+    },
   })
 
   variablesService.incrementStatAsync(team.id, 'pull')

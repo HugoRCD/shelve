@@ -43,6 +43,17 @@ const activeTab = computed({
   }
 })
 
+const sectionDescription = computed(() => {
+  switch (activeTab.value) {
+    case 'audit-logs':
+      return 'Review every sensitive action across this team.'
+    case 'settings':
+      return 'Manage team settings and preferences.'
+    default:
+      return 'Manage team members and settings'
+  }
+})
+
 useSeoMeta({
   titleTemplate: () => `%s - ${currentTeam.value.name} Team - Shelve`
 })
@@ -51,7 +62,7 @@ useSeoMeta({
 <template>
   <PageSection
     title="Team"
-    description="Manage team members and settings"
+    :description="sectionDescription"
     :image="currentTeam?.logo"
   >
     <UTabs v-model="activeTab" :items variant="link" class="w-full mb-2" />

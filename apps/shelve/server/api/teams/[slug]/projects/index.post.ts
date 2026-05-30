@@ -16,8 +16,18 @@ export default eventHandler(async (event) => {
 
   const body = await readValidatedBody(event, createProjectSchema.parse)
 
-  return await new ProjectsService().createProject({
+  const project = await new ProjectsService().createProject({
     ...body,
     teamId: team.id,
   })
+
+  await logAudit(event, {
+    teamId: team.id,
+    action: 'project.create',
+    resourceType: 'project',
+    resourceId: project.id,
+    metadata: { name: project.name },
+  })
+
+  return project
 })

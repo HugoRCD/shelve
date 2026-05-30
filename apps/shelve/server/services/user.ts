@@ -104,7 +104,7 @@ function generateUniqueUsername(username: string): string {
 export async function authenticateToken(
   rawToken: string,
   event: H3Event
-): Promise<{ user: User; scopes: TokenScopes }> {
+): Promise<{ user: User; scopes: TokenScopes; token: { id: number; prefix: string; name: string } }> {
   if (!rawToken || !rawToken.startsWith('she_')) {
     throw createError({ statusCode: 401, statusMessage: 'Invalid token' })
   }
@@ -138,7 +138,11 @@ export async function authenticateToken(
     .set({ lastUsedAt: new Date(), lastUsedIp: ip })
     .where(eq(schema.tokens.id, token.id))
 
-  return { user, scopes: token.scopes }
+  return {
+    user,
+    scopes: token.scopes,
+    token: { id: token.id, prefix: token.prefix, name: token.name },
+  }
 }
 
 function isIpInCidr(ip: string, cidr: string): boolean {
