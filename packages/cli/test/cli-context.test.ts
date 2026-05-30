@@ -64,3 +64,11 @@ describe('getCommandFromArgv with -- separator', () => {
     expect(getCommandFromArgv(['node', 'shelve', 'run', '--', '--json', 'config'])).toBe('run')
   })
 })
+
+describe('initCliContextFromArgv with -- separator', () => {
+  it('ignores global flags after -- when initializing context', () => {
+    initCliContextFromArgv(['node', 'shelve', 'run', '--', '--json', '--yes'])
+    expect(isJson()).toBe(false)
+    expect(shouldSkipConfirm()).toBe(false)
+  })
+})

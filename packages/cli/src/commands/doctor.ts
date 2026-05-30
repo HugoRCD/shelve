@@ -258,7 +258,17 @@ function finishDoctor(checks: DoctorCheck[]): never | void {
     if (healthy) {
       cliSuccess(data, undefined, 'doctor')
     } else {
-      console.error(JSON.stringify({ ok: false, command: 'doctor', data }))
+      const failedCheck = checks.find(c => c.status === 'error')
+      console.error(JSON.stringify({
+        ok: false,
+        command: 'doctor',
+        error: {
+          code: 'DOCTOR_UNHEALTHY',
+          message: failedCheck?.message ?? 'Doctor checks failed',
+          ...(failedCheck?.hint ? { hint: failedCheck.hint } : {}),
+          details: data,
+        },
+      }))
     }
   } else {
     for (const check of checks) {

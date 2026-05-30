@@ -49,11 +49,17 @@ function hasFlag(argv: string[], ...flags: string[]): boolean {
   return flags.some(flag => argv.includes(flag))
 }
 
+function argvBeforeDoubleDash(argv: string[]): string[] {
+  const index = argv.indexOf('--')
+  return index >= 0 ? argv.slice(0, index) : argv
+}
+
 export function initCliContextFromArgv(argv: string[] = process.argv): void {
-  jsonMode = hasFlag(argv, '--json')
-  quietMode = hasFlag(argv, '--quiet', '-q')
-  yesMode = hasFlag(argv, '--yes', '-y')
-  nonInteractiveFlag = hasFlag(argv, '--non-interactive')
+  const cliArgv = argvBeforeDoubleDash(argv)
+  jsonMode = hasFlag(cliArgv, '--json')
+  quietMode = hasFlag(cliArgv, '--quiet', '-q')
+  yesMode = hasFlag(cliArgv, '--yes', '-y')
+  nonInteractiveFlag = hasFlag(cliArgv, '--non-interactive')
 
   if (process.env.CI === 'true' || process.env.CI === '1') {
     nonInteractiveFlag = true

@@ -36,25 +36,33 @@ async function fetchLatestCliVersion(): Promise<string> {
 }
 
 export async function isLatestVersion(): Promise<boolean> {
-  if (!isQuiet() && !isJson()) s.start('Checking for updates')
+  const showSpinner = !isQuiet() && !isJson()
+  if (showSpinner) s.start('Checking for updates')
 
-  const latestVersion = await fetchLatestCliVersion()
+  try {
+    const latestVersion = await fetchLatestCliVersion()
+    const isUpdated = semver.gte(version, latestVersion)
 
-  if (!isQuiet() && !isJson()) s.stop('Checking for updates')
-  const isUpdated = semver.gte(version, latestVersion)
+    if (!isUpdated && showSpinner)
+      note(`Shelve CLI ${version} is available (latest version is ${latestVersion})`, 'Update available')
 
-  if (!isUpdated && !isQuiet() && !isJson())
-    note(`Shelve CLI ${version} is available (latest version is ${latestVersion})`, 'Update available')
-
-  return isUpdated
+    return isUpdated
+  } finally {
+    if (showSpinner) s.stop('Checking for updates')
+  }
 }
 
 export async function installLatest(): Promise<string> {
+  const showSpinner = !isQuiet() && !isJson()
   const latestVersion = await fetchLatestCliVersion()
-  if (!isQuiet() && !isJson()) s.start('Updating Shelve CLI')
-  await addDependency('@shelve/cli@latest', {
-    silent: true,
-  })
-  if (!isQuiet() && !isJson()) s.stop('Updating Shelve CLI')
-  return latestVersion
+  if (showSpinner) s.start('Updating Shelve CLI')
+
+  try {
+    await addDependency('@shelve/cli@latest', {
+      silent: true,
+    })
+    return latestVersion
+  } finally {
+    if (showSpinner) s.stop('Updating Shelve CLI')
+  }
 }

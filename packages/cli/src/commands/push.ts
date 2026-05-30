@@ -1,5 +1,5 @@
 import { defineCommand } from 'citty'
-import { loadShelveConfig, shouldSkipConfirm } from '../utils'
+import { loadShelveConfig } from '../utils'
 import { isNonInteractive } from '../utils/cli-context'
 import { cliIntro, cliSuccess } from '../utils/output'
 import { CliError } from '../services/api-error'
@@ -32,7 +32,7 @@ export default defineCommand({
       defaultEnv,
     } = await loadShelveConfig(true)
 
-    const confirmed = args.yes || shouldSkipConfirm()
+    const confirmed = Boolean(args.yes)
     if (confirmChanges && !confirmed && isNonInteractive()) {
       throw new CliError(
         'Push confirmation is required.',
