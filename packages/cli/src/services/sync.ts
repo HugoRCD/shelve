@@ -139,7 +139,10 @@ export class SyncService {
     message: string,
   ): Promise<void> {
     const needsConfirm = (confirmChanges || policy.requireConfirmation) && !skipConfirm
-    if (needsConfirm) await askBoolean(message)
+    if (!needsConfirm) return
+
+    const response = await askBoolean(message)
+    if (isCancel(response) || response === false) cliCancel('Operation cancelled.')
   }
 
 }
