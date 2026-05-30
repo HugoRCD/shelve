@@ -1,5 +1,5 @@
-import { isNonInteractive } from './cli-context'
 import { CliError } from '../services/api-error'
+import { isNonInteractive } from './cli-context'
 
 export function assertSyncConfirmationAllowed(
   confirmChanges: boolean,
