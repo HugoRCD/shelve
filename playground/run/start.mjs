@@ -55,6 +55,7 @@ const onSignal = (sig, exitCode) => {
 }
 process.on('SIGINT', () => onSignal('SIGINT', 130))
 process.on('SIGTERM', () => onSignal('SIGTERM', 143))
+process.on('SIGHUP', () => onSignal('SIGHUP', 129))
 process.on('exit', () => killAll('SIGTERM'))
 
 serverProc.on('error', (err) => {
