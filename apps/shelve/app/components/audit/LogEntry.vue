@@ -5,16 +5,29 @@ defineProps<{
   entry: AuditLogEntry
 }>()
 
-defineEmits<{
+const emit = defineEmits<{
   select: []
 }>()
+
+function onSelect() {
+  emit('select')
+}
+
+function onKeydown(event: KeyboardEvent) {
+  if (event.key === 'Enter' || event.key === ' ') {
+    event.preventDefault()
+    onSelect()
+  }
+}
 </script>
 
 <template>
-  <button
-    type="button"
-    class="group flex w-full items-start gap-3 rounded-lg px-3 py-3 text-left transition-colors hover:bg-elevated/50"
-    @click="$emit('select')"
+  <div
+    role="button"
+    tabindex="0"
+    class="group flex w-full cursor-pointer items-start gap-3 rounded-lg px-3 py-3 text-left transition-colors hover:bg-elevated/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+    @click="onSelect"
+    @keydown="onKeydown"
   >
     <div
       class="flex size-8 shrink-0 items-center justify-center rounded-md bg-elevated/60"
@@ -76,5 +89,5 @@ defineEmits<{
         </div>
       </div>
     </div>
-  </button>
+  </div>
 </template>

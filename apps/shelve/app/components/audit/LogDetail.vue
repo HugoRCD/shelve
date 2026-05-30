@@ -13,6 +13,10 @@ const hasMetadata = computed(() => {
 })
 
 const showRawMetadata = ref(false)
+
+watch(() => props.entry?.id, () => {
+  showRawMetadata.value = false
+})
 </script>
 
 <template>

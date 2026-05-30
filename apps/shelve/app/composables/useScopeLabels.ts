@@ -4,9 +4,9 @@ export type ScopeLabels = {
   environments: Record<number, string>
 }
 
-const scopeLabels = useState<ScopeLabels | null>('scope-labels', () => null)
-
 export function useScopeLabels() {
+  const scopeLabels = useState<ScopeLabels | null>('scope-labels', () => null)
+
   async function fetchScopeLabels() {
     if (scopeLabels.value) return scopeLabels.value
     scopeLabels.value = await $fetch<ScopeLabels>('/api/user/scope-labels')

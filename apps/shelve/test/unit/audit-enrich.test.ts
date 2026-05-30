@@ -48,4 +48,14 @@ describe('buildSummary', () => {
     }), emptyMaps)
     expect(summary).toBe('Created API token ci-deploy')
   })
+
+  test('falls back to project context when variable key is missing', () => {
+    const summary = buildSummary(log({
+      action: 'variables.update',
+      resourceType: 'variable',
+      resourceId: '42',
+      metadata: { projectId: 13 },
+    }), emptyMaps)
+    expect(summary).toBe('Updated variable in web-platform')
+  })
 })

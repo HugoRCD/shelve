@@ -17,12 +17,11 @@ export default defineEventHandler(async (event): Promise<AuditLogResponse> => {
 
   await requireTokenScope(event, { teamId: team.id, permission: 'read' })
 
-  const conditions = [eq(schema.auditLogs.teamId, team.id)]
-  if (cursor) conditions.push(lt(schema.auditLogs.id, cursor))
-  if (action) conditions.push(eq(schema.auditLogs.action, action))
-  if (actorType) conditions.push(eq(schema.auditLogs.actorType, actorType))
+  const baseConditions = [eq(schema.auditLogs.teamId, team.id)]
+  if (action) baseConditions.push(eq(schema.auditLogs.action, action))
+  if (actorType) baseConditions.push(eq(schema.auditLogs.actorType, actorType))
   if (projectId) {
-    conditions.push(
+    baseConditions.push(
       or(
         and(
           eq(schema.auditLogs.resourceType, 'project'),
@@ -33,22 +32,25 @@ export default defineEventHandler(async (event): Promise<AuditLogResponse> => {
     )
   }
 
-  const where = and(...conditions)
+  const where = and(...baseConditions)
 
   const [countRow] = await db
     .select({ count: sql<number>`count(*)::int` })
     .from(schema.auditLogs)
     .where(where)
 
+  const pageConditions = [...baseConditions]
+  if (cursor) pageConditions.push(lt(schema.auditLogs.id, cursor))
+
   const rows = await db.select()
     .from(schema.auditLogs)
-    .where(where)
+    .where(and(...pageConditions))
     .orderBy(desc(schema.auditLogs.id))
     .limit(limit + 1)
 
   const logs = rows.slice(0, limit)
   const nextCursor = rows.length > limit ? rows[limit - 1]!.id : null
-  const enriched = await enrichAuditLogs(logs, slug)
+  const enriched = await enrichAuditLogs(logs, slug, team.id)
 
   return {
     logs: enriched,

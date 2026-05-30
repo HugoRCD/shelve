@@ -2,6 +2,22 @@ import { test, expect } from 'vitest'
 import type { AuditLogResponse } from '@types'
 import type { E2EContext } from '../helpers'
 
+async function waitForAuditAction(
+  ctx: E2EContext,
+  action: string,
+  timeoutMs = 5000,
+): Promise<AuditLogResponse> {
+  const startedAt = Date.now()
+
+  while (Date.now() - startedAt < timeoutMs) {
+    const feed = await ctx.api<AuditLogResponse>(`/api/teams/${ctx.teamSlug}/audit-logs`)
+    if (feed.logs.some(entry => entry.action === action)) return feed
+    await new Promise(resolve => setTimeout(resolve, 200))
+  }
+
+  throw new Error(`Timed out waiting for audit action "${action}"`)
+}
+
 export function registerAuditLogTests(ctx: E2EContext) {
   test('records a `token.create` event when a token is created', async () => {
     await ctx.api('/api/tokens', {
@@ -9,7 +25,7 @@ export function registerAuditLogTests(ctx: E2EContext) {
       body: { name: 'audited-token' },
     })
 
-    const feed = await ctx.api<AuditLogResponse>(`/api/teams/${ctx.teamSlug}/audit-logs`)
+    const feed = await waitForAuditAction(ctx, 'token.create')
     expect(Array.isArray(feed.logs)).toBe(true)
     expect(feed.logs.some(entry => entry.action === 'token.create')).toBe(true)
     expect(feed.logs[0]?.summary).toBeTruthy()

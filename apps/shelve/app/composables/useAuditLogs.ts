@@ -14,6 +14,7 @@ export function useAuditLogs(teamSlug: Ref<string> | ComputedRef<string>) {
   const cursor = ref<number | null>(null)
   const hasMore = ref(false)
   const total = ref(0)
+  let requestId = 0
 
   const filters = reactive<AuditLogFilters>({
     action: undefined,
@@ -22,6 +23,8 @@ export function useAuditLogs(teamSlug: Ref<string> | ComputedRef<string>) {
   })
 
   async function fetchLogs(reset = false) {
+    const currentRequestId = ++requestId
+
     if (reset) {
       loading.value = true
       cursor.value = null
@@ -41,15 +44,21 @@ export function useAuditLogs(teamSlug: Ref<string> | ComputedRef<string>) {
         { query },
       )
 
+      if (currentRequestId !== requestId) return
+
       logs.value = reset ? res.logs : [...logs.value, ...res.logs]
       cursor.value = res.nextCursor
       hasMore.value = res.nextCursor !== null
       total.value = res.total
     } catch {
-      toast.error('Failed to fetch audit logs')
+      if (currentRequestId === requestId) {
+        toast.error('Failed to fetch audit logs')
+      }
     } finally {
-      loading.value = false
-      loadingMore.value = false
+      if (currentRequestId === requestId) {
+        loading.value = false
+        loadingMore.value = false
+      }
     }
   }
 

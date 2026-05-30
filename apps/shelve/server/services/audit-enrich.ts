@@ -35,7 +35,7 @@ function collectIds(logs: AuditLog[]) {
   return { userIds, tokenIds, projectIds, environmentIds }
 }
 
-async function buildLookupMaps(ids: ReturnType<typeof collectIds>): Promise<LookupMaps> {
+async function buildLookupMaps(ids: ReturnType<typeof collectIds>, teamId: number): Promise<LookupMaps> {
   const users = new Map<number, { username: string; email: string; avatar: string }>()
   const tokens = new Map<number, { name: string; prefix: string }>()
   const projects = new Map<number, { name: string; teamId: number }>()
@@ -59,7 +59,10 @@ async function buildLookupMaps(ids: ReturnType<typeof collectIds>): Promise<Look
 
   if (ids.projectIds.size) {
     const rows = await db.query.projects.findMany({
-      where: inArray(schema.projects.id, [...ids.projectIds]),
+      where: and(
+        inArray(schema.projects.id, [...ids.projectIds]),
+        eq(schema.projects.teamId, teamId),
+      ),
       columns: { id: true, name: true, teamId: true },
     })
     for (const row of rows) projects.set(row.id, row)
@@ -67,7 +70,10 @@ async function buildLookupMaps(ids: ReturnType<typeof collectIds>): Promise<Look
 
   if (ids.environmentIds.size) {
     const rows = await db.query.environments.findMany({
-      where: inArray(schema.environments.id, [...ids.environmentIds]),
+      where: and(
+        inArray(schema.environments.id, [...ids.environmentIds]),
+        eq(schema.environments.teamId, teamId),
+      ),
       columns: { id: true, name: true, teamId: true },
     })
     for (const row of rows) environments.set(row.id, row)
@@ -177,11 +183,12 @@ function actionIcon(action: string): { icon: string; color: string } {
 export async function enrichAuditLogs(
   logs: AuditLog[],
   teamSlug: string,
+  teamId: number,
 ): Promise<AuditLogEntry[]> {
   if (!logs.length) return []
 
   const ids = collectIds(logs)
-  const maps = await buildLookupMaps(ids)
+  const maps = await buildLookupMaps(ids, teamId)
 
   return logs.map((log) => {
     const parsed = parseUserAgent(log.userAgent)

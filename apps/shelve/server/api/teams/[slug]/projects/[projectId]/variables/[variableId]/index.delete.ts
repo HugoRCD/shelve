@@ -8,22 +8,25 @@ export default eventHandler(async (event) => {
   const { projectId } = await getValidatedRouterParams(event, projectIdParamsSchema.parse)
 
   const existing = await db.query.variables.findFirst({
-    where: eq(schema.variables.id, variableId),
+    where: and(
+      eq(schema.variables.id, variableId),
+      eq(schema.variables.projectId, projectId),
+    ),
   })
   if (!existing) throw createError({ statusCode: 404, statusMessage: 'Variable not found' })
 
-  const project = await new ProjectsService().getProject(projectId)
+  const project = await new ProjectsService().getProject(existing.projectId)
 
   await new VariablesService(event).deleteVariable(variableId)
 
-  await logAudit(event, {
+  void logAudit(event, {
     teamId: team.id,
     action: 'variables.delete',
     resourceType: 'variable',
     resourceId: variableId,
     metadata: {
       key: existing.key,
-      projectId,
+      projectId: existing.projectId,
       projectName: project.name,
     },
   })

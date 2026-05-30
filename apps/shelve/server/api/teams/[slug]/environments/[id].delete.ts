@@ -17,7 +17,7 @@ export default defineEventHandler(async (event) => {
 
   await clearCache('Environments', team.id)
 
-  await logAudit(event, {
+  void logAudit(event, {
     teamId: team.id,
     action: 'environment.delete',
     resourceType: 'environment',

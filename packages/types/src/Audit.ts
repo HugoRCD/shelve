@@ -21,6 +21,7 @@ export type AuditAction =
 export const AUDIT_ACTIONS: AuditAction[] = [
   'token.create',
   'token.delete',
+  'token.use',
   'variables.read',
   'variables.create',
   'variables.update',

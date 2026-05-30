@@ -54,9 +54,13 @@ export async function logAuditForTeams(
   payload: Omit<AuditEvent, 'teamId'>,
 ): Promise<void> {
   const uniqueTeamIds = [...new Set(teamIds)]
-  for (const teamId of uniqueTeamIds) {
-    await logAudit(event, { ...payload, teamId })
-  }
+  await Promise.all(
+    uniqueTeamIds.map(teamId =>
+      logAudit(event, { ...payload, teamId }).catch(err => {
+        console.error('[audit] failed to record team event', { action: payload.action, teamId, err })
+      }),
+    ),
+  )
 }
 
 export async function getUserTeamIds(userId: number): Promise<number[]> {

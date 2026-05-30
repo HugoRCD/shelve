@@ -1,4 +1,4 @@
-import { inArray } from 'drizzle-orm'
+import { eq, inArray } from 'drizzle-orm'
 
 export type ScopeLabels = {
   teams: Record<number, string>

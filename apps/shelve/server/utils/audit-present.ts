@@ -34,9 +34,13 @@ export function buildSummary(log: AuditLog, maps: AuditLookupMaps): string {
       return `Created ${count} variable${count === 1 ? '' : 's'} in ${projectLabel(resourceId, maps, meta)}`
     }
     case 'variables.update':
-      return `Updated variable ${meta.key ?? ''}`.trim() || `Updated variable in ${projectLabel(meta.projectId as number | undefined, maps, meta)}`
+      return meta.key
+        ? `Updated variable ${meta.key}`
+        : `Updated variable in ${projectLabel(meta.projectId as number | undefined, maps, meta)}`
     case 'variables.delete':
-      return `Deleted variable ${meta.key ?? ''}`.trim() || 'Deleted a variable'
+      return meta.key
+        ? `Deleted variable ${meta.key}`
+        : `Deleted a variable in ${projectLabel(meta.projectId as number | undefined, maps, meta)}`
     case 'token.create':
       return `Created API token ${meta.name ?? maps.tokens.get(resourceId!)?.name ?? ''}`.trim()
     case 'token.delete':
