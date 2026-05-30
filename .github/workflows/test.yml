@@ -70,7 +70,7 @@ jobs:
           pnpm play:fail
           code=$?
           set -e
-          test "$code" -eq 1
+          test "$code" -eq 7
 
   lp-agent-skills:
     runs-on: ubuntu-latest
