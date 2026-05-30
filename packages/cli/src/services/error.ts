@@ -11,7 +11,7 @@ const ERROR_MESSAGES: Record<number, string> = {
 export class ErrorService {
 
   static handleApiError = (ctx: { response: Response }): void => {
-    const status = ctx.response.status
+    const { status } = ctx.response
     const message = ERROR_MESSAGES[status]
       ?? (ctx.response.statusText || `Request failed (${status})`)
 

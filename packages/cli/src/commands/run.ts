@@ -6,6 +6,8 @@ import { defineCommand } from 'citty'
 import { intro, log } from '@clack/prompts'
 import type { EnvVarExport, Project, Environment } from '@types'
 import consola from 'consola'
+import { readPackageJSON } from 'pkg-types'
+import { runScript } from 'nypm'
 import {
   handleCancel,
   loadShelveConfig,
@@ -21,8 +23,6 @@ import {
   ProjectService,
   type CacheKeyInput,
 } from '../services'
-import { readPackageJSON } from 'pkg-types'
-import { runScript } from 'nypm'
 import { debugLog } from '../constants'
 
 const DEFAULT_CACHE_TTL_MS = 24 * 60 * 60 * 1000
