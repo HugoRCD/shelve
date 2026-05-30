@@ -130,10 +130,17 @@ cli = spawn(process.execPath, [cliBin, ...cliArgs], {
   windowsHide: true,
 })
 
+function isGracefulExit(code, signal) {
+  if (signal === 'SIGINT' || signal === 'SIGTERM' || signal === 'SIGHUP') return true
+  const n = code ?? 0
+  return n === 130 || n === 143 || n === 129
+}
+
 cli.on('exit', (code, signal) => {
   killAll('SIGTERM')
   const finalCode = signal ? 128 + (os.constants.signals[signal] ?? 0) : (code ?? 0)
-  setTimeout(() => process.exit(finalCode), 200)
+  const exitCode = isGracefulExit(code, signal) || isGracefulExit(finalCode, null) ? 0 : finalCode
+  setTimeout(() => process.exit(exitCode), 200)
 })
 
 cli.on('error', (err) => {

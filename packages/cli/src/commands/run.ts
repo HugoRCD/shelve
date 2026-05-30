@@ -7,7 +7,6 @@ import { intro, log } from '@clack/prompts'
 import type { EnvVarExport, Project, Environment } from '@types'
 import consola from 'consola'
 import { readPackageJSON } from 'pkg-types'
-import { runScript } from 'nypm'
 import treeKill from 'tree-kill'
 import {
   handleCancel,
@@ -236,23 +235,26 @@ function resolveCommand(argv: string[]): { bin: string; argv: string[] } {
   return { bin: argv[0]!, argv: argv.slice(1) }
 }
 
-async function resolveCommandWithScripts(argv: string[]): Promise<{ bin: string; argv: string[] }> {
+type SpawnTarget = { bin: string; argv: string[] }
+
+/** Run the package.json script body via the system shell (same as npm/pnpm would, without the PM wrapper that prints ELIFECYCLE on SIGINT). */
+function resolveDirectScriptSpawn(scriptBody: string): SpawnTarget {
+  if (IS_WINDOWS) {
+    return { bin: 'cmd.exe', argv: ['/d', '/s', '/c', scriptBody] }
+  }
+  return { bin: 'sh', argv: ['-c', scriptBody] }
+}
+
+async function resolveCommandWithScripts(argv: string[]): Promise<SpawnTarget> {
   if (argv.length === 1 && !argv[0]!.includes('/') && !argv[0]!.includes(' ')) {
     const script = argv[0]!
     const pkg = await readPackageJSON().catch(() => null)
-    if (pkg?.scripts?.[script]) {
-      try {
-        const result = await runScript(script, { cwd: process.cwd(), dry: true })
-        if (result.exec) {
-          const resolved = quietPackageManagerArgs(result.exec.command, result.exec.args)
-          debugLog(`Resolved script "${script}" → ${resolved.command} ${resolved.args.join(' ')}`)
-          return { bin: resolved.command, argv: resolved.args }
-        }
-        debugLog(`runScript("${script}", { dry: true }) returned no exec; falling back to direct invocation`)
-      } catch (err) {
-        debugLog(`runScript("${script}") failed; falling back to direct invocation`, err)
-      }
-    } else if (pkg) {
+    const scriptBody = pkg?.scripts?.[script]
+    if (scriptBody) {
+      debugLog(`Resolved script "${script}" → ${scriptBody} (direct)`)
+      return resolveDirectScriptSpawn(scriptBody)
+    }
+    if (pkg) {
       debugLog(`No script "${script}" in package.json; treating as a literal binary`)
     }
   }
@@ -260,15 +262,24 @@ async function resolveCommandWithScripts(argv: string[]): Promise<{ bin: string;
   return resolveCommand(argv)
 }
 
-function quietPackageManagerArgs(command: string, args: string[]): { command: string; args: string[] } {
-  const basename = command.replace(/\\/g, '/').split('/').pop() || command
-  if ((basename === 'pnpm' || basename === 'npm') && args[0] === 'run' && !args.includes('--silent') && !args.includes('-s')) {
-    return { command, args: ['--silent', ...args] }
-  }
-  return { command, args }
+const IS_WINDOWS = process.platform === 'win32'
+
+/** Exit codes produced when the user interrupts (SIGINT=130, SIGTERM=143, SIGHUP=129). */
+function isSignalExitCode(code: number | null): boolean {
+  return code === 130 || code === 143 || code === 129
 }
 
-const IS_WINDOWS = process.platform === 'win32'
+function exitFromChild(code: number | null, signal: NodeJS.Signals | null): void {
+  if (parentSignalShuttingDown || isSignalExitCode(code)) {
+    process.exit(0)
+  }
+  if (code !== null) process.exit(code)
+  if (signal) {
+    const num = (os.constants.signals as Record<string, number>)[signal] ?? 0
+    process.exit(128 + num)
+  }
+  process.exit(0)
+}
 const PARENT_WATCH_INTERVAL_MS = 2_000
 
 function killTree(pid: number, signal: NodeJS.Signals = 'SIGTERM'): void {
@@ -331,7 +342,7 @@ async function spawnChild(rawArgv: string[], env: NodeJS.ProcessEnv): Promise<Ch
   const child = spawn(bin, argv, {
     env,
     stdio: 'inherit',
-    shell: IS_WINDOWS,
+    shell: false,
     windowsHide: true,
   })
 
@@ -368,12 +379,7 @@ function attachLifecycle(child: ChildProcess): void {
         + `If you're invoking a script name (e.g. \`shelve run dev\`), try \`shelve run -- pnpm dev\` to bypass script resolution.`
       )
     }
-    if (code !== null) process.exit(code)
-    if (signal) {
-      const num = (os.constants.signals as Record<string, number>)[signal] ?? 0
-      process.exit(128 + num)
-    }
-    process.exit(0)
+    exitFromChild(code, signal)
   })
 
   child.on('error', (err) => {

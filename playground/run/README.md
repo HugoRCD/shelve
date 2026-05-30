@@ -82,9 +82,11 @@ curl -s -X POST http://127.0.0.1:7777/__playground/variables \
 - Show extra env vars in `print-env.mjs`: `PLAYGROUND_SHOW_ENV_PATTERN='^MY_|HELLO|API_' pnpm play`.
 - Test against the **real** Shelve cloud: just run the CLI normally (`pnpm cli run dev …`) — the playground is opt-in.
 
-## Harmless noise
+## Ctrl-C / arrêt propre
 
-You'll see `[WARN] Local package.json exists, but node_modules missing, did you mean to install?` once per spawn. That's `pnpm run` complaining because `playground/run/` has a `package.json` but no `node_modules` — intentional, since the playground has zero deps. Safe to ignore.
+`shelve run` exécute les scripts `package.json` **directement** (`sh -c "…"` / `cmd /c "…"`), sans passer par `pnpm run` / `npm run`. Du coup un Ctrl-C ne déclenche plus `[ELIFECYCLE] Command failed with exit code 130` — l'interruption est traitée comme un arrêt normal (exit 0 côté CLI et orchestrateur).
+
+Les codes 130 (SIGINT), 143 (SIGTERM) et 129 (SIGHUP) ne sont pas des erreurs applicatives.
 
 ## Why this exists
 
