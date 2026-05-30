@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { spawn } from 'node:child_process'
+import { spawn, spawnSync } from 'node:child_process'
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { dirname, resolve } from 'node:path'
@@ -21,35 +21,33 @@ const args = firstDashDash >= 0
 const cliArgs = args.length === 0 ? ['run', 'dev'] : args
 
 const cliBin = resolve(here, '../../packages/cli/dist/index.mjs')
+const isWindows = process.platform === 'win32'
 
 console.log(`[playground] starting fake API on ${API_URL}`)
 console.log(`[playground] CLI args: ${JSON.stringify(cliArgs)}`)
 
-const isWindows = process.platform === 'win32'
-
 let cli = null
-
-const serverProc = spawn(process.execPath, [resolve(here, 'server.mjs')], {
-  env: { ...process.env, PLAYGROUND_HOST: HOST, PLAYGROUND_PORT: String(PORT) },
-  stdio: ['ignore', 'inherit', 'inherit'],
-  detached: !isWindows,
-})
-
+let serverProc = null
 let shuttingDown = false
-const killAll = (sig = 'SIGTERM') => {
-  if (shuttingDown) return
-  shuttingDown = true
-  try {
-    if (cli && cli.pid && !isWindows) process.kill(-cli.pid, sig)
-    else if (cli) cli.kill(sig)
-  } catch { /* ignore */ }
-  try {
-    if (serverProc && serverProc.pid && !isWindows) process.kill(-serverProc.pid, sig)
-    else if (serverProc && !serverProc.killed) serverProc.kill(sig)
-  } catch { /* ignore */ }
+
+function killTree(pid, signal = 'SIGTERM') {
+  if (typeof pid !== 'number') return
+  if (isWindows) {
+    spawnSync('taskkill', ['/pid', String(pid), '/f', '/t'], { stdio: 'ignore' })
+  } else {
+    try { process.kill(-pid, signal) } catch {}
+    try { process.kill(pid, signal) } catch {}
+  }
 }
 
-const onSignal = (sig, exitCode) => {
+function killAll(sig = 'SIGTERM') {
+  if (shuttingDown) return
+  shuttingDown = true
+  if (cli?.pid) killTree(cli.pid, sig)
+  if (serverProc?.pid) killTree(serverProc.pid, sig)
+}
+
+function onSignal(sig, exitCode) {
   killAll(sig)
   setTimeout(() => process.exit(exitCode), 300).unref()
 }
@@ -58,9 +56,38 @@ process.on('SIGTERM', () => onSignal('SIGTERM', 143))
 process.on('SIGHUP', () => onSignal('SIGHUP', 129))
 process.on('exit', () => killAll('SIGTERM'))
 
+const parentPid = process.ppid
+if (parentPid && parentPid !== 1) {
+  const t = setInterval(() => {
+    try {
+      process.kill(parentPid, 0)
+    } catch {
+      clearInterval(t)
+      killAll('SIGTERM')
+      setTimeout(() => process.exit(129), 500).unref()
+    }
+  }, 2000)
+  t.unref()
+}
+
+serverProc = spawn(process.execPath, [resolve(here, 'server.mjs')], {
+  env: { ...process.env, PLAYGROUND_HOST: HOST, PLAYGROUND_PORT: String(PORT) },
+  stdio: ['ignore', 'inherit', 'inherit'],
+  windowsHide: true,
+})
+
 serverProc.on('error', (err) => {
   console.error(`[playground] fake API failed to start: ${err.message}`)
+  killAll('SIGTERM')
   process.exit(1)
+})
+
+serverProc.on('exit', (code, signal) => {
+  if (!shuttingDown) {
+    console.error(`[playground] fake API exited unexpectedly (code=${code} signal=${signal})`)
+    killAll('SIGTERM')
+    process.exit(1)
+  }
 })
 
 async function waitForHealth(timeoutMs = 5000) {
@@ -100,17 +127,13 @@ cli = spawn(process.execPath, [cliBin, ...cliArgs], {
   cwd: here,
   env,
   stdio: 'inherit',
-  detached: !isWindows,
+  windowsHide: true,
 })
 
 cli.on('exit', (code, signal) => {
   killAll('SIGTERM')
-  if (signal) {
-    const num = os.constants.signals[signal] ?? 0
-    setTimeout(() => process.exit(128 + num), 200).unref()
-    return
-  }
-  setTimeout(() => process.exit(code ?? 0), 200).unref()
+  const finalCode = signal ? 128 + (os.constants.signals[signal] ?? 0) : (code ?? 0)
+  setTimeout(() => process.exit(finalCode), 200)
 })
 
 cli.on('error', (err) => {

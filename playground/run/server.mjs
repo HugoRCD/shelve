@@ -149,3 +149,12 @@ const shutdown = (sig) => {
 process.on('SIGINT', () => shutdown('SIGINT'))
 process.on('SIGTERM', () => shutdown('SIGTERM'))
 process.on('SIGHUP', () => shutdown('SIGHUP'))
+
+const parentPid = process.ppid
+if (parentPid && parentPid !== 1) {
+  const t = setInterval(() => {
+    try { process.kill(parentPid, 0) }
+    catch { clearInterval(t); shutdown('orphaned') }
+  }, 2000)
+  t.unref()
+}
