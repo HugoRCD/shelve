@@ -230,11 +230,18 @@ async function resolveCommandWithScripts(argv: string[]): Promise<{ bin: string;
     const script = argv[0]!
     const pkg = await readPackageJSON().catch(() => null)
     if (pkg?.scripts?.[script]) {
-      const result = await runScript(script, { cwd: process.cwd(), dry: true })
-      if (result.exec) {
-        debugLog(`Resolved script "${script}" → ${result.exec.command} ${result.exec.args.join(' ')}`)
-        return { bin: result.exec.command, argv: result.exec.args }
+      try {
+        const result = await runScript(script, { cwd: process.cwd(), dry: true })
+        if (result.exec) {
+          debugLog(`Resolved script "${script}" → ${result.exec.command} ${result.exec.args.join(' ')}`)
+          return { bin: result.exec.command, argv: result.exec.args }
+        }
+        debugLog(`runScript("${script}", { dry: true }) returned no exec; falling back to direct invocation`)
+      } catch (err) {
+        debugLog(`runScript("${script}") failed; falling back to direct invocation`, err)
       }
+    } else if (pkg) {
+      debugLog(`No script "${script}" in package.json; treating as a literal binary`)
     }
   }
 
@@ -265,9 +272,12 @@ async function spawnChild(rawArgv: string[], env: NodeJS.ProcessEnv): Promise<Ch
   return child
 }
 
+const QUICK_EXIT_THRESHOLD_MS = 250
+
 function attachLifecycle(child: ChildProcess, isWindows: boolean): void {
   let shuttingDown = false
   let killTimer: ReturnType<typeof setTimeout> | null = null
+  const spawnedAt = Date.now()
 
   const killGroup = (signal: NodeJS.Signals): void => {
     try {
@@ -297,6 +307,14 @@ function attachLifecycle(child: ChildProcess, isWindows: boolean): void {
 
   child.on('exit', (code, signal) => {
     if (killTimer) clearTimeout(killTimer)
+    const elapsed = Date.now() - spawnedAt
+    if (!shuttingDown && code === 0 && elapsed < QUICK_EXIT_THRESHOLD_MS) {
+      consola.warn(
+        `Child exited cleanly after ${elapsed}ms — that's suspiciously fast. `
+        + `Run \`shelve run … --debug\` to see the resolved command. `
+        + `If you're invoking a script name (e.g. \`shelve run dev\`), try \`shelve run -- pnpm dev\` to bypass script resolution.`
+      )
+    }
     if (code !== null) process.exit(code)
     if (signal) {
       const num = (os.constants.signals as Record<string, number>)[signal] ?? 0

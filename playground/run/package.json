@@ -1,0 +1,13 @@
+{
+  "name": "shelve-playground-run",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Local fixture for testing `shelve run` end-to-end. Not part of the workspace.",
+  "type": "module",
+  "scripts": {
+    "dev": "node scripts/print-env.mjs --keep-alive",
+    "start": "node scripts/print-env.mjs",
+    "echo": "node scripts/print-env.mjs",
+    "fail": "node -e \"console.error('boom'); process.exit(7)\""
+  }
+}

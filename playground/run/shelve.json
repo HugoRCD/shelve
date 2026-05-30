@@ -1,0 +1,8 @@
+{
+  "$schema": "https://shelve.cloud/schema.json",
+  "_comment": "Local fixture for `pnpm cli:play`. Edit `project`, `slug` and `defaultEnv` to point at a Shelve project you actually own. Log in with `pnpm cli login` first.",
+  "project": "shelve-playground",
+  "slug": "your-team-slug",
+  "defaultEnv": "development",
+  "autoCreateProject": true
+}

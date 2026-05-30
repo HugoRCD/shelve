@@ -148,3 +148,7 @@ dist
 
 apps/vault/.data
 apps/shelve/.data
+
+# CLI playground (local fixture for `pnpm play`)
+playground/run/.env*
+playground/run/node_modules
