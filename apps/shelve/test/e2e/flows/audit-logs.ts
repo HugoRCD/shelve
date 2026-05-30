@@ -1,6 +1,6 @@
 import { test, expect } from 'vitest'
-import type { E2EContext } from '../helpers'
 import type { AuditLogResponse } from '@types'
+import type { E2EContext } from '../helpers'
 
 export function registerAuditLogTests(ctx: E2EContext) {
   test('records a `token.create` event when a token is created', async () => {

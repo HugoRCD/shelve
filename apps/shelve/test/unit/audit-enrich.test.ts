@@ -5,8 +5,8 @@ import { buildSummary } from '../../server/utils/audit-present'
 const emptyMaps = {
   users: new Map(),
   tokens: new Map(),
-  projects: new Map([ [13, { name: 'web-platform', teamId: 1 }] ]),
-  environments: new Map([ [86, { name: 'production', teamId: 1 }] ]),
+  projects: new Map([[13, { name: 'web-platform', teamId: 1 }]]),
+  environments: new Map([[86, { name: 'production', teamId: 1 }]]),
 }
 
 function log(overrides: Partial<AuditLog>): AuditLog {
