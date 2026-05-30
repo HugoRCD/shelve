@@ -1,6 +1,7 @@
 import { isCancel } from '@clack/prompts'
 import type { Environment } from '@types'
-import { askSelect, capitalize, handleCancel } from '../utils'
+import { askSelect, capitalize, handleCancel, isNonInteractive } from '../utils'
+import { CliError } from './api-error'
 import { BaseService } from './base'
 
 export class EnvironmentService extends BaseService {
@@ -28,6 +29,14 @@ export class EnvironmentService extends BaseService {
       return await this.withLoading(`Fetch environment ${name}`, async () => {
         return await this.request<Environment>(`/teams/${ slug }/environments/${ name }`)
       })
+    }
+    if (isNonInteractive()) {
+      throw new CliError(
+        'Environment name is required.',
+        'MISSING_ENV',
+        undefined,
+        'Pass --env or set defaultEnv in shelve.json / SHELVE_DEFAULT_ENV.',
+      )
     }
     return await this.promptEnvironment(slug)
   }

@@ -3,12 +3,15 @@ import { existsSync } from 'node:fs'
 import { resolve } from 'node:path'
 import * as os from 'node:os'
 import { defineCommand } from 'citty'
-import { intro, log } from '@clack/prompts'
 import type { EnvVarExport, Project, Environment } from '@types'
 import consola from 'consola'
 import { readPackageJSON } from 'pkg-types'
 import treeKill from 'tree-kill'
 import {
+  cliError,
+  cliInfo,
+  cliIntro,
+  cliWarn,
   handleCancel,
   loadShelveConfig,
   loadTemplate,
@@ -24,6 +27,7 @@ import {
   type CacheKeyInput,
 } from '../services'
 import { debugLog } from '../constants'
+import { formatCliError, toCliError } from '../services/api-error'
 
 const DEFAULT_CACHE_TTL_MS = 24 * 60 * 60 * 1000
 const WATCH_POLL_MS = 5_000
@@ -93,7 +97,7 @@ export default defineCommand({
     const noCache = runArgs.noCache === true
     const cacheTtl = parseDuration(runArgs.cacheTtl, DEFAULT_CACHE_TTL_MS)
 
-    intro(`Loading secrets for ${project} (${runArgs.env || defaultEnv})`)
+    cliIntro(`Loading secrets for ${project} (${runArgs.env || defaultEnv})`)
 
     const template = runArgs.template ? loadTemplateOrExit(runArgs.template) : null
 
@@ -114,7 +118,7 @@ export default defineCommand({
       const cached = token ? CacheService.read(cacheInput(envName), token, 0) : null
       if (!cached) handleCancel('Offline cache not found for this project/environment.')
       variables = cached!
-      log.info('Using offline cache (network skipped).')
+      cliInfo('Using offline cache (network skipped).')
     } else {
       try {
         projectData = await ProjectService.getProjectByName(project, slug, autoCreateProject)
@@ -127,13 +131,24 @@ export default defineCommand({
         if (!noCache && token) CacheService.write(cacheInput(envName), token, variables)
       } catch (err) {
         if (noCache) {
-          process.exit(1)
+          const apiError = toCliError(err, 'FETCH_FAILED')
+          cliError({
+            code: apiError.code,
+            message: formatCliError(err, 'Failed to fetch secrets from Shelve'),
+            status: apiError.status,
+          })
         }
         const cached = token ? CacheService.read(cacheInput(envName), token, cacheTtl) : null
         if (!cached) {
-          process.exit(1)
+          const apiError = toCliError(err, 'FETCH_FAILED')
+          cliError({
+            code: apiError.code,
+            message: formatCliError(err, 'Failed to fetch secrets from Shelve and no offline cache is available'),
+            status: apiError.status,
+            hint: 'Run `shelve pull` once while online, or pass --offline when a cache exists.',
+          })
         }
-        log.warn('Failed to fetch from Shelve; falling back to encrypted cache.')
+        cliWarn('Failed to fetch from Shelve; falling back to encrypted cache.')
         variables = cached
       }
     }
@@ -150,7 +165,7 @@ export default defineCommand({
 
     if (runArgs.watch) {
       if (!projectData || !environment) {
-        log.warn('Watch mode requires a successful API connection on startup; ignoring --watch.')
+        cliWarn('Watch mode requires a successful API connection on startup; ignoring --watch.')
       } else {
         startWatch({
           projectData,
@@ -211,7 +226,7 @@ function buildEnv(
   const { resolved, missing } = resolveReferences(template, variables, envName)
   for (const { key, value } of resolved) env[key] = value
   if (missing.length > 0) {
-    log.warn(
+    cliWarn(
       `Unresolved secret references (still rendered as the literal placeholder): ${missing.map(m => m.key).join(', ')}`
     )
   }
@@ -430,7 +445,7 @@ function startWatch(opts: WatchOpts): void {
       })
       const fp = fingerprint(next)
       if (lastPrint && fp !== lastPrint) {
-        log.info('Variables changed — reloading child process.')
+        cliInfo('Variables changed — reloading child process.')
         if (!opts.noCache && opts.token) {
           CacheService.write(opts.cacheInput(opts.envName), opts.token, next)
         }

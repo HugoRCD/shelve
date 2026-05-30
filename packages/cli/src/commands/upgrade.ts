@@ -1,26 +1,27 @@
-import { intro, outro } from '@clack/prompts'
 import { defineCommand } from 'citty'
-import { isLatestVersion, installLatest, handleCancel } from '../utils'
+import { cliIntro, cliSuccess, isLatestVersion, installLatest } from '../utils'
+import { toCliError } from '../services/api-error'
+import { version } from '../../package.json'
 
 export default defineCommand({
   meta: {
     name: 'upgrade',
-    description: 'Upgrade the Shelve CLI to the latest version'
+    description: 'Upgrade the Shelve CLI to the latest version',
   },
   async run() {
-    intro('Upgrading Shelve CLI to the latest version')
+    cliIntro('Upgrading Shelve CLI to the latest version')
 
     try {
       const isLatest = await isLatestVersion()
       if (isLatest) {
-        outro('Shelve CLI is already up to date')
+        cliSuccess({ previous: version, current: version, updated: false }, 'Shelve CLI is already up to date', 'upgrade')
         return
       }
 
       await installLatest()
-      outro('Shelve CLI has been successfully updated')
+      cliSuccess({ previous: version, current: 'latest', updated: true }, 'Shelve CLI has been successfully updated', 'upgrade')
     } catch (error) {
-      handleCancel('Operation cancelled.')
+      throw toCliError(error, 'UPGRADE_FAILED')
     }
-  }
+  },
 })

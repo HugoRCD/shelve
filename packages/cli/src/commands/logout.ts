@@ -1,7 +1,6 @@
-import { intro, outro } from '@clack/prompts'
 import { defineCommand } from 'citty'
 import { CredentialsService } from '../services'
-import { loadShelveConfig } from '../utils'
+import { cliIntro, cliSuccess, loadShelveConfig } from '../utils'
 
 export default defineCommand({
   meta: {
@@ -9,9 +8,9 @@ export default defineCommand({
     description: 'Logout from Shelve locally',
   },
   async run() {
-    intro('Logging out')
+    cliIntro('Logging out')
     const { url } = await loadShelveConfig()
     await CredentialsService.clearToken(url)
-    outro('Successfully logged out')
+    cliSuccess({ loggedOut: true }, 'Successfully logged out', 'logout')
   },
 })

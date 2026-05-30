@@ -30,6 +30,8 @@ pnpm play:fail         # = shelve run fail   (verifies exit-code propagation)
 pnpm play:watch        # = shelve run dev --watch  (poll-based reload via SIGHUP)
 
 pnpm play -- --debug   # forward flags to the CLI
+pnpm play -- --json config   # machine-readable config (token redacted)
+pnpm play -- --non-interactive --yes pull --env development   # agent-style pull smoke
 pnpm play:server       # only the fake API (handy when iterating on the server itself)
 ```
 

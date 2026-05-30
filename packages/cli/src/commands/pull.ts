@@ -1,7 +1,7 @@
-import { intro, outro, log, confirm, isCancel } from '@clack/prompts'
+import { confirm, isCancel } from '@clack/prompts'
 import { defineCommand } from 'citty'
-import { agent as detectedAgent } from 'std-env'
-import { handleCancel, loadShelveConfig } from '../utils'
+import { isAgentShell, loadShelveConfig, shouldSkipConfirm } from '../utils'
+import { cliCancel, cliError, cliIntro, cliSuccess, cliWarn } from '../utils/output'
 import { EnvService, ProjectService, EnvironmentService } from '../services'
 
 export default defineCommand({
@@ -31,15 +31,26 @@ export default defineCommand({
       defaultEnv,
     } = await loadShelveConfig(true)
 
-    if (detectedAgent && !args.yes) {
-      log.warn(
-        `${detectedAgent} appears to be running in this shell. \`shelve pull\` writes plaintext secrets to ${envFileName} where AI agents can read them. Prefer \`shelve run -- <cmd>\` so secrets stay in memory.`
-      )
-      const proceed = await confirm({ message: 'Write secrets to disk anyway?', initialValue: false })
-      if (isCancel(proceed) || !proceed) handleCancel('Aborted by user')
+    const skipConfirm = args.yes || shouldSkipConfirm()
+
+    if (isAgentShell() && !skipConfirm) {
+      cliError({
+        code: 'AGENT_BLOCKED',
+        message: `\`shelve pull\` writes plaintext secrets to ${envFileName} where AI agents can read them.`,
+        hint: 'Prefer `shelve run -- <cmd>` so secrets stay in memory, or pass --yes to write secrets to disk anyway.',
+      })
     }
 
-    intro(`Pulling variable from ${project} project`)
+    if (isAgentShell() && skipConfirm) {
+      cliWarn(
+        `${process.env.AI_AGENT || 'AI agent'} detected. Writing secrets to ${envFileName}. Prefer \`shelve run -- <cmd>\` when possible.`
+      )
+    } else if (!skipConfirm && !isAgentShell()) {
+      const proceed = await confirm({ message: 'Write secrets to disk?', initialValue: false })
+      if (isCancel(proceed) || !proceed) cliCancel('Aborted by user')
+    }
+
+    cliIntro(`Pulling variable from ${project} project`)
 
     const projectData = await ProjectService.getProjectByName(project, slug, autoCreateProject)
 
@@ -49,11 +60,23 @@ export default defineCommand({
 
     const variables = await EnvService.getEnvVariables({ project: projectData, environmentId: environment.id, slug })
 
-    if (variables.length === 0)
-      log.warn('No variables found in the specified environment')
-    else
-      await EnvService.createEnvFile({ envFileName, variables, confirmChanges })
+    const effectiveConfirmChanges = skipConfirm ? false : confirmChanges
 
-    outro(`Successfully pulled variable from ${environment.name} environment`)
+    if (variables.length === 0) {
+      cliWarn('No variables found in the specified environment')
+    } else {
+      await EnvService.createEnvFile({ envFileName, variables, confirmChanges: effectiveConfirmChanges })
+    }
+
+    cliSuccess(
+      {
+        env: environment.name,
+        variableCount: variables.length,
+        file: envFileName,
+        keys: variables.map(v => v.key),
+      },
+      `Successfully pulled variable from ${environment.name} environment`,
+      'pull',
+    )
   },
 })
