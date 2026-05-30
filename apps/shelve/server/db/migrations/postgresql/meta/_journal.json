@@ -50,6 +50,13 @@
       "when": 1782700000002,
       "tag": "0006_project_dek",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1782700000003,
+      "tag": "0007_project_sync_policy",
+      "breakpoints": true
     }
   ]
 }

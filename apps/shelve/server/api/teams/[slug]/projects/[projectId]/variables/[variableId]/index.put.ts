@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { TeamRole } from '@types'
-import { variableIdParamsSchema } from '~~/server/db/zod'
+import { projectIdParamsSchema, variableIdParamsSchema } from '~~/server/db/zod'
 
 const updateVariableSchema = z.object({
   autoUppercase: z.boolean().optional(),
@@ -19,9 +19,15 @@ const updateVariableSchema = z.object({
 
 export default eventHandler(async (event) => {
   const slug = await getTeamSlugFromEvent(event)
-  await requireUserTeam(event, slug, { minRole: TeamRole.ADMIN })
+  const { team } = await requireUserTeam(event, slug, { minRole: TeamRole.ADMIN })
   const { variableId } = await getValidatedRouterParams(event, variableIdParamsSchema.parse)
+  const { projectId } = await getValidatedRouterParams(event, projectIdParamsSchema.parse)
   const body = await readValidatedBody(event, updateVariableSchema.parse)
+
+  const project = await new ProjectsService().getProject(projectId)
+  const environmentIds = [...new Set(body.values.map(v => v.environmentId))]
+  await assertPushAllowedForEnvironmentIds(environmentIds, team.id, project.syncPolicy)
+
   await new VariablesService(event).updateVariable({
     id: variableId,
     key: body.key,

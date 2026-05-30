@@ -13,6 +13,20 @@ const currentLoading = useCurrentLoading()
 const teamRole = useTeamRole()
 const canUpdate = computed(() => hasAccess(teamRole.value, TeamRole.ADMIN))
 
+const protectedEnvironmentsText = computed({
+  get: () => (project.value?.syncPolicy?.protectedEnvironments ?? []).join(', '),
+  set: () => {},
+})
+
+function onProtectedEnvironmentsInput(value: string) {
+  if (!project.value) return
+  const names = value.split(',').map(s => s.trim()).filter(Boolean)
+  project.value.syncPolicy = {
+    ...project.value.syncPolicy,
+    protectedEnvironments: names.length ? names : undefined,
+  }
+}
+
 async function onSubmit(event: FormSubmitEvent<UpdateProjectSchema>) {
   await useProjectsService().updateProject(event.data)
 }
@@ -81,6 +95,31 @@ definePageMeta({
               </UFormField>
             </div>
           </div>
+        </div>
+        <Separator class="my-2" />
+        <div id="sync-policy" class="flex flex-col gap-4" :class="route.hash === '#sync-policy' ? 'ring ring-primary rounded-lg p-4' : ''">
+          <div>
+            <h3 class="font-semibold">
+              Sync policy
+            </h3>
+            <p class="text-pretty text-xs text-muted">
+              Block CLI and API pushes to sensitive environments. Mirrors <code>sync.protectedEnvironments</code> in shelve.json.
+            </p>
+          </div>
+          <UFormField
+            name="syncPolicy.protectedEnvironments"
+            label="Protected environments"
+            help="Comma-separated names (e.g. production, preview). Push to these envs is rejected server-side."
+            :ui="{ help: 'text-xs' }"
+          >
+            <UInput
+              :model-value="protectedEnvironmentsText"
+              class="md:w-2/3"
+              :disabled="!canUpdate"
+              placeholder="production, preview"
+              @update:model-value="onProtectedEnvironmentsInput"
+            />
+          </UFormField>
         </div>
         <Separator class="my-2" />
         <div id="variable-prefix" class="flex flex-col gap-4" :class="route.hash === '#variable-prefix' ? 'ring ring-primary rounded-lg p-4' : ''">

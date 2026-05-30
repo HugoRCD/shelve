@@ -1,14 +1,6 @@
----
-name: shelve-app
-description: Use the Shelve web app and API concepts — teams, projects, environments, scoped tokens, audit logs, and encryption — when helping users manage secrets outside the CLI.
----
+# Shelve platform (app & API)
 
-# Shelve app & platform
-
-Shelve is a team secrets platform at [shelve.cloud](https://shelve.cloud). The **CLI** (`shelve` skill) syncs secrets locally; this skill covers the **dashboard and API model**.
-
-Official docs: https://shelve.cloud/docs  
-CLI skill: install with `npx skills add https://shelve.cloud` (skill `shelve`)
+Official docs: https://shelve.cloud/docs
 
 ## Core concepts
 
@@ -32,10 +24,11 @@ Create at [app.shelve.cloud/user/tokens](https://app.shelve.cloud/user/tokens):
 
 ## Security model
 
-- Variables encrypted at rest (see [Encryption](/docs/core-features/encryption))
-- [Audit logs](/docs/core-features/audit-logs) record token usage and changes
+- Variables encrypted at rest — https://shelve.cloud/docs/core-features/encryption
+- Audit logs record token usage and changes — https://shelve.cloud/docs/core-features/audit-logs
 - Prefer **CLI `shelve run`** for agents — avoids writing `.env` to disk
 - Run **`shelve init`** in repos so agents ignore secret files
+- **Project sync policy** (Settings → Sync policy): `protectedEnvironments` blocks API/CLI push server-side
 
 ## Typical user flows
 
@@ -50,7 +43,7 @@ Create at [app.shelve.cloud/user/tokens](https://app.shelve.cloud/user/tokens):
 ### CI pipeline
 
 1. Store `SHELVE_TOKEN` in CI secrets (scoped to `ci` environment if possible)
-2. Use [GitHub Action `shelve-run`](https://github.com/HugoRCD/shelve/tree/main/.github/actions/shelve-run) or `npx @shelve/cli run -- …`
+2. Use GitHub Action `shelve-run` or `npx @shelve/cli run -- …`
 3. Run `shelve doctor --json` in a setup step to fail fast
 
 ### Rotating a compromised secret
@@ -58,7 +51,7 @@ Create at [app.shelve.cloud/user/tokens](https://app.shelve.cloud/user/tokens):
 1. Update variable in Shelve UI (or `shelve push` from trusted machine)
 2. Restart apps / CI — `shelve run --watch` picks up changes for long-running dev servers
 
-## When to use CLI vs UI
+## CLI vs UI
 
 | Task | Tool |
 |------|------|
@@ -67,11 +60,12 @@ Create at [app.shelve.cloud/user/tokens](https://app.shelve.cloud/user/tokens):
 | Create scoped CI token | Shelve UI |
 | Audit who changed what | Shelve UI audit logs |
 | Agent-safe workspace setup | CLI `shelve init` |
+| Block push to production | UI sync policy + `shelve.json` `sync` |
 
-## Related documentation
+## Documentation links
 
-- [Environments](/docs/core-features/environments)
-- [API Tokens](/docs/core-features/tokens)
-- [Audit logs](/docs/core-features/audit-logs)
-- [CLI agents & automation](/docs/cli/agents-automation)
-- [CLI troubleshooting](/docs/cli/troubleshooting)
+- Environments — https://shelve.cloud/docs/core-features/environments
+- API Tokens — https://shelve.cloud/docs/core-features/tokens
+- Audit logs — https://shelve.cloud/docs/core-features/audit-logs
+- CLI agents & automation — https://shelve.cloud/docs/cli/agents-automation
+- Sync policies — https://shelve.cloud/docs/cli/sync-policies

@@ -16,6 +16,9 @@ const baseProjectSchema = z.object({
     message: 'Homepage must be a valid URL',
   }).optional(),
   variablePrefix: z.string().optional(),
+  syncPolicy: z.object({
+    protectedEnvironments: z.array(z.string().min(1)).optional(),
+  }).nullable().optional(),
 })
 
 export const createProjectSchema = baseProjectSchema

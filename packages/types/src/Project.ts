@@ -1,3 +1,5 @@
+import type { ShelveSyncConfig } from './Sync'
+
 export type Project = {
   id: number;
   name: string;
@@ -8,6 +10,7 @@ export type Project = {
   variablePrefix: string;
   logo: string;
   teamId: number;
+  syncPolicy?: ShelveSyncConfig | null;
   createdAt: Date;
   updatedAt: Date;
 };
@@ -33,5 +36,6 @@ export type ProjectUpdateInput = {
   projectManager?: string;
   variablePrefix?: string;
   teamId: number;
+  syncPolicy?: ShelveSyncConfig | null;
 };
 

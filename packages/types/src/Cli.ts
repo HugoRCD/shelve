@@ -1,6 +1,7 @@
 import type { EnvVar, EnvVarExport } from './Variables'
 import type { Environment } from './Environment'
 import type { Project } from './Project'
+import type { ResolvedSyncPolicy, ShelveSyncConfig } from './Sync'
 
 export const SHELVE_JSON_SCHEMA = 'https://raw.githubusercontent.com/HugoRCD/shelve/main/packages/types/schema.json'
 export const DEFAULT_URL = 'https://app.shelve.cloud'
@@ -77,6 +78,10 @@ export type ShelveConfig = {
    * Whether the project is at the root level
    * */
   isRoot: boolean
+  /**
+   * Sync policies for push, pull, and conflict resolution (CLI; merged with server policy when applicable).
+   */
+  sync?: ShelveSyncConfig
 }
 
 export type CreateEnvFileInput = {
@@ -96,6 +101,11 @@ export type CreateEnvFileInput = {
    * @default false
    */
   confirmChanges: boolean
+  /**
+   * How to merge remote variables into the local env file.
+   * @default 'replace'
+   */
+  pullMode?: 'replace' | 'merge'
 }
 
 export type PushEnvFileInput = {
@@ -127,6 +137,14 @@ export type PushEnvFileInput = {
    * @default true
    * */
   autoUppercase: boolean
+  syncPolicy: ResolvedSyncPolicy
+}
+
+export type PushEnvFileResult = {
+  pushed: boolean
+  variableCount: number
+  skippedKeys: string[]
+  conflictKeys: string[]
 }
 
 export type GetEnvVariables = {

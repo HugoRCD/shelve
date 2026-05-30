@@ -1,6 +1,12 @@
 import { z } from 'zod'
 import { TeamRole } from '@types'
 
+const syncPolicySchema = z.object({
+  default: z.record(z.string(), z.unknown()).optional(),
+  environments: z.record(z.string(), z.record(z.string(), z.unknown())).optional(),
+  protectedEnvironments: z.array(z.string().min(1)).optional(),
+}).nullable().optional()
+
 const updateProjectSchema = z.object({
   name: z.string().min(1).max(255).trim(),
   description: z.string().trim().optional(),
@@ -9,6 +15,7 @@ const updateProjectSchema = z.object({
   variablePrefix: z.string().trim().optional(),
   repository: z.string().trim().optional(),
   logo: z.string().trim().optional(),
+  syncPolicy: syncPolicySchema,
 })
 
 const projectIdParamsSchema = z.object({

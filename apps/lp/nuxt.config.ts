@@ -57,14 +57,9 @@ export default defineNuxtConfig({
             href: 'https://shelve.cloud/.well-known/skills/index.json',
           },
           {
-            title: 'CLI skill (shelve)',
-            description: 'Shelve CLI workflows, flags, and security rules',
+            title: 'Shelve agent skill',
+            description: 'CLI, platform, sync policies, tokens, and agent workflows',
             href: '/.well-known/skills/shelve/SKILL.md',
-          },
-          {
-            title: 'App skill (shelve-app)',
-            description: 'Shelve platform, tokens, teams, and audit logs',
-            href: '/.well-known/skills/shelve-app/SKILL.md',
           },
           {
             title: 'CLI agents & automation',

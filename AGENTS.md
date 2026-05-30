@@ -17,4 +17,4 @@ More details (progressive disclosure):
 - [Build env and outputs](docs/agents/build-env.md)
 - [Reference docs](docs/agents/docs-links.md)
 - [AI collaboration rules](docs/agents/ai-workflow.md)
-- [Shelve CLI for agents & automation](docs/agents/cli.md) — install skill: `npx skills add https://shelve.cloud`
+- [Shelve CLI for agents & automation](docs/agents/cli.md) — install the Shelve skill: `npx skills add https://shelve.cloud`

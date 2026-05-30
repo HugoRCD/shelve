@@ -1,7 +1,7 @@
 import { boolean, pgEnum, pgTable, varchar, index, uniqueIndex, bigint, integer, timestamp, jsonb } from 'drizzle-orm/pg-core'
 import { relations } from 'drizzle-orm'
 import { TeamRole, Role, AuthType, InvitationStatus } from '../../../../packages/types'
-import type { TokenScopes } from '../../../../packages/types'
+import type { ShelveSyncConfig, TokenScopes } from '../../../../packages/types'
 
 const timestamps = {
   updatedAt: timestamp().notNull().$onUpdate(() => new Date()),
@@ -108,6 +108,7 @@ export const projects = pgTable('projects', {
   variablePrefix: varchar({ length: 500 }).default('').notNull(),
   logo: varchar({ length: 500 }).default(DEFAULT_LOGO).notNull(),
   encryptedDek: varchar({ length: 1024 }),
+  syncPolicy: jsonb().$type<ShelveSyncConfig | null>(),
   ...timestamps,
 }, (table) => [
   uniqueIndex('projects_team_name_idx').on(table.teamId, table.name),
