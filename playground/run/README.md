@@ -6,7 +6,7 @@ Boots a **fake Shelve API** on `127.0.0.1:7777` (vanilla `node:http`, no deps), 
 
 ## What's here
 
-```
+```text
 playground/run/
 ├── package.json              # 4 scripts (dev / start / echo / fail)
 ├── shelve.json               # url + slug + project + defaultEnv (matches seed)
@@ -41,7 +41,7 @@ Each `play*` script does three things:
 
 ## What the fake API serves
 
-All endpoints require `Authorization: Bearer <anything>` (the orchestrator sends the seed token):
+All endpoints require `Authorization: Bearer <seed token>` (must match `seed.json`; the orchestrator injects it via `SHELVE_TOKEN`):
 
 | Method | Path                                                            | Returns                          |
 |--------|-----------------------------------------------------------------|----------------------------------|

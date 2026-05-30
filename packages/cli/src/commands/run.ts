@@ -166,8 +166,6 @@ export default defineCommand({
           restartOnChange: runArgs.restartOnChange === true,
           getChild: () => child,
           spawnNew: async (env) => {
-            const old = child as ChildWithFlag
-            old.__restarting = true
             child = await spawnChild(argv, env)
             return child
           },
@@ -432,8 +430,9 @@ function startWatch(opts: WatchOpts): void {
         }
         const env = buildEnv(next, opts.template, opts.envName)
         if (opts.restartOnChange) {
-          const child = opts.getChild()
-          if (typeof child.pid === 'number') killTree(child.pid, 'SIGTERM')
+          const old = opts.getChild() as ChildWithFlag
+          old.__restarting = true
+          if (typeof old.pid === 'number') killTree(old.pid, 'SIGTERM')
           await opts.spawnNew(env)
         } else {
           const child = opts.getChild()

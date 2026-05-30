@@ -1,9 +1,20 @@
 #!/usr/bin/env node
 const keepAlive = process.argv.includes('--keep-alive')
 
-const SHOW = process.env.PLAYGROUND_SHOW_ENV_PATTERN
-  ? new RegExp(process.env.PLAYGROUND_SHOW_ENV_PATTERN)
-  : /^(SHELVE_|PLAYGROUND_|API_|DATABASE_|STRIPE_|FRESH_|HELLO|FOO|BAR|BAZ|NEW_)/
+const DEFAULT_SHOW = /^(SHELVE_|PLAYGROUND_|API_|DATABASE_|STRIPE_|FRESH_|HELLO|FOO|BAR|BAZ|NEW_)/
+
+function getShowPattern() {
+  const raw = process.env.PLAYGROUND_SHOW_ENV_PATTERN
+  if (!raw) return DEFAULT_SHOW
+  try {
+    return new RegExp(raw)
+  } catch {
+    console.error(`Invalid PLAYGROUND_SHOW_ENV_PATTERN: ${raw}`)
+    process.exit(1)
+  }
+}
+
+const SHOW = getShowPattern()
 const interesting = Object.entries(process.env)
   .filter(([key]) => SHOW.test(key))
   .sort(([a], [b]) => a.localeCompare(b))

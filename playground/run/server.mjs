@@ -42,6 +42,10 @@ function requireBearer(req, res) {
     unauthorized(res, 'Empty Bearer token')
     return null
   }
+  if (token !== seed.token) {
+    unauthorized(res, 'Invalid Bearer token')
+    return null
+  }
   return token
 }
 
@@ -113,6 +117,9 @@ const server = createServer(async (req, res) => {
       const body = JSON.parse(Buffer.concat(chunks).toString('utf8'))
       const env = body.env
       if (!mutableVariables[env]) return notFound(res, `Unknown env: ${env}`)
+      if (!Array.isArray(body.variables)) {
+        return send(res, 400, { message: 'variables must be an array' })
+      }
       mutableVariables[env] = body.variables
       return send(res, 200, { ok: true, env, count: body.variables.length })
     } catch (err) {
