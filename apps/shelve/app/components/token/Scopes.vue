@@ -5,6 +5,10 @@ const props = defineProps<{
   token: Token
 }>()
 
+const { scopeLabels, fetchScopeLabels, teamName, projectName, environmentName } = useScopeLabels()
+
+onMounted(() => fetchScopeLabels())
+
 const scopeChips = computed(() => {
   const chips: { label: string; icon: string }[] = []
   const s = props.token.scopes
@@ -15,12 +19,20 @@ const scopeChips = computed(() => {
   return chips
 })
 
+function formatList(ids: number[] | undefined, resolver: (id: number) => string): string | null {
+  if (!ids?.length) return null
+  return ids.map(resolver).join(', ')
+}
+
 const tooltip = computed(() => {
   const s = props.token.scopes
   const lines: string[] = []
-  if (s.teamIds?.length) lines.push(`Teams: ${s.teamIds.join(', ')}`)
-  if (s.projectIds?.length) lines.push(`Projects: ${s.projectIds.join(', ')}`)
-  if (s.environmentIds?.length) lines.push(`Environments: ${s.environmentIds.join(', ')}`)
+  const teams = formatList(s.teamIds, teamName)
+  const projects = formatList(s.projectIds, projectName)
+  const envs = formatList(s.environmentIds, environmentName)
+  if (teams) lines.push(`Teams: ${teams}`)
+  if (projects) lines.push(`Projects: ${projects}`)
+  if (envs) lines.push(`Environments: ${envs}`)
   if (props.token.allowedCidrs?.length) lines.push(`Allowed CIDRs: ${props.token.allowedCidrs.join(', ')}`)
   return lines.join('\n')
 })

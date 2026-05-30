@@ -14,7 +14,9 @@ export default defineEventHandler(async (event) => {
 
   if (!deletedToken) throw createError({ statusCode: 404, message: `Token not found with id ${id}` })
 
-  await logAudit(event, {
+  const teamIds = await resolveTeamIdsFromTokenScopes(deletedToken.scopes, user.id)
+
+  await logAuditForTeams(event, teamIds, {
     action: 'token.delete',
     resourceType: 'token',
     resourceId: deletedToken.id,

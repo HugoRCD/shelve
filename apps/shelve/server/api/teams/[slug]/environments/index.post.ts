@@ -11,7 +11,15 @@ export default defineEventHandler(async (event) => {
 
   const { name } = await readValidatedBody(event, createEnvironmentSchema.parse)
 
-  await new EnvironmentsService().createEnvironment({ name, teamId: team.id })
+  const environment = await new EnvironmentsService().createEnvironment({ name, teamId: team.id })
+
+  await logAudit(event, {
+    teamId: team.id,
+    action: 'environment.create',
+    resourceType: 'environment',
+    resourceId: environment.id,
+    metadata: { name: environment.name },
+  })
 
   return {
     statusCode: 201,

@@ -4,12 +4,16 @@ export type ParsedUserAgent = {
 }
 
 const KNOWN_CLIENTS: Array<{ pattern: RegExp; label: (m: RegExpMatchArray, ua: string) => string; icon: string }> = [
-  { pattern: /shelve-cli\/([\d.]+|unknown)/i, label: (m, ua) => {
-    if (m[1] !== 'unknown') return `Shelve CLI ${m[1]}`
-    const osMatch = ua.match(/\(([^)]+)\)/)
-    const os = osMatch?.[1]?.split(';')[0]?.trim()
-    return os ? `Shelve CLI · ${os}` : 'Shelve CLI'
-  }, icon: 'lucide:terminal' },
+  {
+    pattern: /shelve-cli\/([\d.]+|unknown)/i,
+    label: (m, ua) => {
+      if (m[1] !== 'unknown') return `Shelve CLI ${m[1]}`
+      const osMatch = ua.match(/\(([^)]+)\)/)
+      const os = osMatch?.[1]?.split(';')[0]?.trim()
+      return os ? `Shelve CLI · ${os}` : 'Shelve CLI'
+    },
+    icon: 'lucide:terminal',
+  },
   { pattern: /^node$/i, label: () => 'Node.js', icon: 'lucide:hexagon' },
   { pattern: /node\/?(v?\d+(?:\.\d+)*)?/i, label: m => (m[1] ? `Node.js ${m[1]}` : 'Node.js'), icon: 'lucide:hexagon' },
   { pattern: /curl\/([\d.]+)/i, label: m => `curl ${m[1]}`, icon: 'lucide:terminal' },

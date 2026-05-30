@@ -36,6 +36,19 @@ export default eventHandler(async (event) => {
     values: body.values,
     autoUppercase: body.autoUppercase,
   })
+
+  await logAudit(event, {
+    teamId: team.id,
+    action: 'variables.update',
+    resourceType: 'variable',
+    resourceId: variableId,
+    metadata: {
+      key: body.autoUppercase ? body.key.toUpperCase() : body.key,
+      projectId,
+      projectName: project.name,
+    },
+  })
+
   return {
     statusCode: 200,
     message: 'Variable updated successfully',

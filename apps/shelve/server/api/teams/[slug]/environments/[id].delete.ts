@@ -7,10 +7,23 @@ export default defineEventHandler(async (event) => {
 
   const { id } = await getValidatedRouterParams(event, idParamsSchema.parse)
 
+  const environment = await db.query.environments.findFirst({
+    where: and(eq(schema.environments.id, id), eq(schema.environments.teamId, team.id)),
+  })
+  if (!environment) throw createError({ statusCode: 404, statusMessage: 'Environment not found' })
+
   await db.delete(schema.environments)
     .where(eq(schema.environments.id, id))
 
   await clearCache('Environments', team.id)
+
+  await logAudit(event, {
+    teamId: team.id,
+    action: 'environment.delete',
+    resourceType: 'environment',
+    resourceId: id,
+    metadata: { name: environment.name },
+  })
 
   return {
     statusCode: 204,

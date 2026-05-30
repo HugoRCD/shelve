@@ -23,10 +23,13 @@ export default defineEventHandler(async (event) => {
   if (!bearer) return
 
   try {
-    const { user, scopes } = await authenticateToken(bearer, event)
+    const { user, scopes, token } = await authenticateToken(bearer, event)
     await setUserSession(event, {
       user,
       tokenScopes: scopes,
+      tokenId: token.id,
+      tokenPrefix: token.prefix,
+      tokenName: token.name,
       loggedInAt: new Date(),
     })
     if (legacyCookie) {
