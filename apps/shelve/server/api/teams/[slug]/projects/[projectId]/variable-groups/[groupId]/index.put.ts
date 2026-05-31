@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { TeamRole } from '@types'
-import { projectIdParamsSchema, groupIdParamsSchema } from '~~/server/db/zod'
+import { groupIdParamsSchema } from '~~/server/db/zod'
 
 const updateGroupSchema = z.object({
   name: z.string().min(1).max(50).trim().optional(),
@@ -9,11 +9,11 @@ const updateGroupSchema = z.object({
 })
 
 export default eventHandler(async (event) => {
-  const slug = await getTeamSlugFromEvent(event)
-  await requireUserTeam(event, slug, { minRole: TeamRole.ADMIN })
-  await getValidatedRouterParams(event, projectIdParamsSchema.parse)
+  const { project } = await requireUserTeamProject(event, { minRole: TeamRole.ADMIN })
   const { groupId } = await getValidatedRouterParams(event, groupIdParamsSchema.parse)
   const body = await readValidatedBody(event, updateGroupSchema.parse)
+
+  await new VariableGroupsService().getGroupForProject(groupId, project.id)
 
   const group = await new VariableGroupsService().updateGroup({
     id: groupId,

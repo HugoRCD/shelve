@@ -7,10 +7,12 @@ const bulkAssignGroupSchema = z.object({
 })
 
 export default eventHandler(async (event) => {
-  const slug = await getTeamSlugFromEvent(event)
-  await requireUserTeam(event, slug, { minRole: TeamRole.ADMIN })
+  const { project } = await requireUserTeamProject(event, { minRole: TeamRole.ADMIN })
   const { variableIds, groupId } = await readValidatedBody(event, bulkAssignGroupSchema.parse)
-  await new VariablesService(event).bulkAssignGroup(variableIds, groupId)
+  if (groupId !== null) {
+    await new VariableGroupsService().getGroupForProject(groupId, project.id)
+  }
+  await new VariablesService(event).bulkAssignGroup(project.id, variableIds, groupId)
   return {
     statusCode: 200,
     message: 'Variables assigned to group',

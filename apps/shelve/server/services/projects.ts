@@ -23,9 +23,12 @@ export class ProjectsService {
 
     const [updatedProject] = await db.update(schema.projects)
       .set(input)
-      .where(eq(schema.projects.id, input.id))
+      .where(and(
+        eq(schema.projects.id, input.id),
+        eq(schema.projects.teamId, input.teamId),
+      ))
       .returning()
-    if (!updatedProject) throw createError({ statusCode: 422, message: 'Failed to update project' })
+    if (!updatedProject) throw createError({ statusCode: 404, message: `Project not found with id ${input.id}` })
     await clearCache('Projects', updatedProject.teamId)
     await clearCache('Project', updatedProject.id)
 
@@ -39,6 +42,15 @@ export class ProjectsService {
     if (!project) throw createError({ statusCode: 404, message: `Project not found with id ${projectId}` })
     return project
   })
+
+  /** Resolves a project only when it belongs to the given team (prevents cross-tenant IDOR). */
+  async getProjectForTeam(projectId: number, teamId: number): Promise<Project> {
+    const project = await this.getProject(projectId)
+    if (project.teamId !== teamId) {
+      throw createError({ statusCode: 404, message: `Project not found with id ${projectId}` })
+    }
+    return project
+  }
 
   getProjects = withCache<Project[]>('Projects', (teamId: number) => {
     return db.query.projects.findMany({

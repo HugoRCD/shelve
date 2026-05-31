@@ -1,21 +1,17 @@
 import { TeamRole } from '@types'
-import { projectIdParamsSchema, variableIdParamsSchema } from '~~/server/db/zod'
+import { variableIdParamsSchema } from '~~/server/db/zod'
 
 export default eventHandler(async (event) => {
-  const slug = await getTeamSlugFromEvent(event)
-  const { team } = await requireUserTeam(event, slug, { minRole: TeamRole.OWNER })
+  const { team, project } = await requireUserTeamProject(event, { minRole: TeamRole.OWNER })
   const { variableId } = await getValidatedRouterParams(event, variableIdParamsSchema.parse)
-  const { projectId } = await getValidatedRouterParams(event, projectIdParamsSchema.parse)
 
   const existing = await db.query.variables.findFirst({
     where: and(
       eq(schema.variables.id, variableId),
-      eq(schema.variables.projectId, projectId),
+      eq(schema.variables.projectId, project.id),
     ),
   })
   if (!existing) throw createError({ statusCode: 404, statusMessage: 'Variable not found' })
-
-  const project = await new ProjectsService().getProject(existing.projectId)
 
   await new VariablesService(event).deleteVariable(variableId)
 
@@ -26,7 +22,7 @@ export default eventHandler(async (event) => {
     resourceId: variableId,
     metadata: {
       key: existing.key,
-      projectId: existing.projectId,
+      projectId: project.id,
       projectName: project.name,
     },
   })
