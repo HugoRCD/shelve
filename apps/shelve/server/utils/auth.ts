@@ -1,9 +1,7 @@
 import type { H3Event } from 'h3'
-import type { Member, Project, Team, TokenPermission, TokenScopes, User } from '@types'
+import type { Member, Team, TokenPermission, TokenScopes, User } from '@types'
 import { Role, TeamRole } from '@types'
 import { z } from 'zod'
-import { projectIdParamsSchema } from '~~/server/db/zod'
-import { ProjectsService } from '~~/server/services/projects'
 import { validateTeamAccess, validateTeamRole } from './validateAccess'
 
 const teamSlugSchema = z.object({
@@ -62,21 +60,6 @@ export async function requireUserTeam(
 export async function getTeamSlugFromEvent(event: H3Event): Promise<string> {
   const { slug } = await getValidatedRouterParams(event, teamSlugSchema.parse)
   return slug
-}
-
-/**
- * Requires team membership and that the route's projectId belongs to that team.
- * Use on all handlers under /api/teams/[slug]/projects/[projectId]/.
- */
-export async function requireUserTeamProject(
-  event: H3Event,
-  options?: { minRole?: TeamRole }
-): Promise<{ user: User; team: Team; member: Member; project: Project }> {
-  const slug = await getTeamSlugFromEvent(event)
-  const { user, team, member } = await requireUserTeam(event, slug, options)
-  const { projectId } = await getValidatedRouterParams(event, projectIdParamsSchema.parse)
-  const project = await new ProjectsService().getProjectForTeam(projectId, team.id)
-  return { user, team, member, project }
 }
 
 /**
