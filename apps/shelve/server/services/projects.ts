@@ -15,11 +15,10 @@ export class ProjectsService {
   }
 
   async updateProject(input: ProjectUpdateInput): Promise<Project> {
-    const existingProject = await this.getProject(input.id)
-    if (!existingProject) throw createError({ statusCode: 404, message: `Project not found with id ${input.id}` })
+    const existingProject = await this.getProjectForTeam(input.id, input.teamId)
 
     if (existingProject.name !== input.name)
-      await this.validateProjectName(input.name, existingProject.teamId, input.id)
+      await this.validateProjectName(input.name, input.teamId, input.id)
 
     const [updatedProject] = await db.update(schema.projects)
       .set(input)

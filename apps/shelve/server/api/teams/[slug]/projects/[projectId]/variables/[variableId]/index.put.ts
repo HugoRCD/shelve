@@ -30,6 +30,10 @@ export default eventHandler(async (event) => {
   })
   if (!existing) throw createError({ statusCode: 404, statusMessage: 'Variable not found' })
 
+  if (body.groupId != null) {
+    await new VariableGroupsService().getGroupForProject(body.groupId, project.id)
+  }
+
   const environmentIds = [...new Set(body.values.map(v => v.environmentId))]
   await assertPushAllowedForEnvironmentIds(environmentIds, team.id, project.syncPolicy)
 

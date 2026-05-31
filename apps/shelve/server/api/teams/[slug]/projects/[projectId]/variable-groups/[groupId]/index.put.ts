@@ -13,12 +13,10 @@ export default eventHandler(async (event) => {
   const { groupId } = await getValidatedRouterParams(event, groupIdParamsSchema.parse)
   const body = await readValidatedBody(event, updateGroupSchema.parse)
 
-  await new VariableGroupsService().getGroupForProject(groupId, project.id)
-
   const group = await new VariableGroupsService().updateGroup({
     id: groupId,
     ...body,
-  })
+  }, project.id)
 
   return { statusCode: 200, group }
 })
