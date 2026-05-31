@@ -4,6 +4,7 @@
   "private": true,
   "main": "./nuxt.config.ts",
   "scripts": {
+    "build": "nuxt prepare",
     "postinstall": "nuxt prepare",
     "lint": "eslint .",
     "lint:fix": "eslint --fix ."

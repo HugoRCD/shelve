@@ -45,7 +45,10 @@ export default defineNuxtConfig({
   // close hook to flush types (.nuxt/tsconfig.json) cleanly.
   hooks: {
     close: () => {
-      if (process.env.npm_lifecycle_event === 'build') {
+      // Only force-exit on `nuxi build` (fontless hang workaround). When `build`
+      // runs `nuxt prepare` for Turbo, argv contains `prepare` — let it flush
+      // .nuxt/tsconfig.json normally.
+      if (process.env.npm_lifecycle_event === 'build' && !process.argv.includes('prepare')) {
         process.exit(0)
       }
     },
