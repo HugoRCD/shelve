@@ -63,7 +63,8 @@ shelve run --env preview -- pnpm build
 shelve run dev                    # package.json script shortcut
 
 shelve init                       # agent ignores + .gitignore block
-shelve login --token "$SHELVE_TOKEN"
+shelve login                      # browser device flow (humans)
+shelve login --token "$SHELVE_TOKEN"  # CI / automation
 shelve doctor --json
 shelve --json config
 

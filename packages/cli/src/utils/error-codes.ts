@@ -15,6 +15,18 @@ export const CLI_ERROR_CODES: Record<string, { meaning: string, hint?: string }>
     meaning: 'No API token available',
     hint: 'Set SHELVE_TOKEN or run `shelve login`.',
   },
+  DEVICE_LOGIN_DENIED: {
+    meaning: 'Browser authorization was denied',
+    hint: 'Run `shelve login` again and choose Authorize in the browser.',
+  },
+  DEVICE_LOGIN_EXPIRED: {
+    meaning: 'Device login session expired before approval',
+    hint: 'Run `shelve login` again and complete approval within 15 minutes.',
+  },
+  DEVICE_LOGIN_TIMEOUT: {
+    meaning: 'Device login timed out or failed while polling',
+    hint: 'Check network and Shelve URL, then run `shelve login` again.',
+  },
   CONFIG_MISSING: {
     meaning: 'No shelve.json and required config not provided via env',
     hint: 'Create shelve.json or set SHELVE_TEAM_SLUG and SHELVE_PROJECT.',

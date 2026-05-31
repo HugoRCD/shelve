@@ -57,6 +57,13 @@
       "when": 1782700000003,
       "tag": "0007_project_sync_policy",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1782700000004,
+      "tag": "0008_cli_device_auth",
+      "breakpoints": true
     }
   ]
 }

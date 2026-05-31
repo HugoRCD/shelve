@@ -15,13 +15,26 @@ export default defineCommand({
       description: 'API token (or set SHELVE_TOKEN)',
       required: false,
     },
+    withToken: {
+      type: 'boolean',
+      description: 'Paste an API token instead of browser device login',
+      default: false,
+    },
+    noBrowser: {
+      type: 'boolean',
+      description: 'Do not open a browser; show the authorization URL and code only',
+      default: false,
+    },
   },
   async run({ args }) {
     const { url } = await loadShelveConfig()
 
     cliIntro(`Login to Shelve on ${url}`)
 
-    const { user } = await BaseService.getToken(true, args.token) as { user: User, token: string }
+    const { user } = await BaseService.getToken(true, args.token, {
+      withToken: args.withToken,
+      noBrowser: args.noBrowser,
+    }) as { user: User, token: string }
 
     cliSuccess(
       { username: user.username, email: user.email },

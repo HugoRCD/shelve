@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { motion } from 'motion-v'
+import { parseCliAuthorizeRedirect } from '~~/shared/cli-authorize'
 
 const { title, auth: { isGithubEnabled, isGoogleEnabled, isEmailEnabled } } = useAppConfig()
 
@@ -14,7 +15,18 @@ const focus = ref(false)
 const email = ref(route.query.email as string || '')
 const prefilledOtp = ref(route.query.otp as string || '')
 const redirectUrl = computed(() => route.query.redirect as string || '')
+const cliAuthorize = computed(() => parseCliAuthorizeRedirect(redirectUrl.value))
 const authMode = ref<'oauth' | 'email'>('oauth')
+
+const pageTitle = computed(() =>
+  cliAuthorize.value.isCliAuthorize ? 'Authorize Shelve CLI' : `Sign in to ${title}`,
+)
+
+const pageSubtitle = computed(() =>
+  cliAuthorize.value.isCliAuthorize
+    ? 'Sign in to continue CLI authorization.'
+    : 'Welcome to the future of environment management.',
+)
 
 if (email.value && prefilledOtp.value) {
   authMode.value = 'email'
@@ -76,8 +88,8 @@ function handleOtpVerified() {
 }
 
 useSeoMeta({
-  title: 'Login',
-  titleTemplate: '%s - Shelve'
+  title: () => (cliAuthorize.value.isCliAuthorize ? 'Authorize CLI' : 'Login'),
+  titleTemplate: '%s - Shelve',
 })
 </script>
 
@@ -88,10 +100,16 @@ useSeoMeta({
       <Logo :text="false" size="size-10" />
       <div class="flex flex-col items-center gap-1">
         <h1 class="text-center text-3xl leading-9 main-gradient">
-          Sign in to {{ title }}
+          {{ pageTitle }}
         </h1>
-        <p class="text-muted italic">
-          Welcome to the future of environment management.
+        <p class="text-muted italic max-w-md">
+          {{ pageSubtitle }}
+        </p>
+        <p
+          v-if="cliAuthorize.isCliAuthorize && cliAuthorize.userCode"
+          class="mt-3 font-mono text-base sm:text-lg tracking-[0.35em] text-highlighted tabular-nums"
+        >
+          {{ cliAuthorize.userCode }}
         </p>
       </div>
     </div>

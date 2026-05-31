@@ -48,7 +48,7 @@ Auto non-interactive when:
 
 | Command | Flags |
 |---------|-------|
-| `login` | `--token` or `SHELVE_TOKEN` |
+| `login` | Browser device flow by default; `--token` / `SHELVE_TOKEN` / `--with-token` for automation |
 | `push` / `pull` | `--env`, `--yes` |
 | `create` | `--name`, `--slug` |
 | `generate` | `--type env-example \| eslint` |
