@@ -1,5 +1,11 @@
 # @shelve/cli
 
+## 5.2.0
+
+### Minor Changes
+
+- [#756](https://github.com/HugoRCD/shelve/pull/756) [`13840b5`](https://github.com/HugoRCD/shelve/commit/13840b5f43d3ce786ea9ca785bfd0ae53ec3ffd3) Thanks [@HugoRCD](https://github.com/HugoRCD)! - Add browser-based device login for the CLI (`shelve login` opens Shelve to approve; auto-creates a revocable CLI API token). Keeps `SHELVE_TOKEN`, `--token`, and `--with-token` for CI and manual tokens. Login and authorize pages show CLI-specific messaging when redirecting from the device flow.
+
 ## 5.1.0
 
 ### Minor Changes
