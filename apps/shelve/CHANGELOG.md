@@ -1,5 +1,13 @@
 # @shelve/app
 
+## 3.3.0
+
+### Minor Changes
+
+- [#754](https://github.com/HugoRCD/shelve/pull/754) [`f247f0c`](https://github.com/HugoRCD/shelve/commit/f247f0c66eec6d40378ccec8fa490a1bf79e5e9d) Thanks [@HugoRCD](https://github.com/HugoRCD)! - Improve audit log UX with enriched API responses, timeline UI, expanded event coverage, and human-readable token scope labels.
+
+- [#756](https://github.com/HugoRCD/shelve/pull/756) [`13840b5`](https://github.com/HugoRCD/shelve/commit/13840b5f43d3ce786ea9ca785bfd0ae53ec3ffd3) Thanks [@HugoRCD](https://github.com/HugoRCD)! - Add browser-based device login for the CLI (`shelve login` opens Shelve to approve; auto-creates a revocable CLI API token). Keeps `SHELVE_TOKEN`, `--token`, and `--with-token` for CI and manual tokens. Login and authorize pages show CLI-specific messaging when redirecting from the device flow.
+
 ## 3.2.0
 
 ### Minor Changes
