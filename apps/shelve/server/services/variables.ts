@@ -194,17 +194,17 @@ export class VariablesService {
       : variables
   })
 
-  async bulkAssignGroup(variableIds: number[], groupId: number | null): Promise<void> {
+  async bulkAssignGroup(projectId: number, variableIds: number[], groupId: number | null): Promise<void> {
     if (!variableIds.length) return
 
     await db.update(schema.variables)
       .set({ groupId })
-      .where(inArray(schema.variables.id, variableIds))
+      .where(and(
+        eq(schema.variables.projectId, projectId),
+        inArray(schema.variables.id, variableIds),
+      ))
 
-    const first = await db.query.variables.findFirst({
-      where: eq(schema.variables.id, variableIds[0]!),
-    })
-    if (first) await clearCache('Variables', first.projectId)
+    await clearCache('Variables', projectId)
   }
 
   async deleteVariable(id: number): Promise<void> {
@@ -215,6 +215,23 @@ export class VariablesService {
     if (!deleted) throw createError({ statusCode: 404, statusMessage: `Variable not found with id ${id}` })
 
     await clearCache('Variables', deleted.projectId)
+  }
+
+  async deleteVariablesInProject(projectId: number, variableIds: number[]): Promise<void> {
+    if (!variableIds.length) return
+
+    const deleted = await db.delete(schema.variables)
+      .where(and(
+        eq(schema.variables.projectId, projectId),
+        inArray(schema.variables.id, variableIds),
+      ))
+      .returning()
+
+    if (deleted.length !== variableIds.length) {
+      throw createError({ statusCode: 404, statusMessage: 'One or more variables not found' })
+    }
+
+    await clearCache('Variables', projectId)
   }
 
   async decryptVariables(variables: Variable[]): Promise<Variable[]> {

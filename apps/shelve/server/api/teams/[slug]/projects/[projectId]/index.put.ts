@@ -15,23 +15,13 @@ const updateProjectSchema = z.object({
   syncPolicy: syncPolicySchema,
 })
 
-const projectIdParamsSchema = z.object({
-  projectId: z.coerce.number({
-    error: 'Project ID is required',
-  }).int().positive(),
-})
-
 export default eventHandler(async (event) => {
-  const slug = await getTeamSlugFromEvent(event)
-  const { team } = await requireUserTeam(event, slug, { minRole: TeamRole.ADMIN })
-
-  const { projectId } = await getValidatedRouterParams(event, projectIdParamsSchema.parse)
-
+  const { team, project } = await requireUserTeamProject(event, { minRole: TeamRole.ADMIN })
   const body = await readValidatedBody(event, updateProjectSchema.parse)
 
   return await new ProjectsService().updateProject({
-    id: projectId,
+    id: project.id,
     ...body,
-    teamId: team.id
+    teamId: team.id,
   })
 })

@@ -2,6 +2,17 @@ import type { VariableGroup, CreateVariableGroupInput, UpdateVariableGroupInput 
 
 export class VariableGroupsService {
 
+  async getGroupForProject(groupId: number, projectId: number): Promise<VariableGroup> {
+    const group = await db.query.variableGroups.findFirst({
+      where: and(
+        eq(schema.variableGroups.id, groupId),
+        eq(schema.variableGroups.projectId, projectId),
+      ),
+    })
+    if (!group) throw createError({ statusCode: 404, statusMessage: 'Variable group not found' })
+    return group
+  }
+
   async getGroups(projectId: number): Promise<VariableGroup[]> {
     return await db.query.variableGroups.findMany({
       where: eq(schema.variableGroups.projectId, projectId),

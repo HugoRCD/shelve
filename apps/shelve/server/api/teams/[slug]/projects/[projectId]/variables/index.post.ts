@@ -1,5 +1,4 @@
 import { z } from 'zod'
-import { projectIdParamsSchema } from '~~/server/db/zod'
 
 const createVariablesSchema = z.object({
   autoUppercase: z.boolean().optional(),
@@ -19,18 +18,15 @@ const createVariablesSchema = z.object({
 })
 
 export default eventHandler(async (event) => {
-  const slug = await getTeamSlugFromEvent(event)
-  const { team } = await requireUserTeam(event, slug)
+  const { team, project } = await requireUserTeamProject(event)
   const body = await readValidatedBody(event, createVariablesSchema.parse)
-  const { projectId } = await getValidatedRouterParams(event, projectIdParamsSchema.parse)
-  const project = await new ProjectsService().getProject(projectId)
 
   await assertPushAllowedForEnvironmentIds(body.environmentIds, team.id, project.syncPolicy)
 
   for (const environmentId of body.environmentIds) {
     await requireTokenScope(event, {
       teamId: team.id,
-      projectId,
+      projectId: project.id,
       environmentId,
       permission: 'write',
     })
@@ -38,7 +34,7 @@ export default eventHandler(async (event) => {
 
   const variablesService = new VariablesService(event)
   await variablesService.createVariables(event, {
-    projectId,
+    projectId: project.id,
     autoUppercase: body.autoUppercase,
     environmentIds: body.environmentIds,
     variables: body.variables.map(variable => ({
@@ -55,7 +51,7 @@ export default eventHandler(async (event) => {
     teamId: team.id,
     action: 'variables.create',
     resourceType: 'project',
-    resourceId: projectId,
+    resourceId: project.id,
     metadata: {
       keys: body.variables.map(v => v.key),
       environmentIds: body.environmentIds,

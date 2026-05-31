@@ -1,11 +1,8 @@
 import { z } from 'zod'
 import type { EnvVarExport } from '@types'
-import { projectIdParamsSchema } from '~~/server/db/zod'
 
 export default eventHandler(async (event) => {
-  const slug = await getTeamSlugFromEvent(event)
-  const { team } = await requireUserTeam(event, slug)
-  const { projectId } = await getValidatedRouterParams(event, projectIdParamsSchema.parse)
+  const { team, project } = await requireUserTeamProject(event)
   const { envId } = await getValidatedRouterParams(event, z.object({
     envId: z.coerce.number({
       error: 'Environment ID is required',
@@ -14,14 +11,12 @@ export default eventHandler(async (event) => {
 
   await requireTokenScope(event, {
     teamId: team.id,
-    projectId,
+    projectId: project.id,
     environmentId: envId,
     permission: 'read',
   })
 
   const variablesService = new VariablesService(event)
-
-  const project = await new ProjectsService().getProject(projectId)
   const environmentName = await getEnvironmentName(envId, team.id)
 
   void logAudit(event, {
@@ -30,16 +25,16 @@ export default eventHandler(async (event) => {
     resourceType: 'environment',
     resourceId: envId,
     metadata: {
-      projectId,
+      projectId: project.id,
       projectName: project.name,
       environmentName,
     },
   })
 
   variablesService.incrementStatAsync(team.id, 'pull')
-  const result = await variablesService.getVariables(projectId, envId)
+  const result = await variablesService.getVariables(project.id, envId)
 
-  if (!result) throw createError({ statusCode: 404, statusMessage: `Variables not found for project ${projectId} and environment ${envId}` })
+  if (!result) throw createError({ statusCode: 404, statusMessage: `Variables not found for project ${project.id} and environment ${envId}` })
 
   const decryptedVariables = await variablesService.decryptVariables(result)
 

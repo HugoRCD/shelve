@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { TeamRole } from '@types'
-import { projectIdParamsSchema, variableIdParamsSchema } from '~~/server/db/zod'
+import { variableIdParamsSchema } from '~~/server/db/zod'
 
 const updateVariableSchema = z.object({
   autoUppercase: z.boolean().optional(),
@@ -18,21 +18,18 @@ const updateVariableSchema = z.object({
 })
 
 export default eventHandler(async (event) => {
-  const slug = await getTeamSlugFromEvent(event)
-  const { team } = await requireUserTeam(event, slug, { minRole: TeamRole.ADMIN })
+  const { team, project } = await requireUserTeamProject(event, { minRole: TeamRole.ADMIN })
   const { variableId } = await getValidatedRouterParams(event, variableIdParamsSchema.parse)
-  const { projectId } = await getValidatedRouterParams(event, projectIdParamsSchema.parse)
   const body = await readValidatedBody(event, updateVariableSchema.parse)
 
   const existing = await db.query.variables.findFirst({
     where: and(
       eq(schema.variables.id, variableId),
-      eq(schema.variables.projectId, projectId),
+      eq(schema.variables.projectId, project.id),
     ),
   })
   if (!existing) throw createError({ statusCode: 404, statusMessage: 'Variable not found' })
 
-  const project = await new ProjectsService().getProject(existing.projectId)
   const environmentIds = [...new Set(body.values.map(v => v.environmentId))]
   await assertPushAllowedForEnvironmentIds(environmentIds, team.id, project.syncPolicy)
 
@@ -52,7 +49,7 @@ export default eventHandler(async (event) => {
     resourceId: variableId,
     metadata: {
       key: body.autoUppercase ? body.key.toUpperCase() : body.key,
-      projectId: existing.projectId,
+      projectId: project.id,
       projectName: project.name,
     },
   })
