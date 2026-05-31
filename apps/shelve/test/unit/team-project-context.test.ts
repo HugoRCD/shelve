@@ -19,18 +19,20 @@ describe('ProjectsService.getProjectForTeam', () => {
   test('returns the project when it belongs to the team', async () => {
     const { ProjectsService } = await import('../../server/services/projects')
     const service = new ProjectsService()
-    vi.spyOn(service, 'getProject').mockResolvedValue(projectOnA)
+    const getProject = vi.spyOn(service, 'getProject').mockResolvedValue(projectOnA)
 
     await expect(service.getProjectForTeam(projectOnA.id, 1)).resolves.toEqual(projectOnA)
+    expect(getProject).toHaveBeenCalledWith(projectOnA.id)
   })
 
   test('returns 404 when the project belongs to another team', async () => {
     const { ProjectsService } = await import('../../server/services/projects')
     const service = new ProjectsService()
-    vi.spyOn(service, 'getProject').mockResolvedValue(projectOnB)
+    const getProject = vi.spyOn(service, 'getProject').mockResolvedValue(projectOnB)
 
     await expect(service.getProjectForTeam(projectOnB.id, 1)).rejects.toMatchObject({
       statusCode: 404,
     })
+    expect(getProject).toHaveBeenCalledWith(projectOnB.id)
   })
 })

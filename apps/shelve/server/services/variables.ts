@@ -194,8 +194,23 @@ export class VariablesService {
       : variables
   })
 
+  private async requireVariablesInProject(projectId: number, variableIds: number[]): Promise<void> {
+    const found = await db.query.variables.findMany({
+      where: and(
+        eq(schema.variables.projectId, projectId),
+        inArray(schema.variables.id, variableIds),
+      ),
+      columns: { id: true },
+    })
+    if (found.length !== variableIds.length) {
+      throw createError({ statusCode: 404, statusMessage: 'One or more variables not found' })
+    }
+  }
+
   async bulkAssignGroup(projectId: number, variableIds: number[], groupId: number | null): Promise<void> {
     if (!variableIds.length) return
+
+    await this.requireVariablesInProject(projectId, variableIds)
 
     await db.update(schema.variables)
       .set({ groupId })
@@ -220,16 +235,13 @@ export class VariablesService {
   async deleteVariablesInProject(projectId: number, variableIds: number[]): Promise<void> {
     if (!variableIds.length) return
 
-    const deleted = await db.delete(schema.variables)
+    await this.requireVariablesInProject(projectId, variableIds)
+
+    await db.delete(schema.variables)
       .where(and(
         eq(schema.variables.projectId, projectId),
         inArray(schema.variables.id, variableIds),
       ))
-      .returning()
-
-    if (deleted.length !== variableIds.length) {
-      throw createError({ statusCode: 404, statusMessage: 'One or more variables not found' })
-    }
 
     await clearCache('Variables', projectId)
   }
