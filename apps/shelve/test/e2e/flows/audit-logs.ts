@@ -1,18 +1,22 @@
 import { test, expect } from 'vitest'
+import type { AuditLogResponse } from '@types'
 import type { E2EContext } from '../helpers'
 
-type AuditLog = {
-  id: number
-  action: string
-  actorType: 'user' | 'token' | 'system'
-  actorId: number | null
-  resourceType: string | null
-  resourceId: string | null
-  metadata: Record<string, unknown> | null
-  createdAt: string
-}
+async function waitForAuditAction(
+  ctx: E2EContext,
+  action: string,
+  timeoutMs = 5000,
+): Promise<AuditLogResponse> {
+  const startedAt = Date.now()
 
-type AuditResponse = { logs: AuditLog[]; nextCursor: number | null }
+  while (Date.now() - startedAt < timeoutMs) {
+    const feed = await ctx.api<AuditLogResponse>(`/api/teams/${ctx.teamSlug}/audit-logs`)
+    if (feed.logs.some(entry => entry.action === action)) return feed
+    await new Promise(resolve => setTimeout(resolve, 200))
+  }
+
+  throw new Error(`Timed out waiting for audit action "${action}"`)
+}
 
 export function registerAuditLogTests(ctx: E2EContext) {
   test('records a `token.create` event when a token is created', async () => {
@@ -21,30 +25,29 @@ export function registerAuditLogTests(ctx: E2EContext) {
       body: { name: 'audited-token' },
     })
 
-    // token.create is team-less by default — logs are per-team, so the broadest
-    // assertion we can make via the public endpoint is that _some_ action took
-    // place on this team during the flow. `variable.create` is written on
-    // every push and is the most reliable marker; we simply check the feed
-    // is non-empty and structurally sound here.
-    const feed = await ctx.api<AuditResponse>(`/api/teams/${ctx.teamSlug}/audit-logs`)
+    const feed = await waitForAuditAction(ctx, 'token.create')
     expect(Array.isArray(feed.logs)).toBe(true)
+    expect(feed.logs.some(entry => entry.action === 'token.create')).toBe(true)
+    expect(feed.logs[0]?.summary).toBeTruthy()
+    expect(feed.logs[0]?.actor?.label).toBeTruthy()
   })
 
   test('filters by action', async () => {
-    const feed = await ctx.api<AuditResponse>(
-      `/api/teams/${ctx.teamSlug}/audit-logs?action=variable.create`
+    const feed = await ctx.api<AuditLogResponse>(
+      `/api/teams/${ctx.teamSlug}/audit-logs?action=variables.create`
     )
-    for (const entry of feed.logs) expect(entry.action).toBe('variable.create')
+    for (const entry of feed.logs) expect(entry.action).toBe('variables.create')
   })
 
   test('respects the limit query param', async () => {
-    const feed = await ctx.api<AuditResponse>(`/api/teams/${ctx.teamSlug}/audit-logs?limit=1`)
+    const feed = await ctx.api<AuditLogResponse>(`/api/teams/${ctx.teamSlug}/audit-logs?limit=1`)
     expect(feed.logs.length).toBeLessThanOrEqual(1)
+    expect(typeof feed.total).toBe('number')
   })
 
   test('rejects invalid limit values', async () => {
     await expect(
-      ctx.api<AuditResponse>(`/api/teams/${ctx.teamSlug}/audit-logs?limit=0`)
+      ctx.api<AuditLogResponse>(`/api/teams/${ctx.teamSlug}/audit-logs?limit=0`)
     ).rejects.toMatchObject({ statusCode: 400 })
   })
 }

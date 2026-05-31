@@ -7,7 +7,17 @@ export default eventHandler(async (event) => {
 
   const { projectId } = await getValidatedRouterParams(event, projectIdParamsSchema.parse)
 
+  const project = await new ProjectsService().getProject(projectId)
+
   await new ProjectsService().deleteProject(projectId, team.id)
+
+  await logAudit(event, {
+    teamId: team.id,
+    action: 'project.delete',
+    resourceType: 'project',
+    resourceId: projectId,
+    metadata: { name: project.name },
+  })
 
   return {
     statusCode: 200,

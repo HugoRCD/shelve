@@ -24,7 +24,15 @@ export default eventHandler(async (event) => {
   const { projectId } = await getValidatedRouterParams(event, projectIdParamsSchema.parse)
   const body = await readValidatedBody(event, updateVariableSchema.parse)
 
-  const project = await new ProjectsService().getProject(projectId)
+  const existing = await db.query.variables.findFirst({
+    where: and(
+      eq(schema.variables.id, variableId),
+      eq(schema.variables.projectId, projectId),
+    ),
+  })
+  if (!existing) throw createError({ statusCode: 404, statusMessage: 'Variable not found' })
+
+  const project = await new ProjectsService().getProject(existing.projectId)
   const environmentIds = [...new Set(body.values.map(v => v.environmentId))]
   await assertPushAllowedForEnvironmentIds(environmentIds, team.id, project.syncPolicy)
 
@@ -36,6 +44,19 @@ export default eventHandler(async (event) => {
     values: body.values,
     autoUppercase: body.autoUppercase,
   })
+
+  void logAudit(event, {
+    teamId: team.id,
+    action: 'variables.update',
+    resourceType: 'variable',
+    resourceId: variableId,
+    metadata: {
+      key: body.autoUppercase ? body.key.toUpperCase() : body.key,
+      projectId: existing.projectId,
+      projectName: project.name,
+    },
+  })
+
   return {
     statusCode: 200,
     message: 'Variable updated successfully',

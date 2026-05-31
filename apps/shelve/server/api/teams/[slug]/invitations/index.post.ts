@@ -34,5 +34,12 @@ export default eventHandler(async (event: H3Event) => {
     inviteUrl,
   })
 
+  await logAudit(event, {
+    teamId: team.id,
+    action: 'team.member.invite',
+    resourceType: 'user',
+    metadata: { email, role },
+  })
+
   return invitation
 })

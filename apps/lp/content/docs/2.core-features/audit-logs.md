@@ -3,29 +3,19 @@ title: Audit Logs
 description: Review every privileged action performed on your teams, projects, and secrets.
 ---
 
-Every security-relevant action in Shelve is recorded in an append-only audit log. The feed is scoped to a team and visible to members with at least the required role.
+Every security-relevant action in Shelve is recorded in an append-only audit log. The feed is scoped to a team and visible from **Team → Audit logs**.
 
 ## What gets logged
 
 Among others:
 
-- `team.create`, `team.update`, `team.delete`, `team.member.add`, `team.member.role.update`, `team.member.remove`
-- `project.create`, `project.update`, `project.delete`
+- `team.member.invite`, `team.member.remove`
+- `project.create`, `project.delete`
 - `environment.create`, `environment.update`, `environment.delete`
-- `variable.create`, `variable.update`, `variable.delete`, `variable.pull`, `variable.sync.github`
+- `variables.read`, `variables.create`, `variables.update`, `variables.delete`
 - `token.create`, `token.delete`
 
-Every entry stores:
-
-- the **actor** (`user` with an id, `token` with the non-secret prefix, or `system` for scheduled jobs);
-- the **IP** (respecting the `X-Forwarded-For` chain on serverless / edge hosts);
-- the **user agent** (truncated to 256 chars);
-- the **resource** type and id;
-- an opaque **metadata** JSON blob — for example `{ "scopes": { "permissions": ["read"] } }` on `token.create` or `{ "count": 4 }` on `variable.create`.
-
-::callout{type="info"}
-Audit writes are fire-and-forget: they never block the originating request. If recording fails, the event is logged to the application logs and the request still succeeds.
-::
+Every entry stores the actor, IP, user agent, resource type/id, and a metadata JSON blob. The API enriches each row with human-readable labels — project and environment names, token prefix, user display name — so clients do not need extra lookups.
 
 ## API
 
@@ -48,11 +38,45 @@ curl https://app.shelve.cloud/api/teams/<slug>/audit-logs \
   ::
 
   ::field{name="action" type="string"}
-  Filter by action name (for example `variable.create`). Exact match.
+  Filter by action name (for example `variables.create`). Exact match.
+  ::
+
+  ::field{name="actorType" type="string"}
+  Filter by actor type: `user`, `token`, or `system`.
+  ::
+
+  ::field{name="projectId" type="number"}
+  Filter to events tied to a project (direct resource or metadata).
   ::
 ::
 
-The response includes a `nextCursor` field — pass it back to fetch the next page until it is `null`.
+### Response shape
+
+Each log entry includes enriched fields:
+
+```json
+{
+  "logs": [
+    {
+      "id": 42,
+      "action": "variables.read",
+      "summary": "Read secrets from web-platform / production",
+      "actor": { "type": "token", "label": "she_abc… · ci-deploy" },
+      "resource": { "type": "environment", "label": "web-platform / production", "href": "/my-team/projects/13" },
+      "client": { "label": "Shelve CLI · macOS", "icon": "lucide:terminal", "raw": "..." },
+      "metadata": { "projectId": 13, "projectName": "web-platform", "environmentName": "production" }
+    }
+  ],
+  "nextCursor": 41,
+  "total": 128
+}
+```
+
+Pass `nextCursor` back to fetch the next page until it is `null`.
+
+::callout{type="info"}
+Audit writes are fire-and-forget: they never block the originating request. If recording fails, the event is logged to the application logs and the request still succeeds.
+::
 
 ## Retention
 
