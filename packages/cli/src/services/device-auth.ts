@@ -6,8 +6,8 @@ import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { ofetch } from 'ofetch'
 import { note, spinner } from '@clack/prompts'
-import { CliError } from './api-error'
 import { isNonInteractive } from '../utils/cli-context'
+import { CliError } from './api-error'
 
 const execAsync = promisify(exec)
 

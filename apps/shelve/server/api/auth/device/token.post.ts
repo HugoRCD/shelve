@@ -6,6 +6,6 @@ const bodySchema = z.object({
 })
 
 export default defineEventHandler(async (event) => {
-  const { device_code } = await readValidatedBody(event, bodySchema.parse)
-  return pollDeviceAuthToken(event, device_code)
+  const { device_code: deviceCode } = await readValidatedBody(event, bodySchema.parse)
+  return pollDeviceAuthToken(event, deviceCode)
 })

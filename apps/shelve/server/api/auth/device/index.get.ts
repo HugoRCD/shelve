@@ -6,6 +6,6 @@ const querySchema = z.object({
 })
 
 export default defineEventHandler(async (event) => {
-  const { user_code } = await getValidatedQuery(event, querySchema.parse)
-  return getDeviceAuthStatus(user_code)
+  const { user_code: userCode } = await getValidatedQuery(event, querySchema.parse)
+  return getDeviceAuthStatus(userCode)
 })

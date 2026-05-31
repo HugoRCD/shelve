@@ -6,7 +6,7 @@ const bodySchema = z.object({
 })
 
 export default defineEventHandler(async (event) => {
-  const { user_code } = await readValidatedBody(event, bodySchema.parse)
+  const { user_code: userCode } = await readValidatedBody(event, bodySchema.parse)
   const { user } = await requireUserSession(event)
-  return approveDeviceAuth(event, user, user_code)
+  return approveDeviceAuth(event, user, userCode)
 })

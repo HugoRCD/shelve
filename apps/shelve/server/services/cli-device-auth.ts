@@ -1,8 +1,7 @@
 import { createHash, randomBytes, timingSafeEqual } from 'node:crypto'
 import type { H3Event } from 'h3'
 import { and, eq, lt } from 'drizzle-orm'
-import type { TokenScopes } from '@types'
-import type { User } from '@types'
+import type { TokenScopes, User } from '@types'
 import { cliDeviceAuth } from '../db/schema'
 import type { CliDeviceClientMeta } from '../db/schema'
 import { generateToken, hashToken, safeEqualHex } from '../utils/tokens'
@@ -94,14 +93,14 @@ async function expireStalePending(): Promise<void> {
     ))
 }
 
-async function findByDeviceCode(deviceCode: string) {
+function findByDeviceCode(deviceCode: string) {
   const hash = hashDeviceCode(deviceCode)
   return db.query.cliDeviceAuth.findFirst({
     where: eq(cliDeviceAuth.deviceCodeHash, hash),
   })
 }
 
-async function findByUserCode(userCode: string) {
+function findByUserCode(userCode: string) {
   const normalized = normalizeUserCode(userCode)
   return db.query.cliDeviceAuth.findFirst({
     where: eq(cliDeviceAuth.userCode, normalized),
@@ -126,7 +125,7 @@ export async function startDeviceAuth(
 
   await expireStalePending()
 
-  const origin = getRequestURL(event).origin
+  const { origin } = getRequestURL(event)
   let userCode = generateUserCode()
   let deviceCode = generateDeviceCode()
   const expiresAt = new Date(Date.now() + DEVICE_AUTH_TTL_SECONDS * 1000)
@@ -288,7 +287,7 @@ export async function pollDeviceAuthToken(event: H3Event, deviceCode: string) {
   }
 
   if (row.status === 'approved' && row.accessToken) {
-    const accessToken = row.accessToken
+    const { accessToken } = row
     await db.update(cliDeviceAuth)
       .set({ accessToken: null })
       .where(eq(cliDeviceAuth.id, row.id))

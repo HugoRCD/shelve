@@ -12,10 +12,10 @@ export default defineEventHandler(async (event) => {
   const parsed = bodySchema.safeParse(body)
   let clientMeta = parsed.success && parsed.data
     ? {
-        hostname: parsed.data.hostname,
-        platform: parsed.data.platform,
-        cliVersion: parsed.data.cliVersion,
-      }
+      hostname: parsed.data.hostname,
+      platform: parsed.data.platform,
+      cliVersion: parsed.data.cliVersion,
+    }
     : undefined
 
   const ua = getRequestHeader(event, 'user-agent')
