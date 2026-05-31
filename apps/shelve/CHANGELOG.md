@@ -1,5 +1,11 @@
 # @shelve/app
 
+## 3.3.1
+
+### Patch Changes
+
+- [#757](https://github.com/HugoRCD/shelve/pull/757) [`f9cfe6e`](https://github.com/HugoRCD/shelve/commit/f9cfe6e6d86f8e304f5354d7b47d862bf2393ea5) Thanks [@HugoRCD](https://github.com/HugoRCD)! - Align nested project API handlers with the team from the URL path and tighten bulk project mutations.
+
 ## 3.3.0
 
 ### Minor Changes
