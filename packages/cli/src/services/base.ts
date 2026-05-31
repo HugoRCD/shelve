@@ -9,6 +9,7 @@ import { withSpinner } from '../utils/output'
 import { toCliError } from './api-error'
 import { ErrorService } from './error'
 import { CredentialsService } from './credentials'
+import { loginWithDeviceFlow } from './device-auth'
 
 type LoadingOptions = {
   recoverable?: (error: unknown) => boolean
@@ -43,13 +44,24 @@ export abstract class BaseService {
     })
   }
 
-  static async getToken(returnUser: boolean = false, tokenFromFlag?: string): Promise<string | { user: User, token: string }> {
+  static async getToken(
+    returnUser: boolean = false,
+    tokenFromFlag?: string,
+    options?: { withToken?: boolean, noBrowser?: boolean },
+  ): Promise<string | { user: User, token: string }> {
     const { url } = await loadShelveConfig()
     const sanitizedUrl = url.replace(/\/+$/, '')
-    const token = await askPassword(
-      `Please provide a valid token (you can generate one on ${sanitizedUrl}/user/tokens)`,
-      tokenFromFlag,
-    )
+
+    let token: string
+    if (tokenFromFlag || process.env.SHELVE_TOKEN || options?.withToken) {
+      token = await askPassword(
+        `Please provide a valid token (you can generate one on ${sanitizedUrl}/user/tokens)`,
+        tokenFromFlag,
+      )
+    } else {
+      token = await loginWithDeviceFlow(url, { noBrowser: options?.noBrowser })
+    }
+
     const user = await this.whoAmI(url, token)
 
     await CredentialsService.writeToken(url, token, { email: user.email, username: user.username })

@@ -35,6 +35,19 @@ export const invitationStatusEnum = pgEnum('invitation_status', [
   InvitationStatus.EXPIRED,
 ])
 
+export const cliDeviceAuthStatusEnum = pgEnum('cli_device_auth_status', [
+  'pending',
+  'approved',
+  'denied',
+  'expired',
+])
+
+export type CliDeviceClientMeta = {
+  hostname?: string
+  platform?: string
+  cliVersion?: string
+}
+
 export const users = pgTable('users', {
   id: bigint({ mode: 'number' }).primaryKey().generatedByDefaultAsIdentity(),
   username: varchar({ length: 25 }).unique().notNull(),
@@ -171,6 +184,22 @@ export const tokens = pgTable('tokens', {
   uniqueIndex('tokens_hash_idx').on(table.hash),
   index('tokens_user_idx').on(table.userId),
   index('tokens_prefix_idx').on(table.prefix),
+])
+
+export const cliDeviceAuth = pgTable('cli_device_auth', {
+  id: bigint({ mode: 'number' }).primaryKey().generatedByDefaultAsIdentity(),
+  deviceCodeHash: varchar({ length: 64 }).unique().notNull(),
+  userCode: varchar({ length: 9 }).unique().notNull(),
+  status: cliDeviceAuthStatusEnum().default('pending').notNull(),
+  userId: bigint({ mode: 'number' }).references(() => users.id, { onDelete: 'cascade' }),
+  tokenId: bigint({ mode: 'number' }).references(() => tokens.id, { onDelete: 'set null' }),
+  accessToken: varchar({ length: 128 }),
+  clientMeta: jsonb().$type<CliDeviceClientMeta>(),
+  expiresAt: timestamp().notNull(),
+  createdAt: timestamp().defaultNow().notNull(),
+}, (table) => [
+  uniqueIndex('cli_device_auth_user_code_idx').on(table.userCode),
+  index('cli_device_auth_expires_idx').on(table.expiresAt),
 ])
 
 export const environments = pgTable('environments', {

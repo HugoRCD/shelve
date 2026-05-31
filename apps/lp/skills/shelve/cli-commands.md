@@ -7,7 +7,7 @@
 | `run` | Inject secrets into a child process (no `.env` on disk) |
 | `doctor` | Validate config, auth, API, cache, agent context |
 | `init` | Agent ignore files + `.gitignore` shelve block |
-| `login` | Store token (keychain or XDG fallback) |
+| `login` | Browser device login by default; stores token in keychain or XDG |
 | `logout` | Clear stored credentials |
 | `me` | Show logged-in user |
 | `push` | Upload local `.env` variables to Shelve |
