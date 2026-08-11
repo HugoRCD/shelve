@@ -11,18 +11,25 @@ export function useAppCommands() {
     fetchTeams()
   }
 
+  // Teams with a request in flight, so overlapping watcher runs don't fetch twice
+  const inFlight = new Set<string>()
+
   // Fetch projects for all teams
   async function fetchAllProjects() {
     if (!teams.value || teams.value.length === 0) return
 
     await Promise.all(teams.value.map(async (team) => {
+      const projects = useProjects(team.slug)
+      // undefined means never loaded, an empty array means the team has no projects
+      if (projects.value || inFlight.has(team.slug)) return
+
+      inFlight.add(team.slug)
       try {
-        const projects = useProjects(team.slug)
-        if (!projects.value || projects.value.length === 0) {
-          projects.value = await $fetch<Project[]>(`/api/teams/${team.slug}/projects`)
-        }
+        projects.value = await $fetch<Project[]>(`/api/teams/${team.slug}/projects`)
       } catch (error) {
         console.error(`Failed to fetch projects for ${team.slug}:`, error)
+      } finally {
+        inFlight.delete(team.slug)
       }
     }))
   }
