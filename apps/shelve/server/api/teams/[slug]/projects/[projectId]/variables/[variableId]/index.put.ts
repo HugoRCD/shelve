@@ -30,7 +30,7 @@ export default eventHandler(async (event) => {
   })
   if (!existing) throw createError({ statusCode: 404, statusMessage: 'Variable not found' })
 
-  if (body.groupId != null) {
+  if (body.groupId !== undefined && body.groupId !== null) {
     await new VariableGroupsService().getGroupForProject(body.groupId, project.id)
   }
 
