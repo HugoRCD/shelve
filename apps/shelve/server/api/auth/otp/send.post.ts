@@ -1,4 +1,3 @@
-import { checkBotId } from 'botid/server'
 import { z } from 'zod'
 
 const bodySchema = z.object({
@@ -7,14 +6,8 @@ const bodySchema = z.object({
 
 export default defineEventHandler(async (event) => {
   try {
-    const verification = await checkBotId()
+    await requireHuman()
 
-    if (verification.isBot) {
-      throw createError({
-        statusCode: 403,
-        statusMessage: 'Access denied',
-      })
-    }
     const { email } = await readValidatedBody(event, bodySchema.parse)
 
     const rateLimit = await checkOTPRateLimit(email)

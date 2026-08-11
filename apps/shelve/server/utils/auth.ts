@@ -1,6 +1,7 @@
 import type { H3Event } from 'h3'
 import type { Member, Team, TokenPermission, TokenScopes, User } from '@types'
 import { Role, TeamRole } from '@types'
+import { checkBotId } from 'botid/server'
 import { z } from 'zod'
 import { validateTeamAccess, validateTeamRole } from './validateAccess'
 
@@ -9,6 +10,30 @@ const teamSlugSchema = z.object({
     error: 'Team slug is required',
   }).min(1),
 })
+
+/**
+ * Runs the BotID challenge check, only enforced on production deployments.
+ *
+ * Previews sit behind Vercel Deployment Protection, which intercepts the BotID
+ * challenge requests and redirects them to the SSO login. The challenge can never
+ * be solved there, so every request would be classified as a bot.
+ * @throws {Error} If the request is classified as a bot
+ */
+export async function requireHuman(): Promise<void> {
+  const verification = await checkBotId({
+    developmentOptions: {
+      isDevelopment: process.env.VERCEL_ENV !== 'production',
+      bypass: 'HUMAN',
+    },
+  })
+
+  if (verification.isBot) {
+    throw createError({
+      statusCode: 403,
+      statusMessage: 'Access denied',
+    })
+  }
+}
 
 /**
  * Requires the user to be authenticated and have ADMIN role

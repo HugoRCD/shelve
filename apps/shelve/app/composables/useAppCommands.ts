@@ -1,4 +1,4 @@
-import type { CommandGroup, CommandItem, SubMenuState } from '@types'
+import type { CommandGroup, CommandItem, SubMenuState, Project } from '@types'
 
 export function useAppCommands() {
   const teams = useTeams()
@@ -10,6 +10,36 @@ export function useAppCommands() {
   if (!teams.value || teams.value.length === 0) {
     fetchTeams()
   }
+
+  // Teams with a request in flight, so overlapping watcher runs don't fetch twice
+  const inFlight = new Set<string>()
+
+  // Fetch projects for all teams
+  async function fetchAllProjects() {
+    if (!teams.value || teams.value.length === 0) return
+
+    await Promise.all(teams.value.map(async (team) => {
+      const projects = useProjects(team.slug)
+      // undefined means never loaded, an empty array means the team has no projects
+      if (projects.value || inFlight.has(team.slug)) return
+
+      inFlight.add(team.slug)
+      try {
+        projects.value = await $fetch<Project[]>(`/api/teams/${team.slug}/projects`)
+      } catch (error) {
+        console.error(`Failed to fetch projects for ${team.slug}:`, error)
+      } finally {
+        inFlight.delete(team.slug)
+      }
+    }))
+  }
+
+  // Eagerly fetch projects when teams are available
+  watch(teams, (newTeams) => {
+    if (newTeams && newTeams.length > 0) {
+      fetchAllProjects()
+    }
+  }, { immediate: true })
 
   // Submenu state
   const subMenuState = reactive<SubMenuState>({
@@ -252,6 +282,38 @@ export function useAppCommands() {
     }))
   })
 
+  // Project commands - all projects from all teams
+  const projectCommands = computed<CommandItem[]>(() => {
+    if (!teams.value || teams.value.length === 0) return []
+
+    const currentTeamSlug = getTeamSlug()
+    const allProjects: CommandItem[] = []
+
+    // useProjects returns useState keyed by slug - safe to call in computed
+    for (const team of teams.value) {
+      const projects = useProjects(team.slug)
+      if (!projects.value || projects.value.length === 0) continue
+
+      const isCurrentTeam = team.slug === currentTeamSlug
+      for (const project of projects.value) {
+        allProjects.push({
+          id: `project-${project.id}`,
+          label: project.name,
+          icon: project.logo || 'lucide:folder',
+          isAvatar: Boolean(project.logo),
+          description: isCurrentTeam ? undefined : `in ${team.name}`,
+          action: () => {
+            navigateTo(`/${team.slug}/projects/${project.id}`)
+          },
+          keywords: ['project', 'switch', project.name, team.name],
+          active: route.params.projectId === String(project.id),
+        })
+      }
+    }
+
+    return allProjects
+  })
+
   // Help & Support commands
   const helpCommands = computed<CommandItem[]>(() => [
     {
@@ -343,6 +405,15 @@ export function useAppCommands() {
         id: 'teams',
         label: 'Teams',
         items: teamCommands.value
+      })
+    }
+
+    // Only show projects if available
+    if (projectCommands.value.length > 0) {
+      groups.push({
+        id: 'projects',
+        label: 'Projects',
+        items: projectCommands.value
       })
     }
 
