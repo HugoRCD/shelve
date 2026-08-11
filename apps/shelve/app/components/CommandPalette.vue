@@ -267,9 +267,6 @@ function playAction(item: CommandItem, index: number) {
                           </span>
                         </div>
 
-                        <span v-if="item.suffix" class="text-xs text-muted">
-                          {{ item.suffix }}
-                        </span>
                         <UIcon
                           v-if="item.hasSubmenu"
                           name="lucide:chevron-right"

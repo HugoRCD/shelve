@@ -294,17 +294,15 @@ export function useAppCommands() {
           label: project.name,
           icon: project.logo || 'lucide:folder',
           isAvatar: Boolean(project.logo),
-          suffix: isCurrentTeam ? undefined : team.name,
           description: isCurrentTeam ? undefined : `in ${team.name}`,
-          action: () => navigateTo(`/${team.slug}/projects/${project.id}`),
+          action: () => {
+            navigateTo(`/${team.slug}/projects/${project.id}`)
+          },
           keywords: ['project', 'switch', project.name, team.name],
           active: route.params.projectId === String(project.id),
         })
       }
     }
-
-    // Hide if only 1 project total
-    if (allProjects.length <= 1) return []
 
     return allProjects
   })
