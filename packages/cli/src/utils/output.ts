@@ -1,6 +1,6 @@
 import { cancel, intro, log, outro, spinner } from '@clack/prompts'
 import type { ShelveConfig } from '@types'
-import { CliError, formatCliError } from '../services/api-error'
+import { CliError, formatCliError, toCliError } from '../services/api-error'
 import {
   getCommandFromArgv,
   isJson,
@@ -14,6 +14,7 @@ export type CliErrorInput = {
   message: string
   status?: number
   hint?: string
+  context?: Record<string, unknown>
 }
 
 export function redactConfig(config: ShelveConfig): Omit<ShelveConfig, 'token'> & { token?: string } {
@@ -39,6 +40,7 @@ export function writeJsonError(error: CliErrorInput): void {
       message: error.message,
       ...(error.status !== undefined ? { status: error.status } : {}),
       ...(error.hint ? { hint: error.hint } : {}),
+      ...(error.context ? { context: error.context } : {}),
     },
   }))
 }
@@ -142,17 +144,16 @@ export async function withSpinner<T>(
   }
 }
 
+/**
+ * Converts a thrown error to a CliError and throws it, instead of exiting the
+ * process directly. withSpinner runs inside runInWorkspaces' fan-out loop, and a
+ * hard exit here used to leave that loop's own catch — which attributes the
+ * failure to a package and lists what already completed — unreachable. Throwing
+ * lets it run; the top-level `reportErrors` wrapper (index.ts) still turns
+ * whatever comes out of a command's `run` into the same --json envelope this used
+ * to write directly, so a command outside a fan-out sees no difference.
+ */
 function handleThrownError(error: unknown, context?: string): never {
-  if (error instanceof CliError) {
-    cliError({
-      code: error.code,
-      message: error.message,
-      status: error.status,
-      hint: error.hint,
-    })
-  }
-  cliError({
-    code: 'OPERATION_FAILED',
-    message: formatCliError(error, context),
-  })
+  if (error instanceof CliError) throw error
+  throw toCliError(new Error(formatCliError(error, context)))
 }

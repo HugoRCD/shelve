@@ -2,8 +2,8 @@ import { defineCommand } from 'citty'
 import type { ResolvedSyncPolicy, ShelveConfig } from '@types'
 import { isJson, loadShelveConfig } from '../utils'
 import { getResolvedSyncPolicy } from '../utils/sync-policy'
-import { getWorkspaceTargets, runInWorkspaces } from '../utils/workspaces'
-import { cliIntro, cliOutro, cliSuccess } from '../utils/output'
+import { runFanOutCommand } from '../utils/workspaces'
+import { cliIntro, cliOutro } from '../utils/output'
 import { CliError } from '../services/api-error'
 import { EnvironmentService, ProjectService, SyncService } from '../services'
 
@@ -30,7 +30,6 @@ async function diffProject(
     project,
     slug,
     envFileName,
-    autoCreateProject,
     defaultEnv,
     autoUppercase,
     sync,
@@ -48,7 +47,11 @@ async function diffProject(
 
   cliIntro(`Diff local ${envFileName} vs ${env}`)
 
-  const projectData = await ProjectService.getProjectByName(project, slug, autoCreateProject)
+  // `diff` is documented as read-only ("no writes"); autoCreateProject would let it
+  // create a project on the server per package just by running the comparison, so
+  // this always passes false regardless of the config. Non-interactive gets a plain
+  // PROJECT_NOT_FOUND; interactive still gets the confirm prompt from getProjectByName.
+  const projectData = await ProjectService.getProjectByName(project, slug, false)
   const environment = await EnvironmentService.getEnvironment(slug, env)
   const policy = getResolvedSyncPolicy(environment.name, sync, projectData.syncPolicy)
 
@@ -130,20 +133,7 @@ export default defineCommand({
   async run({ args }) {
     const config = await loadShelveConfig(true)
     const showValues = Boolean(args['show-values'])
-    const targets = getWorkspaceTargets(config, args.path)
 
-    if (!targets) {
-      cliSuccess(await diffProject(config, args.env, showValues), undefined, 'diff')
-      return
-    }
-
-    const packages = await runInWorkspaces(targets, async () =>
-      diffProject(await loadShelveConfig(true), args.env, showValues))
-
-    cliSuccess(
-      { packages },
-      `Diffed ${packages.length} package(s): ${packages.map(p => p.path).join(', ')}`,
-      'diff',
-    )
+    await runFanOutCommand('diff', config, args.path, (cfg) => diffProject(cfg, args.env, showValues))
   },
 })

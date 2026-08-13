@@ -3,8 +3,8 @@ import { defineCommand } from 'citty'
 import type { ShelveConfig } from '@types'
 import { isAgentShell, loadShelveConfig, shouldSkipConfirm } from '../utils'
 import { assertPullAllowed, getResolvedSyncPolicy } from '../utils/sync-policy'
-import { getWorkspaceTargets, runInWorkspaces } from '../utils/workspaces'
-import { cliCancel, cliError, cliIntro, cliOutro, cliSuccess, cliWarn } from '../utils/output'
+import { getWorkspaceTargets, runFanOutCommand } from '../utils/workspaces'
+import { cliCancel, cliError, cliIntro, cliOutro, cliWarn } from '../utils/output'
 import { CliError } from '../services/api-error'
 import { EnvService, ProjectService, EnvironmentService, SyncService } from '../services'
 
@@ -112,37 +112,34 @@ export default defineCommand({
 
     const skipConfirm = args.yes || shouldSkipConfirm()
 
+    // A fanned-out run writes each package's own envFileName, which can differ
+    // from the root config's (see monorepo-config.test.ts). Naming the root's
+    // filename here would point at a file this run may never write, so only
+    // name it for a single-project run. Resolving targets doesn't touch disk,
+    // so this can safely happen ahead of the write-confirmation guard below.
+    const targets = getWorkspaceTargets(config, args.path)
+
     if (isAgentShell() && !skipConfirm) {
       cliError({
         code: 'AGENT_BLOCKED',
-        message: `\`shelve pull\` writes plaintext secrets to ${envFileName} where AI agents can read them.`,
+        message: targets
+          ? '`shelve pull` writes plaintext secrets to each package\'s env file where AI agents can read them.'
+          : `\`shelve pull\` writes plaintext secrets to ${envFileName} where AI agents can read them.`,
         hint: 'Prefer `shelve run -- <cmd>` so secrets stay in memory, or pass --yes to write secrets to disk anyway.',
       })
     }
 
     if (isAgentShell() && skipConfirm) {
       cliWarn(
-        `${process.env.AI_AGENT || 'AI agent'} detected. Writing secrets to ${envFileName}. Prefer \`shelve run -- <cmd>\` when possible.`
+        targets
+          ? `${process.env.AI_AGENT || 'AI agent'} detected. Writing secrets to each package's env file. Prefer \`shelve run -- <cmd>\` when possible.`
+          : `${process.env.AI_AGENT || 'AI agent'} detected. Writing secrets to ${envFileName}. Prefer \`shelve run -- <cmd>\` when possible.`
       )
     } else if (!skipConfirm && !isAgentShell()) {
       const proceed = await confirm({ message: 'Write secrets to disk?', initialValue: false })
       if (isCancel(proceed) || !proceed) cliCancel('Aborted by user')
     }
 
-    const targets = getWorkspaceTargets(config, args.path)
-
-    if (!targets) {
-      cliSuccess(await pullProject(config, args.env, skipConfirm), undefined, 'pull')
-      return
-    }
-
-    const packages = await runInWorkspaces(targets, async () =>
-      pullProject(await loadShelveConfig(true), args.env, skipConfirm))
-
-    cliSuccess(
-      { packages },
-      `Pulled ${packages.length} package(s): ${packages.map(p => p.path).join(', ')}`,
-      'pull',
-    )
+    await runFanOutCommand('pull', config, args.path, (cfg) => pullProject(cfg, args.env, skipConfirm))
   },
 })

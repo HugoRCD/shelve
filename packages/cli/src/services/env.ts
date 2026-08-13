@@ -65,7 +65,6 @@ export class EnvService extends BaseService {
       const envFile = FileService.read(envFileName)
       return parseEnvFile(envFile)
     }
-    FileService.write(envFileName, '')
     return []
   }
 

@@ -45,7 +45,7 @@ Errors go to stderr as JSON when `--json` is set. Check exit code `$?`.
 - Root `shelve.json` is **merged** in, and holds the settings every package shares (`slug`, `defaultEnv`, `envFileName`, …). The package config wins on conflicts.
 - From the workspace root, `push` / `pull` / `diff` / `sync` run once per package that has its own config. `--path <dir>` targets one. `run` never fans out.
 - Give the root `shelve.json` a `project` to opt out and treat the root as a single project.
-- With `--json`, a fan-out run returns `{ "packages": [...] }` — one entry per package, each with its `path`.
+- With `--json`, a fan-out run returns one entry per package under `data.packages`, each with its `path`.
 
 ## Offline / air-gapped
 

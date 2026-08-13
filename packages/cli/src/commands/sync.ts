@@ -1,9 +1,9 @@
 import { defineCommand } from 'citty'
-import type { ShelveConfig } from '@types'
+import type { EnvDiffResult, PushEnvFileResult, ResolvedSyncPolicy, ShelveConfig } from '@types'
 import { assertSyncConfirmationAllowed, loadShelveConfig } from '../utils'
 import { assertPullAllowed, assertPushAllowed, getResolvedSyncPolicy } from '../utils/sync-policy'
-import { getWorkspaceTargets, runInWorkspaces } from '../utils/workspaces'
-import { cliIntro, cliOutro, cliSuccess, cliWarn } from '../utils/output'
+import { runFanOutCommand } from '../utils/workspaces'
+import { cliIntro, cliOutro, cliWarn } from '../utils/output'
 import { CliError } from '../services/api-error'
 import { EnvService, EnvironmentService, ProjectService, SyncService } from '../services'
 
@@ -13,7 +13,37 @@ type SyncArgs = {
   skipConfirm: boolean
 }
 
-async function syncProject(config: ShelveConfig, args: SyncArgs): Promise<Record<string, unknown>> {
+// Discriminated on `dryRun` first, then `action`: syncProject's three return sites
+// (dry-run, push, pull) produce different shapes and nothing checked them before,
+// so the --json contract for `sync` could drift silently. `action` is 'push' | 'pull'
+// on the dry-run branch since it reports what *would* run without running it.
+type SyncDryRunResult = {
+  env: string
+  action: 'push' | 'pull'
+  policy: ResolvedSyncPolicy
+  diff: EnvDiffResult
+  dryRun: true
+}
+
+type SyncPushResult = PushEnvFileResult & {
+  env: string
+  action: 'push'
+  dryRun?: false
+}
+
+type SyncPullResult = {
+  env: string
+  action: 'pull'
+  dryRun?: false
+  variableCount: number
+  file?: string
+  pullMode?: string
+  keys?: string[]
+}
+
+type SyncResult = SyncDryRunResult | SyncPushResult | SyncPullResult
+
+async function syncProject(config: ShelveConfig, args: SyncArgs): Promise<SyncResult> {
   const {
     project,
     slug,
@@ -156,20 +186,6 @@ export default defineCommand({
       dryRun: Boolean(args['dry-run']),
       skipConfirm: Boolean(args.yes),
     }
-    const targets = getWorkspaceTargets(config, args.path)
-
-    if (!targets) {
-      cliSuccess(await syncProject(config, syncArgs), undefined, 'sync')
-      return
-    }
-
-    const packages = await runInWorkspaces(targets, async () =>
-      syncProject(await loadShelveConfig(true), syncArgs))
-
-    cliSuccess(
-      { packages },
-      `Synced ${packages.length} package(s): ${packages.map(p => p.path).join(', ')}`,
-      'sync',
-    )
+    await runFanOutCommand('sync', config, args.path, (cfg) => syncProject(cfg, syncArgs))
   },
 })

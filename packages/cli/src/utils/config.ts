@@ -3,18 +3,20 @@
  * This file handles the creation, loading, and validation of Shelve configuration.
  *
  * Configuration Priority (from highest to lowest):
- * 1. Environment variables (SHELVE_*)
- * 2. Local shelve.json (in current directory)
- * 3. Root shelve.json (in monorepo root)
- * 4. User configuration (~/.shelve)
- * 5. Default values
+ * 1. Local shelve.json (in the current directory)
+ * 2. Environment variables (SHELVE_*)
+ * 3. Root shelve.json (in a monorepo) — shared settings only, `project` is
+ *    per-package and is never inherited from the root
+ * 4. Static defaults — user configuration (~/.shelve), package.json, hardcoded values
  *
  * The configuration is built progressively using defu, meaning each level can
  * override the values from lower priority sources. This allows for flexible
  * configuration management where:
- * - Local config can override root config (in monorepos)
- * - Environment variables can override any file-based config
- * - Each project in a monorepo can have its own specific settings while sharing common settings
+ * - The local file always wins, since that is what an operator is looking at
+ * - Environment variables override a committed root config, so CI can override
+ *   a repo's shelve.json without editing it
+ * - Each project in a monorepo can have its own specific settings while sharing
+ *   common settings from the root
  */
 
 import { dirname, join } from 'path'
@@ -100,7 +102,17 @@ export async function createShelveConfig(input: CreateShelveConfigInput = {}): P
     undefined,
     'Set SHELVE_TEAM_SLUG or pass --slug.',
   )
-  const projectName = input.projectName || defaultConfig.project || await selectProject(slug)
+
+  // At a monorepo root with no fan-out targets, defaultConfig.project falls back to
+  // the root package.json name (a turborepo root always has one), so this would
+  // silently auto-create a project nobody asked for (issue #712). Skip that name
+  // fallback here so the prompt below runs instead. An explicit SHELVE_PROJECT is
+  // still honored — only the package.json-name inference is skipped.
+  const isMonorepoRootWithoutFanOut = defaultConfig.isMonoRepo
+    && defaultConfig.isRoot
+    && (defaultConfig.monorepo?.paths.length ?? 0) === 0
+  const projectFallback = isMonorepoRootWithoutFanOut ? process.env.SHELVE_PROJECT : defaultConfig.project
+  const projectName = input.projectName || projectFallback || await selectProject(slug)
 
   if (!projectName) handleCancel('Error: no project selected')
 
@@ -159,12 +171,81 @@ async function findWorkspaceConfigDirs(workspaceDir: string): Promise<string[]> 
   const paths = await glob(CONFIG_FILENAMES_ARRAY.map((name) => `**/${name}`), {
     cwd: workspaceDir,
     absolute: true,
-    ignore: ['**/node_modules/**'],
+    // ponytail: folder-name heuristic, not a real parse of the workspace's own
+    // globs (package.json "workspaces" / pnpm-workspace.yaml). Extend this list,
+    // or switch to parsing those globs, if phantom fan-out targets keep showing up.
+    ignore: [
+      '**/node_modules/**',
+      '**/dist/**',
+      '**/build/**',
+      '**/.output/**',
+      '**/.nuxt/**',
+      '**/.next/**',
+      '**/coverage/**',
+    ],
   })
 
   return [...new Set(paths.map((path) => dirname(path)))]
     .filter((dir) => dir !== workspaceDir)
     .sort()
+}
+
+/**
+ * Config keys sourced from environment variables, as their own defu layer.
+ *
+ * Kept separate from the rest of the static defaults so loadShelveConfig can
+ * slot them in above a committed root shelve.json: a CI-provided SHELVE_* var
+ * must not be silently overridden by a file checked into the repo (see the
+ * priority note on loadShelveConfig). Only variables that are actually set are
+ * included — an absent key lets the root config or the static defaults fill
+ * the gap instead of being shadowed by `undefined`.
+ *
+ * Must be called after `setupDotenv` has run, so a var coming from a `.env`
+ * file is already in `process.env` by the time this reads it.
+ *
+ * @returns The env-backed config keys that are currently set
+ */
+function getEnvOverrides(): Partial<ShelveConfig> {
+  const overrides: Partial<ShelveConfig> = {}
+  if (process.env.SHELVE_PROJECT) overrides.project = process.env.SHELVE_PROJECT
+  if (process.env.SHELVE_TEAM_SLUG) overrides.slug = process.env.SHELVE_TEAM_SLUG
+  if (process.env.SHELVE_URL) overrides.url = process.env.SHELVE_URL
+  if (process.env.SHELVE_DEFAULT_ENV) overrides.defaultEnv = process.env.SHELVE_DEFAULT_ENV
+  return overrides
+}
+
+/**
+ * Memo for getDefaultConfig, keyed on process.cwd(). BaseService.getApi() now calls
+ * loadShelveConfig on every HTTP request (so it can detect a url/token change across
+ * a monorepo fan-out), and getDefaultConfig is the expensive part of that: setupDotenv,
+ * a package.json read, an OS keychain read, and PkgService.isMonorepo's repo-wide
+ * `**\/package.json` glob. Without this, all four re-run on every request to every
+ * package.
+ *
+ * Only getDefaultConfig is cached, not loadShelveConfig as a whole. Local and root
+ * shelve.json are read fresh on every loadShelveConfig call regardless (see
+ * readConfigFile below), and getEnvOverrides is called a second time there too, above
+ * defaultConfig in the defu merge — so a SHELVE_PROJECT/SHELVE_TEAM_SLUG/SHELVE_URL/
+ * SHELVE_DEFAULT_ENV change always comes through live even from a cached entry. That
+ * also means createShelveConfig's write-then-reread (in loadShelveConfig, below) never
+ * touches this cache: it writes shelve.json, not package.json or the keychain.
+ *
+ * SHELVE_TOKEN is the one input read only here and nowhere else, so it can't fall out
+ * of a stale entry the way the others do — see clearConfigCache and its call sites in
+ * runInWorkspaces (workspaces.ts).
+ */
+const defaultConfigCache = new Map<string, ShelveConfig>()
+
+/**
+ * Drops every cached getDefaultConfig result. Needed wherever process.env or the
+ * files getDefaultConfig reads (package.json, a .env file, the credentials store)
+ * can change without process.cwd() also changing — otherwise a stale entry survives.
+ * runInWorkspaces calls this next to its own process.env reset on each fan-out
+ * iteration; tests that rewrite those files at a cwd they already queried need the
+ * same call before querying it again.
+ */
+export function clearConfigCache(): void {
+  defaultConfigCache.clear()
 }
 
 /**
@@ -182,37 +263,49 @@ async function findWorkspaceConfigDirs(workspaceDir: string): Promise<string[]> 
  * @returns Promise<ShelveConfig> - The base configuration object
  */
 async function getDefaultConfig(): Promise<ShelveConfig> {
+  const cwd = process.cwd()
+  const cached = defaultConfigCache.get(cwd)
+  if (cached) return cached
+
   await setupDotenv({})
+  const env = getEnvOverrides()
   const { name } = await readPackageJSON().catch(() => ({ name: undefined }))
   const conf = CredentialsService.readMeta()
   const workspaceDir = await findWorkspaceDir().catch(() => process.cwd())
   const isMonoRepo = await new PkgService().isMonorepo()
-  const url = process.env.SHELVE_URL || conf.url || 'https://app.shelve.cloud'
+  const isRoot = workspaceDir === process.cwd()
+  const url = env.url || conf.url || 'https://app.shelve.cloud'
   const token = process.env.SHELVE_TOKEN
     || (await CredentialsService.readToken(url).catch(() => undefined))
 
-  return {
+  const config: ShelveConfig = {
     // @ts-expect-error to provide error message we let project be undefined
-    project: process.env.SHELVE_PROJECT || name,
+    project: env.project || name,
     // Overwritten by loadShelveConfig once the config files have been read
-    projectFromConfig: Boolean(process.env.SHELVE_PROJECT),
+    projectFromConfig: Boolean(env.project),
     // @ts-expect-error to provide error message we let slug be undefined
-    slug: process.env.SHELVE_TEAM_SLUG,
+    slug: env.slug,
     // @ts-expect-error checked downstream when an authenticated request is made
     token,
     url,
-    defaultEnv: process.env.SHELVE_DEFAULT_ENV,
+    defaultEnv: env.defaultEnv,
     username: conf.username,
     email: conf.email,
     confirmChanges: false,
     envFileName: DEFAULT_ENV_FILENAME,
     autoUppercase: true,
     autoCreateProject: true,
-    monorepo: isMonoRepo ? { paths: await findWorkspaceConfigDirs(workspaceDir) } : undefined,
+    // Repo-wide glob, so only run it at the workspace root: monorepo.paths has one
+    // reader (getWorkspaceTargets) and it's already guarded behind isRoot there.
+    // A fan-out run would otherwise re-scan the whole repo once per package.
+    monorepo: isMonoRepo ? { paths: isRoot ? await findWorkspaceConfigDirs(workspaceDir) : [] } : undefined,
     workspaceDir,
     isMonoRepo,
-    isRoot: workspaceDir === process.cwd(),
+    isRoot,
   }
+
+  defaultConfigCache.set(cwd, config)
+  return config
 }
 
 /**
@@ -222,8 +315,14 @@ async function getDefaultConfig(): Promise<ShelveConfig> {
  *
  * Loading Process (highest priority first, as defu applies it):
  * 1. Local shelve.json (in the current directory)
- * 2. Root shelve.json (in the monorepo root)
- * 3. Defaults — user config (~/.shelve), package.json, environment variables
+ * 2. Environment variables (SHELVE_*)
+ * 3. Root shelve.json (in the monorepo root), shared settings only —
+ *    `project` is excluded, see the note below
+ * 4. Static defaults — user config (~/.shelve), package.json, hardcoded values
+ *
+ * Env vars sit above the root config on purpose: a committed root shelve.json
+ * must not silently override a CI-provided SHELVE_* var. They sit below the
+ * local file so a value an operator can see in the current directory always wins.
  *
  * Defaults come last on purpose. They carry concrete values for keys such as
  * `envFileName` and `autoCreateProject`, so folding them into the local config
@@ -234,14 +333,26 @@ async function getDefaultConfig(): Promise<ShelveConfig> {
  * @returns Promise<ShelveConfig> - The complete, merged configuration
  */
 export async function loadShelveConfig(check = false): Promise<ShelveConfig> {
+  const defaultConfig = await getDefaultConfig()
+
+  // A monorepo root with its own fan-out targets and no local shelve.json yet has
+  // nothing of its own to create: `createShelveConfig` would write one at the root
+  // using the root package.json name and permanently disable the fan-out (issue
+  // #712). `defaultConfig.projectFromConfig` only reflects SHELVE_PROJECT here — a
+  // root-declared `project` hasn't been read yet, but that's fine: this gate only
+  // runs when there is no local shelve.json to declare one.
+  const isFirstRunAtFanOutRoot = defaultConfig.isMonoRepo
+    && defaultConfig.isRoot
+    && !defaultConfig.projectFromConfig
+    && (defaultConfig.monorepo?.paths.length ?? 0) > 0
+
   let localConfigPath = findConfigFile()
 
-  if (!localConfigPath && check) {
+  if (!localConfigPath && check && !isFirstRunAtFanOutRoot) {
     await createShelveConfig()
     localConfigPath = findConfigFile()
   }
 
-  const defaultConfig = await getDefaultConfig()
   const localConfig = readConfigFile(localConfigPath)
 
   let rootConfig: Partial<ShelveConfig> = {}
@@ -256,15 +367,29 @@ export async function loadShelveConfig(check = false): Promise<ShelveConfig> {
     if (rootConfigPath && rootConfigPath !== localConfigPath) rootConfig = readConfigFile(rootConfigPath)
   }
 
+  // `project` is per-package identity, not a shared setting: a root-declared
+  // project must not leak into packages that fan out from it (issue #712-style
+  // reports). The root's own project still works — at the workspace root
+  // `rootConfig` stays `{}` (see above) and the value arrives through `localConfig`.
+  const { project: _rootProject, ...sharedRootConfig } = rootConfig
+
   // defu widens optional keys to `| null` across Partial sources; defaultConfig
   // is complete, so the merged object is a full ShelveConfig
-  const config = defu(localConfig, rootConfig, defaultConfig) as ShelveConfig
+  const config = defu(localConfig, getEnvOverrides(), sharedRootConfig, defaultConfig) as ShelveConfig
 
-  config.projectFromConfig = Boolean(process.env.SHELVE_PROJECT)
-    || Boolean(localConfig.project)
-    || Boolean(rootConfig.project)
+  config.projectFromConfig = Boolean(process.env.SHELVE_PROJECT) || Boolean(localConfig.project)
 
-  if (check) await validateConfig(config)
+  // Mirrors getWorkspaceTargets (workspaces.ts): skip validation only when this
+  // run actually fans out to per-package configs instead of running once here.
+  // Unlike isFirstRunAtFanOutRoot above, this uses the post-merge projectFromConfig
+  // so a root that declares its own project (read into localConfig by now) is
+  // still validated instead of silently skipped.
+  const willFanOut = config.isMonoRepo
+    && config.isRoot
+    && !config.projectFromConfig
+    && (config.monorepo?.paths.length ?? 0) > 0
+
+  if (check && !willFanOut) await validateConfig(config)
 
   return config
 }

@@ -68,4 +68,37 @@ describe('JSON writers', () => {
     }))
     error.mockRestore()
   })
+
+  // Change 2: the completed-package list from a monorepo fan-out failure used to
+  // exist only inside the hint's prose. `context` gives a --json consumer the
+  // same information structured.
+  it('includes a structured context field when present', () => {
+    const error = vi.spyOn(console, 'error').mockImplementation(() => {})
+    writeJsonError({
+      code: 'FORBIDDEN',
+      message: 'apps/web: Forbidden',
+      status: 403,
+      hint: 'Already completed: apps/api.',
+      context: { failedPackage: 'apps/web', completedPackages: ['apps/api'] },
+    })
+    expect(error).toHaveBeenCalledWith(JSON.stringify({
+      ok: false,
+      error: {
+        code: 'FORBIDDEN',
+        message: 'apps/web: Forbidden',
+        status: 403,
+        hint: 'Already completed: apps/api.',
+        context: { failedPackage: 'apps/web', completedPackages: ['apps/api'] },
+      },
+    }))
+    error.mockRestore()
+  })
+
+  it('omits context when absent', () => {
+    const error = vi.spyOn(console, 'error').mockImplementation(() => {})
+    writeJsonError({ code: 'MISSING_ENV', message: 'Environment required' })
+    const [payload] = error.mock.calls[0] as [string]
+    expect(JSON.parse(payload).error.context).toBeUndefined()
+    error.mockRestore()
+  })
 })

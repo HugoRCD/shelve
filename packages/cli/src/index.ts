@@ -4,9 +4,8 @@ import { readFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { defineCommand, runMain } from 'citty'
-import consola from 'consola'
 import { GLOBAL_CLI_ARGS, initCliContextFromArgv, initDebugFromArgv, setDebug } from './constants'
-import { CliError, toCliError } from './services/api-error'
+import { toCliError } from './services/api-error'
 import { cliError } from './utils/output'
 import push from './commands/push'
 import pull from './commands/pull'
@@ -97,17 +96,9 @@ ${formatErrorCodesHelp()}`,
   },
 })
 
+// citty's runMain already catches and reports every error itself (and exits 1
+// before this can run); the .then still matters because it forces the process
+// past any keep-alive handles ofetch leaves lingering.
 runMain(main).then((_) => {
   process.exit(0)
-}).catch((err) => {
-  if (err instanceof CliError) {
-    cliError({
-      code: err.code,
-      message: err.message,
-      status: err.status,
-      hint: err.hint,
-    })
-  }
-  consola.error(err)
-  process.exit(1)
-})
+}).catch(() => process.exit(1))

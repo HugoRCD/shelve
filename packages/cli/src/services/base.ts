@@ -18,6 +18,10 @@ type LoadingOptions = {
 export abstract class BaseService {
 
   protected static api: $Fetch
+  // Identity (baseURL + token) the memoized `api` above was built from. Kept in the
+  // same static slot as `api`, so each subclass rebuilds its own client instead of
+  // reusing another package's instance/token during a monorepo fan-out.
+  protected static apiIdentity: string
 
   protected static withLoading<T>(
     message: string,
@@ -75,29 +79,31 @@ export abstract class BaseService {
   }
 
   protected static async getApi(): Promise<$Fetch> {
-    if (!this.api) {
-      const config = await loadShelveConfig()
+    const config = await loadShelveConfig()
 
-      if (!config.token)
-        config.token = <string> await this.getToken()
+    if (!config.token)
+      config.token = <string> await this.getToken()
 
-      const baseURL = `${config.url.replace(/\/+$/, '')}/api`
+    const baseURL = `${config.url.replace(/\/+$/, '')}/api`
+    const identity = `${baseURL}#${config.token}`
 
-      this.api = ofetch.create({
-        baseURL,
-        headers: {
-          Authorization: `Bearer ${config.token}`,
-          'User-Agent': `shelve-cli/${getCliVersion()} (${process.platform}; node-${process.versions.node})`,
-        },
-        onRequest({ request, options: reqOptions }) {
-          logHttpRequest(reqOptions.method || 'GET', request.toString())
-        },
-        onResponse({ request, response, options: reqOptions }) {
-          logHttpResponse(reqOptions.method || 'GET', request.toString(), response.status)
-        },
-        onResponseError: ErrorService.handleApiError,
-      })
-    }
+    if (this.api && this.apiIdentity === identity) return this.api
+
+    this.apiIdentity = identity
+    this.api = ofetch.create({
+      baseURL,
+      headers: {
+        Authorization: `Bearer ${config.token}`,
+        'User-Agent': `shelve-cli/${getCliVersion()} (${process.platform}; node-${process.versions.node})`,
+      },
+      onRequest({ request, options: reqOptions }) {
+        logHttpRequest(reqOptions.method || 'GET', request.toString())
+      },
+      onResponse({ request, response, options: reqOptions }) {
+        logHttpResponse(reqOptions.method || 'GET', request.toString(), response.status)
+      },
+      onResponseError: ErrorService.handleApiError,
+    })
     return this.api
   }
 

@@ -2,8 +2,8 @@ import { defineCommand } from 'citty'
 import type { ShelveConfig } from '@types'
 import { loadShelveConfig, assertSyncConfirmationAllowed } from '../utils'
 import { assertPushAllowed, getResolvedSyncPolicy } from '../utils/sync-policy'
-import { getWorkspaceTargets, runInWorkspaces } from '../utils/workspaces'
-import { cliIntro, cliOutro, cliSuccess, cliWarn } from '../utils/output'
+import { runFanOutCommand } from '../utils/workspaces'
+import { cliIntro, cliOutro, cliWarn } from '../utils/output'
 import { CliError } from '../services/api-error'
 import { EnvService, ProjectService, EnvironmentService, SyncService } from '../services'
 
@@ -121,20 +121,7 @@ export default defineCommand({
   async run({ args }) {
     const config = await loadShelveConfig(true)
     const confirmed = Boolean(args.yes)
-    const targets = getWorkspaceTargets(config, args.path)
 
-    if (!targets) {
-      cliSuccess(await pushProject(config, args.env, confirmed), undefined, 'push')
-      return
-    }
-
-    const packages = await runInWorkspaces(targets, async () =>
-      pushProject(await loadShelveConfig(true), args.env, confirmed))
-
-    cliSuccess(
-      { packages },
-      `Pushed ${packages.length} package(s): ${packages.map(p => p.path).join(', ')}`,
-      'push',
-    )
+    await runFanOutCommand('push', config, args.path, (cfg) => pushProject(cfg, args.env, confirmed))
   },
 })

@@ -15,13 +15,17 @@ export class CliError extends Error {
   readonly code: string
   readonly status?: number
   readonly hint?: string
+  // Structured data for a --json consumer, e.g. { failedPackage, completedPackages }
+  // from a monorepo fan-out. Separate from `hint`, which stays human-readable prose.
+  readonly context?: Record<string, unknown>
 
-  constructor(message: string, code: string, status?: number, hint?: string) {
+  constructor(message: string, code: string, status?: number, hint?: string, context?: Record<string, unknown>) {
     super(message)
     this.name = 'CliError'
     this.code = code
     this.status = status
     this.hint = hint
+    this.context = context
   }
 
 }
