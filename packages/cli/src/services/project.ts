@@ -34,12 +34,15 @@ export class ProjectService extends BaseService {
           return this.createProject(name, slug, autoCreate)
         }
 
-        if (isNonInteractive() && !shouldSkipConfirm()) {
+        // `--yes` means "don't ask me", not "override autoCreateProject: false".
+        // Without this, an explicit opt-out is silently ignored in CI and agent
+        // shells, which is exactly where nobody is watching the project get created.
+        if (isNonInteractive() || shouldSkipConfirm()) {
           throw new CliError(
             `Project '${name}' does not exist.`,
             'PROJECT_NOT_FOUND',
             400,
-            'Enable autoCreateProject in shelve.json or pass --yes after creating the project manually.',
+            'Enable autoCreateProject in shelve.json, or create the project in Shelve first.',
           )
         }
 

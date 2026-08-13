@@ -129,17 +129,19 @@ async function selectProject(slug: string): Promise<string> {
 }
 
 /**
- * Reads and merges configuration from a specific path with default configuration
+ * Reads a configuration file without applying any defaults.
  *
- * @param path - Path to the configuration file
- * @param isRoot - Whether this is the root configuration (for monorepos)
- * @returns Promise<ShelveConfig> - The merged configuration
+ * Defaults must stay out until every file has been read: merging them in early
+ * makes each file look like it sets every key, so a lower-priority file can
+ * never contribute one. See loadShelveConfig for the ordering that depends on it.
+ *
+ * @param path - Path to the configuration file, or null when none was found
+ * @returns The parsed configuration, empty when there is nothing to read
  */
-async function checkConfig(path: string | null, isRoot = false): Promise<ShelveConfig> {
-  const defaultConfig = await getDefaultConfig()
-  const raw = path ? FileService.read(path).trim() : ''
-  const config = raw ? JSON.parse(raw) : null
-  return isRoot ? config : defu(config, defaultConfig)
+function readConfigFile(path: string | null): Partial<ShelveConfig> {
+  if (!path) return {}
+  const raw = FileService.read(path).trim()
+  return raw ? JSON.parse(raw) : {}
 }
 
 /**
@@ -171,6 +173,8 @@ async function getDefaultConfig(): Promise<ShelveConfig> {
   return {
     // @ts-expect-error to provide error message we let project be undefined
     project: process.env.SHELVE_PROJECT || name,
+    // Overwritten by loadShelveConfig once the config files have been read
+    projectFromConfig: Boolean(process.env.SHELVE_PROJECT),
     // @ts-expect-error to provide error message we let slug be undefined
     slug: process.env.SHELVE_TEAM_SLUG,
     // @ts-expect-error checked downstream when an authenticated request is made
@@ -195,37 +199,53 @@ async function getDefaultConfig(): Promise<ShelveConfig> {
  * Handles the complete configuration loading process by progressively building
  * the configuration object from multiple sources.
  *
- * Loading Process:
- * 1. Start with default values
- * 2. Merge with user config (~/.shelve)
- * 3. If in monorepo, merge with root shelve.json
- * 4. Merge with local shelve.json (if exists)
- * 5. Apply environment variables (highest priority)
+ * Loading Process (highest priority first, as defu applies it):
+ * 1. Local shelve.json (in the current directory)
+ * 2. Root shelve.json (in the monorepo root)
+ * 3. Defaults — user config (~/.shelve), package.json, environment variables
  *
- * This progressive merging ensures that more specific configurations
- * (local, env vars) can override more general ones (root, defaults).
+ * Defaults come last on purpose. They carry concrete values for keys such as
+ * `envFileName` and `autoCreateProject`, so folding them into the local config
+ * first would make every local file look like it set those keys, and the root
+ * config could never contribute one.
  *
  * @param check - Whether to validate and potentially create new configuration
  * @returns Promise<ShelveConfig> - The complete, merged configuration
  */
 export async function loadShelveConfig(check = false): Promise<ShelveConfig> {
-  const localConfigPath = findConfigFile()
-  let localConfig = localConfigPath ? await checkConfig(localConfigPath) :
-    check ? await createShelveConfig() : await getDefaultConfig()
+  let localConfigPath = findConfigFile()
 
-  if (localConfig.isMonoRepo) {
+  if (!localConfigPath && check) {
+    await createShelveConfig()
+    localConfigPath = findConfigFile()
+  }
+
+  const defaultConfig = await getDefaultConfig()
+  const localConfig = readConfigFile(localConfigPath)
+
+  let rootConfig: Partial<ShelveConfig> = {}
+
+  if (defaultConfig.isMonoRepo) {
     const rootConfigPath = await FileService.findFile(CONFIG_FILENAMES_ARRAY, {
-      startingFrom: localConfig.workspaceDir,
+      startingFrom: defaultConfig.workspaceDir,
       stopOnFirst: true,
     }).catch(() => null)
 
-    const rootConfig = await checkConfig(rootConfigPath, true)
-    localConfig = defu(localConfig, rootConfig)
+    // At the workspace root both lookups land on the same file
+    if (rootConfigPath && rootConfigPath !== localConfigPath) rootConfig = readConfigFile(rootConfigPath)
   }
 
-  if (check) await validateConfig(localConfig)
+  // defu widens optional keys to `| null` across Partial sources; defaultConfig
+  // is complete, so the merged object is a full ShelveConfig
+  const config = defu(localConfig, rootConfig, defaultConfig) as ShelveConfig
 
-  return localConfig
+  config.projectFromConfig = Boolean(process.env.SHELVE_PROJECT)
+    || Boolean(localConfig.project)
+    || Boolean(rootConfig.project)
+
+  if (check) await validateConfig(config)
+
+  return config
 }
 
 /**
