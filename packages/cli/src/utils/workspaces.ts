@@ -1,6 +1,6 @@
 import { isAbsolute, relative, resolve } from 'path'
 import type { ShelveConfig } from '@types'
-import { CliError } from '../services/api-error'
+import { CliError, toCliError } from '../services/api-error'
 import { findConfigFile } from './config'
 import { cliInfo } from './output'
 
@@ -46,6 +46,10 @@ export function getWorkspaceTargets(config: ShelveConfig, path?: string): string
  * subject of the command. The original directory is restored even if a package
  * fails, which keeps a partial run from stranding the process somewhere else.
  *
+ * A failing package stops the run. Earlier packages have already written to
+ * disk by then, so the error names them rather than leaving the caller to guess
+ * how far it got.
+ *
  * @param targets - Absolute directories to run in
  * @param run - The command body, invoked once per target
  * @returns One result per target, tagged with its path relative to the start
@@ -56,14 +60,27 @@ export async function runInWorkspaces<T extends object>(
 ): Promise<WorkspaceResult<T>[]> {
   const cwd = process.cwd()
   const results: WorkspaceResult<T>[] = []
+  let current = ''
 
   try {
     for (const dir of targets) {
-      const path = relative(cwd, dir) || '.'
-      cliInfo(`→ ${path}`)
+      current = relative(cwd, dir) || '.'
+      cliInfo(`→ ${current}`)
       process.chdir(dir)
-      results.push({ ...await run(), path })
+      results.push({ ...await run(), path: current })
     }
+  } catch (error) {
+    const done = results.map(result => result.path)
+    const cliError = toCliError(error)
+    throw new CliError(
+      `${current}: ${cliError.message}`,
+      cliError.code,
+      cliError.status,
+      [
+        cliError.hint,
+        done.length > 0 ? `Already completed: ${done.join(', ')}.` : 'No package completed.',
+      ].filter(Boolean).join(' '),
+    )
   } finally {
     process.chdir(cwd)
   }

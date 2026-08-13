@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url'
 import { defineCommand, runMain } from 'citty'
 import consola from 'consola'
 import { GLOBAL_CLI_ARGS, initCliContextFromArgv, initDebugFromArgv, setDebug } from './constants'
-import { CliError } from './services/api-error'
+import { CliError, toCliError } from './services/api-error'
 import { cliError } from './utils/output'
 import push from './commands/push'
 import pull from './commands/pull'
@@ -43,6 +43,29 @@ function getCliPackageVersion(): string {
   }
 }
 
+/**
+ * Reports errors through cliError so `--json` gets the documented envelope.
+ *
+ * citty's runMain catches everything itself and prints a raw stack trace, which
+ * means the handler below it never sees a failing command. Catching inside each
+ * subcommand gets in ahead of it.
+ */
+function reportErrors<T extends { run?: unknown }>(command: T): T {
+  const { run } = command
+  if (typeof run !== 'function') return command
+
+  return {
+    ...command,
+    async run(context: unknown): Promise<unknown> {
+      try {
+        return await run(context)
+      } catch (error) {
+        cliError(toCliError(error))
+      }
+    },
+  }
+}
+
 const main = defineCommand({
   meta: {
     name: 'shelve',
@@ -57,20 +80,20 @@ ${formatErrorCodesHelp()}`,
     initCliContextFromArgv()
   },
   subCommands: {
-    run,
-    push,
-    pull,
-    diff,
-    sync,
-    login,
-    logout,
-    me,
-    init,
-    doctor,
-    create,
-    config,
-    generate,
-    upgrade,
+    run: reportErrors(run),
+    push: reportErrors(push),
+    pull: reportErrors(pull),
+    diff: reportErrors(diff),
+    sync: reportErrors(sync),
+    login: reportErrors(login),
+    logout: reportErrors(logout),
+    me: reportErrors(me),
+    init: reportErrors(init),
+    doctor: reportErrors(doctor),
+    create: reportErrors(create),
+    config: reportErrors(config),
+    generate: reportErrors(generate),
+    upgrade: reportErrors(upgrade),
   },
 })
 
