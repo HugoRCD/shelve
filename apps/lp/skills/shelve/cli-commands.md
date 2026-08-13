@@ -75,6 +75,16 @@ or `{ "loggedIn": false }`.
 
 Values are **never** included.
 
+Run from a monorepo root and the shape becomes one entry per package:
+
+```json
+{
+  "packages": [
+    { "path": "apps/web", "env": "development", "variableCount": 12, "file": ".env", "keys": ["DATABASE_URL"] }
+  ]
+}
+```
+
 ### `init`
 
 ```json
