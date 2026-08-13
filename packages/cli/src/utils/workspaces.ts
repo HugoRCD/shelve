@@ -1,7 +1,7 @@
 import { isAbsolute, relative, resolve } from 'path'
 import type { ShelveConfig } from '@types'
 import { CliError, toCliError } from '../services/api-error'
-import { clearConfigCache, findConfigFile, loadShelveConfig } from './config'
+import { clearConfigCache, findConfigFile, loadShelveConfig, willFanOut } from './config'
 import { cliInfo, cliSuccess } from './output'
 
 export type WorkspaceResult<T> = T & { path: string }
@@ -46,10 +46,12 @@ export function getWorkspaceTargets(config: ShelveConfig, path?: string): string
     return [dir]
   }
 
-  if (!config.isMonoRepo || !config.isRoot || config.projectFromConfig) return null
+  // willFanOut (config.ts) is the shared predicate for this check: it's also used
+  // by loadShelveConfig to decide whether to skip validation and project-creation
+  // at the root, so the two can't drift on what "will fan out" means.
+  if (!willFanOut(config)) return null
 
-  const paths = config.monorepo?.paths ?? []
-  return paths.length > 0 ? paths : null
+  return config.monorepo?.paths ?? null
 }
 
 /**

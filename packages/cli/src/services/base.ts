@@ -4,7 +4,7 @@ import { dirname, join } from 'node:path'
 import { ofetch, type $Fetch, type FetchOptions } from 'ofetch'
 import type { User } from '@types'
 import { debugLog, isDebug } from '../constants'
-import { askPassword, loadShelveConfig } from '../utils'
+import { askPassword, clearConfigCache, loadShelveConfig } from '../utils'
 import { withSpinner } from '../utils/output'
 import { toCliError } from './api-error'
 import { ErrorService } from './error'
@@ -81,8 +81,15 @@ export abstract class BaseService {
   protected static async getApi(): Promise<$Fetch> {
     const config = await loadShelveConfig()
 
-    if (!config.token)
+    if (!config.token) {
       config.token = <string> await this.getToken()
+      // getToken() writes the new token to the credentials store, but getDefaultConfig's
+      // memo (config.ts) still holds the pre-login snapshot with token undefined — it's
+      // the only reader of the credentials store and SHELVE_TOKEN. Without clearing it,
+      // the next getApi() call rebuilds config from that stale entry, sees !config.token
+      // again, and starts the login flow a second time.
+      clearConfigCache()
+    }
 
     const baseURL = `${config.url.replace(/\/+$/, '')}/api`
     const identity = `${baseURL}#${config.token}`

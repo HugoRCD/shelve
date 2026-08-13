@@ -49,9 +49,11 @@ async function diffProject(
 
   // `diff` is documented as read-only ("no writes"); autoCreateProject would let it
   // create a project on the server per package just by running the comparison, so
-  // this always passes false regardless of the config. Non-interactive gets a plain
-  // PROJECT_NOT_FOUND; interactive still gets the confirm prompt from getProjectByName.
-  const projectData = await ProjectService.getProjectByName(project, slug, false)
+  // this always passes autoCreate: false regardless of the config. promptToCreate:
+  // false on top of that, since getProjectByName's interactive fallback would
+  // otherwise still offer to create the project — every mode gets a plain
+  // PROJECT_NOT_FOUND instead.
+  const projectData = await ProjectService.getProjectByName(project, slug, false, false)
   const environment = await EnvironmentService.getEnvironment(slug, env)
   const policy = getResolvedSyncPolicy(environment.name, sync, projectData.syncPolicy)
 

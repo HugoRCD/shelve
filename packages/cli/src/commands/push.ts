@@ -1,6 +1,6 @@
 import { defineCommand } from 'citty'
 import type { ShelveConfig } from '@types'
-import { loadShelveConfig, assertSyncConfirmationAllowed } from '../utils'
+import { loadShelveConfig, assertSyncConfirmationAllowed, shouldSkipConfirm } from '../utils'
 import { assertPushAllowed, getResolvedSyncPolicy } from '../utils/sync-policy'
 import { runFanOutCommand } from '../utils/workspaces'
 import { cliIntro, cliOutro, cliWarn } from '../utils/output'
@@ -120,7 +120,10 @@ export default defineCommand({
   },
   async run({ args }) {
     const config = await loadShelveConfig(true)
-    const confirmed = Boolean(args.yes)
+    // citty doesn't inherit parent command args, so the global `shelve --yes push`
+    // never reaches `args.yes` here — shouldSkipConfirm() reads the global flag
+    // directly, same as pull.ts, so --non-interactive alone still fails as designed.
+    const confirmed = Boolean(args.yes) || shouldSkipConfirm()
 
     await runFanOutCommand('push', config, args.path, (cfg) => pushProject(cfg, args.env, confirmed))
   },

@@ -171,9 +171,9 @@ async function findWorkspaceConfigDirs(workspaceDir: string): Promise<string[]> 
   const paths = await glob(CONFIG_FILENAMES_ARRAY.map((name) => `**/${name}`), {
     cwd: workspaceDir,
     absolute: true,
-    // ponytail: folder-name heuristic, not a real parse of the workspace's own
-    // globs (package.json "workspaces" / pnpm-workspace.yaml). Extend this list,
-    // or switch to parsing those globs, if phantom fan-out targets keep showing up.
+    // Heuristic ignore list, not a real parse of the workspace's own globs
+    // (package.json "workspaces" / pnpm-workspace.yaml). Extend this list, or
+    // switch to parsing those globs, if phantom fan-out targets keep showing up.
     ignore: [
       '**/node_modules/**',
       '**/dist/**',
@@ -246,6 +246,27 @@ const defaultConfigCache = new Map<string, ShelveConfig>()
  */
 export function clearConfigCache(): void {
   defaultConfigCache.clear()
+}
+
+/**
+ * Whether a command run in `config`'s directory should fan out to per-package
+ * configs instead of running once: a monorepo root, that hasn't itself declared
+ * a project, with at least one package carrying its own Shelve config.
+ *
+ * Shared by loadShelveConfig below (checked once against the pre-merge
+ * defaultConfig, again against the fully merged config) and getWorkspaceTargets
+ * (workspaces.ts), so the three copies this used to be can't drift apart on
+ * what "will fan out" means.
+ *
+ * @param config - A ShelveConfig; either the pre-file-merge defaultConfig or
+ *   the fully merged config both carry the fields this checks
+ * @returns Whether fan-out targets exist for a per-package run
+ */
+export function willFanOut(config: ShelveConfig): boolean {
+  return config.isMonoRepo
+    && config.isRoot
+    && !config.projectFromConfig
+    && (config.monorepo?.paths.length ?? 0) > 0
 }
 
 /**
@@ -341,10 +362,7 @@ export async function loadShelveConfig(check = false): Promise<ShelveConfig> {
   // #712). `defaultConfig.projectFromConfig` only reflects SHELVE_PROJECT here — a
   // root-declared `project` hasn't been read yet, but that's fine: this gate only
   // runs when there is no local shelve.json to declare one.
-  const isFirstRunAtFanOutRoot = defaultConfig.isMonoRepo
-    && defaultConfig.isRoot
-    && !defaultConfig.projectFromConfig
-    && (defaultConfig.monorepo?.paths.length ?? 0) > 0
+  const isFirstRunAtFanOutRoot = willFanOut(defaultConfig)
 
   let localConfigPath = findConfigFile()
 
@@ -381,15 +399,10 @@ export async function loadShelveConfig(check = false): Promise<ShelveConfig> {
 
   // Mirrors getWorkspaceTargets (workspaces.ts): skip validation only when this
   // run actually fans out to per-package configs instead of running once here.
-  // Unlike isFirstRunAtFanOutRoot above, this uses the post-merge projectFromConfig
-  // so a root that declares its own project (read into localConfig by now) is
-  // still validated instead of silently skipped.
-  const willFanOut = config.isMonoRepo
-    && config.isRoot
-    && !config.projectFromConfig
-    && (config.monorepo?.paths.length ?? 0) > 0
-
-  if (check && !willFanOut) await validateConfig(config)
+  // Unlike isFirstRunAtFanOutRoot above, this checks the post-merge config, so a
+  // root that declares its own project (read into localConfig by now) is still
+  // validated instead of silently skipped.
+  if (check && !willFanOut(config)) await validateConfig(config)
 
   return config
 }

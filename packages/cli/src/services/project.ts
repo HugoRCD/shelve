@@ -14,7 +14,21 @@ export class ProjectService extends BaseService {
     )
   }
 
-  static async getProjectByName(name: string, slug: string, autoCreate: boolean = true): Promise<Project> {
+  /**
+   * @param autoCreate - Create the project without asking, once it's confirmed missing
+   * @param promptToCreate - Whether a missing project may fall back to an interactive
+   *   "create it?" prompt when autoCreate is false. `diff` passes false here: it's
+   *   documented as read-only ("no writes"), and the interactive branch below used
+   *   to prompt to create a project regardless of autoCreate, which broke that
+   *   guarantee. pull/push/sync/doctor/run don't pass this, so their existing
+   *   prompt-then-create behaviour when autoCreateProject is false is unchanged.
+   */
+  static async getProjectByName(
+    name: string,
+    slug: string,
+    autoCreate: boolean = true,
+    promptToCreate: boolean = true,
+  ): Promise<Project> {
     const encodedName = encodeURIComponent(name)
 
     try {
@@ -37,7 +51,7 @@ export class ProjectService extends BaseService {
         // `--yes` means "don't ask me", not "override autoCreateProject: false".
         // Without this, an explicit opt-out is silently ignored in CI and agent
         // shells, which is exactly where nobody is watching the project get created.
-        if (isNonInteractive() || shouldSkipConfirm()) {
+        if (!promptToCreate || isNonInteractive() || shouldSkipConfirm()) {
           throw new CliError(
             `Project '${name}' does not exist.`,
             'PROJECT_NOT_FOUND',
