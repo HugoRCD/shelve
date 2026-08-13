@@ -78,6 +78,20 @@ describe('monorepo config resolution', () => {
     expect(config.projectFromConfig).toBe(true)
   })
 
+  it('lists only the packages that carry their own config', async () => {
+    createWorkspace({ slug: 'team' }, { project: 'web-app' })
+    // a package without a Shelve config, and one nested in node_modules
+    mkdirSync(join(workspace, 'packages', 'core'), { recursive: true })
+    writeFileSync(join(workspace, 'packages', 'core', 'package.json'), JSON.stringify({ name: 'core' }))
+    mkdirSync(join(workspace, 'node_modules', 'vendor'), { recursive: true })
+    writeFileSync(join(workspace, 'node_modules', 'vendor', 'shelve.json'), JSON.stringify({ project: 'vendor' }))
+    process.chdir(workspace)
+
+    const config = await loadShelveConfig()
+
+    expect(config.monorepo?.paths).toEqual([join(workspace, 'apps', 'web')])
+  })
+
   it('flags a project inferred from package.json at the workspace root', async () => {
     createWorkspace({ slug: 'team' }, { project: 'web-app' })
     process.chdir(workspace)

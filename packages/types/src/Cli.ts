@@ -69,6 +69,10 @@ export type ShelveConfig = {
    * The monorepo configuration
    * */
   monorepo?: {
+    /**
+     * Workspace packages that have their own Shelve config file, excluding the
+     * workspace root. These are the targets a root-level command fans out to.
+     * */
     paths: string[]
   }
   /**

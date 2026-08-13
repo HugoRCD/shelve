@@ -17,9 +17,10 @@
  * - Each project in a monorepo can have its own specific settings while sharing common settings
  */
 
-import { join } from 'path'
+import { dirname, join } from 'path'
 import { setupDotenv } from 'c12'
 import { findWorkspaceDir, readPackageJSON } from 'pkg-types'
+import { glob } from 'tinyglobby'
 import defu from 'defu'
 import type { CreateShelveConfigInput, ShelveConfig } from '@types'
 import { DEFAULT_URL, SHELVE_JSON_SCHEMA } from '@types'
@@ -145,6 +146,28 @@ function readConfigFile(path: string | null): Partial<ShelveConfig> {
 }
 
 /**
+ * Finds the workspace packages that carry their own Shelve configuration.
+ *
+ * These are the packages a root-level command fans out to. The workspace root
+ * is left out: its config file holds the settings shared across packages, it
+ * does not describe a project of its own.
+ *
+ * @param workspaceDir - Root of the monorepo
+ * @returns Absolute directory paths, sorted, without duplicates
+ */
+async function findWorkspaceConfigDirs(workspaceDir: string): Promise<string[]> {
+  const paths = await glob(CONFIG_FILENAMES_ARRAY.map((name) => `**/${name}`), {
+    cwd: workspaceDir,
+    absolute: true,
+    ignore: ['**/node_modules/**'],
+  })
+
+  return [...new Set(paths.map((path) => dirname(path)))]
+    .filter((dir) => dir !== workspaceDir)
+    .sort()
+}
+
+/**
  * Generates base configuration by gathering information from multiple sources.
  * This serves as the foundation that other configuration sources will override.
  *
@@ -163,9 +186,7 @@ async function getDefaultConfig(): Promise<ShelveConfig> {
   const { name } = await readPackageJSON().catch(() => ({ name: undefined }))
   const conf = CredentialsService.readMeta()
   const workspaceDir = await findWorkspaceDir().catch(() => process.cwd())
-  const pkgService = new PkgService()
-  const isMonoRepo = await pkgService.isMonorepo()
-  const allPkg = await pkgService.getAllPackageJsons()
+  const isMonoRepo = await new PkgService().isMonorepo()
   const url = process.env.SHELVE_URL || conf.url || 'https://app.shelve.cloud'
   const token = process.env.SHELVE_TOKEN
     || (await CredentialsService.readToken(url).catch(() => undefined))
@@ -187,7 +208,7 @@ async function getDefaultConfig(): Promise<ShelveConfig> {
     envFileName: DEFAULT_ENV_FILENAME,
     autoUppercase: true,
     autoCreateProject: true,
-    monorepo: isMonoRepo ? { paths: allPkg.map(pkg => pkg.dir) } : undefined,
+    monorepo: isMonoRepo ? { paths: await findWorkspaceConfigDirs(workspaceDir) } : undefined,
     workspaceDir,
     isMonoRepo,
     isRoot: workspaceDir === process.cwd(),
