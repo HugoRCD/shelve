@@ -1,10 +1,88 @@
 import { confirm, isCancel } from '@clack/prompts'
 import { defineCommand } from 'citty'
+import type { ShelveConfig } from '@types'
 import { isAgentShell, loadShelveConfig, shouldSkipConfirm } from '../utils'
 import { assertPullAllowed, getResolvedSyncPolicy } from '../utils/sync-policy'
-import { cliCancel, cliError, cliIntro, cliSuccess, cliWarn } from '../utils/output'
+import { getWorkspaceTargets, runInWorkspaces } from '../utils/workspaces'
+import { cliCancel, cliError, cliIntro, cliOutro, cliSuccess, cliWarn } from '../utils/output'
 import { CliError } from '../services/api-error'
 import { EnvService, ProjectService, EnvironmentService, SyncService } from '../services'
+
+type PullResult = {
+  env: string
+  variableCount: number
+  file: string
+  keys: string[]
+  pullMode: string
+  preservedLocalKeys: string[]
+}
+
+async function pullProject(
+  config: ShelveConfig,
+  envArg: string | undefined,
+  skipConfirm: boolean,
+): Promise<PullResult> {
+  const {
+    project,
+    slug,
+    envFileName,
+    confirmChanges,
+    autoCreateProject,
+    defaultEnv,
+    autoUppercase,
+    sync,
+  } = config
+
+  const env = envArg || defaultEnv
+  if (!env) {
+    throw new CliError(
+      'Environment name is required.',
+      'MISSING_ENV',
+      undefined,
+      'Pass --env or set defaultEnv in shelve.json / SHELVE_DEFAULT_ENV.',
+    )
+  }
+
+  cliIntro(`Pulling variable from ${project} project`)
+
+  const projectData = await ProjectService.getProjectByName(project, slug, autoCreateProject)
+  const environment = await EnvironmentService.getEnvironment(slug, env)
+  const policy = getResolvedSyncPolicy(environment.name, sync, projectData.syncPolicy)
+  assertPullAllowed(policy, environment.name)
+
+  const syncContext = await SyncService.loadSyncContext({
+    project: projectData,
+    environmentId: environment.id,
+    environmentName: environment.name,
+    slug,
+    autoUppercase,
+  })
+
+  const variables = SyncService.mergeForPull(syncContext, autoUppercase)
+  const effectiveConfirmChanges = skipConfirm ? false : (confirmChanges || policy.requireConfirmation)
+
+  if (variables.length === 0) {
+    cliWarn('No variables found in the specified environment')
+  } else {
+    await EnvService.createEnvFile({
+      envFileName,
+      variables,
+      confirmChanges: effectiveConfirmChanges,
+      pullMode: policy.pullMode,
+    })
+  }
+
+  cliOutro(`Successfully pulled variable from ${environment.name} environment`)
+
+  return {
+    env: environment.name,
+    variableCount: variables.length,
+    file: envFileName,
+    keys: variables.map(v => v.key),
+    pullMode: policy.pullMode,
+    preservedLocalKeys: policy.pullMode === 'merge' ? syncContext.diff.onlyLocal : [],
+  }
+}
 
 export default defineCommand({
   meta: {
@@ -17,6 +95,11 @@ export default defineCommand({
       description: 'Specify the environment to which you want to pull the variables',
       required: false,
     },
+    path: {
+      type: 'string',
+      description: 'Pull a single monorepo package instead of every one',
+      required: false,
+    },
     yes: {
       type: 'boolean',
       description: 'Skip the AI-agent disk-write confirmation prompt',
@@ -24,27 +107,10 @@ export default defineCommand({
     },
   },
   async run({ args }) {
-    const {
-      project,
-      slug,
-      envFileName,
-      confirmChanges,
-      autoCreateProject,
-      defaultEnv,
-      autoUppercase,
-      sync,
-    } = await loadShelveConfig(true)
+    const config = await loadShelveConfig(true)
+    const { envFileName } = config
 
     const skipConfirm = args.yes || shouldSkipConfirm()
-    const env = args.env || defaultEnv
-    if (!env) {
-      throw new CliError(
-        'Environment name is required.',
-        'MISSING_ENV',
-        undefined,
-        'Pass --env or set defaultEnv in shelve.json / SHELVE_DEFAULT_ENV.',
-      )
-    }
 
     if (isAgentShell() && !skipConfirm) {
       cliError({
@@ -63,45 +129,19 @@ export default defineCommand({
       if (isCancel(proceed) || !proceed) cliCancel('Aborted by user')
     }
 
-    cliIntro(`Pulling variable from ${project} project`)
+    const targets = getWorkspaceTargets(config, args.path)
 
-    const projectData = await ProjectService.getProjectByName(project, slug, autoCreateProject)
-    const environment = await EnvironmentService.getEnvironment(slug, env)
-    const policy = getResolvedSyncPolicy(environment.name, sync, projectData.syncPolicy)
-    assertPullAllowed(policy, environment.name)
-
-    const syncContext = await SyncService.loadSyncContext({
-      project: projectData,
-      environmentId: environment.id,
-      environmentName: environment.name,
-      slug,
-      autoUppercase,
-    })
-
-    const variables = SyncService.mergeForPull(syncContext, autoUppercase)
-    const effectiveConfirmChanges = skipConfirm ? false : (confirmChanges || policy.requireConfirmation)
-
-    if (variables.length === 0) {
-      cliWarn('No variables found in the specified environment')
-    } else {
-      await EnvService.createEnvFile({
-        envFileName,
-        variables,
-        confirmChanges: effectiveConfirmChanges,
-        pullMode: policy.pullMode,
-      })
+    if (!targets) {
+      cliSuccess(await pullProject(config, args.env, skipConfirm), undefined, 'pull')
+      return
     }
 
+    const packages = await runInWorkspaces(targets, async () =>
+      pullProject(await loadShelveConfig(true), args.env, skipConfirm))
+
     cliSuccess(
-      {
-        env: environment.name,
-        variableCount: variables.length,
-        file: envFileName,
-        keys: variables.map(v => v.key),
-        pullMode: policy.pullMode,
-        preservedLocalKeys: policy.pullMode === 'merge' ? syncContext.diff.onlyLocal : [],
-      },
-      `Successfully pulled variable from ${environment.name} environment`,
+      { packages },
+      `Pulled ${packages.length} package(s): ${packages.map(p => p.path).join(', ')}`,
       'pull',
     )
   },

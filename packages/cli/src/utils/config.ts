@@ -45,7 +45,7 @@ export const CONFIG_FILENAMES_ARRAY: string[] = [...CONFIG_FILENAMES]
  * @param directory - Directory to search in (defaults to current directory)
  * @returns The path to the first found config file, or null if none exists
  */
-function findConfigFile(directory: string = process.cwd()): string | null {
+export function findConfigFile(directory: string = process.cwd()): string | null {
   for (const filename of CONFIG_FILENAMES) {
     const path = join(directory, filename)
     if (FileService.exists(path)) {
