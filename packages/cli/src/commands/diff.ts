@@ -1,12 +1,113 @@
 import { defineCommand } from 'citty'
+import type { ResolvedSyncPolicy, ShelveConfig } from '@types'
 import { isJson, loadShelveConfig } from '../utils'
 import { getResolvedSyncPolicy } from '../utils/sync-policy'
-import { cliIntro, cliSuccess } from '../utils/output'
+import { runFanOutCommand } from '../utils/workspaces'
+import { cliIntro, cliOutro } from '../utils/output'
 import { CliError } from '../services/api-error'
 import { EnvironmentService, ProjectService, SyncService } from '../services'
 
+type DiffResult = {
+  env: string
+  file: string
+  policy: ResolvedSyncPolicy
+  onlyLocal: string[]
+  onlyRemote: string[]
+  changed: string[]
+  unchanged: string[]
+}
+
 function normalizeKey(key: string, autoUppercase: boolean): string {
   return autoUppercase ? key.toUpperCase() : key
+}
+
+async function diffProject(
+  config: ShelveConfig,
+  envArg: string | undefined,
+  showValues: boolean,
+): Promise<DiffResult> {
+  const {
+    project,
+    slug,
+    envFileName,
+    defaultEnv,
+    autoUppercase,
+    sync,
+  } = config
+
+  const env = envArg || defaultEnv
+  if (!env) {
+    throw new CliError(
+      'Environment name is required.',
+      'MISSING_ENV',
+      undefined,
+      'Pass --env or set defaultEnv in shelve.json / SHELVE_DEFAULT_ENV.',
+    )
+  }
+
+  cliIntro(`Diff local ${envFileName} vs ${env}`)
+
+  // `diff` is documented as read-only ("no writes"); autoCreateProject would let it
+  // create a project on the server per package just by running the comparison, so
+  // this always passes autoCreate: false regardless of the config. promptToCreate:
+  // false on top of that, since getProjectByName's interactive fallback would
+  // otherwise still offer to create the project — every mode gets a plain
+  // PROJECT_NOT_FOUND instead.
+  const projectData = await ProjectService.getProjectByName(project, slug, false, false)
+  const environment = await EnvironmentService.getEnvironment(slug, env)
+  const policy = getResolvedSyncPolicy(environment.name, sync, projectData.syncPolicy)
+
+  const syncContext = await SyncService.loadSyncContext({
+    project: projectData,
+    environmentId: environment.id,
+    environmentName: environment.name,
+    slug,
+    autoUppercase,
+  })
+
+  const { diff } = syncContext
+  const result: DiffResult = {
+    env: environment.name,
+    file: envFileName,
+    policy,
+    onlyLocal: diff.onlyLocal,
+    onlyRemote: diff.onlyRemote,
+    changed: diff.changed,
+    unchanged: diff.unchanged,
+  }
+
+  if (isJson()) return result
+
+  const lines = [
+    `Environment: ${environment.name}`,
+    `Source of truth (policy): ${policy.sourceOfTruth}`,
+    `onPushConflict: ${policy.onPushConflict} · pullMode: ${policy.pullMode}`,
+    `allowPush: ${policy.allowPush} · allowPull: ${policy.allowPull}`,
+    '',
+    `Only in ${envFileName} (${diff.onlyLocal.length}): ${diff.onlyLocal.join(', ') || '—'}`,
+    `Only on Shelve (${diff.onlyRemote.length}): ${diff.onlyRemote.join(', ') || '—'}`,
+    `Changed (${diff.changed.length}): ${diff.changed.join(', ') || '—'}`,
+    `Unchanged (${diff.unchanged.length}): ${diff.unchanged.length} key(s)`,
+  ]
+
+  if (showValues && diff.changed.length > 0) {
+    lines.push('', 'Changed values (local → remote):')
+    const localMap = new Map(
+      syncContext.local.map(v => [normalizeKey(v.key, autoUppercase), v.value]),
+    )
+    const remoteMap = new Map(
+      syncContext.remote.map(v => [normalizeKey(v.key, autoUppercase), v.value]),
+    )
+    for (const key of diff.changed) {
+      const lookup = normalizeKey(key, autoUppercase)
+      lines.push(`  ${key}: ${localMap.get(lookup) ?? '?'} → ${remoteMap.get(lookup) ?? '?'}`)
+    }
+  }
+
+  console.log(lines.join('\n'))
+  cliOutro('Diff complete')
+
+  return result
 }
 
 export default defineCommand({
@@ -20,6 +121,11 @@ export default defineCommand({
       description: 'Environment to compare against',
       required: false,
     },
+    path: {
+      type: 'string',
+      description: 'Diff a single monorepo package instead of every one',
+      required: false,
+    },
     'show-values': {
       type: 'boolean',
       description: 'Include secret values in human output (never in JSON)',
@@ -27,83 +133,9 @@ export default defineCommand({
     },
   },
   async run({ args }) {
-    const {
-      project,
-      slug,
-      envFileName,
-      autoCreateProject,
-      defaultEnv,
-      autoUppercase,
-      sync,
-    } = await loadShelveConfig(true)
+    const config = await loadShelveConfig(true)
+    const showValues = Boolean(args['show-values'])
 
-    const env = args.env || defaultEnv
-    if (!env) {
-      throw new CliError(
-        'Environment name is required.',
-        'MISSING_ENV',
-        undefined,
-        'Pass --env or set defaultEnv in shelve.json / SHELVE_DEFAULT_ENV.',
-      )
-    }
-
-    cliIntro(`Diff local ${envFileName} vs ${env}`)
-
-    const projectData = await ProjectService.getProjectByName(project, slug, autoCreateProject)
-    const environment = await EnvironmentService.getEnvironment(slug, env)
-    const policy = getResolvedSyncPolicy(environment.name, sync, projectData.syncPolicy)
-
-    const syncContext = await SyncService.loadSyncContext({
-      project: projectData,
-      environmentId: environment.id,
-      environmentName: environment.name,
-      slug,
-      autoUppercase,
-    })
-
-    const { diff } = syncContext
-    const data = {
-      env: environment.name,
-      file: envFileName,
-      policy,
-      onlyLocal: diff.onlyLocal,
-      onlyRemote: diff.onlyRemote,
-      changed: diff.changed,
-      unchanged: diff.unchanged,
-    }
-
-    if (isJson()) {
-      cliSuccess(data, undefined, 'diff')
-      return
-    }
-
-    const lines = [
-      `Environment: ${environment.name}`,
-      `Source of truth (policy): ${policy.sourceOfTruth}`,
-      `onPushConflict: ${policy.onPushConflict} · pullMode: ${policy.pullMode}`,
-      `allowPush: ${policy.allowPush} · allowPull: ${policy.allowPull}`,
-      '',
-      `Only in ${envFileName} (${diff.onlyLocal.length}): ${diff.onlyLocal.join(', ') || '—'}`,
-      `Only on Shelve (${diff.onlyRemote.length}): ${diff.onlyRemote.join(', ') || '—'}`,
-      `Changed (${diff.changed.length}): ${diff.changed.join(', ') || '—'}`,
-      `Unchanged (${diff.unchanged.length}): ${diff.unchanged.length} key(s)`,
-    ]
-
-    if (args['show-values'] && diff.changed.length > 0) {
-      lines.push('', 'Changed values (local → remote):')
-      const localMap = new Map(
-        syncContext.local.map(v => [normalizeKey(v.key, autoUppercase), v.value]),
-      )
-      const remoteMap = new Map(
-        syncContext.remote.map(v => [normalizeKey(v.key, autoUppercase), v.value]),
-      )
-      for (const key of diff.changed) {
-        const lookup = normalizeKey(key, autoUppercase)
-        lines.push(`  ${key}: ${localMap.get(lookup) ?? '?'} → ${remoteMap.get(lookup) ?? '?'}`)
-      }
-    }
-
-    console.log(lines.join('\n'))
-    cliSuccess(undefined, 'Diff complete')
+    await runFanOutCommand('diff', config, args.path, (cfg) => diffProject(cfg, args.env, showValues))
   },
 })

@@ -14,6 +14,11 @@ export type ShelveConfig = {
    * */
   project: string
   /**
+   * Whether `project` was explicitly configured (config file or SHELVE_PROJECT)
+   * rather than inferred from the nearest package.json name
+   * */
+  projectFromConfig: boolean
+  /**
    * The team slug, you can find it your team's settings page
    *
    * @default process.env.SHELVE_TEAM_SLUG
@@ -64,6 +69,10 @@ export type ShelveConfig = {
    * The monorepo configuration
    * */
   monorepo?: {
+    /**
+     * Workspace packages that have their own Shelve config file, excluding the
+     * workspace root. These are the targets a root-level command fans out to.
+     * */
     paths: string[]
   }
   /**

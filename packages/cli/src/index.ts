@@ -4,9 +4,8 @@ import { readFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { defineCommand, runMain } from 'citty'
-import consola from 'consola'
 import { GLOBAL_CLI_ARGS, initCliContextFromArgv, initDebugFromArgv, setDebug } from './constants'
-import { CliError } from './services/api-error'
+import { toCliError } from './services/api-error'
 import { cliError } from './utils/output'
 import push from './commands/push'
 import pull from './commands/pull'
@@ -43,6 +42,29 @@ function getCliPackageVersion(): string {
   }
 }
 
+/**
+ * Reports errors through cliError so `--json` gets the documented envelope.
+ *
+ * citty's runMain catches everything itself and prints a raw stack trace, which
+ * means the handler below it never sees a failing command. Catching inside each
+ * subcommand gets in ahead of it.
+ */
+function reportErrors<T extends { run?: unknown }>(command: T): T {
+  const { run } = command
+  if (typeof run !== 'function') return command
+
+  return {
+    ...command,
+    async run(context: unknown): Promise<unknown> {
+      try {
+        return await run(context)
+      } catch (error) {
+        cliError(toCliError(error))
+      }
+    },
+  }
+}
+
 const main = defineCommand({
   meta: {
     name: 'shelve',
@@ -57,34 +79,26 @@ ${formatErrorCodesHelp()}`,
     initCliContextFromArgv()
   },
   subCommands: {
-    run,
-    push,
-    pull,
-    diff,
-    sync,
-    login,
-    logout,
-    me,
-    init,
-    doctor,
-    create,
-    config,
-    generate,
-    upgrade,
+    run: reportErrors(run),
+    push: reportErrors(push),
+    pull: reportErrors(pull),
+    diff: reportErrors(diff),
+    sync: reportErrors(sync),
+    login: reportErrors(login),
+    logout: reportErrors(logout),
+    me: reportErrors(me),
+    init: reportErrors(init),
+    doctor: reportErrors(doctor),
+    create: reportErrors(create),
+    config: reportErrors(config),
+    generate: reportErrors(generate),
+    upgrade: reportErrors(upgrade),
   },
 })
 
+// citty's runMain already catches and reports every error itself (and exits 1
+// before this can run); the .then still matters because it forces the process
+// past any keep-alive handles ofetch leaves lingering.
 runMain(main).then((_) => {
   process.exit(0)
-}).catch((err) => {
-  if (err instanceof CliError) {
-    cliError({
-      code: err.code,
-      message: err.message,
-      status: err.status,
-      hint: err.hint,
-    })
-  }
-  consola.error(err)
-  process.exit(1)
-})
+}).catch(() => process.exit(1))

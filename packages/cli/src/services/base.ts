@@ -4,7 +4,7 @@ import { dirname, join } from 'node:path'
 import { ofetch, type $Fetch, type FetchOptions } from 'ofetch'
 import type { User } from '@types'
 import { debugLog, isDebug } from '../constants'
-import { askPassword, loadShelveConfig } from '../utils'
+import { askPassword, clearConfigCache, loadShelveConfig } from '../utils'
 import { withSpinner } from '../utils/output'
 import { toCliError } from './api-error'
 import { ErrorService } from './error'
@@ -18,6 +18,10 @@ type LoadingOptions = {
 export abstract class BaseService {
 
   protected static api: $Fetch
+  // Identity (baseURL + token) the memoized `api` above was built from. Kept in the
+  // same static slot as `api`, so each subclass rebuilds its own client instead of
+  // reusing another package's instance/token during a monorepo fan-out.
+  protected static apiIdentity: string
 
   protected static withLoading<T>(
     message: string,
@@ -75,29 +79,38 @@ export abstract class BaseService {
   }
 
   protected static async getApi(): Promise<$Fetch> {
-    if (!this.api) {
-      const config = await loadShelveConfig()
+    const config = await loadShelveConfig()
 
-      if (!config.token)
-        config.token = <string> await this.getToken()
-
-      const baseURL = `${config.url.replace(/\/+$/, '')}/api`
-
-      this.api = ofetch.create({
-        baseURL,
-        headers: {
-          Authorization: `Bearer ${config.token}`,
-          'User-Agent': `shelve-cli/${getCliVersion()} (${process.platform}; node-${process.versions.node})`,
-        },
-        onRequest({ request, options: reqOptions }) {
-          logHttpRequest(reqOptions.method || 'GET', request.toString())
-        },
-        onResponse({ request, response, options: reqOptions }) {
-          logHttpResponse(reqOptions.method || 'GET', request.toString(), response.status)
-        },
-        onResponseError: ErrorService.handleApiError,
-      })
+    if (!config.token) {
+      config.token = <string> await this.getToken()
+      // getToken() writes the new token to the credentials store, but getDefaultConfig's
+      // memo (config.ts) still holds the pre-login snapshot with token undefined — it's
+      // the only reader of the credentials store and SHELVE_TOKEN. Without clearing it,
+      // the next getApi() call rebuilds config from that stale entry, sees !config.token
+      // again, and starts the login flow a second time.
+      clearConfigCache()
     }
+
+    const baseURL = `${config.url.replace(/\/+$/, '')}/api`
+    const identity = `${baseURL}#${config.token}`
+
+    if (this.api && this.apiIdentity === identity) return this.api
+
+    this.apiIdentity = identity
+    this.api = ofetch.create({
+      baseURL,
+      headers: {
+        Authorization: `Bearer ${config.token}`,
+        'User-Agent': `shelve-cli/${getCliVersion()} (${process.platform}; node-${process.versions.node})`,
+      },
+      onRequest({ request, options: reqOptions }) {
+        logHttpRequest(reqOptions.method || 'GET', request.toString())
+      },
+      onResponse({ request, response, options: reqOptions }) {
+        logHttpResponse(reqOptions.method || 'GET', request.toString(), response.status)
+      },
+      onResponseError: ErrorService.handleApiError,
+    })
     return this.api
   }
 
