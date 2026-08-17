@@ -1,5 +1,17 @@
 # @shelve/app
 
+## 3.4.0
+
+### Minor Changes
+
+- [#765](https://github.com/HugoRCD/shelve/pull/765) [`903908f`](https://github.com/HugoRCD/shelve/commit/903908faa84b5e56b2b0ef86251a14b2ba3ae645) Thanks [@voidhrithik](https://github.com/voidhrithik)! - Add projects to the command palette so you can search and jump to any project across your teams.
+
+### Patch Changes
+
+- [#765](https://github.com/HugoRCD/shelve/pull/765) [`903908f`](https://github.com/HugoRCD/shelve/commit/903908faa84b5e56b2b0ef86251a14b2ba3ae645) Thanks [@voidhrithik](https://github.com/voidhrithik)! - Only enforce the BotID check on production, so OTP sign-in works on preview deployments.
+
+- [#757](https://github.com/HugoRCD/shelve/pull/757) [`f9cfe6e`](https://github.com/HugoRCD/shelve/commit/f9cfe6e6d86f8e304f5354d7b47d862bf2393ea5) Thanks [@HugoRCD](https://github.com/HugoRCD)! - Align nested project API handlers with the team from the URL path and tighten bulk project mutations.
+
 ## 3.3.0
 
 ### Minor Changes
