@@ -49,7 +49,9 @@ Auto non-interactive when:
 | Command | Flags |
 |---------|-------|
 | `login` | Browser device flow by default; `--token` / `SHELVE_TOKEN` / `--with-token` for automation |
-| `push` / `pull` | `--env`, `--yes` |
+| `push` / `pull` | `--env`, `--path`, `--yes` |
+| `diff` | `--env`, `--path`, `--show-values` |
+| `sync` | `--env`, `--path`, `--dry-run`, `--yes` |
 | `create` | `--name`, `--slug` |
 | `generate` | `--type env-example \| eslint` |
 | `init` | `--cwd` |
@@ -62,13 +64,18 @@ Auto non-interactive when:
 | `doctor` | `{ healthy, checks[], exitCodes, errorCodes }` |
 | `config` | merged config, token redacted as `***` |
 | `me` | `{ loggedIn, username?, email? }` |
-| `push` / `pull` | `{ env, variableCount, pushed?, file?, keys? }` — never includes values |
+| `push` | `{ env, variableCount, pushed, skippedKeys[], conflictKeys[] }` — never includes values |
+| `pull` | `{ env, variableCount, file, keys[], pullMode, preservedLocalKeys[] }` |
+| `diff` | `{ env, file, policy, onlyLocal[], onlyRemote[], changed[], unchanged[] }` |
+| `sync` | `{ env, action, variableCount, file, pullMode, keys[] }`; `--dry-run` returns `{ env, action, policy, diff, dryRun: true }` |
 | `init` | `{ writtenFiles, skippedFiles, gitignoreUpdated }` |
 | `login` | `{ username, email }` |
 | `create` | `{ name, slug, configPath }` |
 | `logout` | `{ loggedOut: true }` |
 | `generate` | `{ type, path }` |
 | `upgrade` | `{ previous, current, updated }` |
+
+From a monorepo root, `push` / `pull` / `diff` / `sync` run once per package that has its own `shelve.json`, and `data` becomes `{ packages: [...] }` — one entry per package with its `path`. `--path <dir>` runs a single package and returns the plain shape. A failing package stops the run; the error carries `context: { failedPackage, completedPackages }`. `run` never fans out. See [Monorepo support](https://shelve.cloud/docs/cli#monorepo-support).
 
 `run` keeps the child process stdio inherited. Startup errors are structured on stderr; with `--json`, a spawn event is also emitted on stderr: `{ ok: true, event: "child_spawned", env, variableCount, keys, command, pid }`.
 

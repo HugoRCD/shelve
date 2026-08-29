@@ -74,6 +74,9 @@ shelve push --env development --yes
 shelve pull --env development --yes   # risky in agent shells
 shelve sync --dry-run --env production
 
+# Monorepo: from the root these four run once per package
+shelve pull --path apps/web           # ...or target a single package
+
 shelve create --name my-app --slug my-team
 shelve generate --type env-example
 ```
@@ -110,6 +113,17 @@ shelve generate --type env-example
 
 See **`sync-policies.md`** and https://shelve.cloud/docs/cli/sync-policies
 
+## Monorepos
+
+From a workspace root, `push` / `pull` / `diff` / `sync` run once per package that has its own `shelve.json`; the root itself and packages without one are skipped. `--path <dir>` targets a single package. `run` never fans out.
+
+- Root `shelve.json` holds shared settings (`slug`, `defaultEnv`, …); `project` stays per-package and is never inherited.
+- Give the root a `project` to opt out and treat it as one project.
+- With `--json`, `data` becomes `{ "packages": [...] }`, one entry per package with its `path`.
+- A failing package stops the run; the error carries `context: { failedPackage, completedPackages }`.
+
+Details: **`agent-workflows.md`**
+
 ## Error codes
 
 | Code | Meaning |
@@ -121,6 +135,7 @@ See **`sync-policies.md`** and https://shelve.cloud/docs/cli/sync-policies
 | `PUSH_BLOCKED` / `PULL_BLOCKED` | Sync policy |
 | `SYNC_CONFLICT` | `onPushConflict: fail` or prompt in CI |
 | `ENV_PROTECTED` | Server blocked push to protected env |
+| `INVALID_INPUT` | Bad flag value, e.g. `--path` with no `shelve.json` there |
 
 ## Reference files (read when needed)
 
