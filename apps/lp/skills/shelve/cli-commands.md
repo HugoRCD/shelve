@@ -32,7 +32,7 @@ Apply to every command: `--json`, `--quiet` / `-q`, `--yes` / `-y`, `--non-inter
 | `diff` | `--env`, `--path`, `--show-values` |
 | `sync` | `--env`, `--path`, `--dry-run`, `--yes` |
 | `run` | `--env`, `--template`, `--offline`, `--no-cache`, `--cache-ttl`, `--watch`, `--restart-on-change` |
-| `login` | `--token` / `--with-token` |
+| `login` | `--token` / `--with-token`, `--no-browser` |
 | `create` | `--name`, `--slug` |
 | `generate` | `--type env-example \| eslint` |
 | `init` | `--cwd` |
@@ -149,7 +149,13 @@ Types: `env-example`, `eslint` (via `--type`).
 { "env": "development", "action": "pull", "variableCount": 12, "file": ".env", "pullMode": "replace", "keys": ["DATABASE_URL"] }
 ```
 
-`--dry-run` returns `{ "env", "action", "policy", "diff", "dryRun": true }` and writes nothing.
+When the policy pushes instead:
+
+```json
+{ "env": "development", "action": "push", "variableCount": 12, "pushed": true, "skippedKeys": [], "conflictKeys": [] }
+```
+
+A pull with nothing to write returns `{ "env", "action": "pull", "variableCount": 0 }`. `--dry-run` returns `{ "env", "action", "policy", "diff", "dryRun": true }` and writes nothing.
 
 ### Monorepo fan-out (`push`, `pull`, `diff`, `sync`)
 
@@ -163,7 +169,7 @@ Run from a workspace root and `data` becomes one entry per package, each carryin
 }
 ```
 
-`--path apps/web` runs a single package and returns the plain shape. A failing package stops the run; the error carries `context: { "failedPackage", "completedPackages" }`.
+`--path apps/web` runs a single package; the result keeps the `packages` envelope, with one entry. A failing package stops the run; the error carries `context: { "failedPackage", "completedPackages" }`.
 
 ## Exit codes
 

@@ -88,7 +88,14 @@ shelve run -- pnpm dev
 
 ### Monorepo usage
 
-In a monorepo, local `shelve.json` is merged with the root config (shared team slug, etc.). Commands run in the current package directory; they do not automatically iterate all packages.
+In a monorepo, local `shelve.json` is merged with the root config (shared team slug, `defaultEnv`, etc.); `project` stays per-package. From the workspace root, `push`, `pull`, `diff` and `sync` run once per package that has its own `shelve.json`, and `--path <dir>` targets a single one:
+
+```bash
+shelve pull                  # every package with a shelve.json
+shelve pull --path apps/web  # just one
+```
+
+Give the root `shelve.json` a `project` to opt out and treat the root as a single project. `run` always executes in the current directory.
 
 <!-- automd:fetch url="gh:hugorcd/markdown/main/src/local_development.md" -->
 

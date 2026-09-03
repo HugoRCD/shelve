@@ -48,7 +48,7 @@ Auto non-interactive when:
 
 | Command | Flags |
 |---------|-------|
-| `login` | Browser device flow by default; `--token` / `SHELVE_TOKEN` / `--with-token` for automation |
+| `login` | Browser device flow by default; `--token` / `SHELVE_TOKEN` / `--with-token` for automation; `--no-browser` prints the URL and code without opening a browser |
 | `push` / `pull` | `--env`, `--path`, `--yes` |
 | `diff` | `--env`, `--path`, `--show-values` |
 | `sync` | `--env`, `--path`, `--dry-run`, `--yes` |
@@ -67,7 +67,7 @@ Auto non-interactive when:
 | `push` | `{ env, variableCount, pushed, skippedKeys[], conflictKeys[] }` — never includes values |
 | `pull` | `{ env, variableCount, file, keys[], pullMode, preservedLocalKeys[] }` |
 | `diff` | `{ env, file, policy, onlyLocal[], onlyRemote[], changed[], unchanged[] }` |
-| `sync` | `{ env, action, variableCount, file, pullMode, keys[] }`; `--dry-run` returns `{ env, action, policy, diff, dryRun: true }` |
+| `sync` | pull: `{ env, action: "pull", variableCount, file, pullMode, keys[] }` (`{ env, action, variableCount: 0 }` when nothing to pull); push: `{ env, action: "push", variableCount, pushed, skippedKeys[], conflictKeys[] }`; `--dry-run`: `{ env, action, policy, diff, dryRun: true }` |
 | `init` | `{ writtenFiles, skippedFiles, gitignoreUpdated }` |
 | `login` | `{ username, email }` |
 | `create` | `{ name, slug, configPath }` |
@@ -75,7 +75,7 @@ Auto non-interactive when:
 | `generate` | `{ type, path }` |
 | `upgrade` | `{ previous, current, updated }` |
 
-From a monorepo root, `push` / `pull` / `diff` / `sync` run once per package that has its own `shelve.json`, and `data` becomes `{ packages: [...] }` — one entry per package with its `path`. `--path <dir>` runs a single package and returns the plain shape. A failing package stops the run; the error carries `context: { failedPackage, completedPackages }`. `run` never fans out. See [Monorepo support](https://shelve.cloud/docs/cli#monorepo-support).
+From a monorepo root, `push` / `pull` / `diff` / `sync` run once per package that has its own `shelve.json`, and `data` becomes `{ packages: [...] }` — one entry per package with its `path`. `--path <dir>` runs a single package; the result keeps the `packages` envelope, with one entry. A failing package stops the run; the error carries `context: { failedPackage, completedPackages }`. `run` never fans out. See [Monorepo support](https://shelve.cloud/docs/cli#monorepo-support).
 
 `run` keeps the child process stdio inherited. Startup errors are structured on stderr; with `--json`, a spawn event is also emitted on stderr: `{ ok: true, event: "child_spawned", env, variableCount, keys, command, pid }`.
 
