@@ -23,6 +23,22 @@
 
 Apply to every command: `--json`, `--quiet` / `-q`, `--yes` / `-y`, `--non-interactive`, `--debug`.
 
+## Command flags
+
+| Command | Flags |
+|---------|-------|
+| `push` | `--env`, `--path`, `--yes` |
+| `pull` | `--env`, `--path`, `--yes` |
+| `diff` | `--env`, `--path`, `--show-values` |
+| `sync` | `--env`, `--path`, `--dry-run`, `--yes` |
+| `run` | `--env`, `--template`, `--offline`, `--no-cache`, `--cache-ttl`, `--watch`, `--restart-on-change` |
+| `login` | `--token` / `--with-token`, `--no-browser` |
+| `create` | `--name`, `--slug` |
+| `generate` | `--type env-example \| eslint` |
+| `init` | `--cwd` |
+
+`--path <dir>` runs a single monorepo package instead of every one.
+
 ## JSON success shape
 
 ```json
@@ -59,7 +75,7 @@ or `{ "loggedIn": false }`.
 ### `push`
 
 ```json
-{ "env": "development", "variableCount": 12, "pushed": true }
+{ "env": "development", "variableCount": 12, "pushed": true, "skippedKeys": [], "conflictKeys": [] }
 ```
 
 ### `pull`
@@ -69,21 +85,13 @@ or `{ "loggedIn": false }`.
   "env": "development",
   "variableCount": 12,
   "file": ".env",
-  "keys": ["DATABASE_URL", "API_KEY"]
+  "keys": ["DATABASE_URL", "API_KEY"],
+  "pullMode": "replace",
+  "preservedLocalKeys": []
 }
 ```
 
 Values are **never** included.
-
-Run from a monorepo root and the shape becomes one entry per package:
-
-```json
-{
-  "packages": [
-    { "path": "apps/web", "env": "development", "variableCount": 12, "file": ".env", "keys": ["DATABASE_URL"] }
-  ]
-}
-```
 
 ### `init`
 
@@ -121,16 +129,6 @@ Types: `env-example`, `eslint` (via `--type`).
 { "previous": "5.0.3", "current": "latest", "updated": true }
 ```
 
-## Exit codes
-
-| Code | Meaning |
-|------|---------|
-| 0 | Success |
-| 1 | Error |
-| 128+n | Child signal exit (`run`) |
-| 129 | Parent gone / EIO |
-| 130 / 143 | SIGINT / SIGTERM |
-
 ### `diff`
 
 ```json
@@ -148,8 +146,40 @@ Types: `env-example`, `eslint` (via `--type`).
 ### `sync`
 
 ```json
-{ "env": "development", "action": "pull", "variableCount": 12, "file": ".env" }
+{ "env": "development", "action": "pull", "variableCount": 12, "file": ".env", "pullMode": "replace", "keys": ["DATABASE_URL"] }
 ```
+
+When the policy pushes instead:
+
+```json
+{ "env": "development", "action": "push", "variableCount": 12, "pushed": true, "skippedKeys": [], "conflictKeys": [] }
+```
+
+A pull with nothing to write returns `{ "env", "action": "pull", "variableCount": 0 }`. `--dry-run` returns `{ "env", "action", "policy", "diff", "dryRun": true }` and writes nothing.
+
+### Monorepo fan-out (`push`, `pull`, `diff`, `sync`)
+
+Run from a workspace root and `data` becomes one entry per package, each carrying that command's shape plus its `path`:
+
+```json
+{
+  "packages": [
+    { "path": "apps/web", "env": "development", "variableCount": 12, "file": ".env", "keys": ["DATABASE_URL"] }
+  ]
+}
+```
+
+`--path apps/web` runs a single package; the result keeps the `packages` envelope, with one entry. A failing package stops the run; the error carries `context: { "failedPackage", "completedPackages" }`.
+
+## Exit codes
+
+| Code | Meaning |
+|------|---------|
+| 0 | Success |
+| 1 | Error |
+| 128+n | Child signal exit (`run`) |
+| 129 | Parent gone / EIO |
+| 130 / 143 | SIGINT / SIGTERM |
 
 ## Error codes (automation)
 
@@ -159,6 +189,7 @@ Types: `env-example`, `eslint` (via `--type`).
 | `PULL_BLOCKED` | Pull disabled by sync policy |
 | `SYNC_CONFLICT` | Diverging keys with `onPushConflict: fail` |
 | `ENV_PROTECTED` | Server blocked write to protected environment |
+| `INVALID_INPUT` | Bad flag value, e.g. `--path` with no `shelve.json` there |
 
 ## Environment variables
 
