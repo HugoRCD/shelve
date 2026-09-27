@@ -130,6 +130,10 @@ For comprehensive guides, API references, and setup instructions, visit the [She
 
 Want full control? Deploy Shelve on your own Vercel account using [Vercel](https://shelve.cloud/docs/self-hosting/vercel).
 
+## ☁️ One-Click Deploy
+
+[![Deploy on RepoCloud](https://d16t0pc4846x52.cloudfront.net/deploylobe.svg)](https://repocloud.io/details/Shelve/)
+
 ## 💬 Community & Support
 
 -   **Issues & Feature Requests:** [GitHub Issues](https://github.com/HugoRCD/shelve/issues) (Best for bugs & feature tracking)
