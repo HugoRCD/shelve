@@ -64,6 +64,13 @@
       "when": 1782700000004,
       "tag": "0008_cli_device_auth",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1791714869628,
+      "tag": "0009_accounts",
+      "breakpoints": true
     }
   ]
 }

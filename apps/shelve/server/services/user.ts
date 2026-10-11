@@ -48,14 +48,42 @@ export async function createUser(input: CreateUserInput, event: H3Event): Promis
   return createdUser
 }
 
+/**
+ * Resolves the user for an OAuth login. The provider account ID is the stable
+ * identity: provider emails can change, so email is only used to link an
+ * existing user the first time a provider account is seen.
+ */
 export async function handleOAuthUser(input: CreateUserInput, event: H3Event): Promise<User> {
+  const { providerAccountId, authType } = input
+
+  if (providerAccountId) {
+    const [linked] = await db
+      .select({ user: schema.users })
+      .from(schema.accounts)
+      .innerJoin(schema.users, eq(schema.accounts.userId, schema.users.id))
+      .where(and(
+        eq(schema.accounts.provider, authType),
+        eq(schema.accounts.providerAccountId, providerAccountId),
+      ))
+
+    if (linked) return await syncUserRole(linked.user, event)
+  }
+
   const [foundUser] = await db
     .select()
     .from(schema.users)
     .where(eq(schema.users.email, input.email))
 
-  if (!foundUser) return await createUser(input, event)
-  return await syncUserRole(foundUser, event)
+  const user = foundUser ?? await createUser(input, event)
+
+  if (providerAccountId) {
+    await db
+      .insert(schema.accounts)
+      .values({ userId: user.id, provider: authType, providerAccountId })
+      .onConflictDoNothing()
+  }
+
+  return foundUser ? await syncUserRole(foundUser, event) : user
 }
 
 export async function handleEmailUser(email: string, event: H3Event): Promise<{ user: User; isNewUser: boolean }> {

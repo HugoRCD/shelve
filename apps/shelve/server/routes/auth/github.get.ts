@@ -14,6 +14,7 @@ export default defineOAuthGitHubEventHandler({
         avatar: user.avatar_url,
         username: user.login,
         authType: AuthType.GITHUB,
+        providerAccountId: String(user.id),
         appUrl,
       }, event)
       await setUserSession(event, {

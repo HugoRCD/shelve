@@ -65,6 +65,17 @@ export const users = pgTable('users', {
   ...timestamps,
 })
 
+export const accounts = pgTable('accounts', {
+  id: bigint({ mode: 'number' }).primaryKey().generatedByDefaultAsIdentity(),
+  userId: bigint({ mode: 'number' }).references(() => users.id, { onDelete: 'cascade' }).notNull(),
+  provider: authTypesEnum().notNull(),
+  providerAccountId: varchar({ length: 64 }).notNull(),
+  ...timestamps,
+}, (table) => [
+  uniqueIndex('accounts_provider_account_idx').on(table.provider, table.providerAccountId),
+  index('accounts_user_idx').on(table.userId),
+])
+
 export const githubApp = pgTable('github_app', {
   id: bigint({ mode: 'number' }).primaryKey().generatedByDefaultAsIdentity(),
   installationId: bigint({ mode: 'number' }).notNull(),
@@ -238,6 +249,13 @@ export const teamStats = pgTable('team_stats', {
   pullCount: integer('pull_count').notNull().default(0),
   ...timestamps,
 }, (table) => [uniqueIndex('team_stats_id_idx').on(table.id)])
+
+export const accountsRelations = relations(accounts, ({ one }) => ({
+  user: one(users, {
+    fields: [accounts.userId],
+    references: [users.id],
+  })
+}))
 
 export const githubAppRelations = relations(githubApp, ({ one }) => ({
   users: one(users, {
