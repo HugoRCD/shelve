@@ -1,5 +1,11 @@
 # @shelve/app
 
+## 3.4.1
+
+### Patch Changes
+
+- [#773](https://github.com/HugoRCD/shelve/pull/773) [`89d7148`](https://github.com/HugoRCD/shelve/commit/89d7148f83d49e66ef1e7b4a32397d34abc73c42) Thanks [@HugoRCD](https://github.com/HugoRCD)! - Link GitHub and Google logins to the provider account ID instead of the email, so changing your email on GitHub or Google no longer creates a new, empty Shelve account. Show a clearer error when the bot check blocks an email sign-in.
+
 ## 3.4.0
 
 ### Minor Changes
