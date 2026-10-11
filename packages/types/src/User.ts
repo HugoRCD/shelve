@@ -28,4 +28,5 @@ export type CreateUserInput = {
   avatar?: string;
   authType: AuthType;
   appUrl: string;
+  providerAccountId?: string;
 };

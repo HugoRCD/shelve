@@ -30,7 +30,7 @@ export async function requireHuman(): Promise<void> {
   if (verification.isBot) {
     throw createError({
       statusCode: 403,
-      statusMessage: 'Access denied',
+      statusMessage: 'Your browser was flagged as automated. Disable extensions or VPN and try again, or sign in with GitHub or Google.',
     })
   }
 }

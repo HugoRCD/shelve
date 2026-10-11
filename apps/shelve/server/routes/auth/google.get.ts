@@ -13,6 +13,7 @@ export default defineOAuthGoogleEventHandler({
         avatar: user.picture,
         username: `${user.given_name}_${user.family_name}`,
         authType: AuthType.GOOGLE,
+        providerAccountId: user.sub,
         appUrl,
       }, event)
       await setUserSession(event, {

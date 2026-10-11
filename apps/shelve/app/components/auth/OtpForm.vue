@@ -57,7 +57,7 @@ async function resendCode() {
     })
     toast.success('New verification code sent')
   } catch (error: any) {
-    toast.error('Failed to resend code')
+    toast.error(error.data?.message || 'Failed to resend code')
   }
 }
 </script>
