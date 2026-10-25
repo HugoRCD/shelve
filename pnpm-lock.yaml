@@ -95,6 +95,9 @@ importers:
       nuxt:
         specifier: 4.5.1
         version: 4.5.1(439988829b6306a5949485d7a0c96249)
+      nuxt-build-cache:
+        specifier: ^0.1.1
+        version: 0.1.1(magicast@0.5.5)
       shaders:
         specifier: ^2.5.109
         version: 2.5.109(vue@3.5.33(typescript@5.9.3))
@@ -15586,7 +15589,7 @@ snapshots:
       '@typescript-eslint/visitor-keys': 8.58.2
       debug: 4.4.3
       minimatch: 10.2.5
-      semver: 7.8.5
+      semver: 7.7.4
       tinyglobby: 0.2.16
       ts-api-utils: 2.5.0(typescript@5.9.3)
       typescript: 5.9.3
@@ -17416,7 +17419,7 @@ snapshots:
       '@one-ini/wasm': 0.1.1
       commander: 10.0.1
       minimatch: 9.0.9
-      semver: 7.8.5
+      semver: 7.7.4
 
   ee-first@1.1.1: {}
 
@@ -18365,7 +18368,7 @@ snapshots:
     dependencies:
       '@sindresorhus/merge-streams': 2.3.0
       fast-glob: 3.3.3
-      ignore: 7.0.5
+      ignore: 7.0.13
       path-type: 6.0.0
       slash: 5.1.0
       unicorn-magic: 0.3.0
@@ -19177,7 +19180,7 @@ snapshots:
   local-pkg@1.2.1:
     dependencies:
       mlly: 1.8.2
-      pkg-types: 2.4.0
+      pkg-types: 2.3.0
       quansync: 0.2.11
 
   locate-path@5.0.0:
@@ -20050,7 +20053,7 @@ snapshots:
 
   nuxt-build-cache@0.1.1(magicast@0.5.5):
     dependencies:
-      '@nuxt/kit': 3.21.2(magicast@0.5.5)
+      '@nuxt/kit': 3.21.11(magicast@0.5.5)
       consola: 3.4.2
       globby: 14.1.0
       nanotar: 0.1.1
@@ -20878,7 +20881,7 @@ snapshots:
       pkg-types: 2.3.0
       radix3: 1.1.2
       sirv: 3.0.2
-      std-env: 4.1.0
+      std-env: 4.3.0
       ufo: 1.6.4
       vue: 3.5.44(typescript@5.9.3)
     optionalDependencies:
@@ -20911,7 +20914,7 @@ snapshots:
       pkg-types: 2.3.0
       radix3: 1.1.2
       sirv: 3.0.2
-      std-env: 4.1.0
+      std-env: 4.3.0
       ufo: 1.6.4
       vue: 3.5.44(typescript@5.9.3)
     optionalDependencies:
@@ -23534,7 +23537,7 @@ snapshots:
       ansis: 4.2.0
       debug: 4.4.3
       error-stack-parser-es: 1.0.5
-      ohash: 2.0.11
+      ohash: 2.0.12
       open: 10.2.0
       perfect-debounce: 2.1.0
       sirv: 3.0.2
