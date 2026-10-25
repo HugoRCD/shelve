@@ -1,6 +1,10 @@
 export default defineNuxtConfig({
   extends: '../base',
 
+  icon: {
+    customCollections: [{ prefix: 'custom', dir: './app/assets/icons' }],
+  },
+
   compatibilityDate: '2024-11-01',
 
   routeRules: {

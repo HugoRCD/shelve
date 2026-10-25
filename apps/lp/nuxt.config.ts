@@ -1,4 +1,8 @@
 export default defineNuxtConfig({
+  icon: {
+    customCollections: [{ prefix: 'custom', dir: './app/assets/icons' }],
+  },
+
   routeRules: {
     '/': { prerender: true },
     '/docs': { redirect: { statusCode: 301, to: '/docs/getting-started' } },
