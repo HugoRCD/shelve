@@ -6,6 +6,7 @@ settings:
 
 overrides:
   nuxt-og-image: 6.7.0
+  magicast: ^0.5.5
 
 importers:
 
@@ -5220,7 +5221,7 @@ packages:
   c12@3.3.4:
     resolution: {integrity: sha512-cM0ApFQSBXuourJejzwv/AuPRvAxordTyParRVcHjjtXirtkzM0uK2L9TTn9s0cXZbG7E55jCivRQzoxYmRAlA==}
     peerDependencies:
-      magicast: '*'
+      magicast: ^0.5.5
     peerDependenciesMeta:
       magicast:
         optional: true
