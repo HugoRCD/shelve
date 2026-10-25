@@ -26,6 +26,13 @@ export default defineNuxtConfig({
 
   css: ['~/assets/css/index.css'],
 
+  icon: {
+    customCollections: [
+      { prefix: 'custom', dir: './app/assets/icons' },
+      { prefix: 'nucleo', dir: './app/assets/icons/nucleo' },
+    ],
+  },
+
   runtimeConfig: {
     private: {
       resendApiKey: '',
