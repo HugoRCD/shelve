@@ -15,7 +15,8 @@ allowBuilds:
   sharp: true
 
 overrides:
-  nuxt-og-image: 6.4.8
+  nuxt-og-image: 6.7.0
+  magicast: ^0.5.5
 
 minimumReleaseAge: 2880
 
