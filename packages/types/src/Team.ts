@@ -97,5 +97,6 @@ export type CreateInvitationInput = {
 
 export type CancelInvitationInput = {
   invitationId: number;
+  teamId: number;
   slug: string;
 }

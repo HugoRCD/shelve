@@ -36,7 +36,8 @@ export class ProjectsService {
 
   getProject = withCache('Project', async (projectId: number): Promise<Project> => {
     const project = await db.query.projects.findFirst({
-      where: eq(schema.projects.id, projectId)
+      where: eq(schema.projects.id, projectId),
+      columns: { encryptedDek: false },
     })
     if (!project) throw createError({ statusCode: 404, message: `Project not found with id ${projectId}` })
     return project
@@ -54,6 +55,7 @@ export class ProjectsService {
   getProjects = withCache<Project[]>('Projects', (teamId: number) => {
     return db.query.projects.findMany({
       where: eq(schema.projects.teamId, teamId),
+      columns: { encryptedDek: false },
       orderBy: [desc(schema.projects.updatedAt)]
     })
   })

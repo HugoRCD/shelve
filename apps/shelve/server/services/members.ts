@@ -29,13 +29,15 @@ export class MembersService {
   }
 
   async updateMember(input: UpdateMemberInput): Promise<Member> {
-    const { slug, memberId, role } = input
+    const { teamId, slug, memberId, role } = input
 
-    await db.update(schema.members)
+    const [updated] = await db.update(schema.members)
       .set({
         role
       })
-      .where(eq(schema.members.id, memberId))
+      .where(and(eq(schema.members.id, memberId), eq(schema.members.teamId, teamId)))
+      .returning({ id: schema.members.id })
+    if (!updated) throw createError({ statusCode: 404, message: `Member not found with id ${memberId}` })
 
     const member = await this.findMemberById(memberId)
     await clearCache('Team', slug)
@@ -43,18 +45,18 @@ export class MembersService {
   }
 
   async removeMember(input: RemoveMemberInput): Promise<void> {
-    const { memberId, slug } = input
+    const { teamId, memberId, slug } = input
 
     const member = await this.findMemberById(memberId)
     await clearCache('Team', slug)
-    await db.delete(schema.members).where(eq(schema.members.id, member.id))
+    await db.delete(schema.members).where(and(eq(schema.members.id, member.id), eq(schema.members.teamId, teamId)))
   }
 
   async findMemberById(memberId: number): Promise<Member> {
     const member = await db.query.members.findFirst({
       where: eq(schema.members.id, memberId),
       with: {
-        user: true
+        user: { columns: PUBLIC_USER_COLUMNS }
       }
     })
     if (!member) throw createError({ statusCode: 404, message: `Member not found with id ${memberId}` })
@@ -67,7 +69,7 @@ export class MembersService {
     return db.query.members.findFirst({
       where: and(eq(schema.members.teamId, teamId), eq(schema.members.userId, user.id)),
       with: {
-        user: true
+        user: { columns: PUBLIC_USER_COLUMNS }
       }
     })
   }
