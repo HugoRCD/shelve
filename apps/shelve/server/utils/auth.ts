@@ -59,13 +59,15 @@ export async function requireAdmin(event: H3Event): Promise<{ user: User }> {
  * @param teamSlug - Team slug from route params
  * @param options - Optional configuration
  * @param options.minRole - Minimum role required (OWNER, ADMIN, or MEMBER)
+ * @param options.teamWide - Whether the route acts on the whole team (default). Tokens restricted to
+ * specific projects or environments are refused, so routes that enforce those scopes themselves pass `false`.
  * @returns Object containing user, team, and member
- * @throws {Error} If user is not authenticated, doesn't belong to team, or doesn't have required role
+ * @throws {Error} If user is not authenticated, doesn't belong to team, doesn't have required role, or the token doesn't cover the team
  */
 export async function requireUserTeam(
   event: H3Event,
   teamSlug: string,
-  options?: { minRole?: TeamRole }
+  options?: { minRole?: TeamRole; teamWide?: boolean }
 ): Promise<{ user: User; team: Team; member: Member }> {
   const { user } = await requireUserSession(event)
 
@@ -74,6 +76,14 @@ export async function requireUserTeam(
   if (options?.minRole) {
     validateTeamRole(member, options.minRole)
   }
+
+  const teamWide = options?.teamWide ?? true
+  await requireTokenScope(event, {
+    permission: getRequestPermission(event),
+    teamId: team.id,
+    allProjects: teamWide,
+    allEnvironments: teamWide,
+  })
 
   return { user, team, member }
 }
@@ -97,16 +107,42 @@ export async function getTokenScopes(event: H3Event): Promise<TokenScopes | null
 }
 
 /**
+ * Returns the ids a token is restricted to for one kind of resource, or null when
+ * the token isn't restricted on it (or the request uses a web session).
+ * Use it to filter lists down to what the token may see.
+ */
+export async function getTokenScopeIds(
+  event: H3Event,
+  scope: 'teamIds' | 'projectIds' | 'environmentIds'
+): Promise<number[] | null> {
+  const ids = (await getTokenScopes(event))?.[scope]
+  return ids?.length ? ids : null
+}
+
+/** Reads need the `read` permission, every other method needs `write`. */
+export function getRequestPermission(event: H3Event): TokenPermission {
+  return event.method === 'GET' || event.method === 'HEAD' ? 'read' : 'write'
+}
+
+/**
  * Enforce a token's scopes against the resource being accessed.
  * No-op when the request is authenticated via web session.
  *
  * Throws 403 if:
  * - The required permission (`read`/`write`) is not granted.
  * - The token is restricted to specific teams/projects/envs and the resource is not in scope.
+ * - The action spans every project (`allProjects`) or environment (`allEnvironments`) and the token is restricted to some.
  */
 export async function requireTokenScope(
   event: H3Event,
-  resource: { teamId?: number; projectId?: number; environmentId?: number; permission: TokenPermission }
+  resource: {
+    teamId?: number
+    projectId?: number
+    environmentId?: number
+    allProjects?: boolean
+    allEnvironments?: boolean
+    permission: TokenPermission
+  }
 ): Promise<void> {
   const scopes = await getTokenScopes(event)
   if (!scopes) return
@@ -125,5 +161,13 @@ export async function requireTokenScope(
 
   if (scopes.environmentIds?.length && resource.environmentId !== undefined && !scopes.environmentIds.includes(resource.environmentId)) {
     throw createError({ statusCode: 403, statusMessage: 'Token not authorized for this environment' })
+  }
+
+  if (resource.allProjects && scopes.projectIds?.length) {
+    throw createError({ statusCode: 403, statusMessage: 'Token is restricted to specific projects' })
+  }
+
+  if (resource.allEnvironments && scopes.environmentIds?.length) {
+    throw createError({ statusCode: 403, statusMessage: 'Token is restricted to specific environments' })
   }
 }

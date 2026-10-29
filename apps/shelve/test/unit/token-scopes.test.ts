@@ -17,7 +17,7 @@ vi.stubGlobal('getUserSession', () => {
 vi.stubGlobal('requireUserSession', () => Promise.resolve({ user: { id: 1 } }))
 vi.stubGlobal('getValidatedRouterParams', () => Promise.resolve({ slug: 'team' }))
 
-const { requireTokenScope } = await import('../../server/utils/auth')
+const { requireTokenScope, getRequestPermission, getTokenScopeIds } = await import('../../server/utils/auth')
 
 const fakeEvent = {} as H3Event
 
@@ -95,5 +95,49 @@ describe('requireTokenScope', () => {
     await expect(
       requireTokenScope(fakeEvent, { permission: 'read' })
     ).resolves.toBeUndefined()
+  })
+
+  test('refuses project-restricted tokens on actions spanning every project', async () => {
+    withScopes({ permissions: ['read', 'write'], projectIds: [10] })
+    await expect(
+      requireTokenScope(fakeEvent, { permission: 'write', teamId: 1, allProjects: true })
+    ).rejects.toMatchObject({ statusCode: 403, message: 'Token is restricted to specific projects' })
+  })
+
+  test('refuses environment-restricted tokens on actions spanning every environment', async () => {
+    withScopes({ permissions: ['read', 'write'], environmentIds: [5] })
+    await expect(
+      requireTokenScope(fakeEvent, { permission: 'write', projectId: 10, allEnvironments: true })
+    ).rejects.toMatchObject({ statusCode: 403, message: 'Token is restricted to specific environments' })
+  })
+
+  test('lets team-restricted tokens act on the whole team', async () => {
+    withScopes({ permissions: ['read', 'write'], teamIds: [1] })
+    await expect(
+      requireTokenScope(fakeEvent, { permission: 'write', teamId: 1, allProjects: true, allEnvironments: true })
+    ).resolves.toBeUndefined()
+  })
+})
+
+describe('getRequestPermission', () => {
+  test('maps safe methods to read and everything else to write', () => {
+    expect(getRequestPermission({ method: 'GET' } as H3Event)).toBe('read')
+    expect(getRequestPermission({ method: 'HEAD' } as H3Event)).toBe('read')
+    for (const method of ['POST', 'PUT', 'PATCH', 'DELETE'])
+      expect(getRequestPermission({ method } as H3Event)).toBe('write')
+  })
+})
+
+describe('getTokenScopeIds', () => {
+  test('returns null for web sessions and unrestricted tokens', async () => {
+    withScopes(null)
+    await expect(getTokenScopeIds(fakeEvent, 'projectIds')).resolves.toBeNull()
+    withScopes({ permissions: ['read'], projectIds: [] })
+    await expect(getTokenScopeIds(fakeEvent, 'projectIds')).resolves.toBeNull()
+  })
+
+  test('returns the restricted ids', async () => {
+    withScopes({ permissions: ['read'], environmentIds: [5, 6] })
+    await expect(getTokenScopeIds(fakeEvent, 'environmentIds')).resolves.toEqual([5, 6])
   })
 })

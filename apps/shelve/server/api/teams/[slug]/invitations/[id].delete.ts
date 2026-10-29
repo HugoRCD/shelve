@@ -12,6 +12,7 @@ export default eventHandler(async (event: H3Event) => {
 
   await new InvitationsService().cancelInvitation({
     invitationId: parseInt(invitationId, 10),
+    teamId: team.id,
     slug: team.slug,
   })
 

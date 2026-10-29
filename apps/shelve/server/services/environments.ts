@@ -35,7 +35,7 @@ export class EnvironmentsService {
       .set({
         name: input.name,
       })
-      .where(eq(schema.environments.id, input.id))
+      .where(and(eq(schema.environments.id, input.id), eq(schema.environments.teamId, input.teamId)))
       .returning()
 
     if (!environment) throw createError({ statusCode: 404, statusMessage: 'Environment not found' })

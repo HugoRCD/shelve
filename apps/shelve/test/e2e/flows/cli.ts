@@ -81,4 +81,22 @@ export function registerCliTests(ctx: E2EContext) {
     expect(content).toContain('CLI_E2E=')
     expect(content).not.toContain('CLI_E2E=hello-from-push')
   })
+
+  test('CLI pull works with a read-only token restricted to the project and environment', async () => {
+    const environments = await ctx.api<{ id: number; name: string }[]>(`/api/teams/${ctx.teamSlug}/environments`)
+    const development = environments.find(e => e.name === 'development')!
+    const { token } = await ctx.api<{ token: string }>('/api/tokens', {
+      method: 'POST',
+      body: {
+        name: 'cli-restricted',
+        scopes: { permissions: ['read'], projectIds: [ctx.projectId], environmentIds: [development.id] },
+      },
+    })
+
+    unlinkSync(join(ctx.cliTmpDir!, '.env'))
+    runCli({ ...ctx, cliToken: token }, ['pull', '--yes'])
+
+    const content = readFileSync(join(ctx.cliTmpDir!, '.env'), 'utf-8')
+    expect(content).toContain('CLI_E2E=hello-from-push')
+  })
 }

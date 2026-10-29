@@ -60,7 +60,7 @@ export class InvitationsService {
       where: eq(schema.invitations.token, token),
       with: {
         team: true,
-        invitedBy: true,
+        invitedBy: { columns: PUBLIC_USER_COLUMNS },
       }
     })
 
@@ -81,7 +81,7 @@ export class InvitationsService {
       where: eq(schema.invitations.id, invitationId),
       with: {
         team: true,
-        invitedBy: true,
+        invitedBy: { columns: PUBLIC_USER_COLUMNS },
       }
     })
 
@@ -101,7 +101,7 @@ export class InvitationsService {
       ),
       with: {
         team: true,
-        invitedBy: true,
+        invitedBy: { columns: PUBLIC_USER_COLUMNS },
       }
     })
   }
@@ -114,7 +114,7 @@ export class InvitationsService {
       ),
       with: {
         team: true,
-        invitedBy: true,
+        invitedBy: { columns: PUBLIC_USER_COLUMNS },
       },
       orderBy: [desc(schema.invitations.createdAt)]
     })
@@ -140,7 +140,7 @@ export class InvitationsService {
         eq(schema.members.teamId, invitation.teamId),
         eq(schema.members.userId, userId)
       ),
-      with: { user: true }
+      with: { user: { columns: PUBLIC_USER_COLUMNS } }
     })
 
     if (existingMember) {
@@ -168,7 +168,7 @@ export class InvitationsService {
 
     const member = await db.query.members.findFirst({
       where: eq(schema.members.id, newMember.id),
-      with: { user: true }
+      with: { user: { columns: PUBLIC_USER_COLUMNS } }
     })
 
     if (!member) {
@@ -189,9 +189,13 @@ export class InvitationsService {
   }
 
   async cancelInvitation(input: CancelInvitationInput): Promise<void> {
-    const { invitationId, slug } = input
+    const { invitationId, teamId, slug } = input
 
     const invitation = await this.getInvitationById(invitationId)
+
+    if (invitation.teamId !== teamId) {
+      throw createError({ statusCode: 404, message: 'Invitation not found' })
+    }
 
     if (invitation.status !== InvitationStatus.PENDING) {
       throw createError({ statusCode: 400, message: 'Can only cancel pending invitations' })
@@ -234,7 +238,7 @@ export class InvitationsService {
         eq(schema.members.teamId, teamId),
         eq(schema.members.userId, user.id)
       ),
-      with: { user: true }
+      with: { user: { columns: PUBLIC_USER_COLUMNS } }
     })
   }
 

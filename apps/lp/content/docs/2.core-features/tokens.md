@@ -21,23 +21,25 @@ By default a token inherits your account's full access. You can narrow it when c
 
 ::field-group
   ::field{name="permissions" type="('read' | 'write')[]"}
-  At least one is required. `read` grants listing and fetching, `write` grants mutations. A read-only token that tries to POST a variable receives `403 Token missing 'write' permission`.
+  At least one is required. `read` grants `GET` requests, `write` grants everything else (create, update, delete). A read-only token that tries to create a project or push a variable receives `403 Token missing 'write' permission`.
   ::
 
   ::field{name="teamIds" type="number[]"}
-  Restrict the token to one or more teams. Requests targeting any other team return `403 Token not authorized for this team`.
+  Restrict the token to one or more teams. Requests targeting any other team return `403 Token not authorized for this team`, and the team list only shows the allowed teams.
   ::
 
   ::field{name="projectIds" type="number[]"}
-  Restrict the token to specific projects within the allowed teams.
+  Restrict the token to specific projects. The token only reaches the teams that own them, and team-wide actions such as creating a project or reading audit logs return `403 Token is restricted to specific projects`.
   ::
 
   ::field{name="environmentIds" type="number[]"}
-  Restrict the token to specific environments. Useful for CI tokens that should only read `production` secrets, for example.
+  Restrict the token to specific environments. The token only reads and writes variable values in those environments, and project-wide actions such as editing project settings or deleting a variable return `403 Token is restricted to specific environments`. Useful for CI tokens that should only read `production` secrets, for example.
   ::
 ::
 
-Scope enforcement happens server-side in a dedicated middleware; the token can never outgrow the scope it was issued with.
+Scopes are enforced server-side on every request, so a token can never outgrow the scope it was issued with.
+
+Tokens only work on `GET /api/teams`, the team API (`/api/teams/**`) and `GET /api/user/me`. Creating or revoking tokens, changing your account, and admin actions need a signed-in session, so a leaked token can't mint new tokens or take over the account.
 
 ## Expiry
 

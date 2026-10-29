@@ -10,7 +10,7 @@ const getProjectSchema = z.object({
 
 export default eventHandler(async (event) => {
   const slug = await getTeamSlugFromEvent(event)
-  const { team } = await requireUserTeam(event, slug)
+  const { team } = await requireUserTeam(event, slug, { teamWide: false })
   const { name } = await getValidatedRouterParams(event, getProjectSchema.parse)
 
   const project = await db.query.projects.findFirst({
@@ -18,9 +18,12 @@ export default eventHandler(async (event) => {
       sql`lower(${schema.projects.name}) like lower(${name})`,
       eq(schema.projects.teamId, team.id)
     ),
+    columns: { encryptedDek: false },
   })
 
   if (!project) throw createError({ statusCode: 400, statusMessage: 'Project not found' })
+
+  await requireTokenScope(event, { permission: 'read', projectId: project.id })
 
   return project
 })

@@ -18,7 +18,7 @@ const createVariablesSchema = z.object({
 })
 
 export default eventHandler(async (event) => {
-  const { team, project } = await requireUserTeamProject(event)
+  const { team, project } = await requireUserTeamProject(event, { projectWide: false })
   const body = await readValidatedBody(event, createVariablesSchema.parse)
 
   await assertPushAllowedForEnvironmentIds(body.environmentIds, team.id, project.syncPolicy)

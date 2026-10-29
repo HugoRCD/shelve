@@ -2,7 +2,7 @@ import { z } from 'zod'
 import type { EnvVarExport } from '@types'
 
 export default eventHandler(async (event) => {
-  const { team, project } = await requireUserTeamProject(event)
+  const { team, project } = await requireUserTeamProject(event, { projectWide: false })
   const { envId } = await getValidatedRouterParams(event, z.object({
     envId: z.coerce.number({
       error: 'Environment ID is required',

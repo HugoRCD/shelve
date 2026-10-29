@@ -15,8 +15,6 @@ export default defineEventHandler(async (event): Promise<AuditLogResponse> => {
   const { team } = await requireUserTeam(event, slug)
   const { limit, cursor, action, actorType, projectId } = await getValidatedQuery(event, querySchema.parse)
 
-  await requireTokenScope(event, { teamId: team.id, permission: 'read' })
-
   const baseConditions = [eq(schema.auditLogs.teamId, team.id)]
   if (action) baseConditions.push(eq(schema.auditLogs.action, action))
   if (actorType) baseConditions.push(eq(schema.auditLogs.actorType, actorType))

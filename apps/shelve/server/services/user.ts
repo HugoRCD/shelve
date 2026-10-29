@@ -1,6 +1,7 @@
 import type { H3Event } from 'h3'
 import type { CreateUserInput, TokenScopes, User } from '@types'
 import { AuthType, Role } from '@types'
+import { inArray } from 'drizzle-orm'
 
 async function syncUserRole(user: User, event: H3Event): Promise<User> {
   const adminEmails = useRuntimeConfig(event).private.adminEmails?.split(',').map(e => e.trim()) || []
@@ -159,8 +160,14 @@ export async function authenticateToken(
 
   const user = await db.query.users.findFirst({
     where: eq(schema.users.id, token.userId),
+    columns: PUBLIC_USER_COLUMNS,
   })
   if (!user) throw createError({ statusCode: 401, statusMessage: 'User not found' })
+
+  const teamIds = await resolveTokenTeamIds(token.scopes)
+  if (teamIds && !teamIds.length) {
+    throw createError({ statusCode: 403, statusMessage: 'Token has no accessible team' })
+  }
 
   await db.update(schema.tokens)
     .set({ lastUsedAt: new Date(), lastUsedIp: ip })
@@ -168,9 +175,37 @@ export async function authenticateToken(
 
   return {
     user,
-    scopes: token.scopes,
+    scopes: teamIds ? { ...token.scopes, teamIds } : token.scopes,
     token: { id: token.id, prefix: token.prefix, name: token.name },
   }
+}
+
+/**
+ * Teams a token can reach, or undefined when it isn't restricted. Project and environment
+ * restrictions narrow the teams too: a token limited to one project stays out of the owner's other teams.
+ */
+async function resolveTokenTeamIds(scopes: TokenScopes): Promise<number[] | undefined> {
+  const restrictions: number[][] = []
+  if (scopes.teamIds?.length) restrictions.push(scopes.teamIds)
+
+  if (scopes.projectIds?.length) {
+    const projects = await db.query.projects.findMany({
+      where: inArray(schema.projects.id, scopes.projectIds),
+      columns: { teamId: true },
+    })
+    restrictions.push(projects.map(p => p.teamId))
+  }
+
+  if (scopes.environmentIds?.length) {
+    const environments = await db.query.environments.findMany({
+      where: inArray(schema.environments.id, scopes.environmentIds),
+      columns: { teamId: true },
+    })
+    restrictions.push(environments.map(e => e.teamId))
+  }
+
+  if (!restrictions.length) return undefined
+  return restrictions.reduce((allowed, teamIds) => allowed.filter(id => teamIds.includes(id)))
 }
 
 function isIpInCidr(ip: string, cidr: string): boolean {

@@ -79,7 +79,7 @@ export class TeamsService {
       with: {
         members: {
           with: {
-            user: true
+            user: { columns: PUBLIC_USER_COLUMNS }
           }
         }
       }
@@ -111,7 +111,7 @@ export class TeamsService {
         with: {
           members: {
             with: {
-              user: true
+              user: { columns: PUBLIC_USER_COLUMNS }
             }
           },
         }
@@ -143,7 +143,7 @@ export class TeamsService {
           with: {
             members: {
               with: {
-                user: true
+                user: { columns: PUBLIC_USER_COLUMNS }
               }
             }
           }
@@ -161,7 +161,7 @@ export class TeamsService {
       with: {
         members: {
           with: {
-            user: true
+            user: { columns: PUBLIC_USER_COLUMNS }
           }
         }
       }
@@ -178,21 +178,6 @@ export class TeamsService {
       where: query
     })
     return !team
-  }
-
-  async getTeamBySlug(slug: string): Promise<Team> {
-    const team = await db.query.teams.findFirst({
-      where: eq(schema.teams.slug, slug),
-      with: {
-        members: {
-          with: {
-            user: true
-          }
-        }
-      }
-    })
-    if (!team) throw createError({ statusCode: 404, statusMessage: `Team not found with slug ${slug}` })
-    return team
   }
 
 }
