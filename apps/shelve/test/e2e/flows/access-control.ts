@@ -143,7 +143,12 @@ export function registerAccessControlTests(ctx: E2EContext) {
     const res = await withToken(token, '/api/user/me')
     expect(res.status).toBe(200)
 
+    // h3 issues an empty session cookie to any request without one; it must not hold the token's session.
     const cookie = res.headers.getSetCookie().map(c => c.split(';')[0]).join('; ')
+    const session = await fetch(url('/api/_auth/session'), { headers: { Cookie: cookie } })
+    expect(session.status).toBe(200)
+    expect(await session.json()).not.toHaveProperty('user')
+
     const replay = await fetch(url('/api/user/me'), { headers: { Cookie: cookie } })
     expect(replay.status).toBe(401)
   })

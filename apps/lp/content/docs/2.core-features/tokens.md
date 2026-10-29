@@ -39,7 +39,7 @@ By default a token inherits your account's full access. You can narrow it when c
 
 Scopes are enforced server-side on every request, so a token can never outgrow the scope it was issued with.
 
-Tokens only work on the team API (`/api/teams/**`) and `GET /api/user/me`. Creating or revoking tokens, changing your account, and admin actions need a signed-in session, so a leaked token can't mint new tokens or take over the account.
+Tokens only work on `GET /api/teams`, the team API (`/api/teams/**`) and `GET /api/user/me`. Creating or revoking tokens, changing your account, and admin actions need a signed-in session, so a leaked token can't mint new tokens or take over the account.
 
 ## Expiry
 
