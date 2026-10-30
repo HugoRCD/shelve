@@ -23,6 +23,7 @@
     "better-sqlite3": "^12.9.0",
     "nuxt-build-cache": "^0.1.1",
     "nuxt-llms": "^0.2.0",
+    "satori": "^0.63.2",
     "tailwindcss": "^4.2.4",
     "vue-router": "^5.0.6"
   },
