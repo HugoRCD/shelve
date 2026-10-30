@@ -43,6 +43,6 @@
     "@nuxt/test-utils": "^4.0.2",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/libsodium-wrappers": "^0.8.2",
-    "vitest": "^4.1.5"
+    "vitest": "^4.1.12"
   }
 }
