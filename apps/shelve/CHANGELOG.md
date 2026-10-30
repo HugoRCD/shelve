@@ -1,5 +1,11 @@
 # @shelve/app
 
+## 3.4.2
+
+### Patch Changes
+
+- [#784](https://github.com/HugoRCD/shelve/pull/784) [`f9f5db9`](https://github.com/HugoRCD/shelve/commit/f9f5db95983ad201daab4faee68e31a766565aae) Thanks [@HugoRCD](https://github.com/HugoRCD)! - Update dependencies to pick up upstream security fixes.
+
 ## 3.4.1
 
 ### Patch Changes
