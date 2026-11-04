@@ -50,10 +50,10 @@ export function getNavigation(where: Where, teamSlug?: string): Navigation[] {
           title: 'Dashboard',
         },
         {
-          name: 'Tests',
-          to: '/admin/tests',
+          name: 'Emails',
+          to: '/admin/emails',
           icon: 'nucleo:list-checkbox',
-          title: 'Tests',
+          title: 'Emails',
         },
       ]
     default:

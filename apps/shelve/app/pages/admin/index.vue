@@ -15,9 +15,9 @@ async function deleteCache() {
     await $fetch('/api/admin/cache', {
       method: 'DELETE'
     })
-    toast.success('Cache deleted')
+    toast.success('Cache cleared')
   } catch (error) {
-    toast.error('Cache deletion failed')
+    toast.error('Failed to clear cache')
   }
 }
 
@@ -208,6 +208,16 @@ useSeoMeta({
     title="Stats"
     description="All applications stats"
   >
+    <template #trailing>
+      <UButton
+        label="Clear cache"
+        variant="soft"
+        size="sm"
+        icon="i-lucide-trash"
+        loading-auto
+        @click="deleteCache"
+      />
+    </template>
     <AdminStats />
   </PageSection>
   <USeparator class="my-4" />
@@ -296,9 +306,6 @@ useSeoMeta({
     </div>
 
     <template #actions>
-      <UTooltip text="Delete cache">
-        <UButton variant="ghost" size="sm" icon="i-lucide-trash" loading-auto @click="deleteCache" />
-      </UTooltip>
       <UInput v-model="search" size="sm" label="Search" placeholder="Search a user" icon="heroicons:magnifying-glass-20-solid" />
     </template>
   </PageSection>
