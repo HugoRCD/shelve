@@ -68,4 +68,41 @@ export function registerVariableTests(ctx: E2EContext) {
     const variables = await ctx.api(`/api/teams/${ctx.teamSlug}/projects/${ctx.projectId}/variables`)
     expect(variables.find((v: any) => v.id === ctx.variableId)).toBeUndefined()
   })
+
+  test('reads stay correct whichever read fills the cache', async () => {
+    const [firstEnvId, secondEnvId, emptyEnvId] = ctx.environmentIds as [number, number, number]
+    const project = await ctx.api(`/api/teams/${ctx.teamSlug}/projects`, {
+      method: 'POST',
+      body: { name: 'Env Reads' },
+    })
+    const variablesUrl = `/api/teams/${ctx.teamSlug}/projects/${project.id}/variables`
+    const readKeys = async (path = '') => {
+      const variables = await ctx.api(`${variablesUrl}${path}`)
+      return variables.map((v: any) => v.key).sort()
+    }
+    // A write clears the project's cache, so the next read fills it.
+    const write = (key: string, environmentId: number) => ctx.api(variablesUrl, {
+      method: 'POST',
+      body: { autoUppercase: true, environmentIds: [environmentId], variables: [{ key, value: 'value' }] },
+    })
+
+    await write('only_first', firstEnvId)
+    await write('only_second', secondEnvId)
+    expect(await readKeys(`/env/${firstEnvId}`)).toEqual(['ONLY_FIRST'])
+    expect(await readKeys(`/env/${secondEnvId}`)).toEqual(['ONLY_SECOND'])
+
+    await write('only_second', secondEnvId)
+    await readKeys()
+    expect(await readKeys(`/env/${secondEnvId}`)).toEqual(['ONLY_SECOND'])
+
+    await write('only_second', secondEnvId)
+    await readKeys(`/env/${firstEnvId}`)
+    expect(await readKeys()).toEqual(['ONLY_FIRST', 'ONLY_SECOND'])
+
+    await write('only_second', secondEnvId)
+    expect(await readKeys(`/env/${emptyEnvId}`)).toEqual([])
+    expect(await readKeys(`/env/${firstEnvId}`)).toEqual(['ONLY_FIRST'])
+
+    await ctx.api(`/api/teams/${ctx.teamSlug}/projects/${project.id}`, { method: 'DELETE' })
+  })
 }

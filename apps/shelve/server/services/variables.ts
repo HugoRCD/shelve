@@ -176,8 +176,9 @@ export class VariablesService {
     })
   }
 
-  getVariables = withCache<Variable[]>('Variables', async (projectId: number, environmentId?: number) => {
-    const variables = await db.query.variables.findMany({
+  // The cache key is the project ID only, so always cache the whole project.
+  private getProjectVariables = withCache<Variable[]>('Variables', async (projectId: number) => {
+    return await db.query.variables.findMany({
       where: eq(schema.variables.projectId, projectId),
       with: {
         group: true,
@@ -188,11 +189,15 @@ export class VariablesService {
         }
       }
     })
+  })
+
+  async getVariables(projectId: number, environmentId?: number) {
+    const variables = await this.getProjectVariables(projectId)
 
     return environmentId
-      ? variables.filter(v => v.values.some(val => val.environmentId === environmentId))
+      ? variables?.filter(v => v.values.some(val => val.environmentId === environmentId))
       : variables
-  })
+  }
 
   private async requireVariablesInProject(projectId: number, variableIds: number[]): Promise<void> {
     const found = await db.query.variables.findMany({
