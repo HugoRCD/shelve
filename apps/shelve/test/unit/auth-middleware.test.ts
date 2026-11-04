@@ -21,12 +21,19 @@ vi.stubGlobal('getRequestHeader', (event: H3Event & { headers: Record<string, st
 vi.stubGlobal('getCookie', () => undefined)
 vi.stubGlobal('getRequestPermission', () => 'read')
 vi.stubGlobal('requireTokenScope', () => Promise.resolve())
+vi.stubGlobal('useRuntimeConfig', () => ({ session: { name: 'nuxt-auth-session' } }))
 
 const { default: authMiddleware } = await import('../../server/middleware/2.auth')
 const run = authMiddleware as unknown as (event: H3Event) => Promise<void>
 
 function request(path: string, headers: Record<string, string> = {}, method = 'GET') {
-  return { path, method, headers } as unknown as H3Event
+  const responseHeaders = new Map<string, unknown>()
+  const res = {
+    getHeader: (name: string) => responseHeaders.get(name),
+    setHeader: (name: string, value: unknown) => responseHeaders.set(name, value),
+    removeHeader: (name: string) => responseHeaders.delete(name),
+  }
+  return { path, method, headers, node: { res } } as unknown as H3Event
 }
 
 beforeEach(() => {
@@ -65,12 +72,15 @@ describe('auth middleware', () => {
       token: { id: 7, prefix: 'she_', name: 'ci' },
     })
 
-    await run(request('/api/teams/acme/projects', { authorization: 'Bearer she_x' }))
+    // Like nuxt-auth-utils 0.6, seal the session into a cookie next to one set elsewhere.
+    setUserSession.mockImplementation((event: H3Event) => {
+      event.node.res.setHeader('set-cookie', ['other=1; Path=/', 'nuxt-auth-session=sealed; Path=/; HttpOnly'])
+    })
+    const event = request('/api/teams/acme/projects', { authorization: 'Bearer she_x' })
 
-    expect(setUserSession).toHaveBeenCalledWith(
-      expect.anything(),
-      expect.objectContaining({ tokenId: 7 }),
-      { cookie: false },
-    )
+    await run(event)
+
+    expect(setUserSession).toHaveBeenCalledWith(expect.anything(), expect.objectContaining({ tokenId: 7 }))
+    expect(event.node.res.getHeader('set-cookie')).toEqual(['other=1; Path=/'])
   })
 })
