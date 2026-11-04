@@ -7,6 +7,16 @@ function acceptsTokens(event: H3Event): boolean {
   return pathname.startsWith('/api/teams/')
 }
 
+/** nuxt-auth-utils seals every session write into a cookie, so drop it to keep a token session in its own request. */
+function dropSessionCookie(event: H3Event) {
+  const prefix = `${useRuntimeConfig(event).session.name}=`
+  const cookies = event.node.res.getHeader('set-cookie')
+  if (!cookies) return
+  const kept = (Array.isArray(cookies) ? cookies : [String(cookies)]).filter(cookie => !cookie.startsWith(prefix))
+  if (kept.length) event.node.res.setHeader('set-cookie', kept)
+  else event.node.res.removeHeader('set-cookie')
+}
+
 export default defineEventHandler(async (event) => {
   if (!event.path?.startsWith('/api')) return
 
@@ -58,7 +68,8 @@ export default defineEventHandler(async (event) => {
     tokenPrefix: token.prefix,
     tokenName: token.name,
     loggedInAt: new Date(),
-  }, { cookie: false })
+  })
+  dropSessionCookie(event)
   if (legacyCookie) {
     setResponseHeader(event, 'Deprecation', 'true')
     setResponseHeader(event, 'Sunset', 'Wed, 01 Jul 2026 00:00:00 GMT')

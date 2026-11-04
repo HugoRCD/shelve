@@ -35,7 +35,7 @@ const commaSeparatedStringToArray = z.preprocess(
 
 const requiredCoreSchema = z.object({
   DATABASE_URL: z.url().startsWith('postgres', { error: 'Must be a valid PostgreSQL URL.' }).optional(),
-  NUXT_SESSION_PASSWORD: z.string().min(32, { error: 'Session password must be at least 32 characters long.' }),
+  NUXT_APP_SECRET: z.string().min(32, { error: 'App secret must be at least 32 characters long.' }),
   NUXT_PRIVATE_ENCRYPTION_KEY: z.string().min(32, { error: 'Encryption key must be at least 32 characters long.' }),
 })
 
