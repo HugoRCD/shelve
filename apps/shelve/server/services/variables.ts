@@ -126,8 +126,6 @@ export class VariablesService {
       }
     })
 
-    await clearCache('Variables', projectId)
-
     if (syncWithGitHub) {
       const { user } = await requireUserSession(event)
       const project = await new ProjectsService().getProject(projectId)
@@ -171,14 +169,11 @@ export class VariablesService {
       for (const ev of encryptedValues) {
         await this.upsertVariableValue(tx, id, ev.environmentId, ev.value)
       }
-
-      await clearCache('Variables', existingVariable.projectId)
     })
   }
 
-  // The cache key is the project ID only, so always cache the whole project.
-  private getProjectVariables = withCache<Variable[]>('Variables', async (projectId: number) => {
-    return await db.query.variables.findMany({
+  async getVariables(projectId: number, environmentId?: number) {
+    const variables: Variable[] = await db.query.variables.findMany({
       where: eq(schema.variables.projectId, projectId),
       with: {
         group: true,
@@ -189,13 +184,9 @@ export class VariablesService {
         }
       }
     })
-  })
-
-  async getVariables(projectId: number, environmentId?: number) {
-    const variables = await this.getProjectVariables(projectId)
 
     return environmentId
-      ? variables?.filter(v => v.values.some(val => val.environmentId === environmentId))
+      ? variables.filter(v => v.values.some(val => val.environmentId === environmentId))
       : variables
   }
 
@@ -223,8 +214,6 @@ export class VariablesService {
         eq(schema.variables.projectId, projectId),
         inArray(schema.variables.id, variableIds),
       ))
-
-    await clearCache('Variables', projectId)
   }
 
   async deleteVariable(id: number): Promise<void> {
@@ -233,8 +222,6 @@ export class VariablesService {
       .returning()
 
     if (!deleted) throw createError({ statusCode: 404, statusMessage: `Variable not found with id ${id}` })
-
-    await clearCache('Variables', deleted.projectId)
   }
 
   async deleteVariablesInProject(projectId: number, variableIds: number[]): Promise<void> {
@@ -247,8 +234,6 @@ export class VariablesService {
         eq(schema.variables.projectId, projectId),
         inArray(schema.variables.id, variableIds),
       ))
-
-    await clearCache('Variables', projectId)
   }
 
   async decryptVariables(variables: Variable[]): Promise<Variable[]> {

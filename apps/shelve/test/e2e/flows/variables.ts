@@ -69,7 +69,7 @@ export function registerVariableTests(ctx: E2EContext) {
     expect(variables.find((v: any) => v.id === ctx.variableId)).toBeUndefined()
   })
 
-  test('reads stay correct whichever read fills the cache', async () => {
+  test('reads stay correct in any order', async () => {
     const [firstEnvId, secondEnvId, emptyEnvId] = ctx.environmentIds as [number, number, number]
     const project = await ctx.api(`/api/teams/${ctx.teamSlug}/projects`, {
       method: 'POST',
@@ -80,7 +80,6 @@ export function registerVariableTests(ctx: E2EContext) {
       const variables = await ctx.api(`${variablesUrl}${path}`)
       return variables.map((v: any) => v.key).sort()
     }
-    // A write clears the project's cache, so the next read fills it.
     const write = (key: string, environmentId: number) => ctx.api(variablesUrl, {
       method: 'POST',
       body: { autoUppercase: true, environmentIds: [environmentId], variables: [{ key, value: 'value' }] },
@@ -104,5 +103,45 @@ export function registerVariableTests(ctx: E2EContext) {
     expect(await readKeys(`/env/${firstEnvId}`)).toEqual(['ONLY_FIRST'])
 
     await ctx.api(`/api/teams/${ctx.teamSlug}/projects/${project.id}`, { method: 'DELETE' })
+  })
+
+  test('reads see every write to what a variable joins', async () => {
+    const teamUrl = `/api/teams/${ctx.teamSlug}`
+    const firstEnvId = ctx.environmentIds[0]!
+    const project = await ctx.api(`${teamUrl}/projects`, {
+      method: 'POST',
+      body: { name: 'Fresh Reads' },
+    })
+    const projectUrl = `${teamUrl}/projects/${project.id}`
+    await ctx.api(`${teamUrl}/environments`, { method: 'POST', body: { name: 'short-lived' } })
+    const environments = await ctx.api(`${teamUrl}/environments`)
+    const environment = environments.find((e: any) => e.name === 'short-lived')
+    const { group } = await ctx.api(`${projectUrl}/variable-groups`, {
+      method: 'POST',
+      body: { name: 'Before' },
+    })
+    await ctx.api(`${projectUrl}/variables`, {
+      method: 'POST',
+      body: { autoUppercase: true, environmentIds: [firstEnvId, environment.id], variables: [{ key: 'grouped', value: 'value' }] },
+    })
+    const [created] = await ctx.api(`${projectUrl}/variables`)
+    await ctx.api(`${projectUrl}/variables/group`, {
+      method: 'PATCH',
+      body: { variableIds: [created.id], groupId: group.id },
+    })
+    const [before] = await ctx.api(`${projectUrl}/variables`)
+    expect(before.group.name).toBe('Before')
+    expect(before.values).toHaveLength(2)
+
+    await ctx.api(`${projectUrl}/variable-groups/${group.id}`, { method: 'PUT', body: { name: 'After' } })
+    await ctx.api(`${teamUrl}/environments/${environment.id}`, { method: 'DELETE' })
+
+    const [after] = await ctx.api(`${projectUrl}/variables`)
+    expect({
+      group: after.group.name,
+      environmentIds: after.values.map((v: any) => v.environmentId),
+    }).toEqual({ group: 'After', environmentIds: [firstEnvId] })
+
+    await ctx.api(projectUrl, { method: 'DELETE' })
   })
 }

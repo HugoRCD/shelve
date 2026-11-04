@@ -53,11 +53,6 @@ export const cacheEntities: Record<string, CacheEntity<string> | CacheEntity<num
     key: 'teamId',
     ttl: CACHE_TTL,
   },
-  Variables: {
-    prefix: 'variables',
-    key: 'projectId',
-    ttl: CACHE_TTL,
-  }
 } as const
 
 export function withCache<T>(
