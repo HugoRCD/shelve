@@ -20,27 +20,27 @@
     "db:migrate": "nuxt db migrate"
   },
   "dependencies": {
-    "@electric-sql/pglite": "^0.4.4",
+    "@electric-sql/pglite": "^0.5.14",
     "@shelve/base": "workspace:*",
     "@vue-email/components": "^0.0.21",
     "@vue-email/render": "^0.0.9",
     "blakejs": "^1.2.1",
-    "drizzle-kit": "^0.31.10",
-    "drizzle-orm": "^0.45.2",
+    "drizzle-kit": "^0.31.11",
+    "drizzle-orm": "^0.45.4",
     "jsonwebtoken": "^9.0.3",
     "libsodium-wrappers": "^0.8.4",
-    "nuxt-auth-utils": "^0.5.29",
+    "nuxt-auth-utils": "^0.6.0",
     "nuxt-build-cache": "^0.1.1",
     "postgres": "^3.4.9",
-    "resend": "^6.12.2",
-    "tailwindcss": "^4.2.4",
+    "resend": "^6.37.0",
+    "tailwindcss": "^4.3.3",
     "tweetnacl": "^1.0.3",
-    "vue-router": "^5.0.6"
+    "vue-router": "^5.4.0"
   },
   "devDependencies": {
     "@shelve/cli": "workspace:*",
-    "@nuxt/devtools": "^3.2.4",
-    "@nuxt/test-utils": "^4.0.2",
+    "@nuxt/devtools": "^3.4.4",
+    "@nuxt/test-utils": "^4.3.4",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/libsodium-wrappers": "^0.8.2",
     "vitest": "^4.1.12"
