@@ -68,6 +68,13 @@ export default defineNuxtConfig({
   },
 
   $production: {
+    hub: {
+      // One store for every instance (Vercel Runtime Cache on Vercel), so `clearCache` reaches all of them.
+      // The tag lets `useStorage('cache').clear()` expire every entry, as that driver can't list keys.
+      cache: {
+        tags: ['shelve-app'],
+      },
+    },
     runtimeConfig: {
       public: {
         github: {

@@ -1,4 +1,5 @@
 import type { H3Event } from 'h3'
+import { and, eq } from 'drizzle-orm'
 import type { Member, Team, User } from '@types'
 import { TeamRole } from '@types'
 
@@ -8,7 +9,13 @@ export async function validateTeamAccess(input: { user: User, teamSlug: string }
   if (!team)
     throw createError({ statusCode: 404, statusMessage: 'Team not found' })
 
-  const member = team.members.find((member) => member.userId === user.id)
+  // Read the membership itself rather than the cached team, so a removal or a role change applies on the next request.
+  const member = await db.query.members.findFirst({
+    where: and(eq(schema.members.teamId, team.id), eq(schema.members.userId, user.id)),
+    with: {
+      user: { columns: PUBLIC_USER_COLUMNS }
+    }
+  })
   if (!member)
     throw createError({ statusCode: 403, statusMessage: 'Unauthorized: User does not belong to the team' })
 
