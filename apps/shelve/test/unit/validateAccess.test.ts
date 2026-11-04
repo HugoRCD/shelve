@@ -7,7 +7,41 @@ vi.stubGlobal('createError', (opts: { statusCode: number, statusMessage: string 
   return err
 })
 
-const { validateTeamRole } = await import('../../server/utils/validateAccess')
+const findMember = vi.fn()
+vi.stubGlobal('schema', await import('../../server/db/schema'))
+vi.stubGlobal('db', { query: { members: { findFirst: findMember } } })
+vi.stubGlobal('PUBLIC_USER_COLUMNS', { id: true })
+// The cached team still lists user 1 as an owner.
+vi.stubGlobal('TeamsService', class {
+
+  getTeam = () => Promise.resolve({ id: 10, slug: 'acme', members: [{ userId: 1, role: TeamRole.OWNER }] })
+
+})
+
+const { validateTeamAccess, validateTeamRole } = await import('../../server/utils/validateAccess')
+
+describe('validateTeamAccess', () => {
+  const user = { id: 1 } as any
+
+  beforeEach(() => {
+    findMember.mockReset()
+  })
+
+  test('refuses a user removed from the team after it was cached', async () => {
+    findMember.mockResolvedValue(undefined)
+
+    await expect(validateTeamAccess({ user, teamSlug: 'acme' })).rejects.toMatchObject({ statusCode: 403 })
+  })
+
+  test('uses the role in the database, not the one in the cached team', async () => {
+    findMember.mockResolvedValue({ userId: 1, teamId: 10, role: TeamRole.MEMBER })
+
+    const { member } = await validateTeamAccess({ user, teamSlug: 'acme' })
+
+    expect(member.role).toBe(TeamRole.MEMBER)
+    expect(() => validateTeamRole(member, TeamRole.ADMIN)).toThrow('Unauthorized: User does not have the required role')
+  })
+})
 
 describe('validateTeamRole', () => {
   const makeMember = (role: TeamRole) => ({ role }) as any
