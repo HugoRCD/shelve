@@ -1,5 +1,21 @@
 # @shelve/app
 
+## 3.4.2
+
+### Patch Changes
+
+- [#794](https://github.com/HugoRCD/shelve/pull/794) [`044e098`](https://github.com/HugoRCD/shelve/commit/044e09840da27a23228babfeaefb59c2a00fea88) Thanks [@HugoRCD](https://github.com/HugoRCD)! - Fix the admin Emails tab, which linked to a removed page, and show the Clear cache button on the admin dashboard at every window width
+
+- [#784](https://github.com/HugoRCD/shelve/pull/784) [`f9f5db9`](https://github.com/HugoRCD/shelve/commit/f9f5db95983ad201daab4faee68e31a766565aae) Thanks [@HugoRCD](https://github.com/HugoRCD)! - Update dependencies to pick up upstream security fixes.
+
+- [#790](https://github.com/HugoRCD/shelve/pull/790) [`744d28b`](https://github.com/HugoRCD/shelve/commit/744d28b08cc23b3f0b292b1bf13cc0ba99411a1e) Thanks [@voidhrithik](https://github.com/voidhrithik)! - Fix 500 errors and missing variables on per-environment reads, caused by one environment's filtered list being cached for the whole project
+
+- [#793](https://github.com/HugoRCD/shelve/pull/793) [`34a5bc1`](https://github.com/HugoRCD/shelve/commit/34a5bc146c06efe35d907ae1faf1bcb86bcb1783) Thanks [@voidhrithik](https://github.com/voidhrithik)! - Fix stale variable reads after a write, by reading a project's variables from the database instead of each server instance's own cache
+
+- [#791](https://github.com/HugoRCD/shelve/pull/791) [`00c3457`](https://github.com/HugoRCD/shelve/commit/00c34573eac07cda4eef7ba55da63b266483c5c7) Thanks [@HugoRCD](https://github.com/HugoRCD)! - Fix sign-in after the nuxt-auth-utils 0.6 upgrade: read the session secret from `NUXT_APP_SECRET`, and keep API token sessions out of the response cookie
+
+- [#793](https://github.com/HugoRCD/shelve/pull/793) [`34a5bc1`](https://github.com/HugoRCD/shelve/commit/34a5bc146c06efe35d907ae1faf1bcb86bcb1783) Thanks [@voidhrithik](https://github.com/voidhrithik)! - Share the server cache between instances in production, and check team membership and role against the database on every request
+
 ## 3.4.1
 
 ### Patch Changes
