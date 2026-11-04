@@ -16,11 +16,11 @@
   },
   "dependencies": {
     "@shelve/base": "workspace:*",
-    "@upstash/redis": "^1.37.0",
-    "tailwindcss": "^4.2.4"
+    "@upstash/redis": "^1.41.0",
+    "tailwindcss": "^4.3.3"
   },
   "devDependencies": {
-    "@nuxt/test-utils": "^4.0.2",
+    "@nuxt/test-utils": "^4.3.4",
     "vitest": "^4.1.12"
   }
 }
