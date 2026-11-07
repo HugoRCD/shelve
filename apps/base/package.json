@@ -12,7 +12,7 @@
   "packageManager": "pnpm@10.34.9",
   "dependencies": {
     "@iconify-json/heroicons": "^1.2.3",
-    "@iconify-json/lucide": "^1.2.150",
+    "@iconify-json/lucide": "^1.2.151",
     "@iconify-json/simple-icons": "^1.2.101",
     "@nuxt/content": "3.16.2",
     "@nuxt/image": "^2.2.1",
@@ -20,21 +20,21 @@
     "@nuxt/ui": "^4.12.0",
     "@nuxthub/core": "^0.10.12",
     "@vercel/analytics": "^2.0.1",
-    "@vercel/speed-insights": "^2.0.0",
+    "@vercel/speed-insights": "^2.1.0",
     "@vueuse/core": "^14.4.0",
     "@vueuse/nuxt": "^14.4.0",
     "dotenv": "^17.4.2",
     "iron-webcrypto": "^2.0.0",
     "motion-plus-vue": "^1.11.1",
-    "motion-v": "^2.10.0",
-    "nuxt": "4.6.3",
+    "motion-v": "^2.11.1",
+    "nuxt": "4.6.4",
     "nuxt-build-cache": "^0.1.1",
-    "vue": "^3.5.44",
+    "vue": "^3.5.45",
     "vue-sonner": "^2.0.9",
     "zod": "^4.6.7",
     "@nuxtjs/mdc": "^0.23.2",
     "botid": "^1.5.12",
     "shaders": "^2.5.135",
-    "tailwindcss": "^4.3.3"
+    "tailwindcss": "^4.3.4"
   }
 }
