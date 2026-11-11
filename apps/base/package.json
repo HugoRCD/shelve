@@ -32,7 +32,7 @@
     "vue": "^3.5.44",
     "vue-sonner": "^2.0.9",
     "zod": "^4.6.7",
-    "@nuxtjs/mdc": "^0.23.2",
+    "@nuxtjs/mdc": "^0.23.3",
     "botid": "^1.5.12",
     "shaders": "^2.5.135",
     "tailwindcss": "^4.3.3"
