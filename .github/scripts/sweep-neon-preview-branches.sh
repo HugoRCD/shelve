@@ -3,8 +3,15 @@
 # or whose pull request is closed/merged. Never touches any other Neon branch.
 set -euo pipefail
 
-: "${NEON_API_KEY:?NEON_API_KEY is required}"
-: "${NEON_PROJECT_ID:?NEON_PROJECT_ID is required}"
+if [[ -z "${NEON_API_KEY:-}" || -z "${NEON_PROJECT_ID:-}" ]]; then
+  echo "Skipping: NEON_API_KEY or NEON_PROJECT_ID is not configured"
+  exit 0
+fi
+if [[ ! "${NEON_PROJECT_ID}" =~ ^[A-Za-z0-9-]+$ ]]; then
+  echo "Refusing unexpected NEON_PROJECT_ID" >&2
+  exit 1
+fi
+
 : "${GITHUB_REPOSITORY:?GITHUB_REPOSITORY is required}"
 : "${GH_TOKEN:=${GITHUB_TOKEN:-}}"
 : "${GH_TOKEN:?GH_TOKEN or GITHUB_TOKEN is required}"
@@ -72,6 +79,12 @@ while IFS= read -r row; do
   id="$(jq -r '.id' <<<"${row}")"
   name="$(jq -r '.name' <<<"${row}")"
   git_branch="${name#preview/}"
+
+  if [[ ! "${id}" =~ ^br-[A-Za-z0-9-]+$ ]]; then
+    echo "Skipping ${name} (${id}): unexpected Neon branch id"
+    kept=$((kept + 1))
+    continue
+  fi
 
   if [[ "${name}" != preview/* || -z "${git_branch}" || "${git_branch}" == "${name}" ]]; then
     echo "Skipping ${name} (${id}): not a preview/* branch"

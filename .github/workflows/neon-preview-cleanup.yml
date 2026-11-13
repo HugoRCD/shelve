@@ -1,7 +1,9 @@
 name: Neon preview cleanup
 
 on:
-  pull_request:
+  # pull_request_target runs this file from the default branch, not the
+  # closing PR, so a branch cannot supply a workflow that reads NEON_API_KEY.
+  pull_request_target:
     types: [closed]
   schedule:
     # Daily sweep for leftover preview/* branches (Vercel can recreate a
@@ -22,7 +24,7 @@ jobs:
   delete-preview-branch:
     name: Delete Neon preview branch
     if: >
-      (github.event_name == 'pull_request' &&
+      (github.event_name == 'pull_request_target' &&
        github.event.pull_request.head.repo.full_name == github.repository) ||
       (github.event_name == 'workflow_dispatch' && inputs.git_branch != '')
     runs-on: ubuntu-latest
@@ -41,7 +43,11 @@ jobs:
             const apiKey = process.env.NEON_API_KEY || ''
             const projectId = process.env.NEON_PROJECT_ID || ''
             if (!apiKey || !projectId) {
-              throw new Error('NEON_API_KEY and NEON_PROJECT_ID are required')
+              console.log('Skipping: NEON_API_KEY or NEON_PROJECT_ID is not configured')
+              return
+            }
+            if (!/^[A-Za-z0-9-]+$/.test(projectId)) {
+              throw new Error('Refusing unexpected NEON_PROJECT_ID')
             }
             if (!/^[A-Za-z0-9._/-]+$/.test(gitBranch)) {
               throw new Error('Refusing unsafe git branch name')
@@ -72,6 +78,9 @@ jobs:
             if (!match) {
               console.log(`Neon branch ${branchName} does not exist; skipping.`)
               return
+            }
+            if (!/^br-[A-Za-z0-9-]+$/.test(match.id)) {
+              throw new Error('Refusing unexpected Neon branch id')
             }
 
             const del = await fetch(`${base}/${match.id}`, { method: 'DELETE', headers })
