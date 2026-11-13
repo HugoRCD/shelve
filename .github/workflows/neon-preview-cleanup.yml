@@ -28,19 +28,61 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
-        with:
-          persist-credentials: false
-
-      # Branch names go through an env var, not YAML interpolation into a
-      # shell script (neondatabase/delete-branch-action interpolates
-      # inputs.branch into bash, which can run command substitution).
-      - name: Delete Neon preview branch
+      # Do not check out the closing PR. That would run untrusted files with
+      # NEON_API_KEY. The git branch is data in an env var only.
+      - uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
         env:
           NEON_API_KEY: ${{ secrets.NEON_API_KEY }}
           NEON_PROJECT_ID: ${{ vars.NEON_PROJECT_ID }}
-          DELETE_GIT_BRANCH: ${{ github.event.pull_request.head.ref || inputs.git_branch }}
-        run: bash .github/scripts/sweep-neon-preview-branches.sh
+          GIT_BRANCH: ${{ github.event.pull_request.head.ref || inputs.git_branch }}
+        with:
+          script: |
+            const gitBranch = process.env.GIT_BRANCH || ''
+            const apiKey = process.env.NEON_API_KEY || ''
+            const projectId = process.env.NEON_PROJECT_ID || ''
+            if (!apiKey || !projectId) {
+              throw new Error('NEON_API_KEY and NEON_PROJECT_ID are required')
+            }
+            if (!/^[A-Za-z0-9._/-]+$/.test(gitBranch)) {
+              throw new Error('Refusing unsafe git branch name')
+            }
+
+            const branchName = `preview/${gitBranch}`
+            const headers = {
+              Authorization: `Bearer ${apiKey}`,
+              Accept: 'application/json'
+            }
+            const base = `https://console.neon.tech/api/v2/projects/${projectId}/branches`
+
+            let cursor = ''
+            let match = null
+            do {
+              const url = new URL(base)
+              url.searchParams.set('limit', '100')
+              if (cursor) url.searchParams.set('cursor', cursor)
+              const res = await fetch(url, { headers })
+              if (!res.ok) {
+                throw new Error(`Neon list failed: HTTP ${res.status}`)
+              }
+              const data = await res.json()
+              match = (data.branches || []).find((branch) => branch.name === branchName) || null
+              cursor = (data.pagination && data.pagination.next) || ''
+            } while (!match && cursor)
+
+            if (!match) {
+              console.log(`Neon branch ${branchName} does not exist; skipping.`)
+              return
+            }
+
+            const del = await fetch(`${base}/${match.id}`, { method: 'DELETE', headers })
+            if (del.status === 404) {
+              console.log(`Neon branch ${branchName} (${match.id}) already gone`)
+              return
+            }
+            if (!del.ok) {
+              throw new Error(`Neon delete failed: HTTP ${del.status} ${await del.text()}`)
+            }
+            console.log(`Deleted ${branchName} (${match.id})`)
 
   sweep-stale-preview-branches:
     name: Sweep stale Neon preview branches
@@ -51,6 +93,7 @@ jobs:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           persist-credentials: false
+          ref: ${{ github.event.repository.default_branch }}
 
       - name: Delete leftover preview branches
         env:
