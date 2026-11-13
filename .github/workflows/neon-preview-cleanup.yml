@@ -28,15 +28,19 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      # The action fails when the Neon branch is already gone. That is
-      # expected (Vercel or the sweeper may have deleted it first).
-      - name: Delete Neon preview branch
-        continue-on-error: true
-        uses: neondatabase/delete-branch-action@v3
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
-          project_id: ${{ vars.NEON_PROJECT_ID }}
-          branch: preview/${{ github.event.pull_request.head.ref || inputs.git_branch }}
-          api_key: ${{ secrets.NEON_API_KEY }}
+          persist-credentials: false
+
+      # Branch names go through an env var, not YAML interpolation into a
+      # shell script (neondatabase/delete-branch-action interpolates
+      # inputs.branch into bash, which can run command substitution).
+      - name: Delete Neon preview branch
+        env:
+          NEON_API_KEY: ${{ secrets.NEON_API_KEY }}
+          NEON_PROJECT_ID: ${{ vars.NEON_PROJECT_ID }}
+          DELETE_GIT_BRANCH: ${{ github.event.pull_request.head.ref || inputs.git_branch }}
+        run: bash .github/scripts/sweep-neon-preview-branches.sh
 
   sweep-stale-preview-branches:
     name: Sweep stale Neon preview branches
