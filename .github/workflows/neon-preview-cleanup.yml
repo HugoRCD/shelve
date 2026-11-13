@@ -1,108 +1,34 @@
 name: Neon preview cleanup
 
 on:
-  # pull_request_target runs this file from the default branch, not the
-  # closing PR, so a branch cannot supply a workflow that reads NEON_API_KEY.
-  pull_request_target:
+  pull_request:
     types: [closed]
   schedule:
     # Daily sweep for leftover preview/* branches (Vercel can recreate a
     # deleted branch while the preview deployment still exists).
     - cron: "0 7 * * *"
   workflow_dispatch:
-    inputs:
-      git_branch:
-        description: Git branch whose Neon preview/<git-branch> database should be deleted. Leave empty to only run the sweeper.
-        required: false
-        type: string
 
 permissions:
   contents: read
   pull-requests: read
 
 jobs:
-  delete-preview-branch:
-    name: Delete Neon preview branch
-    if: >
-      (github.event_name == 'pull_request_target' &&
-       github.event.pull_request.head.repo.full_name == github.repository) ||
-      (github.event_name == 'workflow_dispatch' && inputs.git_branch != '')
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    steps:
-      # Do not check out the closing PR. That would run untrusted files with
-      # NEON_API_KEY. The git branch is data in an env var only.
-      - uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
-        env:
-          NEON_API_KEY: ${{ secrets.NEON_API_KEY }}
-          NEON_PROJECT_ID: ${{ vars.NEON_PROJECT_ID }}
-          GIT_BRANCH: ${{ github.event.pull_request.head.ref || inputs.git_branch }}
-        with:
-          script: |
-            const gitBranch = process.env.GIT_BRANCH || ''
-            const apiKey = process.env.NEON_API_KEY || ''
-            const projectId = process.env.NEON_PROJECT_ID || ''
-            if (!apiKey || !projectId) {
-              console.log('Skipping: NEON_API_KEY or NEON_PROJECT_ID is not configured')
-              return
-            }
-            if (!/^[A-Za-z0-9-]+$/.test(projectId)) {
-              throw new Error('Refusing unexpected NEON_PROJECT_ID')
-            }
-            if (!/^[A-Za-z0-9._/-]+$/.test(gitBranch)) {
-              throw new Error('Refusing unsafe git branch name')
-            }
-
-            const branchName = `preview/${gitBranch}`
-            const headers = {
-              Authorization: `Bearer ${apiKey}`,
-              Accept: 'application/json'
-            }
-            const base = `https://console.neon.tech/api/v2/projects/${projectId}/branches`
-
-            let cursor = ''
-            let match = null
-            do {
-              const url = new URL(base)
-              url.searchParams.set('limit', '100')
-              if (cursor) url.searchParams.set('cursor', cursor)
-              const res = await fetch(url, { headers })
-              if (!res.ok) {
-                throw new Error(`Neon list failed: HTTP ${res.status}`)
-              }
-              const data = await res.json()
-              match = (data.branches || []).find((branch) => branch.name === branchName) || null
-              cursor = (data.pagination && data.pagination.next) || ''
-            } while (!match && cursor)
-
-            if (!match) {
-              console.log(`Neon branch ${branchName} does not exist; skipping.`)
-              return
-            }
-            if (!/^br-[A-Za-z0-9-]+$/.test(match.id)) {
-              throw new Error('Refusing unexpected Neon branch id')
-            }
-
-            const del = await fetch(`${base}/${match.id}`, { method: 'DELETE', headers })
-            if (del.status === 404) {
-              console.log(`Neon branch ${branchName} (${match.id}) already gone`)
-              return
-            }
-            if (!del.ok) {
-              throw new Error(`Neon delete failed: HTTP ${del.status} ${await del.text()}`)
-            }
-            console.log(`Deleted ${branchName} (${match.id})`)
-
   sweep-stale-preview-branches:
     name: Sweep stale Neon preview branches
-    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    if: >
+      github.event_name != 'pull_request' ||
+      github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           persist-credentials: false
-          ref: ${{ github.event.repository.default_branch }}
+          # On PR close, use the default branch so the closing PR cannot
+          # supply the sweep script. schedule and workflow_dispatch use
+          # the commit that triggered the run.
+          ref: ${{ github.event_name == 'pull_request' && github.event.repository.default_branch || github.sha }}
 
       - name: Delete leftover preview branches
         env:
