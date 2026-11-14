@@ -40,10 +40,10 @@
     "@shelve/cli": "workspace:*",
     "automd": "^0.4.3",
     "eslint": "^9.39.5",
-    "turbo": "^2.11.10",
+    "turbo": "^2.11.11",
     "typescript": "^5.9.3"
   },
-  "packageManager": "pnpm@11.28.10",
+  "packageManager": "pnpm@11.28.11",
   "workspaces": [
     "packages/*",
     "apps/*"
