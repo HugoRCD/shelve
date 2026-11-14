@@ -1,0 +1,38 @@
+name: Neon preview cleanup
+
+on:
+  pull_request:
+    types: [closed]
+  schedule:
+    # Daily sweep for leftover preview/* branches (Vercel can recreate a
+    # deleted branch while the preview deployment still exists).
+    - cron: "0 7 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  sweep-stale-preview-branches:
+    name: Sweep stale Neon preview branches
+    if: >
+      github.event_name != 'pull_request' ||
+      github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+          # On PR close, use the default branch so the closing PR cannot
+          # supply the sweep script. schedule and workflow_dispatch use
+          # the commit that triggered the run.
+          ref: ${{ github.event_name == 'pull_request' && github.event.repository.default_branch || github.sha }}
+
+      - name: Delete leftover preview branches
+        env:
+          NEON_API_KEY: ${{ secrets.NEON_API_KEY }}
+          NEON_PROJECT_ID: ${{ vars.NEON_PROJECT_ID }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: bash .github/scripts/sweep-neon-preview-branches.sh
