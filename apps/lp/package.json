@@ -23,10 +23,10 @@
     "@resvg/resvg-js": "^2.6.2",
     "better-sqlite3": "^12.11.1",
     "nuxt-build-cache": "^0.1.1",
-    "nuxt-llms": "^0.3.1",
+    "nuxt-llms": "^0.3.2",
     "satori": "^0.63.2",
     "tailwindcss": "^4.3.5",
-    "vue-router": "^5.5.0"
+    "vue-router": "^5.5.1"
   },
   "devDependencies": {
     "@shelve/cli": "workspace:*"
