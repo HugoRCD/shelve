@@ -20,7 +20,7 @@
     "db:migrate": "nuxt db migrate"
   },
   "dependencies": {
-    "@electric-sql/pglite": "^0.5.16",
+    "@electric-sql/pglite": "^0.5.17",
     "@shelve/base": "workspace:*",
     "@vue-email/components": "^0.0.21",
     "@vue-email/render": "^0.0.9",
@@ -32,10 +32,10 @@
     "nuxt-auth-utils": "^0.6.2",
     "nuxt-build-cache": "^0.1.1",
     "postgres": "^3.4.9",
-    "resend": "^6.38.0",
+    "resend": "^6.39.0",
     "tailwindcss": "^4.3.5",
     "tweetnacl": "^1.0.3",
-    "vue-router": "^5.5.0"
+    "vue-router": "^5.5.1"
   },
   "devDependencies": {
     "@shelve/cli": "workspace:*",
