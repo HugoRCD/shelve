@@ -21,7 +21,7 @@ vi.stubGlobal('schema', schema)
 vi.stubGlobal('lt', lt)
 vi.stubGlobal('useRuntimeConfig', () => runtimeConfig)
 vi.stubGlobal('getUserSession', () => Promise.resolve({}))
-vi.stubGlobal('getRequestIP', () => null)
+vi.stubGlobal('getClientIp', () => null)
 vi.stubGlobal('getRequestHeader', () => undefined)
 
 const DAY = 24 * 60 * 60 * 1000
