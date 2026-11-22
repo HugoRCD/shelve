@@ -44,5 +44,5 @@ describe('0015_api_key_hashes and 0016_api_key_rename', () => {
     expect(rows.map(r => r.start)).toEqual(all.map(t => t.slice(0, 12)))
     const { rows: [owner] } = await client.query<{ id: number }>('select id from users')
     expect(rows.every(r => r.referenceId === owner!.id)).toBe(true)
-  })
+  }, 30_000) // Boots PGlite and runs every migration: slower than the 5s default on CI runners.
 })
