@@ -39,9 +39,9 @@
     "vue-router": "^5.5.1"
   },
   "devDependencies": {
-    "@shelve/cli": "workspace:*",
     "@nuxt/devtools": "^3.4.4",
     "@nuxt/test-utils": "^4.4.0",
+    "@shelve/cli": "workspace:*",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/libsodium-wrappers": "^0.8.2",
     "vitest": "^4.1.12"

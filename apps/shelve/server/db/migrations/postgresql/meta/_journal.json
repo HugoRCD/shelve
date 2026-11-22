@@ -78,6 +78,13 @@
       "when": 1795400000000,
       "tag": "0010_otp_verify_attempts",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1795400100000,
+      "tag": "0011_better_auth_core",
+      "breakpoints": true
     }
   ]
 }
