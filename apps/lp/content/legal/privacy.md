@@ -32,7 +32,7 @@ We also maintain your user role for access control purposes, timestamps of when 
 
 For CLI and API access, we generate API keys that you can create and manage through your account settings. We store only a hash of each key, never the key itself, along with its user-defined name, its first characters (shown to help you identify it), its scopes, expiry and IP allowlist, and when it was created and last used, including the IP address of its last use, for security monitoring. API keys follow the format `she_[random_string]`.
 
-When you sign in, we store a session in our database with its expiry, your IP address and your browser's user agent, so we can keep you signed in and protect your account. When you use OAuth authentication with [GitHub](https://github.com) or [Google](https://google.com), we store the access tokens the provider returns, encrypted, so Shelve can act on your behalf where you asked it to, such as pushing secrets to your GitHub repositories. For email-based authentication, we generate temporary one-time password codes that automatically expire after a short period for security purposes.
+When you sign in, we store a session in our database with its expiry, your IP address and your browser's user agent, so we can keep you signed in and protect your account. When you use OAuth authentication with [GitHub](https://github.com) or [Google](https://google.com), we store the access and refresh tokens the provider returns, encrypted, so Shelve can act on your behalf where you asked it to, such as pushing secrets to your GitHub repositories. Google sign-in also returns an ID token, which contains your basic profile (name, email address and profile picture); we store it without that additional encryption. For email-based authentication, we generate temporary one-time password codes that automatically expire after a short period for security purposes.
 
 ### 2.3 Project and Team Data
 
@@ -142,7 +142,7 @@ When using our secure sharing service at vault.shelve.cloud, we temporarily stor
 ### 5.1 Encryption at Rest
 - **Environment Variables**: All secret values encrypted using [Iron-WebCrypto](https://github.com/hapijs/iron) with AES-256
 - **API Keys**: Stored only as a SHA-256 hash; the key itself is never stored
-- **OAuth Tokens**: Encrypted with the application secret
+- **OAuth Tokens**: Access and refresh tokens encrypted with the application secret; Google ID tokens are stored without this additional encryption
 - **Vault Secrets**: Temporary encrypted storage for secure sharing
 - **Database**: Hosted on [Neon.tech](https://neon.tech) with encryption at rest
 

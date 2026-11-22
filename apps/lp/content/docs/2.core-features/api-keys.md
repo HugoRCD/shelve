@@ -53,8 +53,8 @@ On self-hosted instances behind a reverse proxy, set [`NUXT_PRIVATE_TRUST_PROXY`
 
 ## Audit trail
 
-API key lifecycle events (`token.create`, `token.delete`) and every authenticated request surface in [audit logs](/docs/core-features/audit-logs) with the key prefix, actor, IP, and user agent. When something looks wrong, revoke the key from the UI — the hash is deleted and the next request using it returns `401`.
+API key lifecycle events (`token.create`, `token.delete`) and the writes and variable reads made with a key surface in [audit logs](/docs/core-features/audit-logs) with the key prefix, actor, IP, and user agent. Other reads, such as listing teams or `GET /api/user/me`, are not logged. When something looks wrong, revoke the key from the UI — the hash is deleted and the next request using it returns `401`.
 
 ## Sending API keys
 
-The CLI and any integration should send the key as an `Authorization: Bearer <key>` header. The CLI reads it from `SHELVE_TOKEN` or `shelve login --token`. The legacy `Cookie: authToken=…` path still works for older CLI builds but returns `Deprecation: true` / `Sunset: Wed, 01 Jul 2026 00:00:00 GMT` response headers — migrate clients before that date.
+The CLI and any integration should send the key as an `Authorization: Bearer <key>` header. The CLI reads it from `SHELVE_TOKEN` or `shelve login --token`. The legacy `Cookie: authToken=…` path still works for older CLI builds, but it returns `Deprecation: true` / `Sunset: Wed, 01 Jul 2026 00:00:00 GMT` response headers. That date has passed and the path can be removed at any time — migrate clients to the `Authorization` header now.

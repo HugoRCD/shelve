@@ -398,7 +398,7 @@ Our web application requires a modern browser with [JavaScript](https://develope
 
 ### 18.2 API Specifications
 
-Our API requires API key authentication over [HTTPS](https://en.wikipedia.org/wiki/HTTPS) connections only, with rate limiting enforced to ensure fair usage. We use [JSON](https://www.json.org/) for API communications with [UTF-8](https://en.wikipedia.org/wiki/UTF-8) encoding and follow [RESTful API](https://restfulapi.net) design principles.
+Our API is available over [HTTPS](https://en.wikipedia.org/wiki/HTTPS) connections only and accepts two kinds of authentication: a signed-in session, or an API key, which reaches only the team API and cannot manage your account or your API keys. Rate limiting is enforced to ensure fair usage. We use [JSON](https://www.json.org/) for API communications with [UTF-8](https://en.wikipedia.org/wiki/UTF-8) encoding and follow [RESTful API](https://restfulapi.net) design principles.
 
 ## 19. Open Source and Community
 
