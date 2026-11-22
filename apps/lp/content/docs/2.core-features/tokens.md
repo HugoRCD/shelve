@@ -49,6 +49,8 @@ Every token may carry an `expiresAt`. After that date the token is refused with 
 
 Optionally attach a list of CIDR blocks to a token. Requests originating outside those blocks are rejected with `401 Token not authorized for this network`. Both IPv4 and IPv6 notations are supported.
 
+On self-hosted instances behind a reverse proxy, set [`NUXT_PRIVATE_TRUST_PROXY`](/docs/self-hosting/environment-variables#nuxt_private_trust_proxy) so Shelve checks the client's address instead of the proxy's.
+
 ## Audit trail
 
 Token lifecycle events (`token.create`, `token.delete`) and every authenticated request surface in [audit logs](/docs/core-features/audit-logs) with the token prefix, actor, IP, and user agent. When something looks wrong, revoke the token from the UI — the hash is deleted and the next request using it returns `401`.

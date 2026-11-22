@@ -1,6 +1,19 @@
 import { AuthType } from '@types'
 import { userSchema } from '~~/server/db/zod'
 
+type GitHubEmail = { email: string; primary: boolean; verified: boolean }
+
+/** The account's primary email, when GitHub has verified it. */
+async function getVerifiedPrimaryEmail(accessToken: string): Promise<string | undefined> {
+  const emails = await $fetch<GitHubEmail[]>('https://api.github.com/user/emails', {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      Accept: 'application/vnd.github+json',
+    },
+  })
+  return emails.find(entry => entry.primary && entry.verified)?.email
+}
+
 const githubLogin = defineOAuthGitHubEventHandler({
   config: {
     emailRequired: true,
@@ -8,15 +21,17 @@ const githubLogin = defineOAuthGitHubEventHandler({
   },
   async onSuccess(event, { user, tokens }) {
     try {
-      const appUrl = getRequestHost(event)
+      // The email nuxt-auth-utils picks may be unverified, so ask GitHub which one is.
+      const verifiedEmail = await getVerifiedPrimaryEmail(tokens.access_token)
       const _user = await handleOAuthUser({
-        email: user.email,
+        email: verifiedEmail ?? user.email,
+        emailVerified: !!verifiedEmail,
         avatar: user.avatar_url,
         username: user.login,
         authType: AuthType.GITHUB,
         providerAccountId: String(user.id),
-        appUrl,
       }, event)
+      if (!_user) return sendRedirect(event, '/login?error=unverified-email')
       await replaceUserSession(event, {
         secure: {
           githubToken: tokens.access_token,

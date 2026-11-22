@@ -1,7 +1,7 @@
 export default defineEventHandler(async (event) => {
   await requireAdmin(event)
   const { email, otp } = await readBody(event)
-  const appUrl = getRequestHost(event)
+  const appUrl = getAppOrigin(event)
   const redirectUrl = `${appUrl}/login?email=${encodeURIComponent(email)}&otp=${otp}`
 
   const emailService = new EmailService(event)

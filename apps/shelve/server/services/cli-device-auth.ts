@@ -1,10 +1,12 @@
 import { createHash, randomBytes, timingSafeEqual } from 'node:crypto'
 import type { H3Event } from 'h3'
-import { and, eq, lt } from 'drizzle-orm'
+import { and, eq, isNotNull, lt } from 'drizzle-orm'
 import type { TokenScopes, User } from '@types'
 import { cliDeviceAuth } from '../db/schema'
 import type { CliDeviceClientMeta } from '../db/schema'
 import { generateToken, hashToken, safeEqualHex } from '../utils/tokens'
+import { getAppOrigin } from '../utils/app-origin'
+import { getClientIp } from '../utils/ip'
 import { logAuditForTeams, resolveTeamIdsFromTokenScopes } from './audit'
 
 const CROCKFORD = '0123456789ABCDEFGHJKMNPQRSTVWXYZ'
@@ -80,16 +82,24 @@ function checkRateLimit(
   return { allowed: true }
 }
 
-export function getClientIp(event: H3Event): string {
-  return getRequestIP(event, { xForwardedFor: true }) ?? 'unknown'
-}
-
-async function expireStalePending(): Promise<void> {
+/**
+ * Expires pending requests past their deadline, and drops the plaintext token of approved
+ * requests the CLI never collected: the token row stays, only this copy of its value goes.
+ */
+async function expireStaleRequests(): Promise<void> {
+  const now = new Date()
   await db.update(cliDeviceAuth)
     .set({ status: 'expired' })
     .where(and(
       eq(cliDeviceAuth.status, 'pending'),
-      lt(cliDeviceAuth.expiresAt, new Date()),
+      lt(cliDeviceAuth.expiresAt, now),
+    ))
+  await db.update(cliDeviceAuth)
+    .set({ accessToken: null })
+    .where(and(
+      eq(cliDeviceAuth.status, 'approved'),
+      isNotNull(cliDeviceAuth.accessToken),
+      lt(cliDeviceAuth.expiresAt, now),
     ))
 }
 
@@ -117,15 +127,15 @@ export async function startDeviceAuth(
   event: H3Event,
   clientMeta?: CliDeviceClientMeta,
 ): Promise<DeviceAuthStartResult> {
-  const ip = getClientIp(event)
+  const ip = getClientIp(event) ?? 'unknown'
   const rate = checkRateLimit(initAttempts, ip, DEVICE_INIT_RATE_LIMIT)
   if (!rate.allowed) {
     throw createError({ statusCode: 429, statusMessage: 'Too many device login attempts. Try again later.' })
   }
 
-  await expireStalePending()
+  await expireStaleRequests()
 
-  const { origin } = getRequestURL(event)
+  const origin = getAppOrigin(event)
   let userCode = generateUserCode()
   let deviceCode = generateDeviceCode()
   const expiresAt = new Date(Date.now() + DEVICE_AUTH_TTL_SECONDS * 1000)
@@ -160,7 +170,7 @@ export async function startDeviceAuth(
 }
 
 export async function getDeviceAuthStatus(userCode: string) {
-  await expireStalePending()
+  await expireStaleRequests()
   const row = await findByUserCode(userCode)
   if (!row) {
     throw createError({ statusCode: 404, statusMessage: 'Authorization request not found' })
@@ -183,7 +193,7 @@ function cliTokenName(clientMeta?: CliDeviceClientMeta | null): string {
 }
 
 export async function approveDeviceAuth(event: H3Event, user: User, userCode: string) {
-  await expireStalePending()
+  await expireStaleRequests()
   const row = await findByUserCode(userCode)
   if (!row || row.status !== 'pending') {
     throw createError({ statusCode: 400, statusMessage: 'Invalid or expired authorization request' })
@@ -241,7 +251,7 @@ export async function approveDeviceAuth(event: H3Event, user: User, userCode: st
 }
 
 export async function denyDeviceAuth(userCode: string) {
-  await expireStalePending()
+  await expireStaleRequests()
   const row = await findByUserCode(userCode)
   if (!row || row.status !== 'pending') {
     throw createError({ statusCode: 400, statusMessage: 'Invalid or expired authorization request' })
@@ -256,13 +266,13 @@ export async function denyDeviceAuth(userCode: string) {
 }
 
 export async function pollDeviceAuthToken(event: H3Event, deviceCode: string) {
-  const ip = getClientIp(event)
+  const ip = getClientIp(event) ?? 'unknown'
   const rate = checkRateLimit(pollAttempts, ip, DEVICE_POLL_RATE_LIMIT)
   if (!rate.allowed) {
     throw createError({ statusCode: 429, statusMessage: 'Too many polling attempts. Try again later.' })
   }
 
-  await expireStalePending()
+  await expireStaleRequests()
 
   const row = await findByDeviceCode(deviceCode)
   if (!row) {

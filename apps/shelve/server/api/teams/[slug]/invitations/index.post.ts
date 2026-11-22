@@ -13,6 +13,8 @@ export default eventHandler(async (event: H3Event) => {
 
   const { email, role } = await readValidatedBody(event, createInvitationSchema.parse)
   validateRoleAssignment(member, role)
+  // Before the invitation is stored, so a missing app URL leaves nothing behind.
+  const appOrigin = getAppOrigin(event)
 
   const invitation = await new InvitationsService().createInvitation({
     teamId: team.id,
@@ -23,9 +25,7 @@ export default eventHandler(async (event: H3Event) => {
   })
 
   // Send invitation email
-  const config = useRuntimeConfig(event)
-  const appUrl = getRequestURL(event).origin || 'http://localhost:3000'
-  const inviteUrl = `${appUrl}/invite/${invitation.token}`
+  const inviteUrl = `${appOrigin}/invite/${invitation.token}`
 
   await new EmailService(event).sendInvitationEmail({
     email,

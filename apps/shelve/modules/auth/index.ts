@@ -33,10 +33,40 @@ const commaSeparatedStringToArray = z.preprocess(
   z.array(z.string()).optional(),
 )
 
+// The values committed in `apps/shelve/.env.test`, only accepted while the test suite runs.
+const TEST_SECRETS = ['test-app-secret-at-least-32-chars-long', 'test-encryption-key-at-least-32-chars']
+
+/** Example values copied from the docs or `.env.test` instead of generated ones. */
+function isPlaceholderSecret(value: string): boolean {
+  if (/^your[-_]/i.test(value) || /^<.*>$/.test(value)) return true
+  return !process.env.VITEST && TEST_SECRETS.includes(value)
+}
+
+function secretSchema(label: string) {
+  return z.string()
+    .min(32, { error: `${label} must be at least 32 characters long.` })
+    .refine(value => !isPlaceholderSecret(value), {
+      error: `${label} is an example value. Generate a random one with \`openssl rand -base64 48\`.`,
+    })
+}
+
+function isOrigin(value: string): boolean {
+  if (!URL.canParse(value)) return false
+  const url = new URL(value)
+  return url.pathname === '/' && !url.search && !url.hash && !url.username && !url.password
+}
+
 const requiredCoreSchema = z.object({
   DATABASE_URL: z.url().startsWith('postgres', { error: 'Must be a valid PostgreSQL URL.' }).optional(),
-  NUXT_APP_SECRET: z.string().min(32, { error: 'App secret must be at least 32 characters long.' }),
-  NUXT_PRIVATE_ENCRYPTION_KEY: z.string().min(32, { error: 'Encryption key must be at least 32 characters long.' }),
+  NUXT_APP_SECRET: secretSchema('App secret'),
+  NUXT_PRIVATE_ENCRYPTION_KEY: secretSchema('Encryption key'),
+})
+
+const appUrlSchema = z.object({
+  NUXT_PUBLIC_APP_URL: z.url({ protocol: /^https?$/, error: 'App URL must be an http or https URL.' })
+    .refine(isOrigin, { error: 'App URL must be an origin without a path, for example https://shelve.example.com.' })
+    .optional()
+    .or(z.literal('')),
 })
 
 const authProvidersSchema = z.object({
@@ -59,6 +89,7 @@ const adminAndSecuritySchema = z.object({
 
 export const envSchema = z.object({
   ...requiredCoreSchema.shape,
+  ...appUrlSchema.shape,
   ...authProvidersSchema.shape,
   ...emailSchema.shape,
   ...adminAndSecuritySchema.shape,
