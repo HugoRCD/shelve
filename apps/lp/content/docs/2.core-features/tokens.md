@@ -3,7 +3,7 @@ title: API Tokens
 description: Create, scope, and revoke API tokens for the CLI and integrations.
 ---
 
-API tokens let the CLI and any external system authenticate against Shelve. They are managed from your account settings at [app.shelve.cloud/user/tokens](https://app.shelve.cloud/user/tokens).
+API tokens let the CLI and any external system authenticate against Shelve. They are managed from your account settings at [app.shelve.cloud/user/api-keys](https://app.shelve.cloud/user/api-keys).
 
 ## How tokens are stored
 

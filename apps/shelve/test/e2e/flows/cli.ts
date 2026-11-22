@@ -85,7 +85,7 @@ export function registerCliTests(ctx: E2EContext) {
   test('CLI pull works with a read-only token restricted to the project and environment', async () => {
     const environments = await ctx.api<{ id: number; name: string }[]>(`/api/teams/${ctx.teamSlug}/environments`)
     const development = environments.find(e => e.name === 'development')!
-    const { token } = await ctx.api<{ token: string }>('/api/tokens', {
+    const { key: token } = await ctx.api<{ key: string }>('/api/api-keys', {
       method: 'POST',
       body: {
         name: 'cli-restricted',

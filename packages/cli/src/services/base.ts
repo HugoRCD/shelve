@@ -59,7 +59,7 @@ export abstract class BaseService {
     let token: string
     if (tokenFromFlag || process.env.SHELVE_TOKEN || options?.withToken) {
       token = await askPassword(
-        `Please provide a valid token (you can generate one on ${sanitizedUrl}/user/tokens)`,
+        `Please provide a valid token (you can generate one on ${sanitizedUrl}/user/api-keys)`,
         tokenFromFlag,
       )
     } else {

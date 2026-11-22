@@ -1,10 +1,10 @@
 import { createHash, randomBytes, timingSafeEqual } from 'node:crypto'
 import { defaultKeyHasher } from '@better-auth/api-key'
-import { TOKEN_PREFIX, TOKEN_PREFIX_DISPLAY_LENGTH } from './constants'
+import { API_KEY_PREFIX, API_KEY_START_LENGTH } from './constants'
 
 // Standard Crockford base32: 32 chars = 0-9 + A-Z minus I, L, O, U.
 // Must contain exactly 32 symbols, otherwise indices 30/31 return undefined
-// and the token ends up with the literal string "undefined" inside it.
+// and the key ends up with the literal string "undefined" inside it.
 const CROCKFORD_ALPHABET = '0123456789ABCDEFGHJKMNPQRSTVWXYZ'
 
 function base32Encode(buf: Buffer): string {
@@ -23,14 +23,13 @@ function base32Encode(buf: Buffer): string {
   return out
 }
 
-/** A new API token, with its hash in the format Better Auth's api-key plugin looks tokens up by. */
-export async function generateToken(): Promise<{ token: string; prefix: string; hash: string }> {
-  const body = base32Encode(randomBytes(32))
-  const token = `${TOKEN_PREFIX}${body}`
+/** A new API key, with its hash in the format Better Auth's api-key plugin looks keys up by. */
+export async function generateApiKey(): Promise<{ key: string; start: string; hashedKey: string }> {
+  const key = `${API_KEY_PREFIX}${base32Encode(randomBytes(32))}`
   return {
-    token,
-    prefix: token.slice(0, TOKEN_PREFIX_DISPLAY_LENGTH),
-    hash: await defaultKeyHasher(token),
+    key,
+    start: key.slice(0, API_KEY_START_LENGTH),
+    hashedKey: await defaultKeyHasher(key),
   }
 }
 

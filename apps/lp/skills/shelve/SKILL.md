@@ -28,7 +28,7 @@ Shelve is an open-source **team secrets platform**: web app + CLI. Store variabl
 | Team | `slug` in `shelve.json`, `SHELVE_TEAM_SLUG` |
 | Project | `project`, `SHELVE_PROJECT` |
 | Environment | `--env`, `defaultEnv`, `SHELVE_DEFAULT_ENV` |
-| API token | `SHELVE_TOKEN` — create at https://app.shelve.cloud/user/tokens (shown once; scope read/write + team/project/env) |
+| API token | `SHELVE_TOKEN` — create at https://app.shelve.cloud/user/api-keys (shown once; scope read/write + team/project/env) |
 
 **CLI vs UI:** bulk edit and audit logs → UI; local dev and CI → CLI `run`. Details: **`platform.md`**.
 

@@ -21,9 +21,9 @@ const items = computed<DropdownMenuItem[][]>(() => [
       to: '/user/profile'
     },
     {
-      label: 'API Tokens',
+      label: 'API Keys',
       icon: 'nucleo:key',
-      to: '/user/tokens'
+      to: '/user/api-keys'
     },
     {
       label: 'Settings',

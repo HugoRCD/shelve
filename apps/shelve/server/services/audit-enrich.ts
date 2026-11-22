@@ -12,14 +12,14 @@ type LookupMaps = AuditLookupMaps
 
 function collectIds(logs: AuditLog[]) {
   const userIds = new Set<number>()
-  const tokenIds = new Set<number>()
+  const apiKeyIds = new Set<number>()
   const projectIds = new Set<number>()
   const environmentIds = new Set<number>()
 
   for (const log of logs) {
     if (log.actorType === 'user' && log.actorId) userIds.add(log.actorId)
-    if (log.actorType === 'token' && log.actorId) tokenIds.add(log.actorId)
-    if (log.resourceType === 'token' && log.resourceId) tokenIds.add(Number(log.resourceId))
+    if (log.actorType === 'token' && log.actorId) apiKeyIds.add(log.actorId)
+    if (log.resourceType === 'token' && log.resourceId) apiKeyIds.add(Number(log.resourceId))
     if (log.resourceType === 'project' && log.resourceId) projectIds.add(Number(log.resourceId))
     if (log.resourceType === 'environment' && log.resourceId) environmentIds.add(Number(log.resourceId))
 
@@ -32,12 +32,12 @@ function collectIds(logs: AuditLog[]) {
     }
   }
 
-  return { userIds, tokenIds, projectIds, environmentIds }
+  return { userIds, apiKeyIds, projectIds, environmentIds }
 }
 
 async function buildLookupMaps(ids: ReturnType<typeof collectIds>, teamId: number): Promise<LookupMaps> {
   const users = new Map<number, { username: string; email: string; avatar: string }>()
-  const tokens = new Map<number, { name: string; prefix: string }>()
+  const apiKeys = new Map<number, { name: string; start: string }>()
   const projects = new Map<number, { name: string; teamId: number }>()
   const environments = new Map<number, { name: string; teamId: number }>()
 
@@ -49,12 +49,12 @@ async function buildLookupMaps(ids: ReturnType<typeof collectIds>, teamId: numbe
     for (const row of rows) users.set(row.id, row)
   }
 
-  if (ids.tokenIds.size) {
-    const rows = await db.query.tokens.findMany({
-      where: inArray(schema.tokens.id, [...ids.tokenIds]),
-      columns: { id: true, name: true, prefix: true },
+  if (ids.apiKeyIds.size) {
+    const rows = await db.query.apiKeys.findMany({
+      where: inArray(schema.apiKeys.id, [...ids.apiKeyIds]),
+      columns: { id: true, name: true, start: true },
     })
-    for (const row of rows) tokens.set(row.id, row)
+    for (const row of rows) apiKeys.set(row.id, row)
   }
 
   if (ids.projectIds.size) {
@@ -79,7 +79,7 @@ async function buildLookupMaps(ids: ReturnType<typeof collectIds>, teamId: numbe
     for (const row of rows) environments.set(row.id, row)
   }
 
-  return { users, tokens, projects, environments }
+  return { users, apiKeys, projects, environments }
 }
 
 function buildActor(log: AuditLog, maps: LookupMaps): AuditLogEntry['actor'] {
@@ -95,13 +95,13 @@ function buildActor(log: AuditLog, maps: LookupMaps): AuditLogEntry['actor'] {
   }
 
   if (log.actorType === 'token') {
-    const token = log.actorId ? maps.tokens.get(log.actorId) : undefined
-    const prefix = (meta.tokenPrefix as string | undefined) ?? token?.prefix
-    const name = (meta.tokenName as string | undefined) ?? token?.name
+    const apiKey = log.actorId ? maps.apiKeys.get(log.actorId) : undefined
+    const prefix = (meta.tokenPrefix as string | undefined) ?? apiKey?.start
+    const name = (meta.tokenName as string | undefined) ?? apiKey?.name
     const parts = [prefix, name].filter(Boolean)
     return {
       type: 'token',
-      label: parts.length ? parts.join(' · ') : 'API token',
+      label: parts.length ? parts.join(' · ') : 'API key',
     }
   }
 
@@ -138,13 +138,13 @@ function buildResource(
       }
     }
     case 'token': {
-      const token = resourceId ? maps.tokens.get(resourceId) : undefined
-      const name = (meta.name as string | undefined) ?? token?.name
-      const prefix = (meta.prefix as string | undefined) ?? token?.prefix
+      const apiKey = resourceId ? maps.apiKeys.get(resourceId) : undefined
+      const name = (meta.name as string | undefined) ?? apiKey?.name
+      const prefix = (meta.prefix as string | undefined) ?? apiKey?.start
       return {
         type: 'token',
-        label: [prefix, name].filter(Boolean).join(' · ') || `token #${resourceId}`,
-        href: '/user/tokens',
+        label: [prefix, name].filter(Boolean).join(' · ') || `API key #${resourceId}`,
+        href: '/user/api-keys',
       }
     }
     case 'variable':

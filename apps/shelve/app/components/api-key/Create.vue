@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Environment, Project, Team, TokenPermission, TokenWithSecret } from '@types'
+import type { Environment, Project, Team, ApiKeyPermission, ApiKeyWithSecret } from '@types'
 
 type ScopeOption = {
   label: string
@@ -10,9 +10,9 @@ type ScopeOption = {
 const emits = defineEmits(['create'])
 
 const open = ref(false)
-const tokenName = ref('')
+const apiKeyName = ref('')
 const expiresIn = ref<string>('2592000')
-const permissions = ref<TokenPermission[]>(['read', 'write'])
+const permissions = ref<ApiKeyPermission[]>(['read', 'write'])
 
 const restrictionsOpen = ref(false)
 const selectedTeamIds = ref<number[]>([])
@@ -29,7 +29,7 @@ const teams = ref<Team[]>([])
 const projectsByTeam = ref<Record<number, Project[]>>({})
 const envsByTeam = ref<Record<number, Environment[]>>({})
 
-const createdToken = ref<TokenWithSecret | null>(null)
+const createdApiKey = ref<ApiKeyWithSecret | null>(null)
 
 const expiryOptions = [
   { value: '3600', label: '1 hour' },
@@ -81,7 +81,7 @@ const restrictionSummary = computed(() => {
   if (selectedProjectIds.value.length) parts.push(`${selectedProjectIds.value.length} project(s)`)
   if (selectedEnvironmentIds.value.length) parts.push(`${selectedEnvironmentIds.value.length} environment(s)`)
   if (allowedCidrs.value.length) parts.push(`${allowedCidrs.value.length} CIDR(s)`)
-  return parts.length ? parts.join(' · ') : 'None — token can access everything you can'
+  return parts.length ? parts.join(' · ') : 'None — the API key can access everything you can'
 })
 
 const cidrPattern = /^(?:(?:25[0-5]|2[0-4]\d|1?\d?\d)(?:\.(?:25[0-5]|2[0-4]\d|1?\d?\d)){3}\/(?:3[0-2]|[12]?\d))$|^(?:[A-Fa-f0-9:]+)\/(?:12[0-8]|1[01]\d|[1-9]?\d)$/
@@ -168,7 +168,7 @@ function removeCidr(value: string) {
 }
 
 function resetForm() {
-  tokenName.value = ''
+  apiKeyName.value = ''
   expiresIn.value = '2592000'
   permissions.value = ['read', 'write']
   selectedTeamIds.value = []
@@ -179,9 +179,9 @@ function resetForm() {
   restrictionsOpen.value = false
 }
 
-async function createToken() {
-  if (!tokenName.value.trim()) {
-    toast.error('Token name is required')
+async function createApiKey() {
+  if (!apiKeyName.value.trim()) {
+    toast.error('API key name is required')
     return
   }
   if (!permissions.value.length) {
@@ -197,33 +197,33 @@ async function createToken() {
     if (selectedProjectIds.value.length) scopes.projectIds = selectedProjectIds.value
     if (selectedEnvironmentIds.value.length) scopes.environmentIds = selectedEnvironmentIds.value
 
-    const created = await $fetch<TokenWithSecret>('/api/tokens', {
+    const created = await $fetch<ApiKeyWithSecret>('/api/api-keys', {
       method: 'POST',
       body: {
-        name: tokenName.value.trim(),
+        name: apiKeyName.value.trim(),
         expiresIn: expiresInNum,
         scopes,
         allowedCidrs: allowedCidrs.value.length ? allowedCidrs.value : undefined,
       },
     })
-    createdToken.value = created
+    createdApiKey.value = created
     emits('create')
-    toast.success('Token created — copy it now, you will not see it again.')
+    toast.success('API key created — copy it now, you will not see it again.')
   } catch (error: any) {
-    const message = error?.data?.message ?? error?.statusMessage ?? 'Failed to create token'
+    const message = error?.data?.message ?? error?.statusMessage ?? 'Failed to create API key'
     toast.error(message)
   }
   loading.value = false
 }
 
-function copyToken() {
-  if (!createdToken.value) return
-  navigator.clipboard.writeText(createdToken.value.token)
-  toast.success('Token copied to clipboard')
+function copyApiKey() {
+  if (!createdApiKey.value) return
+  navigator.clipboard.writeText(createdApiKey.value.key)
+  toast.success('API key copied to clipboard')
 }
 
 function dismissCreated() {
-  createdToken.value = null
+  createdApiKey.value = null
   resetForm()
   open.value = false
 }
@@ -232,24 +232,24 @@ function dismissCreated() {
 <template>
   <UModal
     v-model:open="open"
-    title="Create a token"
-    description="Generate a CLI/API token, optionally restricted to specific teams, projects, environments, or IP ranges."
+    title="Create an API key"
+    description="Generate an API key for the CLI or CI, optionally restricted to specific teams, projects, environments, or IP ranges."
     :ui="{ content: 'sm:max-w-xl' }"
   >
-    <CustomButton size="sm" label="Create token" />
+    <CustomButton size="sm" label="Create API key" />
 
     <template #body>
-      <div v-if="!createdToken" class="flex flex-col gap-5">
+      <div v-if="!createdApiKey" class="flex flex-col gap-5">
         <div class="flex flex-col gap-3">
           <UFormField label="Name" required>
-            <UInput v-model="tokenName" placeholder="My CI token" class="w-full" autofocus />
+            <UInput v-model="apiKeyName" placeholder="My CI key" class="w-full" autofocus />
           </UFormField>
 
           <UFormField label="Expiry">
             <USelect v-model="expiresIn" :items="expiryOptions" class="w-full" />
           </UFormField>
 
-          <UFormField label="Permissions" hint="What this token can do">
+          <UFormField label="Permissions" hint="What this API key can do">
             <UCheckboxGroup v-model="permissions" :items="permissionOptions" orientation="horizontal" />
           </UFormField>
         </div>
@@ -323,7 +323,7 @@ function dismissCreated() {
 
               <UFormField
                 label="IP allowlist"
-                hint="CIDR ranges allowed to use this token (IPv4 or IPv6). Empty = any IP."
+                hint="CIDR ranges allowed to use this API key (IPv4 or IPv6). Empty = any IP."
                 :error="cidrDraft && !cidrDraftValid ? 'Invalid CIDR notation' : undefined"
               >
                 <div class="flex gap-2">
@@ -369,8 +369,8 @@ function dismissCreated() {
           icon="lucide:info"
           color="neutral"
           variant="soft"
-          title="Unscoped token"
-          description="This token will be able to access every team, project, and environment you have access to. Add restrictions for tighter blast radius."
+          title="Unscoped API key"
+          description="This API key will be able to access every team, project, and environment you have access to. Add restrictions for tighter blast radius."
         />
       </div>
 
@@ -379,29 +379,29 @@ function dismissCreated() {
           icon="lucide:shield-alert"
           color="warning"
           variant="soft"
-          title="Save this token now"
+          title="Save this API key now"
           description="This is the only time the secret will be shown. Store it in a safe place."
         />
         <div class="flex items-center gap-2 rounded-md border border-default bg-muted/40 p-3 font-mono text-xs break-all">
-          {{ createdToken.token }}
+          {{ createdApiKey.key }}
         </div>
       </div>
     </template>
 
     <template #footer>
       <div class="flex w-full items-center justify-end gap-2">
-        <template v-if="!createdToken">
+        <template v-if="!createdApiKey">
           <UButton variant="ghost" label="Cancel" @click="open = false" />
           <UButton
             :loading
-            :disabled="!tokenName.trim() || !permissions.length"
-            label="Create token"
-            @click="createToken"
+            :disabled="!apiKeyName.trim() || !permissions.length"
+            label="Create API key"
+            @click="createApiKey"
           />
         </template>
         <template v-else>
           <UButton variant="ghost" label="Done" @click="dismissCreated" />
-          <UButton icon="lucide:copy" label="Copy" @click="copyToken" />
+          <UButton icon="lucide:copy" label="Copy" @click="copyApiKey" />
         </template>
       </div>
     </template>

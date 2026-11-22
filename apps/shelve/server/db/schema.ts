@@ -1,7 +1,7 @@
 import { boolean, pgEnum, pgTable, varchar, index, uniqueIndex, bigint, integer, timestamp, jsonb } from 'drizzle-orm/pg-core'
 import { relations } from 'drizzle-orm'
 import { TeamRole, Role, AuthType, InvitationStatus } from '../../../../packages/types'
-import type { ShelveSyncConfig, TokenScopes } from '../../../../packages/types'
+import type { ApiKeyScopes, ShelveSyncConfig } from '../../../../packages/types'
 
 const timestamps = {
   updatedAt: timestamp().notNull().$onUpdate(() => new Date()),
@@ -217,24 +217,23 @@ export const variableValues = pgTable('variable_values', {
   index('variable_values_env_idx').on(table.environmentId),
 ])
 
-/**
- * API tokens, also Better Auth's `apikey` model: `hash` is its `key`, `prefix` its `start` (the characters shown in
- * the UI), `userId` its `referenceId` and `lastUsedAt` its `lastRequest`. Scopes and the IP allowlist stay Shelve's.
- */
-export const tokens = pgTable('tokens', {
+/** API keys, Better Auth's `apikey` model with its field names. Scopes, the IP allowlist and `lastUsedIp` are Shelve's. */
+export const apiKeys = pgTable('api_keys', {
   id: bigint({ mode: 'number' }).primaryKey().generatedByDefaultAsIdentity(),
-  hash: varchar({ length: 64 }).unique().notNull(),
-  prefix: varchar({ length: 16 }).notNull(),
+  // SHA-256 of the key, as unpadded base64url. The key itself is shown once, when it is created.
+  key: varchar({ length: 64 }).unique().notNull(),
+  // The key's first characters, shown in the UI.
+  start: varchar({ length: 16 }).notNull(),
   name: varchar({ length: 25 }).notNull(),
-  userId: bigint({ mode: 'number' }).references(() => users.id, { onDelete: 'cascade' }).notNull(),
-  // No access by default: only Shelve's token routes set scopes.
-  scopes: jsonb().$type<TokenScopes>().default({ permissions: [] }).notNull(),
+  referenceId: bigint({ mode: 'number' }).references(() => users.id, { onDelete: 'cascade' }).notNull(),
+  // No access by default: only Shelve's API key routes set scopes.
+  scopes: jsonb().$type<ApiKeyScopes>().default({ permissions: [] }).notNull(),
   allowedCidrs: jsonb().$type<string[]>().default([]).notNull(),
   expiresAt: timestamp(),
-  lastUsedAt: timestamp(),
+  lastRequest: timestamp(),
   lastUsedIp: varchar({ length: 45 }),
   configId: varchar({ length: 32 }).default('default').notNull(),
-  keyPrefix: varchar({ length: 32 }),
+  prefix: varchar({ length: 32 }),
   enabled: boolean().default(true).notNull(),
   rateLimitEnabled: boolean().default(false).notNull(),
   rateLimitTimeWindow: integer(),
@@ -248,9 +247,9 @@ export const tokens = pgTable('tokens', {
   metadata: varchar({ length: 2048 }),
   ...timestamps,
 }, (table) => [
-  uniqueIndex('tokens_hash_idx').on(table.hash),
-  index('tokens_user_idx').on(table.userId),
-  index('tokens_prefix_idx').on(table.prefix),
+  uniqueIndex('api_keys_key_idx').on(table.key),
+  index('api_keys_reference_idx').on(table.referenceId),
+  index('api_keys_start_idx').on(table.start),
 ])
 
 export const cliDeviceAuth = pgTable('cli_device_auth', {
@@ -259,7 +258,7 @@ export const cliDeviceAuth = pgTable('cli_device_auth', {
   userCode: varchar({ length: 9 }).unique().notNull(),
   status: cliDeviceAuthStatusEnum().default('pending').notNull(),
   userId: bigint({ mode: 'number' }).references(() => users.id, { onDelete: 'cascade' }),
-  tokenId: bigint({ mode: 'number' }).references(() => tokens.id, { onDelete: 'set null' }),
+  apiKeyId: bigint({ mode: 'number' }).references(() => apiKeys.id, { onDelete: 'set null' }),
   accessToken: varchar({ length: 128 }),
   clientMeta: jsonb().$type<CliDeviceClientMeta>(),
   expiresAt: timestamp().notNull(),
@@ -392,9 +391,9 @@ export const variablesRelations = relations(variables, ({ one, many }) => ({
   values: many(variableValues)
 }))
 
-export const tokensRelations = relations(tokens, ({ one }) => ({
+export const apiKeysRelations = relations(apiKeys, ({ one }) => ({
   user: one(users, {
-    fields: [tokens.userId],
+    fields: [apiKeys.referenceId],
     references: [users.id],
   })
 }))

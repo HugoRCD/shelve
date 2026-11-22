@@ -1,5 +1,5 @@
 import type { H3Event } from 'h3'
-import type { TokenScopes, User } from '@types'
+import type { ApiKeyScopes, User } from '@types'
 import { AuthType, Role } from '@types'
 import { inArray } from 'drizzle-orm'
 
@@ -54,51 +54,51 @@ function generateUniqueUsername(username: string): string {
   return `${username.slice(0, USERNAME_MAX_LENGTH - suffix.length)}${suffix}`
 }
 
-export async function authenticateToken(
-  rawToken: string,
+export async function authenticateApiKey(
+  rawKey: string,
   event: H3Event
-): Promise<{ user: User; scopes: TokenScopes; token: { id: number; prefix: string; name: string } }> {
-  if (!rawToken || !rawToken.startsWith('she_')) {
+): Promise<{ user: User; apiKey: { id: number; start: string; name: string; scopes: ApiKeyScopes } }> {
+  // The error messages still say "token": the CLI and existing scripts show them as they are.
+  if (!rawKey || !rawKey.startsWith(API_KEY_PREFIX)) {
     throw createError({ statusCode: 401, statusMessage: 'Invalid token' })
   }
 
-  // Better Auth's api-key plugin finds the token by hash, checks that it is enabled and not expired, and records its use.
-  const { valid, error, key } = await useServerAuth().api.verifyApiKey({ body: { key: rawToken } })
+  // Better Auth's api-key plugin finds the key by hash, checks that it is enabled and not expired, and records its use.
+  const { valid, error, key } = await useServerAuth().api.verifyApiKey({ body: { key: rawKey } })
   if (!valid || !key) {
     throw createError({ statusCode: 401, statusMessage: error?.code === 'KEY_EXPIRED' ? 'Token expired' : 'Invalid token' })
   }
-  const token = await db.query.tokens.findFirst({ where: eq(schema.tokens.id, Number(key.id)) })
-  if (!token) throw createError({ statusCode: 401, statusMessage: 'Invalid token' })
+  const apiKey = await db.query.apiKeys.findFirst({ where: eq(schema.apiKeys.id, Number(key.id)) })
+  if (!apiKey) throw createError({ statusCode: 401, statusMessage: 'Invalid token' })
 
   const ip = getClientIp(event)
-  if (token.allowedCidrs.length > 0) {
+  if (apiKey.allowedCidrs.length > 0) {
     if (!ip || !ip.length) {
       throw createError({ statusCode: 401, statusMessage: 'Token IP allowlist enforced' })
     }
-    if (!token.allowedCidrs.some((cidr) => isIpInCidr(ip, cidr))) {
+    if (!apiKey.allowedCidrs.some((cidr) => isIpInCidr(ip, cidr))) {
       throw createError({ statusCode: 403, statusMessage: 'IP not allowed for this token' })
     }
   }
 
   const user = await db.query.users.findFirst({
-    where: eq(schema.users.id, token.userId),
+    where: eq(schema.users.id, apiKey.referenceId),
     columns: PUBLIC_USER_COLUMNS,
   })
   if (!user) throw createError({ statusCode: 401, statusMessage: 'User not found' })
 
-  const teamIds = await resolveTokenTeamIds(token.scopes)
+  const teamIds = await resolveApiKeyTeamIds(apiKey.scopes)
   if (teamIds && !teamIds.length) {
     throw createError({ statusCode: 403, statusMessage: 'Token has no accessible team' })
   }
 
-  await db.update(schema.tokens)
+  await db.update(schema.apiKeys)
     .set({ lastUsedIp: ip })
-    .where(eq(schema.tokens.id, token.id))
+    .where(eq(schema.apiKeys.id, apiKey.id))
 
   return {
     user,
-    scopes: teamIds ? { ...token.scopes, teamIds } : token.scopes,
-    token: { id: token.id, prefix: token.prefix, name: token.name },
+    apiKey: { id: apiKey.id, start: apiKey.start, name: apiKey.name, scopes: teamIds ? { ...apiKey.scopes, teamIds } : apiKey.scopes },
   }
 }
 
@@ -106,7 +106,7 @@ export async function authenticateToken(
  * Teams a token can reach, or undefined when it isn't restricted. Project and environment
  * restrictions narrow the teams too: a token limited to one project stays out of the owner's other teams.
  */
-async function resolveTokenTeamIds(scopes: TokenScopes): Promise<number[] | undefined> {
+async function resolveApiKeyTeamIds(scopes: ApiKeyScopes): Promise<number[] | undefined> {
   const restrictions: number[][] = []
   if (scopes.teamIds?.length) restrictions.push(scopes.teamIds)
 

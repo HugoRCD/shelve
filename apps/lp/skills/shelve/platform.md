@@ -13,7 +13,7 @@ Official docs: https://shelve.cloud/docs
 
 ## Tokens (CLI & API auth)
 
-Create at [app.shelve.cloud/user/tokens](https://app.shelve.cloud/user/tokens):
+Create at [app.shelve.cloud/user/api-keys](https://app.shelve.cloud/user/api-keys):
 
 - Plaintext shown **once** at creation — store in CI secrets as `SHELVE_TOKEN`
 - Scoped: `read` / `write`, optional team/project/environment IDs

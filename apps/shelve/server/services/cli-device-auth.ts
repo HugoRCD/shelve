@@ -1,13 +1,13 @@
 import { createHash, randomBytes, timingSafeEqual } from 'node:crypto'
 import type { H3Event } from 'h3'
 import { and, eq, isNotNull, lt } from 'drizzle-orm'
-import type { TokenScopes, User } from '@types'
+import type { ApiKeyScopes, User } from '@types'
 import { cliDeviceAuth } from '../db/schema'
 import type { CliDeviceClientMeta } from '../db/schema'
-import { generateToken, hashToken, safeEqualHex } from '../utils/tokens'
+import { generateApiKey, hashToken, safeEqualHex } from '../utils/api-keys'
 import { getAppOrigin } from '../utils/app-origin'
 import { getClientIp } from '../utils/ip'
-import { logAuditForTeams, resolveTeamIdsFromTokenScopes } from './audit'
+import { logAuditForTeams, resolveTeamIdsFromApiKeyScopes } from './audit'
 
 const CROCKFORD = '0123456789ABCDEFGHJKMNPQRSTVWXYZ'
 const DEVICE_AUTH_TTL_SECONDS = 15 * 60
@@ -200,16 +200,16 @@ export async function approveDeviceAuth(event: H3Event, user: User, userCode: st
   }
   assertNotExpired(row)
 
-  const { token, prefix, hash } = await generateToken()
+  const { key, start, hashedKey } = await generateApiKey()
   const expiresAt = new Date(Date.now() + CLI_TOKEN_EXPIRES_SECONDS * 1000)
-  const scopes: TokenScopes = { permissions: ['read', 'write'] }
+  const scopes: ApiKeyScopes = { permissions: ['read', 'write'] }
 
-  const [created] = await db.insert(schema.tokens)
+  const [created] = await db.insert(schema.apiKeys)
     .values({
-      hash,
-      prefix,
+      key: hashedKey,
+      start,
       name: cliTokenName(row.clientMeta),
-      userId: user.id,
+      referenceId: user.id,
       scopes,
       allowedCidrs: [],
       expiresAt,
@@ -218,14 +218,14 @@ export async function approveDeviceAuth(event: H3Event, user: User, userCode: st
 
   if (!created) throw createError({ statusCode: 500, statusMessage: 'Failed to create CLI token' })
 
-  const teamIds = await resolveTeamIdsFromTokenScopes(created.scopes, user.id)
+  const teamIds = await resolveTeamIdsFromApiKeyScopes(created.scopes, user.id)
   await logAuditForTeams(event, teamIds, {
     action: 'token.create',
     resourceType: 'token',
     resourceId: created.id,
     metadata: {
       name: created.name,
-      prefix: created.prefix,
+      prefix: created.start,
       expiresAt: created.expiresAt,
       scopes: created.scopes,
       source: 'cli-device-flow',
@@ -236,8 +236,8 @@ export async function approveDeviceAuth(event: H3Event, user: User, userCode: st
     .set({
       status: 'approved',
       userId: user.id,
-      tokenId: created.id,
-      accessToken: token,
+      apiKeyId: created.id,
+      accessToken: key,
     })
     .where(eq(cliDeviceAuth.id, row.id))
 

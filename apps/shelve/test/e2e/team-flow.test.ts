@@ -8,7 +8,7 @@ import { registerProjectTests } from './flows/projects'
 import { registerVariableTests } from './flows/variables'
 import { registerVariableGroupTests } from './flows/variable-groups'
 import { registerCliTests } from './flows/cli'
-import { registerTokenTests } from './flows/tokens'
+import { registerApiKeyTests } from './flows/api-keys'
 import { registerAccessControlTests } from './flows/access-control'
 import { registerAuditLogTests } from './flows/audit-logs'
 import { registerAuthTests } from './flows/auth'
@@ -43,7 +43,7 @@ describe('Team → Project → Variables E2E flow', async () => {
   registerVariableTests(ctx)
   registerVariableGroupTests(ctx)
   registerCliTests(ctx)
-  registerTokenTests(ctx)
+  registerApiKeyTests(ctx)
   registerAccessControlTests(ctx)
   registerAuditLogTests(ctx)
   registerAuthTests(ctx)

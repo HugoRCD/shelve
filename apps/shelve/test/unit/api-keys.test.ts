@@ -1,8 +1,8 @@
 import { createHash } from 'node:crypto'
 import { describe, test, expect, vi, afterEach } from 'vitest'
 import type { H3Event } from 'h3'
-import { generateToken, hashToken, safeEqualHex } from '../../server/utils/tokens'
-import { TOKEN_PREFIX, TOKEN_PREFIX_DISPLAY_LENGTH } from '../../server/utils/constants'
+import { generateApiKey, hashToken, safeEqualHex } from '../../server/utils/api-keys'
+import { API_KEY_PREFIX, API_KEY_START_LENGTH } from '../../server/utils/constants'
 import { getClientIp, isIpInCidr } from '../../server/utils/ip'
 
 type FakeRequest = { forwardedFor?: string; remoteAddress: string }
@@ -15,43 +15,43 @@ vi.stubGlobal('getRequestIP', (event: FakeRequest, opts?: { xForwardedFor?: bool
 
 const request = (forwardedFor: string | undefined, remoteAddress: string) => ({ forwardedFor, remoteAddress }) as unknown as H3Event
 
-describe('generateToken', () => {
-  test('returns a token starting with the SHE_ prefix', async () => {
-    const { token } = await generateToken()
-    expect(token.startsWith(TOKEN_PREFIX)).toBe(true)
+describe('generateApiKey', () => {
+  test('returns a key starting with the SHE_ prefix', async () => {
+    const { key } = await generateApiKey()
+    expect(key.startsWith(API_KEY_PREFIX)).toBe(true)
   })
 
   test('never produces the literal string "undefined" inside the body', async () => {
     // The Crockford alphabet must have exactly 32 chars: any gap leaves
-    // indices 30/31 as `undefined` and stringifies back into the token.
+    // indices 30/31 as `undefined` and stringifies back into the key.
     for (let i = 0; i < 200; i++) {
-      const { token } = await generateToken()
-      expect(token).not.toContain('undefined')
+      const { key } = await generateApiKey()
+      expect(key).not.toContain('undefined')
     }
   })
 
   test('uses only Crockford base32 characters after the prefix', async () => {
-    const { token } = await generateToken()
-    const body = token.slice(TOKEN_PREFIX.length)
+    const { key } = await generateApiKey()
+    const body = key.slice(API_KEY_PREFIX.length)
     expect(body).toMatch(/^[0-9ABCDEFGHJKMNPQRSTVWXYZ]+$/)
   })
 
-  test('generates cryptographically unique tokens', async () => {
+  test('generates cryptographically unique keys', async () => {
     const seen = new Set<string>()
-    for (let i = 0; i < 1000; i++) seen.add((await generateToken()).token)
+    for (let i = 0; i < 1000; i++) seen.add((await generateApiKey()).key)
     expect(seen.size).toBe(1000)
   })
 
-  test('prefix is the display-length head of the token', async () => {
-    const { token, prefix } = await generateToken()
-    expect(prefix).toBe(token.slice(0, TOKEN_PREFIX_DISPLAY_LENGTH))
-    expect(prefix.length).toBe(TOKEN_PREFIX_DISPLAY_LENGTH)
+  test('start is the display-length head of the key', async () => {
+    const { key, start } = await generateApiKey()
+    expect(start).toBe(key.slice(0, API_KEY_START_LENGTH))
+    expect(start.length).toBe(API_KEY_START_LENGTH)
   })
 
-  test('hash is sha256(token) as unpadded base64url, the format Better Auth looks tokens up by', async () => {
-    const { token, hash } = await generateToken()
-    expect(hash).toBe(createHash('sha256').update(token).digest('base64url'))
-    expect(hash).toMatch(/^[\w-]{43}$/)
+  test('hashedKey is sha256(key) as unpadded base64url, the format Better Auth looks keys up by', async () => {
+    const { key, hashedKey } = await generateApiKey()
+    expect(hashedKey).toBe(createHash('sha256').update(key).digest('base64url'))
+    expect(hashedKey).toMatch(/^[\w-]{43}$/)
   })
 })
 

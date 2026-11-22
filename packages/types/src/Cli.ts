@@ -25,7 +25,7 @@ export type ShelveConfig = {
    */
   slug: string
   /**
-   * The token to authenticate with Shelve created using the app (https://app.shelve.cloud/user/tokens) or your own Shelve instance
+   * The token to authenticate with Shelve created using the app (https://app.shelve.cloud/user/api-keys) or your own Shelve instance
    *
    * @default process.env.SHELVE_TOKEN || conf.token (from .shelve)
    * */

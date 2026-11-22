@@ -113,6 +113,13 @@
       "when": 1795375493639,
       "tag": "0015_api_key_hashes",
       "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "7",
+      "when": 1795377101203,
+      "tag": "0016_api_key_rename",
+      "breakpoints": true
     }
   ]
 }

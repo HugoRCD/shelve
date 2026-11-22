@@ -10,6 +10,6 @@ export default eventHandler(async (event) => {
     return team
   }
   const teams = await new TeamsService().getTeams(user.id)
-  const teamIds = await getTokenScopeIds(event, 'teamIds')
+  const teamIds = await getApiKeyScopeIds(event, 'teamIds')
   return teamIds ? teams?.filter(team => teamIds.includes(team.id)) : teams
 })

@@ -21,7 +21,7 @@ const actionItems = [
 const actorItems = [
   { label: 'All actors', value: undefined },
   { label: 'Users', value: 'user' as AuditActorType },
-  { label: 'API tokens', value: 'token' as AuditActorType },
+  { label: 'API keys', value: 'token' as AuditActorType },
   { label: 'System', value: 'system' as AuditActorType },
 ]
 

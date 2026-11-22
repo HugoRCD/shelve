@@ -2,7 +2,7 @@ import type { AuditLog } from '@types'
 
 export type AuditLookupMaps = {
   users: Map<number, { username: string; email: string; avatar: string }>
-  tokens: Map<number, { name: string; prefix: string }>
+  apiKeys: Map<number, { name: string; start: string }>
   projects: Map<number, { name: string; teamId: number }>
   environments: Map<number, { name: string; teamId: number }>
 }
@@ -51,9 +51,9 @@ export function buildSummary(log: AuditLog, maps: AuditLookupMaps): string {
       return `Deleted ${keys.length} variable${keys.length === 1 ? '' : 's'} in ${project}`
     }
     case 'token.create':
-      return `Created API token ${meta.name ?? maps.tokens.get(resourceId!)?.name ?? ''}`.trim()
+      return `Created API key ${meta.name ?? maps.apiKeys.get(resourceId!)?.name ?? ''}`.trim()
     case 'token.delete':
-      return `Deleted API token ${meta.name ?? maps.tokens.get(resourceId!)?.name ?? ''}`.trim()
+      return `Deleted API key ${meta.name ?? maps.apiKeys.get(resourceId!)?.name ?? ''}`.trim()
     case 'project.create':
       return `Created project ${meta.name ?? maps.projects.get(resourceId!)?.name ?? ''}`.trim()
     case 'project.update': {

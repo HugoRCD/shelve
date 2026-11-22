@@ -1,5 +1,5 @@
 import type { H3Event } from 'h3'
-import type { Member, Team, TokenPermission, TokenScopes, User } from '@types'
+import type { Member, Team, ApiKeyPermission, ApiKeyScopes, User } from '@types'
 import { Role, TeamRole } from '@types'
 import { checkBotId } from 'botid/server'
 import { z } from 'zod'
@@ -11,26 +11,26 @@ const teamSlugSchema = z.object({
   }).min(1),
 })
 
-/** The API token that authenticated the request. */
-export type AuthToken = {
+/** The API key that authenticated the request. */
+export type AuthApiKey = {
   id: number
-  prefix: string
+  start: string
   name: string
-  scopes: TokenScopes
+  scopes: ApiKeyScopes
 }
 
 /**
- * Who is making the request. `token` is null for a web session, which has the user's full access.
+ * Who is making the request. `apiKey` is null for a web session, which has the user's full access.
  * Every route reads auth through `getAuth`/`requireAuth`, so the session library behind it can change in one place.
  */
 export type AuthContext = {
   user: User
-  token: AuthToken | null
+  apiKey: AuthApiKey | null
 }
 
 declare module 'h3' {
   interface H3EventContext {
-    /** The request's auth once resolved: the auth middleware sets it for API tokens, `getAuth` for sessions. `null` is anonymous. */
+    /** The request's auth once resolved: the auth middleware sets it for API keys, `getAuth` for sessions. `null` is anonymous. */
     auth?: AuthContext | null
   }
 }
@@ -70,14 +70,14 @@ export async function getAuth(event: H3Event): Promise<AuthContext | null> {
   const { headers, response } = await useServerAuth().api.getSession({ headers: event.headers, returnHeaders: true })
   // Better Auth refreshes the session cookie as the session nears expiry.
   forwardAuthCookies(event, headers)
-  event.context.auth = response ? { user: toShelveUser(response.user as SessionUser), token: null } : null
+  event.context.auth = response ? { user: toShelveUser(response.user as SessionUser), apiKey: null } : null
   return event.context.auth
 }
 
-/** The GitHub token of the user's web session, or undefined when they did not sign in with GitHub. API tokens never carry one. */
+/** The GitHub token of the user's web session, or undefined when they did not sign in with GitHub. API keys never carry one. */
 export async function getGithubToken(event: H3Event): Promise<string | undefined> {
   const auth = await getAuth(event)
-  if (!auth || auth.token) return
+  if (!auth || auth.apiKey) return
   const userId = String(auth.user.id)
   const betterAuth = useServerAuth()
   const accounts = await (await betterAuth.$context).internalAdapter.findAccounts(userId)
@@ -167,7 +167,7 @@ export async function requireUserTeam(
   }
 
   const teamWide = options?.teamWide ?? true
-  await requireTokenScope(event, {
+  await requireApiKeyScope(event, {
     permission: getRequestPermission(event),
     teamId: team.id,
     allProjects: teamWide,
@@ -190,8 +190,8 @@ export async function getTeamSlugFromEvent(event: H3Event): Promise<string> {
  * Returns the scopes of the token that authenticated the request, or null when
  * authenticated via web (browser cookie session = full access for the user).
  */
-export async function getTokenScopes(event: H3Event): Promise<TokenScopes | null> {
-  return (await getAuth(event))?.token?.scopes ?? null
+export async function getApiKeyScopes(event: H3Event): Promise<ApiKeyScopes | null> {
+  return (await getAuth(event))?.apiKey?.scopes ?? null
 }
 
 /**
@@ -199,16 +199,16 @@ export async function getTokenScopes(event: H3Event): Promise<TokenScopes | null
  * the token isn't restricted on it (or the request uses a web session).
  * Use it to filter lists down to what the token may see.
  */
-export async function getTokenScopeIds(
+export async function getApiKeyScopeIds(
   event: H3Event,
   scope: 'teamIds' | 'projectIds' | 'environmentIds'
 ): Promise<number[] | null> {
-  const ids = (await getTokenScopes(event))?.[scope]
+  const ids = (await getApiKeyScopes(event))?.[scope]
   return ids?.length ? ids : null
 }
 
 /** Reads need the `read` permission, every other method needs `write`. */
-export function getRequestPermission(event: H3Event): TokenPermission {
+export function getRequestPermission(event: H3Event): ApiKeyPermission {
   return event.method === 'GET' || event.method === 'HEAD' ? 'read' : 'write'
 }
 
@@ -221,7 +221,7 @@ export function getRequestPermission(event: H3Event): TokenPermission {
  * - The token is restricted to specific teams/projects/envs and the resource is not in scope.
  * - The action spans every project (`allProjects`) or environment (`allEnvironments`) and the token is restricted to some.
  */
-export async function requireTokenScope(
+export async function requireApiKeyScope(
   event: H3Event,
   resource: {
     teamId?: number
@@ -229,10 +229,10 @@ export async function requireTokenScope(
     environmentId?: number
     allProjects?: boolean
     allEnvironments?: boolean
-    permission: TokenPermission
+    permission: ApiKeyPermission
   }
 ): Promise<void> {
-  const scopes = await getTokenScopes(event)
+  const scopes = await getApiKeyScopes(event)
   if (!scopes) return
 
   if (!scopes.permissions.includes(resource.permission)) {

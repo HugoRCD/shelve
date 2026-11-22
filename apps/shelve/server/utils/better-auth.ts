@@ -90,7 +90,7 @@ function createServerAuth() {
       '/email-otp/reset-password',
       '/email-otp/request-email-change',
       '/email-otp/change-email',
-      // API tokens are created, listed and revoked through `/api/tokens`, which checks scopes and writes the audit log.
+      // API keys are created, listed and revoked through `/api/api-keys`, which checks scopes and writes the audit log.
       '/api-key/create',
       '/api-key/get',
       '/api-key/update',
@@ -104,7 +104,7 @@ function createServerAuth() {
         accounts: schema.accounts,
         sessions: schema.sessions,
         verifications: schema.verifications,
-        tokens: schema.tokens,
+        apiKeys: schema.apiKeys,
       },
     }),
     advanced: {
@@ -184,16 +184,11 @@ function createServerAuth() {
       }),
     },
     plugins: [
-      // Verifies API tokens. Shelve creates them (`createToken`), since their scopes and IP allowlist are its own.
+      // Verifies API keys. Shelve creates them (`generateApiKey`), since their scopes and IP allowlist are its own.
       apiKey({
-        // CI pipelines call the API all day: no per-token request limit, as before.
+        // CI pipelines call the API all day: no per-key request limit, as before.
         rateLimit: { enabled: false },
-        schema: {
-          apikey: {
-            modelName: 'tokens',
-            fields: { key: 'hash', start: 'prefix', referenceId: 'userId', prefix: 'keyPrefix', lastRequest: 'lastUsedAt' },
-          },
-        },
+        schema: { apikey: { modelName: 'apiKeys' } },
       }),
       emailOTP({
         otpLength: 6,

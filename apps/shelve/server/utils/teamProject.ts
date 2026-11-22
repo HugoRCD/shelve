@@ -3,7 +3,7 @@ import type { Member, Project, Team, User } from '@types'
 import { TeamRole } from '@types'
 import { projectIdParamsSchema } from '../db/zod'
 import { ProjectsService } from '../services/projects'
-import { getRequestPermission, getTeamSlugFromEvent, requireTokenScope, requireUserTeam } from './auth'
+import { getRequestPermission, getTeamSlugFromEvent, requireApiKeyScope, requireUserTeam } from './auth'
 
 /**
  * Requires team membership and that the route's projectId belongs to that team.
@@ -19,7 +19,7 @@ export async function requireUserTeamProject(
   const { user, team, member } = await requireUserTeam(event, slug, { minRole: options?.minRole, teamWide: false })
   const { projectId } = await getValidatedRouterParams(event, projectIdParamsSchema.parse)
   const project = await new ProjectsService().getProjectForTeam(projectId, team.id)
-  await requireTokenScope(event, {
+  await requireApiKeyScope(event, {
     permission: getRequestPermission(event),
     projectId: project.id,
     allEnvironments: options?.projectWide ?? true,

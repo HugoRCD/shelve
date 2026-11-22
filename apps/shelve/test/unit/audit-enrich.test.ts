@@ -4,7 +4,7 @@ import { buildSummary } from '../../server/utils/audit-present'
 
 const emptyMaps = {
   users: new Map(),
-  tokens: new Map(),
+  apiKeys: new Map(),
   projects: new Map([[13, { name: 'web-platform', teamId: 1 }]]),
   environments: new Map([[86, { name: 'production', teamId: 1 }]]),
 }
@@ -48,14 +48,14 @@ describe('buildSummary', () => {
     expect(summary).toBe('Read secrets from web-platform / production')
   })
 
-  test('describes token creation', () => {
+  test('describes API key creation', () => {
     const summary = buildSummary(log({
       action: 'token.create',
       resourceType: 'token',
       resourceId: '9',
       metadata: { name: 'ci-deploy' },
     }), emptyMaps)
-    expect(summary).toBe('Created API token ci-deploy')
+    expect(summary).toBe('Created API key ci-deploy')
   })
 
   test('falls back to project context when variable key is missing', () => {

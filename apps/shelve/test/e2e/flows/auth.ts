@@ -30,12 +30,12 @@ export function registerAuthTests(ctx: E2EContext) {
   })
 
   test('audit entries record the connection address, not an X-Forwarded-For the client sent', async () => {
-    await ctx.api('/api/tokens', {
+    await ctx.api('/api/api-keys', {
       method: 'POST',
       body: { name: 'forged-forwarded-ip' },
       headers: { 'X-Forwarded-For': 'x'.repeat(60) },
     })
-    await ctx.api('/api/tokens', {
+    await ctx.api('/api/api-keys', {
       method: 'POST',
       body: { name: 'forwarded-ip' },
       headers: { 'X-Forwarded-For': '203.0.113.7' },
