@@ -20,7 +20,6 @@
  */
 
 import { dirname, join } from 'path'
-import { setupDotenv } from 'c12'
 import { findWorkspaceDir, readPackageJSON } from 'pkg-types'
 import { glob } from 'tinyglobby'
 import defu from 'defu'
@@ -200,8 +199,9 @@ async function findWorkspaceConfigDirs(workspaceDir: string): Promise<string[]> 
  * included — an absent key lets the root config or the static defaults fill
  * the gap instead of being shadowed by `undefined`.
  *
- * Must be called after `setupDotenv` has run, so a var coming from a `.env`
- * file is already in `process.env` by the time this reads it.
+ * These come from the real process environment only. The project's `.env` file
+ * is not loaded: it belongs to the repository, and a SHELVE_URL or
+ * NODE_TLS_REJECT_UNAUTHORIZED in it would steer where the user's token is sent.
  *
  * @returns The env-backed config keys that are currently set
  */
@@ -217,10 +217,11 @@ function getEnvOverrides(): Partial<ShelveConfig> {
 /**
  * Memo for getDefaultConfig, keyed on process.cwd(). BaseService.getApi() now calls
  * loadShelveConfig on every HTTP request (so it can detect a url/token change across
- * a monorepo fan-out), and getDefaultConfig is the expensive part of that: setupDotenv,
- * a package.json read, an OS keychain read, and PkgService.isMonorepo's repo-wide
- * `**\/package.json` glob. Without this, all four re-run on every request to every
- * package.
+ * a monorepo fan-out), and getDefaultConfig is the expensive part of that: a
+ * package.json read, a credentials file read, and PkgService.isMonorepo's repo-wide
+ * `**\/package.json` glob. Without this, all three re-run on every request to every
+ * package. The stored token is looked up for the final, merged url, so it has its
+ * own memo (storedTokenCache below).
  *
  * Only getDefaultConfig is cached, not loadShelveConfig as a whole. Local and root
  * shelve.json are read fresh on every loadShelveConfig call regardless (see
@@ -229,23 +230,61 @@ function getEnvOverrides(): Partial<ShelveConfig> {
  * SHELVE_DEFAULT_ENV change always comes through live even from a cached entry. That
  * also means createShelveConfig's write-then-reread (in loadShelveConfig, below) never
  * touches this cache: it writes shelve.json, not package.json or the keychain.
- *
- * SHELVE_TOKEN is the one input read only here and nowhere else, so it can't fall out
- * of a stale entry the way the others do — see clearConfigCache and its call sites in
- * runInWorkspaces (workspaces.ts).
  */
 const defaultConfigCache = new Map<string, ShelveConfig>()
 
 /**
- * Drops every cached getDefaultConfig result. Needed wherever process.env or the
- * files getDefaultConfig reads (package.json, a .env file, the credentials store)
- * can change without process.cwd() also changing — otherwise a stale entry survives.
- * runInWorkspaces calls this next to its own process.env reset on each fan-out
- * iteration; tests that rewrite those files at a cwd they already queried need the
- * same call before querying it again.
+ * Memo for the stored token, keyed on the url it was looked up for: reading the OS
+ * keychain on every HTTP request is the slow part getDefaultConfig's memo avoids.
+ */
+const storedTokenCache = new Map<string, Promise<string | undefined>>()
+
+function readStoredToken(url: string): Promise<string | undefined> {
+  let token = storedTokenCache.get(url)
+  if (!token) {
+    token = CredentialsService.readToken(url).catch(() => undefined)
+    storedTokenCache.set(url, token)
+  }
+  return token
+}
+
+/**
+ * Drops every cached getDefaultConfig result and stored token. Needed wherever
+ * process.env or the files getDefaultConfig reads (package.json, the credentials
+ * store) can change without process.cwd() also changing — otherwise a stale entry
+ * survives. getApi calls this after a login; runInWorkspaces calls it next to its own
+ * process.env reset on each fan-out iteration; tests that rewrite those files at a
+ * cwd they already queried need the same call before querying it again.
  */
 export function clearConfigCache(): void {
   defaultConfigCache.clear()
+  storedTokenCache.clear()
+}
+
+const LOOPBACK_HOSTS = new Set(['localhost', '127.0.0.1', '[::1]'])
+
+/**
+ * The token is sent to this url, so it must be https: plain http would expose
+ * the token to anyone on the network. Loopback is the exception, for a local server.
+ *
+ * @param url - The merged Shelve url
+ * @throws CliError when the url is not https or loopback http
+ */
+function assertAllowedUrl(url: string): void {
+  let parsed: URL | undefined
+  try {
+    parsed = new URL(url)
+  } catch { /* reported below */ }
+
+  if (parsed?.protocol === 'https:') return
+  if (parsed?.protocol === 'http:' && LOOPBACK_HOSTS.has(parsed.hostname)) return
+
+  throw new CliError(
+    `Shelve url "${url}" must start with https:// (plain http:// is only allowed for localhost, 127.0.0.1 and [::1]).`,
+    'INVALID_INPUT',
+    undefined,
+    'Fix url in shelve.json or SHELVE_URL.',
+  )
 }
 
 /**
@@ -288,16 +327,13 @@ async function getDefaultConfig(): Promise<ShelveConfig> {
   const cached = defaultConfigCache.get(cwd)
   if (cached) return cached
 
-  await setupDotenv({})
   const env = getEnvOverrides()
   const { name } = await readPackageJSON().catch(() => ({ name: undefined }))
   const conf = CredentialsService.readMeta()
   const workspaceDir = await findWorkspaceDir().catch(() => process.cwd())
   const isMonoRepo = await new PkgService().isMonorepo()
   const isRoot = workspaceDir === process.cwd()
-  const url = env.url || conf.url || 'https://app.shelve.cloud'
-  const token = process.env.SHELVE_TOKEN
-    || (await CredentialsService.readToken(url).catch(() => undefined))
+  const url = env.url || conf.url || DEFAULT_URL
 
   const config: ShelveConfig = {
     // @ts-expect-error to provide error message we let project be undefined
@@ -306,8 +342,8 @@ async function getDefaultConfig(): Promise<ShelveConfig> {
     projectFromConfig: Boolean(env.project),
     // @ts-expect-error to provide error message we let slug be undefined
     slug: env.slug,
-    // @ts-expect-error checked downstream when an authenticated request is made
-    token,
+    // @ts-expect-error set by loadShelveConfig once the url is final
+    token: undefined,
     url,
     defaultEnv: env.defaultEnv,
     username: conf.username,
@@ -397,6 +433,14 @@ export async function loadShelveConfig(check = false): Promise<ShelveConfig> {
 
   config.projectFromConfig = Boolean(process.env.SHELVE_PROJECT) || Boolean(localConfig.project)
 
+  assertAllowedUrl(config.url)
+  // The token only ever goes to the url it belongs to: SHELVE_TOKEN from the real
+  // environment, or the token stored for exactly this url. That url can come from the
+  // repository, so a stored token is looked up for it rather than for the user's
+  // default server, and a `token` in a config file is never used.
+  // @ts-expect-error checked downstream when an authenticated request is made
+  config.token = process.env.SHELVE_TOKEN || await readStoredToken(config.url)
+
   // Mirrors getWorkspaceTargets (workspaces.ts): skip validation only when this
   // run actually fans out to per-package configs instead of running once here.
   // Unlike isFirstRunAtFanOutRoot above, this checks the post-merge config, so a
@@ -413,7 +457,8 @@ export async function loadShelveConfig(check = false): Promise<ShelveConfig> {
  * - Authentication token
  * - Team slug
  * - Project name
- * - URL format (if custom URL is provided)
+ *
+ * The url is checked by loadShelveConfig on every load (assertAllowedUrl), not only here.
  *
  * @param config - The configuration object to validate
  * @throws Error - Will cancel the process if validation fails
@@ -441,8 +486,5 @@ async function validateConfig(config: ShelveConfig): Promise<void> {
       )
     }
     handleCancel('Please provide a project name')
-  }
-  if (config.url !== DEFAULT_URL && !/^(http|https):\/\/[^ "]+$/.test(config.url)) {
-    handleCancel('Please provide a valid url')
   }
 }

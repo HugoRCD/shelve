@@ -1,4 +1,4 @@
-import { exec } from 'node:child_process'
+import { execFile } from 'node:child_process'
 import { hostname, platform } from 'node:os'
 import { promisify } from 'node:util'
 import { readFileSync } from 'node:fs'
@@ -9,7 +9,7 @@ import { note, spinner } from '@clack/prompts'
 import { isNonInteractive } from '../utils/cli-context'
 import { CliError } from './api-error'
 
-const execAsync = promisify(exec)
+const execFileAsync = promisify(execFile)
 
 type DeviceStartResponse = {
   device_code: string
@@ -34,18 +34,36 @@ function getCliVersion(): string {
   }
 }
 
-async function openBrowser(url: string): Promise<boolean> {
-  const cmd = process.platform === 'darwin'
-    ? `open ${JSON.stringify(url)}`
+/**
+ * Opens `url` without a shell: the url comes from the server, so it must never be
+ * parsed as a command line (`$(...)` under sh, `&` under cmd.exe).
+ */
+async function openBrowser(url: URL): Promise<boolean> {
+  const [command, args]: [string, string[]] = process.platform === 'darwin'
+    ? ['open', [url.href]]
     : process.platform === 'win32'
-      ? `start "" ${JSON.stringify(url)}`
-      : `xdg-open ${JSON.stringify(url)}`
+      ? ['rundll32', ['url.dll,FileProtocolHandler', url.href]]
+      : ['xdg-open', [url.href]]
 
   try {
-    await execAsync(cmd)
+    await execFileAsync(command, args)
     return true
   } catch {
     return false
+  }
+}
+
+/**
+ * The verification url the server sent, if it is an http(s) page on the server
+ * being logged in to. Anything else is only shown, never opened.
+ */
+function parseVerificationUri(uri: string, base: string): URL | null {
+  try {
+    const url = new URL(uri)
+    const sameOrigin = url.origin === new URL(base).origin
+    return sameOrigin && (url.protocol === 'https:' || url.protocol === 'http:') ? url : null
+  } catch {
+    return null
   }
 }
 
@@ -135,13 +153,20 @@ export async function loginWithDeviceFlow(
     },
   })
 
+  const verificationUrl = parseVerificationUri(start.verification_uri, base)
+
   note(
     `If the browser does not open, visit:\n${start.verification_uri}\n\nCode: ${start.user_code}`,
     'Authorize Shelve CLI',
   )
 
-  if (!options?.noBrowser) {
-    const opened = await openBrowser(start.verification_uri)
+  if (!verificationUrl) {
+    note(
+      `The server sent an authorization link that is not on ${base}, so it was not opened.`,
+      'Check this link before you open it',
+    )
+  } else if (!options?.noBrowser) {
+    const opened = await openBrowser(verificationUrl)
     if (!opened) {
       note(start.verification_uri, 'Open this URL')
     }

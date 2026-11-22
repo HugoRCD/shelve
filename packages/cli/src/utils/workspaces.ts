@@ -62,9 +62,8 @@ export function getWorkspaceTargets(config: ShelveConfig, path?: string): string
  * subject of the command. The original directory is restored even if a package
  * fails, which keeps a partial run from stranding the process somewhere else.
  *
- * loadShelveConfig's setupDotenv call mutates process.env in place and only
- * ever adds to it, so without a reset a variable from one package's .env would
- * still be set once the next package's config is resolved. Restoring goes
+ * process.env is reset before each package, so nothing one package's run sets
+ * there is still around when the next package's config is resolved. Restoring goes
  * through resetEnv rather than `process.env = snapshot`, because reassigning
  * the object swaps out Node's env-backed object for a plain one and silently
  * drops the string coercion it applies to values written afterwards.
@@ -74,12 +73,9 @@ export function getWorkspaceTargets(config: ShelveConfig, path?: string): string
  * how far it got, both in the hint's prose and in a structured `context` field
  * ({ failedPackage, completedPackages }) for a --json consumer.
  *
- * clearConfigCache runs alongside every resetEnv: loadShelveConfig's cache is
- * keyed on process.cwd() (see config.ts), and SHELVE_TOKEN is the one input it
- * reads that nothing re-checks fresh afterwards (unlike the other SHELVE_* vars,
- * which loadShelveConfig re-applies live on every call). Dropping the cache in
- * step with the env reset means a package's own .env can never hand the next
- * package a stale token pulled from cache.
+ * clearConfigCache runs alongside every resetEnv: loadShelveConfig's caches are
+ * keyed on process.cwd() and on the url (see config.ts), so dropping them in step
+ * with the env reset means each package resolves its config and token afresh.
  *
  * @param targets - Absolute directories to run in
  * @param run - The command body, invoked once per target

@@ -73,6 +73,24 @@ describe('CredentialsService (file fallback)', () => {
     expect(after).toBeUndefined()
   })
 
+  it('returns the file-stored token only for the url it was stored for', async () => {
+    const creds = await loadModule()
+    await creds.CredentialsService.writeToken('https://shelve.cloud', 'tkn', { email: 'a@b.co', username: 'ab' })
+
+    expect(await creds.CredentialsService.readToken('https://shelve.cloud/')).toBe('tkn')
+    expect(await creds.CredentialsService.readToken('https://other.example')).toBeUndefined()
+  })
+
+  it('stores a token for another server without replacing the default one', async () => {
+    const creds = await loadModule()
+    await creds.CredentialsService.writeToken('https://shelve.cloud', 'default_tkn', { email: 'a@b.co', username: 'ab' })
+    await creds.CredentialsService.writeToken('http://localhost:3000', 'local_tkn', { email: 'a@b.co', username: 'ab' }, false)
+
+    expect(await creds.CredentialsService.readToken('https://shelve.cloud')).toBe('default_tkn')
+    expect(await creds.CredentialsService.readToken('http://localhost:3000')).toBe('local_tkn')
+    expect(creds.CredentialsService.readMeta().url).toBe('https://shelve.cloud')
+  })
+
   it('migrates a legacy ~/.shelve file on first read and deletes it', async () => {
     const legacyPath = join(sandbox, '.shelve')
     writeFileSync(
