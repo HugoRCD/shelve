@@ -1,7 +1,18 @@
-import { describe, test, expect } from 'vitest'
+import { describe, test, expect, vi, afterEach } from 'vitest'
+import type { H3Event } from 'h3'
 import { generateToken, hashToken, safeEqualHex } from '../../server/utils/tokens'
 import { TOKEN_PREFIX, TOKEN_PREFIX_DISPLAY_LENGTH } from '../../server/utils/constants'
-import { isIpInCidr } from '../../server/utils/ip'
+import { getClientIp, isIpInCidr } from '../../server/utils/ip'
+
+type FakeRequest = { forwardedFor?: string; remoteAddress: string }
+let trustProxy: unknown = 0
+vi.stubGlobal('useRuntimeConfig', () => ({ private: { trustProxy } }))
+vi.stubGlobal('getRequestHeader', (event: FakeRequest, name: string) => name === 'x-forwarded-for' ? event.forwardedFor : undefined)
+// Like h3 1.15: with `xForwardedFor`, the leftmost entry of the header, which the client controls.
+vi.stubGlobal('getRequestIP', (event: FakeRequest, opts?: { xForwardedFor?: boolean }) =>
+  opts?.xForwardedFor && event.forwardedFor ? event.forwardedFor.split(',')[0]!.trim() : event.remoteAddress)
+
+const request = (forwardedFor: string | undefined, remoteAddress: string) => ({ forwardedFor, remoteAddress }) as unknown as H3Event
 
 describe('generateToken', () => {
   test('returns a token starting with the SHE_ prefix', () => {
@@ -132,5 +143,41 @@ describe('isIpInCidr', () => {
     expect(isIpInCidr('10.0.0.1', '10.0.0.0/33')).toBe(false)
     expect(isIpInCidr('10.0.0.1', '10.0.0.0')).toBe(false)
     expect(isIpInCidr('10.0.0.1', '10.0.0.0/8/8')).toBe(false)
+  })
+})
+
+describe('getClientIp', () => {
+  afterEach(() => {
+    trustProxy = 0
+    vi.unstubAllEnvs()
+  })
+
+  test('uses the connection address and ignores X-Forwarded-For without a trusted proxy', () => {
+    vi.stubEnv('VERCEL', '')
+    expect(getClientIp(request('10.0.0.5', '203.0.113.9'))).toBe('203.0.113.9')
+  })
+
+  test('behind trusted proxies, reads the entry the nearest of them added, not one the client sent', () => {
+    vi.stubEnv('VERCEL', '')
+    trustProxy = 1
+    expect(getClientIp(request('10.0.0.5, 198.51.100.4', '192.0.2.1'))).toBe('198.51.100.4')
+    trustProxy = 2
+    expect(getClientIp(request('10.0.0.5, 198.51.100.4, 192.0.2.50', '192.0.2.1'))).toBe('198.51.100.4')
+    trustProxy = true
+    expect(getClientIp(request('10.0.0.5, 198.51.100.4', '192.0.2.1'))).toBe('198.51.100.4')
+  })
+
+  test('trusts the header Vercel rewrites without any setting', () => {
+    vi.stubEnv('VERCEL', '1')
+    expect(getClientIp(request('198.51.100.4', '10.1.2.3'))).toBe('198.51.100.4')
+  })
+
+  test('falls back to the connection address when the trusted entry is missing or not an IP', () => {
+    vi.stubEnv('VERCEL', '')
+    trustProxy = 2
+    expect(getClientIp(request('198.51.100.4', '192.0.2.1'))).toBe('192.0.2.1')
+    trustProxy = 1
+    expect(getClientIp(request('x'.repeat(60), '192.0.2.1'))).toBe('192.0.2.1')
+    expect(getClientIp(request(undefined, '192.0.2.1'))).toBe('192.0.2.1')
   })
 })

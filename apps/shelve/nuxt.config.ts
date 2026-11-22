@@ -53,6 +53,8 @@ export default defineNuxtConfig({
       adminEmails: '',
       senderEmail: '',
       allowedOrigins: '',
+      // Proxies in front of Shelve that append to X-Forwarded-For; 0 uses the connection's address. Vercel counts as 1.
+      trustProxy: 0,
       github: {
         privateKey: '',
       }

@@ -29,7 +29,7 @@ export function registerAuthTests(ctx: E2EContext) {
     expect(body.verification_uri.startsWith(`${E2E_APP_URL}/cli/authorize?user_code=`)).toBe(true)
   })
 
-  test('audit entries keep a valid client IP when X-Forwarded-For is not an IP', async () => {
+  test('audit entries record the connection address, not an X-Forwarded-For the client sent', async () => {
     await ctx.api('/api/tokens', {
       method: 'POST',
       body: { name: 'forged-forwarded-ip' },
@@ -42,9 +42,9 @@ export function registerAuthTests(ctx: E2EContext) {
     })
 
     const { logs } = await ctx.api<AuditLogResponse>(`/api/teams/${ctx.teamSlug}/audit-logs?action=token.create&limit=100`)
-    const forged = logs.find(entry => entry.metadata?.name === 'forged-forwarded-ip')
-    expect(forged?.ip).toMatch(/^(127\.0\.0\.1|::1|::ffff:127\.0\.0\.1)$/)
-    expect(logs.find(entry => entry.metadata?.name === 'forwarded-ip')?.ip).toBe('203.0.113.7')
+    const loopback = /^(127\.0\.0\.1|::1|::ffff:127\.0\.0\.1)$/
+    expect(logs.find(entry => entry.metadata?.name === 'forged-forwarded-ip')?.ip).toMatch(loopback)
+    expect(logs.find(entry => entry.metadata?.name === 'forwarded-ip')?.ip).toMatch(loopback)
   })
 
   test('deleting an account ends its session', async () => {

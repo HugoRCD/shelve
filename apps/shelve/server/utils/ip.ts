@@ -9,12 +9,29 @@ function isValidIp(value: string | undefined): value is string {
 }
 
 /**
- * The client IP for rate limits, audit logs and token allowlists. A forwarded value that isn't
- * an IP address is ignored in favour of the connection's own address.
+ * How many proxies in front of Shelve add the client address to `X-Forwarded-For`
+ * (`NUXT_PRIVATE_TRUST_PROXY`). Vercel replaces the header with the address it saw, so it counts as one.
+ */
+function getTrustedProxyCount(event: H3Event): number {
+  // An env override can arrive as a boolean (`true`) or a string, whatever the default's type.
+  const configured: unknown = useRuntimeConfig(event).private.trustProxy
+  const count = configured === true ? 1 : Number(configured)
+  if (Number.isInteger(count) && count > 0) return count
+  return process.env.VERCEL ? 1 : 0
+}
+
+/**
+ * The client IP for rate limits, audit logs and token allowlists. `X-Forwarded-For` is set by the
+ * client unless a proxy rewrites it, so it's only read behind trusted proxies, from the entry the
+ * nearest of them added. Otherwise, and when that entry isn't an IP, the connection's address is used.
  */
 export function getClientIp(event: H3Event): string | null {
-  const forwarded = getRequestIP(event, { xForwardedFor: true })
-  if (isValidIp(forwarded)) return forwarded
+  const proxies = getTrustedProxyCount(event)
+  if (proxies > 0) {
+    const forwarded = getRequestHeader(event, 'x-forwarded-for')?.split(',').map(entry => entry.trim()) ?? []
+    const client = forwarded.length >= proxies ? forwarded[forwarded.length - proxies] : undefined
+    if (isValidIp(client)) return client
+  }
   const direct = getRequestIP(event)
   return isValidIp(direct) ? direct : null
 }
