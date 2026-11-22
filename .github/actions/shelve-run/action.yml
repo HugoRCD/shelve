@@ -36,10 +36,13 @@ runs:
         SHELVE_PROJECT: ${{ inputs.project }}
         SHELVE_URL: ${{ inputs.url }}
         SHELVE_DEFAULT_ENV: ${{ inputs.env }}
+        SHELVE_CLI_VERSION: ${{ inputs.cli-version }}
+      # Every input except `command` (shell by design) reaches the script through env vars, so its value is never parsed as shell code.
+      # --env is still passed: a defaultEnv in the project's shelve.json would win over SHELVE_DEFAULT_ENV.
       run: |
         set -euo pipefail
-        ENV_FLAG=""
-        if [ -n "${{ inputs.env }}" ]; then
-          ENV_FLAG="--env ${{ inputs.env }}"
+        env_args=()
+        if [ -n "${SHELVE_DEFAULT_ENV}" ]; then
+          env_args=(--env "${SHELVE_DEFAULT_ENV}")
         fi
-        npx --yes "@shelve/cli@${{ inputs.cli-version }}" run ${ENV_FLAG} --non-interactive -- ${{ inputs.command }}
+        npx --yes "@shelve/cli@${SHELVE_CLI_VERSION}" run ${env_args[@]+"${env_args[@]}"} --non-interactive -- ${{ inputs.command }}
