@@ -114,6 +114,7 @@ function copyToClipboard(text: string) {
                   v-model="reads"
                   label="Reads"
                   :min="1"
+                  :max="100"
                   :ui="{
                     base: 'ring-0 border border-muted/20 rounded-xl',
                   }"

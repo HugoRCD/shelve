@@ -8,7 +8,7 @@ const items = [
   {
     label: 'Is Vault by Shelve is secure?',
     icon: 'lucide:shield',
-    content: 'Yes, Vault by Shelve is secure. We use industry-standard encryption (AES-256) to protect your data. We never store your secrets in plain text, and we never share your data with third parties. You can also check the source code on GitHub to verify our security practices.',
+    content: 'Yes, Vault by Shelve is secure. Your secret is sent over HTTPS, then our server encrypts it with industry-standard encryption (AES-256) before storing it, and deletes it once the read limit or expiration is reached. The server sees your secret in plain text while encrypting and decrypting it, but never stores it unencrypted, and we never share your data with third parties. You can also check the source code on GitHub to verify our security practices.',
   },
   {
     label: 'How can I contact the Shelve team?',

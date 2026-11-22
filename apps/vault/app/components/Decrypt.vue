@@ -18,8 +18,9 @@ async function decryptEnvFile() {
       decryptedValue: string
       reads: number
       ttl: string
-    }>(`/api/vault?id=${id.value}`, {
+    }>('/api/vault', {
       method: 'POST',
+      query: { id: id.value.trim() },
       body: password.value ? { password: password.value } : {},
     })
     state.value.value = decryptedValue

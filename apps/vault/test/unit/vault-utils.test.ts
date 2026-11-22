@@ -1,12 +1,61 @@
 import { describe, test, expect, vi } from 'vitest'
 import {
   TTL_MAP,
+  MAX_PASSWORD_LENGTH,
+  MAX_READS,
+  MAX_SECRET_LENGTH,
+  SHARE_ID_PATTERN,
   calculateTimeLeft,
+  encryptRequestSchema,
   formatTimeLeft,
+  generateShareId,
   hashPassword,
   verifyPassword,
   getEncryptionKey,
 } from '../../server/utils/vault'
+
+describe('generateShareId', () => {
+  test('encodes 16 random bytes as base64url', () => {
+    const id = generateShareId()
+    expect(id).toMatch(/^[\w-]{22}$/)
+    expect(Buffer.from(id, 'base64url')).toHaveLength(16)
+    expect(SHARE_ID_PATTERN.test(id)).toBe(true)
+  })
+})
+
+describe('SHARE_ID_PATTERN', () => {
+  test('accepts base36 ids issued before the base64url format', () => {
+    expect(SHARE_ID_PATTERN.test('yri7iuvwwin')).toBe(true)
+  })
+
+  test.each(['', 'a:b', 'a/b', 'a,b', '../a', 'a'.repeat(65)])('rejects %j', (id) => {
+    expect(SHARE_ID_PATTERN.test(id)).toBe(false)
+  })
+})
+
+describe('encryptRequestSchema', () => {
+  const valid = { value: 'secret', reads: 1, ttl: '1d' }
+
+  test('accepts what the UI sends', () => {
+    expect(encryptRequestSchema.safeParse(valid).success).toBe(true)
+    expect(encryptRequestSchema.safeParse({ ...valid, reads: MAX_READS, ttl: 'Infinite', password: 'pwd' }).success).toBe(true)
+  })
+
+  test.each([
+    ['a missing value', { reads: 1, ttl: '1d' }],
+    ['an empty value', { ...valid, value: '' }],
+    ['an oversized value', { ...valid, value: 'a'.repeat(MAX_SECRET_LENGTH + 1) }],
+    ['zero reads', { ...valid, reads: 0 }],
+    ['too many reads', { ...valid, reads: MAX_READS + 1 }],
+    ['fractional reads', { ...valid, reads: 1.5 }],
+    ['reads as a string', { ...valid, reads: '1' }],
+    ['an unknown ttl', { ...valid, ttl: '2d' }],
+    ['an oversized password', { ...valid, password: 'a'.repeat(MAX_PASSWORD_LENGTH + 1) }],
+    ['an unknown field', { ...valid, extra: true }],
+  ])('rejects %s', (_, body) => {
+    expect(encryptRequestSchema.safeParse(body).success).toBe(false)
+  })
+})
 
 describe('TTL_MAP', () => {
   test('has correct values in seconds', () => {

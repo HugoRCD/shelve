@@ -1,6 +1,17 @@
 import type { H3Event } from 'h3'
 import type { DecryptRequest, DecryptResponse, EncryptRequest, StoredData } from '@types'
-import { calculateTimeLeft, formatTimeLeft, getEncryptionKey, hashPassword, verifyPassword } from '../utils/vault'
+import {
+  MAX_PASSWORD_ATTEMPTS,
+  TTL_MAP,
+  calculateTimeLeft,
+  formatTimeLeft,
+  generateShareId,
+  getEncryptionKey,
+  hashPassword,
+  verifyPassword
+} from '../utils/vault'
+
+type VaultEntry = StoredData & { failedAttempts?: number }
 
 export class VaultService {
 
@@ -20,13 +31,36 @@ export class VaultService {
     return `${this.PREFIX}${id}`
   }
 
-  private generateRandomId(): string {
-    return Math.random().toString(36).slice(2)
+  /** Lets the KV store drop the entry once it expires. `Infinite` entries (-1) get no TTL. */
+  private ttlOptions(secondsLeft: number): { ttl: number } | undefined {
+    return secondsLeft > 0 ? { ttl: secondsLeft } : undefined
+  }
+
+  /**
+   * Counts a wrong password on the entry and deletes the entry at the limit.
+   * Best effort: the read-modify-write isn't atomic, so concurrent wrong guesses may be counted once.
+   */
+  private async rejectWrongPassword(key: string, storedData: VaultEntry, timeLeft: number): Promise<never> {
+    const failedAttempts = (storedData.failedAttempts ?? 0) + 1
+
+    if (failedAttempts >= MAX_PASSWORD_ATTEMPTS) {
+      await this.storage.del(key)
+      throw createError({
+        statusCode: 400,
+        statusMessage: 'Too many invalid password attempts, the secret has been deleted'
+      })
+    }
+
+    await this.storage.set(key, { ...storedData, failedAttempts }, this.ttlOptions(timeLeft))
+    throw createError({
+      statusCode: 400,
+      statusMessage: 'Invalid password'
+    })
   }
 
   async decrypt(id: string, decryptRequest?: DecryptRequest): Promise<DecryptResponse> {
     const key = this.generateKey(id)
-    const storedData = await this.storage.get<StoredData>(key)
+    const storedData = await this.storage.get<VaultEntry>(key)
 
     if (!storedData) {
       throw createError({
@@ -63,10 +97,7 @@ export class VaultService {
       }
       const isValidPassword = await verifyPassword(decryptRequest.password, passwordHash)
       if (!isValidPassword) {
-        throw createError({
-          statusCode: 400,
-          statusMessage: 'Invalid password'
-        })
+        await this.rejectWrongPassword(key, storedData, timeLeft)
       }
     }
 
@@ -77,7 +108,7 @@ export class VaultService {
     await this.storage.set(key, {
       ...storedData,
       reads: updatedReads
-    })
+    }, this.ttlOptions(timeLeft))
 
     if (updatedReads === 0) {
       await this.storage.del(key)
@@ -93,8 +124,8 @@ export class VaultService {
   async encrypt(data: EncryptRequest): Promise<string> {
     const derivedKey = await getEncryptionKey(this.encryptionKey, data.password)
     const encryptedValue = await seal(data.value, derivedKey)
-    const randomId = this.generateRandomId()
-    const key = this.generateKey(randomId)
+    const shareId = generateShareId()
+    const key = this.generateKey(shareId)
 
     const storedData: StoredData = {
       encryptedValue,
@@ -104,8 +135,8 @@ export class VaultService {
       ...(data.password && { passwordHash: await hashPassword(data.password) })
     }
 
-    await this.storage.set(key, storedData)
-    return this.generateShareUrl(randomId)
+    await this.storage.set(key, storedData, this.ttlOptions(TTL_MAP[data.ttl]))
+    return this.generateShareUrl(shareId)
   }
 
   private generateShareUrl(id: string): string {

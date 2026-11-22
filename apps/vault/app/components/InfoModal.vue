@@ -5,12 +5,12 @@ const faqItems = [
   {
     label: 'What is Vault?',
     icon: 'lucide:shield-check',
-    content: 'Vault is a secure way to share sensitive information like API keys, passwords, and environment variables with anyone, anywhere. Create a shareable link, set access limits, and we handle the rest. Everything is encrypted end-to-end, so only you and your recipient can access it.',
+    content: 'Vault is a secure way to share sensitive information like API keys, passwords, and environment variables with anyone, anywhere. Create a shareable link, set access limits, and we handle the rest. Your secret is encrypted on our server before it is stored, and deleted once the read limit or expiration is reached.',
   },
   {
     label: 'How secure is Vault?',
     icon: 'lucide:shield',
-    content: 'Extremely secure. We use AES-256 encryption, the same standard used by banks and governments. Your secrets are encrypted before leaving your browser and can only be decrypted with the link and optionally a password you choose. We never see your data in plain text. Ever. You can verify our security practices by inspecting our open-source code.',
+    content: 'Your secret is sent to our server over HTTPS, encrypted there with AES-256, and only stored encrypted. It is decrypted on the server when someone opens the link, with the password too if you set one. This is not end-to-end encryption: our server handles your secret in plain text while encrypting and decrypting it. You can verify how it works by inspecting our open-source code.',
   },
   {
     label: 'How does it work?',
@@ -30,7 +30,7 @@ const faqItems = [
   {
     label: 'What if I lose the link?',
     icon: 'lucide:help-circle',
-    content: 'If you lose the link, you\'ll need to create a new secret. We can\'t recover links for security reasons. This ensures that even we can\'t access your secrets without the link. Always save important links or share them immediately.',
+    content: 'If you lose the link, you\'ll need to create a new secret. There are no accounts, so we can\'t tell which secrets are yours or send you a link again. Always save important links or share them immediately.',
   },
   {
     label: 'Can I track who accessed my secret?',
