@@ -2,7 +2,9 @@ import { describe, test, expect } from 'vitest'
 import { $fetch, fetch, setup } from '@nuxt/test-utils/e2e'
 
 describe('Vault API', async () => {
-  await setup({})
+  await setup({
+    env: { NUXT_PRIVATE_ENCRYPTION_KEY: 'vault-e2e-encryption-key-only-for-tests' },
+  })
 
   test('encrypt then decrypt a secret', async () => {
     const shareUrl = await $fetch('/api/vault', {
