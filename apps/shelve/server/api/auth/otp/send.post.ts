@@ -12,15 +12,14 @@ export default defineEventHandler(async (event) => {
   // Before any code is stored: no email goes out without a trusted link.
   const appOrigin = getAppOrigin(event)
 
-  const rateLimit = await checkOTPRateLimit(email)
+  // Counted before delivery, so parallel requests can't all use the last slot while it sends.
+  const rateLimit = await reserveOTPRequest(email)
   if (!rateLimit.allowed) {
     throw createError({
       statusCode: 429,
       statusMessage: `Too many requests. Please try again in ${rateLimit.retryAfterMinutes} minutes.`,
     })
   }
-  // Counted before delivery, as before Better Auth, so parallel requests can't all use the last slot while it sends.
-  await recordOTPRequest(email)
 
   // Created here and sent by Shelve, so a delivery failure fails this request instead of being logged and dropped.
   const otp = await useServerAuth().api.createVerificationOTP({ body: { email, type: 'sign-in' } })

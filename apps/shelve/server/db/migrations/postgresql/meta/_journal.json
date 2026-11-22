@@ -85,6 +85,20 @@
       "when": 1795400100000,
       "tag": "0011_better_auth_core",
       "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1795373533921,
+      "tag": "0012_better_auth_backfill",
+      "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1795373624143,
+      "tag": "0013_otp_requests",
+      "breakpoints": true
     }
   ]
 }

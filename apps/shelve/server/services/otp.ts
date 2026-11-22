@@ -1,41 +1,32 @@
-import { users } from '../db/schema'
+import { eq, sql } from 'drizzle-orm'
+import { otpRequests } from '../db/schema'
 
-const OTP_RATE_LIMIT_WINDOW_MINUTES = 60
-const OTP_MAX_ATTEMPTS_PER_WINDOW = 3
+const OTP_RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000
+const OTP_MAX_REQUESTS_PER_WINDOW = 3
 
-export async function checkOTPRateLimit(email: string): Promise<{ allowed: boolean; retryAfterMinutes?: number }> {
-  const [user] = await db
-    .select({ otpAttempts: users.otpAttempts, otpLastRequestAt: users.otpLastRequestAt })
-    .from(users)
-    .where(eq(users.email, email))
-    .limit(1)
+/**
+ * Takes one of the email's code requests for the current hour, whether or not the email has an account.
+ * Checking and counting are one statement, so parallel requests can't both take the last one.
+ */
+export async function reserveOTPRequest(email: string): Promise<{ allowed: boolean; retryAfterMinutes?: number }> {
+  const now = new Date()
+  const windowStart = new Date(now.getTime() - OTP_RATE_LIMIT_WINDOW_MS)
+  const expired = sql`${otpRequests.windowStart} < ${windowStart}`
+  const reserved = await db
+    .insert(otpRequests)
+    .values({ email, count: 1, windowStart: now })
+    .onConflictDoUpdate({
+      target: otpRequests.email,
+      set: {
+        count: sql`case when ${expired} then 1 else ${otpRequests.count} + 1 end`,
+        windowStart: sql`case when ${expired} then ${now} else ${otpRequests.windowStart} end`,
+      },
+      setWhere: sql`${expired} or ${otpRequests.count} < ${OTP_MAX_REQUESTS_PER_WINDOW}`,
+    })
+    .returning({ email: otpRequests.email })
+  if (reserved.length) return { allowed: true }
 
-  if (!user?.otpLastRequestAt || !user.otpAttempts) return { allowed: true }
-
-  const windowStart = new Date(Date.now() - OTP_RATE_LIMIT_WINDOW_MINUTES * 60 * 1000)
-  if (user.otpLastRequestAt < windowStart) return { allowed: true }
-
-  if (user.otpAttempts >= OTP_MAX_ATTEMPTS_PER_WINDOW) {
-    const retryAfter = Math.ceil((user.otpLastRequestAt.getTime() + OTP_RATE_LIMIT_WINDOW_MINUTES * 60 * 1000 - Date.now()) / 60000)
-    return { allowed: false, retryAfterMinutes: retryAfter }
-  }
-
-  return { allowed: true }
-}
-
-/** Counts a code request against an existing user's hourly limit. New emails have no row until they sign in. */
-export async function recordOTPRequest(email: string): Promise<void> {
-  const [user] = await db
-    .select({ otpAttempts: users.otpAttempts, otpLastRequestAt: users.otpLastRequestAt })
-    .from(users)
-    .where(eq(users.email, email))
-    .limit(1)
-  if (!user) return
-
-  const windowStart = new Date(Date.now() - OTP_RATE_LIMIT_WINDOW_MINUTES * 60 * 1000)
-  const isWithinWindow = user.otpLastRequestAt && user.otpLastRequestAt > windowStart
-  await db
-    .update(users)
-    .set({ otpAttempts: isWithinWindow ? (user.otpAttempts || 0) + 1 : 1, otpLastRequestAt: new Date() })
-    .where(eq(users.email, email))
+  const [current] = await db.select({ windowStart: otpRequests.windowStart }).from(otpRequests).where(eq(otpRequests.email, email))
+  const retryAfterMs = (current?.windowStart.getTime() ?? now.getTime()) + OTP_RATE_LIMIT_WINDOW_MS - now.getTime()
+  return { allowed: false, retryAfterMinutes: Math.max(1, Math.ceil(retryAfterMs / 60000)) }
 }
