@@ -81,4 +81,6 @@ An audit entry is written before the response is sent. If recording fails, the e
 
 ## Retention
 
-Audit logs are retained for as long as the team exists on the hosted instance, and are deleted with the team. On self-hosted deployments you control the retention policy by pruning the `audit_logs` table directly.
+Audit entries are deleted 30 days after they are recorded, and all of a team's entries are deleted with the team. Shelve removes expired entries while it records new events, at most once an hour, so an entry can stay a little longer than 30 days.
+
+On self-hosted deployments, set `NUXT_PRIVATE_AUDIT_RETENTION_DAYS` to keep entries for a different number of days, or to `0` to keep every entry and prune the `audit_logs` table yourself.

@@ -45,6 +45,40 @@ export async function logAudit(event: H3Event, payload: AuditEvent): Promise<voi
   } catch (err) {
     console.error('[audit] failed to record event', { action: payload.action, err })
   }
+
+  await pruneExpiredAuditLogs()
+}
+
+const PRUNE_INTERVAL_MS = 60 * 60 * 1000
+const PRUNE_BATCH_SIZE = 5000
+let nextPruneAt = 0
+
+/** Deletes up to one batch of audit entries older than `retentionDays` and returns how many it deleted. */
+export async function pruneAuditLogs(retentionDays: number, now = new Date()): Promise<number> {
+  const cutoff = new Date(now.getTime() - retentionDays * 24 * 60 * 60 * 1000)
+  const expired = db.select({ id: schema.auditLogs.id })
+    .from(schema.auditLogs)
+    .where(lt(schema.auditLogs.createdAt, cutoff))
+    .limit(PRUNE_BATCH_SIZE)
+  const deleted = await db.delete(schema.auditLogs)
+    .where(inArray(schema.auditLogs.id, expired))
+    .returning({ id: schema.auditLogs.id })
+  return deleted.length
+}
+
+/**
+ * Runs `pruneAuditLogs` at most once an hour per server instance, so retention needs no cron.
+ * A retention that isn't a positive number of days keeps every entry.
+ */
+async function pruneExpiredAuditLogs(): Promise<void> {
+  const retentionDays = Number(useRuntimeConfig().private.auditRetentionDays)
+  if (!(retentionDays > 0) || Date.now() < nextPruneAt) return
+  nextPruneAt = Date.now() + PRUNE_INTERVAL_MS
+  try {
+    await pruneAuditLogs(retentionDays)
+  } catch (err) {
+    console.error('[audit] failed to prune expired entries', { err })
+  }
 }
 
 export async function logMemberRoleChange(event: H3Event, teamId: number, member: Member, previousRole: TeamRole): Promise<void> {

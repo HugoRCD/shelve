@@ -40,6 +40,8 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     private: {
+      // Audit log entries older than this many days are deleted; 0 keeps every entry.
+      auditRetentionDays: 30,
       resendApiKey: '',
       resendWebhookSecret: '',
       encryptionKey: '',
