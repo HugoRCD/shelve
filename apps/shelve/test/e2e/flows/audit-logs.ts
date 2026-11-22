@@ -76,7 +76,7 @@ export function registerAuditLogTests(ctx: E2EContext) {
       body: JSON.stringify({ name: 'token-made' }),
     })
     expect(response.status).toBe(200)
-    expect(response.headers.getSetCookie().filter(c => c.startsWith('nuxt-auth-session='))).toEqual([])
+    expect(response.headers.getSetCookie().filter(c => c.includes('session_token'))).toEqual([])
 
     const feed = await waitForAuditAction(ctx, 'environment.create')
     const entry = feed.logs.find(log => log.action === 'environment.create' && log.metadata?.name === 'token-made')

@@ -77,6 +77,12 @@ const authProvidersSchema = z.object({
   NUXT_PRIVATE_GITHUB_PRIVATE_KEY: z.string().optional(),
 })
 
+const betterAuthSchema = z.object({
+  BETTER_AUTH_URL: z.url({ error: 'BETTER_AUTH_URL must be the public URL of this deployment.' }).optional(),
+  OAUTH_PROXY_URL: z.url({ error: 'OAUTH_PROXY_URL must be the production URL.' }).optional(),
+  OAUTH_PROXY_SECRET: z.string().min(32, { error: 'OAuth proxy secret must be at least 32 characters long.' }).optional(),
+})
+
 const emailSchema = z.object({
   NUXT_PRIVATE_RESEND_API_KEY: z.string().startsWith('re_', { error: 'Resend API key must start with "re_"' }).optional().or(z.literal('')),
   NUXT_PRIVATE_SENDER_EMAIL: z.email({ error: 'Sender email must be a valid email address.' }).optional().or(z.literal('')),
@@ -91,11 +97,13 @@ export const envSchema = z.object({
   ...requiredCoreSchema.shape,
   ...appUrlSchema.shape,
   ...authProvidersSchema.shape,
+  ...betterAuthSchema.shape,
   ...emailSchema.shape,
   ...adminAndSecuritySchema.shape,
 }).superRefine((data, ctx) => {
   validateOAuthPair(data, ctx, 'NUXT_OAUTH_GITHUB_CLIENT_ID', 'NUXT_OAUTH_GITHUB_CLIENT_SECRET', 'GitHub')
   validateOAuthPair(data, ctx, 'NUXT_OAUTH_GOOGLE_CLIENT_ID', 'NUXT_OAUTH_GOOGLE_CLIENT_SECRET', 'Google')
+  validateOAuthPair(data, ctx, 'OAUTH_PROXY_URL', 'OAUTH_PROXY_SECRET', 'the preview OAuth proxy')
 })
 
 function handleValidationError(error: z.ZodError) {

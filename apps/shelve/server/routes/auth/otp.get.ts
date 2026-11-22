@@ -1,32 +1,16 @@
-import { userSchema } from '../../db/zod'
-
+/** The link in the sign-in email: it carries the same code as the email, so it signs in like `/api/auth/otp/verify`. */
 export default defineEventHandler(async (event) => {
-  const query = getQuery(event)
-  const { token } = query
+  const { email, otp } = getQuery(event)
+  if (typeof email !== 'string' || typeof otp !== 'string') return sendRedirect(event, '/login?error=missing-params')
 
-  if (!token) {
-    return sendRedirect(event, '/login?error=missing-params')
-  }
+  const response = await useServerAuth().api.signInEmailOTP({
+    body: { email, otp },
+    headers: event.headers,
+    asResponse: true,
+  })
+  if (!response.ok) return sendRedirect(event, '/login?error=invalid-otp')
+  forwardAuthCookies(event, response.headers)
 
-  try {
-    const result = await verifyOTPByToken(token as string)
-
-    if (!result.success || !result.email) {
-      return sendRedirect(event, '/login?error=invalid-otp')
-    }
-
-    const { user, isNewUser } = await handleEmailUser(result.email, event)
-
-    const session = {
-      user: userSchema.parse(user),
-      loggedInAt: new Date(),
-    }
-
-    await replaceUserSession(event, session)
-
-    return sendRedirect(event, isNewUser ? '/onboarding' : '/')
-  } catch (error) {
-    console.error('OTP verification error:', error)
-    return sendRedirect(event, '/login?error=otp-verification')
-  }
+  const { user } = await response.json() as { user: { onboarding?: boolean } }
+  return sendRedirect(event, user.onboarding ? '/' : '/onboarding')
 })

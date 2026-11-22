@@ -1,5 +1,4 @@
 import type { H3Event } from 'h3'
-import { userSchema } from '~~/server/db/zod'
 
 export default eventHandler(async (event: H3Event) => {
   const token = getRouterParam(event, 'token')
@@ -23,15 +22,9 @@ export default eventHandler(async (event: H3Event) => {
 
   // Mark onboarding as complete if not already done
   if (!user.onboarding) {
-    const [updatedUser] = await db.update(schema.users)
+    await db.update(schema.users)
       .set({ onboarding: true })
       .where(eq(schema.users.id, user.id))
-      .returning()
-
-    await setUserSession(event, {
-      user: userSchema.parse(updatedUser),
-      loggedInAt: new Date(),
-    })
   }
 
   if (invitation.team?.slug) {

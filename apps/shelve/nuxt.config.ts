@@ -104,10 +104,10 @@ export default defineNuxtConfig({
     format: ['webp', 'jpeg', 'jpg', 'png', 'svg']
   },
 
-  modules: ['@nuxt/ui', 'nuxt-auth-utils', '@nuxthub/core', 'botid/nuxt'],
+  modules: ['@nuxt/ui', '@nuxthub/core', 'botid/nuxt'],
 
   $test: {
-    modules: ['nuxt-auth-utils', '@nuxthub/core'],
+    modules: ['@nuxthub/core'],
     hub: {
       db: {
         dialect: 'postgresql',

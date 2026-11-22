@@ -8,19 +8,13 @@ vi.stubGlobal('createError', (opts: { statusCode: number; statusMessage: string 
   return err
 })
 
-let session: Record<string, unknown> = {}
-const clearUserSession = vi.fn()
-const setUserSession = vi.fn()
+let session: { user: { id: number }; token: null } | null = null
 const authenticateToken = vi.fn()
-vi.stubGlobal('getUserSession', () => Promise.resolve(session))
-vi.stubGlobal('clearUserSession', clearUserSession)
-vi.stubGlobal('setUserSession', setUserSession)
+vi.stubGlobal('getAuth', () => Promise.resolve(session))
 vi.stubGlobal('authenticateToken', authenticateToken)
 vi.stubGlobal('getRequestURL', (event: H3Event) => new URL(event.path, 'http://localhost'))
 vi.stubGlobal('getRequestHeader', (event: H3Event & { headers: Record<string, string> }, name: string) => event.headers[name])
-// The session cookie is present whenever the test sets a session.
-vi.stubGlobal('getCookie', (_event: H3Event, name: string) => name === 'nuxt-auth-session' && Object.keys(session).length ? 'sealed' : undefined)
-vi.stubGlobal('useRuntimeConfig', () => ({ session: { name: 'nuxt-auth-session' } }))
+vi.stubGlobal('getCookie', () => undefined)
 vi.stubGlobal('getRequestPermission', () => 'read')
 vi.stubGlobal('requireTokenScope', () => Promise.resolve())
 
@@ -38,20 +32,13 @@ function request(path: string, headers: Record<string, string> = {}, method = 'G
 }
 
 beforeEach(() => {
-  session = {}
+  session = null
   vi.clearAllMocks()
 })
 
 describe('auth middleware', () => {
-  test('refuses a token session replayed from a cookie, even on /api/auth routes', async () => {
-    session = { user: { id: 1 }, tokenScopes: { permissions: ['read'] }, tokenId: 7 }
-
-    await expect(run(request('/api/auth/device/approve', {}, 'POST'))).rejects.toMatchObject({ statusCode: 401 })
-    expect(clearUserSession).toHaveBeenCalledOnce()
-  })
-
   test('lets web sessions through without looking at tokens', async () => {
-    session = { user: { id: 1 } }
+    session = { user: { id: 1 }, token: null }
 
     await expect(run(request('/api/tokens', { authorization: 'Bearer she_x' }, 'POST'))).resolves.toBeUndefined()
     expect(authenticateToken).not.toHaveBeenCalled()
@@ -80,7 +67,6 @@ describe('auth middleware', () => {
       user: { id: 1 },
       token: { id: 7, prefix: 'she_', name: 'ci', scopes: { permissions: ['read'] } },
     })
-    expect(setUserSession).not.toHaveBeenCalled()
     expect(event.node.res.getHeader('set-cookie')).toBeUndefined()
   })
 })

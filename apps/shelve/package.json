@@ -30,7 +30,6 @@
     "drizzle-orm": "^0.45.4",
     "jsonwebtoken": "^9.0.3",
     "libsodium-wrappers": "^0.8.4",
-    "nuxt-auth-utils": "^0.6.2",
     "nuxt-build-cache": "^0.1.1",
     "postgres": "^3.4.9",
     "resend": "^6.39.0",

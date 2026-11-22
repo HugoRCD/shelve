@@ -30,23 +30,62 @@ export type AuthContext = {
 
 declare module 'h3' {
   interface H3EventContext {
-    /** Set by the auth middleware for API token requests. Web sessions are read from the session cookie. */
-    auth?: AuthContext
+    /** The request's auth once resolved: the auth middleware sets it for API tokens, `getAuth` for sessions. `null` is anonymous. */
+    auth?: AuthContext | null
   }
 }
 
-/** Returns the request's auth, or null when it is anonymous. */
+type SessionUser = {
+  id: string
+  name: string
+  email: string
+  image?: string | null
+  role?: string | null
+  authType?: string | null
+  onboarding?: boolean | null
+  cliInstalled?: boolean | null
+  createdAt: Date
+  updatedAt: Date
+}
+
+/** Better Auth's user, with its string ID and field names, as the `User` the rest of Shelve uses. */
+export function toShelveUser(user: SessionUser): User {
+  return {
+    id: Number(user.id),
+    username: user.name,
+    email: user.email,
+    avatar: user.image ?? DEFAULT_AVATAR,
+    role: user.role === Role.ADMIN ? Role.ADMIN : Role.USER,
+    authType: (user.authType ?? 'email') as User['authType'],
+    onboarding: !!user.onboarding,
+    cliInstalled: !!user.cliInstalled,
+    createdAt: user.createdAt,
+    updatedAt: user.updatedAt,
+  }
+}
+
+/** Returns the request's auth, or null when it is anonymous. Reads the Better Auth session once per request. */
 export async function getAuth(event: H3Event): Promise<AuthContext | null> {
-  if (event.context.auth) return event.context.auth
-  const { user } = await getUserSession(event)
-  return user ? { user, token: null } : null
+  if (event.context.auth !== undefined) return event.context.auth
+  const { headers, response } = await useServerAuth().api.getSession({ headers: event.headers, returnHeaders: true })
+  // Better Auth refreshes the session cookie as the session nears expiry.
+  forwardAuthCookies(event, headers)
+  event.context.auth = response ? { user: toShelveUser(response.user as SessionUser), token: null } : null
+  return event.context.auth
 }
 
 /** The GitHub token of the user's web session, or undefined when they did not sign in with GitHub. API tokens never carry one. */
 export async function getGithubToken(event: H3Event): Promise<string | undefined> {
-  if (event.context.auth?.token) return
-  const { secure } = await getUserSession(event)
-  return secure?.githubToken
+  const auth = await getAuth(event)
+  if (!auth || auth.token) return
+  const userId = String(auth.user.id)
+  const betterAuth = useServerAuth()
+  const accounts = await (await betterAuth.$context).internalAdapter.findAccounts(userId)
+  const github = accounts.find(account => account.providerId === 'github')
+  if (!github) return
+  // Decrypts the stored token, which `account.encryptOAuthTokens` keeps encrypted in the database.
+  const { accessToken } = await betterAuth.api.getAccessToken({ body: { accountId: github.id, userId } }).catch(() => ({ accessToken: undefined }))
+  return accessToken || undefined
 }
 
 /** @throws {Error} 401 when the request is anonymous */

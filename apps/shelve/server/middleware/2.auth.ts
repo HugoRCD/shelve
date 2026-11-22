@@ -11,18 +11,8 @@ function acceptsTokens(event: H3Event): boolean {
 
 export default defineEventHandler(async (event) => {
   if (!event.path?.startsWith('/api')) return
-
-  // Reading a nuxt-auth-utils session writes a session cookie, so only read one the request sent.
-  const sessionName = useRuntimeConfig(event).session.name
-  const session = getCookie(event, sessionName) ? await getUserSession(event) : {}
-  // Older releases sealed token sessions into the cookie. Refuse one coming back, since it
-  // would outlive the token's revocation, expiry and IP allowlist.
-  if (session.tokenScopes) {
-    await clearUserSession(event)
-    throw createError({ statusCode: 401, statusMessage: 'Invalid session' })
-  }
-  if (session.user) return
   if (event.path.startsWith('/api/auth')) return
+  if (await getAuth(event)) return
 
   const authHeader = getRequestHeader(event, 'authorization')
   let bearer: string | undefined

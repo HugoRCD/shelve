@@ -13,7 +13,7 @@ const emit = defineEmits<{
 
 const { sendInvitation } = useTeamsService()
 
-const { user } = useUserSession()
+const { user } = useAuth()
 const isOwner = computed(() => members.find(member => member.user.id === user.value?.id)?.role === TeamRole.OWNER)
 
 const roles = [

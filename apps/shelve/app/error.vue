@@ -9,7 +9,7 @@ const { error } = defineProps<ErrorProps>()
 console.error(error)
 
 const router = useRouter()
-const { clear } = useUserSession()
+const { clear } = useAuth()
 
 const handleError = () => clearError({ redirect: '/' })
 const goBack = () => {

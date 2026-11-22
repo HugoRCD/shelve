@@ -5,7 +5,7 @@ import CommandPalette from '~/components/CommandPalette.vue'
 
 const route = useRoute()
 const teamSlug = computed(() => route.params.teamSlug as string)
-const { user } = useUserSession()
+const { user } = useAuth()
 
 const defaultTeamSlug = useCookie<string>('defaultTeamSlug', {
   watch: true,

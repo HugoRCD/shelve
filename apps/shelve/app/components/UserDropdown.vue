@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { DropdownMenuItem } from '@nuxt/ui'
 
-const { loggedIn, user } = useUserSession()
+const { loggedIn, user } = useAuth()
 const colorMode = useColorMode()
 
 const items = computed<DropdownMenuItem[][]>(() => [

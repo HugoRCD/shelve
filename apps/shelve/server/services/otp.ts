@@ -1,167 +1,41 @@
-import { randomInt, timingSafeEqual } from 'node:crypto'
-import type { User } from '@types'
-import type { H3Event } from 'h3'
-import { lt, gt, and, isNotNull } from 'drizzle-orm'
 import { users } from '../db/schema'
-import { handleEmailUser } from './user'
 
-const OTP_EXPIRY_MINUTES = 10
 const OTP_RATE_LIMIT_WINDOW_MINUTES = 60
 const OTP_MAX_ATTEMPTS_PER_WINDOW = 3
-const OTP_MAX_VERIFY_ATTEMPTS = 5
-
-export function generateOTPCode(): string {
-  return randomInt(100000, 1000000).toString()
-}
-
-export function generateOTPToken(): string {
-  const array = new Uint8Array(32)
-  crypto.getRandomValues(array)
-  return Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('')
-}
 
 export async function checkOTPRateLimit(email: string): Promise<{ allowed: boolean; retryAfterMinutes?: number }> {
-  const user = await db
-    .select({
-      otpAttempts: users.otpAttempts,
-      otpLastRequestAt: users.otpLastRequestAt,
-    })
+  const [user] = await db
+    .select({ otpAttempts: users.otpAttempts, otpLastRequestAt: users.otpLastRequestAt })
     .from(users)
     .where(eq(users.email, email))
     .limit(1)
 
-  if (!user.length) {
-    return { allowed: true }
-  }
-
-  const [{ otpAttempts, otpLastRequestAt }] = user
-
-  if (!otpLastRequestAt || !otpAttempts) {
-    return { allowed: true }
-  }
+  if (!user?.otpLastRequestAt || !user.otpAttempts) return { allowed: true }
 
   const windowStart = new Date(Date.now() - OTP_RATE_LIMIT_WINDOW_MINUTES * 60 * 1000)
+  if (user.otpLastRequestAt < windowStart) return { allowed: true }
 
-  if (otpLastRequestAt < windowStart) {
-    return { allowed: true }
-  }
-
-  if (otpAttempts >= OTP_MAX_ATTEMPTS_PER_WINDOW) {
-    const retryAfter = Math.ceil((otpLastRequestAt.getTime() + OTP_RATE_LIMIT_WINDOW_MINUTES * 60 * 1000 - Date.now()) / 60000)
+  if (user.otpAttempts >= OTP_MAX_ATTEMPTS_PER_WINDOW) {
+    const retryAfter = Math.ceil((user.otpLastRequestAt.getTime() + OTP_RATE_LIMIT_WINDOW_MINUTES * 60 * 1000 - Date.now()) / 60000)
     return { allowed: false, retryAfterMinutes: retryAfter }
   }
 
   return { allowed: true }
 }
 
-export async function generateOTPForEmail(email: string, event: H3Event): Promise<{ code: string; token: string }> {
-  const code = generateOTPCode()
-  const token = generateOTPToken()
-  const expiresAt = new Date(Date.now() + OTP_EXPIRY_MINUTES * 60 * 1000)
-
-  await handleEmailUser(email, event)
-
-  const existingUser = await db
+/** Counts a code request against an existing user's hourly limit. New emails have no row until they sign in. */
+export async function recordOTPRequest(email: string): Promise<void> {
+  const [user] = await db
     .select({ otpAttempts: users.otpAttempts, otpLastRequestAt: users.otpLastRequestAt })
     .from(users)
     .where(eq(users.email, email))
     .limit(1)
+  if (!user) return
 
   const windowStart = new Date(Date.now() - OTP_RATE_LIMIT_WINDOW_MINUTES * 60 * 1000)
-  const isWithinWindow = existingUser[0]?.otpLastRequestAt && existingUser[0].otpLastRequestAt > windowStart
-  const newAttempts = isWithinWindow ? (existingUser[0]?.otpAttempts || 0) + 1 : 1
-
+  const isWithinWindow = user.otpLastRequestAt && user.otpLastRequestAt > windowStart
   await db
     .update(users)
-    .set({
-      otpCode: code,
-      otpToken: token,
-      otpExpiresAt: expiresAt,
-      otpAttempts: newAttempts,
-      otpLastRequestAt: new Date(),
-      otpVerifyAttempts: 0,
-    })
+    .set({ otpAttempts: isWithinWindow ? (user.otpAttempts || 0) + 1 : 1, otpLastRequestAt: new Date() })
     .where(eq(users.email, email))
-
-  return { code, token }
-}
-
-export async function verifyOTPByToken(token: string): Promise<{ success: boolean; message: string; user?: User; email?: string }> {
-  const user = await db
-    .select()
-    .from(users)
-    .where(
-      and(
-        eq(users.otpToken, token),
-        gt(users.otpExpiresAt!, new Date())
-      )
-    )
-    .limit(1)
-
-  if (!user.length) {
-    return { success: false, message: 'Invalid or expired link' }
-  }
-
-  await db
-    .update(users)
-    .set({
-      otpCode: null,
-      otpToken: null,
-      otpExpiresAt: null,
-    })
-    .where(eq(users.id, user[0].id))
-
-  return { success: true, message: 'OTP verified successfully', user: user[0], email: user[0].email }
-}
-
-export async function verifyOTPForUser(email: string, code: string): Promise<{ success: boolean; message: string; user?: User }> {
-  const failure = { success: false, message: 'Invalid or expired OTP code' }
-
-  // Each check uses up an attempt before the code is compared, so parallel requests can't go past the limit.
-  const [attempt] = await db
-    .update(users)
-    .set({ otpVerifyAttempts: sql`${users.otpVerifyAttempts} + 1` })
-    .where(
-      and(
-        eq(users.email, email),
-        isNotNull(users.otpCode),
-        gt(users.otpExpiresAt!, new Date()),
-        lt(users.otpVerifyAttempts, OTP_MAX_VERIFY_ATTEMPTS)
-      )
-    )
-    .returning({ id: users.id, otpCode: users.otpCode })
-
-  const expected = Buffer.from(attempt?.otpCode ?? '')
-  const received = Buffer.from(code)
-  if (!attempt?.otpCode || expected.length !== received.length || !timingSafeEqual(expected, received)) {
-    return failure
-  }
-
-  const [user] = await db
-    .update(users)
-    .set({
-      otpCode: null,
-      otpToken: null,
-      otpExpiresAt: null,
-      otpVerifyAttempts: 0,
-    })
-    .where(and(eq(users.id, attempt.id), eq(users.otpCode, code)))
-    .returning()
-
-  if (!user) return failure
-
-  return { success: true, message: 'OTP verified successfully', user }
-}
-
-export async function clearExpiredOTPs(): Promise<void> {
-  await db
-    .update(users)
-    .set({
-      otpCode: null,
-      otpToken: null,
-      otpExpiresAt: null,
-    })
-    .where(
-      lt(users.otpExpiresAt!, new Date())
-    )
 }

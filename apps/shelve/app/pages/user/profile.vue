@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ConfirmModal } from '#components'
 
-const { user, clear } = useUserSession()
+const { user, clear } = useAuth()
 
 const updateLoading = ref(false)
 
