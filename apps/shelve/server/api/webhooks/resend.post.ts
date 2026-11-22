@@ -1,4 +1,3 @@
-import crypto from 'crypto'
 import { z } from 'zod'
 
 const resendEventSchema = z.object({
@@ -25,23 +24,13 @@ const resendEventSchema = z.object({
 
 type ResendEvent = z.infer<typeof resendEventSchema>
 
-function verifyWebhookSignature(payload: string, signature: string | undefined, secret: string): boolean {
-  if (!signature) return false
-
-  const expectedSignature = crypto
-    .createHmac('sha256', secret)
-    .update(payload)
-    .digest('base64')
-
-  return crypto.timingSafeEqual(
-    Buffer.from(signature),
-    Buffer.from(expectedSignature)
-  )
-}
-
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig(event)
   const webhookSecret = config.private.resendWebhookSecret
+
+  if (!webhookSecret && (process.env.VERCEL_ENV === 'production' || process.env.NODE_ENV === 'production')) {
+    throw createError({ statusCode: 503, statusMessage: 'Webhook is not configured' })
+  }
 
   const rawBody = await readRawBody(event)
   if (!rawBody) {
@@ -49,8 +38,12 @@ export default defineEventHandler(async (event) => {
   }
 
   if (webhookSecret) {
-    const signature = getHeader(event, 'svix-signature')
-    if (!verifyWebhookSignature(rawBody, signature, webhookSecret)) {
+    const headers = {
+      id: getHeader(event, 'svix-id'),
+      timestamp: getHeader(event, 'svix-timestamp'),
+      signature: getHeader(event, 'svix-signature'),
+    }
+    if (!verifyResendSignature(webhookSecret, headers, rawBody)) {
       console.warn('Invalid webhook signature')
       throw createError({ statusCode: 401, statusMessage: 'Invalid signature' })
     }

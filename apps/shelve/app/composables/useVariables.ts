@@ -37,8 +37,9 @@ export function useVariablesService() {
     loading.value = false
   }
 
-  async function createVariables(input: CreateVariablesInput) {
+  async function createVariables(input: CreateVariablesInput): Promise<boolean> {
     createLoading.value = true
+    let created = false
     try {
       const uniqueVariables = removeDuplicateKeyValues(input.variables)
       const uniqueInput = {
@@ -51,11 +52,14 @@ export function useVariablesService() {
         body: uniqueInput
       })
       toast.success('Your variables have been created')
+      created = true
     } catch (error) {
-      toast.error('An error occurred')
+      if (input.syncWithGitHub) toastGithubError(error, 'An error occurred')
+      else toast.error('An error occurred')
     }
     createLoading.value = false
     await fetchVariables()
+    return created
   }
 
   async function updateVariable(variable: Variable) {

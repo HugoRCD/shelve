@@ -368,6 +368,31 @@ export function registerAccessControlTests(ctx: E2EContext) {
     expect(await ctx.api<unknown[]>('/api/github/apps')).toEqual([])
   })
 
+  test('GitHub repositories and secrets need a GitHub sign-in', async () => {
+    const signInRequired = { statusCode: 403, data: { data: { reason: 'github-sign-in-required' } } }
+    await expect(ctx.api('/api/github/repos')).rejects.toMatchObject(signInRequired)
+    await expect(ctx.api('/api/github/secrets', {
+      method: 'POST',
+      body: { repository: 'acme/app', variables: [{ key: 'API_KEY', value: 'value' }] },
+    })).rejects.toMatchObject(signInRequired)
+
+    await expect(ctx.api(`/api/teams/${ctx.teamSlug}/projects/${ctx.projectId}/variables`, {
+      method: 'POST',
+      body: { environmentIds: [environments[0]!.id], variables: [{ key: 'E2E_GITHUB_SYNC', value: 'value' }], syncWithGitHub: true },
+    })).rejects.toMatchObject(signInRequired)
+    const variables = await ctx.api<Variable[]>(`/api/teams/${ctx.teamSlug}/projects/${ctx.projectId}/variables`)
+    expect(variables.some(v => v.key === 'E2E_GITHUB_SYNC')).toBe(false)
+  })
+
+  test('a GitHub repository name cannot be `.` or `..`', async () => {
+    for (const repository of ['acme/..', 'acme/.', 'https://github.com/acme/..', '../acme']) {
+      await expect(ctx.api('/api/github/secrets', {
+        method: 'POST',
+        body: { repository, variables: [{ key: 'API_KEY', value: 'value' }] },
+      })).rejects.toMatchObject({ statusCode: 400 })
+    }
+  })
+
   test('pages cannot be framed by other sites', async () => {
     const res = await fetch(url('/login'))
     expect(res.headers.get('x-frame-options')).toBe('DENY')

@@ -64,11 +64,12 @@ async function handleCreateVariables() {
     return
   }
   if (!validateVariables(variablesInput.value.variables)) return
-  await createVariables({
+  const created = await createVariables({
     ...variablesInput.value,
     syncWithGitHub: syncWithGitHub.value,
   })
-  resetForm()
+  // Keep what was typed when nothing was saved, e.g. a GitHub sync that needs a GitHub sign-in.
+  if (created) resetForm()
 }
 
 const items = actionVariablesItem()

@@ -66,7 +66,7 @@ async function onSubmit(event: FormSubmitEvent<SyncVariablesSchema>) {
     })
     toast.success('Variables have been sent to Github')
   } catch (error) {
-    toast.error('Failed to send variables to Github')
+    toastGithubError(error, 'Failed to send variables to GitHub')
   }
   open.value = false
 }

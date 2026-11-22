@@ -66,6 +66,7 @@ onMounted(() => {
     toast.error('Could not connect GitHub', {
       description: 'Sign in to Shelve with the GitHub account that installed the app, then connect it again.',
       duration: 10000,
+      action: { label: 'Sign in with GitHub', onClick: signInWithGithub },
     })
     useRouter().replace({ query: {} })
   }
