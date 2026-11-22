@@ -29,10 +29,10 @@ export function getNavigation(where: Where, teamSlug?: string): Navigation[] {
     case 'user':
       return [
         {
-          name: 'API Tokens',
-          to: '/user/tokens',
+          name: 'API Keys',
+          to: '/user/api-keys',
           icon: 'nucleo:key',
-          title: 'API Tokens',
+          title: 'API Keys',
         },
         {
           name: 'Integrations',

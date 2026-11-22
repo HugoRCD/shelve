@@ -3,6 +3,6 @@ export default eventHandler(async (event) => {
   const { team } = await requireUserTeam(event, slug, { teamWide: false })
 
   const environments = await new EnvironmentsService().getEnvironments(team.id)
-  const environmentIds = await getTokenScopeIds(event, 'environmentIds')
+  const environmentIds = await getApiKeyScopeIds(event, 'environmentIds')
   return environmentIds ? environments?.filter(environment => environmentIds.includes(environment.id)) : environments
 })

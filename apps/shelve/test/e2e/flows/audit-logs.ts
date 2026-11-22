@@ -21,7 +21,7 @@ async function waitForAuditAction(
 
 export function registerAuditLogTests(ctx: E2EContext) {
   test('records a `token.create` event when a token is created', async () => {
-    await ctx.api('/api/tokens', {
+    await ctx.api('/api/api-keys', {
       method: 'POST',
       body: { name: 'audited-token' },
     })
@@ -65,7 +65,7 @@ export function registerAuditLogTests(ctx: E2EContext) {
   })
 
   test('attributes token requests to the token and sets no session cookie', async () => {
-    const { token } = await ctx.api<{ token: string }>('/api/tokens', {
+    const { key: token } = await ctx.api<{ key: string }>('/api/api-keys', {
       method: 'POST',
       body: { name: 'audit-actor' },
     })

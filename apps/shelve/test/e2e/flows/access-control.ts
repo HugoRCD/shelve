@@ -1,7 +1,7 @@
 import { request } from 'node:http'
 import { url, fetch } from '@nuxt/test-utils/e2e'
 import { test, expect } from 'vitest'
-import type { TokenScopes } from '@types'
+import type { ApiKeyScopes } from '@types'
 import type { E2EContext } from '../helpers'
 import { authedFetch, seedUser } from '../helpers'
 
@@ -43,12 +43,12 @@ export function registerAccessControlTests(ctx: E2EContext) {
   let intruder: ReturnType<typeof authedFetch>
   let intruderTeamSlug: string
 
-  async function createToken(name: string, scopes: TokenScopes): Promise<string> {
-    const created = await ctx.api<{ token: string }>('/api/tokens', {
+  async function createToken(name: string, scopes: ApiKeyScopes): Promise<string> {
+    const created = await ctx.api<{ key: string }>('/api/api-keys', {
       method: 'POST',
       body: { name, scopes },
     })
-    return created.token
+    return created.key
   }
 
   test('setup: a second team with its own project', async () => {
@@ -142,27 +142,27 @@ export function registerAccessControlTests(ctx: E2EContext) {
   test('a token only reaches the routes it is meant for, however the path is written', async () => {
     const token = await createToken('path-tricks', { permissions: ['read', 'write'], projectIds: [ctx.projectId] })
     const headers = { Authorization: `Bearer ${token}` }
-    const before = await ctx.api<unknown[]>('/api/tokens')
+    const before = await ctx.api<unknown[]>('/api/api-keys')
 
-    expect(await rawRequest('/api/tokens%3F/%2e%2e/teams/x', { method: 'POST', headers, body: { name: 'minted' } })).toBe(403)
-    expect(await rawRequest('/api/tokens%3F/../teams/x', { method: 'POST', headers, body: { name: 'minted' } })).toBe(403)
+    expect(await rawRequest('/api/api-keys%3F/%2e%2e/teams/x', { method: 'POST', headers, body: { name: 'minted' } })).toBe(403)
+    expect(await rawRequest('/api/api-keys%3F/../teams/x', { method: 'POST', headers, body: { name: 'minted' } })).toBe(403)
     expect(await rawRequest('/api/user%3F/%2e%2e/teams/x', { method: 'DELETE', headers })).toBe(403)
     expect(await rawRequest('/api/teams/', { method: 'POST', headers, body: { name: 'Token Team' } })).toBe(403)
 
-    expect(await ctx.api<unknown[]>('/api/tokens')).toHaveLength(before.length)
+    expect(await ctx.api<unknown[]>('/api/api-keys')).toHaveLength(before.length)
     expect(await rawRequest(`/api/teams/${ctx.teamSlug}/projects/${ctx.projectId}`, { headers })).toBe(200)
   })
 
   test('a token cannot create or list tokens', async () => {
     const token = await createToken('full-access', { permissions: ['read', 'write'] })
 
-    const create = await withToken(token, '/api/tokens', {
+    const create = await withToken(token, '/api/api-keys', {
       method: 'POST',
       body: { name: 'minted-by-token' },
     })
     expect(create.status).toBe(403)
 
-    const list = await withToken(token, '/api/tokens')
+    const list = await withToken(token, '/api/api-keys')
     expect(list.status).toBe(403)
   })
 

@@ -23,7 +23,7 @@ export default eventHandler(async (event) => {
 
   if (!project) throw createError({ statusCode: 400, statusMessage: 'Project not found' })
 
-  await requireTokenScope(event, { permission: 'read', projectId: project.id })
+  await requireApiKeyScope(event, { permission: 'read', projectId: project.id })
 
   return project
 })

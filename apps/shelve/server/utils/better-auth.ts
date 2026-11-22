@@ -3,6 +3,7 @@ import { betterAuth } from 'better-auth'
 import { APIError, createAuthMiddleware } from 'better-auth/api'
 import { drizzleAdapter } from 'better-auth/adapters/drizzle'
 import { emailOTP, oAuthProxy } from 'better-auth/plugins'
+import { apiKey } from '@better-auth/api-key'
 
 type OAuthProvider = 'github' | 'google'
 
@@ -89,6 +90,12 @@ function createServerAuth() {
       '/email-otp/reset-password',
       '/email-otp/request-email-change',
       '/email-otp/change-email',
+      // API keys are created, listed and revoked through `/api/api-keys`, which checks scopes and writes the audit log.
+      '/api-key/create',
+      '/api-key/get',
+      '/api-key/update',
+      '/api-key/delete',
+      '/api-key/list',
     ],
     database: drizzleAdapter(db, {
       provider: 'pg',
@@ -97,6 +104,7 @@ function createServerAuth() {
         accounts: schema.accounts,
         sessions: schema.sessions,
         verifications: schema.verifications,
+        apiKeys: schema.apiKeys,
       },
     }),
     advanced: {
@@ -176,6 +184,12 @@ function createServerAuth() {
       }),
     },
     plugins: [
+      // Verifies API keys. Shelve creates them (`generateApiKey`), since their scopes and IP allowlist are its own.
+      apiKey({
+        // CI pipelines call the API all day: no per-key request limit, as before.
+        rateLimit: { enabled: false },
+        schema: { apikey: { modelName: 'apiKeys' } },
+      }),
       emailOTP({
         otpLength: 6,
         expiresIn: 10 * 60,

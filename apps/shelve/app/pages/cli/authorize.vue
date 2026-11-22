@@ -212,7 +212,7 @@ useSeoMeta({
             </div>
 
             <p class="text-xs text-muted text-center">
-              Grants a revocable CLI token (read & write, 90-day expiry).
+              Grants a revocable CLI API key (read & write, 90-day expiry).
             </p>
 
             <div class="flex flex-col gap-2">

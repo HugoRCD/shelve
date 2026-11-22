@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import type { Token } from '@types'
+import type { ApiKey } from '@types'
 
 const props = defineProps<{
-  token: Token
+  apiKey: ApiKey
 }>()
 
 const { scopeLabels, fetchScopeLabels, teamName, projectName, environmentName } = useScopeLabels()
@@ -11,11 +11,11 @@ onMounted(() => fetchScopeLabels())
 
 const scopeChips = computed(() => {
   const chips: { label: string; icon: string }[] = []
-  const s = props.token.scopes
+  const s = props.apiKey.scopes
   if (s.teamIds?.length) chips.push({ label: `${s.teamIds.length} team${s.teamIds.length === 1 ? '' : 's'}`, icon: 'lucide:users' })
   if (s.projectIds?.length) chips.push({ label: `${s.projectIds.length} project${s.projectIds.length === 1 ? '' : 's'}`, icon: 'lucide:folder' })
   if (s.environmentIds?.length) chips.push({ label: `${s.environmentIds.length} env${s.environmentIds.length === 1 ? '' : 's'}`, icon: 'lucide:layers' })
-  if (props.token.allowedCidrs?.length) chips.push({ label: `${props.token.allowedCidrs.length} CIDR${props.token.allowedCidrs.length === 1 ? '' : 's'}`, icon: 'lucide:shield' })
+  if (props.apiKey.allowedCidrs?.length) chips.push({ label: `${props.apiKey.allowedCidrs.length} CIDR${props.apiKey.allowedCidrs.length === 1 ? '' : 's'}`, icon: 'lucide:shield' })
   return chips
 })
 
@@ -25,7 +25,7 @@ function formatList(ids: number[] | undefined, resolver: (id: number) => string)
 }
 
 const tooltip = computed(() => {
-  const s = props.token.scopes
+  const s = props.apiKey.scopes
   const lines: string[] = []
   const teams = formatList(s.teamIds, teamName)
   const projects = formatList(s.projectIds, projectName)
@@ -33,7 +33,7 @@ const tooltip = computed(() => {
   if (teams) lines.push(`Teams: ${teams}`)
   if (projects) lines.push(`Projects: ${projects}`)
   if (envs) lines.push(`Environments: ${envs}`)
-  if (props.token.allowedCidrs?.length) lines.push(`Allowed CIDRs: ${props.token.allowedCidrs.join(', ')}`)
+  if (props.apiKey.allowedCidrs?.length) lines.push(`Allowed CIDRs: ${props.apiKey.allowedCidrs.join(', ')}`)
   return lines.join('\n')
 })
 </script>
@@ -41,7 +41,7 @@ const tooltip = computed(() => {
 <template>
   <div class="flex flex-wrap items-center gap-1">
     <UBadge
-      v-for="permission in token.scopes.permissions"
+      v-for="permission in apiKey.scopes.permissions"
       :key="permission"
       size="sm"
       :color="permission === 'write' ? 'warning' : 'neutral'"

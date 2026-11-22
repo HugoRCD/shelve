@@ -136,14 +136,14 @@ export function useAppCommands() {
     },
     {
       id: 'settings-api',
-      label: 'Tokens',
+      label: 'API Keys',
       icon: 'lucide:key',
-      description: 'Manage API tokens',
+      description: 'Manage API keys',
       action: () => {
-        navigateTo(`/user/tokens`)
+        navigateTo(`/user/api-keys`)
       },
       keywords: ['api', 'keys', 'tokens', 'access'],
-      active: route.path.includes('/user/tokens')
+      active: route.path.includes('/user/api-keys')
     }
   ])
 

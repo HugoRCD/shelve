@@ -9,7 +9,7 @@ export default eventHandler(async (event) => {
     }).int().positive(),
   }).parse)
 
-  await requireTokenScope(event, {
+  await requireApiKeyScope(event, {
     teamId: team.id,
     projectId: project.id,
     environmentId: envId,

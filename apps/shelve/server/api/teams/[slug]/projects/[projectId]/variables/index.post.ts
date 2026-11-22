@@ -24,7 +24,7 @@ export default eventHandler(async (event) => {
   await assertPushAllowedForEnvironmentIds(body.environmentIds, team.id, project.id)
 
   for (const environmentId of body.environmentIds) {
-    await requireTokenScope(event, {
+    await requireApiKeyScope(event, {
       teamId: team.id,
       projectId: project.id,
       environmentId,

@@ -99,6 +99,27 @@
       "when": 1795373624143,
       "tag": "0013_otp_requests",
       "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1795375492348,
+      "tag": "0014_api_key_columns",
+      "breakpoints": true
+    },
+    {
+      "idx": 15,
+      "version": "7",
+      "when": 1795375493639,
+      "tag": "0015_api_key_hashes",
+      "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "7",
+      "when": 1795377101203,
+      "tag": "0016_api_key_rename",
+      "breakpoints": true
     }
   ]
 }

@@ -1,15 +1,15 @@
 <script setup lang="ts">
 import type { TableColumn } from '@nuxt/ui'
-import { type Token } from '@types'
+import { type ApiKey } from '@types'
 import { ConfirmModal } from '#components'
 
-const columns: TableColumn<Token>[] = [
+const columns: TableColumn<ApiKey>[] = [
   {
     accessorKey: 'name',
     header: 'Name',
   },
   {
-    accessorKey: 'prefix',
+    accessorKey: 'start',
     header: 'Prefix',
   },
   {
@@ -21,7 +21,7 @@ const columns: TableColumn<Token>[] = [
     header: 'Created',
   },
   {
-    accessorKey: 'lastUsedAt',
+    accessorKey: 'lastRequest',
     header: 'Last Used',
   },
   {
@@ -34,7 +34,7 @@ const columns: TableColumn<Token>[] = [
   },
 ]
 
-const items = (row: Token) => [
+const items = (row: ApiKey) => [
   [
     {
       label: 'Delete',
@@ -42,13 +42,13 @@ const items = (row: Token) => [
       onSelect: () => {
         modal.open({
           title: 'Are you sure?',
-          description: `You are about to delete ${row.name} token which is currently ${isTokenActive(row.lastUsedAt) ? 'active' : 'inactive'}, this action cannot be undone.`,
+          description: `You are about to delete ${row.name} API key which is currently ${isApiKeyActive(row.lastRequest) ? 'active' : 'inactive'}, this action cannot be undone.`,
           danger: true,
           onSuccess() {
-            toast.promise(deleteToken(row), {
-              loading: 'Deleting token...',
-              success: 'Token has been deleted',
-              error: 'Failed to delete token',
+            toast.promise(deleteApiKey(row), {
+              loading: 'Deleting API key...',
+              success: 'API key has been deleted',
+              error: 'Failed to delete API key',
             })
           },
         })
@@ -57,23 +57,23 @@ const items = (row: Token) => [
   ],
 ]
 
-const tokens = ref<Token[]>([])
+const apiKeys = ref<ApiKey[]>([])
 const search = ref('')
 const loading = ref(false)
 
-const filteredTokens = computed(() => {
-  if (!search.value) return tokens.value
-  return tokens.value!.filter((token: Token) => token.name.toLowerCase().includes(search.value.toLowerCase()))
+const filteredApiKeys = computed(() => {
+  if (!search.value) return apiKeys.value
+  return apiKeys.value!.filter((apiKey: ApiKey) => apiKey.name.toLowerCase().includes(search.value.toLowerCase()))
 })
 
-async function fetchTokens() {
+async function fetchApiKeys() {
   loading.value = true
   try {
-    tokens.value = await $fetch<Token[]>('/api/tokens', {
+    apiKeys.value = await $fetch<ApiKey[]>('/api/api-keys', {
       method: 'GET',
     })
   } catch (error) {
-    toast.error('Failed to fetch tokens')
+    toast.error('Failed to fetch API keys')
   }
   loading.value = false
 }
@@ -81,35 +81,35 @@ async function fetchTokens() {
 const overlay = useOverlay()
 const modal = overlay.create(ConfirmModal)
 
-async function deleteToken(token: Token) {
-  await $fetch(`/api/tokens/${token.id}`, {
+async function deleteApiKey(apiKey: ApiKey) {
+  await $fetch(`/api/api-keys/${apiKey.id}`, {
     method: 'DELETE',
   })
-  await fetchTokens()
+  await fetchApiKeys()
 }
 
-function isTokenActive(value: string | Date | null) {
+function isApiKeyActive(value: string | Date | null) {
   if (!value) return false
-  const lastUsedAt = new Date(value)
+  const lastRequest = new Date(value)
   const oneWeekAgo = new Date(Date.now() - 1000 * 60 * 60 * 24 * 7)
-  return lastUsedAt > oneWeekAgo
+  return lastRequest > oneWeekAgo
 }
 
-fetchTokens()
+fetchApiKeys()
 
 useSeoMeta({
-  title: 'Tokens',
+  title: 'API Keys',
 })
 </script>
 
 <template>
   <PageSection
-    title="Tokens"
-    description="Manage your tokens for the CLI"
+    title="API Keys"
+    description="Manage your API keys for the CLI and CI"
   >
     <UTable
       :columns
-      :data="filteredTokens"
+      :data="filteredApiKeys"
       :loading
       :ui="{
         base: 'table-fixed border-separate border-spacing-0',
@@ -119,23 +119,23 @@ useSeoMeta({
         td: 'border-b border-default'
       }"
     >
-      <template #prefix-cell="{ row }">
-        <TokenToggle :prefix="row.original.prefix" />
+      <template #start-cell="{ row }">
+        <ApiKeyToggle :start="row.original.start" />
       </template>
       <template #scopes-cell="{ row }">
-        <TokenScopes :token="row.original" />
+        <ApiKeyScopes :api-key="row.original" />
       </template>
       <template #createdAt-cell="{ row }">
         <DatePopover :date="row.original.createdAt" label="Created At" />
       </template>
-      <template #lastUsedAt-cell="{ row }">
+      <template #lastRequest-cell="{ row }">
         <span class="flex items-center gap-1">
-          <DatePopover v-if="row.original.lastUsedAt" :date="row.original.lastUsedAt" label="Last Used" />
+          <DatePopover v-if="row.original.lastRequest" :date="row.original.lastRequest" label="Last Used" />
           <span v-else class="text-sm text-muted">never</span>
-          <UTooltip v-if="!isTokenActive(row.original.lastUsedAt)" text="Token seems to be inactive">
+          <UTooltip v-if="!isApiKeyActive(row.original.lastRequest)" text="API key seems to be inactive">
             <UIcon name="heroicons-outline:clock" class="size-4 text-red-600" />
           </UTooltip>
-          <UTooltip v-else text="Token is active">
+          <UTooltip v-else text="API key is active">
             <UIcon name="heroicons-outline:clock" class="size-4 text-muted" />
           </UTooltip>
         </span>
@@ -155,8 +155,8 @@ useSeoMeta({
     </UTable>
 
     <template #actions>
-      <TokenCreate @create="fetchTokens" />
-      <UInput v-model="search" size="sm" placeholder="Search tokens" />
+      <ApiKeyCreate @create="fetchApiKeys" />
+      <UInput v-model="search" size="sm" placeholder="Search API keys" />
     </template>
   </PageSection>
 </template>

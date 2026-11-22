@@ -6,7 +6,7 @@ export default eventHandler(async (event) => {
   if (!encryptedVariables)
     throw createError({ statusCode: 404, statusMessage: 'Project variables not found' })
 
-  const environmentIds = await getTokenScopeIds(event, 'environmentIds')
+  const environmentIds = await getApiKeyScopeIds(event, 'environmentIds')
   const visibleVariables = environmentIds
     ? encryptedVariables
       .map(variable => ({ ...variable, values: variable.values.filter(value => environmentIds.includes(value.environmentId)) }))

@@ -8,6 +8,6 @@ export default eventHandler(async (event) => {
   }).parse)
 
   const environment = await new EnvironmentsService().getEnvironment(id, team.id)
-  await requireTokenScope(event, { permission: 'read', environmentId: environment.id })
+  await requireApiKeyScope(event, { permission: 'read', environmentId: environment.id })
   return environment
 })

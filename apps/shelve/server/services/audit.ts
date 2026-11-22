@@ -1,5 +1,5 @@
 import type { H3Event } from 'h3'
-import type { AuditAction, AuditActorType, Member, TeamRole, TokenScopes } from '@types'
+import type { AuditAction, AuditActorType, Member, TeamRole, ApiKeyScopes } from '@types'
 import { inArray } from 'drizzle-orm'
 
 export type AuditEvent = {
@@ -19,11 +19,11 @@ export type AuditEvent = {
 export async function logAudit(event: H3Event, payload: AuditEvent): Promise<void> {
   try {
     const auth = await getAuth(event)
-    const actorType: AuditActorType = auth?.token ? 'token' : auth ? 'user' : 'system'
-    const actorId = auth?.token ? auth.token.id : auth?.user.id ?? null
+    const actorType: AuditActorType = auth?.apiKey ? 'token' : auth ? 'user' : 'system'
+    const actorId = auth?.apiKey ? auth.apiKey.id : auth?.user.id ?? null
 
-    const tokenMeta = auth?.token
-      ? { tokenPrefix: auth.token.prefix, tokenName: auth.token.name }
+    const tokenMeta = auth?.apiKey
+      ? { tokenPrefix: auth.apiKey.start, tokenName: auth.apiKey.name }
       : {}
 
     const ip = getClientIp(event)
@@ -119,8 +119,8 @@ export async function getUserTeamIds(userId: number): Promise<number[]> {
 }
 
 /** The teams a token event is logged to: those its scopes name, limited to the teams the user belongs to. */
-export async function resolveTeamIdsFromTokenScopes(
-  scopes: TokenScopes,
+export async function resolveTeamIdsFromApiKeyScopes(
+  scopes: ApiKeyScopes,
   userId: number,
 ): Promise<number[]> {
   const userTeamIds = await getUserTeamIds(userId)
@@ -128,7 +128,7 @@ export async function resolveTeamIdsFromTokenScopes(
   return scopedTeamIds ? scopedTeamIds.filter(id => userTeamIds.includes(id)) : userTeamIds
 }
 
-async function getScopedTeamIds(scopes: TokenScopes): Promise<number[] | null> {
+async function getScopedTeamIds(scopes: ApiKeyScopes): Promise<number[] | null> {
   if (scopes.teamIds?.length) {
     return scopes.teamIds
   }

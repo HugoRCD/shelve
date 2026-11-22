@@ -1,6 +1,6 @@
-export const TOKEN_PREFIX = 'she_'
+export const API_KEY_PREFIX = 'she_'
 export const DEFAULT_AVATAR = 'https://i.imgur.com/6VBx3io.png'
-export const TOKEN_PREFIX_DISPLAY_LENGTH = 12
+export const API_KEY_START_LENGTH = 12
 
 /** `users` columns that can be sent to clients. */
 export const PUBLIC_USER_COLUMNS = {

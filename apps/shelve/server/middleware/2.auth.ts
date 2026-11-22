@@ -1,7 +1,7 @@
 import type { H3Event } from 'h3'
 
-/** API tokens only reach the team API and `GET /api/user/me`. Account, token and admin routes need a web session. */
-function acceptsTokens(event: H3Event): boolean {
+/** API keys only reach the team API and `GET /api/user/me`. Account, API key and admin routes need a web session. */
+function acceptsApiKeys(event: H3Event): boolean {
   // Check the path the router matches: decoded and cut at the first `?`, so encoded characters can't point it elsewhere.
   const path = event.path.split('?')[0]!.replace(/\/+$/, '')
   if (path.includes('\\') || path.split('/').some(segment => segment === '.' || segment === '..')) return false
@@ -31,27 +31,26 @@ export default defineEventHandler(async (event) => {
 
   if (!bearer) return
 
-  if (!acceptsTokens(event)) {
+  if (!acceptsApiKeys(event)) {
     throw createError({ statusCode: 403, statusMessage: 'API tokens cannot be used on this endpoint' })
   }
 
-  let auth: Awaited<ReturnType<typeof authenticateToken>>
+  let auth: Awaited<ReturnType<typeof authenticateApiKey>>
   try {
-    auth = await authenticateToken(bearer, event)
+    auth = await authenticateApiKey(bearer, event)
   } catch {
-    // Token invalid, continue without session.
+    // Invalid key, continue without session.
     // The route handler will throw 401 if auth is required.
     return
   }
 
-  const { user, scopes, token } = auth
-  // Kept on the request only: a token's access must not outlive its revocation, expiry and IP allowlist.
-  event.context.auth = { user, token: { ...token, scopes } }
+  // Kept on the request only: an API key's access must not outlive its revocation, expiry and IP allowlist.
+  event.context.auth = auth
   if (legacyCookie) {
     setResponseHeader(event, 'Deprecation', 'true')
     setResponseHeader(event, 'Sunset', 'Wed, 01 Jul 2026 00:00:00 GMT')
     setResponseHeader(event, 'Link', '</docs/cli/auth>; rel="deprecation"')
   }
 
-  await requireTokenScope(event, { permission: getRequestPermission(event) })
+  await requireApiKeyScope(event, { permission: getRequestPermission(event) })
 })
