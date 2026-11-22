@@ -1,4 +1,6 @@
 import { describe, test, expect } from 'vitest'
+import dotenv from 'dotenv'
+import { parseEnvFile } from '@utils'
 import { EnvService } from '../src/services/env'
 
 describe('EnvService.formatEnvContent', () => {
@@ -138,5 +140,83 @@ describe('EnvService.formatEnvContent', () => {
     expect(result).not.toContain('API_KEY=secret')
     expect(result).toContain('# Database host')
     expect(result).toContain('# ---- Database ----')
+  })
+})
+
+describe('EnvService.formatEnvContent output safety', () => {
+  const roundTripValues = [
+    '',
+    'plain',
+    'with space inside',
+    ' leading space',
+    'trailing space ',
+    'has#hash',
+    'quote"inside',
+    'it\'s',
+    '"wrapped"',
+    '\'wrapped\'',
+    '`ticks`',
+    'C:\\dir\\file',
+    'pass#word\\',
+    '\\n is not a newline',
+    'line1\nline2',
+    'crlf\r\nend',
+    'every \' and " and \\ and \n',
+    'tab\tinside',
+    '=starts-with-equals',
+    'unicode\u2028separator',
+    '-----BEGIN KEY-----\nabc\n-----END KEY-----\n',
+  ]
+
+  const toVars = (values: string[]): { key: string, value: string }[] =>
+    values.map((value, index) => ({ key: `KEY_${index}`, value }))
+
+  test('a value containing a newline stays one variable', () => {
+    const content = EnvService.formatEnvContent([{ key: 'API_KEY', value: 'abc\nINJECTED=1' }])
+
+    expect(parseEnvFile(content)).toEqual([{ key: 'API_KEY', value: 'abc\nINJECTED=1' }])
+    expect(dotenv.parse(content)).toEqual({ API_KEY: 'abc\nINJECTED=1' })
+  })
+
+  test('descriptions and group names cannot add variables', () => {
+    const group = { name: 'G\rINJECTED_2=1', description: 'd\u2028INJECTED_3=1' }
+    const content = EnvService.formatEnvContent([{ key: 'DB', value: 'x', description: 'desc\nINJECTED_1=1', group }])
+
+    expect(parseEnvFile(content).map(v => v.key)).toEqual(['DB'])
+    expect(Object.keys(dotenv.parse(content))).toEqual(['DB'])
+  })
+
+  test('skips keys that are not valid variable names', () => {
+    const content = EnvService.formatEnvContent([
+      { key: 'GOOD_KEY', value: '1' },
+      { key: 'BAD KEY', value: '2' },
+      { key: 'A=B', value: '3' },
+      { key: 'X\nINJECTED', value: '4' },
+      { key: '1ABC', value: '5' },
+    ])
+
+    expect(parseEnvFile(content)).toEqual([{ key: 'GOOD_KEY', value: '1' }])
+    expect(content).not.toContain('INJECTED')
+  })
+
+  test('writes values that need no quoting as KEY=value', () => {
+    expect(EnvService.formatEnvContent([{ key: 'URL', value: 'https://example.com?a=b&c=d' }]))
+      .toContain('\nURL=https://example.com?a=b&c=d')
+  })
+
+  test('round-trips every value through the CLI parser', () => {
+    const vars = toVars(roundTripValues)
+
+    expect(parseEnvFile(EnvService.formatEnvContent(vars))).toEqual(vars)
+  })
+
+  test('round-trips through dotenv unless a quoted value also needs backslash escapes', () => {
+    // dotenv only unescapes \n and \r inside double quotes, so a value that needs
+    // double quotes (a newline or a single quote) and also holds \ or " can't be
+    // written in a form dotenv reads back byte for byte.
+    const values = roundTripValues.filter(value => !(/['\r\n]/.test(value) && /["\\]/.test(value)))
+    const vars = toVars(values)
+
+    expect(dotenv.parse(EnvService.formatEnvContent(vars))).toEqual(Object.fromEntries(vars.map(v => [v.key, v.value])))
   })
 })

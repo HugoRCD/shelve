@@ -1,6 +1,6 @@
 import { defineCommand } from 'citty'
 import type { EnvDiffResult, PushEnvFileResult, ResolvedSyncPolicy, ShelveConfig } from '@types'
-import { assertSyncConfirmationAllowed, loadShelveConfig, shouldSkipConfirm } from '../utils'
+import { assertSyncConfirmationAllowed, isAgentShell, loadShelveConfig, shouldSkipConfirm } from '../utils'
 import { assertPullAllowed, assertPushAllowed, getResolvedSyncPolicy } from '../utils/sync-policy'
 import { runFanOutCommand } from '../utils/workspaces'
 import { cliIntro, cliOutro, cliWarn } from '../utils/output'
@@ -131,6 +131,19 @@ async function syncProject(config: ShelveConfig, args: SyncArgs): Promise<SyncRe
     cliWarn('No variables to pull')
     cliOutro('Nothing to pull')
     return { env: environment.name, action: 'pull', variableCount: 0 }
+  }
+
+  // Same guard as `shelve pull`: a sync that pulls writes the same plaintext file
+  if (isAgentShell()) {
+    if (!args.skipConfirm) {
+      throw new CliError(
+        `\`shelve sync\` writes plaintext secrets to ${envFileName} where AI agents can read them.`,
+        'AGENT_BLOCKED',
+        undefined,
+        'Prefer `shelve run -- <cmd>` so secrets stay in memory, or pass --yes to write secrets to disk anyway.',
+      )
+    }
+    cliWarn(`${process.env.AI_AGENT || 'AI agent'} detected. Writing secrets to ${envFileName}. Prefer \`shelve run -- <cmd>\` when possible.`)
   }
 
   await EnvService.createEnvFile({

@@ -1,10 +1,15 @@
-const LINE_RE = /^\s*(?:export\s+)?(?<key>[a-zA-Z_][a-zA-Z0-9_]*)\s*=\s*(?<val>.*?)\s*$/
+// `s`: a value can hold U+2028/U+2029, which `.` would not match otherwise; lines are split on \n
+const LINE_RE = /^\s*(?:export\s+)?(?<key>[a-zA-Z_][a-zA-Z0-9_]*)\s*=\s*(?<val>.*?)\s*$/s
+
+const UNESCAPES: Record<string, string> = { n: '\n', r: '\r' }
 
 function unquote(val: string): string {
-  if (
-    (val.startsWith('"') && val.endsWith('"'))
-    || (val.startsWith("'") && val.endsWith("'"))
-  ) {
+  // Double quotes carry escapes for backslash, double quote and line breaks
+  // (the form the Shelve CLI writes values with newlines or quotes in)
+  if (val.startsWith('"') && val.endsWith('"')) {
+    return val.slice(1, -1).replace(/\\([\\"nr])/g, (_, char: string) => UNESCAPES[char] ?? char)
+  }
+  if (val.startsWith("'") && val.endsWith("'")) {
     return val.slice(1, -1)
   }
   return val

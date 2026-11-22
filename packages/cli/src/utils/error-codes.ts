@@ -8,7 +8,7 @@ export const EXIT_CODES = {
 
 export const CLI_ERROR_CODES: Record<string, { meaning: string, hint?: string }> = {
   AGENT_BLOCKED: {
-    meaning: 'shelve pull refused in an AI agent shell without --yes',
+    meaning: 'shelve pull (or a sync that pulls) refused in an AI agent shell without --yes',
     hint: 'Prefer `shelve run -- <cmd>` or pass --yes to write secrets to disk.',
   },
   AUTH_REQUIRED: {

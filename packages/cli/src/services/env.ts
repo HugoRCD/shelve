@@ -1,3 +1,5 @@
+import { existsSync, lstatSync, realpathSync } from 'node:fs'
+import { basename, dirname, isAbsolute, join, relative, resolve, sep } from 'node:path'
 import { parseEnvFile } from '@utils'
 import type {
   EnvVar,
@@ -12,6 +14,71 @@ import { cliWarn } from '../utils/output'
 import { loadShelveConfig, askBoolean } from '../utils'
 import { FileService } from './file'
 import { BaseService } from './base'
+import { CliError } from './api-error'
+
+/** Names a .env line can hold; anything else could break the line it is written on */
+const ENV_KEY_RE = /^[A-Za-z_][A-Za-z0-9_]*$/
+
+const ESCAPES: Record<string, string> = { '\\': '\\\\', '"': '\\"', '\n': '\\n', '\r': '\\r' }
+
+/**
+ * Writes `value` so it always reads back as this one variable. A value that needs
+ * no quoting stays bare. Otherwise it gets single quotes, which dotenv reads back
+ * verbatim. A value holding a single quote or a line break gets double quotes
+ * instead, with backslash, double quote and line breaks escaped: dotenv unescapes
+ * \n and \r, and parseEnvFile (@utils) unescapes all four.
+ */
+function formatEnvValue(value: string): string {
+  if (!/[\r\n#"'`]/.test(value) && value === value.trim()) return value
+  if (!/['\r\n]/.test(value)) return `'${value}'`
+  return `"${value.replace(/[\\"\r\n]/g, char => ESCAPES[char] ?? char)}"`
+}
+
+/** Keeps a description or group name on its comment line (dotenv also breaks lines at U+2028/U+2029) */
+function formatComment(text: string): string {
+  return text.replace(/[\r\n\u2028\u2029]+/g, ' ')
+}
+
+/**
+ * Resolves envFileName, which can come from a cloned repository's shelve.json,
+ * inside the project directory (the command's working directory). Absolute paths,
+ * `..` and symlinks leading out of it are refused, so pull can't overwrite, and
+ * push can't upload, a file elsewhere on the machine.
+ *
+ * @param envFileName - The configured env file name
+ * @returns The path to read or write, inside the project directory
+ */
+function resolveEnvFilePath(envFileName: string): string {
+  const root = realpathSync(process.cwd())
+  const path = resolve(root, envFileName)
+  // Follow symlinks: the file itself when it exists, else the directory it would go in
+  const realPath = existsSync(path)
+    ? realpathSync(path)
+    : existsSync(dirname(path)) ? join(realpathSync(dirname(path)), basename(path)) : path
+  const fromRoot = relative(root, realPath)
+
+  if (isAbsolute(envFileName) || isAbsolute(fromRoot) || fromRoot === '..' || fromRoot.startsWith(`..${sep}`)) {
+    throw new CliError(
+      `envFileName "${envFileName}" points outside the project directory (${root}).`,
+      'INVALID_INPUT',
+      undefined,
+      'Set envFileName in shelve.json to a file inside the project, such as ".env".',
+    )
+  }
+  return path
+}
+
+/** A symlink would send the write to wherever it points, possibly outside the project */
+function assertNotSymlink(path: string): void {
+  if (lstatSync(path, { throwIfNoEntry: false })?.isSymbolicLink()) {
+    throw new CliError(
+      `Refusing to write ${relative(process.cwd(), path)}: it is a symbolic link.`,
+      'INVALID_INPUT',
+      undefined,
+      'Replace it with a regular file.',
+    )
+  }
+}
 
 export class EnvService extends BaseService {
 
@@ -20,6 +87,7 @@ export class EnvService extends BaseService {
     const ungrouped: EnvVarExport[] = []
 
     for (const variable of variables) {
+      if (!ENV_KEY_RE.test(variable.key)) continue
       if (variable.group) {
         const existing = grouped.get(variable.group.name)
         if (existing) {
@@ -39,19 +107,19 @@ export class EnvService extends BaseService {
 
     for (const [name, { description, vars }] of grouped) {
       lines.push('')
-      lines.push(`# ---- ${name} ----`)
-      if (description) lines.push(`# ${description}`)
+      lines.push(`# ---- ${formatComment(name)} ----`)
+      if (description) lines.push(`# ${formatComment(description)}`)
       for (const v of vars) {
-        if (v.description) lines.push(`# ${v.description}`)
-        lines.push(`${v.key}=${v.value}`)
+        if (v.description) lines.push(`# ${formatComment(v.description)}`)
+        lines.push(`${v.key}=${formatEnvValue(v.value)}`)
       }
     }
 
     if (ungrouped.length > 0) {
       if (grouped.size > 0) lines.push('')
       for (const v of ungrouped) {
-        if (v.description) lines.push(`# ${v.description}`)
-        lines.push(`${v.key}=${v.value}`)
+        if (v.description) lines.push(`# ${formatComment(v.description)}`)
+        lines.push(`${v.key}=${formatEnvValue(v.value)}`)
       }
     }
 
@@ -60,9 +128,10 @@ export class EnvService extends BaseService {
 
   static async getEnvFile(): Promise<EnvVar[]> {
     const { envFileName } = await loadShelveConfig()
+    const path = resolveEnvFilePath(envFileName)
 
-    if (FileService.exists(envFileName)) {
-      const envFile = FileService.read(envFileName)
+    if (FileService.exists(path)) {
+      const envFile = FileService.read(path)
       return parseEnvFile(envFile)
     }
     return []
@@ -70,6 +139,15 @@ export class EnvService extends BaseService {
 
   static async createEnvFile(input: CreateEnvFileInput): Promise<void> {
     const { envFileName, variables, confirmChanges, pullMode = 'replace' } = input
+    const path = resolveEnvFilePath(envFileName)
+    const examplePath = `${path}.example`
+    assertNotSymlink(path)
+    assertNotSymlink(examplePath)
+
+    const invalidKeys = variables.filter(v => !ENV_KEY_RE.test(v.key)).map(v => JSON.stringify(v.key))
+    if (invalidKeys.length > 0) {
+      cliWarn(`Skipped ${invalidKeys.length} variable(s) whose name is not a valid env var name: ${invalidKeys.join(', ')}`)
+    }
 
     if (confirmChanges)
       await askBoolean(`Are you sure you want to update ${envFileName} file?`)
@@ -77,8 +155,8 @@ export class EnvService extends BaseService {
     await this.withLoading(`Creating ${envFileName} and ${envFileName}.example files`, async () => {
       const content = this.formatEnvContent(variables)
 
-      if (pullMode === 'replace' && FileService.exists(envFileName)) FileService.delete(envFileName)
-      FileService.write(envFileName, content)
+      if (pullMode === 'replace' && FileService.exists(path)) FileService.delete(path)
+      FileService.write(path, content, 0o600)
 
       const exampleVars: EnvVarExport[] = variables.map((v) => ({
         key: v.key,
@@ -86,7 +164,7 @@ export class EnvService extends BaseService {
         description: v.description,
         group: v.group,
       }))
-      FileService.write(`${envFileName}.example`, this.formatEnvContent(exampleVars))
+      FileService.write(examplePath, this.formatEnvContent(exampleVars))
 
       // TODO: make withLoading work without setTimeout
       await new Promise((resolve) => setTimeout(resolve, 10))
@@ -132,9 +210,10 @@ export class EnvService extends BaseService {
 
   static async generateEnvExampleFile(): Promise<void> {
     const { envFileName } = await loadShelveConfig()
-    const envExampleFile = `${envFileName}.example`
+    const envExampleFile = `${resolveEnvFilePath(envFileName)}.example`
+    assertNotSymlink(envExampleFile)
 
-    await this.withLoading(`Generating ${envExampleFile} file`, async () => {
+    await this.withLoading(`Generating ${envFileName}.example file`, async () => {
       const variables = await this.getEnvFile()
 
       const exampleVars: EnvVarExport[] = variables.map((v) => ({

@@ -11,8 +11,10 @@ export class FileService {
     return fs.readFileSync(filename, 'utf8')
   }
 
-  static write(filename: string, content: string): void {
-    fs.writeFileSync(filename, content, { encoding: 'utf8' })
+  static write(filename: string, content: string, mode?: number): void {
+    fs.writeFileSync(filename, content, { encoding: 'utf8', mode })
+    // writeFileSync only applies `mode` to a file it creates
+    if (mode !== undefined && process.platform !== 'win32') fs.chmodSync(filename, mode)
   }
 
   static delete(filename: string): void {

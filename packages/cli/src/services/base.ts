@@ -68,7 +68,14 @@ export abstract class BaseService {
 
     const user = await this.whoAmI(url, token)
 
-    await CredentialsService.writeToken(url, token, { email: user.email, username: user.username })
+    // A url set by the repository (shelve.json) keeps its own token without
+    // becoming the server every other repository talks to
+    await CredentialsService.writeToken(
+      url,
+      token,
+      { email: user.email, username: user.username },
+      CredentialsService.isDefaultServer(url),
+    )
 
     if (returnUser) return {
       user,

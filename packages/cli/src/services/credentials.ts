@@ -1,8 +1,10 @@
+import { createHash } from 'node:crypto'
 import { chmodSync, existsSync, mkdirSync, readFileSync, unlinkSync } from 'node:fs'
 import { homedir } from 'node:os'
 import { dirname, join } from 'node:path'
-import { readUserConfig, writeUserConfig } from 'rc9'
+import { readUserConfig, updateUserConfig, writeUserConfig } from 'rc9'
 import consola from 'consola'
+import { DEFAULT_URL } from '@types'
 import { isDebug, debugLog } from '../constants'
 
 const KEYRING_SERVICE = 'shelve-cli'
@@ -12,8 +14,11 @@ const LEGACY_RC_PATH = join(homedir(), RC_FILENAME)
 type StoredConfig = {
   email?: string
   username?: string
+  /** The user's default server; `token` belongs to it */
   url?: string
   token?: string
+  /** File-stored tokens for servers other than the default one, keyed by tokenKey(url) */
+  tokens?: Record<string, string>
   storage?: 'keyring' | 'file'
 }
 
@@ -40,6 +45,15 @@ async function loadKeyring(): Promise<((service: string, account: string) => Key
 
 function accountFor(url: string): string {
   return url.replace(/\/+$/, '').toLowerCase()
+}
+
+/**
+ * Key for a server in StoredConfig.tokens. rc9 splits keys on dots, so the url
+ * can't be the key itself; the leading letter keeps rc9 from reading the map as
+ * an array when the hash starts with a digit.
+ */
+function tokenKey(url: string): string {
+  return `u${createHash('sha256').update(accountFor(url)).digest('hex').slice(0, 32)}`
 }
 
 function xdgConfigDir(): string {
@@ -109,11 +123,25 @@ function parseLegacyRc(contents: string): StoredConfig {
 
 export class CredentialsService {
 
-  static async writeToken(url: string, token: string, meta: { email: string; username: string }): Promise<void> {
+  /**
+   * Stores `token` for `url`.
+   *
+   * @param setDefault - Also make `url` the user's default server. Pass false for a
+   *   url set by a repository: it gets its own token, but must not redirect every
+   *   other repository to that server.
+   */
+  static async writeToken(
+    url: string,
+    token: string,
+    meta: { email: string; username: string },
+    setDefault = true,
+  ): Promise<void> {
     migrateLegacyConfig()
 
     const factory = await loadKeyring()
     const account = accountFor(url)
+    const { tokens } = readUserConfig(RC_FILENAME) as StoredConfig
+    const otherTokens = tokens ? { tokens } : {}
 
     ensureConfigDir()
 
@@ -121,15 +149,21 @@ export class CredentialsService {
       try {
         const entry = factory(KEYRING_SERVICE, account)
         entry.setPassword(token)
-        writeUserConfig({ email: meta.email, username: meta.username, url, storage: 'keyring' }, RC_FILENAME)
-        chmod600(configPath())
+        if (setDefault) {
+          writeUserConfig({ ...otherTokens, email: meta.email, username: meta.username, url, storage: 'keyring' }, RC_FILENAME)
+          chmod600(configPath())
+        }
         return
       } catch (err) {
         if (isDebug()) debugLog('Keyring write failed, falling back to file', err)
       }
     }
 
-    writeUserConfig({ token, email: meta.email, username: meta.username, url, storage: 'file' }, RC_FILENAME)
+    if (setDefault) {
+      writeUserConfig({ ...otherTokens, token, email: meta.email, username: meta.username, url, storage: 'file' }, RC_FILENAME)
+    } else {
+      updateUserConfig({ tokens: { [tokenKey(url)]: token } }, RC_FILENAME)
+    }
     chmod600(configPath())
     consola.warn(`Stored CLI token in plaintext file (${configPath()}, mode 0600). Install OS keychain support for stronger protection.`)
   }
@@ -139,20 +173,32 @@ export class CredentialsService {
 
     const conf = readUserConfig(RC_FILENAME) as StoredConfig
 
-    if (conf.storage === 'keyring' || (!conf.storage && !conf.token)) {
-      const factory = await loadKeyring()
-      if (factory) {
-        try {
-          const entry = factory(KEYRING_SERVICE, accountFor(url))
-          const pwd = entry.getPassword()
-          if (pwd) return pwd
-        } catch (err) {
-          if (isDebug()) debugLog('Keyring read failed', err)
-        }
+    // A token in the file belongs to the server it was stored for, whatever url is asked for
+    if (conf.token && accountFor(conf.url || DEFAULT_URL) === accountFor(url)) return conf.token
+    const fileToken = conf.tokens?.[tokenKey(url)]
+    if (fileToken) return fileToken
+
+    const factory = await loadKeyring()
+    if (factory) {
+      try {
+        const entry = factory(KEYRING_SERVICE, accountFor(url))
+        const pwd = entry.getPassword()
+        if (pwd) return pwd
+      } catch (err) {
+        if (isDebug()) debugLog('Keyring read failed', err)
       }
     }
 
-    return conf.token
+    return undefined
+  }
+
+  /**
+   * Whether `url` is a server the user chose themselves: SHELVE_URL from the
+   * environment, or the default stored at login (app.shelve.cloud until then).
+   */
+  static isDefaultServer(url: string): boolean {
+    const { url: storedUrl } = this.readMeta()
+    return accountFor(url) === accountFor(process.env.SHELVE_URL || storedUrl || DEFAULT_URL)
   }
 
   static async clearToken(url: string): Promise<void> {

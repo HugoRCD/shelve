@@ -34,12 +34,26 @@ afterEach(() => {
   rmSync(sandbox, { recursive: true, force: true })
 })
 
+// A config file's `token` is ignored (token-binding.test.ts), so these tests
+// change the token through SHELVE_TOKEN instead.
 describe('BaseService.getApi memoization', () => {
-  it('rebuilds the client when a monorepo fan-out switches to a package with a different url/token', async () => {
+  let savedShelveToken: string | undefined
+
+  beforeEach(() => {
+    savedShelveToken = process.env.SHELVE_TOKEN
+    process.env.SHELVE_TOKEN = 'token-a'
+  })
+
+  afterEach(() => {
+    if (savedShelveToken === undefined) delete process.env.SHELVE_TOKEN
+    else process.env.SHELVE_TOKEN = savedShelveToken
+  })
+
+  it('rebuilds the client when a monorepo fan-out switches to a package with a different url', async () => {
     const pkgA = join(sandbox, 'pkg-a')
     const pkgB = join(sandbox, 'pkg-b')
-    writePackage(pkgA, { url: 'http://localhost:3000', token: 'token-a' })
-    writePackage(pkgB, { url: 'http://127.0.0.1:7777', token: 'token-b' })
+    writePackage(pkgA, { url: 'http://localhost:3000' })
+    writePackage(pkgB, { url: 'http://127.0.0.1:7777' })
 
     process.chdir(pkgA)
     const apiA1 = await getApi()
@@ -58,13 +72,14 @@ describe('BaseService.getApi memoization', () => {
   it('rebuilds when only the token changes, even if the url is identical', async () => {
     const pkgA = join(sandbox, 'pkg-a')
     const pkgC = join(sandbox, 'pkg-c')
-    writePackage(pkgA, { url: 'http://localhost:3000', token: 'token-a' })
-    writePackage(pkgC, { url: 'http://localhost:3000', token: 'token-c' })
+    writePackage(pkgA, { url: 'http://localhost:3000' })
+    writePackage(pkgC, { url: 'http://localhost:3000' })
 
     process.chdir(pkgA)
     const apiA = await getApi()
 
     process.chdir(pkgC)
+    process.env.SHELVE_TOKEN = 'token-c'
     const apiC = await getApi()
     expect(apiC).not.toBe(apiA) // same url, different token: must not reuse pkg-a's client
   })
