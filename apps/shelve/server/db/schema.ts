@@ -52,6 +52,7 @@ export const users = pgTable('users', {
   id: bigint({ mode: 'number' }).primaryKey().generatedByDefaultAsIdentity(),
   username: varchar({ length: 25 }).unique().notNull(),
   email: varchar({ length: 50 }).unique().notNull(),
+  emailVerified: boolean().default(false).notNull(),
   avatar: varchar({ length: 500 }).default(DEFAULT_AVATAR).notNull(),
   role: rolesEnum().default(Role.USER).notNull(),
   authType: authTypesEnum().notNull(),
@@ -69,13 +70,42 @@ export const users = pgTable('users', {
 export const accounts = pgTable('accounts', {
   id: bigint({ mode: 'number' }).primaryKey().generatedByDefaultAsIdentity(),
   userId: bigint({ mode: 'number' }).references(() => users.id, { onDelete: 'cascade' }).notNull(),
-  provider: authTypesEnum().notNull(),
+  // Better Auth's `providerId`, a free string such as `github` or `google`.
+  provider: varchar({ length: 32 }).notNull(),
+  // Better Auth's `accountId`: the stable ID the provider assigns.
   providerAccountId: varchar({ length: 64 }).notNull(),
+  accessToken: varchar({ length: 2048 }),
+  refreshToken: varchar({ length: 2048 }),
+  idToken: varchar({ length: 4096 }),
+  accessTokenExpiresAt: timestamp(),
+  refreshTokenExpiresAt: timestamp(),
+  scope: varchar({ length: 500 }),
+  password: varchar({ length: 255 }),
   ...timestamps,
 }, (table) => [
   uniqueIndex('accounts_provider_account_idx').on(table.provider, table.providerAccountId),
   index('accounts_user_idx').on(table.userId),
 ])
+
+/** Better Auth web sessions. */
+export const sessions = pgTable('sessions', {
+  id: bigint({ mode: 'number' }).primaryKey().generatedByDefaultAsIdentity(),
+  token: varchar({ length: 255 }).unique().notNull(),
+  userId: bigint({ mode: 'number' }).references(() => users.id, { onDelete: 'cascade' }).notNull(),
+  expiresAt: timestamp().notNull(),
+  ipAddress: varchar({ length: 45 }),
+  userAgent: varchar({ length: 512 }),
+  ...timestamps,
+}, (table) => [index('sessions_user_idx').on(table.userId),])
+
+/** Better Auth one-time values, such as email codes and OAuth state. */
+export const verifications = pgTable('verifications', {
+  id: bigint({ mode: 'number' }).primaryKey().generatedByDefaultAsIdentity(),
+  identifier: varchar({ length: 255 }).notNull(),
+  value: varchar({ length: 2048 }).notNull(),
+  expiresAt: timestamp().notNull(),
+  ...timestamps,
+}, (table) => [index('verifications_identifier_idx').on(table.identifier),])
 
 export const githubApp = pgTable('github_app', {
   id: bigint({ mode: 'number' }).primaryKey().generatedByDefaultAsIdentity(),
@@ -250,6 +280,13 @@ export const teamStats = pgTable('team_stats', {
   pullCount: integer('pull_count').notNull().default(0),
   ...timestamps,
 }, (table) => [uniqueIndex('team_stats_id_idx').on(table.id)])
+
+export const sessionsRelations = relations(sessions, ({ one }) => ({
+  user: one(users, {
+    fields: [sessions.userId],
+    references: [users.id],
+  })
+}))
 
 export const accountsRelations = relations(accounts, ({ one }) => ({
   user: one(users, {
