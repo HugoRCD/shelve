@@ -10,7 +10,7 @@ const updateUserSchema = z.object({
 
 export default eventHandler(async (event) => {
   const body = await readValidatedBody(event, updateUserSchema.parse)
-  const { user } = await requireUserSession(event)
+  const { user } = await requireAuth(event)
 
   if (body.username) body.username = await validateUsername(body.username, body.authType)
 

@@ -8,7 +8,7 @@ const createTeamSchema = z.object({
 })
 
 export default eventHandler(async (event) => {
-  const { user } = await requireUserSession(event)
+  const { user } = await requireAuth(event)
   const { name, logo } = await readValidatedBody(event, createTeamSchema.parse)
   return await new TeamsService().createTeam({
     name,

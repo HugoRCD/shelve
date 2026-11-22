@@ -1,7 +1,7 @@
 import type { Token } from '@types'
 
 export default defineEventHandler(async (event): Promise<Token[]> => {
-  const { user } = await requireUserSession(event)
+  const { user } = await requireAuth(event)
 
   return db.query.tokens.findMany({
     where: eq(schema.tokens.userId, user.id),

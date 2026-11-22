@@ -11,6 +11,51 @@ const teamSlugSchema = z.object({
   }).min(1),
 })
 
+/** The API token that authenticated the request. */
+export type AuthToken = {
+  id: number
+  prefix: string
+  name: string
+  scopes: TokenScopes
+}
+
+/**
+ * Who is making the request. `token` is null for a web session, which has the user's full access.
+ * Every route reads auth through `getAuth`/`requireAuth`, so the session library behind it can change in one place.
+ */
+export type AuthContext = {
+  user: User
+  token: AuthToken | null
+}
+
+declare module 'h3' {
+  interface H3EventContext {
+    /** Set by the auth middleware for API token requests. Web sessions are read from the session cookie. */
+    auth?: AuthContext
+  }
+}
+
+/** Returns the request's auth, or null when it is anonymous. */
+export async function getAuth(event: H3Event): Promise<AuthContext | null> {
+  if (event.context.auth) return event.context.auth
+  const { user } = await getUserSession(event)
+  return user ? { user, token: null } : null
+}
+
+/** The GitHub token of the user's web session, or undefined when they did not sign in with GitHub. API tokens never carry one. */
+export async function getGithubToken(event: H3Event): Promise<string | undefined> {
+  if (event.context.auth?.token) return
+  const { secure } = await getUserSession(event)
+  return secure?.githubToken
+}
+
+/** @throws {Error} 401 when the request is anonymous */
+export async function requireAuth(event: H3Event): Promise<AuthContext> {
+  const auth = await getAuth(event)
+  if (!auth) throw createError({ statusCode: 401, statusMessage: 'Unauthorized' })
+  return auth
+}
+
 /**
  * Runs the BotID challenge check, only enforced on production deployments.
  *
@@ -40,7 +85,7 @@ export async function requireHuman(): Promise<void> {
  * @throws {Error} If user is not authenticated or not an admin
  */
 export async function requireAdmin(event: H3Event): Promise<{ user: User }> {
-  const { user } = await requireUserSession(event)
+  const { user } = await requireAuth(event)
 
   // Read the role from the database: the session cookie keeps the role the user had when they signed in.
   const current = await db.query.users.findFirst({
@@ -74,7 +119,7 @@ export async function requireUserTeam(
   teamSlug: string,
   options?: { minRole?: TeamRole; teamWide?: boolean }
 ): Promise<{ user: User; team: Team; member: Member }> {
-  const { user } = await requireUserSession(event)
+  const { user } = await requireAuth(event)
 
   const { team, member } = await validateTeamAccess({ user, teamSlug })
 
@@ -103,12 +148,11 @@ export async function getTeamSlugFromEvent(event: H3Event): Promise<string> {
 }
 
 /**
- * Returns the token scopes attached to the current session, or null when
+ * Returns the scopes of the token that authenticated the request, or null when
  * authenticated via web (browser cookie session = full access for the user).
  */
 export async function getTokenScopes(event: H3Event): Promise<TokenScopes | null> {
-  const session = await getUserSession(event)
-  return (session as { tokenScopes?: TokenScopes }).tokenScopes ?? null
+  return (await getAuth(event))?.token?.scopes ?? null
 }
 
 /**

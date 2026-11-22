@@ -1,4 +1,4 @@
 export default defineEventHandler(async (event) => {
-  const session = await requireUserSession(event)
-  return await new GithubService(event).getUserRepos(event, session.user.id, requireGithubToken(session))
+  const { user } = await requireAuth(event)
+  return await new GithubService(event).getUserRepos(event, user.id, requireGithubToken(await getGithubToken(event)))
 })

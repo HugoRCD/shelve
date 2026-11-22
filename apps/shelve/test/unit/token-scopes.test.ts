@@ -10,23 +10,22 @@ vi.stubGlobal('createError', (opts: { statusCode: number; statusMessage: string 
   return err
 })
 
-let currentScopes: TokenScopes | null | undefined
-vi.stubGlobal('getUserSession', () => {
-  return Promise.resolve(currentScopes === undefined ? {} : { tokenScopes: currentScopes })
-})
-vi.stubGlobal('requireUserSession', () => Promise.resolve({ user: { id: 1 } }))
+vi.stubGlobal('getUserSession', () => Promise.resolve({ user: { id: 1 } }))
 vi.stubGlobal('getValidatedRouterParams', () => Promise.resolve({ slug: 'team' }))
 
 const { requireTokenScope, getRequestPermission, getTokenScopeIds } = await import('../../server/utils/auth')
 
-const fakeEvent = {} as H3Event
+const fakeEvent = { context: {} } as H3Event
 
-function withScopes(scopes: TokenScopes | null | undefined) {
-  currentScopes = scopes
+/** `null` is a web session; scopes make it a token request, as the auth middleware does. */
+function withScopes(scopes: TokenScopes | null) {
+  fakeEvent.context.auth = scopes
+    ? { user: { id: 1 } as never, token: { id: 7, prefix: 'she_', name: 'ci', scopes } }
+    : undefined
 }
 
 beforeEach(() => {
-  currentScopes = undefined
+  fakeEvent.context.auth = undefined
 })
 
 describe('requireTokenScope', () => {

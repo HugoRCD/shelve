@@ -9,22 +9,14 @@ function acceptsTokens(event: H3Event): boolean {
   return path.startsWith('/api/teams/')
 }
 
-/** nuxt-auth-utils seals every session write into a cookie, so drop it to keep a token session in its own request. */
-function dropSessionCookie(event: H3Event) {
-  const prefix = `${useRuntimeConfig(event).session.name}=`
-  const cookies = event.node.res.getHeader('set-cookie')
-  if (!cookies) return
-  const kept = (Array.isArray(cookies) ? cookies : [String(cookies)]).filter(cookie => !cookie.startsWith(prefix))
-  if (kept.length) event.node.res.setHeader('set-cookie', kept)
-  else event.node.res.removeHeader('set-cookie')
-}
-
 export default defineEventHandler(async (event) => {
   if (!event.path?.startsWith('/api')) return
 
-  const session = await getUserSession(event)
-  // A token session is only valid for the request that sent the token. One coming back in
-  // a cookie or session header would outlive the token's revocation, expiry and IP allowlist.
+  // Reading a nuxt-auth-utils session writes a session cookie, so only read one the request sent.
+  const sessionName = useRuntimeConfig(event).session.name
+  const session = getCookie(event, sessionName) ? await getUserSession(event) : {}
+  // Older releases sealed token sessions into the cookie. Refuse one coming back, since it
+  // would outlive the token's revocation, expiry and IP allowlist.
   if (session.tokenScopes) {
     await clearUserSession(event)
     throw createError({ statusCode: 401, statusMessage: 'Invalid session' })
@@ -63,15 +55,8 @@ export default defineEventHandler(async (event) => {
   }
 
   const { user, scopes, token } = auth
-  await setUserSession(event, {
-    user,
-    tokenScopes: scopes,
-    tokenId: token.id,
-    tokenPrefix: token.prefix,
-    tokenName: token.name,
-    loggedInAt: new Date(),
-  })
-  dropSessionCookie(event)
+  // Kept on the request only: a token's access must not outlive its revocation, expiry and IP allowlist.
+  event.context.auth = { user, token: { ...token, scopes } }
   if (legacyCookie) {
     setResponseHeader(event, 'Deprecation', 'true')
     setResponseHeader(event, 'Sunset', 'Wed, 01 Jul 2026 00:00:00 GMT')

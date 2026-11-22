@@ -6,7 +6,6 @@ import nacl from 'tweetnacl'
 import { blake2b } from 'blakejs'
 import { sanitizeGithubUrl } from '@utils'
 import { GITHUB_SIGN_IN_REQUIRED } from '../../shared/github'
-import type { UserSession } from '#auth-utils'
 
 /** `owner/name`, where the name is not `.` or `..`. */
 export const GITHUB_REPOSITORY_PATTERN = /^[\w-]+\/(?!\.\.?$)[\w.-]+$/
@@ -36,11 +35,11 @@ export function assertGithubSecretNames(keys: string[]) {
 }
 
 /** The GitHub token of the signed-in user. Only a GitHub sign-in stores one, and signing in replaces the whole session. */
-export function requireGithubToken(session: UserSession): string {
-  if (!session.secure?.githubToken) {
+export function requireGithubToken(githubToken: string | undefined): string {
+  if (!githubToken) {
     throw githubSignInError('Sign in to Shelve with GitHub to use your repositories')
   }
-  return session.secure.githubToken
+  return githubToken
 }
 
 function deriveNonce(

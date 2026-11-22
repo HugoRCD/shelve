@@ -62,12 +62,12 @@ export class VariablesService {
     const variablesToSend = varsToCreate.map(v => ({ key: autoUppercase ? v.key.toUpperCase() : v.key, value: v.value }))
     let githubTarget: SecretsTarget | undefined
     if (syncWithGitHub) {
-      const session = await requireUserSession(event)
-      const githubToken = requireGithubToken(session)
+      const { user } = await requireAuth(event)
+      const githubToken = requireGithubToken(await getGithubToken(event))
       assertGithubSecretNames(variablesToSend.map(({ key }) => key))
       const project = await new ProjectsService().getProject(projectId)
       if (!project || !project.repository) throw createError({ statusCode: 400, statusMessage: 'No GitHub repository linked to this project.' })
-      githubTarget = await new GithubService(event).getSecretsTarget(session.user.id, project.repository, githubToken)
+      githubTarget = await new GithubService(event).getSecretsTarget(user.id, project.repository, githubToken)
     }
 
     // Encrypt outside the transaction: this.encryption uses the global `db`

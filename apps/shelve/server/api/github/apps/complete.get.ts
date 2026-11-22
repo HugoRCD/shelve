@@ -5,13 +5,14 @@ const querySchema = z.object({
 })
 
 export default defineEventHandler(async (event) => {
-  const { user, secure } = await requireUserSession(event)
+  const { user } = await requireAuth(event)
+  const githubToken = await getGithubToken(event)
   const { installation_id: installationId } = await getValidatedQuery(event, querySchema.parse)
 
   // GitHub sends `installation_id` through the browser, so anyone could pass another account's id.
   // Only link installations that GitHub lists for this user. Sign-in replaces the whole session,
   // so this token always belongs to the signed-in user.
-  if (!secure?.githubToken || !await canAccessInstallation(secure.githubToken, installationId)) {
+  if (!githubToken || !await canAccessInstallation(githubToken, installationId)) {
     return sendRedirect(event, '/user/integrations?integration=github&setup=signin-required')
   }
 

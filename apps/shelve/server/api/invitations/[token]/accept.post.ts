@@ -7,7 +7,7 @@ export default eventHandler(async (event: H3Event) => {
     throw createError({ statusCode: 400, message: 'Token is required' })
   }
 
-  const { user } = await requireUserSession(event)
+  const { user } = await requireAuth(event)
 
   const invitation = await new InvitationsService().getInvitationByToken(token)
 

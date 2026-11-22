@@ -22,7 +22,7 @@ const bodySchema = z.object({
 
 export default defineEventHandler(async (event): Promise<TokenWithSecret> => {
   const { name, scopes, expiresIn, allowedCidrs } = await readValidatedBody(event, bodySchema.parse)
-  const { user } = await requireUserSession(event)
+  const { user } = await requireAuth(event)
 
   const { token, prefix, hash } = generateToken()
   const expiresAt = expiresIn ? new Date(Date.now() + expiresIn * 1000) : null
