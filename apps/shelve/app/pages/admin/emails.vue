@@ -1,14 +1,11 @@
 <script setup lang="ts">
 import { AuthType, type CreateUserInput, TeamRole } from '@types'
 
-const appUrl = window.location.origin
-
 const newUser = ref<CreateUserInput>({
   email: 'hrichard206@gmail.com',
   username: 'test',
   avatar: 'https://i.imgur.com/6VBx3io.png',
   authType: AuthType.GITHUB,
-  appUrl
 })
 const loading = ref(false)
 

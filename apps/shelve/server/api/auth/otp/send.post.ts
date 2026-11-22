@@ -9,6 +9,8 @@ export default defineEventHandler(async (event) => {
     await requireHuman()
 
     const { email } = await readValidatedBody(event, bodySchema.parse)
+    // Before any code is stored: no email goes out without a trusted link.
+    const appOrigin = getAppOrigin(event)
 
     const rateLimit = await checkOTPRateLimit(email)
     if (!rateLimit.allowed) {
@@ -21,7 +23,7 @@ export default defineEventHandler(async (event) => {
     const { code, token } = await generateOTPForEmail(email, event)
 
     const emailService = new EmailService(event)
-    const redirectUrl = `${getRequestURL(event).origin}/auth/otp?token=${token}`
+    const redirectUrl = `${appOrigin}/auth/otp?token=${token}`
 
     await emailService.sendOtp(email, code, redirectUrl)
 

@@ -1,4 +1,7 @@
 import vue from '@vitejs/plugin-vue'
+import { createResolver } from 'nuxt/kit'
+
+const { resolve } = createResolver(import.meta.url)
 
 export default defineNuxtConfig({
   extends: '../base',
@@ -39,6 +42,10 @@ export default defineNuxtConfig({
   },
 
   runtimeConfig: {
+    public: {
+      // Origin used in links sent outside the app (emails, CLI login). Required outside Vercel.
+      appUrl: '',
+    },
     private: {
       resendApiKey: '',
       resendWebhookSecret: '',
@@ -46,6 +53,8 @@ export default defineNuxtConfig({
       adminEmails: '',
       senderEmail: '',
       allowedOrigins: '',
+      // Proxies in front of Shelve that append to X-Forwarded-For; 0 uses the connection's address. Vercel counts as 1.
+      trustProxy: 0,
       github: {
         privateKey: '',
       }
@@ -102,6 +111,12 @@ export default defineNuxtConfig({
         dialect: 'postgresql',
         driver: 'pglite',
       },
+    },
+    // Test-only server code: a route that signs in a seeded user and a plugin that applies
+    // migrations at boot. Other builds never include them.
+    serverHandlers: [{ route: '/api/_test/seed', method: 'post', handler: resolve('./test/e2e/server/seed.post.ts') }],
+    nitro: {
+      plugins: [resolve('./test/e2e/server/test-migrations.ts')],
     },
   },
 })

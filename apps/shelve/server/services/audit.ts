@@ -28,7 +28,7 @@ export async function logAudit(event: H3Event, payload: AuditEvent): Promise<voi
       ? { tokenPrefix: session.tokenPrefix, tokenName: session.tokenName }
       : {}
 
-    const ip = getRequestIP(event, { xForwardedFor: true }) ?? null
+    const ip = getClientIp(event)
     const userAgent = getRequestHeader(event, 'user-agent')?.slice(0, 256) ?? null
 
     await db.insert(schema.auditLogs).values({

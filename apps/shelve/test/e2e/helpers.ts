@@ -1,5 +1,8 @@
 import { fetch, url } from '@nuxt/test-utils/e2e'
 
+/** `NUXT_PUBLIC_APP_URL` of the test server: the origin of every link it builds. */
+export const E2E_APP_URL = 'http://app.shelve.test'
+
 export interface E2EContext {
   api: ReturnType<typeof authedFetch>
   sessionCookie: string
