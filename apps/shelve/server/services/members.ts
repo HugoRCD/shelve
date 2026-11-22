@@ -4,15 +4,6 @@ export class MembersService {
 
   async addMember(input: AddMemberInput): Promise<Member> {
     const { teamId, email, role, slug } = input
-    const foundedMember = await this.isUserAlreadyMember(teamId, email)
-    if (foundedMember) {
-      return await this.updateMember({
-        teamId,
-        slug,
-        memberId: foundedMember.id,
-        role
-      })
-    }
     const user = await this.getUserByEmail(email)
 
     const [newMember] = await db.insert(schema.members)
@@ -29,15 +20,15 @@ export class MembersService {
   }
 
   async updateMember(input: UpdateMemberInput): Promise<Member> {
-    const { teamId, slug, memberId, role } = input
+    const { teamId, slug, memberId, role, currentRole } = input
 
     const [updated] = await db.update(schema.members)
       .set({
         role
       })
-      .where(and(eq(schema.members.id, memberId), eq(schema.members.teamId, teamId)))
+      .where(and(eq(schema.members.id, memberId), eq(schema.members.teamId, teamId), eq(schema.members.role, currentRole)))
       .returning({ id: schema.members.id })
-    if (!updated) throw createError({ statusCode: 404, message: `Member not found with id ${memberId}` })
+    if (!updated) throw createError({ statusCode: 409, message: 'Member role changed during the update, try again' })
 
     const member = await this.findMemberById(memberId)
     await clearCache('Team', slug)

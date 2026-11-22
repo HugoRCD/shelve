@@ -194,6 +194,43 @@ export function registerAccessControlTests(ctx: E2EContext) {
     expect(after.members.find(m => m.id === membership.id)?.role).toBe('member')
   })
 
+  test('an admin cannot make anyone an owner or change the owner', async () => {
+    const before = await ctx.api<Team>(`/api/teams/${ctx.teamSlug}`)
+    const membership = before.members.find(m => m.user.email === intruderEmail)!
+    const owner = before.members.find(m => m.role === 'owner')!
+    await ctx.api(`/api/teams/${ctx.teamSlug}/members/${membership.id}`, { method: 'PUT', body: { role: 'admin' } })
+
+    await expect(intruder(`/api/teams/${ctx.teamSlug}/members/${membership.id}`, {
+      method: 'PUT',
+      body: { role: 'owner' },
+    })).rejects.toMatchObject({ statusCode: 403 })
+    await expect(intruder(`/api/teams/${ctx.teamSlug}/members`, {
+      method: 'POST',
+      body: { email: intruderEmail, role: 'owner' },
+    })).rejects.toMatchObject({ statusCode: 403 })
+    await expect(intruder(`/api/teams/${ctx.teamSlug}/members/${owner.id}`, {
+      method: 'PUT',
+      body: { role: 'member' },
+    })).rejects.toMatchObject({ statusCode: 403 })
+    await expect(intruder(`/api/teams/${ctx.teamSlug}/members`, {
+      method: 'POST',
+      body: { email: owner.user.email, role: 'member' },
+    })).rejects.toMatchObject({ statusCode: 403 })
+    await expect(intruder(`/api/teams/${ctx.teamSlug}/invitations`, {
+      method: 'POST',
+      body: { email: 'e2e-invitee@shelve.cloud', role: 'owner' },
+    })).rejects.toMatchObject({ statusCode: 403 })
+
+    // An admin still manages roles up to their own.
+    await intruder(`/api/teams/${ctx.teamSlug}/members/${membership.id}`, { method: 'PUT', body: { role: 'member' } })
+
+    const after = await ctx.api<Team>(`/api/teams/${ctx.teamSlug}`)
+    expect(after.members.find(m => m.id === owner.id)?.role).toBe('owner')
+    expect(after.members.find(m => m.id === membership.id)?.role).toBe('member')
+    const invitations = await ctx.api<{ email: string }[]>(`/api/teams/${ctx.teamSlug}/invitations`)
+    expect(invitations.some(i => i.email === 'e2e-invitee@shelve.cloud')).toBe(false)
+  })
+
   test('an admin of one team cannot rename environments of another team', async () => {
     const target = environments[0]!
     await expect(intruder(`/api/teams/${intruderTeamSlug}/environments/${target.id}`, {

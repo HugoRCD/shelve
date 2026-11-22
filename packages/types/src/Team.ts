@@ -57,6 +57,8 @@ export type UpdateMemberInput = {
   slug: string;
   memberId: number;
   role: TeamRole;
+  /** The role the caller's permission check saw; the update only applies if the member still has it. */
+  currentRole: TeamRole;
 }
 
 export type RemoveMemberInput = {

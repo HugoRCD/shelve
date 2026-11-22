@@ -22,13 +22,24 @@ export async function validateTeamAccess(input: { user: User, teamSlug: string }
   return { team, member }
 }
 
+const orderRole = {
+  [TeamRole.OWNER]: 0,
+  [TeamRole.ADMIN]: 1,
+  [TeamRole.MEMBER]: 2,
+}
+
 export function validateTeamRole(member: Member, minRole: TeamRole = TeamRole.MEMBER): boolean {
-  const orderRole = {
-    [TeamRole.OWNER]: 0,
-    [TeamRole.ADMIN]: 1,
-    [TeamRole.MEMBER]: 2,
-  }
   if (orderRole[member.role] > orderRole[minRole])
     throw createError({ statusCode: 403, statusMessage: 'Unauthorized: User does not have the required role' })
   return true
+}
+
+/**
+ * Refuses granting a role above the caller's own, and changing the role of someone ranked above the caller,
+ * so an admin can neither make anyone (themselves included) an owner nor demote an owner.
+ */
+export function validateRoleAssignment(caller: Member, role: TeamRole, target?: Pick<Member, 'role'>): void {
+  const callerRank = orderRole[caller.role]
+  if (orderRole[role] < callerRank || (target && orderRole[target.role] < callerRank))
+    throw createError({ statusCode: 403, statusMessage: 'Unauthorized: Cannot assign a role above your own' })
 }

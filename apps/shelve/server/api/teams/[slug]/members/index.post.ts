@@ -14,7 +14,21 @@ export default eventHandler(async (event) => {
 
   const { email, role } = await readValidatedBody(event, createMemberSchema.parse)
 
-  return await new MembersService().addMember({
+  // Adding someone who is already a member updates their role, so their current role counts too.
+  const membersService = new MembersService()
+  const existing = await membersService.isUserAlreadyMember(team.id, email)
+  validateRoleAssignment(member, role, existing)
+  if (existing) {
+    return await membersService.updateMember({
+      teamId: team.id,
+      slug: team.slug,
+      memberId: existing.id,
+      role,
+      currentRole: existing.role,
+    })
+  }
+
+  return await membersService.addMember({
     teamId: team.id,
     slug: team.slug, // use for caching
     email,

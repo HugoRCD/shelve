@@ -9,9 +9,10 @@ const createInvitationSchema = z.object({
 
 export default eventHandler(async (event: H3Event) => {
   const slug = await getTeamSlugFromEvent(event)
-  const { user, team } = await requireUserTeam(event, slug, { minRole: TeamRole.ADMIN })
+  const { user, team, member } = await requireUserTeam(event, slug, { minRole: TeamRole.ADMIN })
 
   const { email, role } = await readValidatedBody(event, createInvitationSchema.parse)
+  validateRoleAssignment(member, role)
 
   const invitation = await new InvitationsService().createInvitation({
     teamId: team.id,
