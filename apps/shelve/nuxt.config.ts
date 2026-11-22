@@ -11,6 +11,11 @@ export default defineNuxtConfig({
 
   ssr: false,
 
+  routeRules: {
+    // No page of the app may be shown inside another site's frame.
+    '/**': { headers: { 'Content-Security-Policy': 'frame-ancestors \'none\'', 'X-Frame-Options': 'DENY' } },
+  },
+
   nitro: {
     experimental: {
       openAPI: true

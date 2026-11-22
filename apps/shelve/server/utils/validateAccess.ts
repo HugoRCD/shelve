@@ -6,7 +6,7 @@ import { TeamRole } from '@types'
 export async function validateTeamAccess(input: { user: User, teamSlug: string }): Promise<{ team: Team; member: Member }> {
   const { user, teamSlug } = input
   const team = await new TeamsService().getTeam(teamSlug)
-  if (!team)
+  if (!team || team.slug !== teamSlug)
     throw createError({ statusCode: 404, statusMessage: 'Team not found' })
 
   // Read the membership itself rather than the cached team, so a removal or a role change applies on the next request.
@@ -35,11 +35,15 @@ export function validateTeamRole(member: Member, minRole: TeamRole = TeamRole.ME
 }
 
 /**
- * Refuses granting a role above the caller's own, and changing the role of someone ranked above the caller,
+ * Whether the caller may give `role`, and change the role of `target`: never above the caller's own rank,
  * so an admin can neither make anyone (themselves included) an owner nor demote an owner.
  */
-export function validateRoleAssignment(caller: Member, role: TeamRole, target?: Pick<Member, 'role'>): void {
+export function canAssignRole(caller: Pick<Member, 'role'>, role: TeamRole, target?: Pick<Member, 'role'>): boolean {
   const callerRank = orderRole[caller.role]
-  if (orderRole[role] < callerRank || (target && orderRole[target.role] < callerRank))
+  return orderRole[role] >= callerRank && (!target || orderRole[target.role] >= callerRank)
+}
+
+export function validateRoleAssignment(caller: Pick<Member, 'role'>, role: TeamRole, target?: Pick<Member, 'role'>): void {
+  if (!canAssignRole(caller, role, target))
     throw createError({ statusCode: 403, statusMessage: 'Unauthorized: Cannot assign a role above your own' })
 }

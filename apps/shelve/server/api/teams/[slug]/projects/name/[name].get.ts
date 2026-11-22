@@ -15,7 +15,7 @@ export default eventHandler(async (event) => {
 
   const project = await db.query.projects.findFirst({
     where: and(
-      sql`lower(${schema.projects.name}) like lower(${name})`,
+      sql`lower(${schema.projects.name}) = lower(${name})`,
       eq(schema.projects.teamId, team.id)
     ),
     columns: { encryptedDek: false },

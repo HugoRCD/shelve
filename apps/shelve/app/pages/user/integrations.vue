@@ -62,6 +62,14 @@ onMounted(() => {
     router.replace({ query: {} })
   }
 
+  if (integration === 'github' && setup === 'signin-required') {
+    toast.error('Could not connect GitHub', {
+      description: 'Sign in to Shelve with the GitHub account that installed the app, then connect it again.',
+      duration: 10000,
+    })
+    useRouter().replace({ query: {} })
+  }
+
   const unsubscribe = onIntegrationEvent((data) => {
     if (data.type === 'github') {
       refreshGithub()

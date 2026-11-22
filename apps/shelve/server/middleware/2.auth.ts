@@ -2,9 +2,11 @@ import type { H3Event } from 'h3'
 
 /** API tokens only reach the team API and `GET /api/user/me`. Account, token and admin routes need a web session. */
 function acceptsTokens(event: H3Event): boolean {
-  const { pathname } = getRequestURL(event)
-  if (pathname === '/api/user/me' || pathname === '/api/teams') return event.method === 'GET'
-  return pathname.startsWith('/api/teams/')
+  // Check the path the router matches: decoded and cut at the first `?`, so encoded characters can't point it elsewhere.
+  const path = event.path.split('?')[0]!.replace(/\/+$/, '')
+  if (path.includes('\\') || path.split('/').some(segment => segment === '.' || segment === '..')) return false
+  if (path === '/api/user/me' || path === '/api/teams') return event.method === 'GET'
+  return path.startsWith('/api/teams/')
 }
 
 /** nuxt-auth-utils seals every session write into a cookie, so drop it to keep a token session in its own request. */

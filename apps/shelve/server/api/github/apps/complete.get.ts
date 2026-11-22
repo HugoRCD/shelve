@@ -1,28 +1,35 @@
+import { z } from 'zod'
+
+const querySchema = z.object({
+  installation_id: z.coerce.number().int().positive(),
+})
+
 export default defineEventHandler(async (event) => {
-  const query = getQuery(event)
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  const { installation_id } = query
-  const { user } = await requireUserSession(event)
+  const { user, secure } = await requireUserSession(event)
+  const { installation_id: installationId } = await getValidatedQuery(event, querySchema.parse)
 
-  if (!installation_id) {
-    throw createError({
-      statusCode: 400,
-      statusMessage: 'Missing installation_id'
-    })
+  // GitHub sends `installation_id` through the browser, so anyone could pass another account's id.
+  // Only link installations that GitHub lists for this user.
+  if (!secure?.githubToken) {
+    return sendRedirect(event, '/user/integrations?integration=github&setup=signin-required')
+  }
+  const { installations } = await $fetch<{ installations: { id: number }[] }>('https://api.github.com/user/installations?per_page=100', {
+    headers: {
+      Authorization: `Bearer ${secure.githubToken}`,
+      Accept: 'application/vnd.github+json',
+    },
+  }).catch(() => ({ installations: [] }))
+  if (!installations.some(installation => installation.id === installationId)) {
+    return sendRedirect(event, '/user/integrations?integration=github&setup=signin-required')
   }
 
-  try {
-    await db.insert(schema.githubApp).values({
-      installationId: +installation_id,
-      userId: user.id
-    })
-
-    return sendRedirect(event, '/user/integrations?integration=github&setup=success')
-  } catch (error: any) {
-    console.error('Error saving GitHub installation:', error)
-    throw createError({
-      statusCode: 500,
-      statusMessage: 'Failed to save GitHub installation'
-    })
+  const existing = await db.query.githubApp.findFirst({
+    where: and(eq(schema.githubApp.userId, user.id), eq(schema.githubApp.installationId, installationId)),
+    columns: { id: true },
+  })
+  if (!existing) {
+    await db.insert(schema.githubApp).values({ installationId, userId: user.id })
   }
+
+  return sendRedirect(event, '/user/integrations?integration=github&setup=success')
 })

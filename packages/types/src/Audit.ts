@@ -14,7 +14,9 @@ export type AuditAction =
   | 'project.create'
   | 'project.delete'
   | 'team.member.invite'
+  | 'team.member.update'
   | 'team.member.remove'
+  | 'team.update'
   | 'auth.login'
   | 'auth.logout'
 
@@ -32,7 +34,9 @@ export const AUDIT_ACTIONS: AuditAction[] = [
   'project.create',
   'project.delete',
   'team.member.invite',
+  'team.member.update',
   'team.member.remove',
+  'team.update',
 ]
 
 export type AuditLog = {

@@ -1,4 +1,5 @@
 import type { CreateProjectInput, Project, ProjectUpdateInput } from '@types'
+import { getTableColumns } from 'drizzle-orm'
 
 export class ProjectsService {
 
@@ -20,13 +21,15 @@ export class ProjectsService {
     if (existingProject.name !== input.name)
       await this.validateProjectName(input.name, input.teamId, input.id)
 
+    // Every column except the sealed project key, which never leaves the server.
+    const { encryptedDek: _encryptedDek, ...projectColumns } = getTableColumns(schema.projects)
     const [updatedProject] = await db.update(schema.projects)
       .set(input)
       .where(and(
         eq(schema.projects.id, input.id),
         eq(schema.projects.teamId, input.teamId),
       ))
-      .returning()
+      .returning(projectColumns)
     if (!updatedProject) throw createError({ statusCode: 404, message: `Project not found with id ${input.id}` })
     await clearCache('Projects', updatedProject.teamId)
     await clearCache('Project', updatedProject.id)

@@ -1,5 +1,5 @@
 import type { H3Event } from 'h3'
-import type { AuditAction, AuditActorType, TokenScopes } from '@types'
+import type { AuditAction, AuditActorType, Member, TeamRole, TokenScopes } from '@types'
 import { inArray } from 'drizzle-orm'
 
 export type AuditEvent = {
@@ -47,6 +47,21 @@ export async function logAudit(event: H3Event, payload: AuditEvent): Promise<voi
   }
 }
 
+export async function logMemberRoleChange(event: H3Event, teamId: number, member: Member, previousRole: TeamRole): Promise<void> {
+  await logAudit(event, {
+    teamId,
+    action: 'team.member.update',
+    resourceType: 'user',
+    resourceId: member.userId,
+    metadata: {
+      email: member.user?.email,
+      username: member.user?.username,
+      role: member.role,
+      previousRole,
+    },
+  })
+}
+
 /** Writes the same audit event once per team (e.g. token create/delete). */
 export async function logAuditForTeams(
   event: H3Event,
@@ -71,10 +86,17 @@ export async function getUserTeamIds(userId: number): Promise<number[]> {
   return memberships.map(m => m.teamId)
 }
 
+/** The teams a token event is logged to: those its scopes name, limited to the teams the user belongs to. */
 export async function resolveTeamIdsFromTokenScopes(
   scopes: TokenScopes,
   userId: number,
 ): Promise<number[]> {
+  const userTeamIds = await getUserTeamIds(userId)
+  const scopedTeamIds = await getScopedTeamIds(scopes)
+  return scopedTeamIds ? scopedTeamIds.filter(id => userTeamIds.includes(id)) : userTeamIds
+}
+
+async function getScopedTeamIds(scopes: TokenScopes): Promise<number[] | null> {
   if (scopes.teamIds?.length) {
     return scopes.teamIds
   }
@@ -97,5 +119,5 @@ export async function resolveTeamIdsFromTokenScopes(
     if (teamIds.length) return teamIds
   }
 
-  return getUserTeamIds(userId)
+  return null
 }

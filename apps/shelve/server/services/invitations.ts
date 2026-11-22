@@ -148,6 +148,16 @@ export class InvitationsService {
       return existingMember
     }
 
+    // An invitation only grants a role its sender can still grant.
+    const inviter = invitation.invitedById
+      ? await db.query.members.findFirst({
+        where: and(eq(schema.members.teamId, invitation.teamId), eq(schema.members.userId, invitation.invitedById)),
+      })
+      : undefined
+    if (!inviter || !canAssignRole(inviter, invitation.role)) {
+      throw createError({ statusCode: 403, message: 'This invitation is no longer valid' })
+    }
+
     const [newMember] = await db.insert(schema.members)
       .values({
         userId,
@@ -178,11 +188,15 @@ export class InvitationsService {
     return member
   }
 
-  async declineInvitation(token: string): Promise<void> {
+  async declineInvitation(token: string, userEmail: string): Promise<void> {
     const invitation = await this.getInvitationByToken(token)
 
     if (invitation.status !== InvitationStatus.PENDING) {
       throw createError({ statusCode: 400, message: `Invitation has already been ${invitation.status}` })
+    }
+
+    if (invitation.email.toLowerCase() !== userEmail.toLowerCase()) {
+      throw createError({ statusCode: 403, message: 'This invitation was sent to a different email address' })
     }
 
     await this.updateInvitationStatus(invitation.id, InvitationStatus.DECLINED)

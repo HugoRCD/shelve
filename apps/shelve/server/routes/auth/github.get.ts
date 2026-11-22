@@ -25,10 +25,11 @@ export default defineOAuthGitHubEventHandler({
         loggedInAt: new Date(),
       })
 
-      const redirectUrl = getCookie(event, 'auth_redirect')
-      if (redirectUrl) {
+      const redirectCookie = getCookie(event, 'auth_redirect')
+      if (redirectCookie) {
         deleteCookie(event, 'auth_redirect')
-        return sendRedirect(event, redirectUrl)
+        const redirectUrl = getSafeRedirectPath(redirectCookie)
+        if (redirectUrl) return sendRedirect(event, redirectUrl)
       }
 
       if (!_user.onboarding) {
@@ -37,7 +38,7 @@ export default defineOAuthGitHubEventHandler({
 
       const defaultTeamSlug = getCookie(event, 'defaultTeamSlug')
       if (defaultTeamSlug) {
-        return sendRedirect(event, `/${defaultTeamSlug}`)
+        return sendRedirect(event, `/${encodeURIComponent(defaultTeamSlug)}`)
       }
 
       return sendRedirect(event, '/')

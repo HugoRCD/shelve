@@ -42,7 +42,12 @@ export async function requireHuman(): Promise<void> {
 export async function requireAdmin(event: H3Event): Promise<{ user: User }> {
   const { user } = await requireUserSession(event)
 
-  if (user.role !== Role.ADMIN) {
+  // Read the role from the database: the session cookie keeps the role the user had when they signed in.
+  const current = await db.query.users.findFirst({
+    where: eq(schema.users.id, user.id),
+    columns: { role: true },
+  })
+  if (current?.role !== Role.ADMIN) {
     throw createError({
       statusCode: 403,
       statusMessage: 'Insufficient permissions',

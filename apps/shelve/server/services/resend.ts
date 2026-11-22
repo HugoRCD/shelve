@@ -60,7 +60,7 @@ export class EmailService {
         from: this.SENDER,
         to: ['contact@shelve.cloud'],
         subject: 'New user registered',
-        html: `New user registered: ${username} - ${email}`,
+        text: `New user registered: ${username} - ${email}`,
       }).then(() => {
         console.log('New user email sent')
       })
