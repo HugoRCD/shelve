@@ -15,7 +15,7 @@ export default eventHandler(async (event) => {
 
   await new VariablesService(event).deleteVariable(variableId)
 
-  void logAudit(event, {
+  await logAudit(event, {
     teamId: team.id,
     action: 'variables.delete',
     resourceType: 'variable',

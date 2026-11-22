@@ -14,6 +14,30 @@ export async function getEnvironmentName(environmentId: number, teamId: number):
   return environment.name
 }
 
+/**
+ * The policy with environment `from` renamed to `to`, so a protected environment stays protected
+ * after a rename. Returns the same object when the policy doesn't mention `from`.
+ */
+export function renameEnvironmentInSyncPolicy(
+  policy: ShelveSyncConfig | null,
+  from: string,
+  to: string,
+): ShelveSyncConfig | null {
+  const inEnvironments = !!policy?.environments && Object.hasOwn(policy.environments, from)
+  const inProtected = !!policy?.protectedEnvironments?.includes(from)
+  if (!policy || (!inEnvironments && !inProtected)) return policy
+
+  const renamed: ShelveSyncConfig = { ...policy }
+  if (inEnvironments) {
+    const { [from]: environmentPolicy, ...others } = policy.environments!
+    renamed.environments = { ...others, [to]: environmentPolicy! }
+  }
+  if (inProtected) {
+    renamed.protectedEnvironments = [...new Set(policy.protectedEnvironments!.map(name => name === from ? to : name))]
+  }
+  return renamed
+}
+
 export function assertPushAllowedForEnvironment(
   environmentName: string,
   syncPolicy: ShelveSyncConfig | null | undefined,
@@ -28,13 +52,24 @@ export function assertPushAllowedForEnvironment(
   }
 }
 
+/**
+ * Refuses the write when any of the environments is protected by the project's sync policy.
+ * The policy is read from the database, not the project cache, so a change applies to the next push.
+ */
 export async function assertPushAllowedForEnvironmentIds(
   environmentIds: number[],
   teamId: number,
-  syncPolicy: ShelveSyncConfig | null | undefined,
+  projectId: number,
 ): Promise<void> {
   const uniqueIds = [...new Set(environmentIds)]
   if (uniqueIds.length === 0) return
+
+  const project = await db.query.projects.findFirst({
+    where: and(eq(schema.projects.id, projectId), eq(schema.projects.teamId, teamId)),
+    columns: { syncPolicy: true },
+  })
+  if (!project) throw createError({ statusCode: 404, statusMessage: 'Project not found' })
+  const { syncPolicy } = project
 
   const environments = await db.query.environments.findMany({
     where: and(

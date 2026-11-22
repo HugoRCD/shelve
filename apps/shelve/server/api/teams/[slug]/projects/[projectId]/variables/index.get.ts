@@ -12,5 +12,19 @@ export default eventHandler(async (event) => {
       .map(variable => ({ ...variable, values: variable.values.filter(value => environmentIds.includes(value.environmentId)) }))
       .filter(variable => variable.values.length)
     : encryptedVariables
-  return await variablesService.decryptVariables(visibleVariables)
+  const variables = await variablesService.decryptVariables(visibleVariables)
+
+  await logAudit(event, {
+    teamId: team.id,
+    action: 'variables.read',
+    resourceType: 'project',
+    resourceId: project.id,
+    metadata: {
+      projectId: project.id,
+      projectName: project.name,
+      environmentIds: [...new Set(visibleVariables.flatMap(variable => variable.values.map(value => value.environmentId)))],
+    },
+  })
+
+  return variables
 })

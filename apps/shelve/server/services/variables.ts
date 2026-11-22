@@ -224,16 +224,19 @@ export class VariablesService {
     if (!deleted) throw createError({ statusCode: 404, statusMessage: `Variable not found with id ${id}` })
   }
 
-  async deleteVariablesInProject(projectId: number, variableIds: number[]): Promise<void> {
-    if (!variableIds.length) return
+  /** Deletes the variables and returns the keys that were deleted. */
+  async deleteVariablesInProject(projectId: number, variableIds: number[]): Promise<string[]> {
+    if (!variableIds.length) return []
 
     await this.requireVariablesInProject(projectId, variableIds)
 
-    await db.delete(schema.variables)
+    const deleted = await db.delete(schema.variables)
       .where(and(
         eq(schema.variables.projectId, projectId),
         inArray(schema.variables.id, variableIds),
       ))
+      .returning({ key: schema.variables.key })
+    return deleted.map(variable => variable.key)
   }
 
   async decryptVariables(variables: Variable[]): Promise<Variable[]> {

@@ -14,20 +14,20 @@ value ──seal──▶ ciphertext     (key = DEK, per-project)
 DEK   ──seal──▶ encryptedDek   (key = KEK, platform-wide)
 ```
 
-- **KEK** — *Key Encryption Key*. A single secret sourced from `NUXT_PRIVATE_ENCRYPTION_KEY` at boot. It never touches stored data directly; it is only used to seal and unseal DEKs.
+- **KEK** — *Key Encryption Key*. A single secret sourced from `NUXT_PRIVATE_ENCRYPTION_KEY` at boot. It seals and unseals DEKs; values written before envelope encryption existed are still sealed with it directly (see below).
 - **DEK** — *Data Encryption Key*. Generated server-side on a project's first write (32 random bytes, base64-encoded), sealed with the KEK, and persisted in `projects.encryptedDek`. From then on every variable on that project is encrypted with that DEK.
 
-The sealing primitive underneath is [`iron-webcrypto`](https://github.com/brc-dd/iron-webcrypto), configured with authenticated encryption (`aes-256-gcm`). A tampered ciphertext fails to decrypt — there is no silent downgrade.
+The sealing primitive underneath is [`iron-webcrypto`](https://github.com/brc-dd/iron-webcrypto) with its default settings: AES-256-CBC with a random IV, authenticated with HMAC-SHA256 (encrypt-then-MAC). A tampered ciphertext fails the integrity check before anything is decrypted — there is no silent downgrade.
 
 ## Why envelope encryption?
 
 ::card-group
   ::card{icon="i-lucide-zap"}
   #title
-  Fast key rotation
+  Rotation-ready
 
   #description
-  Rotating a project's DEK only re-encrypts that project's variables. A platform-wide rotation changes only the KEK; every sealed DEK is re-sealed once and business continues.
+  Rotating a project's DEK would only re-encrypt that project's variables, and a KEK rotation would only re-seal DEKs. Shelve does not ship a rotation command yet; see the self-host checklist below.
   ::
 
   ::card{icon="i-lucide-shield"}

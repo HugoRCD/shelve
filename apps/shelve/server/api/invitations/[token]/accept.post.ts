@@ -13,6 +13,14 @@ export default eventHandler(async (event: H3Event) => {
 
   const member = await new InvitationsService().acceptInvitation(token, user.id, user.email)
 
+  await logAudit(event, {
+    teamId: invitation.teamId,
+    action: 'team.invitation.accept',
+    resourceType: 'user',
+    resourceId: user.id,
+    metadata: { email: user.email, username: user.username, role: member.role, invitedById: invitation.invitedById },
+  })
+
   // Mark onboarding as complete if not already done
   if (!user.onboarding) {
     const [updatedUser] = await db.update(schema.users)

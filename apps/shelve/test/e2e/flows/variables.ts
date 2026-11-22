@@ -105,6 +105,27 @@ export function registerVariableTests(ctx: E2EContext) {
     await ctx.api(`/api/teams/${ctx.teamSlug}/projects/${project.id}`, { method: 'DELETE' })
   })
 
+  test('a protected environment stays protected after a rename', async () => {
+    const teamUrl = `/api/teams/${ctx.teamSlug}`
+    const project = await ctx.api(`${teamUrl}/projects`, { method: 'POST', body: { name: 'Protected Rename' } })
+    const projectUrl = `${teamUrl}/projects/${project.id}`
+    await ctx.api(`${teamUrl}/environments`, { method: 'POST', body: { name: 'locked-env' } })
+    const environment = (await ctx.api(`${teamUrl}/environments`)).find((e: any) => e.name === 'locked-env')
+    await ctx.api(projectUrl, { method: 'PUT', body: { name: project.name, syncPolicy: { protectedEnvironments: ['locked-env'] } } })
+
+    await ctx.api(`${teamUrl}/environments/${environment.id}`, { method: 'PUT', body: { name: 'renamed-locked-env' } })
+
+    await expect(ctx.api(`${projectUrl}/variables`, {
+      method: 'POST',
+      body: { autoUppercase: true, environmentIds: [environment.id], variables: [{ key: 'blocked', value: 'value' }] },
+    })).rejects.toMatchObject({ statusCode: 403 })
+    const renamed = await ctx.api(projectUrl)
+    expect(renamed.syncPolicy.protectedEnvironments).toEqual(['renamed-locked-env'])
+
+    await ctx.api(`${teamUrl}/environments/${environment.id}`, { method: 'DELETE' })
+    await ctx.api(projectUrl, { method: 'DELETE' })
+  })
+
   test('reads see every write to what a variable joins', async () => {
     const teamUrl = `/api/teams/${ctx.teamSlug}`
     const firstEnvId = ctx.environmentIds[0]!

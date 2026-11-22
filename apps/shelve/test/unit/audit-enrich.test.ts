@@ -39,6 +39,15 @@ describe('buildSummary', () => {
     expect(summary).toBe('Read secrets from api / staging')
   })
 
+  test('describes a read of every environment of a project', () => {
+    const summary = buildSummary(log({
+      resourceType: 'project',
+      resourceId: '13',
+      metadata: { projectId: 13, environmentIds: [86] },
+    }), emptyMaps)
+    expect(summary).toBe('Read secrets from web-platform / production')
+  })
+
   test('describes token creation', () => {
     const summary = buildSummary(log({
       action: 'token.create',

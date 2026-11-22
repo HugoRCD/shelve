@@ -12,10 +12,13 @@ export type AuditAction =
   | 'environment.update'
   | 'environment.delete'
   | 'project.create'
+  | 'project.update'
   | 'project.delete'
   | 'team.member.invite'
   | 'team.member.update'
   | 'team.member.remove'
+  | 'team.invitation.accept'
+  | 'team.invitation.cancel'
   | 'team.update'
   | 'auth.login'
   | 'auth.logout'
@@ -32,10 +35,13 @@ export const AUDIT_ACTIONS: AuditAction[] = [
   'environment.update',
   'environment.delete',
   'project.create',
+  'project.update',
   'project.delete',
   'team.member.invite',
   'team.member.update',
   'team.member.remove',
+  'team.invitation.accept',
+  'team.invitation.cancel',
   'team.update',
 ]
 

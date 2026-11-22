@@ -19,5 +19,13 @@ export default eventHandler(async (event: H3Event) => {
     slug: team.slug,
   })
 
+  await logAudit(event, {
+    teamId: team.id,
+    action: 'team.invitation.cancel',
+    resourceType: 'invitation',
+    resourceId: invitation.id,
+    metadata: { email: invitation.email, role: invitation.role },
+  })
+
   return { success: true }
 })

@@ -13,14 +13,14 @@ export default defineEventHandler(async (event) => {
   const { id } = await getValidatedRouterParams(event, idParamsSchema.parse)
   const { name } = await readValidatedBody(event, updateEnvironmentSchema.parse)
 
-  const environment = await new EnvironmentsService().updateEnvironment({ id, teamId: team.id, name })
+  const { environment, previousName } = await new EnvironmentsService().updateEnvironment({ id, teamId: team.id, name })
 
   await logAudit(event, {
     teamId: team.id,
     action: 'environment.update',
     resourceType: 'environment',
     resourceId: environment.id,
-    metadata: { name: environment.name },
+    metadata: { name: environment.name, previousName },
   })
 
   return {
