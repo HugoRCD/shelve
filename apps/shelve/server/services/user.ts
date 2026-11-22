@@ -144,11 +144,16 @@ function generateUniqueUsername(username: string): string {
  */
 async function getAvailableUsername(username: string): Promise<string> {
   const name = username.slice(0, USERNAME_MAX_LENGTH)
-  const [taken] = await db
+  const isTaken = async (candidate: string) => (await db
     .select({ id: schema.users.id })
     .from(schema.users)
-    .where(eq(schema.users.username, name))
-  return taken ? generateUniqueUsername(name) : name
+    .where(eq(schema.users.username, candidate))).length > 0
+
+  let candidate = name
+  for (let attempt = 0; attempt < 10 && await isTaken(candidate); attempt++) {
+    candidate = generateUniqueUsername(name)
+  }
+  return candidate
 }
 
 export async function authenticateToken(

@@ -96,6 +96,17 @@ describe('handleEmailUser', () => {
     expect(user.username).toMatch(/^alice_#\d+$/)
   })
 
+  test('skips a generated username that is also taken', async () => {
+    await db.insert(schema.users).values({ username: 'alice_#123', email: 'alice123@shelve.cloud', authType: AuthType.EMAIL })
+    const random = vi.spyOn(Math, 'random').mockReturnValueOnce(0.123).mockReturnValueOnce(0.456)
+    try {
+      const { user } = await handleEmailUser('alice@example.com', event)
+      expect(user.username).toBe('alice_#456')
+    } finally {
+      random.mockRestore()
+    }
+  })
+
   test('keeps a long name within the username column', async () => {
     const { user } = await handleEmailUser(`${'a'.repeat(30)}@example.com`, event)
     expect(user.username).toBe('a'.repeat(25))
