@@ -7,11 +7,12 @@ import { emailOTP, oAuthProxy } from 'better-auth/plugins'
 type OAuthProvider = 'github' | 'google'
 
 /**
- * This deployment's public URL. Set `BETTER_AUTH_URL` when self-hosting. On Vercel it falls back to the
- * production domain or the preview's own URL. Left undefined (inferred per request) in local dev and tests.
+ * This deployment's public origin: `BETTER_AUTH_URL`, else `NUXT_PUBLIC_APP_URL`. On Vercel it falls back to
+ * the production domain or the preview's own URL. Left undefined (inferred per request) in local dev and tests.
  */
-function resolveBaseURL(): string | undefined {
-  if (process.env.BETTER_AUTH_URL) return process.env.BETTER_AUTH_URL
+function resolveBaseURL(appUrl: string | undefined): string | undefined {
+  const configured = process.env.BETTER_AUTH_URL || appUrl
+  if (configured) return new URL(configured).origin
   if (process.env.VERCEL_ENV === 'production' && process.env.VERCEL_PROJECT_PRODUCTION_URL)
     return `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
   if (process.env.VERCEL_ENV === 'preview' && (process.env.VERCEL_BRANCH_URL || process.env.VERCEL_URL))
@@ -20,19 +21,20 @@ function resolveBaseURL(): string | undefined {
 
 function createServerAuth() {
   const config = useRuntimeConfig()
-  const baseURL = resolveBaseURL()
+  const baseURL = resolveBaseURL(config.public.appUrl)
   // Previews send OAuth through production, so only production's callback is registered with GitHub and Google.
-  const oauthProxyURL = process.env.OAUTH_PROXY_URL
+  // The proxy runs only when both variables are set.
   const oauthProxySecret = process.env.OAUTH_PROXY_SECRET
+  const oauthProxyURL = oauthProxySecret && process.env.OAUTH_PROXY_URL ? new URL(process.env.OAUTH_PROXY_URL).origin : undefined
   const oauthOrigin = oauthProxyURL || baseURL
   // Keep the callback URLs OAuth apps already have registered: `/auth/github` and `/auth/google`.
   const redirectURI = (provider: OAuthProvider) => oauthOrigin ? `${oauthOrigin}/auth/${provider}` : undefined
   /**
-   * The origin of links in emails: `NUXT_PUBLIC_APP_URL`, else this deployment's URL. Like `getAppOrigin`,
+   * The origin of links in emails: this deployment's URL. Like `getAppOrigin`,
    * the origin Better Auth inferred from the request is only trusted on Vercel and in development.
    */
   const linkOrigin = (inferredURL: string | undefined) => {
-    const url = config.public.appUrl || baseURL || ((process.env.VERCEL || import.meta.dev) ? inferredURL : undefined)
+    const url = baseURL || ((process.env.VERCEL || import.meta.dev) ? inferredURL : undefined)
     if (url) return new URL(url).origin
     const message = 'NUXT_PUBLIC_APP_URL is not set. Set it to the URL Shelve is served from, for example https://shelve.example.com.'
     console.error(`[shelve] ${message}`)
@@ -73,6 +75,21 @@ function createServerAuth() {
     baseURL,
     secret: config.appSecret,
     trustedOrigins,
+    disabledPaths: [
+      // The decrypted GitHub token, which can act on the user's repositories, stays on the server.
+      '/get-access-token',
+      '/refresh-token',
+      // Email codes go through Shelve's routes, which check for bots and count requests.
+      '/email-otp/send-verification-otp',
+      '/email-otp/check-verification-otp',
+      '/email-otp/verify-email',
+      '/sign-in/email-otp',
+      '/forget-password/email-otp',
+      '/email-otp/request-password-reset',
+      '/email-otp/reset-password',
+      '/email-otp/request-email-change',
+      '/email-otp/change-email',
+    ],
     database: drizzleAdapter(db, {
       provider: 'pg',
       schema: {
@@ -164,10 +181,8 @@ function createServerAuth() {
         expiresIn: 10 * 60,
         allowedAttempts: 5,
         storeOTP: 'hashed',
-        async sendVerificationOTP({ email, otp }, ctx) {
-          const link = `${linkOrigin(ctx?.context.baseURL)}/auth/otp?${new URLSearchParams({ email, otp })}`
-          await new EmailService().sendOtp(email, otp, link)
-        },
+        // Required by the plugin, but its send endpoint is disabled: `/api/auth/otp/send` creates and sends codes.
+        sendVerificationOTP: () => Promise.reject(new Error('Email codes are sent by /api/auth/otp/send')),
       }),
       ...(oauthProxyURL && oauthProxySecret
         ? [oAuthProxy({ productionURL: oauthProxyURL, currentURL: baseURL, secret: oauthProxySecret })]

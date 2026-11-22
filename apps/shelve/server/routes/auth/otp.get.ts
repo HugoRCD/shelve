@@ -7,7 +7,11 @@ export default defineEventHandler(async (event) => {
     body: { email, otp },
     headers: event.headers,
     asResponse: true,
+  }).catch((error: unknown) => {
+    console.error('[Auth] Email link sign-in failed:', error)
+    return null
   })
+  if (!response) return sendRedirect(event, '/login?error=otp-verification')
   if (!response.ok) return sendRedirect(event, '/login?error=invalid-otp')
   forwardAuthCookies(event, response.headers)
 

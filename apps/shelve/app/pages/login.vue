@@ -80,7 +80,7 @@ if (route.query.error === 'otp-verification') {
   authMode.value = 'email'
 }
 
-const handledErrors = ['github', 'google', 'invalid-otp', 'otp-verification']
+const handledErrors = ['github', 'google', 'unverified-email', 'invalid-otp', 'otp-verification']
 if (typeof route.query.error === 'string' && !handledErrors.includes(route.query.error)) {
   toast.error('Sign-in failed. Please try again.', {
     description: route.query.error,
