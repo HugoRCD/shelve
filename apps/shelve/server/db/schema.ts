@@ -217,17 +217,35 @@ export const variableValues = pgTable('variable_values', {
   index('variable_values_env_idx').on(table.environmentId),
 ])
 
+/**
+ * API tokens, also Better Auth's `apikey` model: `hash` is its `key`, `prefix` its `start` (the characters shown in
+ * the UI), `userId` its `referenceId` and `lastUsedAt` its `lastRequest`. Scopes and the IP allowlist stay Shelve's.
+ */
 export const tokens = pgTable('tokens', {
   id: bigint({ mode: 'number' }).primaryKey().generatedByDefaultAsIdentity(),
   hash: varchar({ length: 64 }).unique().notNull(),
   prefix: varchar({ length: 16 }).notNull(),
   name: varchar({ length: 25 }).notNull(),
   userId: bigint({ mode: 'number' }).references(() => users.id, { onDelete: 'cascade' }).notNull(),
-  scopes: jsonb().$type<TokenScopes>().notNull(),
+  // No access by default: only Shelve's token routes set scopes.
+  scopes: jsonb().$type<TokenScopes>().default({ permissions: [] }).notNull(),
   allowedCidrs: jsonb().$type<string[]>().default([]).notNull(),
   expiresAt: timestamp(),
   lastUsedAt: timestamp(),
   lastUsedIp: varchar({ length: 45 }),
+  configId: varchar({ length: 32 }).default('default').notNull(),
+  keyPrefix: varchar({ length: 32 }),
+  enabled: boolean().default(true).notNull(),
+  rateLimitEnabled: boolean().default(false).notNull(),
+  rateLimitTimeWindow: integer(),
+  rateLimitMax: integer(),
+  requestCount: integer().default(0).notNull(),
+  remaining: integer(),
+  refillInterval: integer(),
+  refillAmount: integer(),
+  lastRefillAt: timestamp(),
+  permissions: varchar({ length: 2048 }),
+  metadata: varchar({ length: 2048 }),
   ...timestamps,
 }, (table) => [
   uniqueIndex('tokens_hash_idx').on(table.hash),

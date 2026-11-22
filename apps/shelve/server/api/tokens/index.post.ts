@@ -24,7 +24,7 @@ export default defineEventHandler(async (event): Promise<TokenWithSecret> => {
   const { name, scopes, expiresIn, allowedCidrs } = await readValidatedBody(event, bodySchema.parse)
   const { user } = await requireAuth(event)
 
-  const { token, prefix, hash } = generateToken()
+  const { token, prefix, hash } = await generateToken()
   const expiresAt = expiresIn ? new Date(Date.now() + expiresIn * 1000) : null
 
   const [created] = await db.insert(schema.tokens)

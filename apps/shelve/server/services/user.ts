@@ -62,15 +62,13 @@ export async function authenticateToken(
     throw createError({ statusCode: 401, statusMessage: 'Invalid token' })
   }
 
-  const hash = hashToken(rawToken)
-  const token = await db.query.tokens.findFirst({
-    where: eq(schema.tokens.hash, hash),
-  })
-  if (!token) throw createError({ statusCode: 401, statusMessage: 'Invalid token' })
-
-  if (token.expiresAt && token.expiresAt.getTime() < Date.now()) {
-    throw createError({ statusCode: 401, statusMessage: 'Token expired' })
+  // Better Auth's api-key plugin finds the token by hash, checks that it is enabled and not expired, and records its use.
+  const { valid, error, key } = await useServerAuth().api.verifyApiKey({ body: { key: rawToken } })
+  if (!valid || !key) {
+    throw createError({ statusCode: 401, statusMessage: error?.code === 'KEY_EXPIRED' ? 'Token expired' : 'Invalid token' })
   }
+  const token = await db.query.tokens.findFirst({ where: eq(schema.tokens.id, Number(key.id)) })
+  if (!token) throw createError({ statusCode: 401, statusMessage: 'Invalid token' })
 
   const ip = getClientIp(event)
   if (token.allowedCidrs.length > 0) {
@@ -94,7 +92,7 @@ export async function authenticateToken(
   }
 
   await db.update(schema.tokens)
-    .set({ lastUsedAt: new Date(), lastUsedIp: ip })
+    .set({ lastUsedIp: ip })
     .where(eq(schema.tokens.id, token.id))
 
   return {

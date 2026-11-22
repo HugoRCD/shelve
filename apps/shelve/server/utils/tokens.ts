@@ -1,4 +1,5 @@
 import { createHash, randomBytes, timingSafeEqual } from 'node:crypto'
+import { defaultKeyHasher } from '@better-auth/api-key'
 import { TOKEN_PREFIX, TOKEN_PREFIX_DISPLAY_LENGTH } from './constants'
 
 // Standard Crockford base32: 32 chars = 0-9 + A-Z minus I, L, O, U.
@@ -22,16 +23,18 @@ function base32Encode(buf: Buffer): string {
   return out
 }
 
-export function generateToken(): { token: string; prefix: string; hash: string } {
+/** A new API token, with its hash in the format Better Auth's api-key plugin looks tokens up by. */
+export async function generateToken(): Promise<{ token: string; prefix: string; hash: string }> {
   const body = base32Encode(randomBytes(32))
   const token = `${TOKEN_PREFIX}${body}`
   return {
     token,
     prefix: token.slice(0, TOKEN_PREFIX_DISPLAY_LENGTH),
-    hash: hashToken(token),
+    hash: await defaultKeyHasher(token),
   }
 }
 
+/** Hex SHA-256, for one-time values such as CLI device codes. */
 export function hashToken(token: string): string {
   return createHash('sha256').update(token).digest('hex')
 }

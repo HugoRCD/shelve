@@ -136,4 +136,16 @@ export function registerTokenTests(ctx: E2EContext) {
     })
     expect(res.status).toBe(401)
   })
+
+  test('Better Auth\'s own API key routes are closed, so every token goes through Shelve\'s scope checks and audit log', async () => {
+    const statuses = await Promise.all(['create', 'list', 'get', 'update', 'delete'].map(async (route) => {
+      const res = await fetch(url(`/api/auth/api-key/${route}`), {
+        method: route === 'list' || route === 'get' ? 'GET' : 'POST',
+        headers: { 'Content-Type': 'application/json', 'Cookie': ctx.sessionCookie },
+        body: route === 'list' || route === 'get' ? undefined : JSON.stringify({ name: 'bypass' }),
+      })
+      return res.status
+    }))
+    expect(statuses).toEqual([404, 404, 404, 404, 404])
+  })
 }

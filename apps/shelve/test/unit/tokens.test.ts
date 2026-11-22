@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto'
 import { describe, test, expect, vi, afterEach } from 'vitest'
 import type { H3Event } from 'h3'
 import { generateToken, hashToken, safeEqualHex } from '../../server/utils/tokens'
@@ -15,42 +16,42 @@ vi.stubGlobal('getRequestIP', (event: FakeRequest, opts?: { xForwardedFor?: bool
 const request = (forwardedFor: string | undefined, remoteAddress: string) => ({ forwardedFor, remoteAddress }) as unknown as H3Event
 
 describe('generateToken', () => {
-  test('returns a token starting with the SHE_ prefix', () => {
-    const { token } = generateToken()
+  test('returns a token starting with the SHE_ prefix', async () => {
+    const { token } = await generateToken()
     expect(token.startsWith(TOKEN_PREFIX)).toBe(true)
   })
 
-  test('never produces the literal string "undefined" inside the body', () => {
+  test('never produces the literal string "undefined" inside the body', async () => {
     // The Crockford alphabet must have exactly 32 chars: any gap leaves
     // indices 30/31 as `undefined` and stringifies back into the token.
     for (let i = 0; i < 200; i++) {
-      const { token } = generateToken()
+      const { token } = await generateToken()
       expect(token).not.toContain('undefined')
     }
   })
 
-  test('uses only Crockford base32 characters after the prefix', () => {
-    const { token } = generateToken()
+  test('uses only Crockford base32 characters after the prefix', async () => {
+    const { token } = await generateToken()
     const body = token.slice(TOKEN_PREFIX.length)
     expect(body).toMatch(/^[0-9ABCDEFGHJKMNPQRSTVWXYZ]+$/)
   })
 
-  test('generates cryptographically unique tokens', () => {
+  test('generates cryptographically unique tokens', async () => {
     const seen = new Set<string>()
-    for (let i = 0; i < 1000; i++) seen.add(generateToken().token)
+    for (let i = 0; i < 1000; i++) seen.add((await generateToken()).token)
     expect(seen.size).toBe(1000)
   })
 
-  test('prefix is the display-length head of the token', () => {
-    const { token, prefix } = generateToken()
+  test('prefix is the display-length head of the token', async () => {
+    const { token, prefix } = await generateToken()
     expect(prefix).toBe(token.slice(0, TOKEN_PREFIX_DISPLAY_LENGTH))
     expect(prefix.length).toBe(TOKEN_PREFIX_DISPLAY_LENGTH)
   })
 
-  test('hash matches sha256(token) as hex', () => {
-    const { token, hash } = generateToken()
-    expect(hash).toBe(hashToken(token))
-    expect(hash).toMatch(/^[0-9a-f]{64}$/)
+  test('hash is sha256(token) as unpadded base64url, the format Better Auth looks tokens up by', async () => {
+    const { token, hash } = await generateToken()
+    expect(hash).toBe(createHash('sha256').update(token).digest('base64url'))
+    expect(hash).toMatch(/^[\w-]{43}$/)
   })
 })
 

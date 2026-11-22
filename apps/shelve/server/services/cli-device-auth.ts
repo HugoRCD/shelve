@@ -200,7 +200,7 @@ export async function approveDeviceAuth(event: H3Event, user: User, userCode: st
   }
   assertNotExpired(row)
 
-  const { token, prefix, hash } = generateToken()
+  const { token, prefix, hash } = await generateToken()
   const expiresAt = new Date(Date.now() + CLI_TOKEN_EXPIRES_SECONDS * 1000)
   const scopes: TokenScopes = { permissions: ['read', 'write'] }
 

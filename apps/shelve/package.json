@@ -20,6 +20,7 @@
     "db:migrate": "nuxt db migrate"
   },
   "dependencies": {
+    "@better-auth/api-key": "1.7.27",
     "@electric-sql/pglite": "^0.5.17",
     "@shelve/base": "workspace:*",
     "@vue-email/components": "^0.0.21",
