@@ -1,4 +1,5 @@
 import type { H3Event } from 'h3'
+import { userSchema } from '~~/server/db/zod'
 
 export default eventHandler(async (event: H3Event) => {
   const token = getRouterParam(event, 'token')
@@ -20,7 +21,7 @@ export default eventHandler(async (event: H3Event) => {
       .returning()
 
     await setUserSession(event, {
-      user: updatedUser,
+      user: userSchema.parse(updatedUser),
       loggedInAt: new Date(),
     })
   }

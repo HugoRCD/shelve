@@ -1,6 +1,7 @@
 function setAuthRedirectCookie(event: H3Event, redirect: string | undefined) {
-  if (!redirect?.startsWith('/') || redirect.startsWith('//')) return
-  setCookie(event, 'auth_redirect', redirect, {
+  const path = getSafeRedirectPath(redirect)
+  if (!path) return
+  setCookie(event, 'auth_redirect', path, {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax',

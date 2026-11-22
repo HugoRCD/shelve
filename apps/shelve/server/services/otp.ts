@@ -1,15 +1,17 @@
+import { randomInt, timingSafeEqual } from 'node:crypto'
 import type { User } from '@types'
 import type { H3Event } from 'h3'
-import { lt, gt, and } from 'drizzle-orm'
+import { lt, gt, and, isNotNull } from 'drizzle-orm'
 import { users } from '../db/schema'
 import { handleEmailUser } from './user'
 
 const OTP_EXPIRY_MINUTES = 10
 const OTP_RATE_LIMIT_WINDOW_MINUTES = 60
 const OTP_MAX_ATTEMPTS_PER_WINDOW = 3
+const OTP_MAX_VERIFY_ATTEMPTS = 5
 
 export function generateOTPCode(): string {
-  return Math.floor(100000 + Math.random() * 900000).toString()
+  return randomInt(100000, 1000000).toString()
 }
 
 export function generateOTPToken(): string {
@@ -77,6 +79,7 @@ export async function generateOTPForEmail(email: string, event: H3Event): Promis
       otpExpiresAt: expiresAt,
       otpAttempts: newAttempts,
       otpLastRequestAt: new Date(),
+      otpVerifyAttempts: 0,
     })
     .where(eq(users.email, email))
 
@@ -112,32 +115,42 @@ export async function verifyOTPByToken(token: string): Promise<{ success: boolea
 }
 
 export async function verifyOTPForUser(email: string, code: string): Promise<{ success: boolean; message: string; user?: User }> {
-  const user = await db
-    .select()
-    .from(users)
+  const failure = { success: false, message: 'Invalid or expired OTP code' }
+
+  // Each check uses up an attempt before the code is compared, so parallel requests can't go past the limit.
+  const [attempt] = await db
+    .update(users)
+    .set({ otpVerifyAttempts: sql`${users.otpVerifyAttempts} + 1` })
     .where(
       and(
         eq(users.email, email),
-        eq(users.otpCode, code),
-        gt(users.otpExpiresAt!, new Date())
+        isNotNull(users.otpCode),
+        gt(users.otpExpiresAt!, new Date()),
+        lt(users.otpVerifyAttempts, OTP_MAX_VERIFY_ATTEMPTS)
       )
     )
-    .limit(1)
+    .returning({ id: users.id, otpCode: users.otpCode })
 
-  if (!user.length) {
-    return { success: false, message: 'Invalid or expired OTP code' }
+  const expected = Buffer.from(attempt?.otpCode ?? '')
+  const received = Buffer.from(code)
+  if (!attempt?.otpCode || expected.length !== received.length || !timingSafeEqual(expected, received)) {
+    return failure
   }
 
-  await db
+  const [user] = await db
     .update(users)
     .set({
       otpCode: null,
       otpToken: null,
       otpExpiresAt: null,
+      otpVerifyAttempts: 0,
     })
-    .where(eq(users.id, user[0].id))
+    .where(and(eq(users.id, attempt.id), eq(users.otpCode, code)))
+    .returning()
 
-  return { success: true, message: 'OTP verified successfully', user: user[0] }
+  if (!user) return failure
+
+  return { success: true, message: 'OTP verified successfully', user }
 }
 
 export async function clearExpiredOTPs(): Promise<void> {

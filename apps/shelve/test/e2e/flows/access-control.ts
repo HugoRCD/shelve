@@ -1,3 +1,4 @@
+import { request } from 'node:http'
 import { url, fetch } from '@nuxt/test-utils/e2e'
 import { test, expect } from 'vitest'
 import type { TokenScopes } from '@types'
@@ -8,6 +9,19 @@ type Team = { id: number; slug: string; members: { id: number; role: string; use
 type Project = { id: number; name: string; teamId: number }
 type Environment = { id: number; name: string }
 type Variable = { key: string; values: { environmentId: number; value: string }[] }
+
+/** Sends `path` exactly as written, without the URL normalization `fetch` applies. */
+function rawRequest(path: string, init: { method?: string; headers?: Record<string, string>; body?: unknown } = {}): Promise<number> {
+  const { hostname, port } = new URL(url('/'))
+  return new Promise((resolve, reject) => {
+    const req = request({ hostname, port, path, method: init.method ?? 'GET', headers: { 'Content-Type': 'application/json', ...init.headers } }, (res) => {
+      res.resume()
+      resolve(res.statusCode!)
+    })
+    req.on('error', reject)
+    req.end(init.body ? JSON.stringify(init.body) : undefined)
+  })
+}
 
 function withToken(token: string, path: string, init: { method?: string; body?: unknown } = {}) {
   return fetch(url(path), {
@@ -125,6 +139,20 @@ export function registerAccessControlTests(ctx: E2EContext) {
     expect(envs.map(e => e.id)).toEqual([allowed!.id])
   })
 
+  test('a token only reaches the routes it is meant for, however the path is written', async () => {
+    const token = await createToken('path-tricks', { permissions: ['read', 'write'], projectIds: [ctx.projectId] })
+    const headers = { Authorization: `Bearer ${token}` }
+    const before = await ctx.api<unknown[]>('/api/tokens')
+
+    expect(await rawRequest('/api/tokens%3F/%2e%2e/teams/x', { method: 'POST', headers, body: { name: 'minted' } })).toBe(403)
+    expect(await rawRequest('/api/tokens%3F/../teams/x', { method: 'POST', headers, body: { name: 'minted' } })).toBe(403)
+    expect(await rawRequest('/api/user%3F/%2e%2e/teams/x', { method: 'DELETE', headers })).toBe(403)
+    expect(await rawRequest('/api/teams/', { method: 'POST', headers, body: { name: 'Token Team' } })).toBe(403)
+
+    expect(await ctx.api<unknown[]>('/api/tokens')).toHaveLength(before.length)
+    expect(await rawRequest(`/api/teams/${ctx.teamSlug}/projects/${ctx.projectId}`, { headers })).toBe(200)
+  })
+
   test('a token cannot create or list tokens', async () => {
     const token = await createToken('full-access', { permissions: ['read', 'write'] })
 
@@ -156,10 +184,11 @@ export function registerAccessControlTests(ctx: E2EContext) {
   test('setup: an intruder who is a member of the team and owns another team', async () => {
     const seeded = await seedUser({ username: 'e2e-intruder', email: intruderEmail })
     intruder = authedFetch(seeded.cookie)
-    await ctx.api(`/api/teams/${ctx.teamSlug}/members`, {
+    const invitation = await ctx.api<{ token: string }>(`/api/teams/${ctx.teamSlug}/invitations`, {
       method: 'POST',
       body: { email: intruderEmail, role: 'member' },
     })
+    await intruder(`/api/invitations/${invitation.token}/accept`, { method: 'POST' })
     const intruderTeam = await intruder<Team>('/api/teams', { method: 'POST', body: { name: 'E2E Intruder' } })
     intruderTeamSlug = intruderTeam.slug
   })
@@ -229,6 +258,120 @@ export function registerAccessControlTests(ctx: E2EContext) {
     expect(after.members.find(m => m.id === membership.id)?.role).toBe('member')
     const invitations = await ctx.api<{ email: string }[]>(`/api/teams/${ctx.teamSlug}/invitations`)
     expect(invitations.some(i => i.email === 'e2e-invitee@shelve.cloud')).toBe(false)
+  })
+
+  test('people join a team only by accepting an invitation', async () => {
+    const outsider = await seedUser({ username: 'e2e-outsider', email: 'e2e-outsider@shelve.cloud' })
+    const added = ctx.api(`/api/teams/${ctx.teamSlug}/members`, { method: 'POST', body: { email: 'e2e-outsider@shelve.cloud' } })
+    const unknown = ctx.api(`/api/teams/${ctx.teamSlug}/members`, { method: 'POST', body: { email: 'nobody@shelve.cloud' } })
+    // The same answer whether or not the email has an account.
+    await expect(added).rejects.toMatchObject({ statusCode: 404, data: { statusMessage: 'Member not found' } })
+    await expect(unknown).rejects.toMatchObject({ statusCode: 404, data: { statusMessage: 'Member not found' } })
+
+    const outsiderTeams = await authedFetch(outsider.cookie)<Team[]>('/api/teams')
+    expect(outsiderTeams.some(t => t.slug === ctx.teamSlug)).toBe(false)
+  })
+
+  test('an invitation only grants a role its sender can still grant', async () => {
+    const invitee = await seedUser({ username: 'e2e-invitee2', email: 'e2e-invitee2@shelve.cloud' })
+    const team = await ctx.api<Team>(`/api/teams/${ctx.teamSlug}`)
+    const membership = team.members.find(m => m.user.email === intruderEmail)!
+    await ctx.api(`/api/teams/${ctx.teamSlug}/members/${membership.id}`, { method: 'PUT', body: { role: 'admin' } })
+
+    const invitation = await intruder<{ id: number; token: string }>(`/api/teams/${ctx.teamSlug}/invitations`, {
+      method: 'POST',
+      body: { email: 'e2e-invitee2@shelve.cloud', role: 'admin' },
+    })
+    const memberInvitation = await intruder<{ token: string }>(`/api/teams/${ctx.teamSlug}/invitations`, {
+      method: 'POST',
+      body: { email: 'e2e-invitee3@shelve.cloud', role: 'member' },
+    })
+    const ownerInvitation = await ctx.api<{ id: number }>(`/api/teams/${ctx.teamSlug}/invitations`, {
+      method: 'POST',
+      body: { email: 'e2e-future-owner@shelve.cloud', role: 'owner' },
+    })
+    await expect(intruder(`/api/teams/${ctx.teamSlug}/invitations/${ownerInvitation.id}`, { method: 'DELETE' }))
+      .rejects.toMatchObject({ statusCode: 403 })
+
+    await ctx.api(`/api/teams/${ctx.teamSlug}/members/${membership.id}`, { method: 'PUT', body: { role: 'member' } })
+    await expect(authedFetch(invitee.cookie)(`/api/invitations/${invitation.token}/accept`, { method: 'POST' }))
+      .rejects.toMatchObject({ statusCode: 403 })
+    const memberInvitee = await seedUser({ username: 'e2e-invitee3', email: 'e2e-invitee3@shelve.cloud' })
+    await expect(authedFetch(memberInvitee.cookie)(`/api/invitations/${memberInvitation.token}/accept`, { method: 'POST' }))
+      .rejects.toMatchObject({ statusCode: 403 })
+
+    const after = await ctx.api<Team>(`/api/teams/${ctx.teamSlug}`)
+    expect(after.members.some(m => m.user.email === 'e2e-invitee2@shelve.cloud')).toBe(false)
+    expect(after.members.some(m => m.user.email === 'e2e-invitee3@shelve.cloud')).toBe(false)
+    await ctx.api(`/api/teams/${ctx.teamSlug}/invitations/${ownerInvitation.id}`, { method: 'DELETE' })
+  })
+
+  test('declining an invitation needs the invited account', async () => {
+    const invitation = await ctx.api<{ id: number; token: string }>(`/api/teams/${ctx.teamSlug}/invitations`, {
+      method: 'POST',
+      body: { email: 'e2e-decliner@shelve.cloud', role: 'member' },
+    })
+    expect((await fetch(url(`/api/invitations/${invitation.token}/decline`), { method: 'POST' })).status).toBe(401)
+    await expect(intruder(`/api/invitations/${invitation.token}/decline`, { method: 'POST' })).rejects.toMatchObject({ statusCode: 403 })
+    await ctx.api(`/api/teams/${ctx.teamSlug}/invitations/${invitation.id}`, { method: 'DELETE' })
+  })
+
+  test('a team keeps at least one owner', async () => {
+    const team = await ctx.api<Team>(`/api/teams/${ctx.teamSlug}`)
+    const owner = team.members.find(m => m.role === 'owner')!
+    await expect(ctx.api(`/api/teams/${ctx.teamSlug}/members/${owner.id}`, { method: 'PUT', body: { role: 'member' } }))
+      .rejects.toMatchObject({ statusCode: 409 })
+    await expect(ctx.api(`/api/teams/${ctx.teamSlug}/members/${owner.id}`, { method: 'DELETE' }))
+      .rejects.toMatchObject({ statusCode: 409 })
+  })
+
+  test('team slugs only use letters, digits and dashes', async () => {
+    await expect(intruder(`/api/teams/${intruderTeamSlug}`, { method: 'PUT', body: { slug: `:${ctx.teamSlug}` } }))
+      .rejects.toMatchObject({ statusCode: 409 })
+    await expect(intruder(`/api/teams/${intruderTeamSlug}`, { method: 'PUT', body: { slug: '' } }))
+      .rejects.toMatchObject({ statusCode: 400 })
+
+    const renamed = await intruder<Team>(`/api/teams/${intruderTeamSlug}`, { method: 'PUT', body: { slug: 'E2E Intruder & Co' } })
+    expect(renamed.slug).toBe('e2e-intruder-co')
+    intruderTeamSlug = renamed.slug
+    expect((await ctx.api<Team>(`/api/teams/${ctx.teamSlug}`)).id).toBe(team.id)
+  })
+
+  test('a project lookup by name only matches that exact name', async () => {
+    await expect(ctx.api(`/api/teams/${ctx.teamSlug}/projects/name/%25`)).rejects.toMatchObject({ statusCode: 400 })
+  })
+
+  test('email preview endpoints are for platform admins only', async () => {
+    const body = { email: 'someone@shelve.cloud', username: 'someone', otp: '123456' }
+    expect((await fetch(url('/api/mail/welcome'), { method: 'POST', body: JSON.stringify(body) })).status).toBe(401)
+    await expect(ctx.api('/api/mail/otp', { method: 'POST', body })).rejects.toMatchObject({ statusCode: 403 })
+  })
+
+  test('the login redirect only accepts paths on this site', async () => {
+    const redirectCookie = async (redirect: string) => {
+      const res = await fetch(url(`/auth/github?redirect=${encodeURIComponent(redirect)}`), { redirect: 'manual' })
+      return res.headers.getSetCookie().find(c => c.startsWith('auth_redirect='))
+    }
+    expect(await redirectCookie('/\\evil.example')).toBeUndefined()
+    expect(await redirectCookie('/\tevil.example')).toBeUndefined()
+    expect(await redirectCookie('//evil.example')).toBeUndefined()
+    expect(await redirectCookie('//localhost/account')).toBeUndefined()
+    expect(await redirectCookie(`/${ctx.teamSlug}`)).toBeDefined()
+  })
+
+  test('the GitHub App is only linked when GitHub lists it for the user', async () => {
+    const res = await fetch(url('/api/github/apps/complete?installation_id=123'), {
+      headers: { Cookie: ctx.sessionCookie },
+      redirect: 'manual',
+    })
+    expect(res.headers.get('location')).toContain('setup=signin-required')
+    expect(await ctx.api<unknown[]>('/api/github/apps')).toEqual([])
+  })
+
+  test('pages cannot be framed by other sites', async () => {
+    const res = await fetch(url('/login'))
+    expect(res.headers.get('x-frame-options')).toBe('DENY')
+    expect(res.headers.get('content-security-policy')).toContain('frame-ancestors \'none\'')
   })
 
   test('an admin of one team cannot rename environments of another team', async () => {

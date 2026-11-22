@@ -62,7 +62,8 @@ export function withCache<T>(
   return cachedFunction(fn, {
     maxAge: cacheEntities[entity].ttl,
     name: cacheEntities[entity].prefix,
-    getKey: (arg) => `${cacheEntities[entity].key}:${arg}`
+    // Encoded so keys stay distinct: the storage layer treats `:`, `/`, `\` and `?` in keys as separators.
+    getKey: (arg) => `${cacheEntities[entity].key}:${encodeURIComponent(String(arg))}`
   })
 }
 
@@ -73,7 +74,7 @@ export async function clearCache<T extends string | number>(
   const storage = useStorage('cache')
   const config = cacheEntities[entity]
   if (!config) throw createError({ statusCode: 404, message: `Cache entity ${entity} not found` })
-  const cacheString = `nitro:functions:${config.prefix}:${config.key}:${id}.json`
+  const cacheString = `nitro:functions:${config.prefix}:${config.key}:${encodeURIComponent(String(id))}.json`
 
   await storage.removeItem(cacheString)
 

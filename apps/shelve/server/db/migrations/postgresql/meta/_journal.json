@@ -71,6 +71,13 @@
       "when": 1791714869628,
       "tag": "0009_accounts",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1795400000000,
+      "tag": "0010_otp_verify_attempts",
+      "breakpoints": true
     }
   ]
 }

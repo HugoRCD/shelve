@@ -1,28 +1,42 @@
-export default defineEventHandler(async (event) => {
-  const query = getQuery(event)
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  const { installation_id } = query
-  const { user } = await requireUserSession(event)
+import { z } from 'zod'
 
-  if (!installation_id) {
-    throw createError({
-      statusCode: 400,
-      statusMessage: 'Missing installation_id'
-    })
-  }
-
-  try {
-    await db.insert(schema.githubApp).values({
-      installationId: +installation_id,
-      userId: user.id
-    })
-
-    return sendRedirect(event, '/user/integrations?integration=github&setup=success')
-  } catch (error: any) {
-    console.error('Error saving GitHub installation:', error)
-    throw createError({
-      statusCode: 500,
-      statusMessage: 'Failed to save GitHub installation'
-    })
-  }
+const querySchema = z.object({
+  installation_id: z.coerce.number().int().positive(),
 })
+
+export default defineEventHandler(async (event) => {
+  const { user, secure } = await requireUserSession(event)
+  const { installation_id: installationId } = await getValidatedQuery(event, querySchema.parse)
+
+  // GitHub sends `installation_id` through the browser, so anyone could pass another account's id.
+  // Only link installations that GitHub lists for this user. Sign-in replaces the whole session,
+  // so this token always belongs to the signed-in user.
+  if (!secure?.githubToken || !await canAccessInstallation(secure.githubToken, installationId)) {
+    return sendRedirect(event, '/user/integrations?integration=github&setup=signin-required')
+  }
+
+  const existing = await db.query.githubApp.findFirst({
+    where: and(eq(schema.githubApp.userId, user.id), eq(schema.githubApp.installationId, installationId)),
+    columns: { id: true },
+  })
+  if (!existing) {
+    await db.insert(schema.githubApp).values({ installationId, userId: user.id })
+  }
+
+  return sendRedirect(event, '/user/integrations?integration=github&setup=success')
+})
+
+async function canAccessInstallation(githubToken: string, installationId: number): Promise<boolean> {
+  for (let page = 1; page <= 10; page++) {
+    const { installations } = await $fetch<{ installations: { id: number }[] }>('https://api.github.com/user/installations', {
+      query: { per_page: 100, page },
+      headers: {
+        Authorization: `Bearer ${githubToken}`,
+        Accept: 'application/vnd.github+json',
+      },
+    }).catch(() => ({ installations: [] }))
+    if (installations.some(installation => installation.id === installationId)) return true
+    if (installations.length < 100) return false
+  }
+  return false
+}

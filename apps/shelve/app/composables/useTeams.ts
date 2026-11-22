@@ -92,27 +92,6 @@ export function useTeamsService() {
     }
   }
 
-  async function addMember(email: string, role: TeamRole) {
-    try {
-      const newMember = await $fetch<Member>(`/api/teams/${team.value.slug}/members`, {
-        method: 'POST',
-        body: {
-          email,
-          role,
-        },
-      })
-
-      const existingMember = team.value.members.find(member => member.userId === newMember.userId)
-      if (!existingMember) {
-        team.value.members.push(newMember)
-      }
-
-      updateTeamInList(team.value)
-    } catch (error) {
-      toast.error('Failed to add member')
-    }
-  }
-
   async function updateMember(memberId: number, role: TeamRole) {
     try {
       const updatedMember = await $fetch<Member>(`/api/teams/${team.value.slug}/members/${memberId}`, {
@@ -208,7 +187,6 @@ export function useTeamsService() {
     createTeam,
     updateTeam,
     deleteTeam,
-    addMember,
     updateMember,
     removeMember,
     sendInvitation,

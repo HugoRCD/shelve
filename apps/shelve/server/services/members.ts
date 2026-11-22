@@ -1,34 +1,22 @@
-import type { AddMemberInput, Member, RemoveMemberInput, UpdateMemberInput, User } from '@types'
+import type { Member, RemoveMemberInput, UpdateMemberInput } from '@types'
+import { TeamRole } from '@types'
 
 export class MembersService {
-
-  async addMember(input: AddMemberInput): Promise<Member> {
-    const { teamId, email, role, slug } = input
-    const user = await this.getUserByEmail(email)
-
-    const [newMember] = await db.insert(schema.members)
-      .values({
-        userId: user.id,
-        teamId,
-        role,
-      })
-      .returning()
-    if (!newMember) throw createError({ statusCode: 422, message: 'Failed to add member' })
-    const member = await this.findMemberById(newMember.id)
-    await clearCache('Team', slug)
-    return member
-  }
 
   async updateMember(input: UpdateMemberInput): Promise<Member> {
     const { teamId, slug, memberId, role, currentRole } = input
 
-    const [updated] = await db.update(schema.members)
-      .set({
-        role
-      })
-      .where(and(eq(schema.members.id, memberId), eq(schema.members.teamId, teamId), eq(schema.members.role, currentRole)))
-      .returning({ id: schema.members.id })
-    if (!updated) throw createError({ statusCode: 409, message: 'Member role changed during the update, try again' })
+    await db.transaction(async (tx) => {
+      if (currentRole === TeamRole.OWNER && role !== TeamRole.OWNER) await requireAnotherOwner(tx, teamId)
+
+      const [updated] = await tx.update(schema.members)
+        .set({
+          role
+        })
+        .where(and(eq(schema.members.id, memberId), eq(schema.members.teamId, teamId), eq(schema.members.role, currentRole)))
+        .returning({ id: schema.members.id })
+      if (!updated) throw createError({ statusCode: 409, message: 'Member role changed during the update, try again' })
+    })
 
     const member = await this.findMemberById(memberId)
     await clearCache('Team', slug)
@@ -38,9 +26,17 @@ export class MembersService {
   async removeMember(input: RemoveMemberInput): Promise<void> {
     const { teamId, memberId, slug } = input
 
-    const member = await this.findMemberById(memberId)
+    await db.transaction(async (tx) => {
+      await lockTeam(tx, teamId)
+      const member = await tx.query.members.findFirst({
+        where: and(eq(schema.members.id, memberId), eq(schema.members.teamId, teamId)),
+        columns: { id: true, role: true },
+      })
+      if (!member) throw createError({ statusCode: 404, message: `Member not found with id ${memberId}` })
+      if (member.role === TeamRole.OWNER) await requireAnotherOwner(tx, teamId)
+      await tx.delete(schema.members).where(and(eq(schema.members.id, member.id), eq(schema.members.teamId, teamId)))
+    })
     await clearCache('Team', slug)
-    await db.delete(schema.members).where(and(eq(schema.members.id, member.id), eq(schema.members.teamId, teamId)))
   }
 
   async findMemberById(memberId: number): Promise<Member> {
@@ -54,9 +50,13 @@ export class MembersService {
     return member
   }
 
-  async isUserAlreadyMember(teamId: number, email: string): Promise<Member | undefined> {
-    const user = await this.getUserByEmail(email)
-    if (!user) throw createError({ statusCode: 404, message: `User not found with email ${email}` })
+  /** The team's member with this email, or `undefined` whether or not the email has an account. */
+  async findMemberByEmail(teamId: number, email: string): Promise<Member | undefined> {
+    const user = await db.query.users.findFirst({
+      where: eq(schema.users.email, email),
+      columns: { id: true },
+    })
+    if (!user) return undefined
     return db.query.members.findFirst({
       where: and(eq(schema.members.teamId, teamId), eq(schema.members.userId, user.id)),
       with: {
@@ -65,12 +65,24 @@ export class MembersService {
     })
   }
 
-  async getUserByEmail(email: string): Promise<User> {
-    const user = await db.query.users.findFirst({
-      where: eq(schema.users.email, email)
-    })
-    if (!user) throw createError({ statusCode: 404, message: `User not found with email ${email}` })
-    return user
-  }
+}
 
+type Transaction = Parameters<Parameters<typeof db.transaction>[0]>[0]
+
+/**
+ * Locks the team's row until the transaction ends, so owner changes on the same team run one after
+ * another: each one counts the owners only after the previous one is committed.
+ */
+async function lockTeam(tx: Transaction, teamId: number): Promise<void> {
+  await tx.select({ id: schema.teams.id }).from(schema.teams).where(eq(schema.teams.id, teamId)).for('update')
+}
+
+/** A team always keeps at least one owner, who alone can delete it. */
+async function requireAnotherOwner(tx: Transaction, teamId: number): Promise<void> {
+  await lockTeam(tx, teamId)
+  const owners = await tx.query.members.findMany({
+    where: and(eq(schema.members.teamId, teamId), eq(schema.members.role, TeamRole.OWNER)),
+    columns: { id: true },
+  })
+  if (owners.length < 2) throw createError({ statusCode: 409, message: 'A team needs at least one owner' })
 }

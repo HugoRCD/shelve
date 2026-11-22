@@ -20,11 +20,13 @@ export default eventHandler(async (event) => {
   if (!target) throw createError({ statusCode: 404, statusMessage: 'Member not found' })
   validateRoleAssignment(member, role, target)
 
-  return new MembersService().updateMember({
+  const updated = await new MembersService().updateMember({
     teamId: team.id,
     slug: team.slug,
     memberId: id,
     role,
     currentRole: target.role,
   })
+  await logMemberRoleChange(event, team.id, updated, target.role)
+  return updated
 })

@@ -1,3 +1,4 @@
+import { randomBytes } from 'node:crypto'
 import type { CreateTeamInput, DeleteTeamInput, Team, UpdateTeamInput } from '@types'
 import { TeamRole } from '@types'
 
@@ -37,10 +38,16 @@ export const BLACKLIST_TEAM_SLUGS: string[] = [
   'roadmap'
 ]
 
+/** Lowercase letters, digits and single dashes, so `Équipe & Co` becomes `equipe-co`. */
+function toSlug(value: string): string {
+  return value.normalize('NFKD').replace(/[\u0300-\u036F]/g, '').toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-').slice(0, 50).replace(/^-+|-+$/g, '')
+}
+
 export class TeamsService {
 
   async createTeam(input: CreateTeamInput): Promise<Team> {
-    const slug = input.name.toLowerCase().replace(/\s/g, '-')
+    const slug = toSlug(input.name) || `team-${randomBytes(4).toString('hex')}`
 
     // Check uniqueness BEFORE transaction to avoid PGlite deadlock
     const isSlugUnique = await this.isSlugUnique(slug)
@@ -92,8 +99,12 @@ export class TeamsService {
 
   async updateTeam(input: UpdateTeamInput): Promise<Team> {
     const { teamId, ...data } = input
-    if (data.slug) {
-      data.slug = data.slug.toLowerCase().replace(/\s/g, '-')
+    const [previous] = await db.select({ slug: schema.teams.slug }).from(schema.teams).where(eq(schema.teams.id, teamId))
+    // Keep an existing slug that predates the current rules when it is sent back unchanged.
+    if (data.slug === previous?.slug) delete data.slug
+    if (data.slug !== undefined) {
+      data.slug = toSlug(data.slug)
+      if (!data.slug) throw createError({ statusCode: 400, statusMessage: 'The slug needs at least one letter or digit' })
       const isSlugUnique = await this.isSlugUnique(data.slug, teamId)
       if (!isSlugUnique) throw createError({ statusCode: 409, statusMessage: 'Slug already in use' })
       if (BLACKLIST_TEAM_SLUGS.includes(data.slug)) {
@@ -101,10 +112,12 @@ export class TeamsService {
       }
     }
 
-    return await db.transaction(async (tx) => {
-      await tx.update(schema.teams)
-        .set(data)
-        .where(eq(schema.teams.id, teamId))
+    const updatedTeam = await db.transaction(async (tx) => {
+      if (Object.values(data).some(value => value !== undefined)) {
+        await tx.update(schema.teams)
+          .set(data)
+          .where(eq(schema.teams.id, teamId))
+      }
 
       const updatedTeam = await tx.query.teams.findFirst({
         where: eq(schema.teams.id, teamId),
@@ -117,12 +130,14 @@ export class TeamsService {
         }
       })
       if (!updatedTeam) throw createError({ statusCode: 404, statusMessage: `Team not found with id ${teamId}` })
-
-      await clearCache('Team', updatedTeam.id)
-      await clearCache('Team', updatedTeam.slug)
-
       return updatedTeam
     })
+
+    // Clear the cache once the change is committed, or a concurrent read could cache the old team again.
+    if (previous && previous.slug !== updatedTeam.slug) await clearCache('Team', previous.slug)
+    await clearCache('Team', updatedTeam.slug)
+
+    return updatedTeam
   }
 
   async deleteTeam(input: DeleteTeamInput): Promise<void> {

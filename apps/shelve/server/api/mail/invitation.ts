@@ -1,4 +1,5 @@
 export default defineEventHandler(async (event) => {
+  await requireAdmin(event)
   const { email, teamName, inviterName, role } = await readBody(event)
   const appUrl = getRequestHost(event)
   const inviteUrl = `${appUrl}/invite/test-token-preview`

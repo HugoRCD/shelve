@@ -1,6 +1,6 @@
 import { randomBytes } from 'node:crypto'
 import type { CreateInvitationInput, CancelInvitationInput, TeamInvitation, Member } from '@types'
-import { InvitationStatus } from '@types'
+import { InvitationStatus, TeamRole } from '@types'
 import { and, eq, lt, desc } from 'drizzle-orm'
 
 const INVITATION_EXPIRY_DAYS = 7
@@ -148,6 +148,16 @@ export class InvitationsService {
       return existingMember
     }
 
+    // An invitation only grants a role its sender can still grant, and only while the sender can still invite.
+    const inviter = invitation.invitedById
+      ? await db.query.members.findFirst({
+        where: and(eq(schema.members.teamId, invitation.teamId), eq(schema.members.userId, invitation.invitedById)),
+      })
+      : undefined
+    if (!inviter || inviter.role === TeamRole.MEMBER || !canAssignRole(inviter, invitation.role)) {
+      throw createError({ statusCode: 403, message: 'This invitation is no longer valid' })
+    }
+
     const [newMember] = await db.insert(schema.members)
       .values({
         userId,
@@ -178,11 +188,15 @@ export class InvitationsService {
     return member
   }
 
-  async declineInvitation(token: string): Promise<void> {
+  async declineInvitation(token: string, userEmail: string): Promise<void> {
     const invitation = await this.getInvitationByToken(token)
 
     if (invitation.status !== InvitationStatus.PENDING) {
       throw createError({ statusCode: 400, message: `Invitation has already been ${invitation.status}` })
+    }
+
+    if (invitation.email.toLowerCase() !== userEmail.toLowerCase()) {
+      throw createError({ statusCode: 403, message: 'This invitation was sent to a different email address' })
     }
 
     await this.updateInvitationStatus(invitation.id, InvitationStatus.DECLINED)

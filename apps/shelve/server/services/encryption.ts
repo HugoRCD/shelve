@@ -1,5 +1,6 @@
 import { randomBytes } from 'node:crypto'
 import type { H3Event } from 'h3'
+import { isNull } from 'drizzle-orm'
 
 /**
  * Two-tier encryption (envelope encryption):
@@ -57,9 +58,12 @@ export class EncryptionService {
 
     const dek = randomBytes(32).toString('base64')
     const encryptedDek = await seal(dek, this.kek)
-    await db.update(schema.projects)
+    const [provisioned] = await db.update(schema.projects)
       .set({ encryptedDek })
-      .where(eq(schema.projects.id, projectId))
+      .where(and(eq(schema.projects.id, projectId), isNull(schema.projects.encryptedDek)))
+      .returning({ id: schema.projects.id })
+    // Another request gave the project its key first: use that one, or values written with this one would be lost.
+    if (!provisioned) return this.getProjectKey(projectId)
     this.dekCache.set(projectId, dek)
     return { key: dek, isProjectKey: true }
   }

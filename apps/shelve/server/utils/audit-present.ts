@@ -59,6 +59,10 @@ export function buildSummary(log: AuditLog, maps: AuditLookupMaps): string {
       return `Invited ${meta.email ?? 'a member'}`
     case 'team.member.remove':
       return `Removed ${meta.email ?? meta.username ?? 'a member'}`
+    case 'team.member.update':
+      return `Changed ${meta.email ?? meta.username ?? 'a member'}'s role to ${meta.role ?? 'another role'}`
+    case 'team.update':
+      return meta.slug ? `Updated the team, now at /${meta.slug}` : 'Updated the team settings'
     default:
       return log.action.replace(/\./g, ' · ')
   }
