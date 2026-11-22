@@ -1,7 +1,7 @@
 import { rmSync } from 'node:fs'
 import { setup } from '@nuxt/test-utils/e2e'
 import { describe, beforeAll, afterAll } from 'vitest'
-import { seedUser, authedFetch } from './helpers'
+import { E2E_APP_URL, seedUser, authedFetch } from './helpers'
 import type { E2EContext } from './helpers'
 import { registerTeamTests } from './flows/teams'
 import { registerProjectTests } from './flows/projects'
@@ -11,12 +11,14 @@ import { registerCliTests } from './flows/cli'
 import { registerTokenTests } from './flows/tokens'
 import { registerAccessControlTests } from './flows/access-control'
 import { registerAuditLogTests } from './flows/audit-logs'
+import { registerAuthTests } from './flows/auth'
 import { registerCleanupTests } from './flows/cleanup'
 
 describe('Team → Project → Variables E2E flow', async () => {
   await setup({
     env: {
       NUXT_TEST_SEED: '1',
+      NUXT_PUBLIC_APP_URL: E2E_APP_URL,
     },
   })
 
@@ -44,5 +46,6 @@ describe('Team → Project → Variables E2E flow', async () => {
   registerTokenTests(ctx)
   registerAccessControlTests(ctx)
   registerAuditLogTests(ctx)
+  registerAuthTests(ctx)
   registerCleanupTests(ctx)
 })

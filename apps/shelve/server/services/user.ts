@@ -31,9 +31,12 @@ async function syncUserRole(user: User, event: H3Event): Promise<User> {
   return user
 }
 
+// Length of the `users.username` column.
+const USERNAME_MAX_LENGTH = 25
+
 export async function createUser(input: CreateUserInput, event: H3Event): Promise<User> {
   const adminEmails = useRuntimeConfig(event).private.adminEmails?.split(',') || []
-  input.username = await validateUsername(input.username, input.authType)
+  input.username = await getAvailableUsername(input.username)
   const [createdUser] = await db
     .insert(schema.users)
     .values({
@@ -45,7 +48,7 @@ export async function createUser(input: CreateUserInput, event: H3Event): Promis
     })
     .returning()
   if (!createdUser) throw createError({ statusCode: 422, statusMessage: 'Failed to create user' })
-  await new EmailService(event).sendWelcomeEmail(input.email, input.username, input.appUrl)
+  await new EmailService(event).sendWelcomeEmail(input.email, input.username)
   return createdUser
 }
 
@@ -53,8 +56,12 @@ export async function createUser(input: CreateUserInput, event: H3Event): Promis
  * Resolves the user for an OAuth login. The provider account ID is the stable
  * identity: provider emails can change, so email is only used to link an
  * existing user the first time a provider account is seen.
+ *
+ * Linking by email, creating a user and granting admin by email all trust the
+ * email, so they need one the provider has verified. Returns null when the
+ * provider account isn't linked yet and its email isn't verified.
  */
-export async function handleOAuthUser(input: CreateUserInput, event: H3Event): Promise<User> {
+export async function handleOAuthUser(input: CreateUserInput & { emailVerified: boolean }, event: H3Event): Promise<User | null> {
   const { providerAccountId, authType } = input
 
   if (providerAccountId) {
@@ -69,6 +76,8 @@ export async function handleOAuthUser(input: CreateUserInput, event: H3Event): P
 
     if (linked) return await syncUserRole(linked.user, event)
   }
+
+  if (!input.emailVerified) return null
 
   const [foundUser] = await db
     .select()
@@ -98,13 +107,11 @@ export async function handleEmailUser(email: string, event: H3Event): Promise<{ 
     return { user: syncedUser, isNewUser: false }
   }
 
-  const username = await validateUsername(email.split('@')[0], AuthType.EMAIL)
   const userInput: CreateUserInput = {
     email,
-    username,
+    username: email.split('@')[0]!,
     authType: AuthType.EMAIL,
     avatar: 'https://i.imgur.com/6VBx3io.png',
-    appUrl: getRequestHost(event),
   }
 
   const newUser = await createUser(userInput, event)
@@ -127,7 +134,21 @@ export async function validateUsername(username: string, authType?: AuthType): P
 }
 
 function generateUniqueUsername(username: string): string {
-  return `${username}_#${Math.floor(Math.random() * 1000)}`
+  const suffix = `_#${Math.floor(Math.random() * 1000)}`
+  return `${username.slice(0, USERNAME_MAX_LENGTH - suffix.length)}${suffix}`
+}
+
+/**
+ * A username for a new account: the requested one when it's free, otherwise a variant
+ * with a random suffix. Sign-up never fails on, or reveals, a name someone else has.
+ */
+async function getAvailableUsername(username: string): Promise<string> {
+  const name = username.slice(0, USERNAME_MAX_LENGTH)
+  const [taken] = await db
+    .select({ id: schema.users.id })
+    .from(schema.users)
+    .where(eq(schema.users.username, name))
+  return taken ? generateUniqueUsername(name) : name
 }
 
 export async function authenticateToken(
@@ -148,7 +169,7 @@ export async function authenticateToken(
     throw createError({ statusCode: 401, statusMessage: 'Token expired' })
   }
 
-  const ip = getRequestIP(event, { xForwardedFor: true }) ?? null
+  const ip = getClientIp(event)
   if (token.allowedCidrs.length > 0) {
     if (!ip || !ip.length) {
       throw createError({ statusCode: 401, statusMessage: 'Token IP allowlist enforced' })
@@ -206,30 +227,4 @@ async function resolveTokenTeamIds(scopes: TokenScopes): Promise<number[] | unde
 
   if (!restrictions.length) return undefined
   return restrictions.reduce((allowed, teamIds) => allowed.filter(id => teamIds.includes(id)))
-}
-
-function isIpInCidr(ip: string, cidr: string): boolean {
-  const [range, bitsRaw] = cidr.split('/')
-  if (!range || !bitsRaw) return false
-  const bits = parseInt(bitsRaw, 10)
-  if (Number.isNaN(bits)) return false
-
-  if (ip.includes(':') !== range.includes(':')) return false
-
-  if (!ip.includes(':')) {
-    const ipNum = ipv4ToNumber(ip)
-    const rangeNum = ipv4ToNumber(range)
-    if (ipNum === null || rangeNum === null) return false
-    if (bits === 0) return true
-    const mask = (~0 << (32 - bits)) >>> 0
-    return (ipNum & mask) === (rangeNum & mask)
-  }
-
-  return false
-}
-
-function ipv4ToNumber(ip: string): number | null {
-  const parts = ip.split('.').map(Number)
-  if (parts.length !== 4 || parts.some((p) => Number.isNaN(p) || p < 0 || p > 255)) return null
-  return ((parts[0]! << 24) | (parts[1]! << 16) | (parts[2]! << 8) | parts[3]!) >>> 0
 }

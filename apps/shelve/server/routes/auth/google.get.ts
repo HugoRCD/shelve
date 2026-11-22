@@ -7,15 +7,15 @@ export default defineOAuthGoogleEventHandler({
   },
   async onSuccess(event, { user, tokens }) {
     try {
-      const appUrl = getRequestHost(event)
       const _user = await handleOAuthUser({
         email: user.email,
+        emailVerified: user.email_verified === true,
         avatar: user.picture,
         username: `${user.given_name}_${user.family_name}`,
         authType: AuthType.GOOGLE,
         providerAccountId: user.sub,
-        appUrl,
       }, event)
+      if (!_user) return sendRedirect(event, '/login?error=unverified-email')
       await replaceUserSession(event, {
         secure: {
           googleToken: tokens.access_token,

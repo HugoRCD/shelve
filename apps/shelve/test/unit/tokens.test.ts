@@ -1,6 +1,7 @@
 import { describe, test, expect } from 'vitest'
 import { generateToken, hashToken, safeEqualHex } from '../../server/utils/tokens'
 import { TOKEN_PREFIX, TOKEN_PREFIX_DISPLAY_LENGTH } from '../../server/utils/constants'
+import { isIpInCidr } from '../../server/utils/ip'
 
 describe('generateToken', () => {
   test('returns a token starting with the SHE_ prefix', () => {
@@ -76,5 +77,60 @@ describe('safeEqualHex', () => {
     // that the helper handles the input without throwing — callers always
     // pass sha256 hex strings produced by hashToken.
     expect(() => safeEqualHex('zzzz', 'yyyy')).not.toThrow()
+  })
+})
+
+describe('isIpInCidr', () => {
+  test('matches IPv4 ranges up to their boundaries', () => {
+    expect(isIpInCidr('10.0.0.0', '10.0.0.0/8')).toBe(true)
+    expect(isIpInCidr('10.255.255.255', '10.0.0.0/8')).toBe(true)
+    expect(isIpInCidr('9.255.255.255', '10.0.0.0/8')).toBe(false)
+    expect(isIpInCidr('11.0.0.0', '10.0.0.0/8')).toBe(false)
+    expect(isIpInCidr('203.0.113.7', '203.0.113.7/32')).toBe(true)
+    expect(isIpInCidr('203.0.113.8', '203.0.113.7/32')).toBe(false)
+    expect(isIpInCidr('198.51.100.1', '0.0.0.0/0')).toBe(true)
+  })
+
+  test('matches IPv6 ranges up to their boundaries', () => {
+    const cidr = '2001:db8:abcd:12::/64'
+    expect(isIpInCidr('2001:db8:abcd:12::', cidr)).toBe(true)
+    expect(isIpInCidr('2001:db8:abcd:12:ffff:ffff:ffff:ffff', cidr)).toBe(true)
+    expect(isIpInCidr('2001:db8:abcd:11:ffff:ffff:ffff:ffff', cidr)).toBe(false)
+    expect(isIpInCidr('2001:db8:abcd:13::', cidr)).toBe(false)
+  })
+
+  test('matches IPv6 prefixes that split a group', () => {
+    expect(isIpInCidr('2001:db8:7fff:ffff:ffff:ffff:ffff:ffff', '2001:db8::/33')).toBe(true)
+    expect(isIpInCidr('2001:db8:8000::', '2001:db8::/33')).toBe(false)
+  })
+
+  test('reads compressed and expanded IPv6 forms alike', () => {
+    expect(isIpInCidr('2001:0db8:0000:0000:0000:0000:0000:0001', '2001:db8::1/128')).toBe(true)
+    expect(isIpInCidr('2001:db8::1', '2001:0DB8:0:0::1/128')).toBe(true)
+    expect(isIpInCidr('::1', '::1/128')).toBe(true)
+    expect(isIpInCidr('::2', '::1/128')).toBe(false)
+    expect(isIpInCidr('fe80::1', '::/0')).toBe(true)
+  })
+
+  test('treats IPv4-mapped IPv6 addresses as IPv4', () => {
+    expect(isIpInCidr('::ffff:192.168.1.10', '192.168.1.0/24')).toBe(true)
+    expect(isIpInCidr('::ffff:192.168.2.10', '192.168.1.0/24')).toBe(false)
+    expect(isIpInCidr('192.168.1.10', '::ffff:c0a8:100/120')).toBe(true)
+    expect(isIpInCidr('192.168.2.10', '::ffff:c0a8:100/120')).toBe(false)
+  })
+
+  test('never matches across address families', () => {
+    expect(isIpInCidr('10.0.0.1', '::/0')).toBe(false)
+    expect(isIpInCidr('2001:db8::1', '0.0.0.0/0')).toBe(false)
+  })
+
+  test('refuses malformed addresses and ranges', () => {
+    expect(isIpInCidr('not-an-ip', '0.0.0.0/0')).toBe(false)
+    expect(isIpInCidr('1..2.3', '0.0.0.0/0')).toBe(false)
+    expect(isIpInCidr('fe80::1%eth0', '::/0')).toBe(false)
+    expect(isIpInCidr('2001:db8::1', '2001:db8::/129')).toBe(false)
+    expect(isIpInCidr('10.0.0.1', '10.0.0.0/33')).toBe(false)
+    expect(isIpInCidr('10.0.0.1', '10.0.0.0')).toBe(false)
+    expect(isIpInCidr('10.0.0.1', '10.0.0.0/8/8')).toBe(false)
   })
 })

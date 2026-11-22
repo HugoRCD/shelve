@@ -44,6 +44,17 @@ if (route.query.error === 'github' || route.query.error === 'google') {
   })
 }
 
+if (route.query.error === 'unverified-email') {
+  toast.error('Your GitHub or Google account needs a verified primary email to sign in. Verify it with the provider, then try again.', {
+    duration: Infinity,
+    closeButton: false,
+    action: {
+      label: 'Dismiss',
+      onClick: () => useRouter().push('/login')
+    }
+  })
+}
+
 if (route.query.error === 'invalid-otp') {
   toast.error('Invalid or expired verification code. Please try again.', {
     duration: Infinity,
