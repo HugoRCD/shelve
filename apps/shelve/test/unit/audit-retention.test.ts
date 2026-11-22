@@ -20,7 +20,7 @@ vi.stubGlobal('db', db)
 vi.stubGlobal('schema', schema)
 vi.stubGlobal('lt', lt)
 vi.stubGlobal('useRuntimeConfig', () => runtimeConfig)
-vi.stubGlobal('getUserSession', () => Promise.resolve({}))
+vi.stubGlobal('getAuth', () => Promise.resolve(null))
 vi.stubGlobal('getClientIp', () => null)
 vi.stubGlobal('getRequestHeader', () => undefined)
 

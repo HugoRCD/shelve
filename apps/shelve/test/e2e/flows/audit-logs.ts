@@ -1,3 +1,4 @@
+import { fetch, url } from '@nuxt/test-utils/e2e'
 import { test, expect } from 'vitest'
 import type { AuditLogResponse } from '@types'
 import type { E2EContext } from '../helpers'
@@ -61,6 +62,28 @@ export function registerAuditLogTests(ctx: E2EContext) {
       syncPolicy: null,
       previousSyncPolicy: { protectedEnvironments: ['production'] },
     })
+  })
+
+  test('attributes token requests to the token and sets no session cookie', async () => {
+    const { token } = await ctx.api<{ token: string }>('/api/tokens', {
+      method: 'POST',
+      body: { name: 'audit-actor' },
+    })
+
+    const response = await fetch(url(`/api/teams/${ctx.teamSlug}/environments`), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ name: 'token-made' }),
+    })
+    expect(response.status).toBe(200)
+    expect(response.headers.getSetCookie().filter(c => c.startsWith('nuxt-auth-session='))).toEqual([])
+
+    const feed = await waitForAuditAction(ctx, 'environment.create')
+    const entry = feed.logs.find(log => log.action === 'environment.create' && log.metadata?.name === 'token-made')
+    expect(entry?.actor.type).toBe('token')
+    expect(entry?.metadata).toMatchObject({ tokenName: 'audit-actor' })
+
+    await ctx.api(`/api/teams/${ctx.teamSlug}/environments/${entry!.resourceId}`, { method: 'DELETE' })
   })
 
   test('filters by action', async () => {

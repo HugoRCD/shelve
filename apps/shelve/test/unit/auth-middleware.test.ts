@@ -18,10 +18,11 @@ vi.stubGlobal('setUserSession', setUserSession)
 vi.stubGlobal('authenticateToken', authenticateToken)
 vi.stubGlobal('getRequestURL', (event: H3Event) => new URL(event.path, 'http://localhost'))
 vi.stubGlobal('getRequestHeader', (event: H3Event & { headers: Record<string, string> }, name: string) => event.headers[name])
-vi.stubGlobal('getCookie', () => undefined)
+// The session cookie is present whenever the test sets a session.
+vi.stubGlobal('getCookie', (_event: H3Event, name: string) => name === 'nuxt-auth-session' && Object.keys(session).length ? 'sealed' : undefined)
+vi.stubGlobal('useRuntimeConfig', () => ({ session: { name: 'nuxt-auth-session' } }))
 vi.stubGlobal('getRequestPermission', () => 'read')
 vi.stubGlobal('requireTokenScope', () => Promise.resolve())
-vi.stubGlobal('useRuntimeConfig', () => ({ session: { name: 'nuxt-auth-session' } }))
 
 const { default: authMiddleware } = await import('../../server/middleware/2.auth')
 const run = authMiddleware as unknown as (event: H3Event) => Promise<void>
@@ -33,7 +34,7 @@ function request(path: string, headers: Record<string, string> = {}, method = 'G
     setHeader: (name: string, value: unknown) => responseHeaders.set(name, value),
     removeHeader: (name: string) => responseHeaders.delete(name),
   }
-  return { path, method, headers, node: { res } } as unknown as H3Event
+  return { path, method, headers, context: {}, node: { res } } as unknown as H3Event
 }
 
 beforeEach(() => {
@@ -65,22 +66,21 @@ describe('auth middleware', () => {
     expect(authenticateToken).not.toHaveBeenCalled()
   })
 
-  test('keeps token sessions out of the session cookie', async () => {
+  test('keeps token auth on the request, out of the session cookie', async () => {
     authenticateToken.mockResolvedValue({
       user: { id: 1 },
       scopes: { permissions: ['read'] },
       token: { id: 7, prefix: 'she_', name: 'ci' },
     })
-
-    // Like nuxt-auth-utils 0.6, seal the session into a cookie next to one set elsewhere.
-    setUserSession.mockImplementation((event: H3Event) => {
-      event.node.res.setHeader('set-cookie', ['other=1; Path=/', 'nuxt-auth-session=sealed; Path=/; HttpOnly'])
-    })
     const event = request('/api/teams/acme/projects', { authorization: 'Bearer she_x' })
 
     await run(event)
 
-    expect(setUserSession).toHaveBeenCalledWith(expect.anything(), expect.objectContaining({ tokenId: 7 }))
-    expect(event.node.res.getHeader('set-cookie')).toEqual(['other=1; Path=/'])
+    expect(event.context.auth).toEqual({
+      user: { id: 1 },
+      token: { id: 7, prefix: 'she_', name: 'ci', scopes: { permissions: ['read'] } },
+    })
+    expect(setUserSession).not.toHaveBeenCalled()
+    expect(event.node.res.getHeader('set-cookie')).toBeUndefined()
   })
 })

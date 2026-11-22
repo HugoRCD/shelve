@@ -7,7 +7,7 @@ export type ScopeLabels = {
 }
 
 export default defineEventHandler(async (event): Promise<ScopeLabels> => {
-  const { user } = await requireUserSession(event)
+  const { user } = await requireAuth(event)
 
   const memberships = await db.query.members.findMany({
     where: eq(schema.members.userId, user.id),

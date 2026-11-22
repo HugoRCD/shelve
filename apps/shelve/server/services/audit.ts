@@ -18,14 +18,12 @@ export type AuditEvent = {
  */
 export async function logAudit(event: H3Event, payload: AuditEvent): Promise<void> {
   try {
-    const session = await getUserSession(event)
-    const actorType: AuditActorType = session.tokenScopes ? 'token' : session.user ? 'user' : 'system'
-    const actorId = session.tokenScopes && session.tokenId
-      ? session.tokenId
-      : session.user?.id ?? null
+    const auth = await getAuth(event)
+    const actorType: AuditActorType = auth?.token ? 'token' : auth ? 'user' : 'system'
+    const actorId = auth?.token ? auth.token.id : auth?.user.id ?? null
 
-    const tokenMeta = session.tokenScopes && session.tokenId
-      ? { tokenPrefix: session.tokenPrefix, tokenName: session.tokenName }
+    const tokenMeta = auth?.token
+      ? { tokenPrefix: auth.token.prefix, tokenName: auth.token.name }
       : {}
 
     const ip = getClientIp(event)

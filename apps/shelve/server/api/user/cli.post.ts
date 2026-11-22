@@ -1,5 +1,5 @@
 export default defineEventHandler(async (event) => {
-  const { user } = await requireUserSession(event)
+  const { user } = await requireAuth(event)
 
   const [updatedUser] = await db.update(schema.users)
     .set({

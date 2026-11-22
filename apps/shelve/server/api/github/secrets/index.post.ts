@@ -2,7 +2,7 @@ import { z } from 'zod'
 import { sanitizeGithubUrl } from '@utils'
 
 export default defineEventHandler(async (event) => {
-  const session = await requireUserSession(event)
+  const { user } = await requireAuth(event)
   const { variables, repository } = await readValidatedBody(event, z.object({
     variables: z.array(z.object({
       key: z.string({
@@ -16,5 +16,5 @@ export default defineEventHandler(async (event) => {
       error: 'Repository is required',
     }).trim().transform(url => sanitizeGithubUrl(url).replace(/\/+$/, '')).pipe(z.string().regex(GITHUB_REPOSITORY_PATTERN, 'Repository must be owner/name')),
   }).parse)
-  return await new GithubService(event).sendSecrets(session.user.id, repository, variables, requireGithubToken(session))
+  return await new GithubService(event).sendSecrets(user.id, repository, variables, requireGithubToken(await getGithubToken(event)))
 })

@@ -255,10 +255,10 @@ describe('pushing secrets to GitHub', () => {
 
 describe('requireGithubToken', () => {
   test('needs a GitHub sign-in', () => {
-    expect(() => githubModule.requireGithubToken({ user: { id: 1 } } as any))
+    expect(() => githubModule.requireGithubToken(undefined))
       .toThrow(expect.objectContaining({ statusCode: 403, data: { reason: 'github-sign-in-required' } }))
-    expect(() => githubModule.requireGithubToken({ user: { id: 1 }, secure: { googleToken: 'g' } } as any))
+    expect(() => githubModule.requireGithubToken(''))
       .toThrow(expect.objectContaining({ statusCode: 403 }))
-    expect(githubModule.requireGithubToken({ user: { id: 1 }, secure: { githubToken: USER_TOKEN } } as any)).toBe(USER_TOKEN)
+    expect(githubModule.requireGithubToken(USER_TOKEN)).toBe(USER_TOKEN)
   })
 })

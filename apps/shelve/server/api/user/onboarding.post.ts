@@ -1,7 +1,7 @@
 import { z } from 'zod'
 
 export default defineEventHandler(async (event) => {
-  const { user } = await requireUserSession(event)
+  const { user } = await requireAuth(event)
   const { teamSlug } = await readValidatedBody(event, z.object({
     teamSlug: z.string({
       error: 'Team Slug is required',
