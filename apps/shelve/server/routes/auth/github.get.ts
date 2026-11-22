@@ -1,7 +1,7 @@
 import { AuthType } from '@types'
 import { userSchema } from '~~/server/db/zod'
 
-export default defineOAuthGitHubEventHandler({
+const githubLogin = defineOAuthGitHubEventHandler({
   config: {
     emailRequired: true,
     scope: ['repo', 'user:email'],
@@ -51,4 +51,9 @@ export default defineOAuthGitHubEventHandler({
     console.error('GitHub OAuth error:', error)
     return sendRedirect(event, '/login?error=github')
   },
+})
+
+export default defineEventHandler(async (event) => {
+  if (await proxyPreviewOAuthCallback(event, 'github')) return
+  return githubLogin(event)
 })
