@@ -131,7 +131,9 @@ export async function verifyOTPForUser(email: string, code: string): Promise<{ s
     )
     .returning({ id: users.id, otpCode: users.otpCode })
 
-  if (!attempt?.otpCode || attempt.otpCode.length !== code.length || !timingSafeEqual(Buffer.from(attempt.otpCode), Buffer.from(code))) {
+  const expected = Buffer.from(attempt?.otpCode ?? '')
+  const received = Buffer.from(code)
+  if (!attempt?.otpCode || expected.length !== received.length || !timingSafeEqual(expected, received)) {
     return failure
   }
 

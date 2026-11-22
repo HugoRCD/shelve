@@ -1,6 +1,6 @@
 import { randomBytes } from 'node:crypto'
 import type { CreateInvitationInput, CancelInvitationInput, TeamInvitation, Member } from '@types'
-import { InvitationStatus } from '@types'
+import { InvitationStatus, TeamRole } from '@types'
 import { and, eq, lt, desc } from 'drizzle-orm'
 
 const INVITATION_EXPIRY_DAYS = 7
@@ -148,13 +148,13 @@ export class InvitationsService {
       return existingMember
     }
 
-    // An invitation only grants a role its sender can still grant.
+    // An invitation only grants a role its sender can still grant, and only while the sender can still invite.
     const inviter = invitation.invitedById
       ? await db.query.members.findFirst({
         where: and(eq(schema.members.teamId, invitation.teamId), eq(schema.members.userId, invitation.invitedById)),
       })
       : undefined
-    if (!inviter || !canAssignRole(inviter, invitation.role)) {
+    if (!inviter || inviter.role === TeamRole.MEMBER || !canAssignRole(inviter, invitation.role)) {
       throw createError({ statusCode: 403, message: 'This invitation is no longer valid' })
     }
 

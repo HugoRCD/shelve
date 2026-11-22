@@ -16,7 +16,7 @@ export default defineOAuthGoogleEventHandler({
         providerAccountId: user.sub,
         appUrl,
       }, event)
-      await setUserSession(event, {
+      await replaceUserSession(event, {
         secure: {
           googleToken: tokens.access_token,
         },

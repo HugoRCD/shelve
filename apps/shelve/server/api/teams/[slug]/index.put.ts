@@ -2,7 +2,7 @@ import { z } from 'zod'
 import { TeamRole } from '@types'
 
 const updateTeamSchema = z.object({
-  name: z.string().min(3).max(50).trim().optional(),
+  name: z.string().trim().min(3).max(50).optional(),
   logo: z.string().optional(),
   slug: z.string().max(50).optional(),
 })

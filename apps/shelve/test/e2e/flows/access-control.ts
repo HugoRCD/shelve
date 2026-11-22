@@ -282,6 +282,10 @@ export function registerAccessControlTests(ctx: E2EContext) {
       method: 'POST',
       body: { email: 'e2e-invitee2@shelve.cloud', role: 'admin' },
     })
+    const memberInvitation = await intruder<{ token: string }>(`/api/teams/${ctx.teamSlug}/invitations`, {
+      method: 'POST',
+      body: { email: 'e2e-invitee3@shelve.cloud', role: 'member' },
+    })
     const ownerInvitation = await ctx.api<{ id: number }>(`/api/teams/${ctx.teamSlug}/invitations`, {
       method: 'POST',
       body: { email: 'e2e-future-owner@shelve.cloud', role: 'owner' },
@@ -292,9 +296,13 @@ export function registerAccessControlTests(ctx: E2EContext) {
     await ctx.api(`/api/teams/${ctx.teamSlug}/members/${membership.id}`, { method: 'PUT', body: { role: 'member' } })
     await expect(authedFetch(invitee.cookie)(`/api/invitations/${invitation.token}/accept`, { method: 'POST' }))
       .rejects.toMatchObject({ statusCode: 403 })
+    const memberInvitee = await seedUser({ username: 'e2e-invitee3', email: 'e2e-invitee3@shelve.cloud' })
+    await expect(authedFetch(memberInvitee.cookie)(`/api/invitations/${memberInvitation.token}/accept`, { method: 'POST' }))
+      .rejects.toMatchObject({ statusCode: 403 })
 
     const after = await ctx.api<Team>(`/api/teams/${ctx.teamSlug}`)
     expect(after.members.some(m => m.user.email === 'e2e-invitee2@shelve.cloud')).toBe(false)
+    expect(after.members.some(m => m.user.email === 'e2e-invitee3@shelve.cloud')).toBe(false)
     await ctx.api(`/api/teams/${ctx.teamSlug}/invitations/${ownerInvitation.id}`, { method: 'DELETE' })
   })
 
@@ -347,6 +355,7 @@ export function registerAccessControlTests(ctx: E2EContext) {
     expect(await redirectCookie('/\\evil.example')).toBeUndefined()
     expect(await redirectCookie('/\tevil.example')).toBeUndefined()
     expect(await redirectCookie('//evil.example')).toBeUndefined()
+    expect(await redirectCookie('//localhost/account')).toBeUndefined()
     expect(await redirectCookie(`/${ctx.teamSlug}`)).toBeDefined()
   })
 

@@ -99,6 +99,9 @@ export class TeamsService {
 
   async updateTeam(input: UpdateTeamInput): Promise<Team> {
     const { teamId, ...data } = input
+    const [previous] = await db.select({ slug: schema.teams.slug }).from(schema.teams).where(eq(schema.teams.id, teamId))
+    // Keep an existing slug that predates the current rules when it is sent back unchanged.
+    if (data.slug === previous?.slug) delete data.slug
     if (data.slug !== undefined) {
       data.slug = toSlug(data.slug)
       if (!data.slug) throw createError({ statusCode: 400, statusMessage: 'The slug needs at least one letter or digit' })
@@ -109,12 +112,12 @@ export class TeamsService {
       }
     }
 
-    const [previous] = await db.select({ slug: schema.teams.slug }).from(schema.teams).where(eq(schema.teams.id, teamId))
-
     const updatedTeam = await db.transaction(async (tx) => {
-      await tx.update(schema.teams)
-        .set(data)
-        .where(eq(schema.teams.id, teamId))
+      if (Object.values(data).some(value => value !== undefined)) {
+        await tx.update(schema.teams)
+          .set(data)
+          .where(eq(schema.teams.id, teamId))
+      }
 
       const updatedTeam = await tx.query.teams.findFirst({
         where: eq(schema.teams.id, teamId),

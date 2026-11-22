@@ -17,7 +17,7 @@ export default defineOAuthGitHubEventHandler({
         providerAccountId: String(user.id),
         appUrl,
       }, event)
-      await setUserSession(event, {
+      await replaceUserSession(event, {
         secure: {
           githubToken: tokens.access_token,
         },

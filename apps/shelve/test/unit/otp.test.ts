@@ -44,6 +44,10 @@ describe('verifyOTPForUser', () => {
     expect((await verifyOTPForUser(email, code)).success).toBe(false)
   })
 
+  test('refuses a code whose bytes differ in length', async () => {
+    expect((await verifyOTPForUser(email, 'é82913')).success).toBe(false)
+  })
+
   test('refuses the right code after five wrong ones', async () => {
     for (const guess of ['000000', '111111', '222222', '333333', '444444'])
       expect((await verifyOTPForUser(email, guess)).success).toBe(false)

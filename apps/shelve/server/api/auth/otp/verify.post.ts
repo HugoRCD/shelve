@@ -28,7 +28,7 @@ export default defineEventHandler(async (event) => {
       loggedInAt: new Date(),
     }
 
-    await setUserSession(event, session)
+    await replaceUserSession(event, session)
 
     return {
       success: true,
