@@ -24,6 +24,7 @@ export default eventHandler(async (event) => {
     teamId: team.id,
     slug: team.slug,
     memberId: id,
-    role
+    role,
+    currentRole: target.role,
   })
 })

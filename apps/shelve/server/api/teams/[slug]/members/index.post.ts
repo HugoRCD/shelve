@@ -16,7 +16,17 @@ export default eventHandler(async (event) => {
 
   // Adding someone who is already a member updates their role, so their current role counts too.
   const membersService = new MembersService()
-  validateRoleAssignment(member, role, await membersService.isUserAlreadyMember(team.id, email))
+  const existing = await membersService.isUserAlreadyMember(team.id, email)
+  validateRoleAssignment(member, role, existing)
+  if (existing) {
+    return await membersService.updateMember({
+      teamId: team.id,
+      slug: team.slug,
+      memberId: existing.id,
+      role,
+      currentRole: existing.role,
+    })
+  }
 
   return await membersService.addMember({
     teamId: team.id,
