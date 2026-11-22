@@ -5,7 +5,7 @@ export function useGitHub() {
     $fetch('/api/github/apps')
   )
 
-  const { data: repos, status: reposStatus, refresh: refreshRepos } = useFetch<GitHubRepo[]>('/api/github/repos', {
+  const { data: repos, status: reposStatus, refresh: refreshRepos, error: reposError } = useFetch<GitHubRepo[]>('/api/github/repos', {
     key: 'github-repos',
     server: false,
     immediate: false
@@ -18,6 +18,7 @@ export function useGitHub() {
   return {
     apps,
     repos,
+    reposError,
     loading,
     refreshRepos
   }

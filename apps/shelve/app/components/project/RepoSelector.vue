@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { GitHubRepo } from '@types'
 
-const { repos, apps, refreshRepos, loading } = useGitHub()
+const { repos, reposError, apps, refreshRepos, loading } = useGitHub()
 const { searchTerm, filterRepos, formatRepos } = useRepoSearch()
 
 const repo = defineModel<string>()
@@ -68,6 +68,13 @@ defineSlots<{ default?: any }>()
             </div>
             <USkeleton v-for="n in 3" :key="n" class="h-6 w-full rounded-sm" />
           </div>
+          <div v-else-if="needsGithubSignIn(reposError)" class="flex flex-col items-center justify-center gap-3 py-4">
+            <UIcon name="simple-icons:github" class="size-8" />
+            <p class="text-muted text-center">
+              Sign in to Shelve with GitHub to see your repositories.
+            </p>
+            <UButton label="Sign in with GitHub" icon="simple-icons:github" size="sm" @click="signInWithGithub" />
+          </div>
           <div v-else-if="searchTerm && !formattedRepos.length" class="flex flex-col items-center justify-center gap-2 py-4">
             <UIcon name="i-heroicons-magnifying-glass-slash" class="size-8 text-muted" />
             <p class="text-muted text-center">
@@ -77,7 +84,7 @@ defineSlots<{ default?: any }>()
           <div v-else class="flex flex-col items-center justify-center gap-2 py-4">
             <UIcon name="simple-icons:github" class="size-8" />
             <p class="text-muted">
-              No repositories found.
+              No repositories you administer were found.
             </p>
           </div>
         </template>

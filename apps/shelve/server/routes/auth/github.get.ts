@@ -14,7 +14,7 @@ async function getVerifiedPrimaryEmail(accessToken: string): Promise<string | un
   return emails.find(entry => entry.primary && entry.verified)?.email
 }
 
-export default defineOAuthGitHubEventHandler({
+const githubLogin = defineOAuthGitHubEventHandler({
   config: {
     emailRequired: true,
     scope: ['repo', 'user:email'],
@@ -66,4 +66,9 @@ export default defineOAuthGitHubEventHandler({
     console.error('GitHub OAuth error:', error)
     return sendRedirect(event, '/login?error=github')
   },
+})
+
+export default defineEventHandler(async (event) => {
+  if (await proxyPreviewOAuthCallback(event, 'github')) return
+  return githubLogin(event)
 })

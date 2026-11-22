@@ -1,6 +1,7 @@
 import type { UpdateVariableInput, CreateVariablesInput, Variable } from '@types'
 import type { H3Event } from 'h3'
-import { GithubService } from './github'
+import { GithubService, assertGithubSecretNames, requireGithubToken } from './github'
+import type { SecretsTarget } from './github'
 import { ProjectsService } from './projects'
 import { EncryptionService } from './encryption'
 
@@ -56,6 +57,18 @@ export class VariablesService {
   // Public methods
   async createVariables(event: H3Event, input: CreateVariablesInput): Promise<void> {
     const { projectId, variables: varsToCreate, autoUppercase = true, environmentIds, syncWithGitHub } = input
+
+    // Check GitHub access before saving, so a sync the user may not do saves nothing.
+    const variablesToSend = varsToCreate.map(v => ({ key: autoUppercase ? v.key.toUpperCase() : v.key, value: v.value }))
+    let githubTarget: SecretsTarget | undefined
+    if (syncWithGitHub) {
+      const session = await requireUserSession(event)
+      const githubToken = requireGithubToken(session)
+      assertGithubSecretNames(variablesToSend.map(({ key }) => key))
+      const project = await new ProjectsService().getProject(projectId)
+      if (!project || !project.repository) throw createError({ statusCode: 400, statusMessage: 'No GitHub repository linked to this project.' })
+      githubTarget = await new GithubService(event).getSecretsTarget(session.user.id, project.repository, githubToken)
+    }
 
     // Encrypt outside the transaction: this.encryption uses the global `db`
     // pool, and several drivers (pglite, libSQL) only expose a single
@@ -126,12 +139,8 @@ export class VariablesService {
       }
     })
 
-    if (syncWithGitHub) {
-      const { user } = await requireUserSession(event)
-      const project = await new ProjectsService().getProject(projectId)
-      if (!project || !project.repository) throw createError({ statusCode: 400, statusMessage: 'No GitHub repository linked to this project.' })
-      const variablesToSend = varsToCreate.map(v => ({ key: autoUppercase ? v.key.toUpperCase() : v.key, value: v.value }))
-      await new GithubService(event).sendSecrets(user.id, project.repository, variablesToSend)
+    if (githubTarget) {
+      await new GithubService(event).pushSecrets(githubTarget, variablesToSend)
     }
   }
 

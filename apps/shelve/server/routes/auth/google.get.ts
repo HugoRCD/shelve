@@ -1,7 +1,7 @@
 import { AuthType } from '@types'
 import { userSchema } from '~~/server/db/zod'
 
-export default defineOAuthGoogleEventHandler({
+const googleLogin = defineOAuthGoogleEventHandler({
   config: {
     scope: ['profile', 'email'],
   },
@@ -50,4 +50,9 @@ export default defineOAuthGoogleEventHandler({
     console.error('Google OAuth error:', error)
     return sendRedirect(event, '/login?error=google')
   },
+})
+
+export default defineEventHandler(async (event) => {
+  if (await proxyPreviewOAuthCallback(event, 'google')) return
+  return googleLogin(event)
 })
