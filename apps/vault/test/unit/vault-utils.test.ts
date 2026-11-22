@@ -191,10 +191,9 @@ describe('getEncryptionKey', () => {
     expect(key).toBe(expected)
   })
 
-  test('uses password alone when no base key', async () => {
-    const key = await getEncryptionKey('', 'my-password')
-    const expected = await hashPassword('my-password')
-    expect(key).toBe(expected)
+  test('refuses to derive a key without the server key', async () => {
+    await expect(getEncryptionKey('', 'my-password')).rejects.toThrow('NUXT_PRIVATE_ENCRYPTION_KEY')
+    await expect(getEncryptionKey('')).rejects.toThrow('NUXT_PRIVATE_ENCRYPTION_KEY')
   })
 
   test('returns base key directly when >= 32 chars and no password', async () => {
@@ -208,11 +207,6 @@ describe('getEncryptionKey', () => {
     const key = await getEncryptionKey(shortKey)
     expect(key).toMatch(/^[a-f0-9]{64}$/)
     expect(key).not.toBe(shortKey)
-  })
-
-  test('generates secure key when no base key and no password', async () => {
-    const key = await getEncryptionKey('')
-    expect(key).toMatch(/^[a-f0-9]{64}$/)
   })
 
   test('ignores whitespace-only password', async () => {

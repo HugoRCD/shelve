@@ -83,18 +83,16 @@ export async function verifyPassword(password: string, hash: string): Promise<bo
 }
 
 export async function getEncryptionKey(encryptionKey: string, password?: string): Promise<string> {
-  const baseKey = encryptionKey || ''
+  // Without the server key, the key would only depend on public values, or on the password whose hash is stored with the secret.
+  if (!encryptionKey) throw new Error('NUXT_PRIVATE_ENCRYPTION_KEY is not set')
 
   if (password && password.trim() !== '') {
-    const combined = baseKey ? `${baseKey}:${password}` : password
-    return await hashPassword(combined)
+    return await hashPassword(`${encryptionKey}:${password}`)
   }
 
-  if (baseKey && baseKey.length >= 32) {
-    return baseKey
+  if (encryptionKey.length >= 32) {
+    return encryptionKey
   }
 
-  const salt = 'vault-encryption-secured-salt'
-  const combined = baseKey ? `${baseKey}:${salt}` : salt
-  return await hashPassword(combined)
+  return await hashPassword(`${encryptionKey}:vault-encryption-secured-salt`)
 }
