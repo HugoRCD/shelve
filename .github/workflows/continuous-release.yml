@@ -47,4 +47,4 @@ jobs:
         run: pnpm run build:cli
 
       - name: 🚀 Continuous Release
-        run: npx pkg-pr-new publish './packages/cli'
+        run: npx pkg-pr-new@0.0.94 publish './packages/cli'
