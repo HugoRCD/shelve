@@ -236,6 +236,16 @@ describe('pushing secrets to GitHub', () => {
     expect(calls).toEqual([])
   })
 
+  test('refuses secret names GitHub reserves before calling GitHub', async () => {
+    for (const key of ['GITHUB_TOKEN', 'github_sha', 'GitHub_Ref']) {
+      expect(githubModule.GITHUB_SECRET_NAME_PATTERN.test(key)).toBe(false)
+      await expect(service().sendSecrets(user!.id, 'me/tool', [{ key, value: 'x' }], USER_TOKEN)).rejects.toMatchObject({ statusCode: 400 })
+    }
+    for (const key of ['API_KEY', 'MY_GITHUB_TOKEN', 'GITHUB', '_GITHUB_X'])
+      expect(githubModule.GITHUB_SECRET_NAME_PATTERN.test(key)).toBe(true)
+    expect(calls).toEqual([])
+  })
+
   test('asks to sign in with GitHub again when GitHub refuses the user token', async () => {
     await expect(service().sendSecrets(user!.id, 'me/tool', secrets, 'expired-token'))
       .rejects.toMatchObject({ statusCode: 403, data: { reason: 'github-sign-in-required' } })

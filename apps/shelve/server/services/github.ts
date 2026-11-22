@@ -10,7 +10,9 @@ import type { UserSession } from '#auth-utils'
 
 /** `owner/name`, where the name is not `.` or `..`. */
 export const GITHUB_REPOSITORY_PATTERN = /^[\w-]+\/(?!\.\.?$)[\w.-]+$/
-export const GITHUB_SECRET_NAME_PATTERN = /^[A-Za-z_][A-Za-z0-9_]*$/
+/** GitHub's rule for secret names; names are case-insensitive and the `GITHUB_` prefix is reserved. */
+export const GITHUB_SECRET_NAME_PATTERN = /^(?!github_)[a-z_][a-z0-9_]*$/i
+export const GITHUB_SECRET_NAME_MESSAGE = 'Secret names can only contain letters, digits and underscores, and can\'t start with GITHUB_'
 
 /** A repository as GitHub returns it to a user token, with that user's own access to it. */
 type UserRepository = GitHubRepo & { permissions?: { admin?: boolean } }
@@ -29,7 +31,7 @@ function githubStatus(error: unknown): number | undefined {
 
 export function assertGithubSecretNames(keys: string[]) {
   if (keys.some(key => !GITHUB_SECRET_NAME_PATTERN.test(key))) {
-    throw createError({ statusCode: 400, statusMessage: 'Secret names can only contain letters, digits and underscores' })
+    throw createError({ statusCode: 400, statusMessage: GITHUB_SECRET_NAME_MESSAGE })
   }
 }
 
@@ -309,6 +311,7 @@ export class GithubService {
     variables: { key: string; value: string }[],
     githubToken: string
   ) {
+    assertGithubSecretNames(variables.map(({ key }) => key))
     await this.pushSecrets(await this.getSecretsTarget(userId, repository, githubToken), variables)
     return {
       statusCode: 201,

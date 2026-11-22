@@ -7,7 +7,7 @@ export default defineEventHandler(async (event) => {
     variables: z.array(z.object({
       key: z.string({
         error: 'Variable key is required',
-      }).trim().regex(GITHUB_SECRET_NAME_PATTERN, 'Secret names can only contain letters, digits and underscores'),
+      }).trim().regex(GITHUB_SECRET_NAME_PATTERN, GITHUB_SECRET_NAME_MESSAGE),
       value: z.string({
         error: 'Variable value is required',
       }).min(1).trim(),
