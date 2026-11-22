@@ -1,5 +1,5 @@
 import { describe, test, expect } from 'vitest'
-import { $fetch, setup } from '@nuxt/test-utils/e2e'
+import { $fetch, fetch, setup } from '@nuxt/test-utils/e2e'
 
 describe('Vault API', async () => {
   await setup({})
@@ -12,6 +12,7 @@ describe('Vault API', async () => {
 
     expect(shareUrl).toContain('?id=')
     const id = new URL(shareUrl).searchParams.get('id')
+    expect(id).toMatch(/^[\w-]{22}$/)
 
     const result = await $fetch(`/api/vault?id=${id}`, {
       method: 'POST',
@@ -71,6 +72,33 @@ describe('Vault API', async () => {
     expect(error.statusCode).toBe(400)
   })
 
+  test('deletes the secret after 5 wrong passwords', async () => {
+    const shareUrl = await $fetch('/api/vault', {
+      method: 'POST',
+      body: { value: 'guarded', reads: 5, ttl: '1d', password: 'right' },
+    })
+    const id = new URL(shareUrl).searchParams.get('id')
+    const tryPassword = (password: string) => $fetch(`/api/vault?id=${id}`, {
+      method: 'POST',
+      body: { password },
+    }).catch((e: any) => e)
+
+    for (let attempt = 1; attempt < 5; attempt++) {
+      expect((await tryPassword('wrong')).statusMessage).toBe('Invalid password')
+    }
+    expect((await tryPassword('wrong')).statusMessage).toBe('Too many invalid password attempts, the secret has been deleted')
+    expect((await tryPassword('right')).statusMessage).toBe('Invalid id or link has expired')
+  })
+
+  test('rejects an invalid encrypt body with 400', async () => {
+    const error = await $fetch('/api/vault', {
+      method: 'POST',
+      body: { value: 'secret', reads: 0, ttl: '2d' },
+    }).catch((e: any) => e)
+
+    expect(error.statusCode).toBe(400)
+  })
+
   test('invalid id returns 400', async () => {
     const error = await $fetch('/api/vault?id=nonexistent', {
       method: 'POST',
@@ -78,6 +106,21 @@ describe('Vault API', async () => {
 
     expect(error.statusCode).toBe(400)
     expect(error.statusMessage).toBe('Invalid id or link has expired')
+  })
+
+  test('malformed id returns 400', async () => {
+    const error = await $fetch('/api/vault?id=a:b', {
+      method: 'POST',
+    }).catch((e: any) => e)
+
+    expect(error.statusCode).toBe(400)
+    expect(error.statusMessage).toBe('Invalid id or link has expired')
+  })
+
+  test('pages cannot be framed', async () => {
+    const response = await fetch('/')
+    expect(response.headers.get('content-security-policy')).toBe('frame-ancestors \'none\'')
+    expect(response.headers.get('x-frame-options')).toBe('DENY')
   })
 
   test('encrypt with infinite TTL', async () => {

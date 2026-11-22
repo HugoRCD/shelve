@@ -1,3 +1,5 @@
+import { randomBytes } from 'node:crypto'
+import { z } from 'zod'
 import type { TTLFormat } from '@types'
 
 export const TTL_MAP: Record<TTLFormat, number> = {
@@ -6,6 +8,26 @@ export const TTL_MAP: Record<TTLFormat, number> = {
   '30d': 30 * 24 * 60 * 60,
   'Infinite': -1,
 }
+
+export const MAX_SECRET_LENGTH = 64 * 1024
+export const MAX_READS = 100
+export const MAX_PASSWORD_LENGTH = 256
+export const MAX_PASSWORD_ATTEMPTS = 5
+
+/** Matches new ids (22 base64url chars) and the shorter base36 ids issued before them. */
+export const SHARE_ID_PATTERN = /^[\w-]{1,64}$/
+
+/** The share id is the only credential for a secret without a password, so it must be unguessable. */
+export function generateShareId(): string {
+  return randomBytes(16).toString('base64url')
+}
+
+export const encryptRequestSchema = z.strictObject({
+  value: z.string().min(1).max(MAX_SECRET_LENGTH),
+  reads: z.number().int().min(1).max(MAX_READS),
+  ttl: z.enum(['1d', '7d', '30d', 'Infinite']),
+  password: z.string().max(MAX_PASSWORD_LENGTH).optional(),
+})
 
 export function calculateTimeLeft(createdAt: number, ttl: TTLFormat): number {
   const ttlInSeconds = TTL_MAP[ttl]

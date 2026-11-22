@@ -8,6 +8,12 @@ export default defineNuxtConfig({
   compatibilityDate: '2024-11-01',
 
   routeRules: {
+    '/**': {
+      headers: {
+        'Content-Security-Policy': 'frame-ancestors \'none\'',
+        'X-Frame-Options': 'DENY',
+      },
+    },
     '/': { prerender: true }
   },
 

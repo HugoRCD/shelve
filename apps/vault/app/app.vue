@@ -12,17 +12,17 @@ useHead({
 
 useSeoMeta({
   title: 'Vault by Shelve - Secure Secret Sharing Platform',
-  description: 'Share secrets securely. No account required. Set expiration. Control access. End-to-end encrypted.',
+  description: 'Share secrets securely. No account required. Set expiration. Control access. Encrypted at rest.',
 
   ogTitle: 'Vault - Share Secrets Securely',
-  ogDescription: 'Share secrets securely. No account required. Set expiration. Control access. End-to-end encrypted.',
+  ogDescription: 'Share secrets securely. No account required. Set expiration. Control access. Encrypted at rest.',
   ogImage: 'https://shelve.cloud/vault-og.png',
   ogUrl: 'https://shelve.cloud/vault',
   ogType: 'website',
   ogSiteName: 'Shelve',
 
   twitterTitle: 'Vault - Secure Secret Sharing',
-  twitterDescription: 'Share secrets securely. No account required. Set expiration. Control access. End-to-end encrypted.',
+  twitterDescription: 'Share secrets securely. No account required. Set expiration. Control access. Encrypted at rest.',
   twitterCard: 'summary_large_image',
   twitterImage: 'https://shelve.cloud/vault-og.png',
 
@@ -86,7 +86,7 @@ useSeoMeta({
                 delay: 0.3
               }"
             >
-              Share secrets securely. No account required. Set expiration. Control access. End-to-end encrypted.
+              Share secrets securely. No account required. Set expiration. Control access. Encrypted at rest.
               <UButton
                 variant="link"
                 size="xs"
