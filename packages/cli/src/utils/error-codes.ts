@@ -12,7 +12,7 @@ export const CLI_ERROR_CODES: Record<string, { meaning: string, hint?: string }>
     hint: 'Prefer `shelve run -- <cmd>` or pass --yes to write secrets to disk.',
   },
   AUTH_REQUIRED: {
-    meaning: 'No API token available',
+    meaning: 'No API key available',
     hint: 'Set SHELVE_TOKEN or run `shelve login`.',
   },
   DEVICE_LOGIN_DENIED: {
@@ -37,10 +37,10 @@ export const CLI_ERROR_CODES: Record<string, { meaning: string, hint?: string }>
   },
   FETCH_FAILED: {
     meaning: 'Could not fetch secrets from Shelve',
-    hint: 'Check network, token scopes, and offline cache.',
+    hint: 'Check network, API key scopes, and offline cache.',
   },
   FORBIDDEN: {
-    meaning: 'Token lacks permission for this action',
+    meaning: 'API key lacks permission for this action',
   },
   INVALID_INPUT: {
     meaning: 'Invalid flag or argument value',

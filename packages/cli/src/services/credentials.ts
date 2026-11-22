@@ -165,7 +165,7 @@ export class CredentialsService {
       updateUserConfig({ tokens: { [tokenKey(url)]: token } }, RC_FILENAME)
     }
     chmod600(configPath())
-    consola.warn(`Stored CLI token in plaintext file (${configPath()}, mode 0600). Install OS keychain support for stronger protection.`)
+    consola.warn(`Stored CLI API key in plaintext file (${configPath()}, mode 0600). Install OS keychain support for stronger protection.`)
   }
 
   static async readToken(url: string): Promise<string | undefined> {

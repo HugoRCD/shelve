@@ -57,12 +57,12 @@ Projects created before the envelope upgrade have no `encryptedDek` column value
 |---|---|
 | `variables.encryptedValue` | Sealed ciphertext of the secret value. Never plaintext. |
 | `projects.encryptedDek` | Project DEK, sealed by the KEK. `null` for pre-envelope projects. |
-| `tokens.hash` | `sha256(token)` as hex. The plaintext token is never stored. |
-| `tokens.prefix` | Non-secret 12-char prefix used for display and audit logs. |
+| `api_keys.key` | `sha256(key)` as unpadded base64url. The plaintext API key is never stored. |
+| `api_keys.start` | Non-secret 12-char prefix used for display and audit logs. |
 
-## API tokens
+## API keys
 
-API tokens follow a different (but compatible) model: they are hashed, not encrypted. See [API Tokens](/docs/core-features/tokens) for the full story.
+API keys follow a different (but compatible) model: they are hashed, not encrypted. See [API keys](/docs/core-features/api-keys) for the full story.
 
 ## In transit
 

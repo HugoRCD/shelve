@@ -42,8 +42,8 @@ sections:
         icon: lucide:shield
         variant: ghost
   - id: tokens
-    title: Scoped, expiring API tokens
-    description: Stop shipping broad-power tokens. Create tokens scoped to specific teams, projects, environments, or permissions — with optional expiry and IP allowlists. Tokens are shown once, stored hashed, and every usage lands in the audit log.
+    title: Scoped, expiring API keys
+    description: Stop shipping broad-power credentials. Create API keys scoped to specific teams, projects, environments, or permissions — with optional expiry and IP allowlists. API keys are shown once, stored hashed, and every usage lands in the audit log.
     links:
       - label: Fine-grained scopes
         size: xs
@@ -59,7 +59,7 @@ sections:
         variant: ghost
   - id: audit
     title: Audit everything that matters
-    description: Team changes, project writes, variable edits, token creations — every security-relevant action is captured with actor, IP, user agent, and resource context. Query the feed via API, filter by action, and build your own alerting on top.
+    description: Team changes, project writes, variable edits, API key creations — every security-relevant action is captured with actor, IP, user agent, and resource context. Query the feed via API, filter by action, and build your own alerting on top.
     links:
       - label: Immutable feed
         size: xs
@@ -75,7 +75,7 @@ sections:
         variant: ghost
   - id: agent
     title: Safe with your AI coding agent
-    description: Shelve treats AI agents as first-class citizens. `shelve init` provisions `.cursorignore`, `.aiderignore`, `.codeiumignore`, and more so your coding agent never reads a raw `.env` file. Tokens live in the OS keychain. Runtime injection keeps secrets in memory only.
+    description: Shelve treats AI agents as first-class citizens. `shelve init` provisions `.cursorignore`, `.aiderignore`, `.codeiumignore`, and more so your coding agent never reads a raw `.env` file. API keys live in the OS keychain. Runtime injection keeps secrets in memory only.
     links:
       - label: .cursorignore
         size: xs
@@ -154,15 +154,15 @@ faq:
   items:
     - label: Is Shelve free?
       defaultOpen: true
-      content: Shelve is **open source** and free to self-host. The hosted instance at `app.shelve.cloud` is currently free to use, and every security feature on this page — envelope encryption, scoped tokens, audit logs, and agent-safe ignore files — ships in the open-source core.
+      content: Shelve is **open source** and free to self-host. The hosted instance at `app.shelve.cloud` is currently free to use, and every security feature on this page — envelope encryption, scoped API keys, audit logs, and agent-safe ignore files — ships in the open-source core.
     - label: How does Shelve encrypt my secrets?
       content: Shelve uses a two-tier **envelope encryption** scheme. Each variable is sealed with a per-project **Data Encryption Key (DEK)** using AES-256-GCM, and the DEK itself is sealed with a platform-wide **Key Encryption Key (KEK)**. A leaked DEK compromises one project, not the whole instance. Plaintext never lands in the database. Read the full model on the [Encryption page](/docs/core-features/encryption).
-    - label: How are API tokens stored?
-      content: Tokens are generated from a Crockford-base32 alphabet, displayed **once**, then stored as a **SHA-256 hash** alongside a short non-secret prefix used for audit display. You can scope tokens to specific teams, projects, environments, and permissions, set an expiry, and restrict them to an IP allowlist. Details on the [Tokens page](/docs/core-features/tokens).
+    - label: How are API keys stored?
+      content: API keys are generated from a Crockford-base32 alphabet, displayed **once**, then stored as a **SHA-256 hash** alongside a short non-secret prefix used for audit display. You can scope API keys to specific teams, projects, environments, and permissions, set an expiry, and restrict them to an IP allowlist. Details on the [API keys page](/docs/core-features/api-keys).
     - label: Is Shelve safe to use with AI coding agents?
-      content: Yes, by design. `shelve init` writes `.cursorignore`, `.aiderignore`, `.codeiumignore`, and others so your agent never reads `.env` files or the local cache. Use `shelve run` to inject variables into the spawned process memory with zero disk writes. CLI tokens live in the **OS keychain** (Keychain, Credential Vault, libsecret), not a plaintext dotfile.
+      content: Yes, by design. `shelve init` writes `.cursorignore`, `.aiderignore`, `.codeiumignore`, and others so your agent never reads `.env` files or the local cache. Use `shelve run` to inject variables into the spawned process memory with zero disk writes. CLI API keys live in the **OS keychain** (Keychain, Credential Vault, libsecret), not a plaintext dotfile.
     - label: Can I audit who did what?
-      content: Every security-relevant action (team, project, variable, token, member) is logged with actor, IP, user agent, and resource context. Query the feed via the filterable `/api/teams/:slug/audit-logs` endpoint or through the dashboard. See [Audit logs](/docs/core-features/audit-logs).
+      content: Every security-relevant action (team, project, variable, API key, member) is logged with actor, IP, user agent, and resource context. Query the feed via the filterable `/api/teams/:slug/audit-logs` endpoint or through the dashboard. See [Audit logs](/docs/core-features/audit-logs).
     - label: Can I self-host Shelve?
       content: Absolutely. Shelve is designed for flexibility, including self-hosting. You can deploy your own instance using [Vercel](/docs/self-hosting/vercel), and more providers are coming soon. You own the KEK, the database, and the audit trail end-to-end.
     - label: Does Shelve integrate with other tools?

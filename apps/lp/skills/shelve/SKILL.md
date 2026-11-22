@@ -1,6 +1,6 @@
 ---
 name: shelve
-description: Complete guide to Shelve — team secrets platform, CLI (@shelve/cli), sync policies, scoped tokens, shelve run for agents/CI, push/pull/diff, and the web app. Install with npx skills add https://shelve.cloud
+description: Complete guide to Shelve — team secrets platform, CLI (@shelve/cli), sync policies, scoped API keys, shelve run for agents/CI, push/pull/diff, and the web app. Install with npx skills add https://shelve.cloud
 ---
 
 # Shelve
@@ -21,14 +21,14 @@ Shelve is an open-source **team secrets platform**: web app + CLI. Store variabl
 5. Run **`shelve init`** once per workspace before secret operations.
 6. **Protect production:** use `sync.protectedEnvironments` in `shelve.json` and/or project Settings → Sync policy.
 
-## Platform (teams, tokens, UI)
+## Platform (teams, API keys, UI)
 
 | Concept | CLI / config |
 |---------|----------------|
 | Team | `slug` in `shelve.json`, `SHELVE_TEAM_SLUG` |
 | Project | `project`, `SHELVE_PROJECT` |
 | Environment | `--env`, `defaultEnv`, `SHELVE_DEFAULT_ENV` |
-| API token | `SHELVE_TOKEN` — create at https://app.shelve.cloud/user/api-keys (shown once; scope read/write + team/project/env) |
+| API key | `SHELVE_TOKEN` — create at https://app.shelve.cloud/user/api-keys (shown once; scope read/write + team/project/env) |
 
 **CLI vs UI:** bulk edit and audit logs → UI; local dev and CI → CLI `run`. Details: **`platform.md`**.
 
@@ -38,7 +38,7 @@ Run **`shelve doctor --json`** first in automation.
 
 | Variable | Purpose |
 |----------|---------|
-| `SHELVE_TOKEN` | API token |
+| `SHELVE_TOKEN` | API key |
 | `SHELVE_TEAM_SLUG` | Team slug |
 | `SHELVE_PROJECT` | Project name |
 | `SHELVE_DEFAULT_ENV` | Default environment |
@@ -129,7 +129,7 @@ Details: **`agent-workflows.md`**
 | Code | Meaning |
 |------|---------|
 | `AGENT_BLOCKED` | `pull` in agent shell without `--yes` |
-| `AUTH_REQUIRED` | Missing token |
+| `AUTH_REQUIRED` | Missing API key |
 | `MISSING_ENV` | No `--env` / `defaultEnv` |
 | `FETCH_FAILED` | API/cache failure in `run` |
 | `PUSH_BLOCKED` / `PULL_BLOCKED` | Sync policy |
@@ -143,7 +143,7 @@ Details: **`agent-workflows.md`**
 |------|----------|
 | **`cli-commands.md`** | All commands, JSON shapes, config keys |
 | **`agent-workflows.md`** | CI, GitHub Actions, monorepo, templates, watch |
-| **`platform.md`** | Teams, tokens, encryption, UI flows |
+| **`platform.md`** | Teams, API keys, encryption, UI flows |
 | **`sync-policies.md`** | Push/pull conflict rules, `diff` / `sync` |
 
 ## Common mistakes
