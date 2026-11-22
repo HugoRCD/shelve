@@ -8,7 +8,7 @@ const pages = computed(() => {
   return [...teamNavigations, ...userNavigations, ...adminNavigations]
 })
 
-const { user } = useUserSession()
+const { user } = useAuth()
 
 const navigation = computed(() => {
   if (route.path.includes('/projects'))

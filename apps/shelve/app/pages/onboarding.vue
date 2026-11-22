@@ -19,7 +19,7 @@ const state = reactive<Partial<Schema>>({
   teamName: undefined,
 })
 
-const { user } = useUserSession()
+const { user } = useAuth()
 const defaultTeamSlug = useCookie<string>('defaultTeamSlug')
 
 const {

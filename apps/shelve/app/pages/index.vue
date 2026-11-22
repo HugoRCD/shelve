@@ -7,7 +7,7 @@ definePageMeta({
 
 const teams = useTeams()
 const navLoading = ref(false)
-const { user } = useUserSession()
+const { user } = useAuth()
 const defaultTeamSlug = useCookie<string>('defaultTeamSlug')
 
 const router = useRouter()

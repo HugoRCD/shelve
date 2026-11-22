@@ -107,6 +107,13 @@ export const verifications = pgTable('verifications', {
   ...timestamps,
 }, (table) => [index('verifications_identifier_idx').on(table.identifier),])
 
+/** Email code requests per email in the current hour, kept apart from `users` so emails without an account count too. */
+export const otpRequests = pgTable('otp_requests', {
+  email: varchar({ length: 255 }).primaryKey(),
+  count: integer().notNull(),
+  windowStart: timestamp().notNull(),
+})
+
 export const githubApp = pgTable('github_app', {
   id: bigint({ mode: 'number' }).primaryKey().generatedByDefaultAsIdentity(),
   installationId: bigint({ mode: 'number' }).notNull(),

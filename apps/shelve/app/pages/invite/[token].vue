@@ -10,7 +10,7 @@ const route = useRoute()
 const router = useRouter()
 const token = route.params.token as string
 
-const { loggedIn, user } = useUserSession()
+const { loggedIn, user } = useAuth()
 const { title, auth: { isGithubEnabled, isGoogleEnabled, isEmailEnabled } } = useAppConfig()
 
 const { data: invitation, status, error } = await useFetch(`/api/invitations/${token}`, {
@@ -57,7 +57,7 @@ async function acceptInvitation() {
       method: 'POST',
     })
 
-    await useUserSession().fetch()
+    await useAuth().fetch()
 
     toast.success('Invitation accepted! Welcome to the team.')
     if (result.teamSlug) {
@@ -93,7 +93,7 @@ function loginWithRedirect(provider: string) {
 }
 
 async function logoutAndRedirect() {
-  await useUserSession().clear()
+  await useAuth().clear()
   const redirect = `/invite/${token}`
   await navigateTo(`/login?redirect=${encodeURIComponent(redirect)}`)
 }

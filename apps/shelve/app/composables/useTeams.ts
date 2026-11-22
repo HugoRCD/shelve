@@ -7,7 +7,7 @@ import { Role, TeamRole } from '@types'
  */
 export function useTeamRole(): Ref<TeamRole> {
   const team = useTeam()
-  const { user } = useUserSession()
+  const { user } = useAuth()
   return computed(() => {
     if (!team.value) return TeamRole.MEMBER
     if (user.value?.role === Role.ADMIN) return TeamRole.OWNER

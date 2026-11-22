@@ -2,7 +2,7 @@ import { describe, test, expect, vi, beforeEach } from 'vitest'
 import type { H3Event } from 'h3'
 import type { TokenScopes } from '@types'
 
-// The real util calls Nuxt / h3 globals (`getUserSession`, `createError`).
+// The real util calls Nuxt / h3 globals (`createError`).
 // Stub them on the global so the module under test can import normally.
 vi.stubGlobal('createError', (opts: { statusCode: number; statusMessage: string }) => {
   const err = new Error(opts.statusMessage) as Error & { statusCode: number }
@@ -10,7 +10,6 @@ vi.stubGlobal('createError', (opts: { statusCode: number; statusMessage: string 
   return err
 })
 
-vi.stubGlobal('getUserSession', () => Promise.resolve({ user: { id: 1 } }))
 vi.stubGlobal('getValidatedRouterParams', () => Promise.resolve({ slug: 'team' }))
 
 const { requireTokenScope, getRequestPermission, getTokenScopeIds } = await import('../../server/utils/auth')
@@ -19,13 +18,14 @@ const fakeEvent = { context: {} } as H3Event
 
 /** `null` is a web session; scopes make it a token request, as the auth middleware does. */
 function withScopes(scopes: TokenScopes | null) {
-  fakeEvent.context.auth = scopes
-    ? { user: { id: 1 } as never, token: { id: 7, prefix: 'she_', name: 'ci', scopes } }
-    : undefined
+  fakeEvent.context.auth = {
+    user: { id: 1 } as never,
+    token: scopes ? { id: 7, prefix: 'she_', name: 'ci', scopes } : null,
+  }
 }
 
 beforeEach(() => {
-  fakeEvent.context.auth = undefined
+  withScopes(null)
 })
 
 describe('requireTokenScope', () => {

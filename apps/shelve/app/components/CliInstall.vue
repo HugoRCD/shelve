@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { user, fetch } = useUserSession()
+const { user, fetch } = useAuth()
 
 const closed = ref(false)
 const loading = ref(false)

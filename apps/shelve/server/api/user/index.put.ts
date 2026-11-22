@@ -24,9 +24,5 @@ export default eventHandler(async (event) => {
     .returning()
   if (!updatedUser) throw createError({ statusCode: 404, statusMessage: 'User not found' })
 
-  await setUserSession(event, {
-    user: updatedUser,
-    loggedInAt: new Date(),
-  })
   return updatedUser
 })

@@ -80,6 +80,19 @@ if (route.query.error === 'otp-verification') {
   authMode.value = 'email'
 }
 
+const handledErrors = ['github', 'google', 'unverified-email', 'invalid-otp', 'otp-verification']
+if (typeof route.query.error === 'string' && !handledErrors.includes(route.query.error)) {
+  toast.error('Sign-in failed. Please try again.', {
+    description: route.query.error,
+    duration: Infinity,
+    closeButton: false,
+    action: {
+      label: 'Dismiss',
+      onClick: () => useRouter().push('/login')
+    }
+  })
+}
+
 function handleEmailSubmitted(submittedEmail: string) {
   email.value = submittedEmail
   showOtp.value = true

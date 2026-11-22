@@ -1,4 +1,4 @@
 export async function useLogout() {
-  await useUserSession().clear()
+  await useAuth().clear()
   navigateTo('/login')
 }

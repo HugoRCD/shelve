@@ -1,5 +1,5 @@
 export default defineNuxtRouteMiddleware((to) => {
-  const { loggedIn } = useUserSession()
+  const { loggedIn } = useAuth()
 
   if (!loggedIn.value) return
 

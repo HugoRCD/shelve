@@ -7,12 +7,10 @@ import teamInvitation from '~~/server/emails/teamInvitation.vue'
 
 export class EmailService {
 
-  private readonly event: H3Event
   private readonly resend: Resend | null
   private readonly SENDER: string
 
-  constructor(event: H3Event) {
-    this.event = event
+  constructor(event?: H3Event) {
     const config = useRuntimeConfig(event)
     this.resend = config.private.resendApiKey ? new Resend(config.private.resendApiKey) : null
     this.SENDER = config.private.senderEmail || 'HugoRCD <contact@hrcd.fr>'
@@ -42,7 +40,7 @@ export class EmailService {
     }
   }
 
-  async sendWelcomeEmail(email: string, username: string): Promise<void> {
+  async sendWelcomeEmail(email: string, username: string, appUrl: string): Promise<void> {
     if (!this.resend) {
       console.warn('Resend API key not found, set NUXT_PRIVATE_RESEND_API_KEY in your environment variables to enable email sending')
       return
@@ -50,7 +48,7 @@ export class EmailService {
 
     try {
       // Inside the try: a welcome email that can't be sent must not fail the sign-up.
-      const template = await this.generateWelcomeTemplate(username, getAppOrigin(this.event))
+      const template = await this.generateWelcomeTemplate(username, appUrl)
       await this.resend.emails.send({
         from: this.SENDER,
         to: [email],

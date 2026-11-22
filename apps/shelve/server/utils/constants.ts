@@ -1,7 +1,8 @@
 export const TOKEN_PREFIX = 'she_'
+export const DEFAULT_AVATAR = 'https://i.imgur.com/6VBx3io.png'
 export const TOKEN_PREFIX_DISPLAY_LENGTH = 12
 
-/** `users` columns that can be sent to clients. Leaves out the pending one-time login code and link token. */
+/** `users` columns that can be sent to clients. */
 export const PUBLIC_USER_COLUMNS = {
   id: true,
   username: true,

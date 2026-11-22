@@ -12,7 +12,7 @@ definePageMeta({
 })
 
 const route = useRoute()
-const { loggedIn, user, fetch: fetchSession } = useUserSession()
+const { loggedIn, user, fetch: fetchSession } = useAuth()
 const { title, auth: { isGithubEnabled, isGoogleEnabled, isEmailEnabled } } = useAppConfig()
 
 const userCode = computed(() => {
