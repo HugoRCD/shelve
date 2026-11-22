@@ -32,6 +32,37 @@ export function registerAuditLogTests(ctx: E2EContext) {
     expect(feed.logs[0]?.actor?.label).toBeTruthy()
   })
 
+  test('records reads from the app, bulk deletes and sync policy changes', async () => {
+    const teamUrl = `/api/teams/${ctx.teamSlug}`
+    const projectUrl = `${teamUrl}/projects/${ctx.projectId}`
+    const entries = async (action: string) =>
+      (await ctx.api<AuditLogResponse>(`${teamUrl}/audit-logs?action=${action}&limit=100`)).logs
+
+    await ctx.api(`${projectUrl}/variables`)
+    const read = (await entries('variables.read')).find(entry => entry.resourceType === 'project')
+    expect(read?.resourceId).toBe(String(ctx.projectId))
+
+    await ctx.api(`${projectUrl}/variables`, {
+      method: 'POST',
+      body: { autoUppercase: true, environmentIds: [ctx.environmentIds[0]], variables: [{ key: 'bulk_a', value: 'a' }, { key: 'bulk_b', value: 'b' }] },
+    })
+    const variables = await ctx.api<{ id: number, key: string }[]>(`${projectUrl}/variables`)
+    const bulk = variables.filter(variable => variable.key.startsWith('BULK_'))
+    await ctx.api(`${projectUrl}/variables`, { method: 'DELETE', body: { variables: bulk.map(variable => variable.id) } })
+    const deleted = (await entries('variables.delete')).find(entry => Array.isArray(entry.metadata?.keys))
+    expect((deleted?.metadata?.keys as string[]).sort()).toEqual(['BULK_A', 'BULK_B'])
+
+    const project = await ctx.api<{ name: string }>(projectUrl)
+    await ctx.api(projectUrl, { method: 'PUT', body: { name: project.name, syncPolicy: { protectedEnvironments: ['production'] } } })
+    await ctx.api(projectUrl, { method: 'PUT', body: { name: project.name, syncPolicy: null } })
+    const [unprotected] = await entries('project.update')
+    expect(unprotected?.metadata).toMatchObject({
+      fields: ['syncPolicy'],
+      syncPolicy: null,
+      previousSyncPolicy: { protectedEnvironments: ['production'] },
+    })
+  })
+
   test('filters by action', async () => {
     const feed = await ctx.api<AuditLogResponse>(
       `/api/teams/${ctx.teamSlug}/audit-logs?action=variables.create`

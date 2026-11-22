@@ -19,7 +19,7 @@ export default eventHandler(async (event) => {
   const variablesService = new VariablesService(event)
   const environmentName = await getEnvironmentName(envId, team.id)
 
-  void logAudit(event, {
+  await logAudit(event, {
     teamId: team.id,
     action: 'variables.read',
     resourceType: 'environment',

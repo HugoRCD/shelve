@@ -3,16 +3,17 @@ title: Audit Logs
 description: Review every privileged action performed on your teams, projects, and secrets.
 ---
 
-Every security-relevant action in Shelve is recorded in an append-only audit log. The feed is scoped to a team and visible from **Team → Audit logs**.
+Every security-relevant action in Shelve is recorded in an audit log that no API can edit. The feed is scoped to a team and visible from **Team → Audit logs**.
 
 ## What gets logged
 
 Among others:
 
-- `team.member.invite`, `team.member.remove`
-- `project.create`, `project.delete`
+- `team.update`, `team.member.invite`, `team.member.update`, `team.member.remove`
+- `team.invitation.accept`, `team.invitation.cancel`
+- `project.create`, `project.update` (including sync policy changes), `project.delete`
 - `environment.create`, `environment.update`, `environment.delete`
-- `variables.read`, `variables.create`, `variables.update`, `variables.delete`
+- `variables.read` (from the app and the CLI), `variables.create`, `variables.update`, `variables.delete`
 - `token.create`, `token.delete`
 
 Every entry stores the actor, IP, user agent, resource type/id, and a metadata JSON blob. The API enriches each row with human-readable labels — project and environment names, token prefix, user display name — so clients do not need extra lookups.
@@ -75,9 +76,9 @@ Each log entry includes enriched fields:
 Pass `nextCursor` back to fetch the next page until it is `null`.
 
 ::callout{type="info"}
-Audit writes are fire-and-forget: they never block the originating request. If recording fails, the event is logged to the application logs and the request still succeeds.
+An audit entry is written before the response is sent. If recording fails, the error is logged to the application logs and the request still succeeds.
 ::
 
 ## Retention
 
-Audit logs are retained indefinitely on the hosted instance. On self-hosted deployments you control the retention policy by pruning the `audit_logs` table directly.
+Audit logs are retained for as long as the team exists on the hosted instance, and are deleted with the team. On self-hosted deployments you control the retention policy by pruning the `audit_logs` table directly.

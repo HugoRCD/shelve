@@ -35,7 +35,7 @@ export default eventHandler(async (event) => {
   }
 
   const environmentIds = [...new Set(body.values.map(v => v.environmentId))]
-  await assertPushAllowedForEnvironmentIds(environmentIds, team.id, project.syncPolicy)
+  await assertPushAllowedForEnvironmentIds(environmentIds, team.id, project.id)
 
   await new VariablesService(event).updateVariable({
     id: variableId,
@@ -46,7 +46,7 @@ export default eventHandler(async (event) => {
     autoUppercase: body.autoUppercase,
   })
 
-  void logAudit(event, {
+  await logAudit(event, {
     teamId: team.id,
     action: 'variables.update',
     resourceType: 'variable',

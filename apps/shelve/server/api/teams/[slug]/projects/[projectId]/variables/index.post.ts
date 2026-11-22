@@ -21,7 +21,7 @@ export default eventHandler(async (event) => {
   const { team, project } = await requireUserTeamProject(event, { projectWide: false })
   const body = await readValidatedBody(event, createVariablesSchema.parse)
 
-  await assertPushAllowedForEnvironmentIds(body.environmentIds, team.id, project.syncPolicy)
+  await assertPushAllowedForEnvironmentIds(body.environmentIds, team.id, project.id)
 
   for (const environmentId of body.environmentIds) {
     await requireTokenScope(event, {
