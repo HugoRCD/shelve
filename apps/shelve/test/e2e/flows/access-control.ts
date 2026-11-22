@@ -212,6 +212,10 @@ export function registerAccessControlTests(ctx: E2EContext) {
       method: 'PUT',
       body: { role: 'member' },
     })).rejects.toMatchObject({ statusCode: 403 })
+    await expect(intruder(`/api/teams/${ctx.teamSlug}/members`, {
+      method: 'POST',
+      body: { email: owner.user.email, role: 'member' },
+    })).rejects.toMatchObject({ statusCode: 403 })
     await expect(intruder(`/api/teams/${ctx.teamSlug}/invitations`, {
       method: 'POST',
       body: { email: 'e2e-invitee@shelve.cloud', role: 'owner' },
