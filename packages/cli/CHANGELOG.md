@@ -1,5 +1,15 @@
 # @shelve/cli
 
+## 5.3.1
+
+### Patch Changes
+
+- [#818](https://github.com/HugoRCD/shelve/pull/818) [`d3fbef3`](https://github.com/HugoRCD/shelve/commit/d3fbef3fdfe6eaaec42c20d96bda5dec70691705) Thanks [@HugoRCD](https://github.com/HugoRCD)! - API tokens are now API keys, verified by Better Auth's api-key plugin. The `tokens` table becomes `api_keys`, with the plugin's field names. Existing `she_` keys keep working: a migration re-encodes their stored hashes into the plugin's format. Scopes, IP allowlists and audit logs work as before. The page moves to `/user/api-keys`, and `/user/tokens` redirects to it. An expired key is now deleted the first time someone tries to use it.
+
+- [#819](https://github.com/HugoRCD/shelve/pull/819) [`8155b2c`](https://github.com/HugoRCD/shelve/commit/8155b2c913ffb47d9ea7a0fcca307235808d9f69) Thanks [@HugoRCD](https://github.com/HugoRCD)! - Call API tokens "API keys" in CLI messages, matching the app. `SHELVE_TOKEN`, `--token`, `--with-token` and the `token` config key are unchanged.
+
+- [#805](https://github.com/HugoRCD/shelve/pull/805) [`becb6f8`](https://github.com/HugoRCD/shelve/commit/becb6f873c1c4e01286a26fcd7b94ee285a45a55) Thanks [@HugoRCD](https://github.com/HugoRCD)! - Only send the stored token to the server it was issued for, and harden login, env file paths and .env output
+
 ## 5.3.0
 
 ### Minor Changes
