@@ -7,7 +7,7 @@
 | `run` | Inject secrets into a child process (no `.env` on disk) |
 | `doctor` | Validate config, auth, API, cache, agent context |
 | `init` | Agent ignore files + `.gitignore` shelve block |
-| `login` | Browser device login by default; stores token in keychain or XDG |
+| `login` | Browser device login by default; stores the API key in keychain or XDG |
 | `logout` | Clear stored credentials |
 | `me` | Show logged-in user |
 | `push` | Upload local `.env` variables to Shelve |
@@ -195,7 +195,7 @@ Run from a workspace root and `data` becomes one entry per package, each carryin
 
 | Variable | Overrides |
 |----------|-----------|
-| `SHELVE_TOKEN` | Auth token |
+| `SHELVE_TOKEN` | API key |
 | `SHELVE_TEAM_SLUG` | `slug` in config |
 | `SHELVE_PROJECT` | `project` in config |
 | `SHELVE_URL` | Shelve instance URL |

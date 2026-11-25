@@ -2,8 +2,8 @@ import { debugLog, isDebug } from '../constants'
 import { ShelveApiError } from './api-error'
 
 const ERROR_MESSAGES: Record<number, string> = {
-  401: 'Authentication failed — run `shelve login` or check your token',
-  403: 'Access denied — your token cannot access this resource',
+  401: 'Authentication failed — run `shelve login` or check your API key',
+  403: 'Access denied — your API key cannot access this resource',
   404: 'Not found — check your team slug and project name in shelve.json',
   500: 'Shelve server error — try again later',
 }

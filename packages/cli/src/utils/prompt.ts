@@ -67,7 +67,7 @@ export async function askPassword(message: string, tokenFromFlag?: string): Prom
 
   if (isNonInteractive()) {
     throw new CliError(
-      'Authentication token is required.',
+      'An API key is required.',
       'AUTH_REQUIRED',
       undefined,
       'Set SHELVE_TOKEN or pass --token to shelve login.',

@@ -9,6 +9,7 @@ export default defineNuxtConfig({
     '/docs/core-features': { redirect: { statusCode: 301, to: '/docs/core-features/environments' } },
     '/docs/integrations': { redirect: { statusCode: 301, to: '/docs/integrations/github' } },
     '/docs/self-hosting': { redirect: { statusCode: 301, to: '/docs/self-hosting/vercel' } },
+    '/docs/core-features/tokens': { redirect: { statusCode: 301, to: '/docs/core-features/api-keys' } },
   },
 
   modules: [

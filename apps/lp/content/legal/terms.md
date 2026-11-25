@@ -1,7 +1,7 @@
 ---
 title: "Terms of Service"
 description: "Terms and conditions for using the Shelve platform"
-lastUpdated: "2025-06-22"
+lastUpdated: "2026-11-22"
 effectiveDate: "2025-06-22"
 ---
 
@@ -46,7 +46,7 @@ Shelve is an environment variable management platform that provides:
 
 **Command-Line Interface (CLI)**:
 - Cross-platform CLI tool for environment variable management
-- Secure authentication via API tokens
+- Secure authentication via API keys
 - Push/pull operations for environment synchronization
 - Local configuration management
 
@@ -72,7 +72,7 @@ Shelve is an environment variable management platform that provides:
 
 **API Services**:
 - [RESTful API](https://restfulapi.net) for all platform operations
-- Token-based authentication for CLI access
+- API key authentication for CLI access
 - Rate limiting and security controls
 - Comprehensive logging and monitoring
 
@@ -103,9 +103,9 @@ You are responsible for:
 - Immediately notifying us of any unauthorized access
 - Using strong authentication methods when available
 
-### 4.4 API Tokens
+### 4.4 API Keys
 
-For CLI access, you may generate API tokens that provide programmatic access to your account. These tokens can be revoked at any time through your account settings and should be kept secure and not shared with unauthorized parties.
+For CLI access, you may generate API keys that provide programmatic access to your account. These keys can be revoked at any time through your account settings and should be kept secure and not shared with unauthorized parties.
 
 ## 5. Acceptable Use Policy
 
@@ -398,7 +398,7 @@ Our web application requires a modern browser with [JavaScript](https://develope
 
 ### 18.2 API Specifications
 
-Our API requires token-based authentication over [HTTPS](https://en.wikipedia.org/wiki/HTTPS) connections only, with rate limiting enforced to ensure fair usage. We use [JSON](https://www.json.org/) for API communications with [UTF-8](https://en.wikipedia.org/wiki/UTF-8) encoding and follow [RESTful API](https://restfulapi.net) design principles.
+Our API is available over [HTTPS](https://en.wikipedia.org/wiki/HTTPS) connections only and accepts two kinds of authentication: a signed-in session, or an API key, which reaches only the team API and cannot manage your account or your API keys. Rate limiting is enforced to ensure fair usage. We use [JSON](https://www.json.org/) for API communications with [UTF-8](https://en.wikipedia.org/wiki/UTF-8) encoding and follow [RESTful API](https://restfulapi.net) design principles.
 
 ## 19. Open Source and Community
 

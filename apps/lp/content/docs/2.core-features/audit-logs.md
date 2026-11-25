@@ -16,7 +16,7 @@ Among others:
 - `variables.read` (from the app and the CLI), `variables.create`, `variables.update`, `variables.delete`
 - `token.create`, `token.delete`
 
-Every entry stores the actor, IP, user agent, resource type/id, and a metadata JSON blob. The API enriches each row with human-readable labels — project and environment names, token prefix, user display name — so clients do not need extra lookups.
+Every entry stores the actor, IP, user agent, resource type/id, and a metadata JSON blob. The API enriches each row with human-readable labels — project and environment names, API key prefix, user display name — so clients do not need extra lookups.
 
 ## API
 
@@ -43,7 +43,7 @@ curl https://app.shelve.cloud/api/teams/<slug>/audit-logs \
   ::
 
   ::field{name="actorType" type="string"}
-  Filter by actor type: `user`, `token`, or `system`.
+  Filter by actor type: `user`, `token` (an API key), or `system`.
   ::
 
   ::field{name="projectId" type="number"}

@@ -11,21 +11,21 @@ Official docs: https://shelve.cloud/docs
 | **Environment** | Named set of variables (`development`, `preview`, `production`, …) |
 | **Variable** | Key/value secret; may belong to a group with description |
 
-## Tokens (CLI & API auth)
+## API keys (CLI & API auth)
 
 Create at [app.shelve.cloud/user/api-keys](https://app.shelve.cloud/user/api-keys):
 
 - Plaintext shown **once** at creation — store in CI secrets as `SHELVE_TOKEN`
 - Scoped: `read` / `write`, optional team/project/environment IDs
 - Optional expiry and IP allowlist
-- Send as `Authorization: Bearer <token>`
+- Send as `Authorization: Bearer <key>`
 
-**Never** commit tokens, log them, or put them in agent prompts.
+**Never** commit API keys, log them, or put them in agent prompts.
 
 ## Security model
 
 - Variables encrypted at rest — https://shelve.cloud/docs/core-features/encryption
-- Audit logs record token usage and changes — https://shelve.cloud/docs/core-features/audit-logs
+- Audit logs record API key usage and changes — https://shelve.cloud/docs/core-features/audit-logs
 - Prefer **CLI `shelve run`** for agents — avoids writing `.env` to disk
 - Run **`shelve init`** in repos so agents ignore secret files
 - **Project sync policy** (Settings → Sync policy): `protectedEnvironments` blocks API/CLI push server-side
@@ -35,7 +35,7 @@ Create at [app.shelve.cloud/user/api-keys](https://app.shelve.cloud/user/api-key
 ### New developer on a project
 
 1. Receive team invite / access in Shelve UI
-2. Create scoped CLI token (read + write for their team/project if needed)
+2. Create scoped CLI API key (read + write for their team/project if needed)
 3. `export SHELVE_TOKEN=…` + `SHELVE_TEAM_SLUG` + `SHELVE_PROJECT`
 4. `shelve init` in repo
 5. `shelve run -- pnpm dev`
@@ -57,7 +57,7 @@ Create at [app.shelve.cloud/user/api-keys](https://app.shelve.cloud/user/api-key
 |------|------|
 | Local dev with secrets | CLI `shelve run` |
 | Bulk edit / review variables | Shelve UI |
-| Create scoped CI token | Shelve UI |
+| Create scoped CI API key | Shelve UI |
 | Audit who changed what | Shelve UI audit logs |
 | Agent-safe workspace setup | CLI `shelve init` |
 | Block push to production | UI sync policy + `shelve.json` `sync` |
@@ -65,7 +65,7 @@ Create at [app.shelve.cloud/user/api-keys](https://app.shelve.cloud/user/api-key
 ## Documentation links
 
 - Environments — https://shelve.cloud/docs/core-features/environments
-- API Tokens — https://shelve.cloud/docs/core-features/tokens
+- API keys — https://shelve.cloud/docs/core-features/api-keys
 - Audit logs — https://shelve.cloud/docs/core-features/audit-logs
 - CLI agents & automation — https://shelve.cloud/docs/cli/agents-automation
 - Sync policies — https://shelve.cloud/docs/cli/sync-policies

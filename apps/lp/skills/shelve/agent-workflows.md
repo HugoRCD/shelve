@@ -55,7 +55,7 @@ After one successful online fetch:
 shelve run --offline -- pnpm build
 ```
 
-Cache lives at `~/.shelve/cache/` (encrypted with key derived from token). Revoking the token invalidates cache.
+Cache lives at `~/.shelve/cache/` (encrypted with key derived from the API key). Switching API keys makes the cache unreadable; revoking a key does not, so delete the cache after revoking a leaked key.
 
 ## Secret references (committed templates)
 

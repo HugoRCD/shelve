@@ -79,7 +79,7 @@ export default defineCommand({
       checks.push({
         id: 'auth',
         status: 'error',
-        message: 'Token is present but authentication failed',
+        message: 'API key is present but authentication failed',
         hint: CLI_ERROR_CODES.AUTH_REQUIRED?.hint,
       })
       finishDoctor(checks)
@@ -134,11 +134,11 @@ function pushConfigChecks(config: ShelveConfig, checks: DoctorCheck[]): void {
     checks.push({
       id: 'token',
       status: 'error',
-      message: 'No API token configured',
+      message: 'No API key configured',
       hint: CLI_ERROR_CODES.AUTH_REQUIRED?.hint,
     })
   } else {
-    checks.push({ id: 'token', status: 'ok', message: 'API token is configured' })
+    checks.push({ id: 'token', status: 'ok', message: 'API key is configured' })
   }
 
   checks.push({
@@ -187,7 +187,7 @@ async function pushApiChecks(
       checks.push({
         id: 'cache',
         status: 'warn',
-        message: 'Cache file exists but is stale or unreadable with the current token',
+        message: 'Cache file exists but is stale or unreadable with the current API key',
         hint: 'Run `shelve run` online once to refresh the cache.',
       })
     } else {

@@ -12,12 +12,12 @@ export default defineCommand({
   args: {
     token: {
       type: 'string',
-      description: 'API token (or set SHELVE_TOKEN)',
+      description: 'API key (or set SHELVE_TOKEN)',
       required: false,
     },
     withToken: {
       type: 'boolean',
-      description: 'Paste an API token instead of browser device login',
+      description: 'Paste an API key instead of browser device login',
       default: false,
     },
     noBrowser: {
