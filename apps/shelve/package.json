@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "@better-auth/api-key": "1.7.27",
-    "@electric-sql/pglite": "^0.5.17",
+    "@electric-sql/pglite": "^0.6.0",
     "@shelve/base": "workspace:*",
     "@vue-email/components": "^0.0.21",
     "@vue-email/render": "^0.0.9",
