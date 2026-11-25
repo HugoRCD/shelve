@@ -1,5 +1,31 @@
 # @shelve/app
 
+## 3.5.0
+
+### Minor Changes
+
+- [#817](https://github.com/HugoRCD/shelve/pull/817) [`3d58b89`](https://github.com/HugoRCD/shelve/commit/3d58b89b9322a4c4f255d7f31be3c9c8af904e4c) Thanks [@HugoRCD](https://github.com/HugoRCD)! - Delete audit log entries after 30 days. Self-hosted instances can change the window with `NUXT_PRIVATE_AUDIT_RETENTION_DAYS`, or set it to `0` to keep every entry.
+
+- [#814](https://github.com/HugoRCD/shelve/pull/814) [`1c78853`](https://github.com/HugoRCD/shelve/commit/1c78853f8890077ba08c7bf105789d679a1effb4) Thanks [@HugoRCD](https://github.com/HugoRCD)! - Sign in with Better Auth: GitHub, Google and email codes now create database sessions that can be revoked, and nuxt-auth-utils is removed. Everyone signs in once after this release. Preview deployments can use GitHub and Google login through production with `OAUTH_PROXY_URL` and `OAUTH_PROXY_SECRET`.
+
+### Patch Changes
+
+- [#802](https://github.com/HugoRCD/shelve/pull/802) [`4011f02`](https://github.com/HugoRCD/shelve/commit/4011f023ddbfbb60c522e79823cacc512977db75) Thanks [@HugoRCD](https://github.com/HugoRCD)! - Tighten access checks across sign-in, teams, invitations and integrations.
+
+- [#810](https://github.com/HugoRCD/shelve/pull/810) [`3eb2ee3`](https://github.com/HugoRCD/shelve/commit/3eb2ee35ddcb4a45c4aeed92e0677c8e76d7e848) Thanks [@HugoRCD](https://github.com/HugoRCD)! - Record more sensitive actions in the audit log and keep environment protection after a rename.
+
+- [#813](https://github.com/HugoRCD/shelve/pull/813) [`f384b5a`](https://github.com/HugoRCD/shelve/commit/f384b5a8c7a593c72ee9dddb8ccdec5187ba59fe) Thanks [@HugoRCD](https://github.com/HugoRCD)! - Tighten sign-in and account checks. Self-hosted instances outside Vercel must now set `NUXT_PUBLIC_APP_URL`, and `NUXT_PRIVATE_TRUST_PROXY` when they run behind a reverse proxy.
+
+- [#815](https://github.com/HugoRCD/shelve/pull/815) [`67d7777`](https://github.com/HugoRCD/shelve/commit/67d777787332bea6a70e12b0a4162c422e234933) Thanks [@HugoRCD](https://github.com/HugoRCD)! - Check repository access before pushing secrets to GitHub.
+
+- [#806](https://github.com/HugoRCD/shelve/pull/806) [`3f41bd4`](https://github.com/HugoRCD/shelve/commit/3f41bd429f7c9fb9db28872af96a28a2019f6769) Thanks [@HugoRCD](https://github.com/HugoRCD)! - Read request auth through one `getAuth`/`requireAuth` helper, and keep API token auth on the request instead of a throwaway session, as the first step of the move to Better Auth
+
+- [#818](https://github.com/HugoRCD/shelve/pull/818) [`d3fbef3`](https://github.com/HugoRCD/shelve/commit/d3fbef3fdfe6eaaec42c20d96bda5dec70691705) Thanks [@HugoRCD](https://github.com/HugoRCD)! - API tokens are now API keys, verified by Better Auth's api-key plugin. The `tokens` table becomes `api_keys`, with the plugin's field names. Existing `she_` keys keep working: a migration re-encodes their stored hashes into the plugin's format. Scopes, IP allowlists and audit logs work as before. The page moves to `/user/api-keys`, and `/user/tokens` redirects to it. An expired key is now deleted the first time someone tries to use it.
+
+- [#807](https://github.com/HugoRCD/shelve/pull/807) [`e9fb1ab`](https://github.com/HugoRCD/shelve/commit/e9fb1aba228e83bd249a006e6d2b7d5aa42680c8) Thanks [@HugoRCD](https://github.com/HugoRCD)! - Add the Better Auth schema (sessions, verifications, OAuth token columns on accounts, `emailVerified` on users) and mount a Better Auth instance on the existing tables at `/api/auth/*`. Logins still use the current flow.
+
+- [#816](https://github.com/HugoRCD/shelve/pull/816) [`390266f`](https://github.com/HugoRCD/shelve/commit/390266ffc4246ae82225389a1d6783a60a82e455) Thanks [@HugoRCD](https://github.com/HugoRCD)! - Production can now complete GitHub and Google sign-in for preview deployments that use Better Auth's OAuth proxy, when `OAUTH_PROXY_URL` and `OAUTH_PROXY_SECRET` are set. Production's own sign-in is unchanged.
+
 ## 3.4.2
 
 ### Patch Changes
