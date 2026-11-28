@@ -20,12 +20,12 @@
     "db:migrate": "nuxt db migrate"
   },
   "dependencies": {
-    "@better-auth/api-key": "1.7.27",
+    "@better-auth/api-key": "1.7.28",
     "@electric-sql/pglite": "^0.6.0",
     "@shelve/base": "workspace:*",
     "@vue-email/components": "^0.0.21",
     "@vue-email/render": "^0.0.9",
-    "better-auth": "1.7.27",
+    "better-auth": "1.7.28",
     "blakejs": "^1.2.1",
     "drizzle-kit": "^0.31.11",
     "drizzle-orm": "^0.45.4",
@@ -33,10 +33,10 @@
     "libsodium-wrappers": "^0.8.4",
     "nuxt-build-cache": "^0.1.1",
     "postgres": "^3.4.9",
-    "resend": "^6.39.0",
+    "resend": "^6.40.1",
     "tailwindcss": "^4.3.5",
     "tweetnacl": "^1.0.3",
-    "vue-router": "^5.5.1"
+    "vue-router": "^5.5.3"
   },
   "devDependencies": {
     "@nuxt/devtools": "^3.4.4",

@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@shelve/base": "workspace:*",
-    "@upstash/redis": "^1.41.0",
+    "@upstash/redis": "^1.41.1",
     "tailwindcss": "^4.3.5"
   },
   "devDependencies": {
